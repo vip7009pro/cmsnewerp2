@@ -134,8 +134,8 @@ export default function SemanticEngineManager() {
   const [tableDialogOpen, setTableDialogOpen] = useState(false);
   const [columnDialogOpen, setColumnDialogOpen] = useState(false);
   const [relationshipDialogOpen, setRelationshipDialogOpen] = useState(false);
-  const [ruleDialogOpen, setRuleDialogOpen] = useState(false);
-  const [conceptDialogOpen, setConceptDialogOpen] = useState(false);
+  const [metricDialogOpen, setMetricDialogOpen] = useState(false);
+  const [glossaryDialogOpen, setGlossaryDialogOpen] = useState(false);
   const [bulkTableDialogOpen, setBulkTableDialogOpen] = useState(false);
   const [bulkColumnDialogOpen, setBulkColumnDialogOpen] = useState(false);
   const [bulkRelationshipDialogOpen, setBulkRelationshipDialogOpen] = useState(false);
@@ -171,8 +171,36 @@ export default function SemanticEngineManager() {
     weight: 1,
     description: ''
   });
-  const [ruleForm, setRuleForm] = useState({ name: '', condition: '', applies_to: '' });
-  const [conceptForm, setConceptForm] = useState({ business_question: '', primary_metric: '', dimension: '', time_period: '' });
+  const [metricForm, setMetricForm] = useState({
+    id: '',
+    name: '',
+    business_name: '',
+    description: '',
+    formula: '',
+    tables: [] as string[],
+    data_type: 'count',
+    unit: '',
+    related_dimensions: [] as string[],
+    conditions: [] as string[],
+  });
+  const [glossaryForm, setGlossaryForm] = useState({
+    id: '',
+    user_terms: [] as string[],
+    canonical_term: '',
+    metric_ids: [] as string[],
+    table_names: [] as string[],
+    column_names: [] as string[],
+    time_filter: '',
+    operation: '',
+    description: '',
+  });
+  const [metricTablesInput, setMetricTablesInput] = useState('');
+  const [metricRelatedDimensionsInput, setMetricRelatedDimensionsInput] = useState('');
+  const [metricConditionsInput, setMetricConditionsInput] = useState('');
+  const [glossaryUserTermsInput, setGlossaryUserTermsInput] = useState('');
+  const [glossaryMetricIdsInput, setGlossaryMetricIdsInput] = useState('');
+  const [glossaryTableNamesInput, setGlossaryTableNamesInput] = useState('');
+  const [glossaryColumnNamesInput, setGlossaryColumnNamesInput] = useState('');
 
   // Bulk import states
   const [bulkTableJson, setBulkTableJson] = useState('');
@@ -181,8 +209,10 @@ export default function SemanticEngineManager() {
   const [relatedColumns, setRelatedColumns] = useState<any[]>([]);
 
   // Training state
-  const [patterns, setPatterns] = useState<any[]>([]);
-  const [trainingExamples, setTrainingExamples] = useState<any[]>([]);
+  const [metricsMetadata, setMetricsMetadata] = useState<any[]>([]);
+  const [glossaryMetadata, setGlossaryMetadata] = useState<any[]>([]);
+  const [selectedMetric, setSelectedMetric] = useState<any>(null);
+  const [selectedGlossary, setSelectedGlossary] = useState<any>(null);
   const [syncReport, setSyncReport] = useState<any>(null);
   const [forceSyncOverwrite, setForceSyncOverwrite] = useState(false);
 
@@ -223,24 +253,23 @@ export default function SemanticEngineManager() {
   const loadTrainingData = async () => {
     try {
       console.log('[FRONTEND] Loading training data...');
-      const [patternsRes, examplesRes] = await Promise.all([
-        api.getTrainingPatterns(),
-        api.getTrainingExamples(),
+      const [metricsRes, glossaryRes] = await Promise.all([
+        api.getMetricsMetadata(),
+        api.getGlossaryMetadata(),
       ]);
-
-      console.log('[FRONTEND] Patterns response:', patternsRes);
-      console.log('[FRONTEND] Examples response:', examplesRes);
-
-      if (patternsRes.tk_status === 'OK') {
-        setPatterns(patternsRes.data?.patterns || []);
+      if (metricsRes.tk_status === 'OK') {
+        setMetricsMetadata(metricsRes.data?.metrics || []);
       }
-      if (examplesRes.tk_status === 'OK') {
-        setTrainingExamples(examplesRes.data?.examples || []);
+      if (glossaryRes.tk_status === 'OK') {
+        setGlossaryMetadata(glossaryRes.data?.glossary || []);
       }
     } catch (error) {
       console.error('Failed to load training data', error);
     }
   };
+
+  const parseCsv = (value: string): string[] =>
+    value.split(',').map((s) => s.trim()).filter(Boolean);
 
   const showMessage = (type: 'success' | 'error' | 'info', text: string) => {
     setMessage({ type, text });
@@ -272,6 +301,34 @@ export default function SemanticEngineManager() {
     } catch (error) {
       console.error('[FRONTEND] Sync error:', error);
       showMessage('error', 'Error syncing from database');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Clear embedding cache to invalidate cached embeddings
+   * Called after metadata changes to ensure semantic search uses updated embeddings
+   */
+  const handleClearEmbeddingCache = async () => {
+    try {
+      setLoading(true);
+      console.log('[FRONTEND] Clearing embedding cache...');
+
+      const res = await api.clearEmbeddingCache();
+
+      console.log('[FRONTEND] Clear cache response:', res);
+
+      if (res.tk_status === 'OK') {
+        showMessage('success', 'Embedding cache cleared successfully');
+        console.log('[FRONTEND] Cache cleared:', res.data);
+      } else {
+        console.error('[FRONTEND] Clear cache failed:', res.error);
+        showMessage('error', res.error?.message || 'Failed to clear cache');
+      }
+    } catch (error) {
+      console.error('[FRONTEND] Clear cache error:', error);
+      showMessage('error', 'Error clearing embedding cache');
     } finally {
       setLoading(false);
     }
@@ -428,65 +485,296 @@ export default function SemanticEngineManager() {
     }
   };
 
+  const handleDeleteTable = async () => {
+    const tableName = (tableForm.table_name || '').trim();
+    if (!tableName) return;
+    if (!window.confirm(`Delete table metadata "${tableName}"? This also removes related columns and relationships.`)) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await api.deleteTableMetadata(tableName);
+      if (res.tk_status === 'OK') {
+        showMessage('success', 'Table metadata deleted successfully. Embedding cache regenerated.');
+        setTableDialogOpen(false);
+        if (selectedTable === tableName) {
+          setSelectedTable('');
+          setTableColumns([]);
+        }
+        setTableForm({
+          table_name: '',
+          schema: 'dbo',
+          business_name: '',
+          description: '',
+          use_cases: [],
+          synonyms: []
+        });
+        await loadMetadata();
+      } else {
+        showMessage('error', res.error?.message || 'Failed to delete table metadata');
+      }
+    } catch (error) {
+      showMessage('error', 'Error deleting table metadata');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteColumn = async () => {
+    const tableName = (columnForm.table_name || selectedTable || '').trim();
+    const columnName = (columnForm.column_name || '').trim();
+    if (!tableName || !columnName) return;
+    if (!window.confirm(`Delete column metadata "${tableName}.${columnName}"?`)) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await api.deleteColumnMetadata(tableName, columnName);
+      if (res.tk_status === 'OK') {
+        showMessage('success', 'Column metadata deleted successfully. Embedding cache regenerated.');
+        setColumnDialogOpen(false);
+        setColumnForm({
+          table_name: '',
+          column_name: '',
+          business_name: '',
+          description: '',
+          data_type: 'VARCHAR',
+          example_value: '',
+          is_key: false,
+          is_searchable: false,
+          is_filterable: false,
+          synonyms: []
+        });
+        if (selectedTable) {
+          await loadTableColumnsData(selectedTable);
+        }
+      } else {
+        showMessage('error', res.error?.message || 'Failed to delete column metadata');
+      }
+    } catch (error) {
+      showMessage('error', 'Error deleting column metadata');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteRelationship = async () => {
+    const fromTable = (relationshipForm.from_table || '').trim();
+    const fromColumn = (relationshipForm.from_column || '').trim();
+    const toTable = (relationshipForm.to_table || '').trim();
+    const toColumn = (relationshipForm.to_column || '').trim();
+
+    if (!fromTable || !fromColumn || !toTable || !toColumn) return;
+    if (!window.confirm(`Delete relationship "${fromTable}.${fromColumn} -> ${toTable}.${toColumn}"?`)) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await api.deleteRelationshipMetadata(fromTable, fromColumn, toTable, toColumn);
+      if (res.tk_status === 'OK') {
+        showMessage('success', 'Relationship metadata deleted successfully. Embedding cache regenerated.');
+        setRelationshipDialogOpen(false);
+        setRelationshipForm({
+          from_table: '',
+          from_column: '',
+          to_table: '',
+          to_column: '',
+          type: 'fk',
+          cardinality: 'N:1',
+          weight: 1,
+          description: ''
+        });
+        await loadMetadata();
+      } else {
+        showMessage('error', res.error?.message || 'Failed to delete relationship metadata');
+      }
+    } catch (error) {
+      showMessage('error', 'Error deleting relationship metadata');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // ==================== BUSINESS TRAINING ====================
 
-  const handleCreateRule = async () => {
+  const handleSaveMetric = async () => {
     try {
       setLoading(true);
-      const res = await api.createBusinessRule(ruleForm);
-
+      const payload = {
+        ...metricForm,
+        tables: parseCsv(metricTablesInput),
+        related_dimensions: parseCsv(metricRelatedDimensionsInput),
+        conditions: parseCsv(metricConditionsInput),
+      };
+      const res = await api.saveMetricMetadata(payload);
       if (res.tk_status === 'OK') {
-        showMessage('success', 'Business rule created successfully');
-        setRuleDialogOpen(false);
-        setRuleForm({ name: '', condition: '', applies_to: '' });
-        loadTrainingData();
+        showMessage('success', 'Metric metadata saved. Embedding cache regenerated.');
+        setMetricDialogOpen(false);
+        setMetricForm({
+          id: '',
+          name: '',
+          business_name: '',
+          description: '',
+          formula: '',
+          tables: [],
+          data_type: 'count',
+          unit: '',
+          related_dimensions: [],
+          conditions: [],
+        });
+        setMetricTablesInput('');
+        setMetricRelatedDimensionsInput('');
+        setMetricConditionsInput('');
+        setSelectedMetric(null);
+        await loadTrainingData();
       } else {
-        showMessage('error', res.error?.message || 'Failed to create rule');
+        showMessage('error', res.error?.message || 'Failed to save metric metadata');
       }
     } catch (error) {
-      showMessage('error', 'Error creating rule');
+      showMessage('error', 'Error saving metric metadata');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCreateConcept = async () => {
+  const handleDeleteMetric = async (metricId?: string) => {
+    const id = (metricId || metricForm.id || '').trim();
+    if (!id) return;
+    if (!window.confirm(`Delete metric metadata "${id}"?`)) return;
+
     try {
       setLoading(true);
-      const res = await api.mapBusinessConcept(conceptForm);
-
+      const res = await api.deleteMetricMetadata(id);
       if (res.tk_status === 'OK') {
-        showMessage('success', 'Business concept mapped successfully');
-        setConceptDialogOpen(false);
-        setConceptForm({ business_question: '', primary_metric: '', dimension: '', time_period: '' });
-        loadTrainingData();
+        showMessage('success', 'Metric metadata deleted. Embedding cache regenerated.');
+        setMetricDialogOpen(false);
+        setMetricForm({
+          id: '',
+          name: '',
+          business_name: '',
+          description: '',
+          formula: '',
+          tables: [],
+          data_type: 'count',
+          unit: '',
+          related_dimensions: [],
+          conditions: [],
+        });
+        setMetricTablesInput('');
+        setMetricRelatedDimensionsInput('');
+        setMetricConditionsInput('');
+        setSelectedMetric(null);
+        await loadTrainingData();
       } else {
-        showMessage('error', res.error?.message || 'Failed to map concept');
+        showMessage('error', res.error?.message || 'Failed to delete metric metadata');
       }
     } catch (error) {
-      showMessage('error', 'Error mapping concept');
+      showMessage('error', 'Error deleting metric metadata');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDeleteExample = async (id: string) => {
-    if (!window.confirm('Delete this training example?')) return;
+  const handleSaveGlossary = async () => {
+    try {
+      setLoading(true);
+      const payload = {
+        ...glossaryForm,
+        user_terms: parseCsv(glossaryUserTermsInput),
+        metric_ids: parseCsv(glossaryMetricIdsInput),
+        table_names: parseCsv(glossaryTableNamesInput),
+        column_names: parseCsv(glossaryColumnNamesInput),
+      };
+      const res = await api.saveGlossaryEntry(payload);
+      if (res.tk_status === 'OK') {
+        showMessage('success', 'Glossary entry saved. Cache refreshed.');
+        setGlossaryDialogOpen(false);
+        setGlossaryForm({
+          id: '',
+          user_terms: [],
+          canonical_term: '',
+          metric_ids: [],
+          table_names: [],
+          column_names: [],
+          time_filter: '',
+          operation: '',
+          description: '',
+        });
+        setGlossaryUserTermsInput('');
+        setGlossaryMetricIdsInput('');
+        setGlossaryTableNamesInput('');
+        setGlossaryColumnNamesInput('');
+        setSelectedGlossary(null);
+        await loadTrainingData();
+      } else {
+        showMessage('error', res.error?.message || 'Failed to save glossary metadata');
+      }
+    } catch (error) {
+      showMessage('error', 'Error saving glossary metadata');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteGlossary = async (entryId?: string) => {
+    const id = (entryId || glossaryForm.id || '').trim();
+    if (!id) return;
+    if (!window.confirm(`Delete glossary entry "${id}"?`)) return;
 
     try {
       setLoading(true);
-      const res = await api.deleteTrainingExample(id);
-
+      const res = await api.deleteGlossaryEntry(id);
       if (res.tk_status === 'OK') {
-        showMessage('success', 'Training example deleted');
-        loadTrainingData();
+        showMessage('success', 'Glossary entry deleted. Cache refreshed.');
+        setGlossaryDialogOpen(false);
+        setGlossaryForm({
+          id: '',
+          user_terms: [],
+          canonical_term: '',
+          metric_ids: [],
+          table_names: [],
+          column_names: [],
+          time_filter: '',
+          operation: '',
+          description: '',
+        });
+        setGlossaryUserTermsInput('');
+        setGlossaryMetricIdsInput('');
+        setGlossaryTableNamesInput('');
+        setGlossaryColumnNamesInput('');
+        setSelectedGlossary(null);
+        await loadTrainingData();
+      } else {
+        showMessage('error', res.error?.message || 'Failed to delete glossary metadata');
       }
     } catch (error) {
-      showMessage('error', 'Error deleting example');
+      showMessage('error', 'Error deleting glossary metadata');
     } finally {
       setLoading(false);
     }
   };
+
+  const isEditingTable = !!tableForm.table_name && tables.some(
+    (t) => String(t.table_name || '').toLowerCase() === String(tableForm.table_name || '').toLowerCase(),
+  );
+
+  const isEditingColumn = !!columnForm.table_name && !!columnForm.column_name && tableColumns.some(
+    (c) => String(c.column_name || '').toLowerCase() === String(columnForm.column_name || '').toLowerCase(),
+  );
+
+  const isEditingRelationship = !!relationshipForm.from_table && !!relationshipForm.from_column
+    && !!relationshipForm.to_table && !!relationshipForm.to_column;
+
+  const isEditingMetric = !!metricForm.id && metricsMetadata.some(
+    (m) => String(m.id || '').toLowerCase() === String(metricForm.id || '').toLowerCase(),
+  );
+
+  const isEditingGlossary = !!glossaryForm.id && glossaryMetadata.some(
+    (g) => String(g.id || '').toLowerCase() === String(glossaryForm.id || '').toLowerCase(),
+  );
 
   // ==================== BULK IMPORT HANDLERS ====================
 
@@ -733,6 +1021,33 @@ export default function SemanticEngineManager() {
             </Card>
           </Box>
 
+          {/* Embedding Cache Management */}
+          <Box>
+            <Card sx={{ mb: 1 }}>
+              <CardContent sx={{ pb: 1, pt: 1.5, px: 2, '&:last-child': { pb: 1 } }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                  <Box>
+                    <Typography variant="subtitle2">Embedding Cache</Typography>
+                    <Typography variant="caption" sx={{ fontSize: '0.7rem', color: '#6b7280' }}>
+                      Clear cached embeddings when metadata changes to ensure semantic search accuracy
+                    </Typography>
+                  </Box>
+                  <Button
+                    variant="contained"
+                    color="warning"
+                    size="small"
+                    startIcon={<RefreshIcon />}
+                    onClick={handleClearEmbeddingCache}
+                    disabled={loading}
+                    sx={{ fontSize: '0.75rem' }}
+                  >
+                    Clear Cache
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          </Box>
+
           {/* Tables Management */}
           <Box>
             <Card sx={{ mb: 1 }}>
@@ -972,6 +1287,11 @@ export default function SemanticEngineManager() {
             />
           </DialogContent>
           <DialogActions sx={{ pt: 1, pb: 1 }}>
+            {isEditingTable && (
+              <Button onClick={handleDeleteTable} color="error" size="small" disabled={loading}>
+                Delete
+              </Button>
+            )}
             <Button onClick={() => setTableDialogOpen(false)} size="small">Cancel</Button>
             <Button onClick={handleSaveTable} variant="contained" size="small" disabled={loading || !tableForm.table_name}>
               Save
@@ -1086,6 +1406,11 @@ export default function SemanticEngineManager() {
             />
           </DialogContent>
           <DialogActions sx={{ pt: 1, pb: 1 }}>
+            {isEditingColumn && (
+              <Button onClick={handleDeleteColumn} color="error" size="small" disabled={loading}>
+                Delete
+              </Button>
+            )}
             <Button onClick={() => setColumnDialogOpen(false)} size="small">Cancel</Button>
             <Button onClick={handleSaveColumn} variant="contained" size="small" disabled={loading || !columnForm.column_name}>
               Save
@@ -1230,6 +1555,11 @@ export default function SemanticEngineManager() {
             />
           </DialogContent>
           <DialogActions>
+            {isEditingRelationship && (
+              <Button onClick={handleDeleteRelationship} color="error" disabled={loading}>
+                Delete
+              </Button>
+            )}
             <Button onClick={() => setRelationshipDialogOpen(false)}>Cancel</Button>
             <Button
               onClick={handleSaveRelationship}
@@ -1245,291 +1575,346 @@ export default function SemanticEngineManager() {
       {/* ==================== BUSINESS TRAINING TAB ==================== */}
       <TabPanel value={tabValue} index={1}>
         <Box sx={{ display: 'grid', gap: 2 }}>
-          {/* Common Patterns */}
+          {/* Metrics Metadata CRUD */}
           <Box>
             <Card>
               <CardContent>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  📊 Common Query Patterns (Learn by Example)
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  These are common patterns in Vietnamese ERP systems. Use these as templates for training.
-                </Typography>
-
-                {patterns.map((pattern) => (
-                  <Accordion key={pattern.pattern_name} sx={{ mb: 1 }}>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Box sx={{ width: '100%' }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                          {pattern.pattern_name}
-                        </Typography>
-                        <Box sx={{ mt: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                          {pattern.keywords.slice(0, 3).map((kw: string) => (
-                            <Chip key={kw} label={kw} size="small" />
-                          ))}
-                        </Box>
-                      </Box>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Box>
-                        <Typography variant="subtitle2" sx={{ mb: 1 }}>Example Questions (tự động tạo변종):</Typography>
-                        <Box sx={{ pl: 2, mb: 2 }}>
-                          {pattern.example_questions.map((q: string, i: number) => (
-                            <Typography key={i} variant="body2" sx={{ mb: 0.5, color: '#1976d2' }}>
-                              • {q}
-                            </Typography>
-                          ))}
-                        </Box>
-                        <Typography variant="caption" sx={{ display: 'block', mt: 2, p: 1, bgcolor: '#f5f5f5', borderRadius: 1, fontFamily: 'monospace' }}>
-                          {pattern.sql_template.slice(0, 200)}...
-                        </Typography>
-                      </Box>
-                    </AccordionDetails>
-                  </Accordion>
-                ))}
-              </CardContent>
-            </Card>
-          </Box>
-
-          {/* Business Rule Creation */}
-          <Box sx={{ gridColumn: { md: '1' } }}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  ⚙️ Business Rules (No SQL needed!)
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Define business logic by describing conditions in plain language.
-                </Typography>
-
-                <Box sx={{ p: 2, bgcolor: '#f9f9f9', borderRadius: 1, mb: 2 }}>
-                  <Typography variant="subtitle2" sx={{ mb: 2 }}>Example: VIP Customer Definition</Typography>
-                  <Box sx={{ pl: 2 }}>
-                    <Typography variant="body2">Rule Name: <strong>VIP Customer</strong></Typography>
-                    <Typography variant="body2">Applies To: <strong>Customers table</strong></Typography>
-                    <Typography variant="body2">Condition: <strong>Total purchases {'>'}  1,000,000 VND</strong></Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                  <Typography variant="h6">📏 Metrics Metadata ({metricsMetadata.length})</Typography>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => {
+                        if (!selectedMetric) return;
+                        setMetricForm({
+                          id: selectedMetric.id || '',
+                          name: selectedMetric.name || '',
+                          business_name: selectedMetric.business_name || '',
+                          description: selectedMetric.description || '',
+                          formula: selectedMetric.formula || '',
+                          tables: selectedMetric.tables || [],
+                          data_type: selectedMetric.data_type || 'count',
+                          unit: selectedMetric.unit || '',
+                          related_dimensions: selectedMetric.related_dimensions || [],
+                          conditions: selectedMetric.conditions || [],
+                        });
+                        setMetricTablesInput(Array.isArray(selectedMetric.tables) ? selectedMetric.tables.join(', ') : '');
+                        setMetricRelatedDimensionsInput(Array.isArray(selectedMetric.related_dimensions) ? selectedMetric.related_dimensions.join(', ') : '');
+                        setMetricConditionsInput(Array.isArray(selectedMetric.conditions) ? selectedMetric.conditions.join(', ') : '');
+                        setMetricDialogOpen(true);
+                      }}
+                      disabled={!selectedMetric}
+                    >
+                      Edit Selected
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      size="small"
+                      onClick={() => handleDeleteMetric(selectedMetric?.id)}
+                      disabled={!selectedMetric}
+                    >
+                      Delete Selected
+                    </Button>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      startIcon={<AddIcon />}
+                      onClick={() => {
+                        setMetricForm({
+                          id: '',
+                          name: '',
+                          business_name: '',
+                          description: '',
+                          formula: '',
+                          tables: [],
+                          data_type: 'count',
+                          unit: '',
+                          related_dimensions: [],
+                          conditions: [],
+                        });
+                        setMetricTablesInput('');
+                        setMetricRelatedDimensionsInput('');
+                        setMetricConditionsInput('');
+                        setMetricDialogOpen(true);
+                      }}
+                    >
+                    Add Metric
+                    </Button>
                   </Box>
                 </Box>
 
-                <Button
-                  variant="contained"
-                  fullWidth
-                  onClick={() => setRuleDialogOpen(true)}
-                >
-                  + Create Business Rule
-                </Button>
-              </CardContent>
-            </Card>
-          </Box>
-
-          {/* Business Concept Mapping */}
-          <Box sx={{ gridColumn: { md: '1' } }}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  🎯 Business Concept Mapping
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Describe what you want in business terms, system generates variations.
-                </Typography>
-
-                <Box sx={{ p: 2, bgcolor: '#f9f9f9', borderRadius: 1, mb: 2 }}>
-                  <Typography variant="subtitle2" sx={{ mb: 2 }}>Example: Monthly Revenue Analysis</Typography>
-                  <Box sx={{ pl: 2 }}>
-                    <Typography variant="body2">Business Question: <strong>"Monthly revenue by product"</strong></Typography>
-                    <Typography variant="body2">Primary Metric: <strong>Revenue</strong></Typography>
-                    <Typography variant="body2">Group By: <strong>Product Category</strong></Typography>
-                    <Typography variant="body2">Time: <strong>Monthly</strong></Typography>
-                  </Box>
+                <Box sx={{ height: '300px', width: '100%' }}>
+                  <AGTable
+                    data={metricsMetadata.map((m) => ({
+                      id: m.id,
+                      metric_id: m.id,
+                      business_name: m.business_name || m.name,
+                      tables: Array.isArray(m.tables) ? m.tables.join(', ') : '',
+                      data_type: m.data_type || 'count',
+                    }))}
+                    columns={[
+                      { field: 'metric_id', headerName: 'ID', width: 130, minWidth: 110 },
+                      { field: 'business_name', headerName: 'Business Name', width: 180, minWidth: 140 },
+                      { field: 'tables', headerName: 'Tables', width: 220, minWidth: 160 },
+                      { field: 'data_type', headerName: 'Type', width: 100, minWidth: 80 },
+                    ]}
+                    columnWidth={120}
+                    rowHeight={24}
+                    showFilter={true}
+                    onSelectionChange={() => {}}
+                    onRowClick={(e: any) => {
+                      const row = metricsMetadata.find((m) => m.id === e.data?.id);
+                      setSelectedMetric(row || null);
+                    }}
+                    onRowDoubleClick={(e: any) => {
+                      const row = metricsMetadata.find((m) => m.id === e.data?.id);
+                      if (!row) return;
+                      setMetricForm({
+                        id: row.id || '',
+                        name: row.name || '',
+                        business_name: row.business_name || '',
+                        description: row.description || '',
+                        formula: row.formula || '',
+                        tables: row.tables || [],
+                        data_type: row.data_type || 'count',
+                        unit: row.unit || '',
+                        related_dimensions: row.related_dimensions || [],
+                        conditions: row.conditions || [],
+                      });
+                      setMetricTablesInput(Array.isArray(row.tables) ? row.tables.join(', ') : '');
+                      setMetricRelatedDimensionsInput(Array.isArray(row.related_dimensions) ? row.related_dimensions.join(', ') : '');
+                      setMetricConditionsInput(Array.isArray(row.conditions) ? row.conditions.join(', ') : '');
+                      setMetricDialogOpen(true);
+                    }}
+                    suppressRowClickSelection={true}
+                  />
                 </Box>
-
-                <Button
-                  variant="contained"
-                  fullWidth
-                  onClick={() => setConceptDialogOpen(true)}
-                >
-                  + Map Business Concept
-                </Button>
               </CardContent>
             </Card>
           </Box>
 
-          {/* Training Examples Created */}
+          {/* Glossary Metadata CRUD */}
           <Box>
             <Card>
               <CardContent>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  📚 Training Examples ({trainingExamples.length})
-                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                  <Typography variant="h6">📖 Glossary Metadata ({glossaryMetadata.length})</Typography>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => {
+                        if (!selectedGlossary) return;
+                        setGlossaryForm({
+                          id: selectedGlossary.id || '',
+                          user_terms: selectedGlossary.user_terms || [],
+                          canonical_term: selectedGlossary.canonical_term || '',
+                          metric_ids: selectedGlossary.metric_ids || [],
+                          table_names: selectedGlossary.table_names || [],
+                          column_names: selectedGlossary.column_names || [],
+                          time_filter: selectedGlossary.time_filter || '',
+                          operation: selectedGlossary.operation || '',
+                          description: selectedGlossary.description || '',
+                        });
+                        setGlossaryUserTermsInput(Array.isArray(selectedGlossary.user_terms) ? selectedGlossary.user_terms.join(', ') : '');
+                        setGlossaryMetricIdsInput(Array.isArray(selectedGlossary.metric_ids) ? selectedGlossary.metric_ids.join(', ') : '');
+                        setGlossaryTableNamesInput(Array.isArray(selectedGlossary.table_names) ? selectedGlossary.table_names.join(', ') : '');
+                        setGlossaryColumnNamesInput(Array.isArray(selectedGlossary.column_names) ? selectedGlossary.column_names.join(', ') : '');
+                        setGlossaryDialogOpen(true);
+                      }}
+                      disabled={!selectedGlossary}
+                    >
+                      Edit Selected
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      size="small"
+                      onClick={() => handleDeleteGlossary(selectedGlossary?.id)}
+                      disabled={!selectedGlossary}
+                    >
+                      Delete Selected
+                    </Button>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      startIcon={<AddIcon />}
+                      onClick={() => {
+                        setGlossaryForm({
+                          id: '',
+                          user_terms: [],
+                          canonical_term: '',
+                          metric_ids: [],
+                          table_names: [],
+                          column_names: [],
+                          time_filter: '',
+                          operation: '',
+                          description: '',
+                        });
+                        setGlossaryUserTermsInput('');
+                        setGlossaryMetricIdsInput('');
+                        setGlossaryTableNamesInput('');
+                        setGlossaryColumnNamesInput('');
+                        setGlossaryDialogOpen(true);
+                      }}
+                    >
+                    Add Glossary
+                    </Button>
+                  </Box>
+                </Box>
 
-                {trainingExamples.length === 0 ? (
-                  <Typography variant="body2" color="text.secondary">
-                    No training examples yet. Create some using the options above!
-                  </Typography>
-                ) : (
-                  <TableContainer>
-                    <Table size="small">
-                      <TableHead>
-                        <TableRow sx={{ bgcolor: '#f5f5f5' }}>
-                          <TableCell>Type</TableCell>
-                          <TableCell>Description</TableCell>
-                          <TableCell>Confidence</TableCell>
-                          <TableCell align="right">Actions</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {trainingExamples.map((ex) => (
-                          <TableRow key={ex.id}>
-                            <TableCell>
-                              <Chip
-                                label={ex.source_type}
-                                size="small"
-                                variant={ex.source_type === 'pattern' ? 'filled' : 'outlined'}
-                              />
-                            </TableCell>
-                            <TableCell>{ex.business_concept}</TableCell>
-                            <TableCell>
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <LinearProgress variant="determinate" value={ex.confidence * 100} sx={{ flex: 1, minWidth: 100 }} />
-                                <Typography variant="caption">{(ex.confidence * 100).toFixed(0)}%</Typography>
-                              </Box>
-                            </TableCell>
-                            <TableCell align="right">
-                              <IconButton
-                                size="small"
-                                onClick={() => handleDeleteExample(ex.id)}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                )}
+                <Box sx={{ height: '300px', width: '100%' }}>
+                  <AGTable
+                    data={glossaryMetadata.map((g) => ({
+                      id: g.id,
+                      glossary_id: g.id,
+                      canonical_term: g.canonical_term || '',
+                      user_terms: Array.isArray(g.user_terms) ? g.user_terms.join(', ') : '',
+                      binding: Array.isArray(g.metric_ids) && g.metric_ids.length
+                        ? `metrics: ${g.metric_ids.length}`
+                        : (Array.isArray(g.table_names) && g.table_names.length ? `tables: ${g.table_names.length}` : '-'),
+                    }))}
+                    columns={[
+                      { field: 'glossary_id', headerName: 'ID', width: 140, minWidth: 120 },
+                      { field: 'canonical_term', headerName: 'Canonical Term', width: 180, minWidth: 140 },
+                      { field: 'user_terms', headerName: 'User Terms', width: 260, minWidth: 200 },
+                      { field: 'binding', headerName: 'Binding', width: 120, minWidth: 100 },
+                    ]}
+                    columnWidth={120}
+                    rowHeight={24}
+                    showFilter={true}
+                    onSelectionChange={() => {}}
+                    onRowClick={(e: any) => {
+                      const row = glossaryMetadata.find((g) => g.id === e.data?.id);
+                      setSelectedGlossary(row || null);
+                    }}
+                    onRowDoubleClick={(e: any) => {
+                      const row = glossaryMetadata.find((g) => g.id === e.data?.id);
+                      if (!row) return;
+                      setGlossaryForm({
+                        id: row.id || '',
+                        user_terms: row.user_terms || [],
+                        canonical_term: row.canonical_term || '',
+                        metric_ids: row.metric_ids || [],
+                        table_names: row.table_names || [],
+                        column_names: row.column_names || [],
+                        time_filter: row.time_filter || '',
+                        operation: row.operation || '',
+                        description: row.description || '',
+                      });
+                      setGlossaryUserTermsInput(Array.isArray(row.user_terms) ? row.user_terms.join(', ') : '');
+                      setGlossaryMetricIdsInput(Array.isArray(row.metric_ids) ? row.metric_ids.join(', ') : '');
+                      setGlossaryTableNamesInput(Array.isArray(row.table_names) ? row.table_names.join(', ') : '');
+                      setGlossaryColumnNamesInput(Array.isArray(row.column_names) ? row.column_names.join(', ') : '');
+                      setGlossaryDialogOpen(true);
+                    }}
+                    suppressRowClickSelection={true}
+                  />
+                </Box>
               </CardContent>
             </Card>
           </Box>
         </Box>
 
-        {/* Rule Dialog */}
-        <Dialog open={ruleDialogOpen} onClose={() => setRuleDialogOpen(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>Create Business Rule</DialogTitle>
-          <DialogContent sx={{ pt: 2 }}>
+        {/* Metric Dialog */}
+        <Dialog open={metricDialogOpen} onClose={() => setMetricDialogOpen(false)} maxWidth="md" fullWidth>
+          <DialogTitle>Metric Metadata</DialogTitle>
+          <DialogContent sx={{ pt: 2, maxHeight: '520px', overflow: 'auto' }}>
+            <TextField fullWidth label="Metric ID" value={metricForm.id} onChange={(e) => setMetricForm({ ...metricForm, id: e.target.value })} margin="dense" />
+            <TextField fullWidth label="Name" value={metricForm.name} onChange={(e) => setMetricForm({ ...metricForm, name: e.target.value })} margin="dense" />
+            <TextField fullWidth label="Business Name" value={metricForm.business_name} onChange={(e) => setMetricForm({ ...metricForm, business_name: e.target.value })} margin="dense" />
+            <TextField fullWidth label="Description" value={metricForm.description} onChange={(e) => setMetricForm({ ...metricForm, description: e.target.value })} margin="dense" multiline rows={2} />
+            <TextField fullWidth label="Formula" value={metricForm.formula} onChange={(e) => setMetricForm({ ...metricForm, formula: e.target.value })} margin="dense" multiline rows={2} />
             <TextField
               fullWidth
-              label="Rule Name (e.g., VIP Customer)"
-              value={ruleForm.name}
-              onChange={(e) => setRuleForm({ ...ruleForm, name: e.target.value })}
-              margin="normal"
+              label="Tables (comma-separated)"
+              value={metricTablesInput}
+              onChange={(e) => setMetricTablesInput(e.target.value)}
+              margin="dense"
             />
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Applies To Table</InputLabel>
-              <Select
-                value={ruleForm.applies_to}
-                label="Applies To Table"
-                onChange={(e) => setRuleForm({ ...ruleForm, applies_to: e.target.value })}
-              >
-                {tables.map((t) => (
-                  <MenuItem key={t.table_name} value={t.table_name}>
-                    {t.business_name} ({t.table_name})
-                  </MenuItem>
-                ))}
+            <FormControl fullWidth margin="dense">
+              <InputLabel>Data Type</InputLabel>
+              <Select value={metricForm.data_type} label="Data Type" onChange={(e) => setMetricForm({ ...metricForm, data_type: String(e.target.value) })}>
+                <MenuItem value="count">count</MenuItem>
+                <MenuItem value="currency">currency</MenuItem>
+                <MenuItem value="percentage">percentage</MenuItem>
+                <MenuItem value="number">number</MenuItem>
               </Select>
             </FormControl>
+            <TextField fullWidth label="Unit" value={metricForm.unit} onChange={(e) => setMetricForm({ ...metricForm, unit: e.target.value })} margin="dense" />
             <TextField
               fullWidth
-              label="Condition (plain language, e.g., 'Total purchases > 1,000,000')"
-              value={ruleForm.condition}
-              onChange={(e) => setRuleForm({ ...ruleForm, condition: e.target.value })}
-              multiline
-              rows={3}
-              margin="normal"
+              label="Related Dimensions (comma-separated)"
+              value={metricRelatedDimensionsInput}
+              onChange={(e) => setMetricRelatedDimensionsInput(e.target.value)}
+              margin="dense"
             />
-            <Alert severity="info" sx={{ mt: 2 }}>
-              💡 Write your condition in natural language. The system will generate SQL variations automatically.
-            </Alert>
+            <TextField
+              fullWidth
+              label="Conditions (comma-separated)"
+              value={metricConditionsInput}
+              onChange={(e) => setMetricConditionsInput(e.target.value)}
+              margin="dense"
+            />
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setRuleDialogOpen(false)}>Cancel</Button>
-            <Button
-              onClick={handleCreateRule}
-              variant="contained"
-              disabled={loading || !ruleForm.name || !ruleForm.condition || !ruleForm.applies_to}
-            >
-              Create Rule
+            {isEditingMetric && (
+              <Button onClick={() => handleDeleteMetric()} color="error" disabled={loading}>Delete</Button>
+            )}
+            <Button onClick={() => setMetricDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleSaveMetric} variant="contained" disabled={loading || !metricForm.id || !metricForm.name || !metricForm.business_name || !metricForm.formula || !parseCsv(metricTablesInput).length}>
+              Save
             </Button>
           </DialogActions>
         </Dialog>
 
-        {/* Concept Dialog */}
-        <Dialog open={conceptDialogOpen} onClose={() => setConceptDialogOpen(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>Map Business Concept to SQL</DialogTitle>
-          <DialogContent sx={{ pt: 2 }}>
+        {/* Glossary Dialog */}
+        <Dialog open={glossaryDialogOpen} onClose={() => setGlossaryDialogOpen(false)} maxWidth="md" fullWidth>
+          <DialogTitle>Glossary Metadata</DialogTitle>
+          <DialogContent sx={{ pt: 2, maxHeight: '520px', overflow: 'auto' }}>
+            <TextField fullWidth label="Entry ID" value={glossaryForm.id} onChange={(e) => setGlossaryForm({ ...glossaryForm, id: e.target.value })} margin="dense" />
             <TextField
               fullWidth
-              label="Business Question (e.g., 'Monthly revenue by product')"
-              value={conceptForm.business_question}
-              onChange={(e) => setConceptForm({ ...conceptForm, business_question: e.target.value })}
-              margin="normal"
+              label="User Terms (comma-separated)"
+              value={glossaryUserTermsInput}
+              onChange={(e) => setGlossaryUserTermsInput(e.target.value)}
+              margin="dense"
             />
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Primary Metric (What to measure)</InputLabel>
-              <Select
-                value={conceptForm.primary_metric}
-                label="Primary Metric"
-                onChange={(e) => setConceptForm({ ...conceptForm, primary_metric: e.target.value })}
-              >
-                <MenuItem value="Revenue">Revenue</MenuItem>
-                <MenuItem value="Quantity">Quantity</MenuItem>
-                <MenuItem value="Count">Count</MenuItem>
-                <MenuItem value="Average">Average</MenuItem>
-                <MenuItem value="Total">Total</MenuItem>
-                <MenuItem value="Profit">Profit</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Dimension (Group by)</InputLabel>
-              <Select
-                value={conceptForm.dimension}
-                label="Dimension"
-                onChange={(e) => setConceptForm({ ...conceptForm, dimension: e.target.value })}
-              >
-                <MenuItem value="Product">Product</MenuItem>
-                <MenuItem value="Customer">Customer</MenuItem>
-                <MenuItem value="Region">Region</MenuItem>
-                <MenuItem value="Time">Time</MenuItem>
-                <MenuItem value="Category">Category</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Time Period</InputLabel>
-              <Select
-                value={conceptForm.time_period}
-                label="Time Period"
-                onChange={(e) => setConceptForm({ ...conceptForm, time_period: e.target.value })}
-              >
-                <MenuItem value="">None</MenuItem>
-                <MenuItem value="Daily">Daily</MenuItem>
-                <MenuItem value="Weekly">Weekly</MenuItem>
-                <MenuItem value="Monthly">Monthly</MenuItem>
-                <MenuItem value="Quarterly">Quarterly</MenuItem>
-                <MenuItem value="Yearly">Yearly</MenuItem>
-              </Select>
-            </FormControl>
-            <Alert severity="info" sx={{ mt: 2 }}>
-              💡 System will auto-generate question variations and map to SQL patterns.
-            </Alert>
+            <TextField fullWidth label="Canonical Term" value={glossaryForm.canonical_term} onChange={(e) => setGlossaryForm({ ...glossaryForm, canonical_term: e.target.value })} margin="dense" />
+            <TextField
+              fullWidth
+              label="Metric IDs (comma-separated)"
+              value={glossaryMetricIdsInput}
+              onChange={(e) => setGlossaryMetricIdsInput(e.target.value)}
+              margin="dense"
+            />
+            <TextField
+              fullWidth
+              label="Table Names (comma-separated)"
+              value={glossaryTableNamesInput}
+              onChange={(e) => setGlossaryTableNamesInput(e.target.value)}
+              margin="dense"
+            />
+            <TextField
+              fullWidth
+              label="Column Names (comma-separated)"
+              value={glossaryColumnNamesInput}
+              onChange={(e) => setGlossaryColumnNamesInput(e.target.value)}
+              margin="dense"
+            />
+            <TextField fullWidth label="Time Filter" value={glossaryForm.time_filter} onChange={(e) => setGlossaryForm({ ...glossaryForm, time_filter: e.target.value })} margin="dense" />
+            <TextField fullWidth label="Operation" value={glossaryForm.operation} onChange={(e) => setGlossaryForm({ ...glossaryForm, operation: e.target.value })} margin="dense" />
+            <TextField fullWidth label="Description" value={glossaryForm.description} onChange={(e) => setGlossaryForm({ ...glossaryForm, description: e.target.value })} margin="dense" multiline rows={2} />
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setConceptDialogOpen(false)}>Cancel</Button>
-            <Button
-              onClick={handleCreateConcept}
-              variant="contained"
-              disabled={loading || !conceptForm.business_question || !conceptForm.primary_metric || !conceptForm.dimension}
-            >
-              Map Concept
+            {isEditingGlossary && (
+              <Button onClick={() => handleDeleteGlossary()} color="error" disabled={loading}>Delete</Button>
+            )}
+            <Button onClick={() => setGlossaryDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleSaveGlossary} variant="contained" disabled={loading || !glossaryForm.id || !glossaryForm.canonical_term || !parseCsv(glossaryUserTermsInput).length}>
+              Save
             </Button>
           </DialogActions>
         </Dialog>
@@ -1688,7 +2073,8 @@ export default function SemanticEngineManager() {
                 <Typography variant="body2">Total Tables: {tables.length}</Typography>
                 <Typography variant="body2">Total Columns (selected table): {tableColumns.length}</Typography>
                 <Typography variant="body2">Total Relationships: {relationships.length}</Typography>
-                <Typography variant="body2">Training Examples: {trainingExamples.length}</Typography>
+                <Typography variant="body2">Metrics Metadata: {metricsMetadata.length}</Typography>
+                <Typography variant="body2">Glossary Metadata: {glossaryMetadata.length}</Typography>
                 <Typography variant="body2">Last Sync: {syncReport ? new Date(syncReport.timestamp).toLocaleString() : 'Never'}</Typography>
               </Box>
             </CardContent>

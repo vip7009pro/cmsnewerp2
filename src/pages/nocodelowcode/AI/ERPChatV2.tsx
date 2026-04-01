@@ -33,12 +33,25 @@ type PipelineStep = {
   note?: any;
 };
 
+type ErrorInfo = {
+  code?: string;
+  message?: string;
+  http_status?: number;
+  title?: string;
+  description?: string;
+  suggestion?: string;
+  retry_after_seconds?: number;
+  debug_info?: any;
+};
+
 type ChatMessage = {
   role: 'user' | 'assistant';
   text: string;
   sql?: string;
+  prompt?: string;
   rows?: any[];
   error?: string;
+  error_info?: ErrorInfo;
   pipeline_steps?: PipelineStep[];
   debug_info?: any;
 };
@@ -289,8 +302,9 @@ const ERPChatV2 = () => {
           ...prev,
           {
             role: 'assistant',
-            text: resp.error?.message ? String(resp.error.message) : 'Query failed',
-            error: resp.error?.message ? String(resp.error.message) : 'Query failed',
+            text: resp.error?.title || resp.error?.message || 'Lỗi truy vấn',
+            error: resp.error?.message || 'Query failed',
+            error_info: resp.error,
             sql: resp.data?.sql ? String(resp.data.sql) : undefined,
             pipeline_steps: resp.data?.pipeline_steps,
           },
@@ -305,6 +319,7 @@ const ERPChatV2 = () => {
           role: 'assistant',
           text: out?.explanation ? String(out.explanation) : 'Đã truy vấn dữ liệu ERP.',
           sql: out?.sql ? String(out.sql) : '',
+          prompt: out?.sql_generation_prompt ? String(out.sql_generation_prompt) : undefined,
           rows: Array.isArray(out?.data) ? out.data : [],
           pipeline_steps: Array.isArray(out?.pipeline_steps) ? out.pipeline_steps : [],
           debug_info: out?.debug_info,
@@ -316,12 +331,28 @@ const ERPChatV2 = () => {
       }
     } catch (e: any) {
       if (lastRequestIdRef.current !== reqId) return;
+      const errorMessage = e?.message || String(e);
+      const httpStatus = e?.response?.status;
+      
+      // Build complete error info from response data + axios info
+      const responseError = e?.response?.data?.error || {};
+      const completeErrorInfo = {
+        code: responseError.code || (httpStatus ? 'HTTP_ERROR' : 'NETWORK_ERROR'),
+        message: errorMessage,
+        http_status: responseError.http_status || httpStatus,
+        title: responseError.title || (httpStatus ? `HTTP ${httpStatus} Error` : 'Network Error'),
+        description: responseError.description || (httpStatus ? `Lỗi HTTP ${httpStatus} khi gửi request` : 'Không thể kết nối tới server'),
+        suggestion: responseError.suggestion || 'Vui lòng kiểm tra kết nối mạng hoặc thử lại sau',
+        retry_after_seconds: responseError.retry_after_seconds,
+      };
+      
       setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
-          text: e?.message ? String(e.message) : String(e),
-          error: e?.message ? String(e.message) : String(e),
+          text: responseError.title || 'Lỗi truy vấn',
+          error: errorMessage,
+          error_info: completeErrorInfo,
         },
       ]);
     } finally {
@@ -398,6 +429,7 @@ const ERPChatV2 = () => {
 
   const lastSql = useMemo(() => lastAssistantMsg?.sql || '', [lastAssistantMsg]);
   const lastError = useMemo(() => lastAssistantMsg?.error || '', [lastAssistantMsg]);
+  const lastPrompt = useMemo(() => lastAssistantMsg?.prompt || '', [lastAssistantMsg]);
   const lastPipelineSteps = useMemo(() => lastAssistantMsg?.pipeline_steps || [], [lastAssistantMsg]);
   const lastDebugInfo = useMemo(() => lastAssistantMsg?.debug_info, [lastAssistantMsg]);
 
@@ -502,9 +534,69 @@ const ERPChatV2 = () => {
                       </Typography>
                     ) : null}
 
-                    {/* Error inline */}
-                    {m.error ? (
-                      <Typography sx={{ fontSize: 12, mt: 1, color: '#b91c1c' }}>{m.error}</Typography>
+                    {/* Error display with full details */}
+                    {m.error_info || m.error ? (
+                      <Alert 
+                        severity="error" 
+                        sx={{ 
+                          mt: 1, 
+                          bgcolor: '#fef2f2',
+                          borderColor: '#fecaca',
+                          border: '1px solid',
+                        }}
+                      >
+                        <Stack spacing={0.75}>
+                          {/* Error header: HTTP status + title */}
+                          <Box>
+                            {m.error_info?.http_status ? (
+                              <Typography sx={{ fontSize: 12, fontWeight: 600, color: '#7f1d1d' }}>
+                                {m.error_info.http_status} {m.error_info.title || 'Lỗi'}
+                              </Typography>
+                            ) : (
+                              m.error_info?.title && (
+                                <Typography sx={{ fontSize: 12, fontWeight: 600, color: '#7f1d1d' }}>
+                                  {m.error_info.title}
+                                </Typography>
+                              )
+                            )}
+                          </Box>
+                          
+                          {/* Error code */}
+                          {m.error_info?.code && (
+                            <Typography sx={{ fontSize: 11, color: '#991b1b', fontFamily: 'monospace' }}>
+                              Code: {m.error_info.code}
+                            </Typography>
+                          )}
+                          
+                          {/* Error message */}
+                          {m.error && (
+                            <Typography sx={{ fontSize: 12, color: '#7f1d1d' }}>
+                              {m.error}
+                            </Typography>
+                          )}
+                          
+                          {/* Description */}
+                          {m.error_info?.description && (
+                            <Typography sx={{ fontSize: 12, color: '#7f1d1d', mt: 0.5 }}>
+                              {m.error_info.description}
+                            </Typography>
+                          )}
+                          
+                          {/* Suggestion */}
+                          {m.error_info?.suggestion && (
+                            <Typography sx={{ fontSize: 12, color: '#7f1d1d', fontStyle: 'italic', mt: 0.5 }}>
+                              💡 {m.error_info.suggestion}
+                            </Typography>
+                          )}
+                          
+                          {/* Retry suggestion for rate limit */}
+                          {m.error_info?.retry_after_seconds && (
+                            <Typography sx={{ fontSize: 11, color: '#991b1b', mt: 0.5, fontWeight: 600 }}>
+                              ⏱️ Chờ {m.error_info.retry_after_seconds} giây rồi thử lại
+                            </Typography>
+                          )}
+                        </Stack>
+                      </Alert>
                     ) : null}
                   </Box>
                 </Box>
@@ -594,6 +686,55 @@ const ERPChatV2 = () => {
                     >
                       {JSON.stringify(lastDebugInfo, null, 2)}
                     </Box>
+                  </Box>
+                )}
+
+                {/* SQL Generation Prompt */}
+                {lastPrompt && (
+                  <Box sx={{ px: 1.5, pb: 1.5 }}>
+                    <Divider sx={{ mb: 1 }} />
+                    <Typography sx={{ fontSize: 12, fontWeight: 700, mb: 0.5, color: '#374151' }}>
+                      💬 SQL Generation Prompt
+                    </Typography>
+                    <Typography sx={{ fontSize: 11, color: '#6b7280', mb: 0.75 }}>
+                      Dùng prompt này để test với LLM bên ngoài (ChatGPT, Claude, etc.)
+                    </Typography>
+                    <Box
+                      sx={{
+                        p: 1,
+                        bgcolor: '#fef8e7',
+                        borderRadius: 1,
+                        fontFamily: 'monospace',
+                        fontSize: 10.5,
+                        whiteSpace: 'pre-wrap',
+                        maxHeight: 300,
+                        overflow: 'auto',
+                        border: '1px solid #fcd34d',
+                        color: '#1e293b',
+                        wordBreak: 'break-word',
+                      }}
+                    >
+                      {lastPrompt}
+                    </Box>
+                    <Stack direction="row" spacing={0.75} sx={{ mt: 0.75 }}>
+                      <Tooltip title="Copy Prompt to Clipboard">
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          sx={{ fontSize: 10, py: 0.25, px: 1, minWidth: 0 }}
+                          onClick={async () => {
+                            try {
+                              await navigator.clipboard.writeText(lastPrompt);
+                              // Optional: show a toast notification here
+                            } catch (e) {
+                              console.error('Failed to copy prompt:', e);
+                            }
+                          }}
+                        >
+                          📋 Copy
+                        </Button>
+                      </Tooltip>
+                    </Stack>
                   </Box>
                 )}
               </Box>

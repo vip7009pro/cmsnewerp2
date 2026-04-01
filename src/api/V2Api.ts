@@ -4,6 +4,7 @@
 
 import axios, { AxiosInstance } from 'axios';
 import Cookies from 'universal-cookie';
+import { getSever } from './Api';
 
 const cookies = new Cookies();
 
@@ -25,6 +26,8 @@ interface SemanticQueryResponse {
     explanation: string;
     chat_summary: string;
     execution_time_ms: number;
+    sql_generation_prompt?: string;
+    debug_info?: any;
     visualization_hints?: {
       type: 'line' | 'bar' | 'pie' | 'table' | 'scatter';
       dimensions: string[];
@@ -40,6 +43,12 @@ interface SemanticQueryResponse {
   error?: {
     code: string;
     message: string;
+    http_status?: number;
+    title?: string;
+    description?: string;
+    suggestion?: string;
+    retry_after_seconds?: number;
+    debug_info?: any;
     details?: any;
   };
 }
@@ -84,8 +93,20 @@ export class V2ApiClient {
   private client: AxiosInstance;
   public baseURL: string;
 
-  constructor(baseURL: string = '/ai') {
-    this.baseURL = baseURL;
+  constructor(baseURL: string = '') {
+    if (!baseURL) {
+      // Get server URL from Redux store (configured with proper server IP/port)
+      try {
+        const serverUrl = getSever();
+        this.baseURL = serverUrl ? `${serverUrl}/ai` : 'http://localhost:3007/ai';
+      } catch (err) {
+        // Fallback if getSever fails
+        console.warn('[V2ApiClient] Failed to get server URL from Redux, using fallback', err);
+        this.baseURL = 'http://localhost:3007/ai';
+      }
+    } else {
+      this.baseURL = baseURL;
+    }
     this.client = axios.create({
       baseURL: this.baseURL,
       timeout: 60000,
@@ -281,6 +302,132 @@ export class V2ApiClient {
     }
   }
 
+  /**
+   * Delete table metadata
+   */
+  async deleteTableMetadata(tableName: string): Promise<any> {
+    try {
+      const response = await this.client.delete(`/v2/metadata/tables/${encodeURIComponent(tableName)}`);
+      return response.data;
+    } catch (error) {
+      console.error('Delete Table Error:', error);
+      return { tk_status: 'NG', error: { code: 'API_ERROR' } };
+    }
+  }
+
+  /**
+   * Delete column metadata
+   */
+  async deleteColumnMetadata(tableName: string, columnName: string): Promise<any> {
+    try {
+      const response = await this.client.delete(
+        `/v2/metadata/columns/${encodeURIComponent(tableName)}/${encodeURIComponent(columnName)}`,
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Delete Column Error:', error);
+      return { tk_status: 'NG', error: { code: 'API_ERROR' } };
+    }
+  }
+
+  /**
+   * Delete relationship metadata
+   */
+  async deleteRelationshipMetadata(
+    sourceTable: string,
+    sourceColumn: string,
+    targetTable: string,
+    targetColumn: string,
+  ): Promise<any> {
+    try {
+      const response = await this.client.delete(
+        `/v2/metadata/relationships/${encodeURIComponent(sourceTable)}/${encodeURIComponent(sourceColumn)}/${encodeURIComponent(targetTable)}/${encodeURIComponent(targetColumn)}`,
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Delete Relationship Error:', error);
+      return { tk_status: 'NG', error: { code: 'API_ERROR' } };
+    }
+  }
+
+  /**
+   * Get business metrics metadata
+   */
+  async getMetricsMetadata(): Promise<any> {
+    try {
+      const response = await this.client.get('/v2/metadata/metrics');
+      return response.data;
+    } catch (error) {
+      console.error('Get Metrics Metadata Error:', error);
+      return { tk_status: 'NG', error: { code: 'API_ERROR' } };
+    }
+  }
+
+  /**
+   * Add/Update business metric metadata
+   */
+  async saveMetricMetadata(metric: any): Promise<any> {
+    try {
+      const response = await this.client.post('/v2/metadata/metrics', metric);
+      return response.data;
+    } catch (error) {
+      console.error('Save Metric Metadata Error:', error);
+      return { tk_status: 'NG', error: { code: 'API_ERROR' } };
+    }
+  }
+
+  /**
+   * Delete business metric metadata
+   */
+  async deleteMetricMetadata(metricId: string): Promise<any> {
+    try {
+      const response = await this.client.delete(`/v2/metadata/metrics/${encodeURIComponent(metricId)}`);
+      return response.data;
+    } catch (error) {
+      console.error('Delete Metric Metadata Error:', error);
+      return { tk_status: 'NG', error: { code: 'API_ERROR' } };
+    }
+  }
+
+  /**
+   * Get glossary metadata
+   */
+  async getGlossaryMetadata(): Promise<any> {
+    try {
+      const response = await this.client.get('/v2/metadata/glossary');
+      return response.data;
+    } catch (error) {
+      console.error('Get Glossary Metadata Error:', error);
+      return { tk_status: 'NG', error: { code: 'API_ERROR' } };
+    }
+  }
+
+  /**
+   * Add/Update glossary metadata entry
+   */
+  async saveGlossaryEntry(entry: any): Promise<any> {
+    try {
+      const response = await this.client.post('/v2/metadata/glossary', entry);
+      return response.data;
+    } catch (error) {
+      console.error('Save Glossary Error:', error);
+      return { tk_status: 'NG', error: { code: 'API_ERROR' } };
+    }
+  }
+
+  /**
+   * Delete glossary metadata entry
+   */
+  async deleteGlossaryEntry(entryId: string): Promise<any> {
+    try {
+      const response = await this.client.delete(`/v2/metadata/glossary/${encodeURIComponent(entryId)}`);
+      return response.data;
+    } catch (error) {
+      console.error('Delete Glossary Error:', error);
+      return { tk_status: 'NG', error: { code: 'API_ERROR' } };
+    }
+  }
+
   // ==================== BUSINESS TRAINING ====================
 
   /**
@@ -350,12 +497,29 @@ export class V2ApiClient {
   /**
    * Delete training example
    */
+  /**
+   * Delete training example
+   */
   async deleteTrainingExample(id: string): Promise<any> {
     try {
       const response = await this.client.delete(`/v2/training/examples/${id}`);
       return response.data;
     } catch (error) {
       console.error('Delete Example Error:', error);
+      return { tk_status: 'NG', error: { code: 'API_ERROR' } };
+    }
+  }
+
+  /**
+   * Clear embedding cache (manual invalidation)
+   * Called when metadata changes to force refresh embeddings
+   */
+  async clearEmbeddingCache(): Promise<any> {
+    try {
+      const response = await this.client.post('/v2/cache/clear');
+      return response.data;
+    } catch (error) {
+      console.error('Clear Cache Error:', error);
       return { tk_status: 'NG', error: { code: 'API_ERROR' } };
     }
   }
