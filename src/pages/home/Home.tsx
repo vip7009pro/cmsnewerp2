@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import "../home/home.scss";
 import { animated } from "@react-spring/web";
 import React, { useEffect, useState, Suspense, useMemo, useCallback, useRef, } from "react";
@@ -14,15 +14,18 @@ import {
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
-import { addTab, changeGLBLanguage, closeTab, resetTab, setTabModeSwap, settabIndex, toggleSidebar } from "../../redux/slices/globalSlice";
+import { addTab, changeGLBLanguage, closeTab, hideSidebar, resetTab, setTabModeSwap, settabIndex, toggleSidebar } from "../../redux/slices/globalSlice";
 import styled from "@emotion/styled";
 import Cookies from "universal-cookie";
 import { MENU_LIST_DATA } from "../../api/GlobalInterface";
-import { AccountInfo, Navbar } from "../../api/lazyPages";
+import { AccountInfo } from "../../api/lazyPages";
 import { getMenuList } from "./menuConfig";
 import PageTabs from "../nocodelowcode/components/PagesManager/Components/PageTabs/PageTabs";
 import { useRenderLag } from "../../api/userRenderLag";
-import NavMenu from "../../components/NavMenu/NavMenu";
+import NavBarNew from "../../components/Navbar/NavBarNew";
+import NavMenuNew from "../../components/NavMenu/NavMenuNew";
+import { getNavMenu } from "../../components/NavMenu/getNavMenu";
+import { canUseTabMode, getFirstNavMenuSearchResult, normalizeMenuPath } from "../../components/NavMenu/navMenuSearch";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { Link } from "react-router-dom";
 export const current_ver: number = getCompany() === "CMS" ? 2656 : 438;
@@ -94,6 +97,7 @@ const CloseIconButton = styled(IconButton)<IconButtonProps>({
 
 function Home() {
   const cookies = new Cookies();
+  const navigate = useNavigate();
   const { theme, tabs, lang, company, tabIndex, tabModeSwap, sidebarStatus, cpnInfo, selectedServer, userData } =
     useSelector((state: RootState) => ({
       theme: state.totalSlice.theme,
@@ -107,6 +111,8 @@ function Home() {
       userData: state.totalSlice.userData,
       tabs: state.totalSlice.tabs,
     }), shallowEqual);
+
+  const [menuSearchText, setMenuSearchText] = useState("");
 
   const prevState = useRef<any>(null);
   useEffect(() => {
@@ -122,8 +128,65 @@ function Home() {
 
   console.log("company", company);
   const menulist: MENU_LIST_DATA[] = useMemo(() => getMenuList(company, lang), [company, lang]);
+  const navMenus = useMemo(() => getNavMenu(company, lang), [company, lang]);
   const dispatch = useDispatch();
   const [checkVerWeb, setCheckVerWeb] = useState(1);
+  const [menuOpenSource, setMenuOpenSource] = useState<"navbar" | "menu" | null>(null);
+
+  const handleNavSearchTextChange = useCallback((value: string) => {
+    setMenuOpenSource("navbar");
+    setMenuSearchText(value);
+
+    if (value.trim() && !sidebarStatus) {
+      dispatch(toggleSidebar("2"));
+    }
+  }, [dispatch, sidebarStatus]);
+
+  useEffect(() => {
+    if (!sidebarStatus) {
+      setMenuOpenSource(null);
+    }
+  }, [sidebarStatus]);
+
+  const openFirstSearchResult = useCallback(() => {
+    const searchResult = getFirstNavMenuSearchResult(navMenus, menuSearchText);
+    if (!searchResult) return;
+
+    if (searchResult.subMenu) {
+      if (tabModeSwap) {
+        if (!canUseTabMode(userData, searchResult.subMenu.MENU_CODE)) {
+          Swal.fire("Cảnh báo", "Không đủ quyền hạn", "error");
+          return;
+        }
+
+        const existedTabIndex = tabs.findIndex((ele) => ele.ELE_CODE === searchResult.subMenu?.MENU_CODE);
+        if (existedTabIndex !== -1) {
+          dispatch(settabIndex(existedTabIndex));
+        } else {
+          dispatch(
+            addTab({
+              ELE_NAME: searchResult.subMenu.title,
+              ELE_CODE: searchResult.subMenu.MENU_CODE,
+              REACT_ELE: "",
+              PAGE_ID: -1,
+            })
+          );
+          dispatch(settabIndex(tabs.length));
+        }
+
+        dispatch(hideSidebar("2"));
+        return;
+      }
+
+      navigate(normalizeMenuPath(searchResult.subMenu.path));
+      dispatch(hideSidebar("2"));
+      return;
+    }
+
+    navigate(normalizeMenuPath(searchResult.menu.path));
+    dispatch(hideSidebar("2"));
+  }, [dispatch, menuSearchText, navMenus, navigate, tabModeSwap, tabs, userData]);
+
   const updatechamcongdiemdanh = useCallback(() => {
     generalQuery("updatechamcongdiemdanhauto", {})
       .then((response) => {
@@ -229,7 +292,6 @@ function Home() {
   const pvnToggleRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!isPVN) return;
     if (didRestoreTabsRef.current) return;
     didRestoreTabsRef.current = true;
 
@@ -260,7 +322,14 @@ function Home() {
         )
       );
     }
-  }, [dispatch, isPVN]);
+  }, [dispatch]);
+
+  const handleNavSearchFocus = useCallback(() => {
+    setMenuOpenSource("navbar");
+    if (!sidebarStatus) {
+      dispatch(toggleSidebar("2"));
+    }
+  }, [dispatch, sidebarStatus]);
 
   useEffect(() => {
     if (!isPVN) return;
@@ -289,6 +358,7 @@ function Home() {
       if (isTypingTarget) return;
 
       e.preventDefault();
+      setMenuOpenSource(!sidebarStatus ? "menu" : null);
       dispatch(toggleSidebar("2"));
     };
 
@@ -299,11 +369,49 @@ function Home() {
       document.removeEventListener("pointerdown", onPointerDown);
     };
   }, [dispatch, isPVN, sidebarStatus]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!event.ctrlKey || !event.shiftKey) return;
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+
+      const switchableTabs = tabs.filter((tab) => tab.ELE_CODE !== "-1");
+      if (switchableTabs.length < 2) return;
+
+      const currentCode = tabs[tabIndex]?.ELE_CODE;
+      const currentSwitchableIndex = switchableTabs.findIndex((tab) => tab.ELE_CODE === currentCode);
+      const direction = event.key === "ArrowRight" ? 1 : -1;
+      const nextSwitchableIndex = currentSwitchableIndex === -1
+        ? 0
+        : (currentSwitchableIndex + direction + switchableTabs.length) % switchableTabs.length;
+      const nextTab = switchableTabs[nextSwitchableIndex];
+
+      if (!nextTab) return;
+
+      const nextTabIndex = tabs.findIndex((tab) => tab.ELE_CODE === nextTab.ELE_CODE);
+      if (nextTabIndex === -1) return;
+
+      event.preventDefault();
+      dispatch(settabIndex(nextTabIndex));
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [dispatch, tabIndex, tabs]);
   return (
     <div className={`home ${isPVN ? "home--pvn" : ""}`}>
       {!isPVN && (
         <div className="navdiv">
-          <Navbar />
+          <NavBarNew
+            searchText={menuSearchText}
+            onSearchTextChange={handleNavSearchTextChange}
+            onSearchFocus={handleNavSearchFocus}
+            onSearchEnter={openFirstSearchResult}
+            onSidebarToggle={(nextOpen) => setMenuOpenSource(nextOpen ? "menu" : null)}
+            menuAutoFocusSearch={menuOpenSource !== "navbar"}
+          />
         </div>
       )}
       <div className={`homeContainer ${isPVN ? "homeContainer--pvn" : ""}`}>
@@ -332,7 +440,11 @@ function Home() {
             </div>
             <div className="pvnSidebarMenuScroll">
               <div className="pvnSidebarMenuScrollInner">
-                <NavMenu />
+                <NavMenuNew
+                  mode="sidebar"
+                  autoFocusSearch={menuOpenSource !== "navbar"}
+                  onSearchEnter={openFirstSearchResult}
+                />
               </div>
             </div>
             <div className="pvnSidebarFooter">
@@ -420,6 +532,7 @@ function Home() {
             ref={pvnToggleRef}
             className={`pvnSidebarToggle ${sidebarStatus ? "pvnSidebarToggle--open" : "pvnSidebarToggle--closed"}`}
             onClick={() => {
+              setMenuOpenSource(!sidebarStatus ? "menu" : null);
               dispatch(toggleSidebar("2"));
             }}
           >

@@ -1,10 +1,21 @@
 /* ==========================================================================
    GLOBAL RESET & BASE STYLES
    ========================================================================== */
+:root {
+  --app-scrollbar-track: rgba(148, 163, 184, 0.18);
+  --app-scrollbar-thumb: rgba(59, 130, 246, 0.42);
+  --app-scrollbar-thumb-hover: rgba(37, 99, 235, 0.68);
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  scrollbar-width: none; /* Hide scrollbar for standard body */
+  scrollbar-gutter: stable;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--app-scrollbar-thumb) var(--app-scrollbar-track);
 }
 
 .App {
@@ -16,66 +27,50 @@ body {
 /* ==========================================================================
    SCROLLBAR CUSTOMIZATION
    ========================================================================== */
-/* Hide scrollbars by default for webkit */
 ::-webkit-scrollbar {
-  width: 0px;
-}
-
-::-webkit-scrollbar:horizontal {
+  width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-track:horizontal {
-  box-shadow: inset 0 0 5px grey;
-  border-radius: 10px;
+  background: var(--app-scrollbar-track);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: transparent;
-  border-radius: 10px;
+  background-color: var(--app-scrollbar-thumb);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
 
-::-webkit-scrollbar-thumb:horizontal {
-  background: rgb(149, 145, 245);
-  border-radius: 10px;
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--app-scrollbar-thumb-hover);
 }
 
-::-webkit-scrollbar-thumb:hover:horizontal {
-  background: #b30000;
-}
-
-/* Show scrollbars when .is-scrolling is active */
 .is-scrolling {
   scrollbar-width: thin;
-  scrollbar-color: rgb(149, 145, 245) rgba(0, 0, 0, 0);
-  scrollbar-gutter: stable both-edges;
-  padding-bottom: 8px;
-  box-sizing: border-box;
+  scrollbar-color: var(--app-scrollbar-thumb) var(--app-scrollbar-track);
+  scrollbar-gutter: stable;
 
   &::-webkit-scrollbar {
     width: 8px;
-  }
-
-  &::-webkit-scrollbar:horizontal {
     height: 8px;
   }
 
   &::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey;
-    border-radius: 10px;
+    background: var(--app-scrollbar-track);
+    border-radius: 999px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgb(149, 145, 245);
-    border-radius: 10px;
+    background-color: var(--app-scrollbar-thumb);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
 
     &:hover {
-      background: #b30000;
+      background-color: var(--app-scrollbar-thumb-hover);
     }
   }
 }
