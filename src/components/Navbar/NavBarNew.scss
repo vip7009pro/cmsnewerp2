@@ -58,6 +58,11 @@
         min-width: 160px;
     }
 
+    &__searchAnchor {
+        width: min(320px, 100%);
+        position: relative;
+    }
+
     &__toggleButton {
         width: 20px;
         height: 20px;
@@ -142,7 +147,7 @@
 
     &__searchField {
         width: 100%;
-        max-width: 320px;
+        max-width: none;
 
         .MuiInputBase-root {
             min-height: 22px;
@@ -289,6 +294,12 @@
         pointer-events: auto;
     }
 
+    &__menuPanel--search {
+        left: var(--navbarnx-menu-left, 0px);
+        width: var(--navbarnx-menu-width, min(320px, calc(100vw - 16px)));
+        justify-content: center;
+    }
+
     &__notificationPaper,
     &__menuPaper {
         border-radius: 20px !important;
@@ -298,8 +309,10 @@
     }
 
     &__notificationPaper {
-        width: min(360px, 92vw);
-        max-width: none;
+        width: fit-content;
+        min-width: min(460px, calc(100vw - 16px));
+        max-width: calc(100vw - 16px);
+        overflow: visible !important;
     }
 
     &__menuPaper--language {
@@ -362,6 +375,10 @@
             max-width: none;
         }
 
+        &__searchAnchor {
+            width: 100%;
+        }
+
         &__actions {
             width: 100%;
             justify-content: flex-start;
@@ -377,6 +394,11 @@
         }
 
         &__menuPanel {
+            left: 8px;
+            width: calc(100vw - 16px);
+        }
+
+        &__menuPanel--search {
             left: 8px;
             width: calc(100vw - 16px);
         }
@@ -455,6 +477,11 @@
             left: 0;
             width: calc(100vw - 16px);
             top: 100%;
+        }
+
+        &__menuPanel--search {
+            left: 0;
+            width: calc(100vw - 16px);
         }
     }
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ChangeEvent, type MouseEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ChangeEvent, type MouseEvent } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -58,10 +58,12 @@ interface NavBarNewProps {
   searchText: string;
   onSearchTextChange: (value: string) => void;
   onSearchFocus: () => void;
+  onSearchBlur?: () => void;
   onSearchEnter: () => void;
   onSidebarToggle?: (nextOpen: boolean) => void;
   onMenuSearchFocus?: () => void;
   menuAutoFocusSearch?: boolean;
+  menuAlignedToSearch?: boolean;
 }
 
 const CMS_THEME_OPTIONS: ThemeOption[] = [
@@ -130,13 +132,15 @@ const hasManagementRole = (userData?: UserData) => {
   );
 };
 
-export default function NavBarNew({ searchText, onSearchTextChange, onSearchFocus, onSearchEnter, onSidebarToggle, onMenuSearchFocus, menuAutoFocusSearch = true }: NavBarNewProps) {
+export default function NavBarNew({ searchText, onSearchTextChange, onSearchFocus, onSearchBlur, onSearchEnter, onSidebarToggle, onMenuSearchFocus, menuAutoFocusSearch = true, menuAlignedToSearch = false }: NavBarNewProps) {
   const dispatch = useDispatch();
   const navbarRef = useRef<HTMLElement | null>(null);
+  const searchAnchorRef = useRef<HTMLDivElement | null>(null);
   const [languageAnchorEl, setLanguageAnchorEl] = useState<HTMLElement | null>(null);
   const [avatarAnchorEl, setAvatarAnchorEl] = useState<HTMLElement | null>(null);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState<HTMLElement | null>(null);
   const [themeChoice, setThemeChoice] = useState("");
+  const [searchMenuBounds, setSearchMenuBounds] = useState({ left: 0, width: 0 });
 
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const company: string = useSelector((state: RootState) => state.totalSlice.company);
@@ -171,6 +175,37 @@ export default function NavBarNew({ searchText, onSearchTextChange, onSearchFocu
     onSidebarToggle?.(nextOpen);
     dispatch(toggleSidebar("2"));
   }, [dispatch, onSidebarToggle, sidebarStatus]);
+
+  const updateSearchMenuBounds = useCallback(() => {
+    if (!menuAlignedToSearch) return;
+
+    const searchAnchor = searchAnchorRef.current;
+    const navbarElement = navbarRef.current;
+    if (!searchAnchor || !navbarElement) return;
+
+    const searchRect = searchAnchor.getBoundingClientRect();
+    const navbarRect = navbarElement.getBoundingClientRect();
+    setSearchMenuBounds({
+      left: Math.max(0, searchRect.left - navbarRect.left),
+      width: searchRect.width,
+    });
+  }, [menuAlignedToSearch]);
+
+  useLayoutEffect(() => {
+    if (!menuAlignedToSearch) {
+      setSearchMenuBounds({ left: 0, width: 0 });
+      return;
+    }
+
+    updateSearchMenuBounds();
+
+    const handleResize = () => updateSearchMenuBounds();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [menuAlignedToSearch, updateSearchMenuBounds, sidebarStatus, searchText]);
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
@@ -307,48 +342,58 @@ export default function NavBarNew({ searchText, onSearchTextChange, onSearchFocu
         </div>
 
         <div className="navbarnx__searchWrap">
-          <TextField
-            value={searchText}
-            onChange={(event) => onSearchTextChange(event.target.value)}
-            onFocus={onSearchFocus}
-            onKeyDown={(event) => {
-              if (event.key === "Escape") {
-                if (sidebarStatus) {
-                  event.preventDefault();
-                  handleSidebarToggle();
+          <div ref={searchAnchorRef} className="navbarnx__searchAnchor">
+            <TextField
+              value={searchText}
+              onChange={(event) => onSearchTextChange(event.target.value)}
+              onFocus={() => {
+                onSearchFocus();
+                requestAnimationFrame(() => updateSearchMenuBounds());
+              }}
+              onBlur={() => {
+                if (!searchText.trim()) {
+                  onSearchBlur?.();
                 }
-                return;
-              }
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  if (sidebarStatus) {
+                    event.preventDefault();
+                    handleSidebarToggle();
+                  }
+                  return;
+                }
 
-              if (event.key !== "Enter") return;
-              event.preventDefault();
-              onSearchEnter();
-            }}
-            fullWidth
-            size="small"
-            placeholder="Nhập tên menu hoặc mã menu, hoặc bấm Ctrl + Space để tắt mở menu"
-            className="navbarnx__searchField"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchRounded fontSize="small" />
-                </InputAdornment>
-              ),
-              endAdornment: searchText ? (
-                <InputAdornment position="end">
-                  <IconButton
-                    className="navbarnx__searchClear"
-                    size="small"
-                    onClick={() => onSearchTextChange("")}
-                    onMouseDown={(event) => event.preventDefault()}
-                    aria-label="Clear search"
-                  >
-                    <CloseRounded fontSize="inherit" />
-                  </IconButton>
-                </InputAdornment>
-              ) : undefined,
-            }}
-          />
+                if (event.key !== "Enter") return;
+                event.preventDefault();
+                onSearchEnter();
+              }}
+              fullWidth
+              size="small"
+              placeholder="Nhập tên menu hoặc mã menu, hoặc bấm Ctrl + Space để tắt mở menu"
+              className="navbarnx__searchField"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchRounded fontSize="small" />
+                  </InputAdornment>
+                ),
+                endAdornment: searchText ? (
+                  <InputAdornment position="end">
+                    <IconButton
+                      className="navbarnx__searchClear"
+                      size="small"
+                      onClick={() => onSearchTextChange("")}
+                      onMouseDown={(event) => event.preventDefault()}
+                      aria-label="Clear search"
+                    >
+                      <CloseRounded fontSize="inherit" />
+                    </IconButton>
+                  </InputAdornment>
+                ) : undefined,
+              }}
+            />
+          </div>
         </div>
 
         <div className="navbarnx__actions">
@@ -401,7 +446,13 @@ export default function NavBarNew({ searchText, onSearchTextChange, onSearchFocu
       </div>
 
       {sidebarStatus && company !== "PVN" && (
-        <div className="navbarnx__menuPanel">
+        <div
+          className={`navbarnx__menuPanel ${menuAlignedToSearch ? "navbarnx__menuPanel--search" : ""}`.trim()}
+          style={menuAlignedToSearch ? {
+            ["--navbarnx-menu-left" as any]: `${searchMenuBounds.left}px`,
+            ["--navbarnx-menu-width" as any]: `${searchMenuBounds.width}px`,
+          } : undefined}
+        >
           <NavMenuNew
             mode="overlay"
             onClose={handleSidebarToggle}

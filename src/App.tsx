@@ -38,7 +38,7 @@ function App() {
   useDocumentScrollIdleClass();
 
   const appTheme = useMemo(() => {
-    const fontFamily = '"Roboto", "Segoe UI", sans-serif';
+    const fontFamily = '"Inter", "Segoe UI", sans-serif';
 
     return createTheme({
       typography: {

@@ -1,5 +1,6 @@
 import React from 'react'
 import './Notification.scss'
+import { CheckCircleRounded, WarningRounded, ErrorRounded, InfoRounded } from '@mui/icons-material';
 
 export interface NotificationElement {
   CTR_CD: string,
@@ -14,6 +15,21 @@ export interface NotificationElement {
   UPD_EMPL: string,
   UPD_DATE: string,
 }
+
+const getNotificationIcon = (type: string) => {
+  const iconSize = 'small';
+  switch (type?.toLowerCase()) {
+    case 'success':
+      return <CheckCircleRounded fontSize={iconSize} />;
+    case 'warning':
+      return <WarningRounded fontSize={iconSize} />;
+    case 'error':
+      return <ErrorRounded fontSize={iconSize} />;
+    case 'info':
+    default:
+      return <InfoRounded fontSize={iconSize} />;
+  }
+};
 
 const Notification = ({notidata}: {notidata: NotificationElement}) => {
   const formatNotiTime = (value: string) => {
@@ -33,13 +49,26 @@ const Notification = ({notidata}: {notidata: NotificationElement}) => {
     }
   };
 
+  const notificationType = notidata.NOTI_TYPE?.toLowerCase() || 'info';
+
   return (
-    <div className='notification' role='listitem' tabIndex={0}>
-      <div className="notification__header">
-        <div className='notification__title' title={notidata.TITLE}>{notidata.TITLE}</div>
-        <div className='notification__time'>{formatNotiTime(notidata.INS_DATE)}</div>
+    <div 
+      className={`notification notification--${notificationType}`}
+      role='listitem' 
+      tabIndex={0}
+    >
+      <div className="notification__wrapper">
+        <div className='notification__type-icon'>
+          {getNotificationIcon(notificationType)}
+        </div>
+        <div className="notification__main">
+          <div className="notification__header">
+            <div className='notification__title' title={notidata.TITLE}>{notidata.TITLE}</div>
+            <div className='notification__time'>{formatNotiTime(notidata.INS_DATE)}</div>
+          </div>
+          <div className='notification__content'>{notidata.CONTENT}</div>
+        </div>
       </div>
-      <div className='notification__content'>{notidata.CONTENT}</div>
     </div>
   )
 }

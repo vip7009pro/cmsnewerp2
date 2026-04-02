@@ -1,13 +1,13 @@
 /* ==========================================================================
    GLOBAL RESET & BASE STYLES
    ========================================================================== */
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
 :root {
   --app-scrollbar-track: rgba(148, 163, 184, 0.18);
   --app-scrollbar-thumb: rgba(59, 130, 246, 0.42);
   --app-scrollbar-thumb-hover: rgba(37, 99, 235, 0.68);
-  --app-font-family: "Roboto", "Segoe UI", sans-serif;
+  --app-font-family: "Inter", "Segoe UI", sans-serif;
 }
 
 html {
