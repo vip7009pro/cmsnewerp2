@@ -37,7 +37,7 @@ const FALLBACK_ENTRY: Omit<ChangelogEntry, "version"> = {
 };
 
 const CHANGELOGS: Record<number, Omit<ChangelogEntry, "version">> = {
-  2657: {
+  2658: {
     label: "Navigation refresh",
     summary: "Navbar, navmenu, keyboard shortcuts và search được làm lại để thao tác nhanh hơn.",
     highlights: [
