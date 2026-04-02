@@ -7,7 +7,6 @@ import {
   getNotiCount,
   getUserData,
 } from "./api/Api";
-import Swal from "sweetalert2";
 import { RootState } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -31,10 +30,31 @@ import { requestFullScreen } from "./api/services/utilService";
 import { useAppBootstrap } from "./hooks/useAppBootstrap";
 import { useDocumentScrollIdleClass } from "./hooks/useDocumentScrollIdleClass";
 import AppBootScreen from "./components/AppBootScreen/AppBootScreen";
+import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import ChangelogHost, { requestChangelogPopup } from "./components/Changelog/ChangelogHost";
 
 function App() {
   const isBootstrapping = useAppBootstrap();
   useDocumentScrollIdleClass();
+
+  const appTheme = useMemo(() => {
+    const fontFamily = '"Be Vietnam Pro", "Inter", "Segoe UI", sans-serif';
+
+    return createTheme({
+      typography: {
+        fontFamily,
+      },
+      components: {
+        MuiCssBaseline: {
+          styleOverrides: {
+            body: {
+              fontFamily,
+            },
+          },
+        },
+      },
+    });
+  }, []);
 
   const full_screen: number = parseInt(
     getGlobalSetting()?.filter(
@@ -87,30 +107,11 @@ function App() {
 
   const handleSetWebVer = useCallback((data: any) => {
     console.log("co data web ver", data);
-    if (current_ver >= data) {
+    const serverVersion = Number(data);
+    if (!Number.isFinite(serverVersion) || current_ver >= serverVersion) {
       console.log("khong can update web");
     } else {
-      Swal.fire({
-        title: "ERP has updates?",
-        text: "Update Web",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Update",
-        cancelButtonText: "Update later",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire("Notification", "Update Web", "success");
-          window.location.reload();
-        } else {
-          Swal.fire(
-            "Notification",
-            "Press Ctrl + F5 to update the Web",
-            "info"
-          );
-        }
-      });
+      requestChangelogPopup(serverVersion);
     }
   }, []);
 
@@ -222,24 +223,28 @@ function App() {
   }, [isBootstrapping, getIPAddress, handleEnableNotifications]);
 
   return (
-    <>
-      {isBootstrapping && <AppBootScreen />}
-      {!isBootstrapping && globalLoginState && (
-        <div
-          className="App"
-          ref={elementRef}
-          onClick={() => requestFullScreen(elementRef, full_screen)}
-        >
-          <Suspense fallback={<FallBackComponent />}>
-            <ErrorBoundary>
-              <AppRoutes globalUserData={globalUserData} />
-            </ErrorBoundary>
-          </Suspense>
-        </div>
-      )}
-      {!isBootstrapping && !globalLoginState && <Login />}
-      <Notifications />
-    </>
+    <ThemeProvider theme={appTheme}>
+      <CssBaseline />
+      <ChangelogHost />
+      <>
+        {isBootstrapping && <AppBootScreen />}
+        {!isBootstrapping && globalLoginState && (
+          <div
+            className="App"
+            ref={elementRef}
+            onClick={() => requestFullScreen(elementRef, full_screen)}
+          >
+            <Suspense fallback={<FallBackComponent />}>
+              <ErrorBoundary>
+                <AppRoutes globalUserData={globalUserData} />
+              </ErrorBoundary>
+            </Suspense>
+          </div>
+        )}
+        {!isBootstrapping && !globalLoginState && <Login />}
+        <Notifications />
+      </>
+    </ThemeProvider>
   );
 }
 export default App;

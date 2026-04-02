@@ -26,9 +26,10 @@ import NavBarNew from "../../components/Navbar/NavBarNew";
 import NavMenuNew from "../../components/NavMenu/NavMenuNew";
 import { getNavMenu } from "../../components/NavMenu/getNavMenu";
 import { canUseTabMode, getFirstNavMenuSearchResult, normalizeMenuPath } from "../../components/NavMenu/navMenuSearch";
+import { requestChangelogPopup } from "../../components/Changelog/changelogEvents";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { Link } from "react-router-dom";
-export const current_ver: number = getCompany() === "CMS" ? 2656 : 438;
+export const current_ver: number = getCompany() === "CMS" ? 2657 : 438;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
@@ -134,13 +135,16 @@ function Home() {
   const [menuOpenSource, setMenuOpenSource] = useState<"navbar" | "menu" | null>(null);
 
   const handleNavSearchTextChange = useCallback((value: string) => {
-    setMenuOpenSource("navbar");
     setMenuSearchText(value);
 
     if (value.trim() && !sidebarStatus) {
       dispatch(toggleSidebar("2"));
     }
   }, [dispatch, sidebarStatus]);
+
+  const handleMenuSearchFocus = useCallback(() => {
+    setMenuOpenSource("menu");
+  }, []);
 
   useEffect(() => {
     if (!sidebarStatus) {
@@ -238,33 +242,10 @@ function Home() {
     generalQuery("checkWebVer", {})
       .then((response) => {
         if (response?.data?.tk_status !== "NG") {
-          console.log('webver', response.data.data[0].VERWEB);
-          if (current_ver >= response.data.data[0].VERWEB) {
-          } else {
-            if (intervalID) {
-              window.clearInterval(intervalID);
-            }
-            Swal.fire({
-              title: "ERP has updates?",
-              text: "Update Web",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonColor: "#3085d6",
-              cancelButtonColor: "#d33",
-              confirmButtonText: "Update",
-              cancelButtonText: "Update later",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                Swal.fire("Notification", "Update Web", "success");
-                window.location.reload();
-              } else {
-                Swal.fire(
-                  "Notification",
-                  "Press Ctrl + F5 to update the Web",
-                  "info"
-                );
-              }
-            });
+          const serverVersion = Number(response.data.data[0].VERWEB);
+          console.log('webver', serverVersion);
+          if (Number.isFinite(serverVersion) && current_ver < serverVersion) {
+            requestChangelogPopup(serverVersion);
           }
         } else {
         }
@@ -372,6 +353,18 @@ function Home() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.shiftKey && event.key === "ArrowDown") {
+        if (!tabModeSwap) return;
+
+        const currentTabIndex = tabIndex;
+        const currentTab = tabs[currentTabIndex];
+        if (!currentTab || currentTab.ELE_CODE === "-1") return;
+
+        event.preventDefault();
+        dispatch(closeTab(currentTabIndex));
+        return;
+      }
+
       if (!event.ctrlKey || !event.shiftKey) return;
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
 
@@ -411,6 +404,7 @@ function Home() {
             onSearchEnter={openFirstSearchResult}
             onSidebarToggle={(nextOpen) => setMenuOpenSource(nextOpen ? "menu" : null)}
             menuAutoFocusSearch={menuOpenSource !== "navbar"}
+            onMenuSearchFocus={handleMenuSearchFocus}
           />
         </div>
       )}
@@ -444,6 +438,7 @@ function Home() {
                   mode="sidebar"
                   autoFocusSearch={menuOpenSource !== "navbar"}
                   onSearchEnter={openFirstSearchResult}
+                  onSearchFocus={handleMenuSearchFocus}
                 />
               </div>
             </div>

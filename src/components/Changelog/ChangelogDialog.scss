@@ -1,0 +1,189 @@
+.changelogDialog {
+  &__paper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px !important;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: 0 32px 80px rgba(15, 23, 42, 0.28);
+  }
+
+  &__hero {
+    position: relative;
+    overflow: hidden;
+    padding: 24px 24px 22px;
+    color: #fff;
+    background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 48%, #38bdf8 100%);
+  }
+
+  &__heroGlow {
+    position: absolute;
+    inset: -40% auto auto -10%;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    filter: blur(24px);
+    pointer-events: none;
+  }
+
+  &__heroContent {
+    position: relative;
+    z-index: 1;
+    max-width: 48rem;
+  }
+
+  &__versionChip {
+    width: fit-content;
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.16) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.04em !important;
+  }
+
+  &__label {
+    margin: 0 !important;
+    color: rgba(255, 255, 255, 0.76) !important;
+    letter-spacing: 0.2em !important;
+    font-size: 0.67rem !important;
+    font-weight: 800 !important;
+  }
+
+  &__title {
+    margin: 0 !important;
+    font-size: clamp(1.6rem, 3vw, 2.4rem) !important;
+    font-weight: 800 !important;
+    line-height: 1.05 !important;
+    color: #fff !important;
+  }
+
+  &__summary {
+    margin: 0 !important;
+    max-width: 56ch;
+    font-size: 0.92rem !important;
+    line-height: 1.7 !important;
+    color: rgba(255, 255, 255, 0.86) !important;
+  }
+
+  &__content {
+    padding: 22px 24px 14px !important;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  &__card {
+    min-height: 110px;
+    padding: 14px 14px 12px;
+    border-radius: 20px;
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.06);
+  }
+
+  &__cardTitle {
+    margin: 0 0 6px !important;
+    font-size: 0.86rem !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+  }
+
+  &__cardDetail {
+    margin: 0 !important;
+    color: rgba(15, 23, 42, 0.72) !important;
+    line-height: 1.6 !important;
+    font-size: 0.8rem !important;
+  }
+
+  &__divider {
+    margin: 18px 0 14px !important;
+    border-color: rgba(148, 163, 184, 0.18) !important;
+  }
+
+  &__footerNote {
+    padding: 12px 14px;
+    border-radius: 18px;
+    background: rgba(59, 130, 246, 0.06);
+    border: 1px solid rgba(59, 130, 246, 0.12);
+
+    p {
+      margin: 0;
+      color: rgba(15, 23, 42, 0.72);
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+  }
+
+  &__actions {
+    padding: 0 24px 22px !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  &__checkbox {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+
+    .MuiFormControlLabel-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: rgba(15, 23, 42, 0.72);
+    }
+  }
+
+  &__actionSpacer {
+    flex: 1 1 auto;
+  }
+
+  &__secondaryButton {
+    border-radius: 999px !important;
+    padding-inline: 18px !important;
+    text-transform: none !important;
+    font-weight: 700 !important;
+  }
+
+  &__primaryButton {
+    border-radius: 999px !important;
+    padding-inline: 18px !important;
+    text-transform: none !important;
+    font-weight: 700 !important;
+    box-shadow: 0 12px 24px rgba(29, 78, 216, 0.28) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .changelogDialog {
+    &__hero,
+    &__content,
+    &__actions {
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+    }
+
+    &__grid {
+      grid-template-columns: 1fr;
+    }
+
+    &__actions {
+      flex-wrap: wrap;
+    }
+
+    &__checkbox {
+      width: 100%;
+      margin-right: 0 !important;
+    }
+
+    &__actionSpacer {
+      display: none;
+    }
+
+    &__secondaryButton,
+    &__primaryButton {
+      flex: 1 1 0;
+    }
+  }
+}

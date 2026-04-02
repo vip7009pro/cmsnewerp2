@@ -10,7 +10,7 @@ import { Chip, Collapse, IconButton, InputAdornment, TextField } from "@mui/mate
 import Swal from "sweetalert2";
 import { RootState } from "../../redux/store";
 import { ELE_ARRAY, UserData } from "../../api/GlobalInterface";
-import { addTab, settabIndex } from "../../redux/slices/globalSlice";
+import { addTab, hideSidebar, settabIndex } from "../../redux/slices/globalSlice";
 import { getNavMenu, NAVMENUDATA, SUBNAVMENUDATA } from "./getNavMenu";
 import { canUseTabMode, filterNavMenusByQuery, includesMenuText, normalizeMenuPath, normalizeSearchText } from "./navMenuSearch";
 import "./NavMenuNew.scss";
@@ -21,6 +21,7 @@ interface NavMenuNewProps {
   onClose?: () => void;
   searchText?: string;
   onSearchTextChange?: (value: string) => void;
+  onSearchFocus?: () => void;
   onSearchEnter?: () => void;
   autoFocusSearch?: boolean;
 }
@@ -65,6 +66,7 @@ const NavMenuNew = ({
   onClose,
   searchText,
   onSearchTextChange,
+  onSearchFocus,
   onSearchEnter,
   autoFocusSearch = true,
 }: NavMenuNewProps) => {
@@ -214,6 +216,17 @@ const NavMenuNew = ({
     <aside
       className={`navmenu-new navmenu-new--${mode} ${className ?? ""}`.trim()}
       aria-label="ERP navigation menu"
+      onKeyDown={(event) => {
+        if (event.key !== "Escape") return;
+        event.preventDefault();
+
+        if (mode === "overlay" && onClose) {
+          onClose();
+          return;
+        }
+
+        dispatch(hideSidebar("2"));
+      }}
     >
       <div className="navmenu-new__surface" style={{ backgroundImage }}>
         <div className="navmenu-new__header">
@@ -240,6 +253,7 @@ const NavMenuNew = ({
           inputRef={searchInputRef}
           value={effectiveSearchText}
           onChange={(event) => handleSearchChange(event.target.value)}
+          onFocus={onSearchFocus}
           onKeyDown={(event) => {
             if (event.key !== "Enter") return;
             event.preventDefault();

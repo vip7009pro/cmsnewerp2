@@ -60,6 +60,7 @@ interface NavBarNewProps {
   onSearchFocus: () => void;
   onSearchEnter: () => void;
   onSidebarToggle?: (nextOpen: boolean) => void;
+  onMenuSearchFocus?: () => void;
   menuAutoFocusSearch?: boolean;
 }
 
@@ -129,7 +130,7 @@ const hasManagementRole = (userData?: UserData) => {
   );
 };
 
-export default function NavBarNew({ searchText, onSearchTextChange, onSearchFocus, onSearchEnter, onSidebarToggle, menuAutoFocusSearch = true }: NavBarNewProps) {
+export default function NavBarNew({ searchText, onSearchTextChange, onSearchFocus, onSearchEnter, onSidebarToggle, onMenuSearchFocus, menuAutoFocusSearch = true }: NavBarNewProps) {
   const dispatch = useDispatch();
   const navbarRef = useRef<HTMLElement | null>(null);
   const [languageAnchorEl, setLanguageAnchorEl] = useState<HTMLElement | null>(null);
@@ -321,6 +322,14 @@ export default function NavBarNew({ searchText, onSearchTextChange, onSearchFocu
             onChange={(event) => onSearchTextChange(event.target.value)}
             onFocus={onSearchFocus}
             onKeyDown={(event) => {
+              if (event.key === "Escape") {
+                if (sidebarStatus) {
+                  event.preventDefault();
+                  handleSidebarToggle();
+                }
+                return;
+              }
+
               if (event.key !== "Enter") return;
               event.preventDefault();
               onSearchEnter();
@@ -408,6 +417,7 @@ export default function NavBarNew({ searchText, onSearchTextChange, onSearchFocu
             onClose={handleSidebarToggle}
             searchText={searchText}
             onSearchTextChange={onSearchTextChange}
+            onSearchFocus={onMenuSearchFocus}
             onSearchEnter={onSearchEnter}
             autoFocusSearch={menuAutoFocusSearch}
           />

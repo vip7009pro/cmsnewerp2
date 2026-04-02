@@ -1,16 +1,27 @@
 /* ==========================================================================
    GLOBAL RESET & BASE STYLES
    ========================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap");
+
 :root {
   --app-scrollbar-track: rgba(148, 163, 184, 0.18);
   --app-scrollbar-thumb: rgba(59, 130, 246, 0.42);
   --app-scrollbar-thumb-hover: rgba(37, 99, 235, 0.68);
+  --app-font-family: "Be Vietnam Pro", "Inter", "Segoe UI", sans-serif;
 }
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: var(--app-font-family);
   scrollbar-gutter: stable;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--app-font-family);
 }
 
 * {
