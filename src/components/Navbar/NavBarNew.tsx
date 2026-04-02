@@ -177,16 +177,6 @@ export default function NavBarNew({ searchText, onSearchTextChange, onSearchFocu
       const isCtrlSpace = event.ctrlKey && (event.code === "Space" || event.key === " ");
       if (!isCtrlSpace) return;
 
-      const target = event.target as HTMLElement | null;
-      const tag = target?.tagName?.toLowerCase();
-      const isTypingTarget =
-        tag === "input" ||
-        tag === "textarea" ||
-        tag === "select" ||
-        target?.isContentEditable;
-
-      if (isTypingTarget) return;
-
       event.preventDefault();
       handleSidebarToggle();
     };

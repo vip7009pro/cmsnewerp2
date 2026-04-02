@@ -29,9 +29,12 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Tùy chỉnh tên file, chỉ lấy id mà không có tên file gốc
-        entryFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[hash].js',
+        chunkFileNames: 'assets/[hash].js',
+        assetFileNames: 'assets/[hash].[extname]',
+        /* entryFileNames: 'assets/[name]-[hash].js',
         chunkFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[extname]',
+        assetFileNames: 'assets/[name]-[hash].[extname]', */
         manualChunks(id) {
           if (id.includes('node_modules')) {
             if (id.includes('@mui')) return 'vendor-mui';
