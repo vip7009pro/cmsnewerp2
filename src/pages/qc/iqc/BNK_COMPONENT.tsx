@@ -230,7 +230,7 @@ const BNK_COMPONENT = ({
             <th colSpan={5}>Ngoại quan</th>
             <th colSpan={8}>Độ tin cậy</th>
           </tr>
-          <tr>
+          <tr style={{ textAlign: "center", fontSize: "0.6rem" }}>
             <th>Màu sắc</th>
             <th>Chấm</th>
             <th>Xước</th>
@@ -264,7 +264,7 @@ const BNK_COMPONENT = ({
             <td>1 mẫu/Lot</td>
           </tr>
           <tr>
-            <td>Sample QTY</td>
+            <td>QTY</td>
             <td>{getTestQty(data?.TOTAL_ROLL ?? 0)}</td>
             <td>{getTestQty(data?.TOTAL_ROLL ?? 0)}</td>
             <td>{getTestQty(data?.TOTAL_ROLL ?? 0)}</td>
@@ -289,12 +289,12 @@ const BNK_COMPONENT = ({
       <div className="rowoftable">
         <table className="detail-table1">
           <thead>
-            <tr>
+            <tr  style={{ textAlign: "center", fontSize: "0.6rem" }}>
               <th rowSpan={2}>Chi tiết</th>
               <th colSpan={5}>Ngoại quan</th>
               <th colSpan={2}>Độ tin cậy</th>
             </tr>
-            <tr>
+            <tr  style={{ textAlign: "center", fontSize: "0.6rem" }}>
               <th>Màu sắc</th>
               <th>Chấm</th>
               <th>Xước</th>
@@ -305,13 +305,13 @@ const BNK_COMPONENT = ({
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr  style={{ textAlign: "center", fontSize: "0.6rem" }}>
               <td>Dụng cụ kiểm tra</td>
               <td colSpan={5}>Mắt thường/Thước đo</td>
               <td>Thước đo</td>
               <td>Máy kiểm tra độ dày</td>
             </tr>
-            <tr>
+            <tr style={{ textAlign: "center", fontSize: "0.6rem" }}>
               <td>Tiêu chuẩn</td>
               <td>Khớp mẫu</td>
               <td colSpan={2}>W≤0.03mm, L≤5mm</td>
@@ -529,8 +529,8 @@ const BNK_COMPONENT = ({
             <tr>
               <th colSpan={8}>Độ tin cậy</th>
             </tr>
-            <tr>
-              <th>Hạng mục</th>
+            <tr  style={{ textAlign: "center", fontSize: "0.6rem" }}>
+              <th>Mục</th>
               <th>NO</th>
               <th>NAME</th>
               <th>CENTER</th>
