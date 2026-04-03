@@ -2,6 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import JSZip from 'jszip';
 import { Button, MenuItem, TextField } from '@mui/material';
 import { generalQuery } from '../../../api/Api';
+import {
+  buildDictionaryPromptBlock,
+  loadTranslationDictionary,
+} from './translationDictionary';
 
 type ParagraphTextItem = {
   path: string;
@@ -94,7 +98,7 @@ const WordAITranslator = () => {
     return out;
   }, []);
 
-  const buildPrompt = useCallback((items: ParagraphTextItem[], fn: string, from: string, to: string) => {
+  const buildPrompt = useCallback(async (items: ParagraphTextItem[], fn: string, from: string, to: string) => {
     const payload: PromptPayload = {
       meta: {
         fileName: fn,
@@ -105,6 +109,14 @@ const WordAITranslator = () => {
       paragraphs: items,
     };
 
+    let dictionary: Awaited<ReturnType<typeof loadTranslationDictionary>>['items'] = [];
+    try {
+      const store = await loadTranslationDictionary();
+      dictionary = store.items;
+    } catch {
+      dictionary = [];
+    }
+
     const schema: any = {
       paragraphs: [{ path: 'word/document.xml', p: 0, text: 'translated text (use \\n for line breaks if needed)' }],
     };
@@ -114,6 +126,13 @@ const WordAITranslator = () => {
     const bilingualInstruction = isBilingual 
       ? `\n- Bilingual mode: Nếu đoạn văn bản đã có cả hai ngôn ngữ ${fromLang} và ${toLang}, hãy giữ nguyên. Nếu chỉ có một ngôn ngữ, hãy dịch sang ${toLang} và trình bày dưới dạng: [Ngôn ngữ gốc] / [Ngôn ngữ đích].`
       : `'Nếu đoạn văn bản đã có cả hai ngôn ngữ ${fromLang} và ${toLang}, hãy giữ nguyên, Nếu chỉ có một ngôn ngữ, hãy dịch sang ${toLang}'`;
+    const glossaryBlock = buildDictionaryPromptBlock({
+      items,
+      dictionary,
+      fromLang: from,
+      toLang: to,
+      docType: 'Word document',
+    });
 
     return [
       `You are an expert translator. Translate from ${from} to ${to}.`,
@@ -126,6 +145,7 @@ const WordAITranslator = () => {
       `- Preserve placeholders like {0}, {name}, %s.`,
       `- Do not reorder items.`,
       `- Translate each item independently; do not rely on missing context outside the provided items.`,
+      glossaryBlock,
       presetInstruction,
       bilingualInstruction,
       `Input JSON:`,
@@ -193,7 +213,7 @@ const WordAITranslator = () => {
       }
 
       setParagraphs(items);
-      const prompt = buildPrompt(items, file.name, fromLang, toLang);
+      const prompt = await buildPrompt(items, file.name, fromLang, toLang);
       setPromptText(prompt);
     },
     [buildPrompt, extractParagraphTextsFromXml, fromLang, toLang],
@@ -292,7 +312,7 @@ const WordAITranslator = () => {
 
       for (let ci = 0; ci < chunks.length; ci++) {
         const chunk = chunks[ci];
-        const chunkPrompt = buildPrompt(chunk, fileName || f.name, fromLang, toLang);
+        const chunkPrompt = await buildPrompt(chunk, fileName || f.name, fromLang, toLang);
 
         const resp: any = await generalQuery('gemini_prompt', {
           prompt: chunkPrompt,
@@ -396,7 +416,9 @@ const WordAITranslator = () => {
     if (backendTranslating) return;
 
     const t = setTimeout(() => {
-      setPromptText(buildPrompt(paragraphs, fileName || 'document.docx', fromLang, toLang));
+      buildPrompt(paragraphs, fileName || 'document.docx', fromLang, toLang)
+        .then((prompt) => setPromptText(prompt))
+        .catch((err) => alert(err?.message ?? String(err)));
     }, 250);
 
     return () => clearTimeout(t);
@@ -529,7 +551,9 @@ const WordAITranslator = () => {
           variant="outlined"
           onClick={() => {
             if (!paragraphs.length) return;
-            setPromptText(buildPrompt(paragraphs, fileName || 'document.docx', fromLang, toLang));
+            buildPrompt(paragraphs, fileName || 'document.docx', fromLang, toLang)
+              .then((prompt) => setPromptText(prompt))
+              .catch((err) => alert(err?.message ?? String(err)));
           }}
           disabled={!paragraphs.length}
         >

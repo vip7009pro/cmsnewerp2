@@ -17,6 +17,7 @@ import WordAITranslator from "./AI/WordAITranslator";
 import ERPChat from "./AI/ERPChat";
 import ERPChatV2 from "./AI/ERPChatV2";
 import ColumnComments from "./DBComments/ColumnComments";
+import TranslationDictionaryManager from "./AI/TranslationDictionaryManager";
 import SemanticEngineManager from "../../components/SemanticEngineManagerEnhanced";
 
 const  NOCODELOWCODE = () => {
@@ -68,6 +69,9 @@ const  NOCODELOWCODE = () => {
         </MyTabs.Tab>
         <MyTabs.Tab title={"Semantic Engine Manager"}>
           <SemanticEngineManager/>
+        </MyTabs.Tab>
+        <MyTabs.Tab title={"AI Dictionary"}>
+          <TranslationDictionaryManager/>
         </MyTabs.Tab>
         <MyTabs.Tab title={"DB Column Comments"}>
           <ColumnComments/>

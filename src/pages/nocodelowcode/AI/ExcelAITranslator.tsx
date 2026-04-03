@@ -2,6 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import JSZip from 'jszip';
 import { Button, Checkbox, ListItemText, MenuItem, TextField } from '@mui/material';
 import { generalQuery } from '../../../api/Api';
+import {
+  buildDictionaryPromptBlock,
+  loadTranslationDictionary,
+} from './translationDictionary';
 
 type SharedStringItem = {
   i: number;
@@ -395,7 +399,7 @@ const ExcelAITranslator = () => {
   );
 
   const buildPrompt = useCallback(
-    (
+    async (
       items: SharedStringItem[],
       inline: InlineStringItem[],
       shapes: ShapeTextItem[],
@@ -417,6 +421,14 @@ const ExcelAITranslator = () => {
         ...(m === 'all' ? { inlineStrings: inline } : {}),
       };
 
+      let dictionary: Awaited<ReturnType<typeof loadTranslationDictionary>>['items'] = [];
+      try {
+        const store = await loadTranslationDictionary();
+        dictionary = store.items;
+      } catch {
+        dictionary = [];
+      }
+
       const schema: any = {
         sharedStrings: [{ i: 0, text: 'translated text' }],
         shapeTexts: [{ path: 'xl/drawings/drawing1.xml', i: 0, text: 'translated text' }],
@@ -430,6 +442,13 @@ const ExcelAITranslator = () => {
       const bilingualInstruction = isBilingual
         ? `\n- Bilingual mode: Nếu đoạn văn bản đã có cả hai ngôn ngữ ${fromLang} và ${toLang}, hãy giữ nguyên. Nếu chỉ có một ngôn ngữ, hãy dịch sang ${toLang} và trình bày dưới dạng: [Ngôn ngữ gốc] / [Ngôn ngữ đích].`
         : `Nếu đoạn văn bản đã có cả hai ngôn ngữ ${fromLang} và ${toLang}, hãy giữ nguyên, Nếu chỉ có một ngôn ngữ, hãy dịch sang ${toLang}`;
+      const glossaryBlock = buildDictionaryPromptBlock({
+        items: [...items, ...inline, ...shapes],
+        dictionary,
+        fromLang: from,
+        toLang: to,
+        docType: m === 'all' ? 'Excel workbook' : 'Excel workbook shared strings',
+      });
 
       return [
         `You are an expert translator. Translate from ${from} to ${to}.`,
@@ -440,6 +459,7 @@ const ExcelAITranslator = () => {
         `- Keep each i exactly the same. (i is the sharedStrings index in sharedStrings.xml)`,
         `- Preserve placeholders like {0}, {name}, %s, and Excel-like tokens.`,
         `- Do not reorder items.`,
+        glossaryBlock,
         presetInstruction,
         bilingualInstruction,
         `Input JSON:`,
@@ -510,7 +530,7 @@ const ExcelAITranslator = () => {
 
       setShapeTexts(shapes);
 
-      const prompt = buildPrompt(out, inline, shapes, file.name, fromLang, toLang, mode);
+      const prompt = await buildPrompt(out, inline, shapes, file.name, fromLang, toLang, mode);
       setPromptText(prompt);
     },
     [
@@ -706,7 +726,7 @@ const ExcelAITranslator = () => {
       } = await getFilteredDataForSelection();
       const prompt = promptText.trim()
         ? promptText
-        : buildPrompt(filteredShared, filteredInline, filteredShapes, fileName || f.name, fromLang, toLang, mode);
+        : await buildPrompt(filteredShared, filteredInline, filteredShapes, fileName || f.name, fromLang, toLang, mode);
 
       const resp: any = await generalQuery('gemini_prompt', {
         prompt,
@@ -802,9 +822,8 @@ const ExcelAITranslator = () => {
   const rebuildPromptForSelection = useCallback(async () => {
     const { sharedStrings: filteredShared, inlineStrings: filteredInline, shapeTexts: filteredShapes } =
       await getFilteredDataForSelection();
-    setPromptText(
-      buildPrompt(filteredShared, filteredInline, filteredShapes, fileName || 'workbook.xlsx', fromLang, toLang, mode),
-    );
+    const prompt = await buildPrompt(filteredShared, filteredInline, filteredShapes, fileName || 'workbook.xlsx', fromLang, toLang, mode);
+    setPromptText(prompt);
   }, [buildPrompt, fileName, fromLang, getFilteredDataForSelection, mode, toLang]);
 
   useEffect(() => {

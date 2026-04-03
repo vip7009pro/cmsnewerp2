@@ -2,6 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import JSZip from 'jszip';
 import { Button, MenuItem, TextField } from '@mui/material';
 import { generalQuery } from '../../../api/Api';
+import {
+  buildDictionaryPromptBlock,
+  loadTranslationDictionary,
+} from './translationDictionary';
 
 type TextBoxTextItem = {
   path: string;
@@ -90,7 +94,7 @@ const PowerPointAITranslator = () => {
     return out;
   }, []);
 
-  const buildPrompt = useCallback((items: TextBoxTextItem[], fn: string, from: string, to: string) => {
+  const buildPrompt = useCallback(async (items: TextBoxTextItem[], fn: string, from: string, to: string) => {
     const payload: PromptPayload = {
       meta: {
         fileName: fn,
@@ -101,15 +105,30 @@ const PowerPointAITranslator = () => {
       textboxTexts: items,
     };
 
+    let dictionary: Awaited<ReturnType<typeof loadTranslationDictionary>>['items'] = [];
+    try {
+      const store = await loadTranslationDictionary();
+      dictionary = store.items;
+    } catch {
+      dictionary = [];
+    }
+
     const schema: any = {
       textboxTexts: [{ path: 'ppt/slides/slide1.xml', box: 0, text: 'translated text (use \\n for line breaks)' }],
     };
 
-    const presetObj = PROMPT_PRESETS.find(p => p.value === promptPreset);
+    const presetObj = PROMPT_PRESETS.find((p) => p.value === promptPreset);
     const presetInstruction = presetObj?.instruction ? `\n- Style: ${presetObj.instruction}` : '';
-    const bilingualInstruction = isBilingual 
+    const bilingualInstruction = isBilingual
       ? `\n- Bilingual mode: Nếu đoạn văn bản đã có cả hai ngôn ngữ ${fromLang} và ${toLang}, hãy giữ nguyên. Nếu chỉ có một ngôn ngữ, hãy dịch sang ${toLang} và trình bày dưới dạng: [Ngôn ngữ gốc] / [Ngôn ngữ đích].`
       : `Nếu đoạn văn bản đã có cả hai ngôn ngữ ${fromLang} và ${toLang}, hãy giữ nguyên, Nếu chỉ có một ngôn ngữ, hãy dịch sang ${toLang}`;
+    const glossaryBlock = buildDictionaryPromptBlock({
+      items,
+      dictionary,
+      fromLang: from,
+      toLang: to,
+      docType: 'PowerPoint presentation',
+    });
 
     return [
       `You are an expert translator. Translate from ${from} to ${to}.`,
@@ -122,6 +141,7 @@ const PowerPointAITranslator = () => {
       `- Preserve placeholders like {0}, {name}, %s.`,
       `- Do not reorder items.`,
       `- Keep line breaks (\\n) to preserve slide paragraph breaks as much as possible.`,
+      glossaryBlock,
       presetInstruction,
       bilingualInstruction,
       `Input JSON:`,
@@ -153,7 +173,7 @@ const PowerPointAITranslator = () => {
       }
 
       setTextboxTexts(items);
-      const prompt = buildPrompt(items, file.name, fromLang, toLang);
+      const prompt = await buildPrompt(items, file.name, fromLang, toLang);
       setPromptText(prompt);
     },
     [buildPrompt, extractTextBoxesFromXml, fromLang, toLang],
@@ -255,7 +275,7 @@ const PowerPointAITranslator = () => {
     try {
       const prompt = promptText.trim()
         ? promptText
-        : buildPrompt(textboxTexts, fileName || f.name, fromLang, toLang);
+        : await buildPrompt(textboxTexts, fileName || f.name, fromLang, toLang);
 
       const resp: any = await generalQuery('gemini_prompt', {
         prompt,
@@ -331,7 +351,9 @@ const PowerPointAITranslator = () => {
     if (backendTranslating) return;
 
     const t = setTimeout(() => {
-      setPromptText(buildPrompt(textboxTexts, fileName || 'slides.pptx', fromLang, toLang));
+      buildPrompt(textboxTexts, fileName || 'slides.pptx', fromLang, toLang)
+        .then((prompt) => setPromptText(prompt))
+        .catch((err) => alert(err?.message ?? String(err)));
     }, 250);
 
     return () => clearTimeout(t);
@@ -372,6 +394,13 @@ const PowerPointAITranslator = () => {
             accept=".pptx"
             onChange={async (e) => {
               const f = e.target.files?.[0];
+              let dictionary: Awaited<ReturnType<typeof loadTranslationDictionary>>['items'] = [];
+              try {
+                const store = await loadTranslationDictionary();
+                dictionary = store.items;
+              } catch {
+                dictionary = [];
+              }
               if (!f) return;
               try {
                 await onUpload(f);
@@ -446,9 +475,10 @@ const PowerPointAITranslator = () => {
 
         <Button
           variant="outlined"
-          onClick={() => {
+          onClick={async () => {
             if (!textboxTexts.length) return;
-            setPromptText(buildPrompt(textboxTexts, fileName || 'slides.pptx', fromLang, toLang));
+            const prompt = await buildPrompt(textboxTexts, fileName || 'slides.pptx', fromLang, toLang);
+            setPromptText(prompt);
           }}
           disabled={!textboxTexts.length}
         >
