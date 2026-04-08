@@ -121,6 +121,7 @@ const KPI_NV_NEW2 = () => {
   ];
   const columns_loss_time_data_theo_nguoi = [
     { field: "INS_EMPL", headerName: "INS_EMPL", width: 60 },
+    { field: "FULL_TIME", headerName: "FULL_TIME", width: 60 },
     { field: "WORK_HOUR", headerName: "WORK_HOUR", width: 60 },
     { field: "WORK_MINUTE", headerName: "WORK_MINUTE", width: 60 },
     { field: "TOTAL_SX_TIME", headerName: "TOTAL_SX_TIME", width: 60 },
@@ -204,7 +205,20 @@ const KPI_NV_NEW2 = () => {
 
 
 
-
+{ field: "TILE_CC", headerName: "TILE_CC", width: 80,cellRenderer: (params: any) => {
+      return (
+          <span style={{ color: "gray", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{style: 'percent', minimumFractionDigits: 2})}
+          </span>
+        );
+    }   },
+{ field: "HIEUSUAT_TIME", headerName: "HIEUSUAT_TIME", width: 80,cellRenderer: (params: any) => {
+      return (
+          <span style={{ color: "gray", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{style: 'percent', minimumFractionDigits: 2})}
+          </span>
+        );
+    }   },
 
 
 

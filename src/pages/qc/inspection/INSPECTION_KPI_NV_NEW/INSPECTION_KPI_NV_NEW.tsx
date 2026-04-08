@@ -54,7 +54,7 @@ const INSPECTION_KPI_NV_NEW = () => {
   const theme = useSelector((state: RootState) => state.totalSlice.theme);
 
   const columns_loss_time_data_theo_may = [
-    { field: "EMPL_NO", headerName: "EMPL_NO", width: 100 },
+    { field: "EMPL_NO", headerName: "EMPL_NO", width: 100 },  
     { field: "PHANLOAI", headerName: "PHANLOAI", width: 100 },
     { field: "CODE_COUNT", headerName: "CODE_COUNT", width: 100 },
     { field: "INSPECT_MINUTE", headerName: "INSPECT_MINUTE", width: 100 },
@@ -97,6 +97,9 @@ const INSPECTION_KPI_NV_NEW = () => {
   ];
   const columns_loss_time_data_theo_nguoi = [
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 100 },
+    { field: "FULL_TIME", headerName: "FULL_TIME", width: 60 },
+    { field: "WORK_HOUR", headerName: "WORK_HOUR", width: 60 },
+    { field: "WORK_MINUTE", headerName: "WORK_MINUTE", width: 60 },
     { field: "CODE_COUNT", headerName: "CODE_COUNT", width: 100 },
     { field: "WORK_MINUTE", headerName: "WORK_MINUTE", width: 100 },
     { field: "INSPECT_MINUTE", headerName: "INSPECT_MINUTE", width: 100 },
@@ -131,6 +134,9 @@ const INSPECTION_KPI_NV_NEW = () => {
   ];
   const columns_kpi_nv_ktra = [
     { field: "EMPL_NO", headerName: "EMPL_NO", width: 80 },
+      { field: "FULL_TIME", headerName: "FULL_TIME", width: 60 },
+    { field: "WORK_HOUR", headerName: "WORK_HOUR", width: 60 },
+    { field: "WORK_MINUTE", headerName: "WORK_MINUTE", width: 60 },
     { field: "CODE_COUNT", headerName: "CODE_COUNT", width: 80 },
     { field: "INSPECT_MINUTE", headerName: "INSPECT_MINUTE", width: 80 },
     { field: "COUNT_TT", headerName: "COUNT_TT", width: 80 },
@@ -193,6 +199,14 @@ const INSPECTION_KPI_NV_NEW = () => {
           </span>
         );
     }    },
+    
+{ field: "TILE_CC", headerName: "TILE_CC", width: 80,cellRenderer: (params: any) => {
+      return (
+          <span style={{ color: "blue", fontWeight: "normal" }}>
+            {params.value?.toLocaleString("en-US",{style: 'percent', minimumFractionDigits: 2})}
+          </span>
+        );
+    }   },
     { field: "TOTAL_KIEMTRA_KPI", headerName: "TOTAL_KIEMTRA_KPI", width: 80,cellRenderer: (params: any) => {
       return (
           <span style={{ color: "blue", fontWeight: "normal" }}>
