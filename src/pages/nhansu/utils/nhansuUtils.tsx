@@ -455,7 +455,13 @@ export const loadBangCongTheoThang = async (DATA: any) => {
   await generalQuery("loadBangCongTheoThang",DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        kq = response.data.data;
+        let loaded_data = response.data.data.map((e: any, index: number) => {
+          return {
+            ...e,
+            id: index + 1,
+          };
+        });
+        kq = loaded_data;
       }
     })
     .catch((error) => {
@@ -500,7 +506,13 @@ export const f_checkDoubleNV_CCID = async (DATA: any) => {
   await generalQuery("checktrungNV_CCID",DATA)
     .then((response) => {
       if (response.data.tk_status !== "NG") {
-        kq = response.data.data;
+        let loaded_data = response.data.data.map((e: any, index: number) => {
+          return {
+            ...e,
+            id: index + 1,
+          };
+        });
+        kq = loaded_data;
       }
       else {
         kq = [];
