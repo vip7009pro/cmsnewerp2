@@ -8,6 +8,7 @@ const BAOCAOTHEOROLL = React.lazy(() => import("./BAOCAOTHEOROLL/BAOCAOTHEOROLL"
 const ACHIVEMENTTB = React.lazy(() => import("../qlsx/QLSXPLAN/ACHIVEMENTTB/ACHIVEMENTTB"));
 const PATROL = React.lazy(() => import("./PATROL/PATROL"));
 const DAOFILMDATA = React.lazy(() => import("./LICHSUDAOFILM/DAOFILMDATA"));
+const DAOFILM_REPORT = React.lazy(() => import("./DAOFILM_REPORT/DAOFILM_REPORT"));
 const BTP_AUTO = React.lazy(() => import("./BTP_AUTO/BTP_AUTO"));
 const FAILING = React.lazy(() => import("../qc/iqc/FAILING"));
 const MAINDEFECTS = React.lazy(() => import("./MAINDEFECTS/MAINDEFECTS"));
@@ -58,6 +59,9 @@ const BAOCAOSXALL = () => {
           </MyTabs.Tab>}
           {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title="Data Dao Film">
             <DAOFILMDATA />
+          </MyTabs.Tab>}
+          {getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title="Dao Film Report">
+            <DAOFILM_REPORT />
           </MyTabs.Tab>}
           {getCompany() === "CMS" && getUserData()?.JOB_NAME !== "Worker" && <MyTabs.Tab title="Failing">
             <FAILING />

@@ -184,6 +184,8 @@ const DAOFILMDATA = () => {
     { field: 'INS_DATE', headerName: 'INS_DATE', resizable: true, width: 100 },
     { field: 'PLAN_DATE', headerName: 'PLAN_DATE', resizable: true, width: 80 },
     { field: 'CA_LAM_VIEC', headerName: 'CA', resizable: true, width: 40 },
+    { field: 'MA_DAO', headerName: 'MA_DAO', resizable: true, width: 50 },
+    { field: 'MA_DAO_KT', headerName: 'MA_DAO_KT', resizable: true, width: 80 },
     { field: 'PLAN_ID', headerName: 'PLAN_ID', resizable: true, width: 50 },
     { field: 'G_NAME', headerName: 'G_NAME', resizable: true, width: 100 },
     { field: 'G_NAME_KD', headerName: 'G_NAME_KD', resizable: true, width: 70 },

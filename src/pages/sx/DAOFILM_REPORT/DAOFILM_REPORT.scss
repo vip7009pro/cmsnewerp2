@@ -1,0 +1,320 @@
+@media only screen and (max-width: 5000px) {
+  .daoFilmReport {
+    width: 100%;
+    height: calc(100vh - 85px);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .daoFilmReportTop {
+      width: 100%;
+      min-height: 340px;
+      flex: 5.5;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(240px, 1fr));
+      gap: 8px;
+    }
+
+    .daoFilmWidgetColumn {
+      display: grid;
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .daoFilmWidgetCard {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border-radius: 6px;
+      box-shadow: 4px 4px 10px 2px rgba(0, 0, 0, 0.22);
+      padding: 10px;
+      min-height: 0;
+      height: 100%;
+
+      .widgetTitle {
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+
+      .widgetValue {
+        font-size: 2.2rem;
+        line-height: 1;
+        font-weight: 800;
+      }
+
+      &.total {
+        background-image: linear-gradient(0deg, #d9f3ff, #7ed7ff);
+        color: #0f3a63;
+      }
+
+      &.ok {
+        background-image: linear-gradient(0deg, #dbfce8, #9df7be);
+        color: #0f5f2d;
+      }
+
+      &.ng {
+        background-image: linear-gradient(0deg, #ffe1e1, #ffb0b0);
+        color: #7f1d1d;
+      }
+    }
+
+    .daoFilmPieCard {
+      display: flex;
+      flex-direction: column;
+      border-radius: 6px;
+      box-shadow: 4px 4px 10px 2px rgba(0, 0, 0, 0.22);
+      background-image: linear-gradient(0deg, #f3f6ff, #d3e2ff);
+      padding: 8px;
+      overflow: visible;
+
+      .daoFilmPieTitle {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #1f3f85;
+        text-align: center;
+      }
+
+      .daoFilmPieSummary {
+        font-size: 0.65rem;
+        color: #334155;
+        text-align: center;
+        margin-top: 2px;
+      }
+
+      .daoFilmPieBody {
+        width: 100%;
+        flex: 1;
+        min-height: 260px;
+
+        .recharts-wrapper,
+        .recharts-surface {
+          overflow: visible;
+        }
+      }
+    }
+
+    .daoFilmPieTooltip {
+      background-color: #ffffff;
+      border: 1px solid #94a3b8;
+      border-radius: 5px;
+      padding: 6px;
+
+      p {
+        margin: 0;
+        font-size: 0.66rem;
+        font-weight: 600;
+        color: #1e293b;
+      }
+    }
+
+    .daoFilmReportBottom {
+      width: 100%;
+      min-height: 220px;
+      flex: 4.5;
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      padding: 6px;
+      border-radius: 6px;
+      overflow: hidden;
+      background-image: linear-gradient(0deg, #afd3d1, #86cfff);
+      box-shadow: 4px 4px 10px 2px rgba(0, 0, 0, 0.22);
+
+      .daoFilmBackTablePanel,
+      .daoFilmDetailTablePanel {
+        display: flex;
+        min-width: 0;
+        min-height: 0;
+      }
+
+      .daoFilmBackTablePanel {
+        flex: 3;
+      }
+
+      .daoFilmDetailTablePanel {
+        flex: 2;
+      }
+
+      .agtable {
+        min-height: 0;
+      }
+    }
+
+    .daoFilmReportToolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.65rem;
+
+      .daoFilmToolbarTitle {
+        font-size: 0.86rem;
+        font-weight: 800;
+        color: #0f3a63;
+        margin-right: 6px;
+      }
+
+      label {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+
+      input[type="date"] {
+        height: 24px;
+        border: none;
+        border-radius: 5px;
+        padding: 2px 6px;
+        font-size: 0.65rem;
+        background-image: linear-gradient(0deg, #ececec, #9dee95);
+      }
+
+      .defaultMonthCheckbox {
+        background-color: rgba(255, 255, 255, 0.55);
+        border-radius: 12px;
+        padding: 2px 8px;
+      }
+
+      input[type="checkbox"] {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    .daoFilmDetailToolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.65rem;
+
+      .daoFilmToolbarTitle {
+        font-size: 0.86rem;
+        font-weight: 800;
+        color: #0f3a63;
+        margin-right: 6px;
+      }
+
+      .daoFilmSelectedKnife {
+        font-weight: 700;
+        color: #0f172a;
+        background-color: rgba(255, 255, 255, 0.55);
+        border-radius: 12px;
+        padding: 2px 8px;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 1400px) {
+  .daoFilmReport {
+    .daoFilmReportTop {
+      grid-template-columns: repeat(3, minmax(200px, 1fr));
+      min-height: 300px;
+      flex: 5;
+    }
+
+    .daoFilmReportBottom {
+      min-height: 250px;
+      flex: 5;
+    }
+
+    .daoFilmWidgetCard {
+      min-height: 88px;
+
+      .widgetTitle {
+        font-size: 0.95rem;
+      }
+
+      .widgetValue {
+        font-size: 1.9rem;
+      }
+    }
+
+    .daoFilmPieCard {
+      min-height: 240px;
+
+      .daoFilmPieBody {
+        min-height: 230px;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .daoFilmReport {
+    height: auto;
+    min-height: calc(100vh - 85px);
+
+    .daoFilmReportTop {
+      grid-template-columns: repeat(2, minmax(180px, 1fr));
+      min-height: 520px;
+      flex: 5;
+    }
+
+    .daoFilmReportBottom {
+      flex: 0 0 auto;
+      height: 62vh;
+      min-height: 360px;
+      flex-direction: column;
+
+      .daoFilmBackTablePanel {
+        flex: 3;
+      }
+
+      .daoFilmDetailTablePanel {
+        flex: 2;
+      }
+    }
+
+    .daoFilmWidgetColumn {
+      min-height: 300px;
+    }
+
+    .daoFilmWidgetCard {
+      .widgetTitle {
+        font-size: 0.9rem;
+      }
+
+      .widgetValue {
+        font-size: 1.7rem;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .daoFilmReport {
+    .daoFilmReportTop {
+      grid-template-columns: 1fr;
+      min-height: 840px;
+    }
+
+    .daoFilmReportToolbar {
+      .daoFilmToolbarTitle {
+        width: 100%;
+      }
+
+      label {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .defaultMonthCheckbox {
+        justify-content: space-between;
+      }
+    }
+
+    .daoFilmReportBottom {
+      height: 56vh;
+      min-height: 340px;
+    }
+  }
+}

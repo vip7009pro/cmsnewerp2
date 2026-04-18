@@ -1,5 +1,39 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-04-17 (Dao Film Report)
+
+### Completed
+- Added new tab **Dao Film Report** inside `src/pages/sx/BAOCAOSXALL.tsx` (kept existing Data Dao Film tab unchanged).
+- Implemented new page `src/pages/sx/DAOFILM_REPORT/DAOFILM_REPORT.tsx` + styles `src/pages/sx/DAOFILM_REPORT/DAOFILM_REPORT.scss`.
+- New page layout:
+	- Top area: 3 KPI widgets (Tong so dao, So dao OK, So dao NG) + 2 Recharts pie charts.
+	- Bottom area: split AGTable layout 3:2 (left backdata table + right detail table).
+- Checkbox behavior implemented as requested:
+	- Checked: always query full range from 2020-01-01 to current date (All time).
+	- Unchecked: query by selected from/to dates.
+	- First load on entering tab auto-runs with checkbox checked.
+- Added frontend API utilities at `src/pages/sx/utils/daoFilmReportUtils.ts` for 4 report queries.
+- Additional UI refinement:
+	- Increased widget typography for easier reading.
+	- Pie charts switched to full pie style and now display outside labels with connector lines so users can identify slices directly without looking at bottom legend.
+	- Updated usage pie bucket ranges to: `0%`, `1 - 10%`, `11 - 20%`, `21 - 50%`, `51 - 99%`, `100 - 300%`, `301 - 500%`, `>= 500%`.
+	- Updated export-count pie bucket ranges to: `0 lan`, `1 lan`, `2 - 3 lan`, `4 - 5 lan`, `6 - 10 lan`, `11 - 50 lan`, `51 - 100 lan`, `100 - 300 lan`, `300 - 500 lan`, `> 500 lan`.
+	- Desktop layout updated to 3 equal columns: first column is a stacked widget group (Tong/OK/NG), second and third columns are the two pie charts; top row height is prioritized over AGTable area to enlarge chart display.
+	- Added right-side detail AGTable: click a row in left backdata table to load detail rows by selected `MA_DAO` + `MA_DAO_KT`; detail columns now include `MA_DAO`, `MA_DAO_KT`, `G_CODE`, `G_NAME`, `PD`, `CAVITY`, `QTY`, `PRESS_QTY`, `EMPL_NO`, `SX_EMPL`, `SX_DATE`, `PLAN_ID` from OUT_KNIFE_FILM-based query.
+
+### Backend Commands Added (practice1)
+- `loadDaoFilmReportBackData`
+- `loadDaoFilmReportWidgetData`
+- `loadDaoFilmReportUsagePieData`
+- `loadDaoFilmReportExportPieData`
+- `loadDaoFilmReportDetailData`
+
+These were added in `practice1/services/sanxuatService.js` and are reachable through the existing `/api` command dispatcher (`dbCommandHandlers` spread import of `sanxuatService`).
+
+### Validation
+- Frontend production build succeeded: `npm run build`.
+- Backend service syntax check passed: `node -e "require('./services/sanxuatService')"`.
+
 **Date**: March 31, 2026  
 **Objective**: Implement ERPChat feature with database synchronization, semantic query engine, and real-time AI chat interface.
 
