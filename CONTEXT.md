@@ -125,6 +125,6 @@ Build a complete ERP Chat system that enables:
 
 ---
 
-**Version**: v0.3-alpha  
-**Last Updated**: 2026-03-31 16:15:00  
+**Version**: v0.3-alpha
+**Last Updated**: 2026-03-31 16:15:00
 **Status**: Metadata pipeline STABLE. UI STABLE. Ready for training & chat testing.
