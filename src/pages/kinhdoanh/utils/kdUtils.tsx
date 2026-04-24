@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode, getCompany, getSocket, getUserData } from "../../../api/Api";
-import { CodeListData, CustomerListData, FCSTTDYCSX, InvoiceTableData, PO_BALANCE_CUSTOMER, PO_BALANCE_CUSTOMER_BY_YEAR, PO_BALANCE_DETAIL, PO_BALANCE_SUMMARY, POBALANCETDYCSX, PONOLIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, TONKHOTDYCSX, UploadAmazonData, YCSXTableData, YCTK_TREND_DATA, YCTKData } from "../interfaces/kdInterface";
+import { BANGGIA_DELETED_DATA, CodeListData, CustomerListData, FCSTTDYCSX, InvoiceTableData, PO_BALANCE_CUSTOMER, PO_BALANCE_CUSTOMER_BY_YEAR, PO_BALANCE_DETAIL, PO_BALANCE_SUMMARY, POBALANCETDYCSX, PONOLIST, POTableData, PRICEWITHMOQ, PROD_OVER_DATA, TONKHOTDYCSX, UploadAmazonData, YCSXTableData, YCTK_TREND_DATA, YCTKData } from "../interfaces/kdInterface";
 import moment from "moment";
 import { f_insert_Notification_Data, zeroPad } from "../../../api/GlobalFunction";
 import * as XLSX from "xlsx";
@@ -350,6 +350,54 @@ export const f_loadprice = async (G_CODE?: string, CUST_NAME?: string) => {
       });
   }
   return newCodePriceData;
+};
+export const f_loadbanggiaDeletedHistory = async (filterData: any) => {
+  let deletedPriceData: BANGGIA_DELETED_DATA[] = [];
+  await generalQuery("loadbanggiaDeletedHistory", filterData)
+    .then((response) => {
+      if (response.data.tk_status !== "NG") {
+        const loaded_data: BANGGIA_DELETED_DATA[] = response.data.data.map(
+          (element: BANGGIA_DELETED_DATA, index: number) => {
+            return {
+              ...element,
+              id: index,
+              G_NAME:
+                getAuditMode() == 0
+                  ? element?.G_NAME
+                  : element?.G_NAME?.search("CNDB") == -1
+                  ? element?.G_NAME
+                  : "TEM_NOI_BO",
+              G_NAME_KD:
+                getAuditMode() == 0
+                  ? element?.G_NAME_KD
+                  : element?.G_NAME_KD?.search("CNDB") == -1
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
+              PRICE_DATE:
+                element.PRICE_DATE !== null
+                  ? moment.utc(element.PRICE_DATE).format("YYYY-MM-DD")
+                  : "",
+              INS_DATE:
+                element.INS_DATE !== null
+                  ? moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss")
+                  : "",
+              UPD_DATE:
+                element.UPD_DATE !== null
+                  ? moment.utc(element.UPD_DATE).format("YYYY-MM-DD HH:mm:ss")
+                  : "",
+            };
+          }
+        );
+        deletedPriceData = loaded_data;
+      } else {
+        Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      Swal.fire("Thông báo", " Có lỗi : " + error, "error");
+    });
+  return deletedPriceData;
 };
 export const f_insertInvoice = async (invoiceData: any) => {
   let kq: string = "NG";
