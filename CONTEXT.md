@@ -1,5 +1,27 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-04-24 (Quotation Delete Price History)
+
+### Completed
+- Added new tab **Lịch sử xóa giá** in `src/pages/kinhdoanh/quotationmanager/QuotationTotal.tsx`.
+- Implemented new page `src/pages/kinhdoanh/quotationmanager/QuotationDeleteHistory.tsx` + styles `src/pages/kinhdoanh/quotationmanager/QuotationDeleteHistory.scss`.
+- New tab follows QuotationManager-style layout:
+	- Left panel: filter form (`fromdate`, `todate`, `codeKD`, `codeCMS`, `m_name`, `cust_name`, `alltime`) and search button.
+	- Right panel: `AGTable` with deleted price history columns, approval color rendering, and Show/Hide filter panel button in toolbar.
+
+### Backend Commands Added (practice1)
+- `loadbanggiaDeletedHistory`
+
+This command was added in `practice1/services/kinhdoanhService.js`, querying `PROD_PRICE_TABLE_DELETED` with filters and joins to `M100` + `M110`.
+
+### Frontend Service/Type Added
+- Added `BANGGIA_DELETED_DATA` interface in `src/pages/kinhdoanh/interfaces/kdInterface.ts`.
+- Added `f_loadbanggiaDeletedHistory(filterData)` in `src/pages/kinhdoanh/utils/kdUtils.tsx`.
+
+### Validation
+- Frontend production build succeeded: `npm run build` (in `cmsnewerp2`).
+- Backend syntax/module load check passed: `node -e "require('./services/kinhdoanhService')"` (in `practice1`).
+
 ## Update - 2026-04-17 (Dao Film Report)
 
 ### Completed

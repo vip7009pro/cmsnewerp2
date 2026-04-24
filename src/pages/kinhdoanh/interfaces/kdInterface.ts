@@ -736,6 +736,31 @@ export interface BANGGIA_DATA_CALC {
     DUPLICATE: number;
   }
 
+  export interface BANGGIA_DELETED_DATA {
+    id: number;
+    PROD_ID: number;
+    CUST_NAME_KD?: string;
+    CUST_CD?: string;
+    G_CODE?: string;
+    G_NAME?: string;
+    G_NAME_KD?: string;
+    DESCR?: string;
+    PROD_DVT?: string;
+    PROD_MAIN_MATERIAL?: string;
+    PRICE_DATE: string;
+    MOQ: number;
+    PROD_PRICE: number;
+    BEP: number;
+    INS_DATE: string;
+    INS_EMPL: string;
+    UPD_DATE: string;
+    UPD_EMPL: string;
+    REMARK: string;
+    FINAL: string;
+    CURRENCY?: string;
+    RATE?: number;
+  }
+
   export interface DEFAULT_DM {
     id: number;
     WIDTH_OFFSET: number;

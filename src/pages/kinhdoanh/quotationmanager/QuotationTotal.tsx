@@ -2,6 +2,7 @@ import { useEffect, Suspense } from "react";
 import "./QuotationTotal.scss";
 import QuotationManager from "./QuotationManager";
 import CalcQuotation from "./CalcQuotation";
+import QuotationDeleteHistory from "./QuotationDeleteHistory";
 import MyTabs from "../../../components/MyTab/MyTab";
 const QuotationTotal = () => {
   useEffect(() => { }, []);
@@ -14,6 +15,9 @@ const QuotationTotal = () => {
           </MyTabs.Tab>
           <MyTabs.Tab title="Tính báo giá">
             <CalcQuotation />
+          </MyTabs.Tab>
+          <MyTabs.Tab title="Lịch sử xóa giá">
+            <QuotationDeleteHistory />
           </MyTabs.Tab>
         </MyTabs>
       </Suspense>
