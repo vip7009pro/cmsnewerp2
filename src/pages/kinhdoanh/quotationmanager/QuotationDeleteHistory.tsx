@@ -134,6 +134,7 @@ const QuotationDeleteHistory = () => {
       { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 100 },
     ]:[
       { field: "PROD_ID", headerName: "PROD_ID", width: 90 },
+      { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
       { field: "INS_DATE", headerName: "DELETE_DATE", width: 150 },
       { field: "INS_EMPL", headerName: "DELETE_EMPL", width: 100 },
     ],
