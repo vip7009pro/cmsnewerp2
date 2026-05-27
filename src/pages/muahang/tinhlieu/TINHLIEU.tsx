@@ -620,6 +620,46 @@ const TINHLIEU = () => {
         }
       },
     },
+    {
+      field: "ORIGIN_PRICE",
+      headerName: "ORIGIN_PRICE",
+      width: 100,
+      cellRenderer: (params: any) => {
+        return <span style={{ color: params.data.ORIGIN_PRICE < 0 ? "#ff0000" : "#000000", fontWeight: "bold" }}>
+          {params.data.ORIGIN_PRICE?.toLocaleString("en-US",)}
+        </span>
+      }
+    },
+    {
+      field: "LOSS_SETTING",
+      headerName: "LOSS_SETTING",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return <span style={{ color: params.data.LOSS_SETTING < 0 ? "#ff0000" : "#000000", fontWeight: "bold" }}>
+          {params.data.LOSS_SETTING?.toLocaleString("en-US",)} m
+        </span>
+      }
+    },
+    {
+      field: "LOSS_SX",
+      headerName: "LOSS_SX (%)",
+      width: 90,
+      cellRenderer: (params: any) => {
+        return <span style={{ color: params.data.LOSS_SX < 0 ? "#ff0000" : "#000000", fontWeight: "bold" }}>
+          {params.data.LOSS_SX?.toLocaleString("en-US")} %
+        </span>
+      }
+    },
+    {
+      field: "FINAL_QTY",
+      headerName: "FINAL_QTY",
+      width: 100,
+      cellRenderer: (params: any) => {
+        return <span style={{ color: params.data.FINAL_QTY < 0 ? "#ff0000" : "#028d0e", fontWeight: "bold" }}>
+          {params.data.FINAL_QTY?.toLocaleString("en-US",)}
+        </span>
+      }
+    },
   ]
   const column_mrp_all = [
     { field: "M_CODE", headerName: "M_CODE", width: 90 },

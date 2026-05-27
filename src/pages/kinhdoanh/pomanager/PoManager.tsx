@@ -1954,7 +1954,11 @@ const PoManager = () => {
         isOpen={openNewPODialog}
         onClose={handleCloseNewPODialog}
         title="Thêm PO mới"
-        content={<> <div className='dangkyinput'>
+          content={<>
+            <div style={{ margin: '8px 0', color: 'blue', fontWeight: '700', fontSize: '1.5rem' }}>
+              Thành Tiền: {((Number(newpoqty) || 0) * (Number(newpoprice) || 0)).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+            </div>
+            <div className='dangkyinput'>
           <div className='dangkyinputbox'>
             <label>
               <b>Khách hàng:</b>{" "}
