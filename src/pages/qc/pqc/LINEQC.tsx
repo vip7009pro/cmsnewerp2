@@ -303,7 +303,7 @@ const LINEQC = () => {
           PROCESS_LOT_NO: process_lot_no?.toUpperCase(),
           LINEQC_PIC: lineqc_empl?.toUpperCase(),
           PROD_PIC: sx_data[0].INS_EMPL?.toUpperCase(),
-          PROD_LEADER: prod_leader_empl?.toUpperCase(),
+          PROD_LEADER: '',
           STEPS: sx_data[0].STEP,
           CAVITY: sx_data[0].CAVITY,
           SETTING_OK_TIME: sx_data[0].MASS_START_TIME,

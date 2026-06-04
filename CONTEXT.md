@@ -150,3 +150,7 @@ Build a complete ERP Chat system that enables:
 **Version**: v0.3-alpha
 **Last Updated**: 2026-03-31 16:15:00
 **Status**: Metadata pipeline STABLE. UI STABLE. Ready for training & chat testing.
+
+## Update - 2026-05-23 (Restore system default font)
+
+- Set app font to system UI stack by updating `src/App.scss` (removed Google Inter import and switched `--app-font-family` to system-ui fallback list).

@@ -15,7 +15,7 @@
 
   .tieude {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex: 1;
     background-color: transparent;
     width: 100%;
@@ -25,28 +25,49 @@
     font-size: 0.8rem;
     align-items: center;
     padding: 2px 4px;
-  }
-  .machineplan {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    overflow: hidden;
-    flex: 0;
-    padding: 2px 6px 4px 6px;
-    .codename {
-      font-size: 0.65rem;
-      font-weight: bold;
+    .eqname {
+      flex: 1 1 auto;
+      min-width: 0;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-    }
-    .user {
+      font-size: 0.9rem;
+      padding-right: 6px;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      font-size: 0.65rem;
+      gap: 6px;
+    }
+  }
+  .machineplan {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    gap: 4px;
+    overflow: hidden;
+    flex: 0 0 auto;
+    padding: 4px 6px;
+    .codename {
+      font-size: 0.68rem;
       font-weight: 700;
-      color: rgba(15, 23, 42, 0.75);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 100%;
+      min-width: 0;
+      margin: 0;
+    }
+    .user {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: rgba(15, 23, 42, 0.9);
+      white-space: nowrap;
+      width: 100%;
+      margin-top: 0;
     }
   }
 }

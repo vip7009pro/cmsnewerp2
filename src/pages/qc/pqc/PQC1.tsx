@@ -76,6 +76,7 @@ const PQC1 = () => {
       });
   };
   const checkDataSX = (PLAN_ID: string) => {
+    console.log('check data sx with plan id: ', PLAN_ID);
     generalQuery("loadDataSX", {
       ALLTIME: true,
       FROM_DATE: "",
@@ -123,7 +124,7 @@ const PQC1 = () => {
               };
             }
           );
-          //console.log(loaded_data);
+          console.log('sx data',loaded_data);
           setSXData(loaded_data);
           checkPlanIDP501(loaded_data);
         } else {
@@ -667,6 +668,7 @@ const PQC1 = () => {
                       }}
                       onChange={(e) => {
                         if (e.target.value.length >= 8) {
+                          console.log('plan id: ', e.target.value);
                           checkPlanID(e.target.value);
                           checkDataSX(e.target.value);
                         } else {
