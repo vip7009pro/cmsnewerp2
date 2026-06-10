@@ -7,7 +7,9 @@ import { getCompany } from "../../../api/Api";
 import KHOTPNEW from "../../kho/khotp_new/KHOTPNEW";
 import MyTabs from "../../../components/MyTab/MyTab";
 import QTR_DATA from "./QTR_DATA";
+import VOC_HISTORY from "./VOC_HISTORY";
 const OQC = () => {
+  const isCms = getCompany() === "CMS";
   useEffect(() => {}, []);
   return (
     <div className="oqc">
@@ -23,9 +25,14 @@ const OQC = () => {
             <OQC_DATA />
           </div>
         </MyTabs.Tab>
-       { getCompany() === "CMS" && <MyTabs.Tab title={"Data QTR"}>
+       { isCms && <MyTabs.Tab title={"Data QTR"}>
           <div className="trainspection">
             <QTR_DATA />
+          </div>
+        </MyTabs.Tab>}
+       { isCms && <MyTabs.Tab title={"VOC History"}>
+          <div className="trainspection">
+            <VOC_HISTORY />
           </div>
         </MyTabs.Tab>}
         <MyTabs.Tab title={"Báo Cáo"}>

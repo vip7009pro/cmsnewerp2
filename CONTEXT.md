@@ -1,5 +1,26 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-06-10 (OQC VOC History)
+
+### Completed
+- Added a new **VOC History** tab in `src/pages/qc/oqc/OQC.tsx` alongside the existing CMS-only QTR tab.
+- Implemented `src/pages/qc/oqc/VOC_HISTORY.tsx` + `src/pages/qc/oqc/VOC_HISTORY.scss` to render VOC data as cards instead of an AGTable.
+- The VOC tab reuses the same QTR data source and always queries from `2020-01-01` through today.
+- Default view shows the 6 newest VOC cards in a 3-column grid; typing a product name/code filters and shows all matching cards; clearing the search restores the latest 6.
+- VOC image lookup now tries `MANAGEMENT_NUMBER.jpg` and `MANAGEMENT_NUMBER.png` under `/VOC/`, with a fallback image if nothing matches.
+- Updated the VOC card layout so `DEFECT_DETAILS` is shown in a dedicated highlighted block with stronger visual priority, while the product TITLE no longer crowds that area.
+- Added a `Show all` checkbox next to Reload so the VOC tab can switch between the latest 6 cards and the full list when no search term is entered.
+- Added per-card upload support for missing VOC images using `uploadQuery(..., "qtrimage")`; successful uploads immediately refresh the card image using `MANAGEMENT_NUMBER.jpg` or `MANAGEMENT_NUMBER.png`.
+- Added a `Full Screen` checkbox next to `Show all` for the VOC tab, matching the PATROL full-screen behavior.
+- Switched VOC image existence detection to async image probing with a small cache so cards render immediately while image checks run in the background.
+- The VOC search box now auto-focuses on tab load and regains focus after Reload, Show all, and Full Screen toggles.
+- VOC cards now support triple-clicking the image area to open the upload picker even when an image is already displayed.
+- The VOC layout was compacted so the toolbar stays on a single line where possible, image height is fixed with aspect-ratio preserved, and DEFECT/WH OUT/QTR PPM/RATE now stay in a single row to fit six VOC cards better in full screen.
+- Optimized VOC Card layout: Redesigned the card body into two columns of equal width (50% each). The left column splits the 4 metadata fields (`REGISTERED_DATE`, `PLANT`, `PART_CODE`, `DEFECT_QTY`) into 2 rows (2 fields per row) to significantly reduce the card's vertical height. The right column displays `DEFECT_DETAILS` (or `TITLE`) in a larger font size (`1.15rem`, bold) for high visual prominence. This clean structure maximizes readability and allowed increasing the VOC image display height to `300px` (with `height: 100%` and `object-fit: contain` for full scale display) while still ensuring 2 rows of VOC cards fit cleanly in standard viewports.
+
+### Validation
+- Frontend production build succeeded: `npm run build` in `cmsnewerp2`.
+
 ## Update - 2026-04-24 (Quotation Delete Price History)
 
 ### Completed
