@@ -41,11 +41,11 @@ const companyInfo = {
       {
         server_name: "LAN_SERVER",
         apiUrl: `${protocol}://192.168.1.192:${main_port}`
-      },        
+      }, */       
       {
         server_name: "TEST_SERVER",
         apiUrl: `${protocol}://localhost:${sub_port}` 
-      } */
+      }
     ],
   },
   PVN: {

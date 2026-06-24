@@ -1,7 +1,7 @@
 import { Button, IconButton } from "@mui/material";
 import moment from "moment";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AiFillFileAdd, AiOutlineCloudUpload, AiOutlineExport, AiOutlineSearch } from "react-icons/ai";
+import { AiFillFileAdd, AiOutlineCloudUpload, AiOutlineExport, AiOutlineSearch, AiOutlineCheckCircle, AiOutlineClockCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../api/Api";
 import "./NCR_MANAGER.scss";
@@ -61,90 +61,183 @@ const NCR_MANAGER = () => {
     { field: "VENDOR_LOT", headerName: "VENDOR_LOT", width: 80 },
     { field: "DEFECT_TITLE", headerName: "DEFECT_TITLE", width: 80 },
     { field: "DEFECT_DETAIL", headerName: "DEFECT_DETAIL", width: 80 },  
-    { field: "DEFECT_IMAGE", headerName: "DEFECT_IMAGE", width: 80,   cellRenderer: (params: any) => {
-      let file: any = null;
-      const uploadFile2: any = async (e: any) => {
-        //console.log(file);
-        checkBP(userData, ["QC",], ["Leader","Dept Staff","Sub Leader"], ["ALL"], async () => {
-          uploadQuery(file, "NCR_" + params.data.NCR_ID + ".png", "ncrimage")
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-                generalQuery("update_ncr_image", {
-                  NCR_ID: params.data.NCR_ID,
-                  imagevalue: "Y",
-                })
-                  .then((response) => {
-                    if (response.data.tk_status !== "NG") {
-                      Swal.fire(
-                        "Thông báo",
-                        "Upload ảnh thành công",
-                        "success",
-                      );
-                      let tempcodeinfodatatable = ncr_data_table.map(
-                        (element: NCR_DATA, index: number) => {
-                          return element.NCR_ID === params.data.NCR_ID
-                            ? { ...element, DEFECT_IMAGE: "Y" }
-                            : element;
-                        },
-                      );
-                      setNCRDataTable(tempcodeinfodatatable);
-                    } else {
-                      Swal.fire(
-                        "Thông báo",
-                        "Upload ảnh thất bại",
-                        "error",
-                      );
-                    }
+    {
+      field: "DEFECT_IMAGE",
+      headerName: "DEFECT_IMAGE",
+      width: 80,
+      cellRenderer: (params: any) => {
+        const handleDefectImageUpload = async (e: any) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          checkBP(userData, ["QC"], ["Leader", "Dept Staff", "Sub Leader"], ["ALL"], async () => {
+            uploadQuery(file, "NCR_" + params.data.NCR_ID + ".png", "ncrimage")
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_ncr_image", {
+                    NCR_ID: params.data.NCR_ID,
+                    imagevalue: "Y",
                   })
-                  .catch((error) => {
-                    console.log(error);
-                  });
-              } else {
-                Swal.fire(
-                  "Thông báo",
-                  "Upload ảnh thất bại:" + response.data.message,
-                  "error",
-                );
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        });
-      };
-      let hreftlink = "/ncrimage/" + "NCR_" + params.data.NCR_ID + ".png";
-      if (params.data.DEFECT_IMAGE !== "N" && params.data.DEFECT_IMAGE !== null) {
-        return (
-          <span style={{ color: "gray" }}>
-            <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
-              LINK
-            </a>
-          </span>
-        );
-      } else {
-        return (
-          <div className="uploadfile">
-            <IconButton
-              className="buttonIcon"
-              onClick={(e: any) => {
-                uploadFile2(e);
-              }}
-            >
-              <AiOutlineCloudUpload color="yellow" size={15} />
-              Upload
-            </IconButton>
-            <input
-              accept=".png"
-              type="file"
-              onChange={(e: any) => {
-                file = e.target.files[0];
-                console.log(file);
-              }}
-            />
-          </div>
-        );
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload ảnh thành công",
+                          "success",
+                        );
+                        let tempcodeinfodatatable = ncr_data_table.map(
+                          (element: NCR_DATA, index: number) => {
+                            return element.NCR_ID === params.data.NCR_ID
+                              ? { ...element, DEFECT_IMAGE: "Y" }
+                              : element;
+                          },
+                        );
+                        setNCRDataTable(tempcodeinfodatatable);
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload ảnh thất bại",
+                          "error",
+                        );
+                      }
+                    })
+                    .catch((error) => console.log(error));
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload ảnh thất bại:" + response.data.message,
+                    "error",
+                  );
+                }
+              })
+              .catch((error) => console.log(error));
+          });
+        };
+
+        let hreftlink = "/ncrimage/" + "NCR_" + params.data.NCR_ID + ".png";
+        if (params.data.DEFECT_IMAGE !== "N" && params.data.DEFECT_IMAGE !== null) {
+          return (
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hreftlink}>
+                LINK
+              </a>
+            </span>
+          );
+        } else {
+          return (
+            <div className="uploadfile">
+              <Button
+                variant="contained"
+                size="small"
+                component="label"
+                startIcon={<AiOutlineCloudUpload />}
+                sx={{ fontSize: '0.65rem', padding: '2px 4px' }}
+              >
+                Upload
+                <input
+                  type="file"
+                  accept=".png"
+                  hidden
+                  onChange={handleDefectImageUpload}
+                />
+              </Button>
+            </div>
+          );
+        }
       }
-    },},  
+    },
+    {
+      field: "COUNTERMEASURE",
+      headerName: "COUNTERMEASURE",
+      width: 120,
+      cellRenderer: (params: any) => {
+        const handleCountermeasureUpload = async (e: any) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const ext = file.name.split('.').pop().toLowerCase();
+          const allowedExtensions = ["pdf", "pptx", "docx", "xlsx"];
+          if (!allowedExtensions.includes(ext)) {
+            Swal.fire("Thông báo", "Chỉ cho phép upload file dạng pdf, pptx, docx, xlsx", "error");
+            return;
+          }
+          checkBP(userData, ["QC"], ["Leader", "Dept Staff", "Sub Leader"], ["ALL"], async () => {
+            uploadQuery(file, "NCR_" + params.data.NCR_ID + "." + ext, "ncrimage")
+              .then((response) => {
+                if (response.data.tk_status !== "NG") {
+                  generalQuery("update_ncr_countermeasure", {
+                    NCR_ID: params.data.NCR_ID,
+                    countermeasure: "Y",
+                    countermeasure_ext: ext,
+                  })
+                    .then((response) => {
+                      if (response.data.tk_status !== "NG") {
+                        Swal.fire(
+                          "Thông báo",
+                          "Upload đối sách thành công",
+                          "success",
+                        );
+                        let tempcodeinfodatatable = ncr_data_table.map(
+                          (element: NCR_DATA, index: number) => {
+                            return element.NCR_ID === params.data.NCR_ID
+                              ? { ...element, COUNTERMEASURE: "Y", COUNTERMEASURE_EXT: ext }
+                              : element;
+                          },
+                        );
+                        setNCRDataTable(tempcodeinfodatatable);
+                      } else {
+                        Swal.fire(
+                          "Thông báo",
+                          "Cập nhật đối sách thất bại",
+                          "error",
+                        );
+                      }
+                    })
+                    .catch((error) => console.log(error));
+                } else {
+                  Swal.fire(
+                    "Thông báo",
+                    "Upload file thất bại: " + response.data.message,
+                    "error",
+                  );
+                }
+              })
+              .catch((error) => console.log(error));
+          });
+        };
+
+        if (params.data.COUNTERMEASURE === "Y") {
+          const ext = params.data.COUNTERMEASURE_EXT || "pdf";
+          const filename = "NCR_" + params.data.NCR_ID + "." + ext;
+          const hrefLink = "/ncrimage/" + filename;
+          return (
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hrefLink}>
+                LINK ({ext.toUpperCase()})
+              </a>
+            </span>
+          );
+        } else {
+          return (
+            <div className="uploadfile">
+              <Button
+                variant="contained"
+                size="small"
+                component="label"
+                startIcon={<AiOutlineCloudUpload />}
+                sx={{ fontSize: '0.65rem', padding: '2px 4px' }}
+              >
+                Upload
+                <input
+                  type="file"
+                  accept=".pdf,.pptx,.docx,.xlsx"
+                  hidden
+                  onChange={handleCountermeasureUpload}
+                />
+              </Button>
+            </div>
+          );
+        }
+      }
+    },  
     { field: "PROCESS_STATUS", headerName: "PROCESS_STATUS", width: 80,
       cellRenderer: (params: any) => {
         if (params.data.PROCESS_STATUS === 'Y') {
@@ -223,6 +316,24 @@ const NCR_MANAGER = () => {
             >
               <AiOutlineExport color="red" size={15} />
               Export NCR
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                handleSetProcessStatus("Y");
+              }}
+            >
+              <AiOutlineCheckCircle color="green" size={15} />
+              SET COMPLETED
+            </IconButton>
+            <IconButton
+              className="buttonIcon"
+              onClick={() => {
+                handleSetProcessStatus("P");
+              }}
+            >
+              <AiOutlineClockCircle color="orange" size={15} />
+              SET PENDING
             </IconButton>   
           </div>}
         columns={column_ncrdatatable}
@@ -299,6 +410,49 @@ const NCR_MANAGER = () => {
       .catch((error) => {
         console.log(error);
       });
+  };
+  const handleSetProcessStatus = async (status: 'Y' | 'P') => {
+    const selected = selectedRowsData.current;
+    if (selected.length === 0) {
+      Swal.fire("Thông báo", "Vui lòng chọn ít nhất 1 NCR để cập nhật", "warning");
+      return;
+    }
+    
+    checkBP(userData, ["QC"], ["Leader", "Dept Staff", "Sub Leader"], ["ALL"], async () => {
+      let successCount = 0;
+      let errCount = 0;
+      
+      for (const row of selected) {
+        try {
+          const response = await generalQuery("update_ncr_process_status", {
+            NCR_ID: row.NCR_ID,
+            process_status: status
+          });
+          if (response.data.tk_status !== "NG") {
+            successCount++;
+          } else {
+            errCount++;
+          }
+        } catch (error) {
+          console.error(error);
+          errCount++;
+        }
+      }
+      
+      if (successCount > 0) {
+        Swal.fire("Thông báo", `Đã cập nhật ${successCount} NCR thành công`, "success");
+        const updatedIds = selected.map(r => r.NCR_ID);
+        setNCRDataTable(prev => prev.map(element => {
+          if (updatedIds.includes(element.NCR_ID)) {
+            return { ...element, PROCESS_STATUS: status };
+          }
+          return element;
+        }));
+      }
+      if (errCount > 0) {
+        Swal.fire("Lỗi", `Cập nhật ${errCount} NCR thất bại`, "error");
+      }
+    });
   };
   const handletraHoldingData = (ncrDataRow: NCR_DATA) => {
     generalQuery("loadHoldingMaterialByNCR_ID", {
@@ -429,6 +583,8 @@ const NCR_MANAGER = () => {
       UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
       UPD_EMPL: iqc_empl,
       REMARK: remark, 
+      COUNTERMEASURE: "N",
+      COUNTERMEASURE_EXT: "",
     };
     setNCRDataTable((prev) => {
       return [...prev, temp_row];

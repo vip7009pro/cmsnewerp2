@@ -5,6 +5,7 @@ import AUDIT from "./AUDIT/AUDIT";
 import ALLDOC from "./DOCUMENT/ALLDOC";
 import MyTabs from "../../../components/MyTab/MyTab";
 import { getCompany } from "../../../api/Api";
+import CALIBRATION from "./CALIBRATION/CALIBRATION";
 import AUDIT_HISTORY from "./AUDIT/AUDIT_HISTORY";
 const ISO = () => {
   useEffect(() => {}, []);
@@ -24,6 +25,11 @@ const ISO = () => {
         <MyTabs.Tab title="AUDIT HISTORY">
           <div className="audit">
            <AUDIT_HISTORY/>
+          </div>
+        </MyTabs.Tab>
+        <MyTabs.Tab title="QUẢN LÝ HIỆU CHUẨN">
+          <div className="calibration-tab">
+           <CALIBRATION/>
           </div>
         </MyTabs.Tab>
         {(getCompany() ==='CMS') && <MyTabs.Tab title="DOCUMENT">

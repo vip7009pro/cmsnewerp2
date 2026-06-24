@@ -1,0 +1,61 @@
+.calibration {
+  width: 100%;
+  height: calc(100vh - 85px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+
+  .top_section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+  }
+
+  .bottom_section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    border-top: 2px solid #ddd;
+    padding-top: 10px;
+  }
+
+  .agtable {
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+  }
+
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+    align-items: center;
+  }
+
+  .buttonIcon {
+    font-size: 0.8rem;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    &:hover {
+      background-color: #e0e0e0;
+    }
+  }
+
+  .image-preview {
+    img {
+      max-width: 100px;
+      max-height: 50px;
+      object-fit: contain;
+      cursor: pointer;
+    }
+  }
+}

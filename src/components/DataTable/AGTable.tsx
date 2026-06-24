@@ -45,7 +45,7 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
   const [selectedrow, setSelectedrow] = useState(0);
   const rowStyle = { backgroundColor: 'transparent', height: '20px' };
   const getRowStyle = (params: any) => {
-    return { backgroundColor: '#eaf5e1', fontSize: '0.6rem' };
+    return { backgroundColor: 'transparent', fontSize: '0.6rem' };
   };
 
   const onRowdoubleClick = (params: any) => {

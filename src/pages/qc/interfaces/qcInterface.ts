@@ -1289,6 +1289,8 @@ export interface OQC_NG_BY_PRODTYPE {
     UPD_DATE: string;
     UPD_EMPL: string;
     REMARK: string;
+    COUNTERMEASURE?: string;
+    COUNTERMEASURE_EXT?: string;
   }
   export interface HOLDDING_BY_NCR_ID {
     NCR_ID: number;

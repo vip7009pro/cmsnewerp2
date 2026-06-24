@@ -1,5 +1,25 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-06-24 (NCR Manager & Calibration Enhancements)
+
+### Completed
+- Resolved upload error (400 Bad Request) when adding equipment/calibration history in `CALIBRATION.tsx`. Updated backend `routes/fileUpload.js` to dynamically create `TEMP_UPLOAD_FOLDER` if it does not exist.
+- Improved table layout in `CALIBRATION.tsx`:
+  - Set `rowHeight={60}` for both equipment and calibration history tables.
+  - Wrapped image renderers (`IMAGE_URL`, `STAMP_IMAGE_URL`) in anchor tags (`target="_blank"`) to allow opening full-resolution images in a new tab.
+  - Styled images inside cells to fit properly (`height: 50px`, `object-fit: contain`) and vertically centered all cell contents (including action buttons).
+  - Added status color-coding to rows in the main Equipment List table based on calibration due date (Overdue = Red, Near Due = Yellow, In-Time = Green, Broken = Gray) just like in the Calibration History table.
+  - Added a status color legend and a "Load data" refresh button (with `AiOutlineReload` icon) to the Equipment List toolbar.
+  - **Fixed Row Style Override Bug**: Fixed a CSS conflict where `background-color: rgba(241, 239, 198, 0) !important` in `AGTable.scss` was blocking row coloring. Removed `!important` from `.ag-row` in `AGTable.scss` and updated the default `getRowStyle` in `AGTable.tsx` to return `transparent` (instead of `#eaf5e1`) to prevent other tables from turning green.
+  - **Fixed Calibration Status Logic**: Corrected the `daysDiff` threshold comparison math where Overdue (Red) is `daysDiff < -30` (exceeded next calibration date by more than 30 days), Near Due (Yellow) is `-30 <= daysDiff <= 0` (exceeded next calibration date by 0 to 30 days), and OK (Green) is `daysDiff > 0` (future calibration date).
+- **Added NCR Countermeasure & Process Status features in `NCR_MANAGER.tsx`**:
+  - Added `COUNTERMEASURE` and `COUNTERMEASURE_EXT` columns to `ZTB_IQC_NCRTB` database table to support countermeasure status ('Y'/'N') and file extensions.
+  - Added a `COUNTERMEASURE` column to the NCR table which displays a download link if countermeasure exists, or a file upload button if not.
+  - Allowed NCR countermeasure uploads for any of `.pdf`, `.pptx`, `.docx`, or `.xlsx` files named dynamically after `NCR_ID` (stored extension is read on download).
+  - Refactored `DEFECT_IMAGE` and `COUNTERMEASURE` upload inputs to combine file selection and upload into a single-button flow using `<Button component="label">`.
+  - Added "SET COMPLETED" (updates status to 'Y') and "SET PENDING" (updates status to 'P') buttons to the NCR toolbar.
+  - Added corresponding update API commands (`update_ncr_process_status`, `update_ncr_countermeasure`) in backend `qcService.js`.
+
 ## Update - 2026-06-10 (OQC VOC History)
 
 ### Completed
@@ -175,3 +195,11 @@ Build a complete ERP Chat system that enables:
 ## Update - 2026-05-23 (Restore system default font)
 
 - Set app font to system UI stack by updating `src/App.scss` (removed Google Inter import and switched `--app-font-family` to system-ui fallback list).
+
+## Update - 2026-06-17 (Fix Local API Connection)
+
+### Completed
+- Investigated ERR_CONNECTION_TIMED_OUT during Login when using SUBNET_SERVER (http://cmsvina4285.com:3007).
+- Identified that cmsvina4285.com resolves to a remote IP (14.160.33.94) while the local backend is running on localhost. Local requests to the domain were timing out due to network mismatch.
+- Uncommented TEST_SERVER (http://localhost:3007) in globalSlice.ts's apiUrlArray so that the user can test the local backend directly without routing through the external DDNS domain.
+
