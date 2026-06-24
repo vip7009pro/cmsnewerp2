@@ -1,8 +1,18 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
-## Update - 2026-06-24 (NCR Manager & Calibration Enhancements)
+## Update - 2026-06-24 (NCR Layout & IQC NCR_ID Enhancements)
 
 ### Completed
+- **NCR Layout Refactoring**:
+  - Replaced clickedrow ref with `selectedNCR` state to trigger re-renders dynamically.
+  - Split right-hand panel of `NCR_MANAGER.tsx` to display defect image at the top (if available) and the `Holding - Failing Detail` table at the bottom. Clicking the defect image preview opens the image in a new tab.
+- **IQC Incoming NCR_ID & NCR Details Integration**:
+  - Altered `IQC1_TABLE` table on the database to add `NCR_ID` column.
+  - Updated backend query in `qcService.js` (`loadIQC1table`) to LEFT JOIN `ZTB_IQC_NCRTB` and select the `DEFECT_IMAGE` and `COUNTERMEASURE` status fields.
+  - Added backend handler `update_iqc_ncr_id` to update the `NCR_ID` of an incoming lot.
+  - Updated frontend `INCOMMING.tsx` to display `NCR_ID`, `NCR_DEFECT_IMAGE`, and `NCR_COUNTERMEASURE` columns in both the admin and worker tables.
+  - Added an input text box and "Update NCR_ID" button in the toolbar of incoming table with proper validation (exactly 1 row required, prompt confirmation by Swal).
+  - Added a "Show All" checkbox to the search query panel in `INCOMMING.tsx`. When unchecked, the backend filters the list to only return records that are OK/PD, or NG records that have countermeasures uploaded (`COUNTERMEASURE` = 'Y').
 - Resolved upload error (400 Bad Request) when adding equipment/calibration history in `CALIBRATION.tsx`. Updated backend `routes/fileUpload.js` to dynamically create `TEMP_UPLOAD_FOLDER` if it does not exist.
 - Improved table layout in `CALIBRATION.tsx`:
   - Set `rowHeight={60}` for both equipment and calibration history tables.

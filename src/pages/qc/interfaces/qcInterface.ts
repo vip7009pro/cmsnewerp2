@@ -312,6 +312,10 @@ export interface InSpectionSummaryData {
 export interface IQC_INCOMMING_DATA {
   id?: number;
   IQC1_ID: number;
+  NCR_ID?: string | null;
+  NCR_DEFECT_IMAGE?: string | null;
+  NCR_COUNTERMEASURE?: string | null;
+  NCR_COUNTERMEASURE_EXT?: string | null;
   M_CODE: string;
   M_NAME: string;
   WIDTH_CD: number;

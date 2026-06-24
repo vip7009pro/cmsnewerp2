@@ -24,6 +24,7 @@ const NCR_MANAGER = () => {
   const [holdingdatatable, setHoldingDataTable] = useState<Array<HOLDDING_BY_NCR_ID>>([]);
   const selectedRowsData= useRef<Array<NCR_DATA>>([]);
   const clickedrow = useRef<NCR_DATA | null>(null);
+  const [selectedNCR, setSelectedNCR] = useState<NCR_DATA | null>(null);
   const [empl_name, setEmplName] = useState("");
   const [m_name, setM_Name] = useState("");
   const [width_cd, setWidthCD] = useState(0);
@@ -92,6 +93,7 @@ const NCR_MANAGER = () => {
                           },
                         );
                         setNCRDataTable(tempcodeinfodatatable);
+                        setSelectedNCR(prev => prev && prev.NCR_ID === params.data.NCR_ID ? { ...prev, DEFECT_IMAGE: "Y" } : prev);
                       } else {
                         Swal.fire(
                           "Thông báo",
@@ -183,6 +185,7 @@ const NCR_MANAGER = () => {
                           },
                         );
                         setNCRDataTable(tempcodeinfodatatable);
+                        setSelectedNCR(prev => prev && prev.NCR_ID === params.data.NCR_ID ? { ...prev, COUNTERMEASURE: "Y", COUNTERMEASURE_EXT: ext } : prev);
                       } else {
                         Swal.fire(
                           "Thông báo",
@@ -343,6 +346,7 @@ const NCR_MANAGER = () => {
         }} onRowClick={(e: any) => {
           //console.log(e.data)
           clickedrow.current = e.data;
+          setSelectedNCR(e.data);
           handletraHoldingData(e.data);          
         }} onSelectionChange={(e: any) => {
           //console.log(e!.api.getSelectedRows())
@@ -399,6 +403,7 @@ const NCR_MANAGER = () => {
           );
           setNCRDataTable(loadeddata);
           setNewRegister(false);
+          setSelectedNCR(null);
           Swal.fire(
             "Thông báo",
             "Đã load :" + loadeddata.length + " dòng",
@@ -448,6 +453,7 @@ const NCR_MANAGER = () => {
           }
           return element;
         }));
+        setSelectedNCR(prev => prev && updatedIds.includes(prev.NCR_ID) ? { ...prev, PROCESS_STATUS: status } : prev);
       }
       if (errCount > 0) {
         Swal.fire("Lỗi", `Cập nhật ${errCount} NCR thất bại`, "error");
@@ -885,9 +891,45 @@ const NCR_MANAGER = () => {
           </div>}
           <div className="tracuuYCSXTable"><span style={{textAlign: 'center', fontSize: '1rem', fontWeight: 'bold', color: 'blue'}}>NCR Detail</span>
           {ncrDataTable}</div>
-          <div className="tracuuDataInspectionform2">
+          <div className="tracuuDataInspectionform2" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            {selectedNCR && selectedNCR.DEFECT_IMAGE !== "N" && selectedNCR.DEFECT_IMAGE !== null && selectedNCR.DEFECT_IMAGE !== undefined && (
+              <div 
+                className="defect-image-container" 
+                style={{ 
+                  width: '100%', 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  alignItems: 'center', 
+                  padding: '5px', 
+                  gap: '5px', 
+                  borderBottom: '1px solid #ccc',
+                  backgroundColor: '#f9f9f9',
+                  borderRadius: '4px',
+                  marginBottom: '10px'
+                }}
+              >
+                <b style={{ color: 'blue', fontSize: '0.85rem' }}>Ảnh lỗi (DEFECT IMAGE)</b>
+                <a target="_blank" rel="noopener noreferrer" href={"/ncrimage/" + "NCR_" + selectedNCR.NCR_ID + ".png"}>
+                  <img 
+                    src={"/ncrimage/" + "NCR_" + selectedNCR.NCR_ID + ".png"} 
+                    alt="Defect" 
+                    style={{ 
+                      maxHeight: '160px', 
+                      maxWidth: '100%', 
+                      objectFit: 'contain', 
+                      cursor: 'pointer', 
+                      borderRadius: '4px', 
+                      border: '1px solid #ddd',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                    }} 
+                  />
+                </a>
+              </div>
+            )}
             <b style={{ color: "blue" }}>Holding - Failing Detail</b>
-            {holding_data_table}
+            <div style={{ flex: 1, width: '100%', overflow: 'hidden' }}>
+              {holding_data_table}
+            </div>
           </div>
         </div>
       </div>

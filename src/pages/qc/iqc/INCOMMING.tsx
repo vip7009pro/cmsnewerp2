@@ -85,7 +85,7 @@ const INCOMMING = () => {
       cellRenderer: (params: any) => {
         if (
           params.data.RESULT >=
-            params.data.CENTER_VALUE - params.data.LOWER_TOR &&
+          params.data.CENTER_VALUE - params.data.LOWER_TOR &&
           params.data.RESULT <= params.data.CENTER_VALUE + params.data.UPPER_TOR
         )
           return (
@@ -184,8 +184,8 @@ const INCOMMING = () => {
                   getAuditMode() == 0
                     ? element?.G_NAME
                     : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME
-                    : "TEM_NOI_BO",
+                      ? element?.G_NAME
+                      : "TEM_NOI_BO",
                 TEST_FINISH_TIME: moment
                   .utc(element.TEST_FINISH_TIME)
                   .format("YYYY-MM-DD HH:mm:ss"),
@@ -287,6 +287,8 @@ const INCOMMING = () => {
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [vendor, setVendor] = useState("");
+  const [ncrIdInput, setNcrIdInput] = useState("");
+  const [showAllIncoming, setShowAllIncoming] = useState(false);
 
   const insertHoldingData = async (
     REASON: string,
@@ -465,6 +467,52 @@ const INCOMMING = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
     }
   };
+  const handleUpdateNcrId = () => {
+    const selected = selectedRowsData.current;
+    if (selected.length === 0) {
+      Swal.fire("Thông báo", "Vui lòng chọn 1 dòng để cập nhật NCR_ID", "warning");
+      return;
+    }
+    if (selected.length > 1) {
+      Swal.fire("Thông báo", "Bạn đã chọn nhiều hơn 1 dòng", "warning");
+      return;
+    }
+
+    const targetRow = selected[0];
+    const ncrVal = ncrIdInput.trim();
+
+    Swal.fire({
+      title: "Xác nhận cập nhật?",
+      text: `Bạn có chắc chắn muốn cập nhật NCR_ID "${ncrVal}" cho IQC1_ID: ${targetRow.IQC1_ID}?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Đồng ý",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        generalQuery("update_iqc_ncr_id", {
+          IQC1_ID: targetRow.IQC1_ID,
+          NCR_ID: ncrVal === "" ? null : ncrVal,
+        })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              Swal.fire("Thành công", "Đã cập nhật NCR_ID thành công", "success");
+              setNcrIdInput("");
+              handletraIQC1Data();
+            } else {
+              Swal.fire("Lỗi", "Cập nhật thất bại: " + response.data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+            Swal.fire("Lỗi", "Đã xảy ra lỗi hệ thống", "error");
+          });
+      }
+    });
+  };
+
   const renderOKNGCell = (data: any, key: string) => {
     if (data[key] === 1) {
       return <span style={{ color: "green", fontWeight: "bold" }}>OK</span>;
@@ -573,6 +621,49 @@ const INCOMMING = () => {
       checkboxSelection: true,
       resizable: true,
       width: 80,
+    },
+    {
+      field: "NCR_ID",
+      headerName: "NCR_ID",
+      resizable: true,
+      width: 80,
+    },
+    {
+      field: "NCR_DEFECT_IMAGE",
+      headerName: "NCR_DEFECT_IMAGE",
+      width: 140,
+      cellRenderer: (params: any) => {
+        if (params.data.NCR_DEFECT_IMAGE === "Y" && params.data.NCR_ID) {
+          const hrefLink = "/ncrimage/NCR_" + params.data.NCR_ID + ".png";
+          return (
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hrefLink}>
+                LINK
+              </a>
+            </span>
+          );
+        }
+        return null;
+      }
+    },
+    {
+      field: "NCR_COUNTERMEASURE",
+      headerName: "NCR_COUNTERMEASURE",
+      width: 170,
+      cellRenderer: (params: any) => {
+        if (params.data.NCR_COUNTERMEASURE === "Y" && params.data.NCR_ID) {
+          const ext = params.data.NCR_COUNTERMEASURE_EXT || "pdf";
+          const hrefLink = "/ncrimage/NCR_" + params.data.NCR_ID + "." + ext;
+          return (
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hrefLink}>
+                LINK ({ext.toUpperCase()})
+              </a>
+            </span>
+          );
+        }
+        return null;
+      }
     },
     { field: "INS_DATE", headerName: "REG_DATE", resizable: true, width: 60 },
     { field: "M_CODE", headerName: "M_CODE", resizable: true, width: 60 },
@@ -835,7 +926,7 @@ const INCOMMING = () => {
       width: 100,
       cellRenderer: (params: any) => {
         let inputRef: HTMLInputElement | null = null;
-      
+
         // Hàm upload file
         const uploadFile2 = async (file: File) => {
           checkBP(userData, ["QC"], ["ALL"], ["ALL"], async () => {
@@ -878,7 +969,7 @@ const INCOMMING = () => {
               });
           });
         };
-      
+
         let hreftlink = "/iqcincoming/" + params.data.IQC1_ID + ".pdf";
         if (params.data.CHECKSHEET === "Y") {
           return (
@@ -977,9 +1068,9 @@ const INCOMMING = () => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
                       ? {
-                          ...p,
-                          IQC_TEST_RESULT: e.target.checked ? "OK" : "NG",
-                        }
+                        ...p,
+                        IQC_TEST_RESULT: e.target.checked ? "OK" : "NG",
+                      }
                       : p
                   );
                   return newData;
@@ -1021,9 +1112,9 @@ const INCOMMING = () => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
                       ? {
-                          ...p,
-                          DTC_RESULT: e.target.checked ? "OK" : "NG",
-                        }
+                        ...p,
+                        DTC_RESULT: e.target.checked ? "OK" : "NG",
+                      }
                       : p
                   );
                   return newData;
@@ -1066,9 +1157,9 @@ const INCOMMING = () => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
                       ? {
-                          ...p,
-                          AUTO_JUDGEMENT: e.target.checked ? "OK" : "NG",
-                        }
+                        ...p,
+                        AUTO_JUDGEMENT: e.target.checked ? "OK" : "NG",
+                      }
                       : p
                   );
                   return newData;
@@ -1110,9 +1201,9 @@ const INCOMMING = () => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
                       ? {
-                          ...p,
-                          DTC_AUTO: e.target.checked ? "OK" : "NG",
-                        }
+                        ...p,
+                        DTC_AUTO: e.target.checked ? "OK" : "NG",
+                      }
                       : p
                   );
                   return newData;
@@ -1147,6 +1238,49 @@ const INCOMMING = () => {
       checkboxSelection: true,
       resizable: true,
       width: 50,
+    },
+    {
+      field: "NCR_ID",
+      headerName: "NCR_ID",
+      resizable: true,
+      width: 80,
+    },
+    {
+      field: "NCR_DEFECT_IMAGE",
+      headerName: "NCR_DEFECT_IMAGE",
+      width: 140,
+      cellRenderer: (params: any) => {
+        if (params.data.NCR_DEFECT_IMAGE === "Y" && params.data.NCR_ID) {
+          const hrefLink = "/ncrimage/NCR_" + params.data.NCR_ID + ".png";
+          return (
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hrefLink}>
+                LINK
+              </a>
+            </span>
+          );
+        }
+        return null;
+      }
+    },
+    {
+      field: "NCR_COUNTERMEASURE",
+      headerName: "NCR_COUNTERMEASURE",
+      width: 170,
+      cellRenderer: (params: any) => {
+        if (params.data.NCR_COUNTERMEASURE === "Y" && params.data.NCR_ID) {
+          const ext = params.data.NCR_COUNTERMEASURE_EXT || "pdf";
+          const hrefLink = "/ncrimage/NCR_" + params.data.NCR_ID + "." + ext;
+          return (
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hrefLink}>
+                LINK ({ext.toUpperCase()})
+              </a>
+            </span>
+          );
+        }
+        return null;
+      }
     },
     { field: "M_NAME", headerName: "M_NAME", resizable: true, width: 80 },
     { field: "WIDTH_CD", headerName: "SIZE", resizable: true, width: 30 },
@@ -1311,9 +1445,9 @@ const INCOMMING = () => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
                       ? {
-                          ...p,
-                          IQC_TEST_RESULT: e.target.checked ? "OK" : "NG",
-                        }
+                        ...p,
+                        IQC_TEST_RESULT: e.target.checked ? "OK" : "NG",
+                      }
                       : p
                   );
                   return newData;
@@ -1355,9 +1489,9 @@ const INCOMMING = () => {
                   const newData = prev.map((p) =>
                     p.IQC1_ID === params.data.IQC1_ID
                       ? {
-                          ...p,
-                          DTC_RESULT: e.target.checked ? "OK" : "NG",
-                        }
+                        ...p,
+                        DTC_RESULT: e.target.checked ? "OK" : "NG",
+                      }
                       : p
                   );
                   return newData;
@@ -1475,8 +1609,8 @@ const INCOMMING = () => {
   let keyArray =
     iqc1datatable.length > 0
       ? Object?.keys(iqc1datatable[0])?.filter((key: string) =>
-          key.startsWith("KQ")
-        )
+        key.startsWith("KQ")
+      )
       : [];
   let test_item_fields: any[] = keyArray?.map((key: string) => {
     return {
@@ -1581,6 +1715,28 @@ const INCOMMING = () => {
               <MdDocumentScanner color="#07b46cce" size={15} />
               Show BNK
             </IconButton>
+            <input
+              type="text"
+              placeholder="Nhập NCR_ID..."
+              value={ncrIdInput}
+              onChange={(e) => setNcrIdInput(e.target.value)}
+              style={{
+                width: '100px',
+                height: '25px',
+                fontSize: '0.75rem',
+                padding: '2px 5px',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                marginLeft: '10px'
+              }}
+            />
+            <IconButton
+              className="buttonIcon"
+              onClick={handleUpdateNcrId}
+            >
+              <MdUpdate color="blue" size={15} />
+              Update NCR_ID
+            </IconButton>
           </div>
         }
         columns={
@@ -1603,7 +1759,7 @@ const INCOMMING = () => {
         }}
       />
     );
-  }, [iqc1datatable, clickedRow]);
+  }, [iqc1datatable, clickedRow, ncrIdInput, showAllIncoming]);
   const dtc_data_table = useMemo(() => {
     return (
       <AGTable
@@ -1631,6 +1787,7 @@ const INCOMMING = () => {
       FROM_DATE: fromdate,
       TO_DATE: todate,
       VENDOR_NAME: vendor.trim(),
+      SHOW_ALL: showAllIncoming,
     })
       .then((response) => {
         //console.log(response.data.data);
@@ -1645,11 +1802,11 @@ const INCOMMING = () => {
               )
                 ? "NG"
                 : keyArray.some(
-                    (key: string) =>
-                      element[key as keyof IQC_INCOMMING_DATA] === 2
-                  )
-                ? "PD"
-                : "OK";
+                  (key: string) =>
+                    element[key as keyof IQC_INCOMMING_DATA] === 2
+                )
+                  ? "PD"
+                  : "OK";
               return {
                 ...element,
                 NQ_AQL: getTestQty(element.TOTAL_ROLL) ?? 0,
@@ -1658,30 +1815,30 @@ const INCOMMING = () => {
                     ? auto_judgement
                     : element.IQC_TEST_RESULT === "PD" &&
                       auto_judgement === "NG"
-                    ? "NG"
-                    : element.IQC_TEST_RESULT === "PD" &&
-                      auto_judgement === "PD"
-                    ? "PD"
-                    : element.IQC_TEST_RESULT === "PD" &&
-                      auto_judgement === "OK"
-                    ? "PD"
-                    : element.IQC_TEST_RESULT === "NG" &&
-                      auto_judgement === "NG"
-                    ? "NG"
-                    : "OK",
+                      ? "NG"
+                      : element.IQC_TEST_RESULT === "PD" &&
+                        auto_judgement === "PD"
+                        ? "PD"
+                        : element.IQC_TEST_RESULT === "PD" &&
+                          auto_judgement === "OK"
+                          ? "PD"
+                          : element.IQC_TEST_RESULT === "NG" &&
+                            auto_judgement === "NG"
+                            ? "NG"
+                            : "OK",
                 DTC_AUTO: auto_judgement,
                 INS_DATE:
                   element.INS_DATE === null
                     ? ""
                     : moment(element.INS_DATE)
-                        .utc()
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc()
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 UPD_DATE:
                   element.UPD_DATE === null
                     ? ""
                     : moment(element.UPD_DATE)
-                        .utc()
-                        .format("YYYY-MM-DD HH:mm:ss"),
+                      .utc()
+                      .format("YYYY-MM-DD HH:mm:ss"),
                 EXP_DATE:
                   element.EXP_DATE === null
                     ? ""
@@ -1711,8 +1868,8 @@ const INCOMMING = () => {
           //console.log(response.data.data);
           setEmplName(
             response.data.data[0].MIDLAST_NAME +
-              " " +
-              response.data.data[0].FIRST_NAME
+            " " +
+            response.data.data[0].FIRST_NAME
           );
           setReqDeptCode(response.data.data[0].WORK_POSITION_CODE);
         } else {
@@ -1731,8 +1888,8 @@ const INCOMMING = () => {
           //console.log(response.data.data);
           setM_Name(
             response.data.data[0].M_NAME +
-              " | " +
-              response.data.data[0].WIDTH_CD
+            " | " +
+            response.data.data[0].WIDTH_CD
           );
           setM_Code(response.data.data[0].M_CODE);
           setWidthCD(response.data.data[0].WIDTH_CD);
@@ -1854,7 +2011,7 @@ const INCOMMING = () => {
       M_THICKNESS_UPPER: 0,
       M_THICKNESS_LOWER: 0,
       M_WIDTH: 0,
-      
+
     };
     setIQC1DataTable((prev) => {
       return [...prev, temp_row];
@@ -2135,6 +2292,15 @@ const INCOMMING = () => {
                       value={vendorLot}
                       onChange={(e: any) => setVendorLot(e.target.value)}
                     ></input>
+                  </label>
+                  <label style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "5px", cursor: "pointer" }}>
+                    <input
+                      type="checkbox"
+                      checked={showAllIncoming}
+                      onChange={(e: any) => setShowAllIncoming(e.target.checked)}
+                      style={{ width: "auto", height: "auto" }}
+                    />
+                    {/*  <b style={{ fontSize: "0.75rem", color: "darkblue" }}>Show All (Không lọc)</b> */}
                   </label>
                 </div>
               </div>
