@@ -622,49 +622,7 @@ const INCOMMING = () => {
       resizable: true,
       width: 80,
     },
-    {
-      field: "NCR_ID",
-      headerName: "NCR_ID",
-      resizable: true,
-      width: 80,
-    },
-    {
-      field: "NCR_DEFECT_IMAGE",
-      headerName: "NCR_DEFECT_IMAGE",
-      width: 140,
-      cellRenderer: (params: any) => {
-        if (params.data.NCR_DEFECT_IMAGE === "Y" && params.data.NCR_ID) {
-          const hrefLink = "/ncrimage/NCR_" + params.data.NCR_ID + ".png";
-          return (
-            <span style={{ color: "gray" }}>
-              <a target="_blank" rel="noopener noreferrer" href={hrefLink}>
-                LINK
-              </a>
-            </span>
-          );
-        }
-        return null;
-      }
-    },
-    {
-      field: "NCR_COUNTERMEASURE",
-      headerName: "NCR_COUNTERMEASURE",
-      width: 170,
-      cellRenderer: (params: any) => {
-        if (params.data.NCR_COUNTERMEASURE === "Y" && params.data.NCR_ID) {
-          const ext = params.data.NCR_COUNTERMEASURE_EXT || "pdf";
-          const hrefLink = "/ncrimage/NCR_" + params.data.NCR_ID + "." + ext;
-          return (
-            <span style={{ color: "gray" }}>
-              <a target="_blank" rel="noopener noreferrer" href={hrefLink}>
-                LINK ({ext.toUpperCase()})
-              </a>
-            </span>
-          );
-        }
-        return null;
-      }
-    },
+
     { field: "INS_DATE", headerName: "REG_DATE", resizable: true, width: 60 },
     { field: "M_CODE", headerName: "M_CODE", resizable: true, width: 60 },
     {
@@ -1228,6 +1186,49 @@ const INCOMMING = () => {
           return { backgroundColor: "red", color: "white" };
         }
       },
+    },
+    {
+      field: "NCR_ID",
+      headerName: "NCR_ID",
+      resizable: true,
+      width: 80,
+    },
+    {
+      field: "NCR_DEFECT_IMAGE",
+      headerName: "NCR_DEFECT_IMAGE",
+      width: 140,
+      cellRenderer: (params: any) => {
+        if (params.data.NCR_DEFECT_IMAGE === "Y" && params.data.NCR_ID) {
+          const hrefLink = "/ncrimage/NCR_" + params.data.NCR_ID + ".png";
+          return (
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hrefLink}>
+                LINK
+              </a>
+            </span>
+          );
+        }
+        return null;
+      }
+    },
+    {
+      field: "NCR_COUNTERMEASURE",
+      headerName: "NCR_COUNTERMEASURE",
+      width: 170,
+      cellRenderer: (params: any) => {
+        if (params.data.NCR_COUNTERMEASURE === "Y" && params.data.NCR_ID) {
+          const ext = params.data.NCR_COUNTERMEASURE_EXT || "pdf";
+          const hrefLink = "/ncrimage/NCR_" + params.data.NCR_ID + "." + ext;
+          return (
+            <span style={{ color: "gray" }}>
+              <a target="_blank" rel="noopener noreferrer" href={hrefLink}>
+                LINK ({ext.toUpperCase()})
+              </a>
+            </span>
+          );
+        }
+        return null;
+      }
     },
   ];
   let column_iqcdatatable_worker = [
