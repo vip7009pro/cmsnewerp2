@@ -363,6 +363,12 @@ export interface IQC_INCOMMING_DATA {
   M_THICKNESS_UPPER: number;
   M_THICKNESS_LOWER: number;
   M_WIDTH: number;
+  KEO_KEO?: string;
+  BOC_TACH?: string;
+  DIEN_TRO?: string;
+  TINH_DIEN?: string;
+  FT_IR?: string;
+  TACK?: string;
 }
 export interface HOLDING_DATA {
   HOLD_ID: number;

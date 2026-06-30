@@ -1,5 +1,16 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-06-29 (IQC Reliability Test Items Toggle & Rendering Bugfix)
+
+### Completed
+- **IQC Reliability Test Items Toggle & Rendering Bugfix**:
+  - Added six new Y/N test columns (`KEO_KEO`, `BOC_TACH`, `DIEN_TRO`, `TINH_DIEN`, `FT_IR`, `TACK`) as optional fields in `IQC_INCOMMING_DATA` interface.
+  - Implemented TACK column under "Độ tin cậy" section of the main report table in `BNK_COMPONENT.tsx`, placed immediately after `FT-IR`.
+  - Added double-click handlers on all six reliability test headers in `BNK_COMPONENT.tsx` to toggle their active/inactive status. Double clicking updates the database (`ZTB_MATERIAL_TB` table) and updates the frontend local and parent states dynamically.
+  - Configured conditional formatting and visual cues (line-through and text graying-out) on headers and cells when reliability test items are disabled (`'N'`). Their Test Level and QTY values now display as `N/A`.
+  - Fixed a `TypeError` crash in `BNK_COMPONENT.tsx` where mapping `dtc_data` attempted to call `.slice(0, -1)` on null/undefined `POINT_NAME` values. Added safety checks for `POINT_NAME` and specs comparison to prevent rendering failures when values are null.
+  - Resolved `validateDOMNesting` console warning in `BNK_COMPONENT.tsx` by wrapping the `info-table` row elements inside a `<tbody>` tag.
+
 ## Update - 2026-06-24 (NCR Layout & IQC NCR_ID Enhancements)
 
 ### Completed

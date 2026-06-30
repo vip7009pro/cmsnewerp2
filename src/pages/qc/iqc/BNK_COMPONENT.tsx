@@ -8,9 +8,11 @@ import { DTC_DATA, IQC_INCOMMING_DATA } from "../interfaces/qcInterface";
 const BNK_COMPONENT = ({
   data,
   dtc_data,
+  onDataChange,
 }: {
   data: IQC_INCOMMING_DATA | null;
   dtc_data: DTC_DATA[] | null;
+  onDataChange?: (updatedFields: Partial<IQC_INCOMMING_DATA>) => void;
 }) => {
   const cpnInfo: any = useSelector(
     (state: RootState) => state.totalSlice.cpnInfo
@@ -41,6 +43,29 @@ const BNK_COMPONENT = ({
   const [showSetThickness, setShowSetThickness] = useState(false);
   const [showSetWidth, setShowSetWidth] = useState(false);
   const [showSetThicknessResult, setShowSetThicknessResult] = useState(false);
+
+  const handleHeaderDoubleClick = async (field: keyof IQC_INCOMMING_DATA) => {
+    if (!data) return;
+    const currentVal = data[field] === "N" ? "N" : "Y";
+    const newVal = currentVal === "Y" ? "N" : "Y";
+    try {
+      const response = await generalQuery("updateMaterialTestItem", {
+        M_NAME: data.M_NAME,
+        FIELD_NAME: field,
+        VAL: newVal,
+      });
+      if (response.data.tk_status !== "NG") {
+        if (onDataChange) {
+          onDataChange({ [field]: newVal });
+        }
+      } else {
+        alert("Cập nhật thất bại: " + response.data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Lỗi khi cập nhật hạng mục kiểm tra");
+    }
+  };
 
   const getMThickness = () => {
     console.log("vao day");
@@ -195,40 +220,42 @@ const BNK_COMPONENT = ({
         </div>
       </div>
       <table className="info-table">
-        <tr>
-          <td>Tên liệu</td>
-          <td>{data?.M_NAME}</td>
-          <td>Nhà cung cấp</td>
-          <td>{data?.CUST_NAME_KD}</td>
-          <td>Ngày nhập</td>
-          <td>{`20${data?.M_LOT_NO.substring(0, 2)}-${data?.M_LOT_NO.substring(
-            2,
-            4
-          )}-${data?.M_LOT_NO.substring(4, 6)}`}</td>
-        </tr>
-        <tr>
-          <td>Lot {getCompany()}</td>
-          <td>{data?.M_LOT_NO}</td>
-          <td>Chiều rộng</td>
-          <td>{data?.WIDTH_CD} mm</td>
-          <td>Ngày kiểm tra</td>
-          <td>{moment(data?.INS_DATE).utc().format("YYYY-MM-DD")}</td>
-        </tr>
-        <tr>
-          <td>Lot Vendor</td>
-          <td>{data?.LOT_VENDOR_IQC}</td>
-          <td>Số lượng</td>
-          <td>{data?.TOTAL_ROLL} roll</td>
-          <td>Người kiểm tra</td>
-          <td colSpan={3}>{data?.TEST_EMPL}</td>
-        </tr>
+        <tbody>
+          <tr>
+            <td>Tên liệu</td>
+            <td>{data?.M_NAME}</td>
+            <td>Nhà cung cấp</td>
+            <td>{data?.CUST_NAME_KD}</td>
+            <td>Ngày nhập</td>
+            <td>{`20${data?.M_LOT_NO.substring(0, 2)}-${data?.M_LOT_NO.substring(
+              2,
+              4
+            )}-${data?.M_LOT_NO.substring(4, 6)}`}</td>
+          </tr>
+          <tr>
+            <td>Lot {getCompany()}</td>
+            <td>{data?.M_LOT_NO}</td>
+            <td>Chiều rộng</td>
+            <td>{data?.WIDTH_CD} mm</td>
+            <td>Ngày kiểm tra</td>
+            <td>{moment(data?.INS_DATE).utc().format("YYYY-MM-DD")}</td>
+          </tr>
+          <tr>
+            <td>Lot Vendor</td>
+            <td>{data?.LOT_VENDOR_IQC}</td>
+            <td>Số lượng</td>
+            <td>{data?.TOTAL_ROLL} roll</td>
+            <td>Người kiểm tra</td>
+            <td colSpan={3}>{data?.TEST_EMPL}</td>
+          </tr>
+        </tbody>
       </table>
       <table className="main-table">
         <thead>
           <tr>
             <th rowSpan={2}>Hạng mục kiểm tra</th>
             <th colSpan={5}>Ngoại quan</th>
-            <th colSpan={8}>Độ tin cậy</th>
+            <th colSpan={9}>Độ tin cậy</th>
           </tr>
           <tr style={{ textAlign: "center", fontSize: "0.6rem" }}>
             <th>Màu sắc</th>
@@ -239,11 +266,48 @@ const BNK_COMPONENT = ({
             <th>Chiều rộng (mm)</th>
             <th>Độ dày (µm)</th>
             <th>RoHS (XRF)</th>
-            <th>Kéo keo (gf)</th>
-            <th>Lực bóc tách (gf)</th>
-            <th>Điện trở (Ω)</th>
-            <th>Tĩnh điện (V)</th>
-            <th>FT-IR</th>
+            <th
+              onDoubleClick={() => handleHeaderDoubleClick("KEO_KEO")}
+              className={`cursor-pointer select-none ${(data?.KEO_KEO ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}`}
+              title="Double click to toggle Y/N"
+            >
+              Kéo keo (gf)
+            </th>
+            <th
+              onDoubleClick={() => handleHeaderDoubleClick("BOC_TACH")}
+              className={`cursor-pointer select-none ${(data?.BOC_TACH ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}`}
+              title="Double click to toggle Y/N"
+            >
+              Lực bóc tách (gf)
+            </th>
+            <th
+              onDoubleClick={() => handleHeaderDoubleClick("DIEN_TRO")}
+              className={`cursor-pointer select-none ${(data?.DIEN_TRO ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}`}
+              title="Double click to toggle Y/N"
+            >
+              Điện trở (Ω)
+            </th>
+            <th
+              onDoubleClick={() => handleHeaderDoubleClick("TINH_DIEN")}
+              className={`cursor-pointer select-none ${(data?.TINH_DIEN ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}`}
+              title="Double click to toggle Y/N"
+            >
+              Tĩnh điện (V)
+            </th>
+            <th
+              onDoubleClick={() => handleHeaderDoubleClick("FT_IR")}
+              className={`cursor-pointer select-none ${(data?.FT_IR ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}`}
+              title="Double click to toggle Y/N"
+            >
+              FT-IR
+            </th>
+            <th
+              onDoubleClick={() => handleHeaderDoubleClick("TACK")}
+              className={`cursor-pointer select-none ${(data?.TACK ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}`}
+              title="Double click to toggle Y/N"
+            >
+              TACK
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -257,11 +321,24 @@ const BNK_COMPONENT = ({
             <td>1 mẫu/Lot</td>
             <td>1 mẫu/Lot</td>
             <td>1 mẫu/Lot</td>
-            <td>5 mẫu/Lot</td>
-            <td>3 mẫu/Lot</td>
-            <td>1 mẫu/Lot</td>
-            <td>1 mẫu/Lot</td>
-            <td>1 mẫu/Lot</td>
+            <td className={(data?.KEO_KEO ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}>
+              {(data?.KEO_KEO ?? "Y") === "N" ? "N/A" : "5 mẫu/Lot"}
+            </td>
+            <td className={(data?.BOC_TACH ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}>
+              {(data?.BOC_TACH ?? "Y") === "N" ? "N/A" : "3 mẫu/Lot"}
+            </td>
+            <td className={(data?.DIEN_TRO ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}>
+              {(data?.DIEN_TRO ?? "Y") === "N" ? "N/A" : "1 mẫu/Lot"}
+            </td>
+            <td className={(data?.TINH_DIEN ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}>
+              {(data?.TINH_DIEN ?? "Y") === "N" ? "N/A" : "1 mẫu/Lot"}
+            </td>
+            <td className={(data?.FT_IR ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}>
+              {(data?.FT_IR ?? "Y") === "N" ? "N/A" : "1 mẫu/Lot"}
+            </td>
+            <td className={(data?.TACK ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}>
+              {(data?.TACK ?? "Y") === "N" ? "N/A" : "1 mẫu/Lot"}
+            </td>
           </tr>
           <tr>
             <td>QTY</td>
@@ -273,16 +350,29 @@ const BNK_COMPONENT = ({
             <td>1</td>
             <td>1</td>
             <td>1</td>
-            <td>5</td>
-            <td>3</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
+            <td className={(data?.KEO_KEO ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}>
+              {(data?.KEO_KEO ?? "Y") === "N" ? "N/A" : 5}
+            </td>
+            <td className={(data?.BOC_TACH ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}>
+              {(data?.BOC_TACH ?? "Y") === "N" ? "N/A" : 3}
+            </td>
+            <td className={(data?.DIEN_TRO ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}>
+              {(data?.DIEN_TRO ?? "Y") === "N" ? "N/A" : 1}
+            </td>
+            <td className={(data?.TINH_DIEN ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}>
+              {(data?.TINH_DIEN ?? "Y") === "N" ? "N/A" : 1}
+            </td>
+            <td className={(data?.FT_IR ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}>
+              {(data?.FT_IR ?? "Y") === "N" ? "N/A" : 1}
+            </td>
+            <td className={(data?.TACK ?? "Y") === "N" ? "line-through text-gray-400 bg-gray-100" : ""}>
+              {(data?.TACK ?? "Y") === "N" ? "N/A" : 1}
+            </td>
           </tr>
           <tr>
             <td>Ac/Re</td>
             <td colSpan={5}>C=0</td>
-            <td colSpan={8}>C=0</td>
+            <td colSpan={9}>C=0</td>
           </tr>
         </tbody>
       </table>
@@ -542,19 +632,31 @@ const BNK_COMPONENT = ({
           </thead>
           <tbody>
             {dtc_data?.map((item: DTC_DATA, index: number) => {
-              let judge_result: string =
-                item.RESULT >= item.CENTER_VALUE - item.LOWER_TOR &&
-                item.RESULT <= item.CENTER_VALUE + item.UPPER_TOR
-                  ? "OK"
-                  : "NG";
+              let judge_result: string = "NG";
+              if (
+                item.RESULT !== null &&
+                item.RESULT !== undefined &&
+                item.CENTER_VALUE !== null &&
+                item.CENTER_VALUE !== undefined &&
+                item.LOWER_TOR !== null &&
+                item.LOWER_TOR !== undefined &&
+                item.UPPER_TOR !== null &&
+                item.UPPER_TOR !== undefined
+              ) {
+                judge_result =
+                  item.RESULT >= item.CENTER_VALUE - item.LOWER_TOR &&
+                  item.RESULT <= item.CENTER_VALUE + item.UPPER_TOR
+                    ? "OK"
+                    : "NG";
+              }
               return (
                 <tr key={index}>
                   <td>{item.TEST_NAME}</td>
                   <td>{item.SAMPLE_NO}</td>
                   <td>
                     {item.TEST_NAME === "XRF"
-                      ? item.POINT_NAME.slice(0, -1)
-                      : item.POINT_NAME}
+                      ? (item.POINT_NAME ? item.POINT_NAME.slice(0, -1) : "")
+                      : (item.POINT_NAME ?? "")}
                   </td>
                   <td>
                     {item.CENTER_VALUE?.toLocaleString("en-US", {

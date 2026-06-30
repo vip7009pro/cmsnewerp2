@@ -2454,7 +2454,23 @@ const INCOMMING = () => {
             </IconButton>
           </div>
           <div className="checksheetcpn" ref={incomingChecksheetPrintRef}>
-            <BNK_COMPONENT data={clickedRow} dtc_data={dtcDataTable} />
+            <BNK_COMPONENT
+              data={clickedRow}
+              dtc_data={dtcDataTable}
+              onDataChange={(updatedFields) => {
+                if (clickedRow) {
+                  const updatedRow = { ...clickedRow, ...updatedFields };
+                  setClickedRow(updatedRow);
+                  setIQC1DataTable((prev) =>
+                    prev.map((item) =>
+                      item.IQC1_ID === clickedRow.IQC1_ID
+                        ? { ...item, ...updatedFields }
+                        : item
+                    )
+                  );
+                }
+              }}
+            />
           </div>
         </div>
       )}
