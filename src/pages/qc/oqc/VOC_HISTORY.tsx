@@ -313,6 +313,18 @@ const VOC_HISTORY = () => {
       return allVocData.slice(0, VOC_VISIBLE_LIMIT);
     }
     return allVocData.filter((item) => {
+      let parsedOthers: string[] = [];
+      try {
+        if (item.PART_CODE_OTHERS && typeof item.PART_CODE_OTHERS === "string") {
+          parsedOthers = item.PART_CODE_OTHERS.split(",").map((p) => p.trim()).filter(Boolean);
+        } else if (item.PART_CODE_OTHERS !== undefined && item.PART_CODE_OTHERS !== null) {
+          throw new Error("PART_CODE_OTHERS is not a string");
+        }
+      } catch (error) {
+        // Fallback: search strictly according to old logic by not adding anything from PART_CODE_OTHERS
+        parsedOthers = [];
+      }
+
       const searchableFields = [
         item.MANAGEMENT_NUMBER,
         item.PART_CODE,
@@ -323,6 +335,7 @@ const VOC_HISTORY = () => {
         item.PROJECT,
         item.BASIC_MODEL,
         item.MAIN_CATEGORY,
+        ...parsedOthers
       ];
       return searchableFields.some((field) => (field ?? "").toString().toLowerCase().includes(normalizedSearch));
     });

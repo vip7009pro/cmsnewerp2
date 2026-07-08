@@ -1,5 +1,12 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-07-02 (Add and Search PART_CODE_OTHERS in OQC VOC History)
+
+### Completed
+- **Add and Search PART_CODE_OTHERS**:
+  - Added `PART_CODE_OTHERS?: string;` to frontend `QTR_DATA` interface.
+  - Implemented logic in `VOC_HISTORY.tsx` to search by `PART_CODE_OTHERS` (supporting comma-separated values) with error-handling fallback to old search behavior.
+
 ## Update - 2026-06-29 (IQC Reliability Test Items Toggle & Rendering Bugfix)
 
 ### Completed

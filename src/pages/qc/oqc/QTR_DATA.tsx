@@ -41,6 +41,7 @@ export interface QTR_DATA {
   UPD_DATE: string;
   UPD_EMPL: string;
   QTR_YN: string;
+  PART_CODE_OTHERS?: string;
 }
 
 const QTR_DATA = () => {
