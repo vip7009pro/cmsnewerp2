@@ -1,5 +1,13 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-07-23 (Scanner PROCESS_LOT_NO to G_NAME_KD Lookup in OQC VOC History)
+
+### Completed
+- **Scanner PROCESS_LOT_NO -> G_NAME_KD Lookup in VOC History**:
+  - Updated `f_checkG_CODE_From_PROCESS_LOT_NO` helper in `src/pages/qc/utils/qcUtils.tsx` to read `G_NAME_KD` from API result.
+  - Updated `commitSearch` in `src/pages/qc/oqc/VOC_HISTORY.tsx`: when "Dùng máy scan" is checked, the scanned `PROCESS_LOT_NO` queries `checkG_CODE_From_PROCESS_LOT_NO` to obtain `G_NAME_KD` and filter VOC history records.
+  - Handled errors and alerts when `G_NAME_KD` is not found or no matching VOC records are found.
+
 ## Update - 2026-07-02 (Add and Search PART_CODE_OTHERS in OQC VOC History)
 
 ### Completed
@@ -64,6 +72,8 @@
 - The VOC search box now auto-focuses on tab load and regains focus after Reload, Show all, and Full Screen toggles.
 - VOC cards now support triple-clicking the image area to open the upload picker even when an image is already displayed.
 - The VOC layout was compacted so the toolbar stays on a single line where possible, image height is fixed with aspect-ratio preserved, and DEFECT/WH OUT/QTR PPM/RATE now stay in a single row to fit six VOC cards better in full screen.
+- The VOC search flow now treats the scan text box as a temporary buffer: successful scans commit a persistent filter, clear the input, keep focus, and preserve the current result set until the next scan.
+- Added a `Dùng máy scan` checkbox on VOC History; when enabled, only the first 11 characters of the scan buffer are used as the committed search keyword.
 - Optimized VOC Card layout: Redesigned the card body into two columns of equal width (50% each). The left column splits the 4 metadata fields (`REGISTERED_DATE`, `PLANT`, `PART_CODE`, `DEFECT_QTY`) into 2 rows (2 fields per row) to significantly reduce the card's vertical height. The right column displays `DEFECT_DETAILS` (or `TITLE`) in a larger font size (`1.15rem`, bold) for high visual prominence. This clean structure maximizes readability and allowed increasing the VOC image display height to `300px` (with `height: 100%` and `object-fit: contain` for full scale display) while still ensuring 2 rows of VOC cards fit cleanly in standard viewports.
 
 ### Validation

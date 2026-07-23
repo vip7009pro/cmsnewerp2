@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { uploadQuery } from "../../../api/Api";
 import { RootState } from "../../../redux/store";
-import { f_loadQTRData } from "../utils/qcUtils";
+import { f_checkG_CODE_From_PROCESS_LOT_NO, f_loadQTRData } from "../utils/qcUtils";
 import { QTR_DATA } from "./QTR_DATA";
 import "./VOC_HISTORY.scss";
 
@@ -267,7 +267,9 @@ const VOCHistoryCard = ({ item }: { item: QTR_DATA }) => {
 const VOC_HISTORY = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
-  const [searchValue, setSearchValue] = useState("");
+  const [searchInputValue, setSearchInputValue] = useState("");
+  const [appliedSearchValue, setAppliedSearchValue] = useState("");
+  const [useMachineScan, setUseMachineScan] = useState(true);
   const [showAll, setShowAll] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
   const [allVocData, setAllVocData] = useState<QTR_DATA[]>([]);
@@ -303,28 +305,39 @@ const VOC_HISTORY = () => {
     focusSearchInput();
   }, []);
 
-  const normalizedSearch = searchValue.trim().toLowerCase();
-
-  const visibleData = useMemo(() => {
-    if (!normalizedSearch) {
-      if (showAll) {
-        return allVocData;
-      }
-      return allVocData.slice(0, VOC_VISIBLE_LIMIT);
+  const commitSearch = async () => {
+    const rawInput = searchInputValue.trim();
+    if (!rawInput) {
+      focusSearchInput();
+      return;
     }
-    return allVocData.filter((item) => {
-      let parsedOthers: string[] = [];
-      try {
-        if (item.PART_CODE_OTHERS && typeof item.PART_CODE_OTHERS === "string") {
-          parsedOthers = item.PART_CODE_OTHERS.split(",").map((p) => p.trim()).filter(Boolean);
-        } else if (item.PART_CODE_OTHERS !== undefined && item.PART_CODE_OTHERS !== null) {
-          throw new Error("PART_CODE_OTHERS is not a string");
-        }
-      } catch (error) {
-        // Fallback: search strictly according to old logic by not adding anything from PART_CODE_OTHERS
-        parsedOthers = [];
-      }
 
+    let targetSearchTerm = rawInput;
+
+    if (useMachineScan) {
+      setIsLoading(true);
+      try {
+        const fetchedGNameKd = await f_checkG_CODE_From_PROCESS_LOT_NO(rawInput);
+        if (!fetchedGNameKd) {
+          Swal.fire("Thông báo", `Không tìm thấy G_NAME_KD từ PROCESS_LOT_NO "${rawInput}"`, "error");
+          focusSearchInput();
+          setIsLoading(false);
+          return;
+        }
+        targetSearchTerm = fetchedGNameKd;
+      } catch (error) {
+        console.error(error);
+        Swal.fire("Thông báo", "Lỗi khi gọi API truy vấn G_NAME_KD", "error");
+        focusSearchInput();
+        setIsLoading(false);
+        return;
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    const normalizedQuery = targetSearchTerm.toLowerCase();
+    const matchedData = allVocData.filter((item) => {
       const searchableFields = [
         item.MANAGEMENT_NUMBER,
         item.PART_CODE,
@@ -335,13 +348,52 @@ const VOC_HISTORY = () => {
         item.PROJECT,
         item.BASIC_MODEL,
         item.MAIN_CATEGORY,
-        ...parsedOthers
       ];
-      return searchableFields.some((field) => (field ?? "").toString().toLowerCase().includes(normalizedSearch));
+      return searchableFields.some((field) => (field ?? "").toString().toLowerCase().includes(normalizedQuery));
     });
-  }, [allVocData, normalizedSearch, showAll]);
 
-  const isSearchMode = normalizedSearch.length > 0;
+    if (matchedData.length === 0) {
+      const errorMsg = useMachineScan
+        ? `Không tìm thấy VOC phù hợp với G_NAME_KD "${targetSearchTerm}" (scanned: "${rawInput}")`
+        : `Không tìm thấy VOC phù hợp với "${targetSearchTerm}"`;
+      Swal.fire("Thông báo", errorMsg, "info");
+      focusSearchInput();
+      return;
+    }
+
+    setAppliedSearchValue(normalizedQuery);
+    setSearchInputValue("");
+    window.requestAnimationFrame(() => {
+      focusSearchInput();
+    });
+  };
+
+  const normalizedAppliedSearch = appliedSearchValue.trim().toLowerCase();
+
+  const visibleData = useMemo(() => {
+    if (!normalizedAppliedSearch) {
+      if (showAll) {
+        return allVocData;
+      }
+      return allVocData.slice(0, VOC_VISIBLE_LIMIT);
+    }
+    return allVocData.filter((item) => {
+      const searchableFields = [
+        item.MANAGEMENT_NUMBER,
+        item.PART_CODE,
+        item.PART_NAME,
+        item.G_CODE,
+        item.G_NAME,
+        item.TITLE,
+        item.PROJECT,
+        item.BASIC_MODEL,
+        item.MAIN_CATEGORY,
+      ];
+      return searchableFields.some((field) => (field ?? "").toString().toLowerCase().includes(normalizedAppliedSearch));
+    });
+  }, [allVocData, normalizedAppliedSearch, showAll]);
+
+  const isSearchMode = normalizedAppliedSearch.length > 0;
 
   return (
     <div
@@ -361,19 +413,38 @@ const VOC_HISTORY = () => {
           <div className="voc-history__title">VOC History</div>
           <div className="voc-history__subtitle">
             {isSearchMode
-              ? `Đang lọc theo "${searchValue.trim()}" - ${visibleData.length} kết quả`
+              ? `Đang lọc theo "${appliedSearchValue.trim()}" - ${visibleData.length} kết quả`
               : `Hiển thị ${Math.min(VOC_VISIBLE_LIMIT, allVocData.length)} VOC mới nhất từ ${VOC_DEFAULT_FROM_DATE} đến ${moment().format("YYYY-MM-DD")}`}
           </div>
         </div>
         <div className="voc-history__actions">
+          <FormControlLabel
+            className="voc-history__scanmode"
+            control={
+              <Checkbox
+                checked={useMachineScan}
+                onChange={(e) => {
+                  setUseMachineScan(e.target.checked);
+                  focusSearchInput();
+                }}
+              />
+            }
+            label="Dùng máy scan"
+          />
           <label className="voc-history__search">
             <span>Tìm kiếm sản phẩm</span>
             <input
               ref={searchInputRef}
               type="text"
               placeholder="Nhập tên hoặc mã sản phẩm"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+              value={searchInputValue}
+              onChange={(e) => setSearchInputValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  void commitSearch();
+                }
+              }}
             />
           </label>
           <Button
@@ -382,7 +453,13 @@ const VOC_HISTORY = () => {
             size="small"
             onClick={async () => {
               await loadVocHistoryData();
-              focusSearchInput();
+              if (appliedSearchValue.trim()) {
+                window.requestAnimationFrame(() => {
+                  focusSearchInput();
+                });
+              } else {
+                focusSearchInput();
+              }
             }}
             disabled={isLoading}
           >

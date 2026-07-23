@@ -807,4 +807,20 @@ import { QTR_DATA } from "../oqc/QTR_DATA";
       })
       .catch((error) => {});
     return kq;
-  }
+  };
+
+  export const f_checkG_CODE_From_PROCESS_LOT_NO = async (PROCESS_LOT_NO: string) => {
+    let gNameKd: string = "";
+    await generalQuery("checkG_CODE_From_PROCESS_LOT_NO", {
+      PROCESS_LOT_NO: PROCESS_LOT_NO,
+    })
+      .then((response) => {
+        if (response.data.tk_status !== "NG" && response.data.data && response.data.data.length > 0) {
+          gNameKd = response.data.data[0].G_NAME_KD ?? response.data.data[0].G_CODE ?? "";
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return gNameKd;
+  };
