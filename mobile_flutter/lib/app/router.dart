@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_flutter/features/home/presentation/home_page.dart';
 import 'package:mobile_flutter/features/subscription/presentation/subscription_gate_page.dart';
 
 import '../features/auth/application/auth_notifier.dart';
@@ -39,6 +40,7 @@ import '../features/kho/presentation/nhap_xuat_ton_tp_page.dart';
 import '../features/muahang/presentation/quan_ly_vat_lieu_page.dart';
 import '../features/muahang/presentation/mrp_page.dart';
 import '../features/qc/presentation/dtc_page.dart';
+import '../features/qc/presentation/iqc_worker_dtc_page.dart';
 import '../features/qc/presentation/iqc/iqc_page.dart';
 import '../features/qc/presentation/inspection/inspection_page.dart';
 import '../features/qc/presentation/oqc/oqc_page.dart';
@@ -74,29 +76,34 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
 
       if (authState is AuthAuthenticated) {
+        final subDept = (authState.session.user.subDeptName ?? '')
+            .toUpperCase();
+        if (subDept.contains('IQC') && state.matchedLocation != '/home') {
+          return '/home';
+        }
         return isLogin || isSplash ? '/home' : null;
       }
 
       return null;
     },
     routes: [
-      GoRoute(
-        path: '/splash',
-        builder: (context, state) => const SplashPage(),
-      ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginPage(),
-      ),
+      GoRoute(path: '/splash', builder: (context, state) => const SplashPage()),
+      GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
       GoRoute(
         path: '/home',
-        builder: (context, state) => const SubscriptionGatePage(),
-       /*  builder: (context, state) => const HomePage(), */
+        builder: (context, state) {
+          final authState = ref.read(authNotifierProvider);
+          if (authState is AuthAuthenticated) {
+            final subDept = (authState.session.user.subDeptName ?? '')
+                .toUpperCase();
+            if (subDept.contains('IQC')) {
+              return const IqcWorkerDtcPage();
+            }
+          }
+          return const HomePage();
+        },
       ),
-      GoRoute(
-        path: '/menu',
-        builder: (context, state) => const MenuPage(),
-      ),
+      GoRoute(path: '/menu', builder: (context, state) => const MenuPage()),
       GoRoute(
         path: '/nhansu/quanlyphongbannhanvien',
         builder: (context, state) => const HrDepartmentEmployeePage(),
@@ -110,7 +117,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/nhansu/diemdanhnhom',
-        builder: (context, state) => const DiemDanhNhomPage(option: 'diemdanhnhom'),
+        builder: (context, state) =>
+            const DiemDanhNhomPage(option: 'diemdanhnhom'),
       ),
       GoRoute(
         path: '/nhansu/dieuchuyenteam',
@@ -122,7 +130,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/nhansu/pheduyetnghi',
-        builder: (context, state) => const PheDuyetNghiPage(option: 'pheduyetnhom'),
+        builder: (context, state) =>
+            const PheDuyetNghiPage(option: 'pheduyetnhom'),
       ),
       GoRoute(
         path: '/nhansu/lichsu',
@@ -138,15 +147,20 @@ final routerProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: 'diemdanh',
-            builder: (context, state) => const DiemDanhNhomPage(option: 'diemdanhnhomBP'),
+            builder: (context, state) =>
+                const DiemDanhNhomPage(option: 'diemdanhnhomBP'),
           ),
           GoRoute(
             path: 'pheduyetnghi',
-            builder: (context, state) => const PheDuyetNghiPage(option: 'pheduyetnhomBP'),
+            builder: (context, state) =>
+                const PheDuyetNghiPage(option: 'pheduyetnhomBP'),
           ),
           GoRoute(
             path: 'dieuchuyenteam',
-            builder: (context, state) => const DieuChuyenTeamPage(option1: 'diemdanhnhomBP', option2: 'workpositionlist_BP'),
+            builder: (context, state) => const DieuChuyenTeamPage(
+              option1: 'diemdanhnhomBP',
+              option2: 'workpositionlist_BP',
+            ),
           ),
         ],
       ),
@@ -156,15 +170,20 @@ final routerProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: 'diemdanh',
-            builder: (context, state) => const DiemDanhNhomPage(option: 'diemdanhnhomNS'),
+            builder: (context, state) =>
+                const DiemDanhNhomPage(option: 'diemdanhnhomNS'),
           ),
           GoRoute(
             path: 'pheduyetnghi',
-            builder: (context, state) => const PheDuyetNghiPage(option: 'pheduyetnhomNS'),
+            builder: (context, state) =>
+                const PheDuyetNghiPage(option: 'pheduyetnhomNS'),
           ),
           GoRoute(
             path: 'dieuchuyenteam',
-            builder: (context, state) => const DieuChuyenTeamPage(option1: 'diemdanhnhomNS', option2: 'workpositionlist_NS'),
+            builder: (context, state) => const DieuChuyenTeamPage(
+              option1: 'diemdanhnhomNS',
+              option2: 'workpositionlist_NS',
+            ),
           ),
         ],
       ),
@@ -269,10 +288,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       // QC routes
-      GoRoute(
-        path: '/qc/dtc',
-        builder: (context, state) => const DtcPage(),
-      ),
+      GoRoute(path: '/qc/dtc', builder: (context, state) => const DtcPage()),
       GoRoute(
         path: '/qc/ycsxmanager',
         builder: (context, state) => const YcsxManagerPage(),
@@ -281,30 +297,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/qc/codeinfo',
         builder: (context, state) => const ThongTinSanPhamPage(),
       ),
-      GoRoute(
-        path: '/qc/iqc',
-        builder: (context, state) => const IqcPage(),
-      ),
-      GoRoute(
-        path: '/qc/pqc',
-        builder: (context, state) => const PqcPage(),
-      ),
-      GoRoute(
-        path: '/qc/oqc',
-        builder: (context, state) => const OqcPage(),
-      ),
+      GoRoute(path: '/qc/iqc', builder: (context, state) => const IqcPage()),
+      GoRoute(path: '/qc/pqc', builder: (context, state) => const PqcPage()),
+      GoRoute(path: '/qc/oqc', builder: (context, state) => const OqcPage()),
       GoRoute(
         path: '/qc/inspection',
         builder: (context, state) => const InspectionPage(),
       ),
-      GoRoute(
-        path: '/qc/cs',
-        builder: (context, state) => const CsPage(),
-      ),
-      GoRoute(
-        path: '/qc/iso',
-        builder: (context, state) => const IsoPage(),
-      ),
+      GoRoute(path: '/qc/cs', builder: (context, state) => const CsPage()),
+      GoRoute(path: '/qc/iso', builder: (context, state) => const IsoPage()),
       GoRoute(
         path: '/qc/qcreport',
         builder: (context, state) => const QcReportPage(),

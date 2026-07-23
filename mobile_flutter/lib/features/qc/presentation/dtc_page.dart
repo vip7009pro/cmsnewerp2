@@ -10,7 +10,8 @@ import 'dtc_tabs/spec_dtc_tab.dart';
 import 'dtc_tabs/test_table_tab.dart';
 
 class DtcPage extends StatelessWidget {
-  const DtcPage({super.key});
+  final int initialIndex;
+  const DtcPage({super.key, this.initialIndex = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,7 @@ class DtcPage extends StatelessWidget {
     ];
 
     return DefaultTabController(
+      initialIndex: initialIndex >= 0 && initialIndex < tabs.length ? initialIndex : 0,
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(

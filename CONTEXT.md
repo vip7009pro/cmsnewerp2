@@ -1,5 +1,16 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-07-23 (Dedicated Standalone Screen for IQC Workers)
+
+### Completed
+- **Dedicated Standalone Screen & Route Locking for IQC Workers**:
+  - Created `IqcWorkerDtcPage` in `mobile_flutter/lib/features/qc/presentation/iqc_worker_dtc_page.dart`: a single standalone screen containing ONLY `DkDtcTab`, without left navigation menu (AppDrawer) and without tab bars.
+  - Added a Logout button (`Icons.logout`) to the AppBar in `IqcWorkerDtcPage` for quick sign out.
+  - Updated `mobile_flutter/lib/app/router.dart`: users with `subDeptName` containing `'IQC'` are directed strictly to `IqcWorkerDtcPage()` on `/home`, and any navigation attempt to other routes is automatically redirected back to `/home`. Non-IQC users continue to navigate to `HomePage`.
+  - Registered listener `_onEmplCtrlChanged` on `_requestEmplCtrl` in `dk_dtc_tab.dart` so that whenever `REQUEST_EMPL_NO` is auto-filled or changed, `_checkEmplName` runs automatically to fetch `WORK_POSITION_CODE` (`REQUEST_DEPT_CODE`) and employee name.
+  - Integrated `insertIQC1table` command in `dk_dtc_tab.dart`: immediately after successful DTC registration for Nguyên Vật Liệu (`_checkNvl == true`), `_insertIncomingData(nextId)` is executed automatically using the newly created `DTC_ID` (`nextId`).
+  - Added strict validations on client & server (`qcService.js`) for `DTC_ID`, `M_CODE`, `G_CODE`, and `REQUEST_DEPT_CODE`.
+
 ## Update - 2026-07-23 (Scanner PROCESS_LOT_NO to G_NAME_KD Lookup in OQC VOC History)
 
 ### Completed
