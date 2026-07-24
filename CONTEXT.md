@@ -1,5 +1,12 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-07-24 (Auto-dismiss Swal Alert in VOC History Scanner)
+
+### Completed
+- **Auto-dismiss Swal Alert (3s) for Scanner in VOC History**:
+  - Updated `commitSearch` in `src/pages/qc/oqc/VOC_HISTORY.tsx`: added `timer: 3000` and `timerProgressBar: true` to `Swal.fire` when `G_NAME_KD` is not found for scanned `PROCESS_LOT_NO`, when API returns an error, or when scan query returns no matching records in machine scan mode.
+  - Allows scanner users without mouse/keyboard to have alerts automatically close after 3 seconds without blocking subsequent scans.
+
 ## Update - 2026-07-23 (Dedicated Standalone Screen for IQC Workers)
 
 ### Completed

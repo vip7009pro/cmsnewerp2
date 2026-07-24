@@ -319,7 +319,13 @@ const VOC_HISTORY = () => {
       try {
         const fetchedGNameKd = await f_checkG_CODE_From_PROCESS_LOT_NO(rawInput);
         if (!fetchedGNameKd) {
-          Swal.fire("Thông báo", `Không tìm thấy G_NAME_KD từ PROCESS_LOT_NO "${rawInput}"`, "error");
+          Swal.fire({
+            title: "Thông báo",
+            text: `Không tìm thấy G_NAME_KD từ PROCESS_LOT_NO "${rawInput}"`,
+            icon: "error",
+            timer: 3000,
+            timerProgressBar: true,
+          });
           focusSearchInput();
           setIsLoading(false);
           return;
@@ -327,7 +333,13 @@ const VOC_HISTORY = () => {
         targetSearchTerm = fetchedGNameKd;
       } catch (error) {
         console.error(error);
-        Swal.fire("Thông báo", "Lỗi khi gọi API truy vấn G_NAME_KD", "error");
+        Swal.fire({
+          title: "Thông báo",
+          text: "Lỗi khi gọi API truy vấn G_NAME_KD",
+          icon: "error",
+          timer: 3000,
+          timerProgressBar: true,
+        });
         focusSearchInput();
         setIsLoading(false);
         return;
@@ -356,7 +368,12 @@ const VOC_HISTORY = () => {
       const errorMsg = useMachineScan
         ? `Không tìm thấy VOC phù hợp với G_NAME_KD "${targetSearchTerm}" (scanned: "${rawInput}")`
         : `Không tìm thấy VOC phù hợp với "${targetSearchTerm}"`;
-      Swal.fire("Thông báo", errorMsg, "info");
+      Swal.fire({
+        title: "Thông báo",
+        text: errorMsg,
+        icon: "info",
+        ...(useMachineScan ? { timer: 3000, timerProgressBar: true } : {}),
+      });
       focusSearchInput();
       return;
     }
