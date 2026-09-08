@@ -1,5 +1,15 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-08 (Web ERP UI System Specification for Google Stitch)
+
+### Completed
+- **Created Comprehensive Web ERP UI Specification Document (`SYSTEM_UI_SPECIFICATION_FOR_STITCH.md`)**:
+  - Outlined overall system profile, tech stack (React 18, MUI v5, AG-Grid Quartz, DevExtreme Pivot, Recharts), target users (management vs shopfloor workers).
+  - Detailed the master layout architecture: Top Navbar (`NavBarNew`), Navigation Menu (`NavMenuNew` - overlay vs sidebar), Multi-tab system (`CustomTabs`), and Notification panel.
+  - Formulated the 5 core page layout archetypes: Split Master (Search panel + AG-Grid), Dual Dashboard & Reports (KPIs + Pie charts + 3:2 split tables), Workshop Visual Card Grid (VOC History with scan buffer & 300px defect photos), Forms/Modals (`CustomDialog`), and Personal/Attendance Hub (`AccountInfo`).
+  - Summarized all 10 business departments & modules (Kinh Doanh, QLSX, SX, QC, R&D, Mua Hàng, Kho, Nhân Sự, Bảng Tin & AI Tools).
+  - Highlighted current aesthetic pain points (vintage gradients, heavy shadows, lack of unified design tokens, dark mode absence) and provided structured prompt directives for Google Stitch redesign (Modern High-Density Enterprise SaaS aesthetic, neutral slate canvas, compact 28-32px rows, micro-spacing).
+
 ## Update - 2026-07-24 (Auto-dismiss Swal Alert in VOC History Scanner)
 
 ### Completed

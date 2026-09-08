@@ -5,3 +5,4 @@
 - [x] Add scanner PROCESS_LOT_NO -> G_NAME_KD lookup via checkG_CODE_From_PROCESS_LOT_NO API in VOC_HISTORY.tsx
 - [x] Fix empty REQUEST_DEPT_CODE bug in DTC Registration (dk_dtc_tab.dart & qcService.js)
 - [x] Add auto-dismiss timer (3s) for Swal alert when G_NAME_KD is not found during scanning in VOC_HISTORY.tsx
+- [x] Create comprehensive Web ERP UI specification markdown for Google Stitch redesign (`SYSTEM_UI_SPECIFICATION_FOR_STITCH.md`)
