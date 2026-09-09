@@ -243,7 +243,7 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
           enableCellTextSelection={true}
           floatingFiltersHeight={23}
           onSelectionChanged={(params: any) => {
-            ag_data.onSelectionChange(params);
+            ag_data.onSelectionChange?.(params);
             tableSelectionChange();
           }}
           onRowClicked={ag_data.onRowClick}

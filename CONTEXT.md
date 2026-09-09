@@ -1,5 +1,67 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-09 (Fix Full-Height Layout: Bảng Nhân Sự và Bảng Phòng Ban Dính Chạm Đáy Viewport)
+
+### Completed
+- **Khắc Phục Khoảng Trống Dưới Đáy Bảng Nhân Sự (`PrecisionUserManager.scss`, `MyTab.scss`)**:
+  - **Nguyên nhân cốt lõi**:
+    1. Trong `PrecisionUserManager.scss`, xuất hiện đoạn code thừa dòng 333-336 (`gap: 10px; position: sticky; top: 8px; }`) tạo lỗi cú pháp `[sass] unmatched "}"` khiến toàn bộ file SCSS bị server Vite trả về HTTP 500. Trình duyệt không load được style của `PrecisionUserManager`, dẫn tới container bảng không nhận được các thuộc tính `flex: 1` và `height: 100%`.
+    2. Trong `MyTab.scss`, `.tab-pane` được cấu hình `flex: 1 0 auto; min-height: 100%;` nhưng thiếu `height: 100%; flex: 1 1 0px;`, khiến component con không tính toán được 100% chiều cao kế thừa từ `.tab-content`.
+    3. Trước đó `&__gridContainer` bị gán cứng `height: 540px;` và `.precision-usermanager` có `overflow-y: auto;`.
+  - **Giải pháp triệt để**:
+    1. Đã dọn sạch đoạn cú pháp thừa trong `PrecisionUserManager.scss`, đưa HTTP status của file SCSS từ 500 về 200 OK ngay lập tức.
+    2. Thiết lập chuỗi Flex Stretch hoàn chỉnh từ gốc đến lá:
+       - `.tab-pane`: `height: 100%; min-height: 100%; flex: 1 1 0px;`
+       - `.precision-usermanager`: `height: 100%; min-height: 100%; flex: 1 1 0px; overflow: hidden;`
+       - `&__dualGrid`: `flex: 1 1 0px; height: 100%; min-height: 0; align-items: stretch;`
+       - `&__leftPanel`: `flex: 1 1 0px; height: 100%; min-height: 0; overflow: hidden;`
+       - `&__gridContainer`: `flex: 1 1 0px; height: 100%; min-height: 0; position: relative; overflow: hidden;`
+       - `.agtable` & `.ag-theme-quartz`: `flex: 1 1 0px; height: 100% !important; min-height: 0;`
+    3. Đồng bộ tương tự cho tab Quản lý phòng ban (`PrecisionDeptManager.scss`):
+       - `.precision-deptmanager`: `height: 100%; flex: 1 1 0px; overflow: hidden;`
+       - `&__triGrid`: `flex: 1 1 0px; min-height: 0; height: 100%;`
+       - `&__panel`: `flex: 1 1 0px; min-height: 0; height: 100%;`
+       - `&__tableWrapper`: `flex: 1 1 0px; min-height: 0; height: 100%;`
+  - **Kết quả**: Bảng nhân sự và 3 bảng phòng ban tự động dãn nở tối đa và dính sát xuống mép đáy của màn hình, loại bỏ hoàn toàn khoảng không gian hở thừa, thanh footer (bottombar) của AG Grid hiển thị sắc nét sát cạnh dưới.
+
+
+### Completed
+- **Khắc Phục Triệt Để TypeError trong `AGTable.tsx`**:
+  - Lỗi: `AGTable.tsx:246 Uncaught TypeError: ag_data.onSelectionChange is not a function at onSelectionChanged`.
+  - Nguyên nhân: `ag_data.onSelectionChange` là thuộc tính tùy chọn (optional callback) nhưng lại được gọi trực tiếp `ag_data.onSelectionChange(params)` trong `onSelectionChanged` mà không có optional chaining hoặc kiểm tra tồn tại.
+  - Sửa đổi:
+    1. Thêm optional chaining `ag_data.onSelectionChange?.(params)` trong `AGTable.tsx` dòng 246, ngăn chặn hoàn toàn việc văng lỗi khi component cha không truyền prop `onSelectionChange`.
+    2. Bổ sung `onSelectionChange` callback đồng bộ dữ liệu dòng được chọn (`getSelectedRows()[0]`) vào các bảng: `PrecisionDeptMainTable.tsx`, `PrecisionDeptSubTable.tsx`, `PrecisionDeptPosTable.tsx` và `UserManager.tsx`.
+
+## Update - 2026-09-09 (Precision QuanLyPhongBanNhanSu NS1 & NS2: Stitch Enterprise Redesign for UserManager & DeptManager)
+
+### Completed
+- **Sao Lưu An Toàn Toàn Bộ Mã Nguồn Cũ (100% Backup)**:
+  - `UserManager.backup.tsx` (809 dòng).
+  - `DeptManager.backup.tsx` (690 dòng).
+  - `QuanLyPhongBanNhanSu.backup.tsx` (22 dòng).
+- **Tab 1: Quản Lý Nhân Sự (UserManager - NS1) theo Stitch `stitch_quanlynhansu`**:
+  - Tách thành 6 subcomponents (< 250 dòng/file):
+    1. *Controller (`UserManager.tsx` - ~270 dòng)*: Quản lý state danh sách nhân viên, Face API, upload avatar, phân quyền `checkBP`.
+    2. *Styles (`PrecisionUserManager.scss`)*: Bố cục Dual-Panel (~72% Left Grid, ~28% Right Profile), token Google Stitch, responsive Desktop/Tablet/Mobile.
+    3. *Header (`PrecisionUserHeader.tsx`)*: Tiêu đề + Telemetry pills ("PORT 4370 CONNECTED", "ZKTECO TCP/IP ACTIVE", tỷ lệ hồ sơ lọc).
+    4. *Toolbar (`PrecisionUserToolbar.tsx`)*: Checkbox "Trừ người đã nghỉ", nút Add/Update, Load, EX1, EX2, Pivot, ô tìm kiếm nhanh real-time.
+    5. *Columns (`PrecisionUserColumns.tsx`)*: Cấu hình AGTable với Avatar tròn, ERP_ID chip xanh in đậm, họ tên in đậm, trạng thái công tác, ca kíp.
+    6. *Profile Panel (`PrecisionUserProfilePanel.tsx`)*: Panel chi tiết nhân viên bên phải (Sticky, ảnh lớn, chọn file + nút Upload avatar, nút Train Face / Check Face, chi tiết việc làm & cá nhân).
+    7. *Modal Form (`PrecisionUserModal.tsx`)*: Hộp thoại Add/Update nhân viên với form 3 cột cân đối sạch sẽ.
+- **Tab 2: Quản Lý Phòng Ban (DeptManager - NS2) theo Stitch `stitch_quanlyphongban`**:
+  - Tách thành 6 subcomponents (< 230 dòng/file):
+    1. *Controller (`DeptManager.tsx` - ~230 dòng)*: Quản lý 3 bảng cấu trúc, selection liên hoàn (click MainDept -> load SubDept, click SubDept -> load WorkPos), các thao tác CRUD kèm `checkBP`.
+    2. *Styles (`PrecisionDeptManager.scss`)*: Bố cục Tri-Panel (3 cột tương ứng 3 cấp cha - con), 4 thẻ KPI đa màu sắc.
+    3. *Header & KPIs (`PrecisionDeptHeader.tsx`)*: Header telemetry + 4 KPI Cards (Tổng Bộ Phận Chính, Phòng Ban Trực Thuộc, Vị Trí & Nghiệp Vụ, Nhóm Chấm Công ATT).
+    4. *Columns (`PrecisionDeptColumns.tsx`)*: Định nghĩa cột cho cả 3 bảng Main Dept, Sub Dept, Work Position.
+    5. *Panel 1 (`PrecisionDeptMainTable.tsx`)*: Bảng Bộ phận chính (Master) + action toolbar Thêm/Sửa/Xóa/Tải lại/Lọc nhanh.
+    6. *Panel 2 (`PrecisionDeptSubTable.tsx`)*: Bảng Phòng ban trực thuộc (Sub Dept) + action toolbar Thêm/Sửa/Xóa/Tải lại/Lọc nhanh.
+    7. *Panel 3 (`PrecisionDeptPosTable.tsx`)*: Bảng Vị trí công đoạn (Work Position) + action toolbar Thêm/Sửa/Xóa/Tải lại/Lọc nhanh.
+    8. *Modal Form (`PrecisionDeptModal.tsx`)*: Hộp thoại Add/Update/Delete động cho cả 3 cấp.
+- **Root Wrapper (`QuanLyPhongBanNhanSu.scss`)**: Đảm bảo full-width và full-height co giãn tự nhiên trong chế độ Multi-Tab.
+- **Kiểm tra Vite**: 100% (15/15 files mới và cập nhật) đều trả về HTTP 200 OK.
+
 ## Update - 2026-09-09 (Precision BaoCaoNhanSu NS6: Fix Stacked Bar Chart & ON_RATE Trend Calculation)
 
 ### Completed

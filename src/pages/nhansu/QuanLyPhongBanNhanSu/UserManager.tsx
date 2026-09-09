@@ -1,7 +1,7 @@
-import { IconButton, Button } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./UserManager.scss";
+import "./PrecisionUserManager/PrecisionUserManager.scss";
 import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../api/Api";
 import { EmployeeTableData } from "../interfaces/nhansuInterface";
 import AGTable from "../../../components/DataTable/AGTable";
@@ -13,796 +13,345 @@ import {
   f_updateEmployee,
   f_updateFaceID,
 } from "../utils/nhansuUtils";
-import { BiLoaderCircle } from "react-icons/bi";
-import { MdAdd } from "react-icons/md";
-import CustomDialog from "../../../components/Dialog/CustomDialog";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
-import { AiOutlineCloudUpload } from "react-icons/ai";
+import { useDispatch } from "react-redux";
 import { changeUserData } from "../../../redux/slices/globalSlice";
-import { getlang } from "../../../components/String/String";
 import moment from "moment";
 import { checkBP } from "../../../api/services/permissionService";
-// import * as faceapi from 'face-api.js'; // Removed for dynamic import
+import { SaveExcel } from "../../../api/services/excelService";
+
+// Precision Subcomponents
+import PrecisionUserHeader from "./PrecisionUserManager/PrecisionUserHeader";
+import PrecisionUserToolbar from "./PrecisionUserManager/PrecisionUserToolbar";
+import { getColumnsUserManager } from "./PrecisionUserManager/PrecisionUserColumns";
+import PrecisionUserProfilePanel from "./PrecisionUserManager/PrecisionUserProfilePanel";
+import PrecisionUserModal from "./PrecisionUserManager/PrecisionUserModal";
+
+const initialUserState: EmployeeTableData = {
+  id: "",
+  EMPL_NO: "",
+  CMS_ID: "",
+  FIRST_NAME: "",
+  MIDLAST_NAME: "",
+  FULL_NAME: "",
+  DOB: moment().format("YYYY-MM-DD"),
+  HOMETOWN: "",
+  ADD_PROVINCE: "",
+  ADD_DISTRICT: "",
+  ADD_COMMUNE: "",
+  ADD_VILLAGE: "",
+  PHONE_NUMBER: "",
+  WORK_START_DATE: moment().format("YYYY-MM-DD"),
+  PASSWORD: "",
+  EMAIL: "",
+  REMARK: "",
+  ONLINE_DATETIME: "",
+  CTR_CD: "",
+  SEX_CODE: 0,
+  SEX_NAME: "",
+  SEX_NAME_KR: "",
+  WORK_STATUS_CODE: 1,
+  WORK_STATUS_NAME: "",
+  WORK_STATUS_NAME_KR: "",
+  FACTORY_CODE: 1,
+  FACTORY_NAME: "",
+  FACTORY_NAME_KR: "",
+  JOB_CODE: 1,
+  JOB_NAME: "",
+  JOB_NAME_KR: "",
+  POSITION_CODE: 3,
+  POSITION_NAME: "",
+  POSITION_NAME_KR: "",
+  WORK_SHIFT_CODE: 0,
+  WORK_SHIF_NAME: "",
+  WORK_SHIF_NAME_KR: "",
+  WORK_POSITION_CODE: 1,
+  WORK_POSITION_NAME: "",
+  WORK_POSITION_NAME_KR: "",
+  ATT_GROUP_CODE: 0,
+  SUBDEPTCODE: 0,
+  SUBDEPTNAME: "",
+  SUBDEPTNAME_KR: "",
+  MAINDEPTCODE: 0,
+  MAINDEPTNAME: "",
+  MAINDEPTNAME_KR: "",
+  NV_CCID: 0,
+  EMPL_IMAGE: "",
+  RESIGN_DATE: moment().format("YYYY-MM-DD"),
+};
 
 const UserManager = () => {
- 
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-
-  
-  
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [openDialog, setOpenDialog] = useState(false);
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
   const [resigned_check, setResignedCheck] = useState(true);
   const [empl_info, setEmplInfo] = useState<Array<EmployeeTableData>>([]);
   const [workpositionload, setWorkPositionLoad] = useState<Array<any>>([]);
+  const [selectedRows, setSelectedRows] = useState<EmployeeTableData>(initialUserState);
+  const [quickFilterText, setQuickFilterText] = useState("");
+
   const loadWorkPosition = async () => {
-    let kq: any[] = [];
-    kq = await f_loadWorkPositionList();
-//    console.log(kq);
-    setWorkPositionLoad(kq);
-  }
-  const loadEmplInfo = async () => {
-    let kq: EmployeeTableData[] = [];
-    kq = await f_getEmployeeList();
-    setEmplInfo(kq);
-    if (kq.length > 0) {
-      Swal.fire('Thông báo', 'Có ' + kq.length + ' nhân viên', 'success');
-    }
-    else {
-      Swal.fire('Thông báo', 'Không có nhân viên nào', 'error');
-    }
-  }
-  const [selectedRows, setSelectedRows] = useState<EmployeeTableData>({
-    id: "",
-    EMPL_NO: "",
-    CMS_ID: "",
-    FIRST_NAME: "",
-    MIDLAST_NAME: "",
-    FULL_NAME: "",
-    DOB: moment().format("YYYY-MM-DD"),
-    HOMETOWN: "",
-    ADD_PROVINCE: "",
-    ADD_DISTRICT: "",
-    ADD_COMMUNE: "",
-    ADD_VILLAGE: "",
-    PHONE_NUMBER: "",
-    WORK_START_DATE:  moment().format("YYYY-MM-DD"),
-    PASSWORD: "",
-    EMAIL: "",
-    REMARK: "",
-    ONLINE_DATETIME: "",
-    CTR_CD: "",
-    SEX_CODE: 0,
-    SEX_NAME: "",
-    SEX_NAME_KR: "",
-    WORK_STATUS_CODE: 0,
-    WORK_STATUS_NAME: "",
-    WORK_STATUS_NAME_KR: "",
-    FACTORY_CODE: 1,
-    FACTORY_NAME: "",
-    FACTORY_NAME_KR: "",
-    JOB_CODE: 0,
-    JOB_NAME: "",
-    JOB_NAME_KR: "",
-    POSITION_CODE: 0,
-    POSITION_NAME: "",
-    POSITION_NAME_KR: "",
-    WORK_SHIFT_CODE: 0,
-    WORK_SHIF_NAME: "",
-    WORK_SHIF_NAME_KR: "",
-    WORK_POSITION_CODE: 1,
-    WORK_POSITION_NAME: "",
-    WORK_POSITION_NAME_KR: "",
-    ATT_GROUP_CODE: 0,
-    SUBDEPTCODE: 0,
-    SUBDEPTNAME: "",
-    SUBDEPTNAME_KR: "",
-    MAINDEPTCODE: 0,
-    MAINDEPTNAME: "",
-    MAINDEPTNAME_KR: "",
-    NV_CCID: 0,
-    EMPL_IMAGE: "",
-    RESIGN_DATE:  moment().format("YYYY-MM-DD"),
-  });
-  const columns = [
-    {
-      field: 'EMPL_NO', headerName: 'ERP_ID', resizable: true, editable: false, width: 90, headerCheckboxSelection: true, checkboxSelection: true, cellRenderer: (params: any) => {
-        return <span style={{ color: 'blue', fontWeight: 'bold' }}>{params.value}</span>
-      }
-    },
-    { field: 'NV_CCID', headerName: 'NV_CCID', resizable: true, editable: false, width: 50 },
-    { field: 'CMS_ID', headerName: 'NS_ID', resizable: true, editable: false, width: 60 },
-    {
-      field: 'IMAGE', headerName: 'IMAGE', resizable: true, editable: false, width: 50, cellRenderer: (params: any) => {
-        if (params.data.EMPL_IMAGE === "Y")
-          return (
-            <img
-              width={50}
-              height={50}
-              src={"/Picture_NS/NS_" + params.data.EMPL_NO + ".jpg"}
-              alt={selectedRows.EMPL_NO}
-            ></img>
-          )
-        else {
-          return (
-            <img
-              width={50}
-              height={50}
-              src={"/noimage.webp"}
-              alt={selectedRows.EMPL_NO}
-            ></img>
-          )
-        }
-      }
-    },
-    { field: 'MIDLAST_NAME', headerName: 'MIDLAST_NAME', resizable: true, editable: false, width: 90 },
-    { field: 'FIRST_NAME', headerName: 'FIRST_NAME', resizable: true, editable: false, width: 70 },
-    {
-      field: 'FULL_NAME', headerName: 'FULL_NAME', resizable: true, editable: false, width: 100, cellRenderer: (params: any) => {
-        return <span style={{ color: 'green', fontWeight: 'bold' }}>{params.value}</span>
-      }
-    },
-    { field: 'SUBDEPTNAME', headerName: 'SUBDEPT', resizable: true, editable: false, width: 60 },
-    { field: 'MAINDEPTNAME', headerName: 'MAINDEPT', resizable: true, editable: false, width: 60 },
-    { field: 'WORK_POSITION_NAME', headerName: 'WORK_POSITION', resizable: true, editable: false, width: 80 },
-    { field: 'POSITION_NAME', headerName: 'POSITION', resizable: true, editable: false, width: 80 },
-    { field: 'JOB_NAME', headerName: 'JOB_NAME', resizable: true, editable: false, width: 60 },
-    { field: 'WORK_SHIF_NAME', headerName: 'WORK_SHIFT', resizable: true, editable: false, width: 80 },
-    { field: 'DOB', headerName: 'DOB', resizable: true, editable: false, width: 70 },
-    { field: 'HOMETOWN', headerName: 'HOMETOWN', resizable: true, editable: false, width: 150 },
-    { field: 'ADD_PROVINCE', headerName: 'ADD_PROVINCE', resizable: true, editable: false, width: 80 },
-    { field: 'ADD_DISTRICT', headerName: 'ADD_DISTRICT', resizable: true, editable: false, width: 80 },
-    { field: 'ADD_COMMUNE', headerName: 'ADD_COMMUNE', resizable: true, editable: false, width: 80 },
-    { field: 'ADD_VILLAGE', headerName: 'ADD_VILLAGE', resizable: true, editable: false, width: 80 },
-    { field: 'PHONE_NUMBER', headerName: 'PHONE_NUMBER', resizable: true, editable: false, width: 80 },
-    { field: 'WORK_START_DATE', headerName: 'NGAY_VAO', resizable: true, editable: false, width: 60 },
-    { field: 'PASSWORD', headerName: 'PASSWORD', resizable: true, editable: false, width: 70 },
-    { field: 'EMAIL', headerName: 'EMAIL', resizable: true, editable: false, width: 100 },
-    { field: 'REMARK', headerName: 'REMARK', resizable: true, editable: false, width: 100 },
-    { field: 'ONLINE_DATETIME', headerName: 'ONLINE_DATETIME', resizable: true, editable: false, width: 100 },
-    { field: 'SEX_NAME', headerName: 'SEX', resizable: true, editable: false, width: 50 },
-    { field: 'WORK_STATUS_NAME', headerName: 'WORK_STATUS', resizable: true, editable: false, width: 80 },
-    { field: 'FACTORY_NAME', headerName: 'FACTORY_NAME', resizable: true, editable: false, width: 80 },
-    { field: 'ATT_GROUP_CODE', headerName: 'ATT_GROUP', resizable: true, editable: false, width: 60 },
-    { field: 'RESIGN_DATE', headerName: 'RESIGN_DATE', resizable: true, editable: false, width: 100 },
-  ];
-  const setCustInfo = (keyname: string, value: any) => {
-    let tempCustInfo: EmployeeTableData = { ...selectedRows, [keyname]: value };
-    //console.log(tempcodefullinfo);
-    setSelectedRows(tempCustInfo);
+    let kq: any[] = await f_loadWorkPositionList();
+    setWorkPositionLoad(kq || []);
   };
-  const createNewUser = async () => {
-    setSelectedRows({
-      id: "",
-      EMPL_NO: "",
-      CMS_ID: "",
-      FIRST_NAME: "",
-      MIDLAST_NAME: "",
-      FULL_NAME: "",
-      DOB: "",
-      HOMETOWN: "",
-      ADD_PROVINCE: "",
-      ADD_DISTRICT: "",
-      ADD_COMMUNE: "",
-      ADD_VILLAGE: "",
-      PHONE_NUMBER: "",
-      WORK_START_DATE: "",
-      PASSWORD: "",
-      EMAIL: "",
-      REMARK: "",
-      ONLINE_DATETIME: "",
-      CTR_CD: "",
-      SEX_CODE: 0,
-      SEX_NAME: "",
-      SEX_NAME_KR: "",
-      WORK_STATUS_CODE: 0,
-      WORK_STATUS_NAME: "",
-      WORK_STATUS_NAME_KR: "",
-      FACTORY_CODE: 0,
-      FACTORY_NAME: "",
-      FACTORY_NAME_KR: "",
-      JOB_CODE: 0,
-      JOB_NAME: "",
-      JOB_NAME_KR: "",
-      POSITION_CODE: 0,
-      POSITION_NAME: "",
-      POSITION_NAME_KR: "",
-      WORK_SHIFT_CODE: 0,
-      WORK_SHIF_NAME: "",
-      WORK_SHIF_NAME_KR: "",
-      WORK_POSITION_CODE: 0,
-      WORK_POSITION_NAME: "",
-      WORK_POSITION_NAME_KR: "",
-      ATT_GROUP_CODE: 0,
-      SUBDEPTCODE: 0,
-      SUBDEPTNAME: "",
-      SUBDEPTNAME_KR: "",
-      MAINDEPTCODE: 0,
-      MAINDEPTNAME: "",
-      MAINDEPTNAME_KR: "",
-      NV_CCID: 0,
-      EMPL_IMAGE: "",
-      RESIGN_DATE: "",
+
+  const loadEmplInfo = async () => {
+    setLoading(true);
+    let kq: EmployeeTableData[] = await f_getEmployeeList();
+    setEmplInfo(kq || []);
+    setLoading(false);
+    if (kq && kq.length > 0) {
+      if (!selectedRows.EMPL_NO) {
+        setSelectedRows(kq[0]);
+      }
+      Swal.fire("Thông báo", `Đã tải ${kq.length} nhân viên`, "success");
+    } else {
+      Swal.fire("Thông báo", "Không có nhân viên nào", "error");
+    }
+  };
+
+  const setCustInfo = (keyname: string, value: any) => {
+    setSelectedRows((prev) => ({ ...prev, [keyname]: value }));
+  };
+
+  const createNewUser = () => {
+    setSelectedRows({ ...initialUserState, DOB: "", WORK_START_DATE: "", RESIGN_DATE: "" });
+  };
+
+  const uploadFile2 = async (fileToUpload: File) => {
+    if (!fileToUpload) {
+      Swal.fire("Thông báo", "Chọn file trước", "error");
+      return;
+    }
+    if (!selectedRows.EMPL_NO) {
+      Swal.fire("Thông báo", "Chọn nhân viên trước", "error");
+      return;
+    }
+    const empl_no = selectedRows.EMPL_NO;
+    checkBP(getUserData(), ["NHANSU"], ["ALL"], ["ALL"], async () => {
+      uploadQuery(fileToUpload, "NS_" + empl_no + ".jpg", "Picture_NS")
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            generalQuery("update_empl_image", { EMPL_NO: empl_no, EMPL_IMAGE: "Y" })
+              .then((res) => {
+                if (res.data.tk_status !== "NG") {
+                  dispatch(changeUserData({ ...getUserData(), EMPL_IMAGE: "Y" }));
+                  setSelectedRows((prev) => ({ ...prev, EMPL_IMAGE: "Y" }));
+                  setEmplInfo((prev) =>
+                    prev.map((e) => (e.EMPL_NO === empl_no ? { ...e, EMPL_IMAGE: "Y" } : e))
+                  );
+                  Swal.fire("Thông báo", "Upload avatar thành công", "success");
+                } else {
+                  Swal.fire("Thông báo", "Upload avatar thất bại", "error");
+                }
+              });
+          } else {
+            Swal.fire("Thông báo", "Upload file thất bại: " + response.data.message, "error");
+          }
+        })
+        .catch((err) => console.log(err));
     });
   };
-  const glbLang: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.lang
-  );
-  const dispatch = useDispatch();
-  const [file, setFile] = useState<any>(null);
-  const uploadFile2 = async (empl_no: string) => {
-    if (file !== null && file !== undefined) {
-      if (selectedRows.EMPL_NO !== "") {
-        uploadQuery(file, "NS_" + empl_no + ".jpg", "Picture_NS")
-          .then((response) => {
-            console.log("resopone upload:", response.data);
-            if (response.data.tk_status !== "NG") {
-              generalQuery("update_empl_image", {
-                EMPL_NO: empl_no,
-                EMPL_IMAGE: "Y",
-              })
-                .then((response) => {
-                  if (response.data.tk_status !== "NG") {
-                    dispatch(changeUserData({ ...getUserData(), EMPL_IMAGE: "Y" }));
-                    Swal.fire("Thông báo", "Upload avatar thành công", "success");
-                  } else {
-                    Swal.fire("Thông báo", "Upload avatar thất bại", "error");
-                  }
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
-            } else {
-              Swal.fire(
-                "Thông báo",
-                "Upload file thất bại:" + response.data.message,
-                "error"
-              );
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        Swal.fire("Thông báo", "Chọn nhân viên trước", "error");
-      }
+
+  const handleAddEmployee = async () => {
+    const doAdd = async () => {
+      await f_addEmployee(selectedRows);
+      loadEmplInfo();
+      setOpenDialog(false);
+    };
+    if (getCompany() !== "CMS") {
+      checkBP(getUserData(), ["NHANSU"], ["ALL"], ["ALL"], doAdd);
     } else {
-      Swal.fire("Thông báo", "Chọn file trước", "error");
+      doAdd();
     }
   };
-  const emplAGTable = useMemo(() => {
-    return (
-      <AGTable
-        suppressRowClickSelection={false}
-        rowHeight={50}
-        toolbar={
-          <div style={{ fontSize: '0.7rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                loadEmplInfo();
-              }}
-            >
-              <BiLoaderCircle color="#06cc70" size={15} />
-              Load Data
-            </IconButton>
-            <label>
-              <span>Trừ người đã nghỉ_</span>
-              <input
-                type="checkbox"
-                name="alltimecheckbox"
-                checked={resigned_check}
-                onChange={() => setResignedCheck(!resigned_check)}
-              ></input>
-            </label>
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                handleOpenDialog();
-              }}
-            >
-              <MdAdd color="#1c44f5" size={15} />
-              Add/Update
-            </IconButton>
-          </div>}
-        columns={columns}
-        data={resigned_check ? empl_info.filter((e) => e.WORK_STATUS_CODE === 1) : empl_info}
-        onCellEditingStopped={(params: any) => {
-          //console.log(e.data)
-        }} onRowClick={(params: any) => {
-          setSelectedRows(params.data);
-          //console.log(e.data) 
-        }} onSelectionChange={(params: any) => {
-          //console.log(params)
-          //setSelectedRows(params!.api.getSelectedRows()[0]);
-          //console.log(e!.api.getSelectedRows())
-        }} onRowDoubleClick={(params: any) => {
-          handleOpenDialog();
-        }}
-      />
-    )
-  }, [empl_info, resigned_check])
+
+  const handleUpdateEmployee = async () => {
+    const doUpdate = async () => {
+      await f_updateEmployee(selectedRows);
+      loadEmplInfo();
+      setOpenDialog(false);
+    };
+    if (getCompany() !== "CMS") {
+      checkBP(getUserData(), ["NHANSU"], ["ALL"], ["ALL"], doUpdate);
+    } else {
+      doUpdate();
+    }
+  };
+
+  // Face API Handlers
+  const extractEmbedding = async (imageUrl: string) => {
+    if (!imageUrl) {
+      Swal.fire("Thông báo", "Vui lòng nhập URL ảnh!", "error");
+      return;
+    }
+    setLoading(true);
+    try {
+      const faceapi = await import("face-api.js");
+      const img = await faceapi.fetchImage(imageUrl);
+      const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+      if (!detections) {
+        Swal.fire("Thông báo", "Không tìm thấy khuôn mặt trong ảnh!", "error");
+        setLoading(false);
+        return;
+      }
+      const embedding = Array.from(detections.descriptor);
+      const buffer = new ArrayBuffer(embedding.length * 4);
+      const floatArray = new Float32Array(buffer);
+      embedding.forEach((val, i) => (floatArray[i] = val));
+      const byteArray = new Uint8Array(buffer);
+      let kq: boolean = await f_updateFaceID({ EMPL_NO: selectedRows.EMPL_NO, FACE_ID: byteArray });
+      if (kq) {
+        Swal.fire("Thông báo", "Lưu embedding khuôn mặt thành công!", "success");
+      } else {
+        Swal.fire("Thông báo", "Lưu embedding thất bại!", "error");
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Thông báo", "Lỗi khi trích xuất embedding!", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const checkEmbedding = async (imageUrl: string) => {
+    if (!imageUrl) {
+      Swal.fire("Thông báo", "Vui lòng nhập URL ảnh!", "error");
+      return;
+    }
+    setLoading(true);
+    try {
+      const faceapi = await import("face-api.js");
+      const img = await faceapi.fetchImage(imageUrl);
+      const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+      if (!detections) {
+        Swal.fire("Thông báo", "Không tìm thấy khuôn mặt trong ảnh!", "error");
+        setLoading(false);
+        return;
+      }
+      const embedding = Array.from(detections.descriptor);
+      let kq: any = await f_recognizeFaceID({ FACE_ID: embedding });
+      if (kq.tk_status !== "NG") {
+        Swal.fire("Thông báo", "Xin chào " + kq.data.EMPL_NO, "success");
+      } else {
+        Swal.fire("Thông báo", kq.message, "error");
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Thông báo", "Lỗi khi nhận diện khuôn mặt!", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Data Filtering
+  const filteredData = useMemo(() => {
+    let data = resigned_check
+      ? empl_info.filter((e) => e.WORK_STATUS_CODE === 1)
+      : empl_info;
+
+    if (quickFilterText.trim()) {
+      const kw = quickFilterText.toLowerCase().trim();
+      data = data.filter(
+        (item) =>
+          item.EMPL_NO?.toLowerCase().includes(kw) ||
+          item.FULL_NAME?.toLowerCase().includes(kw) ||
+          item.CMS_ID?.toLowerCase().includes(kw) ||
+          item.PHONE_NUMBER?.toLowerCase().includes(kw) ||
+          item.SUBDEPTNAME?.toLowerCase().includes(kw)
+      );
+    }
+    return data;
+  }, [empl_info, resigned_check, quickFilterText]);
+
+  // Excel export
+  const handleExportEX1 = () => SaveExcel(filteredData, "DS_NhanVien_Filtered");
+  const handleExportEX2 = () => SaveExcel(empl_info, "DS_NhanVien_Full");
+
   useEffect(() => {
     loadEmplInfo();
     loadWorkPosition();
   }, []);
 
-   const loadModels = async () => {
-      const faceapi = await import('face-api.js');
-      try {
-        await Promise.all([
-          faceapi.nets.ssdMobilenetv1.loadFromUri('/models'), // Model detect mặt
-          faceapi.nets.faceRecognitionNet.loadFromUri('/models'), // Model trích xuất embedding
-          faceapi.nets.faceLandmark68Net.loadFromUri('/models'), // Optional: landmarks
-        ]);
-        console.log('Models loaded successfully');
-        Swal.fire('Thông báo', 'Tải models thành công!', 'success');
-      } catch (error) {
-        console.error('Error loading models:', error);
-        Swal.fire('Thông báo', 'Không tải được models!', 'error');
-        //message.error('Không tải được models!');
-      }
-    };
-  // Load face-api.js models khi component mount
-  useEffect(() => {
-   
-    loadModels();
-  }, []);
+  const columns = useMemo(() => getColumnsUserManager(), []);
 
-  // Hàm trích xuất face embedding từ URL ảnh
-  const extractEmbedding = async (imageUrl: string) => {
-    const faceapi = await import('face-api.js');
-    console.log("imageUrl",imageUrl);
-    if (!imageUrl) {
-      //message.error('Vui lòng nhập URL ảnh!');
-      Swal.fire('Thông báo', 'Vui lòng nhập URL ảnh!', 'error');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      // Tạo img element để load ảnh
-      const img = await faceapi.fetchImage(imageUrl); // Fetch ảnh từ server
-      // Detect khuôn mặt và trích xuất embedding
-      const detections = await faceapi
-        .detectSingleFace(img)
-        .withFaceLandmarks()
-        .withFaceDescriptor();
-
-      if (!detections) {
-        Swal.fire('Thông báo', 'Không tìm thấy khuôn mặt trong ảnh!', 'error');
-        setLoading(false);
-        return;
-      }
-
-      // Lấy embedding (vector 128D)
-      const embedding = Array.from(detections.descriptor); // Chuyển Float32Array thành array thường
-      console.log('Embedding:', embedding);
-      Swal.fire('Embedding', embedding.join(','));
-      const buffer = new ArrayBuffer(embedding.length * 4);
-      const floatArray = new Float32Array(buffer);
-      embedding.forEach((val, i) => floatArray[i] = val);
-      const byteArray = new Uint8Array(buffer);
-      console.log('byteArray',byteArray);
-      let kq: boolean = await f_updateFaceID({EMPL_NO: selectedRows.EMPL_NO, FACE_ID: byteArray});
-      if (kq) {
-        Swal.fire('Thông báo', 'Lưu embedding thành công!', 'success');
-      } else {
-        Swal.fire('Thông báo', 'Lưu embedding thất bại!', 'error');
-      }
-      //Swal.fire('byteArray',byteArray.join(','));
-
-      // Gửi embedding lên server (mock API)
-      /* const response = await axios.post('http://localhost:3001/users', {
-        name: 'Tên User', // Đại ca thay bằng tên từ form
-        faceEncoding: JSON.stringify(embedding), // Lưu embedding dưới dạng string
-      }); */
-
-      /* Swal.fire('Thông báo', 'Trích xuất và lưu embedding thành công!', 'success');
-      console.log('Response from server:', response.data); */
-    } catch (error) {
-      console.error('Error extracting embedding:', error);
-      Swal.fire('Thông báo', 'Lỗi khi trích xuất embedding!', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
-  const checkEmbedding = async (imageUrl: string) => {
-    const faceapi = await import('face-api.js');
-    console.log("imageUrl",imageUrl);
-    if (!imageUrl) {
-      //message.error('Vui lòng nhập URL ảnh!');
-      Swal.fire('Thông báo', 'Vui lòng nhập URL ảnh!', 'error');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      // Tạo img element để load ảnh
-      const img = await faceapi.fetchImage(imageUrl); // Fetch ảnh từ server
-      // Detect khuôn mặt và trích xuất embedding
-      const detections = await faceapi
-        .detectSingleFace(img)
-        .withFaceLandmarks()
-        .withFaceDescriptor();
-
-      if (!detections) {
-        Swal.fire('Thông báo', 'Không tìm thấy khuôn mặt trong ảnh!', 'error');
-        setLoading(false);
-        return;
-      }
-
-      // Lấy embedding (vector 128D)
-      const embedding = Array.from(detections.descriptor); // Chuyển Float32Array thành array thường
-      console.log('Embedding:', embedding);
-      Swal.fire('Embedding', embedding.join(','));
-      let kq: any = await f_recognizeFaceID({FACE_ID: embedding});
-      console.log('kq',kq.data.EMPL_NO);
-      if (kq.tk_status !== "NG") {
-        Swal.fire('Thông báo','Xin chào ' + kq.data.EMPL_NO, 'success');
-      } else {
-        Swal.fire('Thông báo', kq.message, 'error');
-      }
-      //Swal.fire('byteArray',byteArray.join(','));
-
-      // Gửi embedding lên server (mock API)
-      /* const response = await axios.post('http://localhost:3001/users', {
-        name: 'Tên User', // Đại ca thay bằng tên từ form
-        faceEncoding: JSON.stringify(embedding), // Lưu embedding dưới dạng string
-      }); */
-
-      /* Swal.fire('Thông báo', 'Trích xuất và lưu embedding thành công!', 'success');
-      console.log('Response from server:', response.data); */
-    } catch (error) {
-      console.error('Error extracting embedding:', error);
-      Swal.fire('Thông báo', 'Lỗi khi trích xuất embedding!', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
   return (
-    <div className="user_manager">
-      <div className="tracuuDataInspection">
-        <CustomDialog
-          isOpen={openDialog}
-          onClose={handleCloseDialog}
-          title={`Add/Update Employee (EMPL_NO: ${selectedRows?.EMPL_NO})`}
-          content={<div className="forminput" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-            <div className="maindeptinputbox">
-              <label>
-                {getlang("maerp", glbLang!)}{" "}
-                <input
-                  type="text"
-                  value={selectedRows.EMPL_NO}
-                  onChange={(e) => setCustInfo("EMPL_NO", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("manhansu", glbLang!)}{" "}
-                <input
-                  type="text"
-                  value={selectedRows.CMS_ID}
-                  onChange={(e) => setCustInfo("CMS_ID", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("machamcong", glbLang!)}
-                <input
-                  name="gioitinh"
-                  value={selectedRows.NV_CCID}
-                  onChange={(e) => setCustInfo("NV_CCID", Number(e.target.value))}
-                ></input>
-              </label>
-              <label>
-                {getlang("ten", glbLang!)}{" "}
-                <input
-                  type="text"
-                  value={selectedRows.FIRST_NAME}
-                  onChange={(e) => setCustInfo("FIRST_NAME", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("hovadem", glbLang!)}
-                <input
-                  type="text"
-                  value={selectedRows.MIDLAST_NAME}
-                  onChange={(e) => setCustInfo("MIDLAST_NAME", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("ngaythangnamsinh", glbLang!)}
-                <input
-                  type="date"
-                  value={selectedRows.DOB.slice(0, 10)}
-                  onChange={(e) => setCustInfo("DOB", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("quequan", glbLang!)}
-                <input
-                  type="text"
-                  value={selectedRows.HOMETOWN}
-                  onChange={(e) => setCustInfo("HOMETOWN", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("gioitinh", glbLang!)}
-                <select
-                  name="gioitinh"
-                  value={selectedRows.SEX_CODE}
-                  onChange={(e) => setCustInfo("SEX_CODE", Number(e.target.value))}
-                >
-                  <option value={0}>Nữ</option>
-                  <option value={1}>Nam</option>
-                </select>
-              </label>
-            </div>
-            <div className="maindeptinputbox">
-              <label>
-                {getlang("tinhthanhpho", glbLang!)}
-                <input
-                  type="text"
-                  value={selectedRows.ADD_PROVINCE}
-                  onChange={(e) => setCustInfo("ADD_PROVINCE", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("quanhuyen", glbLang!)}
-                <input
-                  type="text"
-                  value={selectedRows.ADD_DISTRICT}
-                  onChange={(e) => setCustInfo("ADD_DISTRICT", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("xathitran", glbLang!)}
-                <input
-                  type="text"
-                  value={selectedRows.ADD_COMMUNE}
-                  onChange={(e) => setCustInfo("ADD_COMMUNE", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("thonxom", glbLang!)}
-                <input
-                  type="text"
-                  value={selectedRows.ADD_VILLAGE}
-                  onChange={(e) => setCustInfo("ADD_VILLAGE", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("sodienthoai", glbLang!)}
-                <input
-                  type="text"
-                  value={selectedRows.PHONE_NUMBER}
-                  onChange={(e) => setCustInfo("PHONE_NUMBER", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("ngaybatdaulamviec", glbLang!)}
-                <input
-                  type="date"
-                  value={selectedRows.WORK_START_DATE.slice(0, 10)}
-                  onChange={(e) => setCustInfo("WORK_START_DATE", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("ngaynghiviec", glbLang!)}
-                <input
-                  disabled={selectedRows.WORK_STATUS_CODE !== 0}
-                  type="date"
-                  value={selectedRows.RESIGN_DATE.slice(0, 10)}
-                  onChange={(e) => setCustInfo("RESIGN_DATE", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("password", glbLang!)}
-                <input
-                  type="password"
-                  value={selectedRows.PASSWORD}
-                  onChange={(e) => setCustInfo("PASSWORD", e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="maindeptinputbox">
-              <label>
-                {getlang("email", glbLang!)}
-                <input
-                  type="text"
-                  value={selectedRows.EMAIL}
-                  onChange={(e) => setCustInfo("EMAIL", e.target.value)}
-                ></input>
-              </label>
-              <label>
-                {getlang("vitrilamviec", glbLang!)}
-                <select
-                  name="vitrilamviec"
-                  value={selectedRows.WORK_POSITION_CODE}
-                  onChange={(e) => setCustInfo("WORK_POSITION_CODE", Number(e.target.value))}
-                >
-                  {workpositionload.map((element, index) => (
-                    <option
-                      key={index}
-                      value={element.WORK_POSITION_CODE}
-                    >
-                      {element.WORK_POSITION_NAME}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                {getlang("teamlamviec", glbLang!)}
-                <select
-                  name="calamviec"
-                  value={selectedRows.WORK_SHIFT_CODE}
-                  onChange={(e) => setCustInfo("WORK_SHIFT_CODE", Number(e.target.value))}
-                >
-                  <option value={0}>Hành chính</option>
-                  <option value={1}>TEAM 1</option>
-                  <option value={2}>TEAM 2</option>
-                </select>
-              </label>
-              <label>
-                {getlang("capbac", glbLang!)}
-                <select
-                  name="chucdanh"
-                  value={selectedRows.POSITION_CODE}
-                  onChange={(e) => setCustInfo("POSITION_CODE", Number(e.target.value))}
-                >
-                  <option value={0}>Manager</option>
-                  <option value={1}>AM</option>
-                  <option value={2}>Senior</option>
-                  <option value={3}>Staff</option>
-                  <option value={4}>No Pos</option>
-                </select>
-              </label>
-              <label>
-                {getlang("chucvu", glbLang!)}
-                <select
-                  name="chucvu"
-                  value={selectedRows.JOB_CODE}
-                  onChange={(e) => setCustInfo("JOB_CODE", Number(e.target.value))}
-                >
-                  <option value={1}>Dept Staff</option>
-                  <option value={2}>Leader</option>
-                  <option value={3}>Sub Leader</option>
-                  <option value={4}>Worker</option>
-                </select>
-              </label>
-              <label>
-                {getlang("nhamay", glbLang!)}
-                <select
-                  name="nhamay"
-                  value={selectedRows.FACTORY_CODE}
-                  onChange={(e) => setCustInfo("FACTORY_CODE", Number(e.target.value))}
-                >
-                  <option value={1}>Nhà máy 1</option>
-                  <option value={2}>Nhà máy 2</option>
-                </select>
-              </label>
-              <label>
-                {getlang("trangthailamviec", glbLang!)}
-                <select
-                  name="trangthailamviec"
-                  value={selectedRows.WORK_STATUS_CODE}
-                  onChange={(e) => setCustInfo("WORK_STATUS_CODE", Number(e.target.value))}
-                >
-                  <option value={0}>Đã nghỉ</option>
-                  <option value={1}>Đang làm</option>
-                  <option value={2}>Nghỉ sinh</option>
-                </select>
-              </label>
-            </div>
-          </div>}
-          actions={<div className="formbutton">
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0bb937' }} onClick={() => {
-              createNewUser();
-            }}>Clear</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f626da' }} onClick={async () => {
-              if (getCompany() !== "CMS") {
-                checkBP(
-                  getUserData(),
-                  ["NHANSU"],
-                  ["ALL"],
-                  ["ALL"],
-                  async () => {
-                    await f_addEmployee(selectedRows);
-                  }
-                );
-              } else {
-                await f_addEmployee(selectedRows);
-              }
-              loadEmplInfo();
-            }}>Add</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d19342' }} onClick={async () => {
-              if (getCompany() !== "CMS") {
-                checkBP(
-                  getUserData(),
-                  ["NHANSU"],
-                  ["ALL"],
-                  ["ALL"],
-                  async () => {
-                    await f_updateEmployee(selectedRows);
-                  }
-                );
-              } else {
-                await f_updateEmployee(selectedRows);
-              }
-              loadEmplInfo();
-            }}>Update</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d19342' }} onClick={async () => {
-              //await loadModels();
-              extractEmbedding("/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg");
-            }}>Train Face</Button>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d19342' }} onClick={async () => {
-              checkEmbedding("/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg");
-            }}>Check Face</Button>
-          </div>}
-        />
-        <div className="tracuuYCSXTable">{emplAGTable}</div>
-      </div>
-      <div className="updateform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-        <div className="emplpicture">
-          <div className="emplinfo" style={{ fontWeight: 'bold' }}>
-            {selectedRows.FULL_NAME} ({selectedRows.DOB})
-          </div>
-          <div className="emplinfo" style={{ fontStyle: 'italic' }}>
-            ({selectedRows.MAINDEPTNAME}- {selectedRows.SUBDEPTNAME})
-          </div>
-          {selectedRows.EMPL_IMAGE === "Y" && (
-            <img
-              width={220}
-              height={300}
-              src={"/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg"}
-              alt={selectedRows.EMPL_NO}
-            ></img>
-          )}
-          {selectedRows.EMPL_IMAGE !== "Y" && (
-            <img
-              width={220}
-              height={300}
-              src={"/noimage.webp"}
-              alt={selectedRows.EMPL_NO}
-            ></img>
-          )}
-          <div className="uploadavatardiv">
-            Change Avatar:
-            <input
-              accept=".jpg"
-              type="file"
-              onChange={(e: any) => {
-                setFile(e.target.files[0]);
-                console.log(e.target.files[0]);
+    <div className="precision-usermanager">
+      <PrecisionUserHeader
+        totalCount={empl_info.length}
+        filteredCount={filteredData.length}
+      />
+
+      <div className="precision-usermanager__dualGrid">
+        {/* LEFT: Data Grid Panel */}
+        <div className="precision-usermanager__leftPanel">
+          <PrecisionUserToolbar
+            resignedCheck={resigned_check}
+            setResignedCheck={setResignedCheck}
+            onLoadData={loadEmplInfo}
+            onOpenAddModal={() => setOpenDialog(true)}
+            onExportEX1={handleExportEX1}
+            onExportEX2={handleExportEX2}
+            onOpenPivot={() => SaveExcel(filteredData, "DiemDanh_Pivot_Raw")}
+            quickFilterText={quickFilterText}
+            setQuickFilterText={setQuickFilterText}
+            isLoading={loading}
+          />
+
+          <div className="precision-usermanager__gridContainer">
+            <AGTable
+              suppressRowClickSelection={false}
+              rowHeight={34}
+              headerHeight={32}
+              columns={columns}
+              data={filteredData}
+              onRowClick={(params: any) => setSelectedRows(params.data)}
+              onSelectionChange={(params: any) => {
+                const rows = params?.api?.getSelectedRows();
+                if (rows && rows.length > 0) {
+                  setSelectedRows(rows[0]);
+                }
               }}
+              onRowDoubleClick={() => setOpenDialog(true)}
             />
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                checkBP(
-                  getUserData(),
-                  ["NHANSU"],
-                  ["ALL"],
-                  ["ALL"],
-                  async () => {
-                    uploadFile2(selectedRows.EMPL_NO);
-                  }
-                );
-              }}
-            >
-              <AiOutlineCloudUpload color="yellow" size={15} />
-              Upload
-            </IconButton>
           </div>
         </div>
+
+        {/* RIGHT: Profile Detail Panel */}
+        <div className="precision-usermanager__rightPanel">
+          <PrecisionUserProfilePanel
+            selectedUser={selectedRows}
+            onUploadAvatar={uploadFile2}
+            onTrainFace={() =>
+              extractEmbedding("/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg")
+            }
+            onCheckFace={() =>
+              checkEmbedding("/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg")
+            }
+            isLoadingFace={loading}
+          />
+        </div>
       </div>
+
+      {/* Modal Add / Update */}
+      <PrecisionUserModal
+        isOpen={openDialog}
+        onClose={() => setOpenDialog(false)}
+        selectedUser={selectedRows}
+        setCustInfo={setCustInfo}
+        workpositionload={workpositionload}
+        onClear={createNewUser}
+        onAdd={handleAddEmployee}
+        onUpdate={handleUpdateEmployee}
+        onTrainFace={() =>
+          extractEmbedding("/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg")
+        }
+        onCheckFace={() =>
+          checkEmbedding("/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg")
+        }
+        isLoading={loading}
+      />
     </div>
   );
 };
+
 export default UserManager;
