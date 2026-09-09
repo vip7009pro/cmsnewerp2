@@ -1,5 +1,50 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-09 (Precision NavMenu: Google Stitch High-Density Enterprise Flyout Drawer Redesign)
+
+### Completed
+- **Sao Lưu An Toàn Toàn Bộ Mã Nguồn Cũ (100% Backup)**:
+  - `src/components/NavMenu/NavMenuNew.backup.tsx` (358 dòng).
+- **Thiết Kế Lại Toàn Diện Thanh Điều Hướng Flyout Drawer (`NavMenuNew.tsx`) Theo Google Stitch**:
+  - Dựa trên thiết kế HTML & ảnh mẫu Stitch Enterprise:
+    1. *Backdrop & Drawer Container Clean Glassmorphism*:
+       - Lớp phủ nền mờ xám dịu `navmenu-stitch-overlay` (`fixed inset-0`, `backdrop-filter: blur(2px)`).
+       - Khung menu trượt ra từ góc trái `navmenu-stitch-drawer` (`fixed top-2.5 bottom-2.5 left-2.5 w-[395px] max-w-[calc(100vw-20px)]`, `rounded-2xl`, bóng đổ đa tầng `shadow-2xl`, viền mảnh `border-slate-200/90`).
+       - Sử dụng `createPortal` khi ở chế độ `overlay` gắn thẳng vào `document.body` giúp menu hiển thị độc lập, không bị giới hạn chiều cao hoặc ảnh hưởng bởi `backdrop-filter` của Navbar. Hỗ trợ chế độ `sidebar` inline mượt mà khi chạy trong PVN sidebar.
+    2. *Thanh Header & Micro-Bar*:
+       - Micro-tag thương hiệu phía trên: badge `CMS • ENTERPRISE SUITE` với icon tia sét vàng/xanh.
+       - Nút đóng (X) bo góc mềm, hover nền xám.
+       - Tiêu đề chính `Navigation Menu` + Badge tròn tổng số nhóm `{N} groups` + Tag phiên bản `v2700 Pro`.
+       - Thanh tìm kiếm Omni-Search: icon kính lúp, placeholder trực quan `Tìm nhanh module, mã (NS1, KD, QC...)`, phím tắt badge font mono `⌘K` (hỗ trợ cả phím tắt toàn cục `Ctrl + K` / `Cmd + K` và phím `Esc` để đóng).
+    3. *Danh Sách Module Accordion Chuyên Sâu Từng Phân Hệ (`navMenuThemes.ts`)*:
+       - Tự động nhận diện và gán bảng màu nhận diện chuyên nghiệp cho 10+ phân hệ:
+         - **Nhân sự BP**: Xanh dương `#2563eb` (`NS1-8`).
+         - **HC-NS (Hành chính)**: Tím `#9333ea` (`HC1-6`).
+         - **Phòng Kinh Doanh**: Xanh lá Emerald `#059669` (`KD1-15`).
+         - **Phòng Mua Hàng**: Hồng cánh sen `#db2777` (`PU1-2`).
+         - **Quality Ctrl (QC - QA)**: Xanh tím Violet `#7c3aed` (`QC1-10`).
+         - **Nghiên Cứu & Phát Triển (RnD)**: Xanh Blue `#2563eb` (`RD1-8`).
+         - **Phân Xưởng Sản Xuất**: Đỏ `#dc2626` (`SX1-18`).
+         - **Bộ Phận Kho**: Chàm Indigo `#4f46e5` (`KO1-3`).
+         - **Bảng Truyền Thông**: Xanh Cyan `#0891b2` (`IF1-2`).
+         - **Công Cụ Trợ Giúp**: Xanh mòng két Teal `#0d9488` (`TL1-2`).
+       - Header nhóm: Avatar icon phân hệ bo góc 8px, tên nhóm in đậm, dòng chú thích tagline nghiệp vụ nhỏ bên dưới, badge số lượng mục (hoặc mã dải), mũi tên xoay mượt mà 180 độ.
+       - Danh sách chức năng con (Sub-items):
+         - Icon chức năng trong khung bo tròn 6px với nền màu pastel đồng bộ.
+         - Tên chức năng in đậm hover đổi màu xanh thương hiệu.
+         - Badge mã định danh chức năng font `JetBrains Mono` bo tròn viền xám (`NS1`, `NS2`, `KD1`...).
+         - Giữ nguyên 100% logic phân quyền `canUseTabMode(userData, subMenu.MENU_CODE)` và mở tab trong chế độ Multi-tab (`addTab`, `settabIndex`).
+    4. *Thanh Footer Hệ Thống*:
+       - Chỉ báo trạng thái kết nối realtime: Đèn xanh pulsing dot hiệu ứng ping + `Đồng bộ: CMS.VINA`.
+       - Nút thao tác nhanh `Ghim Sidebar` với icon bookmark/pin.
+    5. *Tối Ưu Giao Diện & SCSS Chuyên Biệt (`NavMenuNew.scss`)*:
+       - Thanh cuộn siêu mỏng 5px `navmenu-scrollbar`.
+       - Tương thích tốt trên cả Desktop và Mobile màn hình nhỏ.
+- **Sửa Lỗi Click Outside & Khắc Phục Lỗi Co Bẹp Nhóm (Squished Groups)**:
+  1. *Khắc phục lỗi bấm bất kỳ đâu trong menu đều bị tắt*: Bổ sung kiểm tra `if (document.getElementById("navigationDrawer")?.contains(target)) return;` trong `PrecisionHeader.tsx` (listener `pointerdown`) và chặn nổi bọt sự kiện `onPointerDown`/`onMouseDown` trên drawer. Đảm bảo chỉ khi bấm ra ngoài vùng menu hoặc bấm lớp phủ backdrop thì menu mới tắt đi, người dùng thao tác thoải mái bên trong menu.
+  2. *Khắc phục lỗi list bị rít rịt lại với nhau khi xóa search*: Đặt `flex: 0 0 auto; min-height: 46px;` cho `&__group`, `&__groupBtn`, `&__subLink` trong `NavMenuNew.scss`, loại bỏ hoàn toàn hiện tượng co bẹp (flex shrink) khi danh sách dài. Đồng thời tối ưu cơ chế Accordion: khi xóa sạch text search, menu tự động collapse gọn gàng về duy nhất nhóm đang hoạt động (active tab/route).
+- **Kiểm tra Vite Dev Server**: 100% các tệp liên quan (`NavMenuNew.tsx`, `PrecisionHeader.tsx`, `Home.tsx`) trả về HTTP 200 OK.
+
 ## Update - 2026-09-09 (Precision BangChamCong: Google Stitch High-Density Enterprise Redesign & Module Decomposition)
 
 ### Completed

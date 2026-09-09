@@ -416,22 +416,9 @@
 
   /* Flyout Menu Panel Container */
   &__menuPanel {
-    position: absolute;
-    top: 48px;
-    left: 8px;
-    width: min(380px, calc(100vw - 16px));
-    z-index: 1050;
-    display: flex;
-    justify-content: flex-start;
+    position: static;
+    display: contents;
     pointer-events: auto;
-    box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  &__menuPanel--search {
-    left: var(--precision-menu-left, 8px);
-    width: var(--precision-menu-width, min(420px, calc(100vw - 16px)));
   }
 }
 

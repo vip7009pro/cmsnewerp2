@@ -316,6 +316,10 @@ export default function PrecisionHeader({
       if (!target) return;
       if (headerRef.current?.contains(target)) return;
 
+      // Không đóng menu nếu click vào bên trong navigationDrawer
+      const drawer = document.getElementById("navigationDrawer");
+      if (drawer?.contains(target)) return;
+
       setInternalMenuOpenSource(null);
       dispatch(hideSidebar("2"));
     };
