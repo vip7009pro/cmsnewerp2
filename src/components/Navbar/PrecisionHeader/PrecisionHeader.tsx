@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -121,6 +121,9 @@ interface PrecisionHeaderProps {
   onSearchEnter?: () => void;
   onSidebarToggle?: (nextOpen: boolean) => void;
   sidebarOpen?: boolean;
+  onMenuSearchFocus?: () => void;
+  menuAutoFocusSearch?: boolean;
+  menuAlignedToSearch?: boolean;
 }
 
 export default function PrecisionHeader({
@@ -131,6 +134,9 @@ export default function PrecisionHeader({
   onSearchEnter: propOnSearchEnter,
   onSidebarToggle: propOnSidebarToggle,
   sidebarOpen: propSidebarOpen,
+  onMenuSearchFocus: propOnMenuSearchFocus,
+  menuAutoFocusSearch: propMenuAutoFocusSearch,
+  menuAlignedToSearch: propMenuAlignedToSearch,
 }: PrecisionHeaderProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -148,6 +154,9 @@ export default function PrecisionHeader({
   const [notificationAnchorEl, setNotificationAnchorEl] = useState<HTMLElement | null>(null);
   const [themeChoice, setThemeChoice] = useState("");
 
+  const [internalMenuOpenSource, setInternalMenuOpenSource] = useState<"navbar" | "menu" | null>(null);
+  const [searchMenuBounds, setSearchMenuBounds] = useState({ left: 0, width: 0 });
+
   const company: string = useSelector((state: RootState) => state.totalSlice.company);
   const lang: string | undefined = useSelector((state: RootState) => state.totalSlice.lang);
   const tabModeSwap: boolean = useSelector((state: RootState) => state.totalSlice.tabModeSwap);
@@ -159,6 +168,18 @@ export default function PrecisionHeader({
 
   const themeOptions = COMPANY_THEME_OPTIONS[company] ?? COMPANY_THEME_OPTIONS.default;
   const isMenuOpen = propSidebarOpen !== undefined ? propSidebarOpen : Boolean(sidebarStatus);
+
+  const effectiveAlignedToSearch =
+    propMenuAlignedToSearch !== undefined
+      ? propMenuAlignedToSearch
+      : internalMenuOpenSource === "navbar";
+
+  const effectiveAutoFocusSearch =
+    propMenuAutoFocusSearch !== undefined
+      ? propMenuAutoFocusSearch
+      : effectiveAlignedToSearch
+      ? false
+      : true;
 
   const navMenus = useMemo(() => getNavMenu(company, lang), [company, lang]);
 
@@ -175,9 +196,47 @@ export default function PrecisionHeader({
     }
   }, [dispatch, themeOptions]);
 
+  // Sync internal source when menu closes
+  useEffect(() => {
+    if (!isMenuOpen) {
+      setInternalMenuOpenSource(null);
+    }
+  }, [isMenuOpen]);
+
+  // Calculate search menu bounds aligned under search box
+  const updateSearchMenuBounds = useCallback(() => {
+    const searchAnchor = searchAnchorRef.current;
+    const headerElement = headerRef.current;
+    if (!searchAnchor || !headerElement) return;
+
+    const searchRect = searchAnchor.getBoundingClientRect();
+    const headerRect = headerElement.getBoundingClientRect();
+    setSearchMenuBounds({
+      left: Math.max(8, searchRect.left - headerRect.left),
+      width: Math.max(380, searchRect.width),
+    });
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!effectiveAlignedToSearch) {
+      setSearchMenuBounds({ left: 0, width: 0 });
+      return;
+    }
+
+    updateSearchMenuBounds();
+
+    const handleResize = () => updateSearchMenuBounds();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [effectiveAlignedToSearch, updateSearchMenuBounds, isMenuOpen, searchText]);
+
   // Toggle navigation panel
   const handleToggleMenu = useCallback(() => {
     const nextState = !isMenuOpen;
+    setInternalMenuOpenSource(nextState ? "menu" : null);
     propOnSidebarToggle?.(nextState);
     dispatch(toggleSidebar("2"));
   }, [dispatch, isMenuOpen, propOnSidebarToggle]);
@@ -257,6 +316,7 @@ export default function PrecisionHeader({
       if (!target) return;
       if (headerRef.current?.contains(target)) return;
 
+      setInternalMenuOpenSource(null);
       dispatch(hideSidebar("2"));
     };
 
@@ -420,14 +480,34 @@ export default function PrecisionHeader({
               onChange={(e) => {
                 const val = e.target.value;
                 handleSearchTextChange(val);
+                setInternalMenuOpenSource("navbar");
                 if (val.trim() && !isMenuOpen) {
-                  dispatch(toggleSidebar("2"));
+                  if (propOnSearchFocus) {
+                    propOnSearchFocus();
+                  } else {
+                    dispatch(toggleSidebar("2"));
+                  }
                 }
+                requestAnimationFrame(() => updateSearchMenuBounds());
               }}
               onFocus={() => {
-                propOnSearchFocus?.();
-                if (!isMenuOpen) {
+                setInternalMenuOpenSource("navbar");
+                if (propOnSearchFocus) {
+                  propOnSearchFocus();
+                } else if (!isMenuOpen) {
                   dispatch(toggleSidebar("2"));
+                }
+                requestAnimationFrame(() => updateSearchMenuBounds());
+              }}
+              onClick={() => {
+                if (!isMenuOpen) {
+                  setInternalMenuOpenSource("navbar");
+                  if (propOnSearchFocus) {
+                    propOnSearchFocus();
+                  } else {
+                    dispatch(toggleSidebar("2"));
+                  }
+                  requestAnimationFrame(() => updateSearchMenuBounds());
                 }
               }}
               onBlur={propOnSearchBlur}
@@ -437,6 +517,7 @@ export default function PrecisionHeader({
                   openFirstSearchResult();
                 } else if (e.key === "Escape") {
                   handleSearchTextChange("");
+                  setInternalMenuOpenSource(null);
                   if (isMenuOpen) {
                     dispatch(hideSidebar("2"));
                   }
@@ -555,14 +636,28 @@ export default function PrecisionHeader({
 
       {/* Flyout ERP Department Menu Panel */}
       {isMenuOpen && company !== "PVN" && (
-        <div className="precision-header__menuPanel">
+        <div
+          className={`precision-header__menuPanel ${effectiveAlignedToSearch ? "precision-header__menuPanel--search" : ""}`.trim()}
+          style={
+            effectiveAlignedToSearch && searchMenuBounds.width > 0
+              ? ({
+                  ["--precision-menu-left" as any]: `${searchMenuBounds.left}px`,
+                  ["--precision-menu-width" as any]: `${searchMenuBounds.width}px`,
+                } as React.CSSProperties)
+              : undefined
+          }
+        >
           <NavMenuNew
             mode="overlay"
-            onClose={() => dispatch(hideSidebar("2"))}
+            onClose={() => {
+              setInternalMenuOpenSource(null);
+              dispatch(hideSidebar("2"));
+            }}
             searchText={searchText}
             onSearchTextChange={handleSearchTextChange}
+            onSearchFocus={propOnMenuSearchFocus}
             onSearchEnter={openFirstSearchResult}
-            autoFocusSearch={false}
+            autoFocusSearch={effectiveAutoFocusSearch}
           />
         </div>
       )}

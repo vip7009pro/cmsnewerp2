@@ -1,5 +1,37 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-09 (Fix: Menu Auto-Focus on Open & Restored Navbar Omnibar Quick Search Dropdown Filter)
+
+### Completed
+- **Fixed Menu Cursor Auto-Focus on Open**:
+  - **Identified Root Causes**:
+    1. In `src/components/Navbar/PrecisionHeader/PrecisionHeader.tsx`, `autoFocusSearch={false}` was hardcoded when rendering `<NavMenuNew />`, completely disabling cursor auto-focus upon opening the menu via the hamburger button or `Ctrl + Space`.
+    2. In `src/components/NavMenu/NavMenuNew.tsx`, `searchInputRef.current?.focus()` fired immediately in a synchronous `useEffect`, which could be swallowed by browser focus transitions on the triggered button.
+  - **Comprehensive Fix**:
+    1. Updated `NavMenuNew.tsx`: added a 50ms `setTimeout` and `.select()` in `autoFocusSearch` effect, ensuring the input receives focus and selects existing text reliably on mount.
+    2. Updated `PrecisionHeader.tsx`: added `effectiveAutoFocusSearch` which evaluates to `true` whenever the menu is opened via the Menu button or `Ctrl + Space`, and `false` when opened via Omnibar search focus.
+- **Restored Navbar Omnibar Quick Search Dropdown & Real-Time Filtering**:
+  - **Identified Root Causes**:
+    1. *Double Dispatch Bug in `onFocus`*: In `PrecisionHeader.tsx`, `onFocus` called `propOnSearchFocus?.()` (which dispatched `toggleSidebar("2")` in `Home.tsx`), and then immediately checked `if (!isMenuOpen) dispatch(toggleSidebar("2"))`. Because Redux state changes are batched, `isMenuOpen` was still false in the current render pass, causing a double-toggle (`false -> true -> false`) that instantly closed the menu before it could open.
+    2. *Missing Search Alignment & Bounds Props*: `PrecisionHeaderProps` was missing `menuAutoFocusSearch`, `menuAlignedToSearch`, and `onMenuSearchFocus`. The menu bounds (`left` and `width` relative to the header) were never measured, and the CSS variables `--precision-menu-left` and `--precision-menu-width` along with `.precision-header__menuPanel--search` were never applied.
+    3. *Missing Dropdown Click Trigger*: Clicking an already focused search input when the menu had been closed did not re-open the dropdown.
+    4. *Blur Premature Reset*: `handleNavSearchBlur` in `Home.tsx` was resetting `menuOpenSource` to null on blur, breaking submenu clicks.
+  - **Comprehensive Fix**:
+    1. In `PrecisionHeader.tsx`:
+       - Added props `onMenuSearchFocus`, `menuAutoFocusSearch`, `menuAlignedToSearch` to `PrecisionHeaderProps`.
+       - Added `searchMenuBounds` state (`left`, `width`) and `updateSearchMenuBounds` callback measuring `searchAnchorRef` relative to `headerRef`.
+       - Implemented `useLayoutEffect` to dynamically recalculate menu alignment bounds on resize, open, and query changes.
+       - Eliminated double dispatch: `onFocus` now only calls `propOnSearchFocus?.()` if provided, and only dispatches `toggleSidebar("2")` if the prop is omitted.
+       - Added `onClick` handler on search input to re-open the dropdown if closed.
+       - Rendered `.precision-header__menuPanel--search` with `--precision-menu-left` and `--precision-menu-width` inline styles.
+    2. In `Home.tsx`:
+       - Passed `onMenuSearchFocus={handleMenuSearchFocus}`, `menuAutoFocusSearch={menuOpenSource !== "navbar"}`, and `menuAlignedToSearch={menuOpenSource === "navbar"}` to `<PrecisionHeader />`.
+       - Updated `handleNavSearchBlur` to only reset `menuOpenSource` when `sidebarStatus` is false, preventing click events on dropdown items from being lost.
+    3. In `NavBarNew.tsx`:
+       - Forwarded `onMenuSearchFocus`, `menuAutoFocusSearch`, and `menuAlignedToSearch` to `PrecisionHeader` for complete backward compatibility.
+- **Validation**:
+  - Vite compilation check returned HTTP 200 for all edited modules (`PrecisionHeader.tsx`, `NavMenuNew.tsx`, `Home.tsx`, `NavBarNew.tsx`).
+
 ## Update - 2026-09-09 (Fix: AG-Grid PO Table Collapsed Height = 0 & Parent Viewport Anchoring)
 
 ### Completed

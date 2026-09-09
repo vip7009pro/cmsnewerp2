@@ -22,6 +22,9 @@ export default function NavBarNew(props: NavBarNewProps) {
       onSearchBlur={props.onSearchBlur}
       onSearchEnter={props.onSearchEnter}
       onSidebarToggle={props.onSidebarToggle}
+      onMenuSearchFocus={props.onMenuSearchFocus}
+      menuAutoFocusSearch={props.menuAutoFocusSearch}
+      menuAlignedToSearch={props.menuAlignedToSearch}
     />
   );
 }

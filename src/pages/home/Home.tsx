@@ -286,10 +286,10 @@ function Home() {
   }, [dispatch, sidebarStatus]);
 
   const handleNavSearchBlur = useCallback(() => {
-    if (!menuSearchText.trim()) {
+    if (!sidebarStatus) {
       setMenuOpenSource(null);
     }
-  }, [menuSearchText]);
+  }, [sidebarStatus]);
 
   useEffect(() => {
     if (!isPVN) return;
@@ -384,6 +384,9 @@ function Home() {
             onSearchEnter={openFirstSearchResult}
             onSidebarToggle={(nextOpen) => setMenuOpenSource(nextOpen ? "menu" : null)}
             sidebarOpen={menuOpenSource === "menu" || Boolean(sidebarStatus)}
+            onMenuSearchFocus={handleMenuSearchFocus}
+            menuAutoFocusSearch={menuOpenSource !== "navbar"}
+            menuAlignedToSearch={menuOpenSource === "navbar"}
           />
         </div>
       )}

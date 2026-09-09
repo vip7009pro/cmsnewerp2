@@ -19,5 +19,7 @@
 - [x] Multi-Tab Bar overhaul: Redesign `tabsdiv` in `Home.tsx` & `home.scss` with modern Stitch UI (34px compact bar, slate-50 background, card-pill active tab with blue status dot, JetBrains Mono index chips, quick close-all toolbar, aligned `.component_element` top offset)
 - [x] Fix Multi-Tab Component Full-Width Stretch: remove `justify-content: center` in `home.scss` and force `align-items: stretch`, `width: 100%` on `.component_element` and `PrecisionPoManager`
 - [x] Fix PO AGTable height collapse bug in Multi-Tab mode: anchor `.component_element` with `bottom: 0` and `height: calc(100vh - 82px)`, establish full flex column height down to `.po-grid-body`, `.agtable`, `.ag-theme-quartz`, and `.ag-root-wrapper` (min-height: 250px)
+- [x] Fix Menu cursor auto-focus on open (Hamburger button & `Ctrl + Space`) via micro-delay focus and `effectiveAutoFocusSearch`
+- [x] Restore Navbar Omnibar quick search dropdown & real-time filtering: fix double-dispatch toggleSidebar bug, add dynamic search alignment bounds calculation (`--precision-menu-left`, `--precision-menu-width`), and enable click-to-open
 
 

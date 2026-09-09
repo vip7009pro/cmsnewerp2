@@ -114,7 +114,11 @@ const NavMenuNew = ({
 
   useEffect(() => {
     if (!autoFocusSearch) return;
-    searchInputRef.current?.focus();
+    const timer = setTimeout(() => {
+      searchInputRef.current?.focus();
+      searchInputRef.current?.select();
+    }, 50);
+    return () => clearTimeout(timer);
   }, [autoFocusSearch]);
 
   useEffect(() => {
