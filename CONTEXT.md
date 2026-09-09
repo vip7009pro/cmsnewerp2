@@ -32,14 +32,16 @@
      - Shift pay coefficients (150%, 200%, 210%, 300%), start time (1700), finish time (2000), auto OT hours calculation, work description.
   6. *Attendance Confirmation Form (`PrecisionAttendanceForm.tsx` - 153 lines)*:
      - Missing punch types (`GD`: check-in, `GS`: check-out, `CA`: both), incident date, actual working time, specific explanation.
-  7. *Audit History Ledger (`PrecisionDangKyHistory.tsx` - 236 lines)*:
-     - AGTable integrated with `mydiemdanhnhom` API.
+  7. *Leave Audit History Ledger (`PrecisionDangKyHistory.tsx` - 303 lines)*:
+     - AGTable integrated with `mydiemdanhnhom` API querying **All-Time** history (`2010-01-01` to end of next year).
+     - **Strict Leave Filtering**: Excludes all normal days without leave applications (`item.REASON_NAME === null && item.OFF_ID === null`); displays exclusively active leave requests.
+     - Sorted in descending order (latest leave dates on top).
+     - High-density columns: STT (`id`), Mã đơn (`OFF_ID` via `LeaveCodeCellRenderer`), Ngày nghỉ (`LeaveDateCellRenderer`), Thứ (`WeekdayCellRenderer` with bold red Sundays), Kiểu nghỉ (`LeaveTypeBadgeCellRenderer`), Ca nghỉ (`LeaveShiftCellRenderer`), Lý do/Bàn giao (`DetailReasonCellRenderer`), Ngày làm đơn (`RequestDateCellRenderer`), and Trạng thái duyệt (`ApprovalStatusCellRenderer`).
      - Green toolbar completely hidden (`.agtable .toolbar { display: none !important; }`).
      - Export buttons `EX1 (Đang lọc)` and `EX2 (Tất cả)` alongside Reload button placed on top quick filter toolbar (`gridToolbar`).
-     - High-density cells in `PrecisionDangKyCells.tsx` (269 lines): type chips, date/weekday, punch span, remarks with ellipsis tooltip, and approval status chips.
      - Auto reload trigger (`reloadTrigger`) upon successful form submission.
 - **Validation**:
-  - Vite dev server returned `HTTP 200` for all 14 new and updated files.
+  - Vite dev server returned `HTTP 200` for all new and updated files.
 
 ## Update - 2026-09-09 (Precision DieuChuyenTeam: Stitch Redesign, Full-Width Multi-Tab, 4 KPIs & Interactive Cells)
 

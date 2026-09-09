@@ -1,94 +1,72 @@
 import React from "react";
 
-// Renderer loại sự kiện / đơn đăng ký
-export const RecordTypeCellRenderer: React.FC<any> = (params) => {
+// Renderer Mã đơn nghỉ (OFF_ID)
+export const LeaveCodeCellRenderer: React.FC<any> = (params) => {
   const data = params.data;
-  if (!data) return null;
+  if (!data || !data.OFF_ID) return <span style={{ color: "#94a3b8", fontSize: "10.5px" }}>—</span>;
 
-  // Xác định loại sự kiện
-  if (data.REASON_NAME || data.OFF_ID) {
-    // Nghỉ phép
-    return (
-      <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "4px",
-            padding: "2px 7px",
-            borderRadius: "5px",
-            fontSize: "11px",
-            fontWeight: 700,
-            background: "#eff6ff",
-            color: "#1d4ed8",
-            border: "1px solid #bfdbfe",
-          }}
-        >
-          <span className="material-symbols-outlined" style={{ fontSize: "13px" }}>
-            calendar_today
-          </span>
-          <span>{data.REASON_NAME || "Nghỉ phép"}</span>
-        </span>
-      </div>
-    );
+  return (
+    <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+      <span
+        style={{
+          fontFamily: "JetBrains Mono, monospace",
+          fontSize: "11px",
+          fontWeight: 700,
+          color: "#2563eb",
+          background: "#eff6ff",
+          border: "1px solid #bfdbfe",
+          borderRadius: "4px",
+          padding: "1px 6px",
+          letterSpacing: "0.02em",
+        }}
+      >
+        LV-{data.OFF_ID}
+      </span>
+    </div>
+  );
+};
+
+// Renderer Kiểu nghỉ phép (Phép năm, Nửa phép, Việc riêng, Nghỉ ốm...)
+export const LeaveTypeBadgeCellRenderer: React.FC<any> = (params) => {
+  const data = params.data;
+  if (!data || !data.REASON_NAME) {
+    return <span style={{ color: "#94a3b8", fontSize: "11px" }}>—</span>;
   }
 
-  if (data.OVER_START || data.OVER_FINISH) {
-    // Tăng ca
-    return (
-      <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "4px",
-            padding: "2px 7px",
-            borderRadius: "5px",
-            fontSize: "11px",
-            fontWeight: 700,
-            background: "#fffbeb",
-            color: "#b45309",
-            border: "1px solid #fde68a",
-          }}
-        >
-          <span className="material-symbols-outlined" style={{ fontSize: "13px" }}>
-            schedule
-          </span>
-          <span>Tăng ca (OT)</span>
-        </span>
-      </div>
-    );
+  const reason = data.REASON_NAME;
+
+  let bg = "#eff6ff";
+  let color = "#1d4ed8";
+  let border = "#bfdbfe";
+  let icon = "calendar_today";
+
+  if (reason.includes("Nửa phép")) {
+    bg = "#faf5ff";
+    color = "#7e22ce";
+    border = "#e9d5ff";
+    icon = "hourglass_bottom";
+  } else if (reason.includes("Việc riêng")) {
+    bg = "#fff7ed";
+    color = "#c2410c";
+    border = "#fed7aa";
+    icon = "person";
+  } else if (reason.includes("ốm") || reason.includes("Khám")) {
+    bg = "#f0fdfa";
+    color = "#0f766e";
+    border = "#99f6e4";
+    icon = "medical_services";
+  } else if (reason.includes("Chế độ")) {
+    bg = "#eef2ff";
+    color = "#4338ca";
+    border = "#c7d2fe";
+    icon = "verified";
+  } else if (reason !== "Phép năm") {
+    bg = "#f8fafc";
+    color = "#475569";
+    border = "#e2e8f0";
+    icon = "info";
   }
 
-  if (data.CONFIRM_WORKTIME) {
-    // Giải trình công
-    return (
-      <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "4px",
-            padding: "2px 7px",
-            borderRadius: "5px",
-            fontSize: "11px",
-            fontWeight: 700,
-            background: "#faf5ff",
-            color: "#7e22ce",
-            border: "1px solid #e9d5ff",
-          }}
-        >
-          <span className="material-symbols-outlined" style={{ fontSize: "13px" }}>
-            fingerprint
-          </span>
-          <span>Xác nhận công</span>
-        </span>
-      </div>
-    );
-  }
-
-  // Đi làm bình thường
-  const isPresent = data.ON_OFF === 1;
   return (
     <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
       <span
@@ -100,26 +78,96 @@ export const RecordTypeCellRenderer: React.FC<any> = (params) => {
           borderRadius: "5px",
           fontSize: "11px",
           fontWeight: 700,
-          background: isPresent ? "#ecfdf5" : "#fff1f2",
-          color: isPresent ? "#047857" : "#be123c",
-          border: `1px solid ${isPresent ? "#a7f3d0" : "#fecdd3"}`,
+          background: bg,
+          color: color,
+          border: `1px solid ${border}`,
         }}
       >
         <span className="material-symbols-outlined" style={{ fontSize: "13px" }}>
-          {isPresent ? "check_circle" : "cancel"}
+          {icon}
         </span>
-        <span>{isPresent ? "Đi làm" : "Nghỉ làm"}</span>
+        <span>{reason}</span>
       </span>
     </div>
   );
 };
 
-// Renderer Ngày áp dụng & Thứ
+// Renderer Ca nghỉ
+export const LeaveShiftCellRenderer: React.FC<any> = (params) => {
+  const data = params.data;
+  if (!data) return null;
+
+  const caNghi = data.CA_NGHI;
+  if (!caNghi) return <span style={{ color: "#94a3b8", fontSize: "11px" }}>—</span>;
+
+  const isCa1 = String(caNghi).includes("1");
+  return (
+    <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+      <span
+        style={{
+          fontSize: "10.5px",
+          fontWeight: 600,
+          color: isCa1 ? "#0284c7" : "#d97706",
+          background: isCa1 ? "#f0f9ff" : "#fffbeb",
+          border: `1px solid ${isCa1 ? "#bae6fd" : "#fde68a"}`,
+          borderRadius: "4px",
+          padding: "1px 5px",
+        }}
+      >
+        {String(caNghi).includes("Ca") ? caNghi : `Ca ${caNghi}`}
+      </span>
+    </div>
+  );
+};
+
+// Renderer Ngày nghỉ (chỉ hiển thị ngày YYYY-MM-DD)
+export const LeaveDateCellRenderer: React.FC<any> = (params) => {
+  const dateStr = params.value || params.data?.DATE_COLUMN || params.data?.APPLY_DATE || "";
+  if (!dateStr) return <span style={{ color: "#94a3b8", fontSize: "11px" }}>—</span>;
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+      <span
+        style={{
+          fontSize: "11px",
+          fontWeight: 700,
+          color: "#1e293b",
+          fontFamily: "JetBrains Mono, monospace",
+        }}
+      >
+        {dateStr}
+      </span>
+    </div>
+  );
+};
+
+// Renderer Thứ riêng biệt (Thứ 2, Thứ 3..., Chủ nhật màu đỏ)
+export const WeekdayCellRenderer: React.FC<any> = (params) => {
+  const weekday = params.value || params.data?.WEEKDAY || "";
+  if (!weekday) return <span style={{ color: "#94a3b8", fontSize: "11px" }}>—</span>;
+
+  const isSunday = weekday === "Sunday" || weekday === "Chủ Nhật" || weekday === "CN";
+  return (
+    <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+      <span
+        style={{
+          fontSize: "11px",
+          fontWeight: isSunday ? 800 : 600,
+          color: isSunday ? "#ef4444" : "#475569",
+        }}
+      >
+        {weekday}
+      </span>
+    </div>
+  );
+};
+
+// Renderer Ngày nghỉ & Thứ (gộp nếu cần)
 export const DateRangeCellRenderer: React.FC<any> = (params) => {
   const data = params.data;
   if (!data) return null;
 
-  const dateStr = data.DATE_COLUMN || data.APPLY_DATE || data.REQUEST_DATE || "";
+  const dateStr = data.DATE_COLUMN || data.APPLY_DATE || "";
   const weekday = data.WEEKDAY || "";
   const isSunday = weekday === "Sunday" || weekday === "Chủ Nhật";
 
@@ -137,7 +185,23 @@ export const DateRangeCellRenderer: React.FC<any> = (params) => {
   );
 };
 
-// Renderer Trạng thái phê duyệt
+// Renderer Ngày làm đơn (REQUEST_DATE)
+export const RequestDateCellRenderer: React.FC<any> = (params) => {
+  const data = params.data;
+  if (!data || !data.REQUEST_DATE) {
+    return <span style={{ color: "#94a3b8", fontSize: "11px" }}>—</span>;
+  }
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+      <span style={{ fontSize: "11px", color: "#475569", fontFamily: "JetBrains Mono, monospace" }}>
+        {data.REQUEST_DATE}
+      </span>
+    </div>
+  );
+};
+
+// Renderer Trạng thái phê duyệt đơn
 export const ApprovalStatusCellRenderer: React.FC<any> = (params) => {
   const data = params.data;
   if (!data) return null;
@@ -208,7 +272,7 @@ export const ApprovalStatusCellRenderer: React.FC<any> = (params) => {
             border: "1px solid #e2e8f0",
           }}
         >
-          <span>Đã hủy</span>
+          <span>Đã hủy / Xóa</span>
         </span>
       </div>
     );
@@ -236,16 +300,23 @@ export const ApprovalStatusCellRenderer: React.FC<any> = (params) => {
   );
 };
 
-// Renderer Lý do / Chi tiết
+// Renderer Lý do / Chi tiết bàn giao
 export const DetailReasonCellRenderer: React.FC<any> = (params) => {
   const data = params.data;
   if (!data) return null;
 
-  const content = data.REMARK || data.CONFIRM_WORKTIME || data.REMARK_CONTENT || "—";
-  const subContent = data.CA_NGHI ? `Ca: ${data.CA_NGHI}` : "";
+  const content = data.REMARK || data.REMARK_CONTENT || "—";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "100%", gap: "1px", overflow: "hidden" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        height: "100%",
+        overflow: "hidden",
+      }}
+    >
       <span
         style={{
           fontSize: "11.5px",
@@ -259,11 +330,6 @@ export const DetailReasonCellRenderer: React.FC<any> = (params) => {
       >
         {content}
       </span>
-      {subContent && (
-        <span style={{ fontSize: "10px", color: "#64748b" }}>
-          {subContent}
-        </span>
-      )}
     </div>
   );
 };

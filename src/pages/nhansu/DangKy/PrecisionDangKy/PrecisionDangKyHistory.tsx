@@ -1,14 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { generalQuery, getUserData } from "../../../../api/Api";
+import { generalQuery } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/services/excelService";
 import { weekdayarray } from "../../../../api/services/utilService";
 import AGTable from "../../../../components/DataTable/AGTable";
 import moment from "moment";
 import {
   ApprovalStatusCellRenderer,
-  DateRangeCellRenderer,
   DetailReasonCellRenderer,
-  RecordTypeCellRenderer,
+  LeaveCodeCellRenderer,
+  LeaveDateCellRenderer,
+  LeaveShiftCellRenderer,
+  LeaveTypeBadgeCellRenderer,
+  RequestDateCellRenderer,
+  WeekdayCellRenderer,
 } from "./PrecisionDangKyCells";
 
 interface PrecisionDangKyHistoryProps {
@@ -20,41 +24,67 @@ export const PrecisionDangKyHistory: React.FC<PrecisionDangKyHistoryProps> = ({
 }) => {
   const [historyData, setHistoryData] = useState<any[]>([]);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [filterType, setFilterType] = useState<string>("all");
-  const [fromDate, setFromDate] = useState<string>(moment().startOf("month").format("YYYY-MM-DD"));
-  const [toDate, setToDate] = useState<string>(moment().endOf("month").format("YYYY-MM-DD"));
+  const [filterReason, setFilterReason] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Load dữ liệu lịch sử từ API
+  // Mặc định toàn thời gian (từ 2010 đến hết năm sau)
+  const fromDate = "2010-01-01";
+  const toDate = moment().add(1, "years").endOf("year").format("YYYY-MM-DD");
+
+  // Load dữ liệu lịch sử từ API mydiemdanhnhom toàn thời gian
   const loadHistory = useCallback(() => {
     setIsLoading(true);
     generalQuery("mydiemdanhnhom", { from_date: fromDate, to_date: toDate })
       .then((response) => {
         if (response.data.tk_status !== "NG" && Array.isArray(response.data.data)) {
-          const formatted = response.data.data.map((item: any, index: number) => {
+          // CHỈ LỌC CÁC NGÀY CÓ ĐƠN NGHỈ (REASON_NAME HOẶC OFF_ID KHÔNG NULL)
+          const leaveRecords = response.data.data.filter((item: any) => {
+            const hasReason =
+              item.REASON_NAME !== null &&
+              item.REASON_NAME !== undefined &&
+              String(item.REASON_NAME).trim() !== "";
+            const hasOffId =
+              item.OFF_ID !== null &&
+              item.OFF_ID !== undefined &&
+              String(item.OFF_ID).trim() !== "";
+            return hasReason || hasOffId;
+          });
+
+          // Sắp xếp mới nhất lên đầu
+          leaveRecords.sort((a: any, b: any) => {
+            const timeA = a.DATE_COLUMN ? new Date(a.DATE_COLUMN).getTime() : 0;
+            const timeB = b.DATE_COLUMN ? new Date(b.DATE_COLUMN).getTime() : 0;
+            return timeB - timeA;
+          });
+
+          const formatted = leaveRecords.map((item: any, index: number) => {
             const dateVal = item.DATE_COLUMN
               ? moment.utc(item.DATE_COLUMN).format("YYYY-MM-DD")
+              : item.APPLY_DATE
+              ? moment.utc(item.APPLY_DATE).format("YYYY-MM-DD")
               : "";
             const dayOfWeek = dateVal ? weekdayarray[new Date(dateVal).getDay()] : "";
-            const check1 = item.CHECK1 ? moment.utc(item.CHECK1).format("HH:mm") : "";
-            const check2 = item.CHECK2 ? moment.utc(item.CHECK2).format("HH:mm") : "";
-            const timeSpan = check1 && check2 ? `${check1} - ${check2}` : check1 || check2 || "—";
+            const reqDate = item.REQUEST_DATE
+              ? moment.utc(item.REQUEST_DATE).format("YYYY-MM-DD")
+              : "";
 
             return {
               ...item,
               id: index + 1,
               DATE_COLUMN: dateVal,
               WEEKDAY: dayOfWeek,
-              TIME_SPAN: timeSpan,
+              REQUEST_DATE: reqDate,
             };
           });
+
           setHistoryData(formatted);
         } else {
           setHistoryData([]);
         }
       })
       .catch((err) => {
-        console.error("Lỗi tải lịch sử đăng ký:", err);
+        console.error("Lỗi tải lịch sử nghỉ phép toàn thời gian:", err);
       })
       .finally(() => {
         setIsLoading(false);
@@ -65,49 +95,60 @@ export const PrecisionDangKyHistory: React.FC<PrecisionDangKyHistoryProps> = ({
     loadHistory();
   }, [loadHistory, reloadTrigger]);
 
-  // Lọc dữ liệu theo search và loại đơn
+  // Lọc dữ liệu theo từ khóa tìm kiếm, kiểu nghỉ và trạng thái duyệt
   const filteredData = useMemo(() => {
     let list = [...historyData];
 
-    if (filterType === "leave") {
-      list = list.filter((item) => item.REASON_NAME || item.OFF_ID);
-    } else if (filterType === "ot") {
-      list = list.filter((item) => item.OVER_START || item.OVER_FINISH);
-    } else if (filterType === "attendance") {
-      list = list.filter((item) => item.CONFIRM_WORKTIME);
+    // Lọc theo kiểu nghỉ
+    if (filterReason !== "all") {
+      list = list.filter((item) => {
+        if (!item.REASON_NAME) return false;
+        return item.REASON_NAME.toLowerCase().includes(filterReason.toLowerCase());
+      });
     }
 
+    // Lọc theo trạng thái duyệt (1: Đã duyệt, 2/0: Chờ duyệt, 3: Đã hủy)
+    if (filterStatus === "approved") {
+      list = list.filter((item) => item.APPROVAL_STATUS === 1);
+    } else if (filterStatus === "pending") {
+      list = list.filter((item) => item.APPROVAL_STATUS === 0 || item.APPROVAL_STATUS === 2);
+    } else if (filterStatus === "canceled") {
+      list = list.filter((item) => item.APPROVAL_STATUS === 3);
+    }
+
+    // Lọc theo từ khóa
     if (searchKeyword.trim()) {
       const q = searchKeyword.toLowerCase();
       list = list.filter((item) => {
         return (
+          (item.OFF_ID && String(item.OFF_ID).toLowerCase().includes(q)) ||
           (item.DATE_COLUMN && item.DATE_COLUMN.toLowerCase().includes(q)) ||
           (item.WEEKDAY && item.WEEKDAY.toLowerCase().includes(q)) ||
           (item.REASON_NAME && item.REASON_NAME.toLowerCase().includes(q)) ||
           (item.REMARK && item.REMARK.toLowerCase().includes(q)) ||
-          (item.CONFIRM_WORKTIME && item.CONFIRM_WORKTIME.toLowerCase().includes(q))
+          (item.REQUEST_DATE && item.REQUEST_DATE.toLowerCase().includes(q))
         );
       });
     }
 
     return list;
-  }, [historyData, filterType, searchKeyword]);
+  }, [historyData, filterReason, filterStatus, searchKeyword]);
 
   // Xuất Excel EX1: Dữ liệu đang lọc
   const handleExportEX1 = () => {
     if (filteredData.length === 0) return;
     const dateStr = moment().format("YYYYMMDD_HHmmss");
-    SaveExcel(filteredData, `NS3_LichSuDangKy_DangLoc_${dateStr}`);
+    SaveExcel(filteredData, `NS3_LichSuNghiPhep_DangLoc_${dateStr}`);
   };
 
   // Xuất Excel EX2: Toàn bộ dữ liệu
   const handleExportEX2 = () => {
     if (historyData.length === 0) return;
     const dateStr = moment().format("YYYYMMDD_HHmmss");
-    SaveExcel(historyData, `NS3_LichSuDangKy_TatCa_${dateStr}`);
+    SaveExcel(historyData, `NS3_LichSuNghiPhep_ToanThoiGian_${dateStr}`);
   };
 
-  // Định nghĩa các cột AG-Grid High-Density
+  // Định nghĩa các cột AG-Grid High-Density cho Lịch Sử Nghỉ Phép
   const columns = useMemo(
     () => [
       {
@@ -117,29 +158,47 @@ export const PrecisionDangKyHistory: React.FC<PrecisionDangKyHistoryProps> = ({
         cellStyle: { textAlign: "center", color: "#64748b", fontWeight: 600, fontSize: "11px" },
       },
       {
+        field: "OFF_ID",
+        headerName: "MÃ ĐƠN",
+        width: 95,
+        cellRenderer: LeaveCodeCellRenderer,
+      },
+      {
         field: "DATE_COLUMN",
-        headerName: "NGÀY / THỨ",
-        width: 115,
-        cellRenderer: DateRangeCellRenderer,
+        headerName: "NGÀY NGHỈ",
+        width: 100,
+        cellRenderer: LeaveDateCellRenderer,
       },
       {
-        field: "TYPE",
-        headerName: "LOẠI NGHIỆP VỤ",
-        width: 135,
-        cellRenderer: RecordTypeCellRenderer,
+        field: "WEEKDAY",
+        headerName: "THỨ",
+        width: 75,
+        cellRenderer: WeekdayCellRenderer,
       },
       {
-        field: "TIME_SPAN",
-        headerName: "GIỜ VÀO - RA",
-        width: 105,
-        cellStyle: { fontFamily: "JetBrains Mono, monospace", fontSize: "11px", fontWeight: 600, color: "#0f172a" },
+        field: "REASON_NAME",
+        headerName: "KIỂU NGHỈ",
+        width: 130,
+        cellRenderer: LeaveTypeBadgeCellRenderer,
+      },
+      {
+        field: "CA_NGHI",
+        headerName: "CA NGHỈ",
+        width: 75,
+        cellRenderer: LeaveShiftCellRenderer,
       },
       {
         field: "REMARK",
-        headerName: "CHI TIẾT / LÝ DO",
+        headerName: "LÝ DO / BÀN GIAO",
         minWidth: 160,
         flex: 1,
         cellRenderer: DetailReasonCellRenderer,
+      },
+      {
+        field: "REQUEST_DATE",
+        headerName: "NGÀY LÀM ĐƠN",
+        width: 105,
+        cellRenderer: RequestDateCellRenderer,
       },
       {
         field: "APPROVAL_STATUS",
@@ -160,7 +219,7 @@ export const PrecisionDangKyHistory: React.FC<PrecisionDangKyHistoryProps> = ({
             <span className="material-symbols-outlined">search</span>
             <input
               type="text"
-              placeholder="Lọc nhanh lịch sử..."
+              placeholder="Tìm mã đơn, ngày, lý do..."
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
             />
@@ -168,13 +227,28 @@ export const PrecisionDangKyHistory: React.FC<PrecisionDangKyHistoryProps> = ({
 
           <select
             className="type-select"
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
+            value={filterReason}
+            onChange={(e) => setFilterReason(e.target.value)}
+            title="Lọc theo kiểu nghỉ"
           >
-            <option value="all">Tất cả loại đơn</option>
-            <option value="leave">Nghỉ phép</option>
-            <option value="ot">Tăng ca (OT)</option>
-            <option value="attendance">Xác nhận công</option>
+            <option value="all">Tất cả kiểu nghỉ</option>
+            <option value="Phép năm">Phép năm</option>
+            <option value="Nửa phép">Nửa phép</option>
+            <option value="Việc riêng">Việc riêng</option>
+            <option value="ốm">Nghỉ ốm (BHXH)</option>
+            <option value="Chế độ">Chế độ</option>
+          </select>
+
+          <select
+            className="type-select"
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            title="Lọc theo trạng thái duyệt"
+          >
+            <option value="all">Tất cả trạng thái</option>
+            <option value="approved">Đã duyệt</option>
+            <option value="pending">Chờ duyệt</option>
+            <option value="canceled">Đã hủy</option>
           </select>
 
           <div className="grid-actions">
@@ -193,7 +267,7 @@ export const PrecisionDangKyHistory: React.FC<PrecisionDangKyHistoryProps> = ({
               type="button"
               className="grid-btn grid-btn--excel"
               onClick={handleExportEX2}
-              title="Xuất toàn bộ lịch sử ra Excel"
+              title="Xuất toàn bộ lịch sử nghỉ phép ra Excel"
             >
               <span className="material-symbols-outlined">file_download</span>
               <span>EX2</span>
@@ -214,7 +288,7 @@ export const PrecisionDangKyHistory: React.FC<PrecisionDangKyHistoryProps> = ({
 
         <div className="toolbar-right">
           <span>
-            Đang hiển thị: <strong>{filteredData.length} / {historyData.length}</strong> đơn
+            Lịch sử nghỉ: <strong>{filteredData.length} / {historyData.length}</strong> đơn (Toàn thời gian)
           </span>
         </div>
       </div>
