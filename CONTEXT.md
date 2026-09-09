@@ -1,6 +1,33 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
-## Update - 2026-09-09 (Fix Full-Height Layout: Bảng Nhân Sự và Bảng Phòng Ban Dính Chạm Đáy Viewport)
+## Update - 2026-09-09 (Redesign Modal Thêm/Sửa Nhân Viên: Google Stitch Enterprise PrecisionUserModal)
+
+### Completed
+- **Thiết Kế Lại Toàn Diện Modal Thêm / Cập Nhật Nhân Viên (`PrecisionUserModal.tsx`)**:
+  - Dựa trên thiết kế Stitch cao cấp (HTML & hình ảnh người dùng cung cấp):
+    1. *Backdrop & Container*: Tự dựng Overlay `backdrop-blur-sm` với card trắng viền bo `rounded-xl`, đổ bóng `shadow-2xl`, hiệu ứng mở mượt mà `precisionModalFadeIn`.
+    2. *Modal Header*: Icon User Profile nổi bật, tiêu đề "Thêm / Cập nhật Nhân viên", chip mã nhân viên `EMPL_NO: BQV1706`, status badge động (`● Đang Hoạt Động` / `○ Đã Nghỉ Việc` / `◐ Nghỉ Sinh`), subtitle phân quyền và nút đóng (X).
+    3. *Grid 3 Cột Cân Đối (Form Groups)*:
+       - **Cột 1 (Thông tin định danh)**: Mã ERP (EMPL_NO) kèm icon ID, Mã Nhân Sự (CMS_ID), Mã Chấm Công (NV_CCID), Họ đệm + Tên tách 2 cột (MIDLAST/FIRST), Ngày sinh (DOB), Quê quán, Giới tính.
+       - **Cột 2 (Địa chỉ & liên hệ)**: Tỉnh/TP, Quận/Huyện, Xã/Thị trấn, Thôn/Xóm, Số điện thoại (kèm icon Phone), Ngày bắt đầu làm & Ngày nghỉ việc (disable nếu đang làm việc), Mật khẩu đăng nhập với nút mắt ẩn/hiện mật khẩu.
+       - **Cột 3 (Vị trí & phân công)**: Email công ty (kèm icon Mail), Vị trí công đoạn (select load từ danh mục API), Ca làm việc (Hành chính / Team 1 / Team 2), Cấp bậc chức danh, Chức vụ, Nhà máy trực thuộc, Trạng thái làm việc.
+    4. *Khu Vực Ảnh Đại Diện & Face AI Biometrics*:
+       - Khung ảnh đại diện 150x200 tỷ lệ chuẩn thẻ căn cước: Tự động hiển thị ảnh thật từ máy chủ `/Picture_NS/NS_${selectedUser.EMPL_NO}.jpg` hoặc ảnh preview tạm thời khi người dùng chọn file mới; fallback icon thông minh khi chưa có ảnh.
+       - Nút chọn tập tin + Nút "Lưu ảnh" upload trực tiếp lên server.
+       - Telemetry pill `Face ID Synced` / `ZKTeco Model v4.1`.
+       - Nút hành động AI: `TRAIN FACE` (Indigo) và `CHECK FACE` (Teal).
+    5. *Modal Footer*:
+       - Nút `CLEAR FORM` bên trái: Reset trắng toàn bộ form để chuẩn bị nhập nhân viên mới.
+       - Cụm nút bên phải: Nút `Đóng`, Nút `+ THÊM MỚI` (Blue) và Nút `CẬP NHẬT` (Emerald Green).
+  - **Kiến Trúc Module Hóa Tuyệt Đối (< 170 dòng/file)**:
+    - `PrecisionUserModal.scss`: Bảng mã CSS chuyên biệt phong cách Google Stitch.
+    - `PrecisionUserIdSection.tsx` (~115 dòng): Module quản lý Thông tin định danh.
+    - `PrecisionUserContactSection.tsx` (~120 dòng): Module quản lý Địa chỉ & Liên hệ.
+    - `PrecisionUserWorkSection.tsx` (~120 dòng): Module quản lý Vị trí & Phân công.
+    - `PrecisionUserPhotoSection.tsx` (~110 dòng): Module quản lý Ảnh đại diện & Face AI.
+    - `PrecisionUserModal.tsx` (~170 dòng): Orchestrator điều phối trạng thái, kết nối API và hành động.
+  - **Kiểm tra Vite**: 100% (7/7 files) trả về HTTP 200 OK.
+
 
 ### Completed
 - **Khắc Phục Khoảng Trống Dưới Đáy Bảng Nhân Sự (`PrecisionUserManager.scss`, `MyTab.scss`)**:

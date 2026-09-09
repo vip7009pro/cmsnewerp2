@@ -348,6 +348,7 @@ const UserManager = () => {
         onCheckFace={() =>
           checkEmbedding("/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg")
         }
+        onUploadAvatar={uploadFile2}
         isLoading={loading}
       />
     </div>
