@@ -1,5 +1,46 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-09 (Precision TabDangKy NS3: Stitch Redesign, Full-Width Multi-Tab, 3 KPI Micro-Cards, Modular Sub-Tabs Forms & AGTable History)
+
+### Completed
+- **Full Preservation of Legacy Implementation with 4 Backups**:
+  - Created `src/pages/nhansu/DangKy/TabDangKy.backup.tsx` (preserving original tabs wrapper).
+  - Created `src/pages/nhansu/DangKy/FormDangKyNghi.backup.tsx` (preserving original leave registration form).
+  - Created `src/pages/nhansu/DangKy/FormDangKyTangCa.backup.tsx` (preserving original overtime registration form).
+  - Created `src/pages/nhansu/DangKy/FormXacNhanChamCong.backup.tsx` (preserving original attendance confirmation form).
+  - Preserved 100% of API query commands: `dangkynghi2`, `dangkytangcacanhan`, `xacnhanchamcongnhom`, realtime socket notification pipeline `f_insert_Notification_Data` + `socket.emit("notification_panel")`, and SweetAlert2 alerts.
+- **Stitch High-Density Enterprise Redesign (`TabDangKy.tsx` & `PrecisionDangKy/`)**:
+  - Replaced legacy neon gradient background (`#afd3d1`, `#2ffc73`, large buttons `#21a73e`, `#3633f7`) with clean neutral Stitch tokens (slate `#f8fafc`, pure white cards `#ffffff`, subtle borders `#e2e8f0`, micro-shadows `0 1px 2px rgba(15, 23, 42, 0.04)`).
+  - Dedicated modular SCSS architecture `PrecisionDangKy.scss` with zero Tailwind runtime dependency.
+  - Multi-Tab Mode Guarantee: Enforced `width: 100%; max-width: 100%; height: 100%; max-height: 100%; flex: 1; min-height: 0;` on `.precision-dangky` and `.component_element &`.
+- **Subcomponents & Clean Architecture (All files < 300 lines)**:
+  1. *Sub-Header Banner (`PrecisionDangKyHeader.tsx` - 57 lines)*:
+     - Module title: `01. NHÂN SỰ & HÀNH CHÍNH • NS3 - CỔNG ĐĂNG KÝ NGHỈ PHÉP, TĂNG CA & CHẤM CÔNG`.
+     - User Badge: Avatar initial, full name, position/department, employee code (`EMPL_NO`).
+     - Telemetry status: `HRM SYNC ACTIVE` with pulsating green dot.
+  2. *Real-time 3 KPI Cards (`PrecisionDangKyKpi.tsx` - 77 lines)*:
+     - Card 1: Quỹ phép năm (Số ngày còn / 12 ngày định mức, blue progress bar).
+     - Card 2: OT Lũy kế tháng (Số giờ OT / 40h định mức, amber progress bar).
+     - Card 3: Giải trình công (Số lần cần duyệt, status badge).
+  3. *Sub-Tabs Interactive Forms (`PrecisionDangKyForms.tsx` - 72 lines)*:
+     - 3-tab pill switcher: "Nghỉ phép" (`calendar_add_on`), "Tăng ca (OT)" (`schedule`), "Chấm công" (`fingerprint`).
+     - Includes CMS Vina automatic approval regulation notice card.
+  4. *Leave Registration Form (`PrecisionLeaveForm.tsx` - 207 lines)*:
+     - Micro duration selector pills (Cả ngày 8h, Nửa sáng 4h, Nửa chiều 4h) with auto calculated days.
+     - Leave type dropdown, work shift allocation, from date - to date, handover remark, and clear/submit buttons.
+  5. *Overtime Registration Form (`PrecisionOtForm.tsx` - 191 lines)*:
+     - Shift pay coefficients (150%, 200%, 210%, 300%), start time (1700), finish time (2000), auto OT hours calculation, work description.
+  6. *Attendance Confirmation Form (`PrecisionAttendanceForm.tsx` - 153 lines)*:
+     - Missing punch types (`GD`: check-in, `GS`: check-out, `CA`: both), incident date, actual working time, specific explanation.
+  7. *Audit History Ledger (`PrecisionDangKyHistory.tsx` - 236 lines)*:
+     - AGTable integrated with `mydiemdanhnhom` API.
+     - Green toolbar completely hidden (`.agtable .toolbar { display: none !important; }`).
+     - Export buttons `EX1 (Đang lọc)` and `EX2 (Tất cả)` alongside Reload button placed on top quick filter toolbar (`gridToolbar`).
+     - High-density cells in `PrecisionDangKyCells.tsx` (269 lines): type chips, date/weekday, punch span, remarks with ellipsis tooltip, and approval status chips.
+     - Auto reload trigger (`reloadTrigger`) upon successful form submission.
+- **Validation**:
+  - Vite dev server returned `HTTP 200` for all 14 new and updated files.
+
 ## Update - 2026-09-09 (Precision DieuChuyenTeam: Stitch Redesign, Full-Width Multi-Tab, 4 KPIs & Interactive Cells)
 
 ### Completed

@@ -26,5 +26,7 @@
 - [x] Remove status footer bar (`PrecisionDiemDanhFooter`) at the bottom of the Diem Danh Nhom screen to maximize table vertical space
 - [x] Create automated Stitch UI Refactor Skill (`.agents/skills/refactor_ui_after_stitch.md` & `refactor_ui_after_stitch/SKILL.md`) with 5-step standard workflow and safety checklist
 - [x] Redesign Dieu Chuyen Team (`DieuChuyenTeamCMS.tsx`) with Google Stitch High-Density: sub-header, operational toolbar, 4 realtime KPI cards, modern AG-Grid interactive action cells (team, shift, factory, position select), pivot modal, full-width multi-tab guarantee, and full backup (`DieuChuyenTeamCMS.backup.tsx`)
+- [x] Redesign Tab Dang Ky NS3 (`TabDangKy.tsx`, `FormDangKyNghi.tsx`, `FormDangKyTangCa.tsx`, `FormXacNhanChamCong.tsx`) with Google Stitch High-Density: sub-header banner, 3 realtime KPI cards, 3 interactive sub-tab forms (Nghỉ phép, Tăng ca, Chấm công), AGTable audit history ledger with EX1/EX2 on quick filter toolbar, multi-tab full-width guarantee, and full backups
+
 
 
