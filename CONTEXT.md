@@ -1,5 +1,51 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-09 (Precision LichSu NS5: Stitch Redesign, Responsive Desktop/Mobile, 4 KPIs, Recharts Timeline, AGTable & Pivot Modal)
+
+### Completed
+- **Runtime Hotfix - Excel Service Export**:
+  - Fixed runtime syntax error `does not provide an export named 'exportToExcel'` by changing import in `LichSu_New.tsx` to `SaveExcel` from `excelService.ts`, and exported backwards-compatible alias `export const exportToExcel = SaveExcel;` in `excelService.ts`.
+- **Full Preservation of Legacy Implementation with Backup**:
+  - Created `src/pages/nhansu/LichSu/LichSu_New.backup.tsx` preserving 100% of the legacy 1226-line implementation, API query commands (`mydiemdanhnhom`), formula calculations (`calcMinutesByRate`, `tinhLuong`), state handlers, and SweetAlert2 alerts.
+- **Stitch High-Density Enterprise Redesign (`LichSu_New.tsx` & `PrecisionLichSu/`)**:
+  - Replaced legacy neon and plain card styles with clean neutral Google Stitch design system tokens (slate `#f8fafc`, pure white cards `#ffffff`, subtle borders `#e2e8f0`, micro shadows `0 1px 2px rgba(15, 23, 42, 0.04)`).
+  - Dedicated modular SCSS architecture `PrecisionLichSu.scss` with comprehensive Media Queries ensuring flawless responsiveness across Desktop, Tablet, and Mobile screens (enforcing Rule 6 of `SKILL.md`).
+  - Multi-Tab Mode Guarantee: Enforced `width: 100%; max-width: 100%; height: 100%; max-height: 100%; flex: 1; min-height: 0;` on `.precision-lichsu` and `.component_element &`.
+- **Subcomponents & Clean Architecture (All files < 300 lines)**:
+  1. *Sub-Header Banner (`PrecisionLichSuHeader.tsx` - 64 lines)*:
+     - Title: `01. NHÂN SỰ & HÀNH CHÍNH • NS5 - LỊCH SỬ ĐI LÀM & CHẤM CÔNG CÁ NHÂN`.
+     - User Identity Chip: Avatar initial letter, Full name, Employee code (`CMS_ID` / `EMPL_NO`), Department.
+     - Telemetry status: `ZKTECO: 100% SYNC` and `HRM ACTIVE` with pulsating green status dots.
+  2. *Operational Toolbar (`PrecisionLichSuToolbar.tsx` - 126 lines)*:
+     - Date range filter: `From Date` and `To Date` inputs.
+     - `Default` checkbox: Auto selects from first day of month to today for table, and end of month for chart.
+     - Action buttons: "Search" (Royal Blue), "Load Data" (Emerald), "EX1 (Đang lọc)", "EX2 (Tất cả)", and "PIVOT (Phân tích)".
+  3. *Real-time 4 KPI Cards (`PrecisionLichSuKpi.tsx` - 107 lines)*:
+     - Card 1: Tổng ngày làm việc (Đếm `ON_OFF === 1`, icon `event_available`).
+     - Card 2: Tổng giờ tích lũy (Giờ thực tế từ `WORKING_MINUTES / 60` hoặc timeline, icon `schedule`).
+     - Card 3: Tăng ca OT (Tổng giờ OT `FINAL_OVERTIMES / 60`, icon `more_time`).
+     - Card 4: Nghỉ phép / Nghỉ tuần (Đếm `ON_OFF === 0` hoặc Chủ nhật, icon `free_cancellation`).
+  4. *Attendance Timeline Chart (`PrecisionLichSuChart.tsx` - 172 lines)*:
+     - Clean Recharts LineChart displaying real-time daily worked hours (`diffMinutes - 60`).
+     - Green line for past days (`hoursPast`), red dashed line for future/today (`hoursFuture`).
+     - Red highlight for Sunday ticks on X-Axis.
+     - Modern Stitch rounded tooltip card and quick "Refresh" button.
+  5. *High-Density AG-Grid Interactive Action Cells (`PrecisionLichSuCells.tsx` - 124 lines)*:
+     - `DateCellRenderer`: JetBrains Mono bold date.
+     - `WeekdayCellRenderer`: Red bold Sunday, royal blue weekdays.
+     - `OnOffCellRenderer`: Compact status badges ("Đi làm", "Nghỉ làm", "Chưa điểm danh").
+     - `CheckTimeCellRenderer` & `FixedTimeCellRenderer`: Monospace time values for `CHECK1`, `CHECK2`, `CHECK3`, `IN_TIME`, `OUT_TIME`.
+     - `MinuteDiffCellRenderer`: Color-coded early in, late in, early out, and OT minutes.
+     - `ApprovalStatusCellRenderer`: Badges for "Phê duyệt", "Từ chối", "Chờ duyệt".
+     - `EmplBadgeCellRenderer`: JetBrains Mono badge chip for `EMPL_NO` and `NS_ID`.
+  6. *Multidimensional Pivot Modal (`PrecisionLichSuPivotModal.tsx` - 124 lines)*:
+     - Interactive matrix summary by Day of the Week (Monday to Sunday) calculating total days, worked days, late counts, early out counts, regular hours, and OT hours.
+  7. *AGTable Standardization & Clean Controller (`LichSu_New.tsx` - 233 lines)*:
+     - Default green toolbar completely removed (`.agtable .toolbar { display: none !important; }`).
+     - Quick Search input placed on `gridToolbar` along with compact `EX1`, `EX2`, and `PIVOT` buttons.
+- **Validation**:
+  - TypeScript compiler (`tsc --noEmit`) verified 0 errors across the entire `src/pages/nhansu/LichSu/` directory.
+
 ## Update - 2026-09-09 (Precision PheDuyetNghi: Stitch Redesign, Full-Width Multi-Tab, 4 KPIs, Interactive Cells & Pivot Modal)
 
 ### Completed

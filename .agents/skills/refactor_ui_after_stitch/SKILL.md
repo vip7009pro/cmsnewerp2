@@ -17,7 +17,7 @@ Skill này thiết lập quy trình chuẩn hóa từng bước để tự độ
 > 4. **KHÔNG DÙNG TAILWIND TRỰC TIẾP - DÙNG SCSS CHUYÊN BIỆT**: Dự án không bật Tailwind runtime. Toàn bộ giao diện phải được viết bằng SCSS trong thư mục con `Precision[ModuleName]/`.
 > 5. **MODULE HÓA - KHÔNG VIẾT FILE HÀNG NGHÌN DÒNG**: Tách nhỏ các thành phần giao diện (Header, Toolbar, KPI Cards, Cells, Modals) thành các file riêng dưới 300 dòng.
 > 6. **ĐẢM BẢO RESPONSIVE CHO CẢ DESKTOP & MOBILE**: Luôn code SCSS với media query để đảm bảo giao diện hiển thị tốt trên cả desktop và mobile.
-
+> 7. **ĐẢM BẢO KHÔNG CÓ LỖI LINT, TRÁNH RUNTIME ERROR**: Nếu có lỗi lint hoặc runtime thì phải sửa ngay, không được bỏ qua.
 ---
 
 ## 🛠️ QUY TRÌNH 5 BƯỚC REFACTOR TỰ ĐỘNG

@@ -99,3 +99,5 @@ export const SaveExcel = async (data: any, title: string) => {
 
   XLSX.writeFile(workbook, `${title}.xlsx`);
 };
+
+export const exportToExcel = SaveExcel;
