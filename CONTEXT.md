@@ -1,5 +1,27 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-09 (Global Scroll Mechanism Fix for Long Content Tabs: BaoCaoNhanSu & All ERP Tabs)
+
+### Completed
+- **Root Cause Resolution - Locked Scroll on Multi-Tab Viewport**:
+  - **Identified Bug**: In `src/pages/home/home.scss`, `.component_element` was declared with `overflow: hidden;` and child rule `> * { height: 100%; flex: 1; min-height: 0; }`. This unconditionally locked vertical scrolling and constrained all child components to a single viewport height. Consequently, long-form components such as `BaoCaoNhanSu.tsx` (containing multiple charts, data grids, and summary tables with height ~2500px) had their lower content clipped off with no way to scroll.
+  - Similarly, in `src/components/MyTab/MyTab.scss` and `MyTab.tsx`, `.tab-content` and `.tab-pane` had `overflow: hidden;` and `height: 100%`, locking nested long tabs.
+- **Global Architecture Optimization (`home.scss`, `MyTab.scss`, `MyTab.tsx`, `BaoCaoNhanSu.scss`)**:
+  - **Main ERP Tab Viewport (`home.scss`)**:
+    - Updated `.component_element`: changed from `overflow: hidden` to `overflow-y: auto; overflow-x: hidden; scrollbar-width: thin;` with Stitch slate scrollbars.
+    - Updated direct child selector `> *`: changed from `height: 100%` to `min-height: 100%; flex: 1 0 auto;`.
+    - **Dual Compatibility**:
+      - Long-form content tabs (like `BaoCaoNhanSu`) now expand naturally based on their contents and trigger smooth vertical scrolling on `.component_element`.
+      - Full-viewport dashboard screens (such as `PrecisionPoManager`, `DiemDanhNhomCMS`, `QuanLyCapCao`) continue to use dedicated `.component_element & { height: 100%; max-height: 100%; overflow: hidden; }`, keeping their grids perfectly anchored edge-to-edge without outer scrollbars.
+  - **Nested Tab Container (`MyTab.scss` & `MyTab.tsx`)**:
+    - Configured `.tab-content` with `overflow-y: auto; overflow-x: hidden; scrollbar-width: thin;`.
+    - Configured `.tab-pane` with `min-height: 100%; flex: 1 0 auto;`, allowing child tabs with long content to expand and scroll smoothly.
+  - **Component Styling (`BaoCaoNhanSu.scss`)**:
+    - Ensured `.baocaonhansu` has `min-height: 100%; height: auto; box-sizing: border-box;`.
+- **Validation**:
+  - TypeScript syntax check passed with 0 errors.
+  - Vite dev server returned HTTP 200 for all edited stylesheets and components.
+
 ## Update - 2026-09-09 (Restore & Standardize AGTable Bottom Bar / Footer Across Single & Nested Tabs)
 
 ### Completed

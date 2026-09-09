@@ -107,11 +107,8 @@ const MyTabs: React.FC<MyTabsProps> & { Tab: React.FC<TabProps> } = ({
                 flexDirection: 'column',
                 width: '100%',
                 maxWidth: '100%',
-                height: '100%',
-                maxHeight: '100%',
-                flex: '1 1 auto',
-                minHeight: 0,
-                overflow: 'hidden',
+                minHeight: '100%',
+                flex: '1 0 auto',
                 boxSizing: 'border-box',
               }}
             >
