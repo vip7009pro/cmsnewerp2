@@ -24,5 +24,7 @@
 - [x] Redesign Diem Danh Nhom (`DiemDanhNhomCMS.tsx`) with Google Stitch High-Density: sub-header, toolbar with factory/shift filter, 3 realtime KPI cards, modern AG-Grid cells (avatar with online dot, chip codes, compact attendance/OT buttons), realtime socket footer, pivot modal, full-width multi-tab guarantee, and full backup (`DiemDanhNhomCMS.backup.tsx`)
 - [x] Hide AGTable green default toolbar and move EX1 (Filtered), EX2 (All), and PIVOT buttons up to the quick filter toolbar (`precision-diemdanh__gridToolbar`)
 - [x] Remove status footer bar (`PrecisionDiemDanhFooter`) at the bottom of the Diem Danh Nhom screen to maximize table vertical space
+- [x] Create automated Stitch UI Refactor Skill (`.agents/skills/refactor_ui_after_stitch.md` & `refactor_ui_after_stitch/SKILL.md`) with 5-step standard workflow and safety checklist
+- [x] Redesign Dieu Chuyen Team (`DieuChuyenTeamCMS.tsx`) with Google Stitch High-Density: sub-header, operational toolbar, 4 realtime KPI cards, modern AG-Grid interactive action cells (team, shift, factory, position select), pivot modal, full-width multi-tab guarantee, and full backup (`DieuChuyenTeamCMS.backup.tsx`)
 
 

@@ -1,5 +1,63 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-09 (Precision DieuChuyenTeam: Stitch Redesign, Full-Width Multi-Tab, 4 KPIs & Interactive Cells)
+
+### Completed
+- **Full Preservation of Legacy Implementation with Backup**:
+  - Created `src/pages/nhansu/DieuChuyenTeam/DieuChuyenTeamCMS.backup.tsx` preserving 100% of the legacy 222-line implementation, API queries, socket emissions, and state handlers.
+- **Stitch High-Density Enterprise Redesign (`DieuChuyenTeamCMS.tsx`)**:
+  - Replaced legacy neon gradient background (`linear-gradient(0deg, #afd3d1, #a4ec51)` / `#d49ef8`) with clean, neutral Stitch design system tokens (slate `#f8fafc`, pure white cards `#ffffff`, subtle borders `#e2e8f0`, micro shadows `0 1px 2px rgba(15, 23, 42, 0.04)`).
+  - Built dedicated SCSS architecture `src/pages/nhansu/DieuChuyenTeam/PrecisionDieuChuyenTeam/PrecisionDieuChuyenTeam.scss` with zero direct Tailwind dependency.
+- **Full-Width Stretch in Multi-Tab Mode Guarantee**:
+  - Enforced `width: 100%; max-width: 100%; box-sizing: border-box;` on container `.precision-dieuchuyen` and `.component_element &`.
+  - Configured flex column full height down to `.precision-dieuchuyen__gridContainer`, `.precision-dieuchuyen__gridBody`, `.agtable`, `.ag-theme-quartz`, and `.ag-root-wrapper` (`min-height: 200px`, `height: 100% !important`).
+  - No horizontal compression or wasted margins in both Single Tab and Multi-Tab modes.
+- **AGTable Standardization**:
+  - Completely eliminated the legacy green `.toolbar` of AGTable (`.agtable { .toolbar { display: none !important; } }`).
+  - Relocated compact 26px action buttons `EX1 (Đang lọc)`, `EX2 (Tất cả)`, and `PIVOT` directly to the table's quick filter toolbar (`gridToolbar`).
+- **Subcomponents & Features Implemented**:
+  1. *Sub-Header Banner (`PrecisionDieuChuyenHeader.tsx`)*:
+     - Title `01. NHÂN SỰ & HÀNH CHÍNH > NS2 - ĐIỀU CHUYỂN TEAM & CHI VIỆN SẢN XUẤT`.
+     - Live sync pills: `SOCKET REALTIME SYNC` and `MES & HRM SYNC ACTIVE`.
+     - Action buttons: "Xuất Excel (EX1)", "Hoàn tác", "Lưu phân bổ ca".
+  2. *Operational Toolbar (`PrecisionDieuChuyenToolbar.tsx`)*:
+     - Factory Selector (Nhà máy 1, Nhà máy 2, Tất cả).
+     - Team / Shift Selector (`WORK_SHIFT_CODE`: 5: Tất cả, 0: TEAM 1 + HC, 1: TEAM 2 + HC, 2: TEAM 1, 3: TEAM 2, 4: HC).
+     - Attendance Date indicator (Hôm nay, DD/MM/YYYY).
+     - Fast data reload button from system API.
+  3. *Real-time 4 KPI Cards (`PrecisionDieuChuyenKpi.tsx`)*:
+     - Card 1 (Biên chế tổ): Total personnel with 100% present status and blue `groups` icon.
+     - Card 2 (Đang chi viện / điều động): Personnel assigned with special shift/transfer and amber `swap_horiz` icon.
+     - Card 3 (Quân số bám line): Personnel staying at original team/plant and emerald `verified_user` icon.
+     - Card 4 (Tiến độ phân công vị trí): Count and percentage of workers assigned with job positions and indigo `assignment_turned_in` icon.
+  4. *High-Density AG-Grid Interactive Action Cells (`PrecisionDieuChuyenCells.tsx`)*:
+     - `CodeCellRenderer`: Blue mono badge chip (`EMPL_NO`) + ERP ID subtitle (`CMS_ID`).
+     - `NameAvatarCellRenderer`: 28x28px avatar with status dot, bold full name, and job/subdept subtitle.
+     - `TeamActionCell`: Interactive micro-buttons to shift between Hành chính, TEAM 1, TEAM 2.
+     - `ShiftActionCell`: Micro-buttons to assign Ca HC, Ca ngày, Ca đêm, or active shift chip with instant Reset.
+     - `FactoryActionCell`: Micro-buttons to switch between Nhà máy 1 and Nhà máy 2.
+     - `PositionSelectCell`: Compact 24px select dropdown mapping `workpositionload` with SweetAlert2 confirmation.
+  5. *Multidimensional Pivot Modal (`PrecisionDieuChuyenPivotModal.tsx`)*:
+     - Interactive summary matrix by Team, Work Shift (HC, Ngày, Đêm), and Factory distribution.
+- **Table Column Optimization (User Feedback)**:
+  - Added dedicated `NS_ID` (`CMS_ID`) column with JetBrains Mono badge renderer (`NsIdCellRenderer`).
+  - Removed redundant `APPLY_DATE` (Ngày áp dụng) column, maximizing viewable space for operational transfer columns.
+- **Validation**:
+  - Vite dev server returned HTTP 200 for all 7 new and updated files (`DieuChuyenTeamCMS.tsx`, `PrecisionDieuChuyenTeam.scss`, `PrecisionDieuChuyenHeader.tsx`, `PrecisionDieuChuyenToolbar.tsx`, `PrecisionDieuChuyenKpi.tsx`, `PrecisionDieuChuyenCells.tsx`, `PrecisionDieuChuyenPivotModal.tsx`).
+
+## Update - 2026-09-09 (Create Automated Stitch UI Refactor Skill)
+
+### Completed
+- **Established Stitch UI Refactoring Skill (`refactor_ui_after_stitch`)**:
+  - Authored comprehensive workflow skill at `.agents/skills/refactor_ui_after_stitch.md` and `.agents/skills/refactor_ui_after_stitch/SKILL.md`.
+  - Enshrined the 5 non-negotiable rules:
+    1. 100% Logic preservation with mandatory `[ComponentName].backup.tsx` creation before any edit.
+    2. Multi-tab mode guarantee (`width: 100%` edge-to-edge, full-height viewport anchoring without vertical collapse).
+    3. AGTable standardization: eliminate default green toolbar (`display: none !important`), move `EX1`, `EX2`, and `PIVOT` up to the quick filter toolbar (`gridToolbar`).
+    4. Dedicated SCSS per module (zero direct Tailwind dependency).
+    5. Strict modular architecture (no monolithic files > 500 lines).
+  - Outlined the end-to-end 5-step automation engine and 10-point checklist for subsequent component modernization requests.
+
 ## Update - 2026-09-09 (Remove Status Footer Bar from DiemDanhNhomCMS)
 
 ### Completed
