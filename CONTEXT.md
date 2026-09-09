@@ -1,5 +1,27 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-09 (Precision Invoice Manager: Google Stitch High-Density Enterprise Redesign)
+
+### Completed
+- **Sao Lưu An Toàn Toàn Bộ Mã Nguồn Cũ (100% Backup)**:
+  - `InvoiceManager.backup.tsx` (627 bytes), `InvoiceManagerManageTab.backup.tsx` (1.591 dòng), `InvoiceManagerAddTab.backup.tsx` (236 dòng).
+- **Hợp nhất hoàn toàn thành 1 View duy nhất & tích hợp Modal Upload Excel**:
+  - Bỏ thanh SubNav tabs toggle, loại bỏ view switching để người dùng tập trung hoàn toàn vào workspace quản lý.
+  - Thêm nút `UP HÀNG LOẠT` trực tiếp trên toolbar ngay cạnh nút `NEW INV`.
+  - Mở Modal Dialog (`stitch-inv__modal--bulk`) chứa toàn bộ tính năng kéo thả file Excel, kiểm tra và import hàng loạt mà không cần chuyển trang.
+  - Loại bỏ footer tùy biến thừa, giữ footer nguyên bản của AGTable để tránh hiển thị 2 footer trùng lặp.
+- **Phân rã kiến trúc từ 1.827 dòng → 7 file mô-đun (< 300 dòng/file)**:
+  - `PrecisionInvoiceManager.scss` (tokens + layout Stitch 2-panel + modal bulk import).
+  - `PrecisionInvoiceColumns.tsx` (column defs, cell renderers, pivot fields).
+  - `PrecisionInvoiceFilterPanel.tsx` (sidebar bộ lọc bên trái + KPI summary).
+  - `PrecisionInvoiceToolbar.tsx` (CRUD, nút UP HÀNG LOẠT, analytics buttons).
+  - `PrecisionInvoiceTable.tsx` (AGTable wrapper).
+  - `PrecisionInvoiceModals.tsx` (modal thêm/sửa Invoice đơn lẻ chuẩn Stitch enterprise).
+  - `PrecisionInvoiceBulkImport.tsx` (upload Excel hàng loạt với drag-drop zone, tích hợp nút Đóng modal).
+  - `InvoiceManager.tsx` (controller chính gọn nhẹ).
+- **Bảo toàn 100% nghiệp vụ**: Tất cả API calls, validation logic (err_code 0-6), permissions checkBP, socket notifications.
+- **Thiết kế Stitch Enterprise**: Filter sidebar w-64, toolbar CRUD, gradient modal header, KPI cards, pivot overlay.
+
 ## Update - 2026-09-09 (Precision Notification: Google Stitch High-Density Enterprise Notification Center Redesign)
 
 ### Completed
