@@ -1,6 +1,31 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
-## Update - 2026-09-09 (Redesign 3 Modal Thao Tác Cơ Cấu Phòng Ban & Vị Trí: Google Stitch Enterprise PrecisionDeptModal)
+## Update - 2026-09-09 (Precision BangChamCong: Google Stitch High-Density Enterprise Redesign & Module Decomposition)
+
+### Completed
+- **Sao Lưu An Toàn Toàn Bộ Mã Nguồn Cũ (100% Backup)**:
+  - `BangChamCong.backup.tsx` (2.885 dòng).
+- **Tái Cấu Trúc Toàn Diện Màn Hình Bảng Chấm Công (`BangChamCong.tsx`)**:
+  - Dựa trên thiết kế trực quan Google Stitch (HTML & hình ảnh người dùng cung cấp):
+    1. *Sub-Header (`PrecisionChamCongHeader.tsx` - ~38 dòng)*: Tiêu đề phân hệ `01. NHÂN SỰ • HỆ THỐNG ĐỐI SOÁT CHẤM CÔNG NHÀ MÁY`, tiêu đề chính `BẢNG CHẤM CÔNG (ATTENDANCE MANAGEMENT)`, telemetry pills `NET_SERVER (15ms)`, `ZKTECO TCP/IP POOL ACTIVE`.
+    2. *Thanh Công Cụ Command & Actions (`PrecisionChamCongToolbar.tsx` - ~185 dòng)*:
+       - Bộ lọc Từ ngày - Tới ngày, checkbox "Trừ nghỉ việc", "Trừ nghỉ sinh".
+       - Cụm nút thao tác nghiệp vụ: `TRA CHẤM CÔNG` (Blue button), `UPDATE FIX TIME` (Amber button), `FIX AUTO TIME` (Sky button).
+       - Cụm nút phân ca hàng loạt: `SET CA HC` (Indigo), `SET CA NGÀY` (Emerald), `SET CA ĐÊM` (Purple).
+       - Tiện ích xuất dữ liệu: `EX1` (Xuất file lọc), `EX2` (Xuất tất cả), `PIVOT` (Mở bảng phân tích đa chiều).
+    3. *Mini-KPI Executive Bar (`PrecisionChamCongMiniKpi.tsx` - ~90 dòng)*: 5 chỉ số realtime tự động tính toán từ dữ liệu (Tổng số nhân sự, Đúng giờ / Đủ công, Thiếu giờ vào, Thiếu giờ ra, Đang làm việc) cùng thời gian đối soát.
+    4. *Cấu Hình Cột & Cell Renderers (`PrecisionChamCongColumns.tsx` - ~290 dòng)*:
+       - Tách theo công ty CMS / khác.
+       - Hiển thị đầy đủ 100% các cột nghiệp vụ gốc bao gồm: `DATE_COLUMN`, `WEEKDAY`, `NV_CCID`, `EMPL_NO`, `CMS_ID`, `FULL_NAME`, `FACTORY_NAME`, `WORK_SHIFT_NAME`, `CALV`, `MAINDEPTNAME`, `SUBDEPTNAME`, `WORK_HOUR` (khi không phải CMS), `FIXED_IN`, `FIXED_OUT`, `AUTO_IN_TIME`, `AUTO_OUT_TIME`, `L100`-`L390` (công ty CMS), `STATUS`, `REASON_NAME`.
+       - Bổ sung đầy đủ 9 cột quẹt thẻ đối soát: `CHECK1`, `CHECK2`, `CHECK3`, `PREV_CHECK1`, `PREV_CHECK2`, `PREV_CHECK3`, `NEXT_CHECK1`, `NEXT_CHECK2`, `NEXT_CHECK3` (phục vụ đối soát ca đêm, vào ca sớm và chuyển giao ca) với font JetBrains Mono.
+       - Cấu hình trường PivotGridDataSource (`getPivotFieldsChamCong`) hỗ trợ đầy đủ các trường `PREV_CHECK` và `NEXT_CHECK`.
+       - Renderers: Họ tên in đậm link xanh, ca kíp chip (HC xám, Team 1 xanh ngọc, Team 2 tím), giờ vào/ra badge cảnh báo đỏ rose nhạt khi "Thiếu giờ vào", "Thiếu giờ ra", badge trạng thái "Đủ công" / "Thiếu công".
+    5. *Thuật Toán Tính Giờ & Chuyển Đổi Dữ Liệu (`ChamCongCalculationUtils.ts` - ~190 dòng)*: Tách thuật toán `tinhInOutTime3` và `formatChamCongRawData` độc lập (ánh xạ đầy đủ các trường PREV_CHECK và NEXT_CHECK).
+    6. *Hộp Thoại Pivot Modal (`PrecisionChamCongPivotModal.tsx` - ~40 dòng)*: Modal căn giữa màn hình bọc `PivotTable`.
+    7. *Styles SCSS Chuyên Biệt (`PrecisionBangChamCong.scss` - ~440 dòng)*: Bố cục tràn viền, full-width, full-height, flex stretch dính chạm đáy màn hình, ẩn thanh toolbar xanh lá cũ của AGTable.
+    8. *Controller Chính (`BangChamCong.tsx` - ~250 dòng)*: Quản lý state, gọi API `loadC0012`, kiểm tra phân quyền `checkBP`, xử lý fix time và phân ca.
+- **Kiểm tra Vite**: 100% (8/8 files) trả về HTTP 200 OK.
+
 
 ### Completed
 - **Thiết Kế Lại Toàn Diện 3 Modal Cơ Cấu Tổ Chức 3 Cấp (`PrecisionDeptModal.tsx`)**:
