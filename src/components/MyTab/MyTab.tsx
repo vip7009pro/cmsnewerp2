@@ -64,25 +64,26 @@ const MyTabs: React.FC<MyTabsProps> & { Tab: React.FC<TabProps> } = ({
 
   return (
     <div className="tabs-container">
-      {/* Danh sách tab (TabList) */}
-      <div className="tab-list" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+      {/* Danh sách tab (TabList) chuẩn Stitch */}
+      <div className="tab-list">
         {tabs.map((tab, index) => (
           <button
             key={index}
+            type="button"
             className={`tab-item ${activeTab === index ? 'active' : ''}`}
             onClick={() => handleTabClick(index)}
           >
-            <span>{tab.props.title}</span>
-            {tab.props.showClose && (            
-
+            {activeTab === index && <span className="active-dot" />}
+            <span className="tab-title">{tab.props.title}</span>
+            {tab.props.showClose && (
               <span
                 className="close-btn"
                 onClick={(e) => {
+                  e.stopPropagation();
                   tab.props.onClose?.();
                 }}
-                style={{ marginLeft: '8px', cursor: 'pointer', paddingLeft: '5px', paddingRight:'5px' }}
               >
-                {' X '}
+                &times;
               </span>
             )}
           </button>
@@ -94,20 +95,30 @@ const MyTabs: React.FC<MyTabsProps> & { Tab: React.FC<TabProps> } = ({
         {tabs.map((tab, index) => {
           const shouldRenderTab =
             tab.props.shouldRender === false
-              ? activeTab === index // Chỉ render khi là tab active nếu shouldRender = false
-              : renderedTabs[index] || activeTab === index; // Giữ render nếu đã render trước đó
+              ? activeTab === index
+              : renderedTabs[index] || activeTab === index;
 
           return (
-            <Suspense key={index} fallback={<div>Loading...</div>}>
             <div
               key={index}
+              className={`tab-pane ${activeTab === index ? 'active' : ''}`}
               style={{
-                display: activeTab === index ? 'block' : 'none',
+                display: activeTab === index ? 'flex' : 'none',
+                flexDirection: 'column',
+                width: '100%',
+                maxWidth: '100%',
+                height: '100%',
+                maxHeight: '100%',
+                flex: '1 1 auto',
+                minHeight: 0,
+                overflow: 'hidden',
+                boxSizing: 'border-box',
               }}
             >
-              {shouldRenderTab ? tab.props.children : null}
+              <Suspense fallback={<div style={{ padding: 12 }}>Đang tải tab...</div>}>
+                {shouldRenderTab ? tab.props.children : null}
+              </Suspense>
             </div>
-            </Suspense>
           );
         })}
       </div>

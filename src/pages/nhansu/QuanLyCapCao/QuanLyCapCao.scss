@@ -1,21 +1,67 @@
+// QuanLyCapCao.scss - Full-Height Multi-Tab Container for Quản Lý Cấp Cao (NS)
+
 .quanlycapcao {
   width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
-  .pheduyetnghi {
-    .maindept_table {
-      height: calc(100vh - 110px) !important;      
-    }
-    
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  background-color: #f8fafc;
+
+  // Anchor inside Multi-Tab Container
+  .component_element & {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
   }
-  .diemdanhnhom {
-    .maindept_table {
-      height: calc(100vh - 110px) !important;      
+
+  .tabs-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  // Đảm bảo tất cả màn hình Stitch con chiếm trọn 100% không gian còn lại bên dưới tab bar
+  .precision-diemdanh,
+  .precision-pheduyet,
+  .precision-dieuchuyen {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+
+    // Ẩn toolbar xanh lá mặc định của AGTable, giữ hiển thị bottombar chuẩn Stitch
+    .agtable {
+      .toolbar {
+        display: none !important;
+      }
     }
   }
+
+  // Fallback cho giao diện legacy cũ
+  .pheduyetnghi,
+  .diemdanhnhom,
   .dieuchuyenteam {
     .maindept_table {
-      height: calc(100vh - 115px) !important;      
+      height: calc(100vh - 120px) !important;
     }
   }
 }

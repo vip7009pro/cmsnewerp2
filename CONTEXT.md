@@ -1,5 +1,64 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-09 (Restore & Standardize AGTable Bottom Bar / Footer Across Single & Nested Tabs)
+
+### Completed
+- **Unmasked AGTable Footer (`.bottombar`) Across All Modules**:
+  - **Identified Root Cause**: In previous cleanup commits, `.bottombar { display: none !important; }` was applied to `PrecisionDiemDanh.scss`, `PrecisionPheDuyetNghi.scss`, `PrecisionDieuChuyenTeam.scss`, `PrecisionLichSu.scss`, and `QuanLyCapCao.scss`, completely hiding the row count and selection footer from users in both standalone screens and nested tabs.
+  - **Comprehensive SCSS Remediation**:
+    - Removed `.bottombar { display: none !important; }` from all 5 SCSS stylesheets while preserving `.toolbar { display: none !important; }` (hiding the legacy green top toolbar since export buttons were relocated to the modern Stitch `gridToolbar`).
+- **Google Stitch High-Density Footer Redesign (`AGTable.scss`)**:
+  - Redesigned `.bottombar` with clean Stitch design tokens: 26px compact height, slate background `#f8fafc`, subtle top border `#e2e8f0`, JetBrains Mono 11px semi-bold font.
+  - Added modern interactive status chips:
+    - `Selected: Y/X rows`: Pale blue badge (`#eff6ff` with `#bfdbfe` border and `#1d4ed8` text) dynamically shown when rows are checked.
+    - `Total: X rows`: Slate badge (`#f1f5f9` with `#cbd5e1` border and `#334155` text) pinned neatly on the right edge.
+    - Added `flex-shrink: 0; box-sizing: border-box; user-select: none;` ensuring the footer is anchored and visible on all screens.
+- **Validation**:
+  - Vite dev server returned HTTP 200 for all updated SCSS files.
+
+## Update - 2026-09-09 (Fix: MyTab Height Overflow Che Mất Footer Bảng & Flex Basis Optimization)
+
+### Completed
+- **Root Cause Resolution - Flexbox Height Calculation Overflow**:
+  - **Identified Bug**: In `src/components/MyTab/MyTab.scss`, the parent `.tabs-container` is a 100% height flex column container. The tab bar `.tab-list` had a fixed height of `32px - 36px`, while `.tab-content` was assigned `height: 100%; flex: 1;`. In browser CSS flexbox calculations, declaring `height: 100%` on a flex item evaluates against the total parent height (100%), yielding `32px + 100% = 100% + 32px`. This extra 32px overflow pushed child tab contents (notably AGTable horizontal scrollbar and bottom status bar) past the bottom viewport edge where it was hidden by `overflow: hidden`.
+  - **Comprehensive SCSS Fix (`MyTab.scss`)**:
+    - Compacted `.tab-list`: `height: 32px; min-height: 32px; max-height: 32px; flex: 0 0 32px;` with compact `24px` `.tab-item` buttons.
+    - Eliminated `height: 100%` from `.tab-content`, replacing it with: `flex: 1 1 0px; height: calc(100% - 32px); max-height: calc(100% - 32px); min-height: 0; overflow: hidden; box-sizing: border-box;`. This enforces a 100% mathematical match (`32px + calc(100% - 32px) = exactly 100%`).
+    - Configured `.tab-pane`: `display: flex; flex-direction: column; width: 100%; max-width: 100%; height: 100%; max-height: 100%; flex: 1 1 auto; min-height: 0; overflow: hidden; box-sizing: border-box;`.
+- **Structural JSX Fix (`MyTab.tsx`)**:
+  - Moved `<Suspense>` inside `div.tab-pane` to restore direct parent-child flexbox relationship with `.tab-content`.
+  - Updated inline style of `tab-pane` to include `maxHeight: '100%', flex: '1 1 auto', minHeight: 0, boxSizing: 'border-box'`.
+- **QuanLyCapCao Container Optimization (`QuanLyCapCao.scss`)**:
+  - Enforced `max-width: 100% !important; max-height: 100% !important; flex: 1 1 auto !important; box-sizing: border-box !important;` on `.tabs-container`.
+- **Grid Container Flex-Basis Calibration (`PrecisionDiemDanh.scss`, `PrecisionPheDuyetNghi.scss`, `PrecisionDieuChuyenTeam.scss`)**:
+  - Converted `&__gridContainer`, `&__gridBody`, and `.agtable` from `flex: 1 1 auto; height: 100%` to `flex: 1 1 0px; min-height: 150px; height: 100%; max-height: 100%;`. This guarantees that the table grid accurately claims only the remaining viewport height below Header, Toolbar, and KPI cards without compounding height calculations.
+- **AGTable Standardization (`AGTable.scss`)**:
+  - Added `flex-shrink: 0; height: 22px; min-height: 22px; box-sizing: border-box;` to `.bottombar` to prevent footer clipping across all ERP screens using AGTable.
+- **Validation**:
+  - TypeScript syntax check (`tsc --noEmit --skipLibCheck --jsx react-jsx --esModuleInterop src/components/MyTab/MyTab.tsx`) passed with 0 errors (exit code 0).
+  - Vite dev server returned HTTP 200 for all edited modules.
+
+## Update - 2026-09-09 (Precision MyTabs: Stitch Redesign & Full-Height Nested Tabs Fix in QuanLyCapCao_NS)
+
+### Completed
+- **MyTabs Google Stitch Enterprise Redesign (`MyTab.tsx` & `MyTab.scss`)**:
+  - Completely eliminated legacy neon green background gradient (`theme.CMS.backgroundImage`) from `.tab-list`.
+  - Upgraded to modern Stitch tokens: compact 36px bar, slate neutral background (`#f1f5f9`), subtle border (`#e2e8f0`).
+  - Active Tab: pure white elevated card (`#ffffff`), subtle 1px border (`#e2e8f0`), deep royal blue text (`#1d4ed8`), pulsating active dot (`#2563eb`), and micro-shadow (`0 1px 2px rgba(15, 23, 42, 0.05)`).
+  - Modernized tab close button (`&times;` with smooth red hover circle).
+- **Nested Tab Full-Height Flex Propagation Architecture**:
+  - Transformed `.tabs-container` and `.tab-content` in `MyTab.scss` into pure flex column containers (`height: 100%; flex: 1; min-height: 0; overflow: hidden;`).
+  - Updated tab pane wrapper in `MyTab.tsx` from standard `display: block` to `display: flex; flex-direction: column; width: 100%; height: 100%; flex: 1; min-height: 0; overflow: hidden;`, solving the CSS height collapse issue for all nested child components.
+- **QuanLyCapCao_NS Viewport Stretching & Height Fix (`QuanLyCapCao.scss`)**:
+  - Enforced full-height flex column layout on `.quanlycapcao` and `.tabs-container` (`height: 100%; flex: 1; min-height: 0; overflow: hidden;`).
+  - Solved **Tab Điểm danh bộ phận** footer overflow bug: Adjusted `.component_element &` in `PrecisionDiemDanh.scss` from fixed `calc(100vh - 82px)` to `height: 100%; max-height: 100%; flex: 1; min-height: 0;`, preventing the table footer and horizontal scrollbar from overflowing past the viewport bottom.
+  - Solved **Tab Phê duyệt nghỉ** & **Tab Điều chuyển team** table height collapse bug: With the new flex container chain, `.precision-pheduyet__gridContainer` and `.precision-dieuchuyen__gridContainer` now expand seamlessly to fill 100% of the available vertical viewport down to the bottom edge.
+- **AGTable Standardization - Neutralized Bottom Bar (`AGTable.scss` & Module SCSS)**:
+  - Neutralized legacy green background `#b2ffa0` of `.bottombar` in `AGTable.scss`, transforming it into a clean Stitch slate bar (`#f8fafc` with `border-top: 1px solid #e2e8f0`, `color: #64748b`, JetBrains Mono 11px).
+  - In addition, added `.agtable .bottombar { display: none !important; }` in `PrecisionDiemDanh.scss`, `PrecisionPheDuyetNghi.scss`, `PrecisionDieuChuyenTeam.scss`, and `PrecisionLichSu.scss` to eliminate redundant bottom status bars, as record counts are already prominently featured in the modern Stitch `gridToolbar`.
+- **Validation**:
+  - Verified no compilation errors in all modified files.
+
 ## Update - 2026-09-09 (Precision LichSu NS5: Stitch Redesign, Responsive Desktop/Mobile, 4 KPIs, Recharts Timeline, AGTable & Pivot Modal)
 
 ### Completed
