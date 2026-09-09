@@ -1,5 +1,36 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-09 (Precision Notification: Google Stitch High-Density Enterprise Notification Center Redesign)
+
+### Completed
+- **Sao Lưu An Toàn Toàn Bộ Mã Nguồn Cũ (100% Backup)**:
+  - `src/components/NotificationPanel/Notification.backup.tsx` (76 dòng).
+  - `src/components/NotificationPanel/NotificationPanel.backup.tsx` (62 dòng).
+- **Thiết Kế Lại Toàn Diện Trung Tâm Thông Báo (`Notification.tsx` & `NotificationPanel.tsx`) Theo Google Stitch**:
+  - Dựa trên thiết kế trực quan Google Stitch (HTML & hình ảnh mẫu người dùng cung cấp):
+    1. *Khung Popover Nổi Hiện Đại (`NotificationPanel.tsx` - ~210 dòng)*:
+       - Kích thước `470px`, bo góc mềm mại `16px`, đổ bóng đa tầng chuẩn Enterprise `shadow-2xl`.
+       - Header dải chuyển màu nhẹ với icon chuông xanh trong khung 28x28px, tiêu đề `Trung Tâm Thông Báo`, pill đếm `{count}+`, dòng trạng thái `Cập nhật thời gian thực (Realtime Socket.io)`.
+       - Cụm điều khiển: Nút `Refresh` tải lại dữ liệu, tag múi giờ `GMT+7` font mono, nút đóng `(X)`.
+    2. *Thanh Lọc Nhanh Phân Loại Tab (Quick Filter Tabs)*:
+       - Bộ 4 tab lọc tức thì: `Tất cả ({total})`, `Chưa đọc ({unread})`, `YCSX` (sản xuất/kinh doanh), `R&D` (nghiên cứu & phát triển/BOM).
+       - Nút thao tác nhanh `Đã đọc tất cả` đánh dấu toàn bộ thông báo đã đọc.
+    3. *Thẻ Thông Báo Chuyên Sâu Từng Phân Hệ (`Notification.tsx` - ~180 dòng)*:
+       - Tự động nhận diện ngữ cảnh và áp dụng theme màu sắc chuẩn Stitch:
+         - **YCSX / Thành công**: Viền ngọc Emerald `#a7f3d0`, icon box `FiCheck` xanh lá, badge `YCSX`, action `Xem chi tiết chỉ thị →`.
+         - **RND / Thông tin kỹ thuật**: Viền xanh Sky `#bae6fd`, icon box `FiInfo` xanh da trời, badge `RND`, action `Kiểm tra bản vẽ →`.
+         - **QLSX / Kế hoạch sản xuất**: Viền chàm Indigo `#c7d2fe`, icon box `FiLayers`, badge `QLSX`, action `Xem thông số CAPA →`.
+         - **QC / Cảnh báo lỗi VOC**: Viền hồng Rose `#fecdd3`, icon box `FiAlertTriangle`, badge `QC4`, action `Xem ảnh lỗi VOC →`.
+         - **Hệ thống / Chung**: Viền Slate `#e2e8f0`, icon box `FiBell`, action `Xem chi tiết →`.
+       - Hiển thị: Tiêu đề in đậm, tag phân hệ, thời gian định dạng chuẩn `HH:mm DD/MM/YYYY`, nội dung chi tiết, tên bộ phận kèm icon cặp hồ sơ, chấm tròn báo chưa đọc (unread dot).
+    4. *Thanh Footer Điều Hành*:
+       - Chỉ báo: Đèn xanh pulsing dot + `Hồ sơ thi đua khen thưởng • Ko tính CN & nửa phép`.
+       - Nút chuyển trang `Xem tất cả thông báo →`.
+    5. *Kiểu Dáng SCSS Chuyên Biệt (`Notification.scss` & `NotificationPanel.scss`)*:
+       - Thanh cuộn siêu mỏng 5px `custom-scroll`.
+       - Chuyển đổi toàn bộ Tailwind sang SCSS chuẩn, đảm bảo không có lỗi co bẹp, tương thích trên mọi kích thước màn hình.
+- **Kiểm tra Vite Dev Server**: 100% các tệp liên quan (`Notification.tsx`, `NotificationPanel.tsx`, `PrecisionHeader.tsx`) trả về HTTP 200 OK.
+
 ## Update - 2026-09-09 (Precision NavMenu: Google Stitch High-Density Enterprise Flyout Drawer Redesign)
 
 ### Completed

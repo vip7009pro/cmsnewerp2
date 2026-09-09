@@ -851,17 +851,18 @@ export default function PrecisionHeader({
         transformOrigin={{ vertical: "top", horizontal: "right" }}
         PaperProps={{
           sx: {
-            mt: 1,
-            borderRadius: "8px",
-            boxShadow: "0 10px 25px -5px rgba(15, 23, 42, 0.15)",
-            border: "1px solid #cbd5e1",
-            maxWidth: 420,
+            mt: 1.5,
+            borderRadius: "16px",
+            boxShadow: "0 25px 50px -12px rgba(15, 23, 42, 0.25)",
+            border: "none",
+            background: "transparent",
+            maxWidth: 480,
             width: "100%",
-            overflow: "hidden",
+            overflow: "visible",
           },
         }}
       >
-        <NotificationPanel />
+        <NotificationPanel onClose={() => setNotificationAnchorEl(null)} />
       </Popover>
     </header>
   );
