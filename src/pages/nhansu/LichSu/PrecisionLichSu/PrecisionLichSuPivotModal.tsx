@@ -13,7 +13,7 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import { DiemDanhLichSuData } from "../interfaces/nhansuInterface";
+import { DiemDanhLichSuData } from "../../interfaces/nhansuInterface";
 
 interface PrecisionLichSuPivotModalProps {
   open: boolean;

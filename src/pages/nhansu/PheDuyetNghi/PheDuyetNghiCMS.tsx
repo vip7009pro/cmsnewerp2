@@ -311,7 +311,7 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
             columns={columns}
             data={filteredData}
             suppressRowClickSelection={false}
-            // KHÔNG truyền prop toolbar để tránh render toolbar xanh lá cũ
+          // KHÔNG truyền prop toolbar để tránh render toolbar xanh lá cũ
           />
         </div>
       </div>

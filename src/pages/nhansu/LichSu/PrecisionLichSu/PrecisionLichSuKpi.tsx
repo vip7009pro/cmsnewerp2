@@ -1,5 +1,5 @@
 import React from "react";
-import { DiemDanhLichSuData } from "../interfaces/nhansuInterface";
+import { DiemDanhLichSuData } from "../../interfaces/nhansuInterface";
 
 interface PrecisionLichSuKpiProps {
   data: DiemDanhLichSuData[];
