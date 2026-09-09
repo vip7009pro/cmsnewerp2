@@ -1,5 +1,44 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-09 (Precision PheDuyetNghi: Stitch Redesign, Full-Width Multi-Tab, 4 KPIs, Interactive Cells & Pivot Modal)
+
+### Completed
+- **Full Preservation of Legacy Implementation with Backup**:
+  - Created `src/pages/nhansu/PheDuyetNghi/PheDuyetNghiCMS.backup.tsx` preserving 100% of the legacy 401-line implementation, API endpoints (`pheduyetnghi`, `setpheduyetnhom`), SweetAlert2 alerts, and permissions.
+- **Stitch High-Density Enterprise Redesign (`PheDuyetNghiCMS.tsx` & `PrecisionPheDuyetNghi/`)**:
+  - Replaced legacy basic layout with clean neutral Google Stitch tokens (slate `#f8fafc`, pure white cards `#ffffff`, subtle borders `#e2e8f0`, micro-shadows `0 1px 2px rgba(15, 23, 42, 0.04)`).
+  - Dedicated modular SCSS architecture `PrecisionPheDuyetNghi.scss` without Tailwind runtime dependencies.
+  - Multi-Tab Mode Guarantee: Enforced `width: 100%; max-width: 100%; height: 100%; max-height: 100%; flex: 1; min-height: 0;` on `.precision-pheduyet` and `.component_element &`.
+- **Subcomponents & Clean Architecture (All files < 300 lines)**:
+  1. *Sub-Header Banner (`PrecisionPheDuyetHeader.tsx` - 57 lines)*:
+     - Module title: `01. NHÂN SỰ & HÀNH CHÍNH • NS4 - TRUNG TÂM PHÊ DUYỆT ĐƠN NGHỈ PHÉP`.
+     - Real-time telemetry pills: `SOCKET REALTIME SYNC` and `MES & HRM SYNC ACTIVE`.
+  2. *Real-time 4 KPI Cards (`PrecisionPheDuyetKpi.tsx` - 79 lines)*:
+     - Card 1: Tổng số đơn đăng ký trong kỳ (`TOTAL_COUNT` với icon `assignment_turned_in`).
+     - Card 2: Chờ phê duyệt cấp tốc (`PENDING_COUNT` với icon `pending_actions`, amber badge).
+     - Card 3: Đã phê duyệt chính thức (`APPROVED_COUNT` với icon `task_alt`, emerald badge).
+     - Card 4: Đã từ chối / Hủy đơn (`REJECTED_COUNT` với icon `cancel`, rose badge).
+  3. *Operational Toolbar (`PrecisionPheDuyetToolbar.tsx` - 110 lines)*:
+     - Date range picker (Từ ngày - Đến ngày).
+     - Filter checkbox: "Chỉ hiện đơn chờ duyệt (Only Pending)" giúp quản lý tập trung xử lý tồn đọng.
+     - Action buttons: "Tra cứu dữ liệu" (`search`), "Phê duyệt hàng loạt" (`done_all`), "Từ chối chọn" (`close`).
+  4. *High-Density AG-Grid Interactive Action Cells (`PrecisionPheDuyetCells.tsx` - 128 lines)*:
+     - `PheDuyetActionCell`: Nút phê duyệt nhanh:
+       - Nếu đơn chưa duyệt: nút xanh lá "Duyệt" và nút đỏ "Từ chối".
+       - Nếu đơn đã duyệt/từ chối: nút xám "Reset" đưa về chờ duyệt.
+       - Nút xóa đơn kèm SweetAlert2 confirmation dialog cảnh báo trước khi xóa.
+     - `PheDuyetEmployeeCell`: Avatar 24x24px, Họ tên in đậm, mã nhân viên JetBrains Mono badge.
+     - `PheDuyetMonoBadge`: Chip JetBrains Mono chuyên biệt cho mã đơn (`OFF_ID`).
+     - `PheDuyetReasonBadge`: Badge màu phân loại kiểu nghỉ (Phép năm: xanh lam, Nửa phép: tím, Nghỉ ốm: cam, Việc riêng: hổ phách, Không lương: xám).
+  5. *Multidimensional Pivot Modal (`PrecisionPheDuyetPivotModal.tsx` - 142 lines)*:
+     - Thống kê chéo số lượng đơn theo: Loại nghỉ phép (Phép năm, ốm, việc riêng...), Tình trạng duyệt (Chờ, Đã duyệt, Hủy), và Phòng ban / Bộ phận.
+  6. *AGTable Standardization & Export Actions*:
+     - Toolbar xanh lá mặc định của AGTable được ẩn hoàn toàn (`.agtable .toolbar { display: none !important; }`).
+     - Bổ sung ô tìm kiếm tức thời `Quick Search` ngay trên đầu bảng AGTable (`gridToolbar`).
+     - Bổ sung các nút: `EX1 (Đang lọc)`, `EX2 (Tất cả)`, `PIVOT (Phân tích)` lên thanh `gridToolbar` với chiều cao compact 26px.
+- **Validation**:
+  - Vite dev server biên dịch thành công HTTP 200 cho toàn bộ 7 file của module `PheDuyetNghi`.
+
 ## Update - 2026-09-09 (Precision TabDangKy NS3: Stitch Redesign, Full-Width Multi-Tab, 3 KPI Micro-Cards, Modular Sub-Tabs Forms & AGTable History)
 
 ### Completed

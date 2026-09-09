@@ -16,6 +16,7 @@ Skill này thiết lập quy trình chuẩn hóa từng bước để tự độ
 > 3. **AGTABLE LÀ TIÊU CHUẨN - ẨN TOOLBAR XANH LÁ CŨ**: Giữ nguyên `AGTable`, **BỎ hoàn toàn prop toolbar** và thêm SCSS `.agtable .toolbar { display: none !important; }`. Đưa các nút tải Excel (`EX1`, `EX2`) và `PIVOT` lên trên cùng thanh lọc nhanh (`gridToolbar`).
 > 4. **KHÔNG DÙNG TAILWIND TRỰC TIẾP - DÙNG SCSS CHUYÊN BIỆT**: Dự án không bật Tailwind runtime. Toàn bộ giao diện phải được viết bằng SCSS trong thư mục con `Precision[ModuleName]/`.
 > 5. **MODULE HÓA - KHÔNG VIẾT FILE HÀNG NGHÌN DÒNG**: Tách nhỏ các thành phần giao diện (Header, Toolbar, KPI Cards, Cells, Modals) thành các file riêng dưới 300 dòng.
+> 6. **ĐẢM BẢO RESPONSIVE CHO CẢ DESKTOP & MOBILE**: Luôn code SCSS với media query để đảm bảo giao diện hiển thị tốt trên cả desktop và mobile.
 
 ---
 

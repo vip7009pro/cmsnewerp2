@@ -27,6 +27,4 @@
 - [x] Create automated Stitch UI Refactor Skill (`.agents/skills/refactor_ui_after_stitch.md` & `refactor_ui_after_stitch/SKILL.md`) with 5-step standard workflow and safety checklist
 - [x] Redesign Dieu Chuyen Team (`DieuChuyenTeamCMS.tsx`) with Google Stitch High-Density: sub-header, operational toolbar, 4 realtime KPI cards, modern AG-Grid interactive action cells (team, shift, factory, position select), pivot modal, full-width multi-tab guarantee, and full backup (`DieuChuyenTeamCMS.backup.tsx`)
 - [x] Redesign Tab Dang Ky NS3 (`TabDangKy.tsx`, `FormDangKyNghi.tsx`, `FormDangKyTangCa.tsx`, `FormXacNhanChamCong.tsx`) with Google Stitch High-Density: sub-header banner, 3 realtime KPI cards, 3 interactive sub-tab forms (Nghỉ phép, Tăng ca, Chấm công), AGTable audit history ledger with EX1/EX2 on quick filter toolbar, multi-tab full-width guarantee, and full backups
-
-
-
+- [x] Redesign Phe Duyet Nghi (`PheDuyetNghiCMS.tsx`) with Google Stitch High-Density: sub-header banner, 4 realtime KPI cards (Tổng đơn, Chờ duyệt, Đã duyệt, Đã xóa), operational toolbar (từ ngày - đến ngày, checkbox Only Pending), AG-Grid interactive action cells (Phê duyệt, Từ chối, Reset, Xóa đơn kèm confirm SweetAlert2), multidimensional Pivot modal, quick search filter, EX1/EX2 export on top grid toolbar, multi-tab full-width guarantee, and full backup (`PheDuyetNghiCMS.backup.tsx`)
