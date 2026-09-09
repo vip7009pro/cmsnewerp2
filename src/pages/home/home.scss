@@ -36,10 +36,27 @@
           height: fit-content;
           .component_element {
             position: absolute;
-            /* top: 35px; */
-            top: 28px;
+            top: 34px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: calc(100vh - 82px);
+            max-height: calc(100vh - 82px);
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: stretch;
+            box-sizing: border-box;
+            overflow: hidden;
+
+            > * {
+              width: 100%;
+              max-width: 100%;
+              height: 100%;
+              flex: 1;
+              min-height: 0;
+              box-sizing: border-box;
+            }
           }
         }
       }
@@ -205,7 +222,7 @@
           
           .component_element {
             position: absolute;
-            top: 32px;
+            top: 34px;
           }
         }
       }
@@ -230,7 +247,7 @@
           margin-top: 35px;
           .component_element {
             position: absolute;
-            top: 32px;
+            top: 34px;
           }
         }
       }
@@ -301,50 +318,197 @@
 
   .tabsdiv {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     position: sticky;
     top: 0;
-    z-index: 2;
-    padding: 0;
-    backdrop-filter: blur(6px);
+    z-index: 100;
+    height: 34px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0 8px 0 10px;
+    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.03);
+    user-select: none;
+    font-family: 'Inter', system-ui, sans-serif;
+    box-sizing: border-box;
     width: 100%;
   }
 
   .tabs {
-    width: 100%;
+    flex: 1;
+    min-height: 34px;
+    height: 34px;
     margin: 0;
-    border-radius: 0;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-left: 0;
-    border-right: 0;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+    border: none;
+    background: transparent;
+
+    .MuiTabs-flexContainer {
+      gap: 4px;
+      height: 34px;
+      align-items: center;
+    }
+
+    .MuiTabs-indicator {
+      display: none;
+    }
+
+    .MuiTabs-scrollButtons {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      color: #64748b;
+      margin: auto 0;
+
+      &:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+
+      &.Mui-disabled {
+        opacity: 0.25;
+      }
+    }
   }
 
   .erpTab {
+    min-height: 26px;
+    height: 26px;
+    padding: 0;
+    min-width: 0;
+    text-transform: none;
     opacity: 1;
   }
 
   .erpTabLabel {
-    color: rgba(0, 0, 0, 0.75);
-    background: rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 26px;
+    padding: 0 4px 0 8px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: rgba(241, 245, 249, 0.8);
+    color: #64748b;
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    transition: all 120ms ease;
+
+    &:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    &.erpTabLabel--active {
+      background: #ffffff;
+      color: #0f172a;
+      font-weight: 600;
+      border-color: #cbd5e1;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+
+      .erpTabDot {
+        background: #2563eb;
+      }
+
+      .erpTabIndex {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+
+      .erpTabTitle {
+        color: #0f172a;
+      }
+    }
   }
 
-  .erpTabLabel:hover {
-    background: rgba(255, 255, 255, 0.7);
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  .erpTabDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: transparent;
+    flex-shrink: 0;
+    transition: background-color 150ms ease;
   }
 
-  .erpTabLabel.erpTabLabel--active {
-    color: #0b5ed7;
-    background: rgba(25, 118, 210, 0.14);
-    box-shadow: inset 0 0 0 1px rgba(25, 118, 210, 0.18);
+  .erpTabIndex {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: #e2e8f0;
+    color: #475569;
+    line-height: 1.1;
+    flex-shrink: 0;
+  }
+
+  .erpTabTitle {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+    font-size: 11.5px;
+    line-height: 1;
   }
 
   .erpTabClose {
-    opacity: 0.75;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    color: #94a3b8;
+    padding: 0;
+    margin-left: 2px;
+    transition: all 120ms ease;
+
+    &:hover {
+      background: #fee2e2;
+      color: #ef4444;
+    }
   }
 
-  .erpTabLabel:hover .erpTabClose {
-    opacity: 1;
+  .erpTabsToolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+
+  .erpTabsCount {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #64748b;
+    background: #e2e8f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .erpTabsCloseAllBtn {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 22px;
+    padding: 0 6px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #64748b;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 120ms ease;
+
+    &:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #b91c1c;
+    }
   }
 
   

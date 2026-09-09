@@ -21,8 +21,8 @@ import { MENU_LIST_DATA } from "../../api/GlobalInterface";
 import { AccountInfo } from "../../api/lazyPages";
 import { getMenuList } from "./menuConfig";
 import PageTabs from "../nocodelowcode/components/PagesManager/Components/PageTabs/PageTabs";
-import { useRenderLag } from "../../api/userRenderLag";
-import NavBarNew from "../../components/Navbar/NavBarNew";
+import PrecisionHeader from "../../components/Navbar/PrecisionHeader/PrecisionHeader";
+import { CloseRounded } from "@mui/icons-material";
 import NavMenuNew from "../../components/NavMenu/NavMenuNew";
 import { getNavMenu } from "../../components/NavMenu/getNavMenu";
 import { canUseTabMode, getFirstNavMenuSearchResult, normalizeMenuPath } from "../../components/NavMenu/navMenuSearch";
@@ -38,62 +38,35 @@ interface ELE_ARRAY {
 }
 
 export const CustomTab = styled(Tab)({
-  minHeight: 28,
+  minHeight: 26,
+  height: 26,
   padding: 0,
   textTransform: "none",
-  color: "rgba(0,0,0,0.65)",
-  fontWeight: 500,
   minWidth: 0,
+  opacity: 1,
 });
 
 const CustomTabs = styled(Tabs)({
-  minHeight: 28,
-  padding: "0 2px",
-  borderRadius: 8,
+  minHeight: 34,
+  height: 34,
+  padding: 0,
   '& .MuiTabs-flexContainer': {
     gap: 4,
+    height: 34,
+    alignItems: "center",
   },
   '& .MuiTabs-indicator': {
-    height: 2,
-    borderRadius: 2,
+    display: "none",
   },
   '& .MuiTabs-scrollButtons': {
-    opacity: 0.85,
+    width: 22,
+    height: 22,
+    borderRadius: 4,
+    color: "#64748b",
     '&.Mui-disabled': {
       opacity: 0.25,
     },
   },
-});
-
-const CustomTabLabel = styled(Typography)({
-  fontWeight: 500,
-  fontSize: "0.7rem",
-  display: "flex",
-  whiteSpace: "nowrap",
-  alignItems: "center",
-});
-
-const TabLabelRoot = styled("div")({
-  display: "flex",
-  alignItems: "center",
-  gap: 4,
-  height: 24,
-  padding: "0 8px",
-  borderRadius: 999,
-  cursor: "pointer",
-  userSelect: "none",
-  transition: "background-color 120ms ease, box-shadow 120ms ease",
-});
-
-const TabTitle = styled("span")({
-  display: "inline-flex",
-  alignItems: "center",
-  lineHeight: 1,
-});
-
-const CloseIconButton = styled(IconButton)<IconButtonProps>({
-  padding: 1,
-  marginLeft: 0,
 });
 
 function Home() {
@@ -403,16 +376,14 @@ function Home() {
     <div className={`home ${isPVN ? "home--pvn" : ""}`}>
       {!isPVN && (
         <div className="navdiv">
-          <NavBarNew
+          <PrecisionHeader
             searchText={menuSearchText}
             onSearchTextChange={handleNavSearchTextChange}
             onSearchFocus={handleNavSearchFocus}
             onSearchBlur={handleNavSearchBlur}
             onSearchEnter={openFirstSearchResult}
             onSidebarToggle={(nextOpen) => setMenuOpenSource(nextOpen ? "menu" : null)}
-            menuAutoFocusSearch={menuOpenSource !== "navbar"}
-            menuAlignedToSearch={menuOpenSource === "navbar"}
-            onMenuSearchFocus={handleMenuSearchFocus}
+            sidebarOpen={menuOpenSource === "menu" || Boolean(sidebarStatus)}
           />
         </div>
       )}
@@ -552,7 +523,7 @@ function Home() {
           >
             {tabModeSwap &&
               tabs.filter(
-                (ele: ELE_ARRAY, index: number) =>
+                (ele: ELE_ARRAY) =>
                   ele.ELE_CODE !== "-1" && ele.ELE_CODE !== "NS0"
               ).length > 0 && (
                 <div className="tabsdiv">
@@ -569,65 +540,68 @@ function Home() {
                     scrollButtons
                     allowScrollButtonsMobile
                     className="tabs"
-                    style={{
-                      backgroundImage: `${company === "CMS"
-                        ? theme.CMS.backgroundImage
-                        : theme.PVN.backgroundImage
-                        }`,
-                      border: "none",
-                      boxSizing: "border-box",
-                      overflow: "hidden",
-                    }}
                   >
                     {tabs.map((ele: ELE_ARRAY, index: number) => {
                       if (ele?.ELE_CODE !== "-1") {
+                        const isActive = tabIndex === index;
                         return (
-                          <div key={index}>
-                            <CustomTab
-                              disableRipple
-                              key={index}
-                              label={
-                                <TabLabelRoot
-                                  className={
-                                    tabIndex === index
-                                      ? "erpTabLabel erpTabLabel--active"
-                                      : "erpTabLabel"
-                                  }
+                          <CustomTab
+                            disableRipple
+                            key={index}
+                            value={index}
+                            className={isActive ? "erpTab erpTab--active" : "erpTab"}
+                            label={
+                              <div
+                                className={
+                                  isActive
+                                    ? "erpTabLabel erpTabLabel--active"
+                                    : "erpTabLabel"
+                                }
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  dispatch(settabIndex(index));
+                                }}
+                              >
+                                <span className="erpTabDot" />
+                                <span className="erpTabIndex">{index + 1}</span>
+                                <span className="erpTabTitle" title={ele.ELE_NAME}>
+                                  {ele.ELE_NAME}
+                                </span>
+                                <span
+                                  className="erpTabClose"
+                                  title="Đóng tab (Ctrl+Shift+Down)"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    dispatch(closeTab(index));
+                                  }}
                                 >
-                                  <CustomTabLabel>
-                                    <TabTitle
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        dispatch(settabIndex(index));
-                                      }}
-                                    >
-                                      {index + 1}.{ele.ELE_NAME}
-                                    </TabTitle>
-                                  </CustomTabLabel>
-                                  <CloseIconButton
-                                    component="span"
-                                    key={index + "A"}
-                                    className="erpTabClose"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      dispatch(closeTab(index));
-                                    }}
-                                  >
-                                    <AiOutlineCloseCircle
-                                      color={tabIndex === index ? `#0b5ed7` : `rgba(0,0,0,0.45)`}
-                                      size={12}
-                                    />
-                                  </CloseIconButton>
-                                </TabLabelRoot>
-                              }
-                              value={index}
-                              className={tabIndex === index ? "erpTab erpTab--active" : "erpTab"}
-                            ></CustomTab>
-                          </div>
+                                  <CloseRounded style={{ fontSize: 13 }} />
+                                </span>
+                              </div>
+                            }
+                          />
                         );
                       }
+                      return null;
                     })}
                   </CustomTabs>
+
+                  <div className="erpTabsToolbar">
+                    <span className="erpTabsCount">
+                      {tabs.filter((t) => t?.ELE_CODE !== "-1").length} tabs
+                    </span>
+                    <button
+                      type="button"
+                      className="erpTabsCloseAllBtn"
+                      title="Đóng tất cả các tab"
+                      onClick={() => {
+                        dispatch(resetTab(0));
+                      }}
+                    >
+                      <CloseRounded style={{ fontSize: 12 }} />
+                      <span>Đóng tất cả</span>
+                    </button>
+                  </div>
                 </div>
               )}
             {tabModeSwap &&

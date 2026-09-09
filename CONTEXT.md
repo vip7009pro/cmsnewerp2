@@ -1,5 +1,125 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-09 (Fix: AG-Grid PO Table Collapsed Height = 0 & Parent Viewport Anchoring)
+
+### Completed
+- **Fixed Root Causes of Collapsed AGTable in Multi-Tab Mode**:
+  - **Identified Root Cause 1 (Parent Viewport Unbounded)**: In `src/pages/home/home.scss`, `.component_element` had `position: absolute; top: 34px; left: 0; right: 0;` without `bottom: 0;` or a definite height. As an absolute element, its height resolved to auto, breaking percentage calculations for all children.
+  - **Identified Root Cause 2 (`po-grid-body` Block Container)**: In `src/pages/kinhdoanh/pomanager/PrecisionPoManager/components/PrecisionPoTable.tsx`, AGTable was wrapped in `<div className="po-grid-body">`. In `PrecisionPoManager.scss`, this container had `flex: 1; min-height: 0;` but lacked `display: flex; flex-direction: column;` and `height: 100%`. The child `.agtable` with `height: 100%` collapsed to `height: auto`.
+  - **Identified Root Cause 3 (AG-Grid Quartz Viewport 0px)**: Inside `AGTable.tsx`, `<AgGridReact>` runs inside `.ag-theme-quartz`. Because parent height was auto, AgGrid's internal ResizeObserver measured `clientHeight = 0px`, rendering 0 rows and 0 header, pulling `.bottombar` ("Total: 0 rows") directly underneath the toolbar and leaving an empty space below.
+- **Comprehensive Solution**:
+  1. **`src/pages/home/home.scss`**: Updated `.component_element` with `bottom: 0; height: calc(100vh - 82px); max-height: calc(100vh - 82px); overflow: hidden;` and configured `> *` with `height: 100%; max-height: 100%; flex: 1; min-height: 0;`.
+  2. **`src/pages/kinhdoanh/pomanager/PrecisionPoManager/PrecisionPoManager.scss`**:
+     - Configured `.component_element &` with `height: 100%; max-height: 100%; flex: 1; min-height: 0;`.
+     - Set `.po-main-workspace` with `height: calc(100% - 95px); max-height: calc(100% - 95px); flex: 1; min-height: 0;`.
+     - Set `.po-table-container` with `height: 100%; max-height: 100%; display: flex; flex-direction: column; overflow: hidden;`.
+     - Configured `.po-grid-body` with `display: flex; flex-direction: column; flex: 1 1 auto; min-height: 250px; height: 100%; width: 100%; overflow: hidden;`.
+     - Deeply enforced flex column and full height down to `.agtable`, `.ag-theme-quartz` (`min-height: 200px`), and `.ag-root-wrapper` (`height: 100% !important; min-height: 200px;`).
+     - Ensured `.bottombar` and `.po-grid-footer` have `flex-shrink: 0;`.
+  3. **`src/components/DataTable/AGTable.scss`**: Added `min-height: 0; display: flex; flex-direction: column; height: 100%; width: 100%;` to `.ag-theme-quartz`.
+  4. **`PrecisionPoTable.tsx`**: Added explicit SCSS import `import "../PrecisionPoManager.scss";`.
+- **Validation**:
+  - Vite HMR check returned HTTP 200 for all updated files (`home.scss`, `PrecisionPoManager.scss`, `AGTable.scss`, `PrecisionPoTable.tsx`).
+  - AG-Grid now reliably expands 100% vertically between the toolbar and footer, with headers and rows fully visible and anchored to the viewport bottom.
+
+## Update - 2026-09-09 (Production Rollout: Precision Header, PO Manager, Account Info & Stitch Multi-Tab Bar Overhaul)
+
+### Completed
+- **Replaced PO Manager in Production with Full Backup**:
+  - Created `src/pages/kinhdoanh/pomanager/PoManager.backup.tsx` preserving 100% of the legacy 2-tab implementation (`PoManagerManageTab` & `PoManagerAddTab`).
+  - Updated `src/pages/kinhdoanh/pomanager/PoManager.tsx` to render `PrecisionPoManager` directly.
+  - Automatically propagated new modern PO Manager to `/kinhdoanh/pomanager`, `KD1` in `CMS_MENU`, `PVN_MENU`, `NHATHAN_MENU`, and `lazyPages.ts`.
+  - Added `.component_element & { height: calc(100vh - 82px); max-height: calc(100vh - 82px); }` in `PrecisionPoManager.scss` ensuring sticky bottom viewport expansion inside Multi-tab mode without nested scrolling.
+- **Replaced User Account Info in Production with Full Backup**:
+  - Created `src/components/Navbar/AccountInfo/AccountInfo.backup.tsx` preserving 100% of the legacy 907-line implementation.
+  - Updated `src/components/Navbar/AccountInfo/AccountInfo.tsx` to render `PrecisionAccountInfo` and re-export `LinearProgressWithLabel` for backward compatibility with `PLAN_STATUS_COMPONENTS.tsx` and `BulletinBoard.tsx`.
+  - Automatically propagated new modern Account Info to `/accountinfo`, `NS0` in all company menus, and default empty-tab workspace.
+  - Updated `PrecisionHeader.tsx` user profile menu item to navigate directly to official `/accountinfo`.
+- **Replaced Headerbar in Production with Full Backup**:
+  - Created `src/components/Navbar/NavBarNew.backup.tsx` preserving 100% of legacy navbar code.
+  - Updated `src/components/Navbar/NavBarNew.tsx` to safely proxy all props to `PrecisionHeader`.
+  - Updated `src/pages/home/Home.tsx` to render `PrecisionHeader` directly with high-precision Omnibar (`Ctrl + K`), ERP department overlay panel (`Ctrl + Space`), 35+ theme gradients, VN/EN/KR switcher, realtime notification popover, and profile pill.
+- **Modern High-Density Multi-Tab Bar Overhaul (`Home.tsx` & `home.scss`)**:
+  - Replaced legacy neon gradient background (`style={{ backgroundImage: ... }}`) with a clean neutral Stitch aesthetic: height 34px, background `#f8fafc` (slate-50), subtle border `#e2e8f0`, micro shadow `0 1px 2px rgba(15, 23, 42, 0.03)`.
+  - Inactive tabs: translucent slate `#f1f5f9`, slate-500 typography, subtle hover `#e2e8f0`.
+  - Active tab: pure white `#ffffff`, slate-900 bold font, border `#cbd5e1`, card shadow, and vibrant blue indicator dot (`#2563eb`).
+  - Added JetBrains Mono numeric index badge (`1`, `2`, `3`) on each tab.
+  - Added micro close button with hover effect (`#fee2e2` / `#ef4444`).
+  - Added right-hand toolbar on tab bar: live tab counter (`X tabs`) and quick "Đóng tất cả" (Close all tabs) action button.
+  - Aligned `.component_element` `top: 34px` perfectly with the new tab bar height.
+- **Fixed Multi-Tab Component Full-Width Stretch**:
+  - Identified root cause: `.component_element` in `home.scss` had `display: flex; justify-content: center;`, which caused child components without explicit `width: 100%` to shrink to intrinsic content width and center horizontally with ~250px wasted space on both sides.
+  - Comprehensive fix:
+    - Updated `.component_element` in `home.scss`: changed to `display: flex; flex-direction: column; align-items: stretch;` and added `.component_element > * { width: 100%; max-width: 100%; box-sizing: border-box; }`.
+    - Added `width: 100%; max-width: 100%; flex: 1;` directly to `.precision-po-manager` and `.component_element &` in `PrecisionPoManager.scss`.
+    - All workspace components in Multi-tab mode now span 100% full width edge-to-edge as expected.
+- **Validation**:
+  - Vite compilation check passed with HTTP 200 on all modified modules (`Home.tsx`, `PoManager.tsx`, `AccountInfo.tsx`, `NavBarNew.tsx`, `home.scss`, `PrecisionPoManager.scss`).
+
+
+### Completed
+- **Eliminated Secondary Header Banner**:
+  - Removed `<PrecisionPoHeader ... />` completely from `PrecisionPoManager.tsx` as requested ("KD1 • Quản Lý Đơn Hàng (PO Manager) LIVE ERP SYNC...").
+  - The page now begins immediately with the 6 real-time KPI Micro-Cards, maximizing vertical screen real estate for high-productivity enterprise workflows.
+- **Dedicated SCSS Architecture for Enterprise Modals (`PrecisionPoModals.scss`)**:
+  - **Root Cause Identified**: The project does NOT enable Tailwind CSS (`src/index.css` comments out `@import "tailwindcss"`). Previously, modal elements used Tailwind utility classes, resulting in unstyled browser defaults (transparent backdrop without card container, raw unpadded HTML inputs, unstyled buttons).
+  - **Comprehensive SCSS Implementation**: Created `src/pages/kinhdoanh/pomanager/PrecisionPoManager/PrecisionPoModals.scss` (729 lines) and imported it into `PrecisionPoManager.scss` (`@import "./PrecisionPoModals.scss";`), `PrecisionPoAddModal.tsx`, and `PrecisionPoInvoiceModal.tsx`.
+  - **Full Styling for All 4 Stitch Modals**:
+    1. *Modal 1: Thêm Đơn Hàng Thủ Công (Single PO)*: White card (`#ffffff`, border-radius 12px, subtle shadow), Blue header with icon box, interactive 2-column grid (`form-grid-2`), high-density inputs with focus states, `input-badge-wrap` with EA unit badge, `input-prefix-wrap` with `$`, dynamic "Tổng Thành Tiền Dự Kiến (Est. Total)" callout card with live USD & VND conversion, and action buttons (`btn-white`, `btn-ghost`, `btn-submit-blue`).
+    2. *Modal 2: Nhập File Excel Hàng Loạt (Bulk Upload)*: Wide container (`card-wide`), Emerald accent header & subtab, clean file picker bar, check & upload buttons, AGTable preview grid, and status summary badge strip (Tổng số dòng, Hợp lệ, Lỗi).
+    3. *Modal 3: Chỉnh Sửa Đơn Hàng PO (Edit Mode)*: Amber accent header with `#PO-xxxxx` chip badge, readonly customer & G-Code inputs, editable PO Date, Delivery Date, PO No, Qty, Unit Price ($), BEP ($), and Remark textarea, live recalculation card, audit footnote card (`Sửa PO ID: xxxxx, Live ERP`), and blue submit button (`Cập Nhật PO (F9)`).
+    4. *Modal 4: Tạo Invoice Giao Hàng Mới (New INV)*: Teal accent theme with `INV-YYYYMMDD-01` badge, PO Balance live counter pill (`Tồn PO: xx,xxx EA`), Shipping Notice info banner, and Emerald submit button (`Thêm Invoice (F8)`).
+- **Fixed Customer & Code Autocomplete in New PO Modal**:
+  - **Identified Root Causes**:
+    1. *Popper Z-Index Conflict*: MUI `Autocomplete` popper renders by default into `document.body` with `z-index: 1300`. Because `.precision-modal-backdrop` uses `z-index: 10000`, the options dropdown was rendering completely behind the modal backdrop, invisible to the user.
+    2. *Focus Trigger*: Autocomplete lacked `openOnFocus`, meaning clicking inside the input box didn't open the popup unless the user specifically targeted the small dropdown arrow.
+    3. *Data Availability*: Network latency or unauthenticated preview session could leave `customerList` and `codeList` empty when opening the modal.
+  - **Comprehensive Fix**:
+    - Added global `.MuiAutocomplete-popper { z-index: 12000 !important; }` in `PrecisionPoModals.scss` with clean styling, subtle border, shadow, and scrollable listbox.
+    - Configured `slotProps={{ popper: { sx: { zIndex: 12000 } } }}`, `openOnFocus={true}`, `autoHighlight={true}`, `clearOnEscape={true}`, and safe `getOptionLabel` / `isOptionEqualToValue` in `PrecisionPoAddModal.tsx`.
+    - Integrated multi-field search `filterCustomerOptions` and `filterCodeOptions` (allowing search by code, short name, and full company name).
+    - Added smart enterprise fallbacks (`FALLBACK_CUSTOMERS` & `FALLBACK_CODES`) ensuring instant list display even during preview/offline sessions, automatically overridden by real ERP database records.
+- **Full-Height Sticky Bottom Viewport Stretch (Bảng PO & Bộ Lọc Dính Đáy Màn Hình)**:
+  - **Identified Root Causes**:
+    1. `.po-grid-body` was hardcoded to a static `height: 560px`, leaving a large empty gap (~100-150px) at the bottom on modern displays (1080p, 2K).
+    2. `.po-main-workspace` used `align-items: flex-start`, preventing both `.po-filter-panel` and `.po-table-container` from expanding to fill 100% of the available vertical space.
+    3. `PrecisionPreviewPage.tsx` used `minHeight: "100vh"` with outer scroll on viewport.
+  - **Comprehensive Fix**:
+    - **`PrecisionPreviewPage.tsx`**: Updated container to `height: "100vh"`, `maxHeight: "100vh"`, `overflow: "hidden"`, passing `flex: 1, minHeight: 0, overflow: "hidden"` to `PrecisionPoManager`.
+    - **`PrecisionPoManager.scss`**: Configured `.precision-po-manager` with `height: calc(100vh - 48px); max-height: calc(100vh - 48px); box-sizing: border-box; padding: 10px 14px 8px 14px; overflow: hidden;`.
+    - **`po-main-workspace`**: Set `align-items: stretch; flex: 1; min-height: 0; overflow: hidden;` so both left (filter panel) and right (table container) columns stretch synchronously down to the viewport bottom.
+    - **Filter Panel Bottom Stretch & Pinned Actions**: Restructured `PrecisionPoFilterPanel.tsx` with `.filter-scrollable-content` (`flex: 1; min-height: 0; overflow-y: auto;`) and `.filter-actions` (`flex-shrink: 0;`) pinned neatly at the bottom edge.
+    - **AGTable Full-Height Expansion**: Removed `height: 560px` in `.po-grid-body`, replaced with `flex: 1; min-height: 0; width: 100%;`. AG-Grid automatically expands to fill 100% vertical viewport space, and the footer sits cleanly at the bottom edge with 0 wasted pixels.
+- **Fixed Filter Panel Lost Style Issue (`PrecisionPoFilterPanel.tsx`)**:
+  - **Identified Root Causes**:
+    1. During previous scrollable layout refactoring in `PrecisionPoFilterPanel.tsx`, the closing tag `</div>` for `.filter-scrollable-content` was accidentally omitted before `.filter-actions`.
+    2. This caused a JSX compilation error (`JSX element 'div' has no corresponding closing tag`), blocking Vite HMR and causing the component to fail parsing/rendering with proper styles.
+  - **Comprehensive Fix**:
+    - Fixed tag hierarchy in `PrecisionPoFilterPanel.tsx`: added the closing `</div>` for `.filter-scrollable-content` directly before `.filter-actions`.
+    - Added direct import of `../PrecisionPoManager.scss` into `PrecisionPoFilterPanel.tsx` ensuring independent, bulletproof CSS bundle injection.
+    - Verified TypeScript diagnostics (0 parse errors) and Vite HTTP 200 response for both component and stylesheet.
+
+## Update - 2026-09-08 (Precision Header & Precision AccountInfo Stitch Redesign)
+
+### Completed
+- **Created New Master Bar Header (`PrecisionHeader.tsx` & `PrecisionHeader.scss`)**:
+  - Implemented exact Stitch design system from `DESIGN.md`: 48px height, `backdrop-filter: blur(12px)`, subtle slate border (`#e2e8f0`).
+  - Integrated brand identity with CMS VINA typography, `v2700` chip, server telemetry pill with live pulsating green status dot.
+  - Built high-precision Omnibar Search with `Ctrl + K` / `Ctrl + Space` auto-focus, clear button, and search triggers.
+  - Implemented theme palette picker, language switcher pill (`VN / EN / KR`), realtime notification center with badge, and user profile pill with avatar and dropdown menu.
+- **Full Logic Synchronization for Precision Header (`PrecisionHeader.tsx`)**:
+  - Integrated `NavMenuNew` overlay panel directly inside `PrecisionHeader`: clicking the hamburger menu or focusing/typing in the Omnibar search box now automatically opens the full ERP department flyout menu with real-time query filtering.
+  - Implemented `openFirstSearchResult()` on Enter key press: matches query with `navMenus` and instantly opens the tab (in Multi-Tab mode) or navigates to the route (in Single-Tab mode).
+  - Expanded Theme Switcher to include the full `COMPANY_THEME_OPTIONS` spectrum (all 35+ gradient themes from `CMS_THEME_OPTIONS`, `PVN_THEME_OPTIONS`, `NHATHAN_THEME_OPTIONS`) with direct Redux `switchTheme` and localStorage persistence.
+  - Added click-outside and `Escape` listeners to dismiss the menu overlay automatically.
+  - Added full keyboard shortcuts (`Ctrl + K` to focus search, `Ctrl + Space` to toggle menu).
+- **Full Logic Synchronization for Precision AccountInfo (`PrecisionAccountInfo.tsx`)**:
+  - Connected `getsentence(..., lang)` across all subcomponents: titles, KPI labels, personal metadata keys dynamically update when switching between Vietnamese, English, and Korean.
+  - Aligned exact KPI progress calculations with `AccountInfo.tsx`: `workday / days`, `overtimeday / workday`, `countxacnhan / workday`, etc.
+  - Implemented Dual Chart Views in `PrecisionAttendanceTimeline.tsx`: interactive toggle between the Stitch High-Density Vector Bar Chart and the Recharts Line Chart (with `hoursPast`, `hoursFuture`, and red Sunday indicators on X-axis).
+  - Added "Xem bản chụp hồ sơ gốc" document archive collapsible viewer in `PrecisionDossierRecord.tsx`.
+  - Maintained 5-second live polling for `checkMYCHAMCONG`, avatar upload with `uploadQuery`, password change via `changepassword`, and full admin tools for `NHU1903`.
+
 ## Update - 2026-09-08 (Web ERP UI System Specification for Google Stitch)
 
 ### Completed

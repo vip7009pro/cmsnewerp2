@@ -5,9 +5,24 @@ import Home from './pages/home/Home';
 import { getCompany } from './api/Api';
 import { animated } from '@react-spring/web';
 import { ProtectedRoute } from "./api/services/permissionService";
+import PrecisionAccountInfo from "./components/Navbar/AccountInfo/PrecisionAccountInfo";
+import PrecisionPreviewPage from "./pages/precision/PrecisionPreviewPage";
+import PrecisionPoManager from "./pages/kinhdoanh/pomanager/PrecisionPoManager/PrecisionPoManager";
 const AppRoutes = React.memo(({ globalUserData }: { globalUserData: any }) => {
   return (
     <Routes>
+      <Route
+        path="/precision-preview"
+        element={
+          <ProtectedRoute
+            user={globalUserData}
+            maindeptname="all"
+            jobname="all"
+          >
+            <PrecisionPreviewPage />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/"
         element={
@@ -33,6 +48,7 @@ const AppRoutes = React.memo(({ globalUserData }: { globalUserData: any }) => {
           element={<BulletinBoard />}
           />
         <Route path="accountinfo" element={<AccountInfo />}></Route>
+        <Route path="accountinfo-v2" element={<PrecisionAccountInfo />}></Route>
         <Route
           path="kinhdoanh"
           element={
@@ -47,6 +63,7 @@ const AppRoutes = React.memo(({ globalUserData }: { globalUserData: any }) => {
         >
           <Route index element={<KinhDoanhReport />} />
           <Route path="pomanager" element={<PoManager />} />
+          <Route path="pomanager-v2" element={<PrecisionPoManager />} />
           <Route path="invoicemanager" element={<InvoiceManager />} />
           <Route path="planmanager" element={<PlanManager />} />
           <Route path="fcstmanager" element={<FCSTManager />} />

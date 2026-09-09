@@ -1,20 +1,8 @@
-import "./PoManager.scss";
-import MyTabs from "../../../components/MyTab/MyTab";
-import PoManagerManageTab from "./PoManagerManageTab";
-import PoManagerAddTab from "./PoManagerAddTab";
+import React from "react";
+import PrecisionPoManager from "./PrecisionPoManager/PrecisionPoManager";
 
-const PoManager = () => {
-  return (
-    <div className="pomanager">
-      <MyTabs defaultActiveTab={0}>
-        <MyTabs.Tab title="Quản lý PO">
-          <PoManagerManageTab />
-        </MyTabs.Tab>
-        <MyTabs.Tab title="Thêm PO">
-          <PoManagerAddTab />
-        </MyTabs.Tab>
-      </MyTabs>
-    </div>
-  );
+const PoManager: React.FC = () => {
+  return <PrecisionPoManager />;
 };
+
 export default PoManager;
