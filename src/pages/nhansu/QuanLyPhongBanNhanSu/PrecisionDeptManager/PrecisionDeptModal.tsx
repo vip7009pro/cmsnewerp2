@@ -1,11 +1,23 @@
 import React from "react";
-import CustomDialog from "../../../../components/Dialog/CustomDialog";
+import "./PrecisionDeptModal.scss";
 import {
   MainDeptTableData,
   SubDeptTableData,
   WORK_POSITION_DATA,
 } from "../../interfaces/nhansuInterface";
-import { Button } from "@mui/material";
+import {
+  FiBriefcase,
+  FiFolder,
+  FiClipboard,
+  FiX,
+  FiPlus,
+  FiCheck,
+  FiTrash2,
+  FiRefreshCw,
+} from "react-icons/fi";
+import PrecisionDeptMainForm from "./PrecisionDeptMainForm";
+import PrecisionDeptSubForm from "./PrecisionDeptSubForm";
+import PrecisionDeptPosForm from "./PrecisionDeptPosForm";
 
 interface PrecisionDeptModalProps {
   isOpen: boolean;
@@ -17,6 +29,8 @@ interface PrecisionDeptModalProps {
   setSubDeptInfo: (keyname: string, value: any) => void;
   selectedWorkPosition: WORK_POSITION_DATA;
   setWorkPositionInfo: (keyname: string, value: any) => void;
+  mainDeptList?: Array<MainDeptTableData>;
+  subDeptList?: Array<SubDeptTableData>;
   onAdd: () => void;
   onUpdate: () => void;
   onDelete: () => void;
@@ -34,210 +48,200 @@ export const PrecisionDeptModal: React.FC<PrecisionDeptModalProps> = ({
   setSubDeptInfo,
   selectedWorkPosition,
   setWorkPositionInfo,
+  mainDeptList = [],
+  subDeptList = [],
   onAdd,
   onUpdate,
   onDelete,
   onClear,
   isLoading,
 }) => {
-  const getModalTitle = () => {
-    if (tableSelection === 1) {
-      return `Thao Tác Bộ Phận Chính (${selectedMainDept.MAINDEPTNAME || "Mới"})`;
-    } else if (tableSelection === 2) {
-      return `Thao Tác Phòng Ban Trực Thuộc (${selectedSubDept.SUBDEPTNAME || "Mới"})`;
-    }
-    return `Thao Tác Vị Trí Công Đoạn (${selectedWorkPosition.WORK_POSITION_NAME || "Mới"})`;
+  if (!isOpen) return null;
+
+  // Level config
+  const levelConfig = {
+    1: {
+      modifier: "level1",
+      tierName: "Cấp 1 • Danh Mục Cốt Lõi",
+      codePill: `MAIN_DEPT: ${selectedMainDept.MAINDEPTCODE || "MỚI"}`,
+      icon: <FiBriefcase size={22} />,
+      title: "Thao Tác Bộ Phận Chính",
+      tag: selectedMainDept.MAINDEPTNAME || "MỚI",
+      parentName: "(Khối Toàn Nhà Máy)",
+      desc: "Quản lý và thiết lập mã danh mục bộ phận cấp 1 cho toàn bộ khối sản xuất CMS Vina.",
+    },
+    2: {
+      modifier: "level2",
+      tierName: "Cấp 2 • Đơn Vị Trực Thuộc",
+      codePill: `SUB_DEPT: ${selectedSubDept.SUBDEPTCODE || "MỚI"}`,
+      icon: <FiFolder size={22} />,
+      title: "Thao Tác Phòng Ban Trực Thuộc",
+      tag: selectedSubDept.SUBDEPTNAME || "MỚI",
+      parentName: `(← Thuộc ${selectedMainDept.MAINDEPTNAME || "Bộ Phận Chính"})`,
+      desc: "Quản lý các ban, tổ kỹ thuật trực thuộc bộ phận cha trong chuỗi vận hành.",
+    },
+    3: {
+      modifier: "level3",
+      tierName: "Cấp 3 • Công Đoạn & Chấm Công",
+      codePill: `POS: ${selectedWorkPosition.WORK_POSITION_CODE || "MỚI"} • ATT: ${selectedWorkPosition.ATT_GROUP_CODE || "MỚI"}`,
+      icon: <FiClipboard size={22} />,
+      title: "Thao Tác Vị Trí Công Đoạn",
+      tag: selectedWorkPosition.WORK_POSITION_NAME || "MỚI",
+      parentName: `(← Thuộc ${selectedSubDept.SUBDEPTNAME || "Phòng Ban Con"})`,
+      desc: "Thiết lập vị trí thao tác tại chuyền và cấu hình ánh xạ nhóm máy chấm công (ATT).",
+    },
+  }[tableSelection] || {
+    modifier: "level1",
+    tierName: "Cấp 1 • Danh Mục Cốt Lõi",
+    codePill: "MỚI",
+    icon: <FiBriefcase size={22} />,
+    title: "Thao Tác Danh Mục",
+    tag: "MỚI",
+    parentName: "",
+    desc: "Quản trị cơ cấu phân cấp phòng ban.",
   };
 
   return (
-    <CustomDialog
-      isOpen={isOpen}
-      onClose={onClose}
-      title={getModalTitle()}
-      content={
-        <div className="precision-deptmanager__modalForm">
-          {/* LEVEL 1: MAIN DEPT FORM */}
+    <div className="precision-dept-modal-overlay" onClick={onClose}>
+      <div
+        className="precision-dept-modal"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* 1. Category Top Bar */}
+        <div
+          className={`precision-dept-modal__topBar precision-dept-modal__topBar--${levelConfig.modifier}`}
+        >
+          <div className="precision-dept-modal__topBarLeft">
+            <span
+              className={`precision-dept-modal__tierBadge precision-dept-modal__tierBadge--${levelConfig.modifier}`}
+            >
+              {tableSelection}
+            </span>
+            <span className="precision-dept-modal__tierTitle">
+              {levelConfig.tierName}
+            </span>
+          </div>
+          <span
+            className={`precision-dept-modal__codePill precision-dept-modal__codePill--${levelConfig.modifier}`}
+          >
+            {levelConfig.codePill}
+          </span>
+        </div>
+
+        {/* 2. Main Header */}
+        <div className="precision-dept-modal__header">
+          <div className="precision-dept-modal__headerRow">
+            <div className="precision-dept-modal__headerLeft">
+              <div
+                className={`precision-dept-modal__headerIcon precision-dept-modal__headerIcon--${levelConfig.modifier}`}
+              >
+                {levelConfig.icon}
+              </div>
+              <div className="precision-dept-modal__headerTitleBlock">
+                <h2 className="precision-dept-modal__modalTitle">
+                  {levelConfig.title}
+                </h2>
+                <div className="precision-dept-modal__headerMetaRow">
+                  <span
+                    className={`precision-dept-modal__headerTag precision-dept-modal__headerTag--${levelConfig.modifier}`}
+                  >
+                    {levelConfig.tag}
+                  </span>
+                  <span className="precision-dept-modal__headerParentName">
+                    {levelConfig.parentName}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              className="precision-dept-modal__btnClose"
+              onClick={onClose}
+              title="Đóng cửa sổ"
+            >
+              <FiX size={20} />
+            </button>
+          </div>
+          <p className="precision-dept-modal__headerDesc">{levelConfig.desc}</p>
+        </div>
+
+        {/* 3. Form Body */}
+        <div className="precision-dept-modal__body">
           {tableSelection === 1 && (
-            <>
-              <div className="precision-deptmanager__formGroup">
-                <label>Mã Bộ Phận (MAINDEPTCODE):</label>
-                <input
-                  type="number"
-                  value={selectedMainDept.MAINDEPTCODE || ""}
-                  onChange={(e) =>
-                    setMainDeptInfo("MAINDEPTCODE", Number(e.target.value))
-                  }
-                />
-              </div>
-              <div className="precision-deptmanager__formGroup">
-                <label>Tên Bộ Phận (MAINDEPTNAME):</label>
-                <input
-                  type="text"
-                  value={selectedMainDept.MAINDEPTNAME || ""}
-                  onChange={(e) =>
-                    setMainDeptInfo("MAINDEPTNAME", e.target.value)
-                  }
-                />
-              </div>
-              <div className="precision-deptmanager__formGroup">
-                <label>Tên Tiếng Hàn (MAINDEPTNAME_KR):</label>
-                <input
-                  type="text"
-                  value={selectedMainDept.MAINDEPTNAME_KR || ""}
-                  onChange={(e) =>
-                    setMainDeptInfo("MAINDEPTNAME_KR", e.target.value)
-                  }
-                />
-              </div>
-            </>
+            <PrecisionDeptMainForm
+              selectedMainDept={selectedMainDept}
+              setMainDeptInfo={setMainDeptInfo}
+            />
           )}
 
-          {/* LEVEL 2: SUB DEPT FORM */}
           {tableSelection === 2 && (
-            <>
-              <div className="precision-deptmanager__formGroup">
-                <label>Mã Bộ Phận Cha (MAINDEPTCODE):</label>
-                <input
-                  type="number"
-                  value={selectedSubDept.MAINDEPTCODE || ""}
-                  onChange={(e) =>
-                    setSubDeptInfo("MAINDEPTCODE", Number(e.target.value))
-                  }
-                />
-              </div>
-              <div className="precision-deptmanager__formGroup">
-                <label>Mã Phòng Ban Con (SUBDEPTCODE):</label>
-                <input
-                  type="number"
-                  value={selectedSubDept.SUBDEPTCODE || ""}
-                  onChange={(e) =>
-                    setSubDeptInfo("SUBDEPTCODE", Number(e.target.value))
-                  }
-                />
-              </div>
-              <div className="precision-deptmanager__formGroup">
-                <label>Tên Phòng Ban (SUBDEPTNAME):</label>
-                <input
-                  type="text"
-                  value={selectedSubDept.SUBDEPTNAME || ""}
-                  onChange={(e) =>
-                    setSubDeptInfo("SUBDEPTNAME", e.target.value)
-                  }
-                />
-              </div>
-              <div className="precision-deptmanager__formGroup">
-                <label>Tên Tiếng Hàn (SUBDEPTNAME_KR):</label>
-                <input
-                  type="text"
-                  value={selectedSubDept.SUBDEPTNAME_KR || ""}
-                  onChange={(e) =>
-                    setSubDeptInfo("SUBDEPTNAME_KR", e.target.value)
-                  }
-                />
-              </div>
-            </>
+            <PrecisionDeptSubForm
+              selectedSubDept={selectedSubDept}
+              setSubDeptInfo={setSubDeptInfo}
+              mainDeptList={mainDeptList}
+              parentDeptName={selectedMainDept.MAINDEPTNAME}
+            />
           )}
 
-          {/* LEVEL 3: WORK POSITION FORM */}
           {tableSelection === 3 && (
-            <>
-              <div className="precision-deptmanager__formGroup">
-                <label>Mã Phòng Ban Cha (SUBDEPTCODE):</label>
-                <input
-                  type="number"
-                  value={selectedWorkPosition.SUBDEPTCODE || ""}
-                  onChange={(e) =>
-                    setWorkPositionInfo("SUBDEPTCODE", Number(e.target.value))
-                  }
-                />
-              </div>
-              <div className="precision-deptmanager__formGroup">
-                <label>Mã Vị Trí (WORK_POSITION_CODE):</label>
-                <input
-                  type="number"
-                  value={selectedWorkPosition.WORK_POSITION_CODE || ""}
-                  onChange={(e) =>
-                    setWorkPositionInfo("WORK_POSITION_CODE", Number(e.target.value))
-                  }
-                />
-              </div>
-              <div className="precision-deptmanager__formGroup">
-                <label>Nhóm Chấm Công (ATT_GROUP_CODE):</label>
-                <input
-                  type="number"
-                  value={selectedWorkPosition.ATT_GROUP_CODE || ""}
-                  onChange={(e) =>
-                    setWorkPositionInfo("ATT_GROUP_CODE", Number(e.target.value))
-                  }
-                />
-              </div>
-              <div className="precision-deptmanager__formGroup">
-                <label>Tên Vị Trí (WORK_POSITION_NAME):</label>
-                <input
-                  type="text"
-                  value={selectedWorkPosition.WORK_POSITION_NAME || ""}
-                  onChange={(e) =>
-                    setWorkPositionInfo("WORK_POSITION_NAME", e.target.value)
-                  }
-                />
-              </div>
-              <div className="precision-deptmanager__formGroup">
-                <label>Tên Tiếng Hàn (WORK_POSITION_NAME_KR):</label>
-                <input
-                  type="text"
-                  value={selectedWorkPosition.WORK_POSITION_NAME_KR || ""}
-                  onChange={(e) =>
-                    setWorkPositionInfo("WORK_POSITION_NAME_KR", e.target.value)
-                  }
-                />
-              </div>
-            </>
+            <PrecisionDeptPosForm
+              selectedWorkPosition={selectedWorkPosition}
+              setWorkPositionInfo={setWorkPositionInfo}
+              subDeptList={subDeptList}
+              parentSubDeptName={selectedSubDept.SUBDEPTNAME}
+            />
           )}
         </div>
-      }
-      actions={
-        <div className="precision-deptmanager__modalActions">
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{ fontSize: "11px", borderColor: "#cbd5e1", color: "#475569" }}
-            onClick={onClear}
-          >
-            Clear Form
-          </Button>
 
-          <Button
-            variant="contained"
-            size="small"
-            sx={{ fontSize: "11px", backgroundColor: "#10b981" }}
-            onClick={onAdd}
-            disabled={isLoading}
-          >
-            + Thêm Mới
-          </Button>
+        {/* 4. Action Buttons Footer */}
+        <div className="precision-dept-modal__footer">
+          <div className="precision-dept-modal__btnGrid">
+            <button
+              type="button"
+              className="precision-dept-modal__btn precision-dept-modal__btn--clear"
+              onClick={onClear}
+              title="Xóa trắng form nhập"
+            >
+              <FiRefreshCw size={13} />
+              CLEAR FORM
+            </button>
 
-          <Button
-            variant="contained"
-            size="small"
-            sx={{ fontSize: "11px", backgroundColor: "#2563eb" }}
-            onClick={onUpdate}
-            disabled={isLoading}
-          >
-            Cập Nhật
-          </Button>
+            <button
+              type="button"
+              className="precision-dept-modal__btn precision-dept-modal__btn--add"
+              onClick={onAdd}
+              disabled={isLoading}
+              title="Thêm bản ghi mới"
+            >
+              <FiPlus size={14} />
+              THÊM MỚI
+            </button>
 
-          <Button
-            variant="contained"
-            size="small"
-            sx={{ fontSize: "11px", backgroundColor: "#ef4444" }}
-            onClick={onDelete}
-            disabled={isLoading}
-          >
-            Xóa
-          </Button>
+            <button
+              type="button"
+              className="precision-dept-modal__btn precision-dept-modal__btn--update"
+              onClick={onUpdate}
+              disabled={isLoading}
+              title="Lưu cập nhật"
+            >
+              <FiCheck size={14} />
+              CẬP NHẬT
+            </button>
+
+            <button
+              type="button"
+              className="precision-dept-modal__btn precision-dept-modal__btn--delete"
+              onClick={onDelete}
+              disabled={isLoading}
+              title="Xóa bản ghi"
+            >
+              <FiTrash2 size={13} />
+              XÓA
+            </button>
+          </div>
         </div>
-      }
-    />
+      </div>
+    </div>
   );
 };
 

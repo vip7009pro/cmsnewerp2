@@ -269,6 +269,8 @@ const DeptManager = () => {
         setSubDeptInfo={setSubDeptInfo}
         selectedWorkPosition={selectedWorkPosition}
         setWorkPositionInfo={setWorkPositionInfo}
+        mainDeptList={maindeptTable}
+        subDeptList={subdeptTable}
         onAdd={handleAddInfo}
         onUpdate={handleUpdateInfo}
         onDelete={handleDeleteInfo}

@@ -1,6 +1,48 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
-## Update - 2026-09-09 (Redesign Modal Thêm/Sửa Nhân Viên: Google Stitch Enterprise PrecisionUserModal)
+## Update - 2026-09-09 (Redesign 3 Modal Thao Tác Cơ Cấu Phòng Ban & Vị Trí: Google Stitch Enterprise PrecisionDeptModal)
+
+### Completed
+- **Thiết Kế Lại Toàn Diện 3 Modal Cơ Cấu Tổ Chức 3 Cấp (`PrecisionDeptModal.tsx`)**:
+  - Dựa trên thiết kế trực quan Google Stitch (HTML & Showcase giao diện người dùng cung cấp):
+    1. *Top Bar & Thẻ Nhận Diện Phân Cấp (Category Top Bar)*:
+       - **Cấp 1 (Bộ Phận Chính - Main Dept)**: Gradient Xanh Navy (`#0f172a` -> `#172554`), badge tròn số 1, danh mục cốt lõi, pill `MAIN_DEPT: 2`.
+       - **Cấp 2 (Phòng Ban Trực Thuộc - Sub Dept)**: Gradient Xanh Ngọc Emerald (`#0f172a` -> `#064e3b`), badge tròn số 2, đơn vị trực thuộc, pill `SUB_DEPT: 6`.
+       - **Cấp 3 (Vị Trí Công Đoạn - Work Position)**: Gradient Xanh Tím Indigo (`#0f172a` -> `#1e1b4b`), badge tròn số 3, công đoạn & chấm công, pill `POS: 13 • ATT: 13`.
+    2. *Modal Header*:
+       - Biểu tượng chuyên biệt theo từng cấp (Tòa nhà / Folder / Clipboard), tiêu đề phân cấp, thẻ tag nổi bật, chỉ báo phòng ban cha và nút đóng (X).
+    3. *Nội Dung Biểu Mẫu Chuyên Sâu Từng Cấp (Sub-Forms)*:
+       - **Cấp 1 (`PrecisionDeptMainForm.tsx`)**:
+         - `MAINDEPTCODE`: Mã Bộ Phận (readonly, icon `#` bên trái, ổ khóa bên phải, badge Khóa Chính PK).
+         - `MAINDEPTNAME`: Tên Bộ Phận (input text, badge Tiêu Chuẩn Quốc Tế).
+         - `MAINDEPTNAME_KR`: Tên Tiếng Hàn (input text, badge 한국어 표기).
+         - Card thông tin: Trạng thái bộ phận kế thừa kèm dot-active xanh.
+       - **Cấp 2 (`PrecisionDeptSubForm.tsx`)**:
+         - `MAINDEPTCODE`: Mã Bộ Phận Cha (dropdown `<select>` động chọn từ danh sách bộ phận chính, badge Khóa Ngoại FK).
+         - `SUBDEPTCODE`: Mã Phòng Ban Con (readonly, icon `#` bên trái, ổ khóa bên phải, badge Khóa Chính Sub).
+         - `SUBDEPTNAME`: Tên Phòng Ban (input text, badge Tên Ngắn Line).
+         - `SUBDEPTNAME_KR`: Tên Tiếng Hàn (input text, badge 한국어 부서).
+         - Card thông tin: Trực thuộc bộ phận cha kèm dot-active xanh.
+       - **Cấp 3 (`PrecisionDeptPosForm.tsx`)**:
+         - `SUBDEPTCODE`: Mã Phòng Ban Cha (dropdown `<select>` động chọn từ danh sách phòng ban con, badge FK Cấp 2).
+         - Hàng 2 cột: `WORK_POSITION_CODE` (Mã Vị Trí readonly) & `ATT_GROUP_CODE` (Nhóm Chấm Công, badge ATT_GRP).
+         - `WORK_POSITION_NAME`: Tên Vị Trí (input text, badge mã vị trí).
+         - `WORK_POSITION_NAME_KR`: Tên Tiếng Hàn (input text, badge 한국어 직무).
+         - Card thông tin: Vị trí công đoạn trực thuộc kèm dot-active xanh.
+    4. *Cụm Nút Hành Động Footer Chuẩn Stitch (4 Nút Hàng Ngang)*:
+       - Nút `CLEAR FORM` (Xóa trắng dữ liệu).
+       - Nút `+ THÊM MỚI` (Xanh ngọc Emerald `#059669`).
+       - Nút `CẬP NHẬT` (Xanh Blue `#2563eb`).
+       - Nút `XÓA` (Đỏ Rose `#e11d48`).
+  - **Kiến Trúc Module Hóa Chuẩn Clean Code (< 130 dòng/file)**:
+    - `PrecisionDeptModal.scss` (~380 dòng): Bảng mã CSS chuyên biệt phong cách Google Stitch.
+    - `PrecisionDeptMainForm.tsx` (~90 dòng): Form Cấp 1 Bộ Phận Chính.
+    - `PrecisionDeptSubForm.tsx` (~115 dòng): Form Cấp 2 Phòng Ban Trực Thuộc.
+    - `PrecisionDeptPosForm.tsx` (~125 dòng): Form Cấp 3 Vị Trí Công Đoạn.
+    - `PrecisionDeptModal.tsx` (~220 dòng): Orchestrator điều phối hiển thị theo cấp bậc và xử lý hành động.
+    - `DeptManager.tsx`: Truyền danh sách `maindeptTable` và `subdeptTable` vào modal phục vụ chọn khóa ngoại cha - con.
+  - **Kiểm tra Vite**: 100% (6/6 files) trả về HTTP 200 OK.
+
 
 ### Completed
 - **Thiết Kế Lại Toàn Diện Modal Thêm / Cập Nhật Nhân Viên (`PrecisionUserModal.tsx`)**:
