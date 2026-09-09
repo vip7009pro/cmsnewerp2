@@ -1,5 +1,43 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-09 (Precision BaoCaoNhanSu NS6: Fix Stacked Bar Chart & ON_RATE Trend Calculation)
+
+### Completed
+- **Sửa Biểu Đồ Trending Thành Cột Chồng (Stacked Bar Chart)**:
+  - Cấu hình `stackId="attendance"` cho cả 2 thanh Bar: `TOTAL_ON` (Đi làm - màu xanh ngọc `#05b388`) ở dưới, và `TOTAL_OFF` (Nghỉ làm - màu hồng đỏ `#f43f5e`) ở trên chồng lên đỉnh với bo góc `radius={[4, 4, 0, 0]}`.
+  - Sửa đường line `ON_RATE` thành màu xanh đậm `#059669`, `strokeWidth={2.8}`, chấm tròn trắng viền xanh lá chuẩn theo đúng ảnh thiết kế Stitch.
+  - Sửa legend hiển thị đúng icon và chú giải: `■ TOTAL_ON (Đi làm)`, `■ TOTAL_OFF (Nghỉ làm)`, `—○ ON_RATE (Tỷ lệ %)`.
+- **Khắc Phục Lỗi ON_RATE Bị 0%**:
+  - Nguyên nhân: Trước đó code đọc `item.TOTAL_ALL` (không tồn tại trong dữ liệu trả về từ query `diemdanhhistorynhom`, khiến mẫu số `tot = 0`).
+  - Khắc phục: Lấy `tot = item.TOTAL || (on + off)`. Kiểm tra `item.ON_RATE`, nếu chưa có hoặc bằng 0 thì tự động tính `(on / tot) * 100`, nếu là dạng số thập phân `0.85` thì nhân 100 để hiển thị `85.0%`.
+- **Hoàn Thiện Tooltip & Trục Tọa Độ**:
+  - Trục Y bên phải định dạng `ticks={[0, 20, 40, 60, 80, 100]}`, đơn vị `%`.
+  - Tooltip card trắng tinh gọn hiển thị chi tiết: Ngày, Tổng quân số, Đi làm, Nghỉ làm, và Tỷ lệ đi làm (%).
+
+## Update - 2026-09-09 (Precision BaoCaoNhanSu NS6: Stitch Redesign, Module Decomposition, 4 KPIs, Trend Chart, Shift Matrix, Dual Charts & Pivot Modal)
+
+### Completed
+- **Full Preservation of Legacy Implementation with Backup**:
+  - Created `src/pages/nhansu/BaoCaoNhanSu/BaoCaoNhanSu.backup.tsx` preserving 100% of the legacy 1599-line monolithic implementation including all 6 API queries, DataGrid columns, Recharts, DevExtreme PivotGrid datasource, and Excel export.
+- **Stitch High-Density Enterprise Redesign (`BaoCaoNhanSu.tsx` & `PrecisionBaoCaoNhanSu/`)**:
+  - Replaced legacy neon gradient backgrounds (`#afd3d1`, `#a4ec51`, `#aff0ff`, `#86cfff`) with clean neutral Google Stitch design tokens (slate `#f8fafc`, pure white cards `#ffffff`, subtle borders `#e2e8f0`, micro-shadows `0 1px 2px rgba(15, 23, 42, 0.04)`).
+  - Dedicated modular SCSS `PrecisionBaoCaoNhanSu.scss` with comprehensive responsive Media Queries (Desktop, Tablet, Mobile).
+  - Long-form content scrolls naturally (inheriting global `overflow-y: auto` on `.component_element`).
+- **Modular Architecture (All files < 300 lines)**:
+  1. *Controller (`BaoCaoNhanSu.tsx` - ~230 lines)*: Manages all state, 6 API queries (`getmaindeptlist`, `diemdanhsummarynhom`, `diemdanhhistorynhom`, `diemdanhfull`, `getddmaindepttb`, `loadDiemDanhFullSummaryTable`), `addTotal` logic, Excel export handlers, and Pivot toggle.
+  2. *Sub-Header (`PrecisionBaoCaoHeader.tsx` - 38 lines)*: Title `NS6 - BÁO CÁO NHÂN SỰ & ĐIỂM DANH TỔNG HỢP`, telemetry pills `ZKTECO BIOMETRICS: 100% SYNC`, `SOCKET REALTIME ACTIVE`.
+  3. *Toolbar (`PrecisionBaoCaoToolbar.tsx` - 147 lines)*: Filters for Bộ phận, Nhà máy, Ca làm việc, From/To date; action buttons Search, Load Data, EX1, EX2, PIVOT.
+  4. *4 KPI Cards (`PrecisionBaoCaoKpi.tsx` - 107 lines)*: Tổng quân số (blue), Đi làm thực tế (green), Nghỉ làm (red), Chưa ĐD/Chờ quẹt (amber) with dynamic calculation from `diemdanhfullsummary` TOTAL row.
+  5. *Trend Chart (`PrecisionBaoCaoTrendChart.tsx` - 141 lines)*: Recharts ComposedChart with stacked Bars (TOTAL_ON green, TOTAL_OFF red) and Line (ON_RATE % blue) with custom Tooltip.
+  6. *Main Dept Analysis (`PrecisionBaoCaoMainDept.tsx` - 169 lines)*: 2-column layout (7:5) with AGTable BP chính + Recharts Donut tỷ trọng cơ cấu nhân sự.
+  7. *Shift Matrix (`PrecisionBaoCaoShiftMatrix.tsx` - 68 lines)*: AGTable with hierarchical column groups (Tổng Hợp, Team 1, Team 2, HC, ON_RATE, Chi Tiết Nghỉ).
+  8. *Sub Dept Analysis (`PrecisionBaoCaoSubDept.tsx` - 171 lines)*: 2-column layout (7:5) with AGTable BP phụ + Recharts Pie phân bổ quy mô.
+  9. *Full Table (`PrecisionBaoCaoFullTable.tsx` - 103 lines)*: AGTable lịch sử đi làm full info with Quick Search, EX1/EX2/PIVOT on gridToolbar.
+  10. *Pivot Modal (`PrecisionBaoCaoPivotModal.tsx` - 76 lines)*: DevExtreme PivotGrid with full field configuration in centered modal overlay.
+  11. *Column Config (`PrecisionBaoCaoColumns.tsx` - 230 lines)*: 4 column definition sets for Main Dept, Shift Matrix, Sub Dept, and Full Info tables.
+- **AGTable Standardization**: Green default toolbar hidden (`.agtable .toolbar { display: none !important; }`), EX1/EX2/PIVOT relocated to modern `gridToolbar`.
+- **Validation**: Vite dev server returned HTTP 200 for all 13 new/updated files.
+
 ## Update - 2026-09-09 (Global Scroll Mechanism Fix for Long Content Tabs: BaoCaoNhanSu & All ERP Tabs)
 
 ### Completed
