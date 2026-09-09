@@ -21,5 +21,8 @@
 - [x] Fix PO AGTable height collapse bug in Multi-Tab mode: anchor `.component_element` with `bottom: 0` and `height: calc(100vh - 82px)`, establish full flex column height down to `.po-grid-body`, `.agtable`, `.ag-theme-quartz`, and `.ag-root-wrapper` (min-height: 250px)
 - [x] Fix Menu cursor auto-focus on open (Hamburger button & `Ctrl + Space`) via micro-delay focus and `effectiveAutoFocusSearch`
 - [x] Restore Navbar Omnibar quick search dropdown & real-time filtering: fix double-dispatch toggleSidebar bug, add dynamic search alignment bounds calculation (`--precision-menu-left`, `--precision-menu-width`), and enable click-to-open
+- [x] Redesign Diem Danh Nhom (`DiemDanhNhomCMS.tsx`) with Google Stitch High-Density: sub-header, toolbar with factory/shift filter, 3 realtime KPI cards, modern AG-Grid cells (avatar with online dot, chip codes, compact attendance/OT buttons), realtime socket footer, pivot modal, full-width multi-tab guarantee, and full backup (`DiemDanhNhomCMS.backup.tsx`)
+- [x] Hide AGTable green default toolbar and move EX1 (Filtered), EX2 (All), and PIVOT buttons up to the quick filter toolbar (`precision-diemdanh__gridToolbar`)
+- [x] Remove status footer bar (`PrecisionDiemDanhFooter`) at the bottom of the Diem Danh Nhom screen to maximize table vertical space
 
 

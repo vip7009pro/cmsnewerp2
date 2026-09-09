@@ -1,5 +1,78 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-09 (Remove Status Footer Bar from DiemDanhNhomCMS)
+
+### Completed
+- **Removed Status Footer Bar (`PrecisionDiemDanhFooter`)**:
+  - Removed `<PrecisionDiemDanhFooter totalCount={diemdanhnhomtable.length} />` and its corresponding import from `src/pages/nhansu/DiemDanhNhom/DiemDanhNhomCMS.tsx`.
+  - Maximized vertical screen real estate for the AGTable grid, allowing data rows to expand seamlessly to the bottom edge.
+- **Validation**:
+  - Node HTTP check returned `HTTP 200` for `DiemDanhNhomCMS.tsx`.
+
+## Update - 2026-09-09 (Hide AGTable Toolbar & Move EX1, EX2, PIVOT to Quick Filter Bar)
+
+### Completed
+- **Eliminated AGTable Green Default Toolbar**:
+  - Identified root cause: `DiemDanhNhomCMS.tsx` passed `toolbar={<></>}` to `<AGTable />`. Because `<></> !== undefined`, AGTable automatically rendered the legacy green `.toolbar` with default IconButton controls (`EX1`, `EX2`, `PIVOT`).
+  - Removed `toolbar` prop completely from `<AGTable />`.
+  - Added strict global CSS rule in `PrecisionDiemDanh.scss`: `.agtable { .toolbar { display: none !important; } }` ensuring the green toolbar never displays.
+- **Relocated Data Export & Pivot Actions to Quick Filter Bar (`precision-diemdanh__gridToolbar`)**:
+  - Structured `.precision-diemdanh__gridToolbarLeft` housing the 26px `searchBox` alongside `.precision-diemdanh__gridActions`.
+  - Created 3 compact, high-density buttons (26px height, font 11px bold, micro shadows, smooth hover transitions):
+    1. `EX1 (Đang lọc)`: Exports currently filtered/displayed rows (`filteredTableData`) to `NS1_DiemDanh_DangLoc_YYYYMMDD_HHmmss.xlsx`.
+    2. `EX2 (Tất cả)`: Exports all rows in current shift (`diemdanhnhomtable`) to `NS1_DiemDanh_TatCa_YYYYMMDD_HHmmss.xlsx`.
+    3. `PIVOT`: Opens modern multidimensional analysis modal (`PrecisionPivotModal`).
+- **Streamlined Operation Toolbar (`PrecisionDiemDanhToolbar.tsx`)**:
+  - Made `onExportExcel` and `onOpenPivot` optional props.
+  - Kept top toolbar focused strictly on Factory, Shift, Date, Bulk Attendance ("Điểm danh nhanh tất cả"), and Refresh.
+- **Validation**:
+  - Node HTTP check returned `HTTP 200` for both `DiemDanhNhomCMS.tsx` and `PrecisionDiemDanh.scss`.
+
+## Update - 2026-09-09 (Precision DiemDanhNhom: Stitch Redesign, Full-Width Multi-Tab, Realtime KPIs & Cells)
+
+### Completed
+- **Full Preservation of Legacy Implementation with Backup**:
+  - Created `src/pages/nhansu/DiemDanhNhom/DiemDanhNhomCMS.backup.tsx` preserving 100% of the legacy 200-line implementation.
+- **Stitch High-Density Enterprise Redesign (`DiemDanhNhomCMS.tsx`)**:
+  - Replaced legacy neon gradient background (`linear-gradient(0deg, #afd3d1, #a4ec51)` / `#f18de1`) with clean, neutral Stitch design system tokens (slate `#f8fafc`, pure white cards `#ffffff`, subtle borders `#e2e8f0`, micro shadows `0 1px 2px rgba(15, 23, 42, 0.04)`).
+  - Built dedicated SCSS architecture `src/pages/nhansu/DiemDanhNhom/PrecisionDiemDanh/PrecisionDiemDanh.scss` with zero Tailwind dependency, guaranteeing instant styling injection.
+- **Full-Width Stretch in Multi-Tab Mode Guarantee**:
+  - Enforced `width: 100%; max-width: 100%; box-sizing: border-box;` on container `.precision-diemdanh` and `.component_element &`.
+  - Configured flex column full height down to `.precision-diemdanh__gridContainer`, `.precision-diemdanh__gridBody`, `.agtable`, `.ag-theme-quartz`, and `.ag-root-wrapper` (`min-height: 200px`, `height: 100% !important`).
+  - No horizontal compression or wasted margins in both Single Tab and Multi-Tab modes.
+- **Subcomponents & Features Implemented**:
+  1. *Sub-Header Title Bar (`PrecisionDiemDanhHeader.tsx`)*:
+     - Module title `01. NHÂN SỰ & HÀNH CHÍNH • NS1 - Điểm danh quân số ca làm việc` with `how_to_reg` icon box.
+     - Live sync pill: `Đồng bộ dữ liệu chấm công: Bình thường` with pulsating green status dot.
+  2. *Operation Toolbar (`PrecisionDiemDanhToolbar.tsx`)*:
+     - Factory Selector (Nhà máy 1, Nhà máy 2, Tất cả).
+     - Work Shift Selector (`WORK_SHIFT_CODE`: 5: Tất cả, 0: TEAM 1 + HC, 1: TEAM 2 + HC, 2: TEAM 1, 3: TEAM 2, 4: HC).
+     - Attendance Date indicator (Hôm nay, DD/MM/YYYY).
+     - Fast action buttons:
+       - "Điểm danh nhanh tất cả": One-click bulk attendance with SweetAlert2 confirmation, automatically marking all unmarked workers present and calling `setdiemdanhnhom`.
+       - "Xuất Excel (EX1)": Full `.xlsx` export using SheetJS `XLSX`.
+       - "Pivot phân tích": Launches interactive multidimensional summary modal.
+       - "Làm mới": Real-time data reload from API.
+  3. *Real-time 3 KPI Cards (`PrecisionDiemDanhKpi.tsx`)*:
+     - Card 1 (Biên chế tổ): Total personnel with live unmarked counter and blue `groups` icon.
+     - Card 2 (Đi làm thực tế): Real-time present count, % rate, animated progress bar, emerald `check_circle` icon.
+     - Card 3 (Vắng mặt / Nghỉ phép): Absent count, % rate, detailed breakdown (nghỉ ốm BHXH, việc riêng có phép), rose `person_off` icon.
+  4. *High-Density AG-Grid Cells*:
+     - `EmpCodeCellRenderer`: Blue mono badge chip (`DTH1204`) + ERP ID subtitle (`CMS376`).
+     - `FullNameCellRenderer`: Bold typography with dynamic color-coding (green = present, red = absent) + team/subdept subtitle.
+     - `AvatarCellRenderer`: 32x32px square rounded portrait with status indicator dot and fallback initials.
+     - `PrecisionAttendanceCell.tsx`: Interactive micro-buttons (Làm Ngày, Làm Đêm, Nghỉ, 50%) and compact status badges with Reset.
+     - `PrecisionOvertimeCell.tsx`: Interactive OT buttons (KTC, 0500-0800, 1700-2000...) and amber OT badge with Reset.
+     - `PhoneCellRenderer`: Monospace telephone with call icon.
+     - `JobCellRenderer`: Role badge (Leader chip blue, Worker chip gray) + factory location.
+     - `FingerprintCellRenderer`: Fingerprint scanner chip or "Chưa quẹt".
+  5. *Realtime Status Footer (`PrecisionDiemDanhFooter.tsx`)*:
+     - Live headcount counter, `Socket Realtime Active` with pulsating indicator, fingerprint gateway status (100% OK), SYS_TIME ticking clock, and `CMS_ERP_V2700`.
+  6. *Multidimensional Pivot Modal (`PrecisionPivotModal.tsx`)*:
+     - Interactive summary tables by Work Shift (Team 1, Team 2, HC) and by Job Position (Leader, Worker...), calculating total, present, absent, and attendance percentage chips.
+- **Validation**:
+  - Vite dev server returned HTTP 200 for all new and updated files (`PrecisionDiemDanh.scss`, `PrecisionAttendanceCell.tsx`, `PrecisionOvertimeCell.tsx`, `PrecisionDiemDanhHeader.tsx`, `PrecisionDiemDanhToolbar.tsx`, `PrecisionDiemDanhKpi.tsx`, `PrecisionPivotModal.tsx`, `PrecisionDiemDanhFooter.tsx`, `DiemDanhNhomCMS.tsx`, `DiemDanhNhomCMS.backup.tsx`).
+
 ## Update - 2026-09-09 (Fix: Menu Auto-Focus on Open & Restored Navbar Omnibar Quick Search Dropdown Filter)
 
 ### Completed
