@@ -71,6 +71,23 @@
     + Nhập thủ công (Manual): Tích hợp MUI `Autocomplete` tìm kiếm thông minh Khách hàng (`f_getcustomerlist`) & Mã sản phẩm (`f_getcodelist`), Ngày FCST, ma trận 22 tuần W1-W22 kèm ô tính tổng realtime `SUM W1-W22`, Ghi chú.
     + Import File Excel: Kéo thả / chọn file Excel `.xlsx`, `.xls`, tải template mẫu, bảng AGTable preview dữ liệu, nút `CHECK` kiểm tra trùng mã và nút `UP FCST` lưu vào hệ thống (`upload_fcst`).
   - Tích hợp Modal Phân Tích Xoay Đa Chiều DevExtreme Pivot Grid (`PivotTable`) chuẩn Stitch.
-  - Bảo toàn 100% sao lưu các file `.backup.tsx`, bảo toàn 100% API queries, quyền hạn `checkBP(userData, ["KD"])`, và kiểm tra Vite compile 7/7 files HTTP 200 OK.
+- [x] Redesign YCSX Manager & Amazon Unified Workspace (`YCSXManager.tsx` & `PrecisionYCSX/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Sao lưu toàn vẹn mã nguồn gốc `YCSXManager.backup.tsx` (3.961 dòng).
+  - Phân rã nguyên khối 3.961 dòng thành master controller tinh gọn (479 dòng) cùng 11 sub-modules chuyên biệt trong `PrecisionYCSX/`:
+    1. `PrecisionYCSX.scss`: Hệ thống SCSS tokens công nghiệp, flex layout full-height cho multi-tab, 4 KPI cards, sidebar bộ lọc 250px, modals dialog chuẩn Stitch.
+    2. `PrecisionYCSXColumns.tsx`: Cấu hình toàn bộ cột AG Grid cho CMS (hơn 30 cột), PVN (cột theo dõi đặc thù), bảng xem trước Excel YCSX và bảng dữ liệu Amazon bulk upload, bảo toàn logic tải/xem bản vẽ PDF (`/banve/{G_CODE}.pdf`).
+    3. `PrecisionYCSXHeader.tsx`: Dải header chuyên nghiệp với 2 Sub-tabs: `1. Quản lý YCSX (YCSX Master)` và `2. Dữ liệu Amazon (Tra & Quản lý AMZ Data)` (cho CMS), telemetry socket realtime, nút `+ THÊM YCSX MỚI` và `THÊM DỮ LIỆU AMZ MỚI`.
+    4. `PrecisionYCSXKpi.tsx`: Bảng điều khiển 4 thẻ KPI realtime (Tổng lệnh YCSX, Đã duyệt SX, Chờ duyệt/Pending, Thiếu NVL) và 4 thẻ KPI cho phân hệ Amazon.
+    5. `PrecisionYCSXFilterPanel.tsx`: Sidebar bộ lọc bên trái (250px) thay thế dải form ngang cũ, gồm 12 tiêu chí lọc chuyên sâu + hỗ trợ kích hoạt tìm kiếm bằng phím `Enter`.
+    6. `PrecisionYCSXToolbar.tsx`: Cụm nút hành động công cụ phía trên bảng (Toggle sidebar, Thêm mới, Sửa, Xóa, Set Closed, Set Pending, In YCSX, Check Bản vẽ, Phê duyệt, Khóa/Mở YCSX, Khóa/Mở Liệu, EX1, EX2, PIVOT).
+    7. `PrecisionYCSXAddModal.tsx`: Chuyển đổi form thêm YCSX thành Modal Dialog hiện đại với 2 chế độ: Nhập thủ công (DropdownSearch Khách hàng & Mã sản phẩm, số lượng, ngày giao hàng, loại SX, loại XH, First LOT, tạm thời) và Import Excel hàng loạt (Kéo thả, xem trước bảng AGTable, CHECK và UP YCSX).
+    8. `PrecisionYCSXEditModal.tsx`: Modal cập nhật/sửa thông tin YCSX độc lập, bảo toàn logic kiểm tra quyền hạn (`LVT1906`, `NHU1903`).
+    9. `PrecisionYCSXPrintModals.tsx`: Modal xem trước và in ấn chuyên biệt cho In YCSX (`renderYCSX`) và In Bản vẽ (`renderBanVe`) tích hợp `react-to-print`.
+    10. `PrecisionAmzAddModal.tsx`: Modal tải dữ liệu Amazon hàng loạt, phân tách lô 1.000 dòng (`insertData_Amazon_SuperFast`), tự động giải mã thông tin YCSX, Model, Cavity và kiểm tra trùng barcode (`f_checkDuplicateAMZ`).
+    11. `PrecisionAmzTab.tsx`: Tích hợp phân hệ tra cứu và in tem Amazon (`TraAMZ`) trong container full-height chuẩn Stitch.
+    12. `useYCSXLogic.ts`: Custom hook quản lý 100% state, API queries (`f_traYCSX`, `f_insertYCSX`, `f_updateYCSX`, `f_batchDeleteYCSX`, thông báo socket, sweetalert confirmation dialogs).
+  - Tích hợp Modal Pivot Table phân tích đa chiều số lượng theo khách hàng.
+  - Bảo toàn 100% nghiệp vụ, phân quyền, in ấn, socket notification.
+  - Kiểm tra Vite Dev Server (port 3001): 13/13 file đều trả về HTTP 200 OK.
 
 

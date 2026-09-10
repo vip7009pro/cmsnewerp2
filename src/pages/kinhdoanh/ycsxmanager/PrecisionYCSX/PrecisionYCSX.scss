@@ -1,0 +1,1128 @@
+/* =========================================================================
+   PrecisionYCSX.scss – Google Stitch High-Density Enterprise UI
+   Phân hệ Quản Lý Yêu Cầu Sản Xuất & Dữ Liệu Amazon (YCSX & AMZ Hub)
+   ========================================================================= */
+
+$py-bg: #f8fafc;
+$py-card: #ffffff;
+$py-border: #e2e8f0;
+$py-border-dark: #cbd5e1;
+$py-text: #0f172a;
+$py-text-secondary: #475569;
+$py-text-muted: #94a3b8;
+
+// Brand Colors
+$py-brand-50: #eff6ff;
+$py-brand-100: #dbeafe;
+$py-brand-200: #bfdbfe;
+$py-brand-500: #3b82f6;
+$py-brand-600: #2563eb;
+$py-brand-700: #1d4ed8;
+
+// Semantic Status Colors
+$py-emerald-50: #ecfdf5;
+$py-emerald-100: #d1fae5;
+$py-emerald-500: #10b981;
+$py-emerald-600: #059669;
+
+$py-rose-50: #fff1f2;
+$py-rose-100: #ffe4e6;
+$py-rose-500: #f43f5e;
+$py-rose-600: #e11d48;
+
+$py-amber-50: #fffbeb;
+$py-amber-100: #fef3c7;
+$py-amber-500: #f59e0b;
+$py-amber-600: #d97706;
+
+$py-purple-50: #faf5ff;
+$py-purple-100: #f3e8ff;
+$py-purple-600: #9333ea;
+$py-purple-700: #7c3aed;
+
+$py-sky-50: #f0f9ff;
+$py-sky-100: #e0f2fe;
+$py-sky-500: #0284c7;
+$py-sky-600: #0369a1;
+
+$py-slate-50: #f8fafc;
+$py-slate-100: #f1f5f9;
+$py-slate-200: #e2e8f0;
+$py-slate-300: #cbd5e1;
+$py-slate-400: #94a3b8;
+$py-slate-500: #64748b;
+$py-slate-600: #475569;
+$py-slate-700: #334155;
+$py-slate-800: #1e293b;
+$py-slate-900: #0f172a;
+
+$py-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+$py-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+$py-shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+$py-radius: 6px;
+
+/* ── ROOT CONTAINER ── */
+.precision-ycsx {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  background: $py-bg !important;
+  overflow: hidden !important;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 11.5px;
+  color: $py-text;
+  flex: 1 1 0px !important;
+  min-height: 0 !important;
+
+  // Multi-tab full viewport stretch
+  .component_element & {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    flex: 1 1 0px !important;
+    min-height: 0 !important;
+  }
+
+  /* ── 1. SUB-TABS & ACTION HEADER ── */
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 12px;
+    height: 40px;
+    min-height: 40px;
+    background: $py-card;
+    border-bottom: 1px solid $py-border;
+    flex-shrink: 0;
+    gap: 12px;
+
+    @media (max-width: 768px) {
+      flex-wrap: wrap;
+      height: auto;
+      min-height: 38px;
+      padding: 6px 10px;
+      gap: 6px;
+    }
+  }
+
+  &__tabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+  }
+
+  &__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    height: 30px;
+    border: 1px solid transparent;
+    border-radius: $py-radius;
+    background: transparent;
+    color: $py-text-secondary;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+
+    &:hover {
+      background: $py-slate-100;
+      color: $py-text;
+    }
+
+    &--active {
+      background: $py-brand-600;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: $py-shadow-xs;
+
+      &:hover {
+        background: $py-brand-700;
+        color: #ffffff;
+      }
+
+      .precision-ycsx__tabBadge {
+        background: rgba(255, 255, 255, 0.25);
+        color: #ffffff;
+      }
+    }
+
+    svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+  }
+
+  &__tabBadge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 9999px;
+    background: $py-slate-200;
+    color: $py-slate-700;
+  }
+
+  &__headerRight {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  &__socketStatus {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: $py-slate-600;
+    background: $py-slate-50;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid $py-border;
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: $py-emerald-500;
+      box-shadow: 0 0 6px $py-emerald-500;
+    }
+  }
+
+  /* ── 2. KPI METRIC CARDS ── */
+  &__kpiGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 8px 12px;
+    background: $py-slate-50;
+    border-bottom: 1px solid $py-border;
+    flex-shrink: 0;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__kpiCard {
+    position: relative;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid $py-border;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: $py-shadow-xs;
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: $py-shadow-sm;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    &--blue {
+      border-color: $py-brand-200;
+      background: linear-gradient(135deg, rgba($py-brand-50, 0.6) 0%, #ffffff 100%);
+      &::after { background: $py-brand-600; }
+      .precision-ycsx__kpiIcon { background: $py-brand-600; color: #fff; }
+      .precision-ycsx__kpiValue { color: $py-brand-700; }
+    }
+
+    &--emerald {
+      border-color: rgba($py-emerald-500, 0.3);
+      background: linear-gradient(135deg, rgba($py-emerald-50, 0.6) 0%, #ffffff 100%);
+      &::after { background: $py-emerald-600; }
+      .precision-ycsx__kpiIcon { background: $py-emerald-600; color: #fff; }
+      .precision-ycsx__kpiValue { color: $py-emerald-600; }
+    }
+
+    &--amber {
+      border-color: rgba($py-amber-500, 0.3);
+      background: linear-gradient(135deg, rgba($py-amber-50, 0.6) 0%, #ffffff 100%);
+      &::after { background: $py-amber-500; }
+      .precision-ycsx__kpiIcon { background: $py-amber-500; color: #fff; }
+      .precision-ycsx__kpiValue { color: $py-amber-600; }
+    }
+
+    &--rose {
+      border-color: rgba($py-rose-500, 0.3);
+      background: linear-gradient(135deg, rgba($py-rose-50, 0.6) 0%, #ffffff 100%);
+      &::after { background: $py-rose-600; }
+      .precision-ycsx__kpiIcon { background: $py-rose-600; color: #fff; }
+      .precision-ycsx__kpiValue { color: $py-rose-600; }
+    }
+  }
+
+  &__kpiInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__kpiLabel {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: $py-slate-600;
+  }
+
+  &__kpiValueRow {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  &__kpiValue {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  &__kpiSub {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: $py-slate-100;
+    color: $py-slate-700;
+  }
+
+  &__kpiIcon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  /* ── 3. WORKSPACE SPLIT (TAB CONTENT & MAIN BODY) ── */
+  &__tabContent {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 0px !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  &__mainBody,
+  &__body {
+    display: flex !important;
+    flex: 1 1 0px !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  /* ── LEFT FILTER SIDEBAR (250px) ── */
+  &__filterPanel {
+    width: 250px !important;
+    min-width: 250px !important;
+    max-width: 250px !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: rgba($py-slate-50, 0.95) !important;
+    border-right: 1px solid $py-border !important;
+    overflow-y: auto !important;
+    flex-shrink: 0 !important;
+
+    @media (max-width: 1024px) {
+      width: 220px !important;
+      min-width: 220px !important;
+      max-width: 220px !important;
+    }
+
+    &--hidden {
+      display: none !important;
+    }
+  }
+
+  &__filterHeader {
+    padding: 8px 12px;
+    border-bottom: 1px solid $py-border;
+    background: rgba($py-slate-100, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  &__filterTitle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: $py-brand-700;
+
+    svg {
+      width: 14px;
+      height: 14px;
+      color: $py-brand-600;
+    }
+  }
+
+  &__filterReset {
+    font-size: 10px;
+    color: $py-brand-600;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+    padding: 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__filterBody {
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__filterGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__filterRow2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  &__filterLabel {
+    font-size: 10px;
+    font-weight: 700;
+    color: $py-slate-700;
+  }
+
+  &__filterInput {
+    height: 26px;
+    padding: 2px 6px;
+    background: #ffffff;
+    border: 1px solid $py-border-dark;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: inherit;
+    color: $py-text;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease;
+
+    &:focus {
+      border-color: $py-brand-600;
+      box-shadow: 0 0 0 1px rgba($py-brand-600, 0.2);
+    }
+
+    &::placeholder {
+      color: $py-text-muted;
+      font-size: 10.5px;
+    }
+  }
+
+  &__filterSelect {
+    height: 26px;
+    padding: 2px 4px;
+    background: #ffffff;
+    border: 1px solid $py-border-dark;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: inherit;
+    color: $py-text;
+    outline: none;
+    box-sizing: border-box;
+
+    &:focus {
+      border-color: $py-brand-600;
+    }
+  }
+
+  &__filterCheckGroup {
+    background: rgba($py-brand-50, 0.6);
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba($py-brand-200, 0.8);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 4px 0;
+  }
+
+  &__filterCheck {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: $py-slate-800;
+
+    input[type='checkbox'] {
+      width: 13px;
+      height: 13px;
+      accent-color: $py-brand-600;
+      cursor: pointer;
+    }
+
+    &--pending {
+      background: $py-rose-50;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba($py-rose-500, 0.3);
+      color: $py-rose-600;
+      font-weight: 700;
+
+      input[type='checkbox'] {
+        accent-color: $py-rose-600;
+      }
+    }
+  }
+
+  &__filterSearchBtn {
+    width: 100%;
+    height: 30px;
+    margin-top: 4px;
+    background: $py-brand-600;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 11.5px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: $py-shadow-sm;
+    transition: background 0.15s ease;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover {
+      background: $py-brand-700;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  /* ── 4. RIGHT DATA GRID CONTAINER & AGTABLE ── */
+  &__content,
+  &__gridContainer {
+    flex: 1 1 0px !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    background: $py-card !important;
+  }
+
+  /* ── COMPREHENSIVE ACTION TOOLBAR ── */
+  &__gridToolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px 10px;
+    background: linear-gradient(180deg, #ffffff 0%, $py-slate-50 100%);
+    border-bottom: 1px solid $py-border;
+    flex-shrink: 0;
+  }
+
+  &__gridToolbarLeft {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  &__gridToolbarRight {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+
+  &__toolBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 27px;
+    padding: 0 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    border: 1px solid $py-border-dark;
+    background: #ffffff;
+    color: $py-slate-700;
+    transition: all 0.15s ease;
+
+    svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    &:hover {
+      background: $py-slate-100;
+      color: $py-text;
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+
+    &--primary {
+      background: $py-brand-600;
+      color: #ffffff;
+      border-color: $py-brand-700;
+      font-weight: 700;
+
+      &:hover {
+        background: $py-brand-700;
+        color: #ffffff;
+      }
+    }
+
+    &--emerald {
+      background: $py-emerald-50;
+      color: $py-emerald-600;
+      border-color: rgba($py-emerald-500, 0.4);
+      font-weight: 700;
+
+      &:hover {
+        background: $py-emerald-100;
+      }
+    }
+
+    &--rose {
+      background: $py-rose-50;
+      color: $py-rose-600;
+      border-color: rgba($py-rose-500, 0.4);
+
+      &:hover {
+        background: $py-rose-100;
+      }
+    }
+
+    &--amber {
+      background: $py-amber-50;
+      color: $py-amber-600;
+      border-color: rgba($py-amber-500, 0.4);
+
+      &:hover {
+        background: $py-amber-100;
+      }
+    }
+
+    &--purple {
+      background: $py-purple-50;
+      color: $py-purple-700;
+      border-color: rgba($py-purple-600, 0.3);
+      font-weight: 700;
+
+      &:hover {
+        background: $py-purple-100;
+      }
+    }
+
+    &--iconOnly {
+      padding: 0;
+      width: 27px;
+      justify-content: center;
+    }
+  }
+
+  &__toolSep {
+    width: 1px;
+    height: 18px;
+    background: $py-border-dark;
+    margin: 0 2px;
+  }
+
+  /* ── GRID BODY & AGTABLE STRETCH ── */
+  &__tableContainer,
+  &__gridBody {
+    flex: 1 1 0px !important;
+    min-height: 200px !important;
+    height: 100% !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+
+    .agtable {
+      display: flex !important;
+      flex-direction: column !important;
+      flex: 1 1 0px !important;
+      min-height: 200px !important;
+      height: 100% !important;
+      width: 100% !important;
+      overflow: hidden !important;
+
+      // Ẩn toolbar xanh lá mặc định của AGTable
+      .toolbar {
+        display: none !important;
+      }
+
+      .ag-theme-quartz {
+        display: flex !important;
+        flex-direction: column !important;
+        flex: 1 1 0px !important;
+        min-height: 200px !important;
+        height: 100% !important;
+        width: 100% !important;
+
+        .ag-root-wrapper {
+          height: 100% !important;
+          min-height: 200px !important;
+          border: none !important;
+        }
+
+        .ag-header {
+          background: $py-slate-100;
+          border-bottom: 1px solid $py-border-dark;
+          font-size: 11px;
+          font-weight: 700;
+          color: $py-slate-700;
+          text-transform: uppercase;
+        }
+
+        .ag-row {
+          font-size: 11.5px;
+          border-bottom: 1px solid $py-slate-200;
+
+          &.ag-row-selected {
+            background-color: rgba($py-brand-100, 0.4) !important;
+            border-left: 3px solid $py-brand-600;
+          }
+        }
+      }
+
+      .bottombar {
+        height: 24px;
+        min-height: 24px;
+        padding: 0 10px;
+        background: $py-slate-100;
+        border-top: 1px solid $py-border;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 10.5px;
+        color: $py-slate-600;
+        font-family: 'JetBrains Mono', monospace;
+      }
+    }
+  }
+}
+
+/* =========================================================================
+   GLOBAL MODALS STYLING (Top-level overlays & backdrops)
+   ========================================================================= */
+.precision-ycsx-modal-backdrop,
+.precision-ycsx__modalOverlay {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 99999 !important;
+  background: rgba(15, 23, 42, 0.72) !important;
+  backdrop-filter: blur(4px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+}
+
+.precision-ycsx-modal-container,
+.precision-ycsx__modalCard {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: 94vh !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  animation: py-fadeIn 0.15s ease-out !important;
+  box-sizing: border-box !important;
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .badge-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: rgba(37, 99, 235, 0.1);
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+      }
+
+      h3 {
+        margin: 0;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+
+      p {
+        margin: 2px 0 0 0;
+        font-size: 11px;
+        color: #64748b;
+      }
+    }
+
+    .btn-close {
+      background: transparent;
+      border: none;
+      color: #64748b;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: 4px;
+
+      &:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+    }
+  }
+
+  .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    background: #ffffff;
+    box-sizing: border-box;
+  }
+
+  .modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    flex-shrink: 0;
+
+    .hint-text {
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .action-btns {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      button {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 11.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .btn-secondary {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #475569;
+
+        &:hover {
+          background: #f1f5f9;
+          color: #0f172a;
+        }
+      }
+
+      .btn-primary {
+        background: #2563eb;
+        border: 1px solid #1d4ed8;
+        color: #ffffff;
+
+        &:hover {
+          background: #1d4ed8;
+        }
+      }
+    }
+  }
+
+  // Common Form Field Styling inside Modals
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #334155;
+      text-transform: uppercase;
+    }
+
+    input, select {
+      height: 28px;
+      padding: 2px 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-family: inherit;
+      color: #0f172a;
+      outline: none;
+      box-sizing: border-box;
+
+      &:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+      }
+    }
+  }
+
+  // AGTable wrapper inside Modal (Guarantees nonzero height)
+  .modal-agtable-wrapper {
+    height: 360px !important;
+    min-height: 360px !important;
+    width: 100% !important;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+
+    .agtable {
+      height: 100% !important;
+      min-height: 360px !important;
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+
+      .toolbar {
+        display: none !important;
+      }
+
+      .ag-theme-quartz {
+        height: 100% !important;
+        min-height: 360px !important;
+        width: 100% !important;
+
+        .ag-root-wrapper {
+          height: 100% !important;
+          min-height: 360px !important;
+        }
+      }
+    }
+  }
+}
+
+// Modal Inner Tabs
+.precision-ycsx__modalModeTabs {
+  display: flex;
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 4px 16px 0 16px;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.precision-ycsx__modalModeTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: #0f172a;
+  }
+
+  &--active {
+    background: #ffffff;
+    color: #2563eb;
+    border-color: #e2e8f0;
+    font-weight: 700;
+  }
+}
+
+// Modal Form Grid
+.precision-ycsx__modalGridForm {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 16px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.precision-ycsx__modalField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  label {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+  }
+
+  input, select {
+    height: 28px;
+    padding: 2px 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-family: inherit;
+    color: #0f172a;
+    outline: none;
+    box-sizing: border-box;
+
+    &:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+    }
+  }
+}
+
+// Quick Add Bar in Excel Tab
+.precision-ycsx__quickAddBar {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .quick-add-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h4 {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    span {
+      font-size: 11px;
+      color: #64748b;
+    }
+  }
+
+  .quick-add-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr 1fr 1.2fr 1fr 1fr 1fr 2fr auto;
+    gap: 8px;
+    align-items: flex-end;
+
+    @media (max-width: 1100px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+@keyframes py-fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

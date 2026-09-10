@@ -1,5 +1,30 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-10 (YCSXManager: Google Stitch High-Density Enterprise Redesign)
+
+### Completed
+- **Backup an toàn mã nguồn gốc**: `YCSXManager.backup.tsx` (158.010 bytes, 3.961 dòng).
+- **Phân rã kiến trúc monolith 3.961 dòng** thành master controller tinh gọn (479 dòng) và 11 sub-modules chuyên biệt trong thư mục `src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/`:
+  1. `PrecisionYCSX.scss`: SCSS tokens công nghiệp, bố cục flex 100% viewport cho multi-tab, layout split 2 panel (sidebar bộ lọc 250px + content data grid), modal dialog chuẩn Stitch, ẩn hoàn toàn thanh công cụ xanh cũ của AGTable.
+  2. `PrecisionYCSXColumns.tsx`: Quản lý toàn bộ cấu hình cột AG Grid cho công ty CMS (hơn 30 cột), PVN (các cột theo dõi đặc thù), bảng xem trước Excel YCSX và bảng dữ liệu Amazon bulk upload, bảo toàn logic tải/xem bản vẽ PDF (`/banve/{G_CODE}.pdf`).
+  3. `PrecisionYCSXHeader.tsx`: Dải header chuyên nghiệp với 2 Sub-tabs: `1. Quản lý YCSX (YCSX Master)` và `2. Dữ liệu Amazon (Tra & Quản lý AMZ Data)` (cho CMS), telemetry socket sync 3007, nút `+ THÊM YCSX MỚI` và `THÊM DỮ LIỆU AMZ MỚI`.
+  4. `PrecisionYCSXKpi.tsx`: Bảng điều khiển 4 thẻ KPI realtime (Tổng lệnh YCSX, Đã duyệt SX, Chờ duyệt/Pending, Thiếu NVL) và 4 thẻ KPI cho phân hệ Amazon.
+  5. `PrecisionYCSXFilterPanel.tsx`: Sidebar bộ lọc bên trái (250px) thay thế dải form ngang cũ, gồm 12 tiêu chí lọc chuyên sâu + hỗ trợ kích hoạt tìm kiếm bằng phím `Enter`.
+  6. `PrecisionYCSXToolbar.tsx`: Cụm nút hành động công cụ phía trên bảng (Toggle sidebar, Thêm mới, Sửa, Xóa, Set Closed, Set Pending, In YCSX, Check Bản vẽ, Phê duyệt, Khóa/Mở YCSX, Khóa/Mở Liệu, EX1, EX2, PIVOT).
+  7. `PrecisionYCSXAddModal.tsx`: Chuyển đổi form thêm YCSX thành Modal Dialog hiện đại với 2 chế độ: Nhập thủ công (DropdownSearch Khách hàng & Mã sản phẩm, số lượng, ngày giao hàng, loại SX, loại XH, First LOT, tạm thời) và Import Excel hàng loạt (Kéo thả, xem trước bảng AGTable, CHECK và UP YCSX).
+  8. `PrecisionYCSXEditModal.tsx`: Modal cập nhật/sửa thông tin YCSX độc lập, bảo toàn logic kiểm tra quyền hạn (`LVT1906`, `NHU1903`).
+  9. `PrecisionYCSXPrintModals.tsx`: Modal xem trước và in ấn chuyên biệt cho In YCSX (`renderYCSX`) và In Bản vẽ (`renderBanVe`) tích hợp `react-to-print`.
+  10. `PrecisionAmzAddModal.tsx`: Modal tải dữ liệu Amazon hàng loạt, phân tách lô 1.000 dòng (`insertData_Amazon_SuperFast`), tự động giải mã thông tin YCSX, Model, Cavity và kiểm tra trùng barcode (`f_checkDuplicateAMZ`).
+  11. `PrecisionAmzTab.tsx`: Tích hợp phân hệ tra cứu và in tem Amazon (`TraAMZ`) trong container full-height chuẩn Stitch.
+  12. `useYCSXLogic.ts`: Custom hook quản lý 100% state, API queries (`f_traYCSX`, `f_insertYCSX`, `f_updateYCSX`, `f_batchDeleteYCSX`, thông báo socket, sweetalert confirmation dialogs).
+- **Master Controller `YCSXManager.tsx`** (~479 dòng): Kết nối header, filter panel, AGTable, action toolbar và các modals, hỗ trợ export EX1, EX2 và Modal Pivot Table phân tích đa chiều số lượng theo khách hàng.
+- **Khắc phục triệt để 3 vấn đề người dùng phản hồi**:
+  1. *Khắc phục lỗi bảng YCSX height = 0 và chỉ hiện khi ẩn lọc*: Đồng bộ hoàn chỉnh class SCSS (`precision-ycsx__tabContent`, `precision-ycsx__mainBody`, `precision-ycsx__content`, `precision-ycsx__tableContainer`), áp dụng chuỗi `flex: 1 1 0px`, `height: 100%`, `min-height: 250px` xuyên suốt từ container xuống AGTable, `.ag-theme-quartz` và `.ag-root-wrapper`. Bảng hiển thị đầy đủ 160+ dòng ngay khi mở mà không cần bấm ẩn lọc.
+  2. *Nâng cấp Modal Thêm YCSX (Tab Excel)*: Bổ sung form **Thêm Nhanh Từng Dòng Vào Lưới** (Khách hàng, Code, Số lượng, Ngày giao, Phân loại, Loại SX, Loại XH, Ghi chú + nút `+ Thêm Dòng`) ngay bên trong tab Thêm hàng loạt, giúp người dùng nhập dòng mới trực tiếp mà không cần chuyển qua tab Nhập thủ công; bọc bảng AGTable trong `.modal-agtable-wrapper` với chiều cao cố định 360px.
+  3. *Tái thiết kế toàn diện Tab Dữ liệu Amazon (`PrecisionAmzTab.tsx`)*: Thay thế hoàn toàn giao diện cũ thành workspace chuẩn Stitch gồm 4 KPI cards (Tổng Serial AMZ, Đã in tem, Tổng số lượng Inlay, Đồng bộ gần nhất), Sidebar bộ lọc bên trái 250px (Từ ngày, Đến ngày, Code KD, Code ERP, YCSX, Plan ID, Data AMZ, All time), Toolbar thao tác (In tem AMZ, Offset X/Y, EX1, EX2, PIVOT, Thêm AMZ mới), bảng AGTable full-height, và bổ sung `position: fixed; inset: 0; z-index: 99999` cho `.precision-ycsx-modal-backdrop` giúp modal `PrecisionAmzAddModal` mở ra nổi bật ngay tức thì.
+- **Bảo toàn 100% nghiệp vụ**: Đầy đủ mọi API queries, permissions (`checkBP`), logic phê duyệt, socket notification, in ấn bản vẽ và tem nhãn.
+- **Kiểm tra Vite Dev Server (port 3001)**: 100% 13/13 files đều trả về HTTP 200 OK.
+
 ## Update - 2026-09-10 (FCSTManager: Google Stitch High-Density Enterprise Redesign)
 
 ### Completed
