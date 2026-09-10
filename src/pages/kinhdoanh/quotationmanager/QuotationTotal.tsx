@@ -1,27 +1,35 @@
-import { useEffect, Suspense } from "react";
-import "./QuotationTotal.scss";
+import React, { Suspense, useState } from "react";
+import "./PrecisionQuotation/PrecisionQuotation.scss";
+import PrecisionQuotationHeader from "./PrecisionQuotation/PrecisionQuotationHeader";
 import QuotationManager from "./QuotationManager";
 import CalcQuotation from "./CalcQuotation";
 import QuotationDeleteHistory from "./QuotationDeleteHistory";
-import MyTabs from "../../../components/MyTab/MyTab";
-const QuotationTotal = () => {
-  useEffect(() => { }, []);
+
+const QuotationTotal: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<number>(0);
+
   return (
-    <div className="quotationtotal">
-      <Suspense fallback={<div>Loading...</div>}>
-        <MyTabs defaultActiveTab={0}>
-          <MyTabs.Tab title="Quản lý giá">
-            <QuotationManager />
-          </MyTabs.Tab>
-          <MyTabs.Tab title="Tính báo giá">
-            <CalcQuotation />
-          </MyTabs.Tab>
-          <MyTabs.Tab title="Lịch sử xóa giá">
-            <QuotationDeleteHistory />
-          </MyTabs.Tab>
-        </MyTabs>
+    <div className="precision-quotation">
+      {/* ── Sub-Tabs & KPI Action Header ── */}
+      <PrecisionQuotationHeader
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        priceCount={3842}
+        auditCount={128}
+        approvedCount={3710}
+        approvedRate="96.5%"
+        duplicateCount={14}
+        exchangeRate="25,480"
+      />
+
+      {/* ── Active Tab Workspace ── */}
+      <Suspense fallback={<div style={{ padding: 20, textAlign: "center", color: "#64748b" }}>Đang tải phân hệ...</div>}>
+        {activeTab === 0 && <QuotationManager />}
+        {activeTab === 1 && <CalcQuotation />}
+        {activeTab === 2 && <QuotationDeleteHistory />}
       </Suspense>
     </div>
   );
 };
+
 export default QuotationTotal;

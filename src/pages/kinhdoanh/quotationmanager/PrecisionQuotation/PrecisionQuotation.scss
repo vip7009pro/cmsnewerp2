@@ -1,0 +1,1987 @@
+/* =========================================================================
+   PrecisionQuotation.scss – Google Stitch High-Density Enterprise UI
+   Phân hệ Quản Lý Báo Giá (Price Master, Costing & BOM, Audit Log)
+   ========================================================================= */
+
+$stitch-bg: #f8fafc;
+$stitch-card: #ffffff;
+$stitch-border: #e2e8f0;
+$stitch-border-dark: #cbd5e1;
+$stitch-text: #0f172a;
+$stitch-text-secondary: #475569;
+$stitch-text-muted: #94a3b8;
+
+$stitch-brand-50: #eff6ff;
+$stitch-brand-100: #dbeafe;
+$stitch-brand-500: #3b82f6;
+$stitch-brand-600: #2563eb;
+$stitch-brand-700: #1d4ed8;
+$stitch-brand-800: #1e40af;
+$stitch-brand-900: #1e3a8a;
+
+$stitch-emerald-50: #ecfdf5;
+$stitch-emerald-100: #d1fae5;
+$stitch-emerald-500: #10b981;
+$stitch-emerald-600: #059669;
+$stitch-emerald-700: #047857;
+
+$stitch-rose-50: #fff1f2;
+$stitch-rose-100: #ffe4e6;
+$stitch-rose-500: #f43f5e;
+$stitch-rose-600: #e11d48;
+
+$stitch-amber-50: #fffbeb;
+$stitch-amber-100: #fef3c7;
+$stitch-amber-500: #f59e0b;
+$stitch-amber-600: #d97706;
+
+$stitch-indigo-50: #eef2ff;
+$stitch-indigo-100: #e0e7ff;
+$stitch-indigo-600: #4f46e5;
+$stitch-indigo-700: #4338ca;
+
+$stitch-purple-50: #faf5ff;
+$stitch-purple-100: #f3e8ff;
+$stitch-purple-600: #7c3aed;
+
+$stitch-slate-50: #f8fafc;
+$stitch-slate-100: #f1f5f9;
+$stitch-slate-200: #e2e8f0;
+$stitch-slate-300: #cbd5e1;
+$stitch-slate-400: #94a3b8;
+$stitch-slate-500: #64748b;
+$stitch-slate-600: #475569;
+$stitch-slate-700: #334155;
+$stitch-slate-800: #1e293b;
+$stitch-slate-900: #0f172a;
+
+$stitch-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+$stitch-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+$stitch-radius: 4px;
+$stitch-radius-md: 6px;
+$stitch-radius-lg: 8px;
+$stitch-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+$stitch-font-display: 'Plus Jakarta Sans', 'Inter', sans-serif;
+$stitch-font-mono: 'JetBrains Mono', 'Consolas', monospace;
+
+/* ── Root Container ── */
+.precision-quotation {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: $stitch-bg;
+  font-family: $stitch-font-sans;
+  font-size: 11px;
+  color: $stitch-text;
+  overflow: hidden;
+  flex: 1 1 0px;
+  min-height: 0;
+
+  // Multi-tab full-width & full-height rule
+  .component_element & {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* ── Header Action Bar & Sub-Tabs Strip ── */
+  &__header {
+    background: $stitch-card;
+    border-bottom: 1px solid $stitch-border;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    box-shadow: $stitch-shadow-xs;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  &__tabs-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: $stitch-slate-100;
+    padding: 3px;
+    border-radius: $stitch-radius-md;
+    border: 1px solid $stitch-border;
+  }
+
+  &__tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: $stitch-radius;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: $stitch-text-secondary;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+
+    &:hover {
+      background: #ffffff;
+      color: $stitch-text;
+    }
+
+    &--active {
+      background: $stitch-brand-600 !important;
+      color: #ffffff !important;
+      box-shadow: $stitch-shadow-xs;
+
+      .precision-quotation__tab-badge {
+        background: $stitch-brand-800;
+        color: #dbeafe;
+      }
+    }
+
+    svg {
+      font-size: 15px;
+    }
+  }
+
+  &__tab-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 9999px;
+    background: #e2e8f0;
+    color: $stitch-text-secondary;
+    font-family: $stitch-font-mono;
+
+    &--rose {
+      background: $stitch-rose-100;
+      color: $stitch-rose-600;
+    }
+  }
+
+  /* ── Top KPIs Strip ── */
+  &__kpis {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    border-radius: $stitch-radius-md;
+    border: 1px solid transparent;
+    box-shadow: $stitch-shadow-xs;
+    white-space: nowrap;
+
+    &--emerald {
+      background: $stitch-emerald-50;
+      border-color: #a7f3d0;
+      .precision-quotation__kpi-icon {
+        background: $stitch-emerald-500;
+        color: white;
+      }
+      .precision-quotation__kpi-label {
+        color: $stitch-emerald-700;
+      }
+      .precision-quotation__kpi-val {
+        color: $stitch-emerald-600;
+      }
+    }
+
+    &--rose {
+      background: $stitch-rose-50;
+      border-color: #fecdd3;
+      .precision-quotation__kpi-icon {
+        background: $stitch-rose-500;
+        color: white;
+      }
+      .precision-quotation__kpi-label {
+        color: #9f1239;
+      }
+      .precision-quotation__kpi-val {
+        color: $stitch-rose-600;
+      }
+    }
+
+    &--blue {
+      background: $stitch-brand-50;
+      border-color: #bfdbfe;
+      .precision-quotation__kpi-icon {
+        background: $stitch-brand-600;
+        color: white;
+      }
+      .precision-quotation__kpi-label {
+        color: $stitch-brand-800;
+      }
+      .precision-quotation__kpi-val {
+        color: $stitch-brand-700;
+      }
+    }
+  }
+
+  &__kpi-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: $stitch-radius;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  &__kpi-content {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  &__kpi-label {
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  &__kpi-val {
+    font-size: 11.5px;
+    font-weight: 800;
+    font-family: $stitch-font-mono;
+
+    small {
+      font-size: 9.5px;
+      font-weight: 500;
+      opacity: 0.85;
+    }
+  }
+
+  /* ── Tab Content Workspace ── */
+  &__workspace {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    min-height: 0;
+    width: 100%;
+  }
+
+  /* ── 2-Panel Layout: Sidebar + Main ── */
+  &__sidebar {
+    width: 250px;
+    min-width: 250px;
+    max-width: 250px;
+    background: #ffffff;
+    border-right: 1px solid $stitch-border;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 8px;
+    overflow-y: auto;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+
+    &--collapsed {
+      width: 0;
+      min-width: 0;
+      padding: 0;
+      overflow: hidden;
+      border-right: none;
+    }
+  }
+
+  &__sidebar-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 6px;
+    border-bottom: 1px solid $stitch-border;
+    font-family: $stitch-font-display;
+    font-weight: 700;
+    font-size: 11.5px;
+    color: $stitch-brand-700;
+    text-transform: uppercase;
+
+    span.badge {
+      font-size: 9.5px;
+      padding: 1px 5px;
+      background: $stitch-brand-50;
+      border: 1px solid #bfdbfe;
+      color: $stitch-brand-700;
+      border-radius: $stitch-radius;
+    }
+  }
+
+  &__filter-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: $stitch-slate-600;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    select {
+      height: 26px;
+      padding: 2px 6px;
+      background: #ffffff;
+      border: 1px solid $stitch-border-dark;
+      border-radius: $stitch-radius;
+      font-size: 11px;
+      color: $stitch-text;
+      outline: none;
+      transition: border-color 0.15s;
+
+      &:focus {
+        border-color: $stitch-brand-500;
+        box-shadow: 0 0 0 1px $stitch-brand-500;
+      }
+    }
+  }
+
+  &__checkbox-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 8px;
+    background: $stitch-slate-50;
+    border: 1px solid $stitch-border;
+    border-radius: $stitch-radius;
+    margin-top: 2px;
+
+    span {
+      font-size: 11px;
+      font-weight: 700;
+      color: $stitch-slate-700;
+    }
+
+    input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      accent-color: $stitch-brand-600;
+      cursor: pointer;
+    }
+  }
+
+  /* 6 Command Action Buttons */
+  &__command-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    padding-top: 8px;
+    border-top: 1px solid $stitch-border;
+  }
+
+  &__cmd-btn {
+    height: 30px;
+    border-radius: $stitch-radius;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s ease;
+    box-shadow: $stitch-shadow-xs;
+    white-space: nowrap;
+
+    &:active {
+      transform: scale(0.97);
+    }
+
+    &--blue {
+      background: $stitch-brand-600;
+      color: white;
+      &:hover { background: $stitch-brand-700; }
+    }
+
+    &--emerald {
+      background: $stitch-emerald-600;
+      color: white;
+      &:hover { background: $stitch-emerald-700; }
+    }
+
+    &--indigo {
+      background: $stitch-indigo-600;
+      color: white;
+      &:hover { background: $stitch-indigo-700; }
+    }
+
+    &--rose {
+      background: $stitch-rose-600;
+      color: white;
+      &:hover { background: darken($stitch-rose-600, 8%); }
+    }
+
+    &--neutral {
+      background: $stitch-slate-100;
+      color: $stitch-text;
+      border: 1px solid $stitch-border-dark;
+      &:hover { background: $stitch-border; }
+    }
+
+    svg {
+      font-size: 13px;
+    }
+  }
+
+  &__sidebar-footer {
+    margin-top: auto;
+    padding: 8px;
+    background: $stitch-slate-50;
+    border: 1px solid $stitch-border;
+    border-radius: $stitch-radius;
+    font-size: 10px;
+    color: $stitch-text-muted;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .active-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: $stitch-emerald-600;
+      font-weight: 700;
+
+      span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: $stitch-emerald-500;
+      }
+    }
+  }
+
+  /* ── Right Content Area ── */
+  &__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: $stitch-card;
+    overflow: hidden;
+  }
+
+  /* ── Toolbar ── */
+  &__toolbar {
+    padding: 5px 10px;
+    background: #ffffff;
+    border-bottom: 1px solid $stitch-border;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__toolbar-left,
+  &__toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    padding: 0 8px;
+    border-radius: $stitch-radius;
+    font-size: 10.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s ease;
+    box-shadow: $stitch-shadow-xs;
+    white-space: nowrap;
+
+    svg {
+      font-size: 13px;
+    }
+
+    &--outline {
+      background: #ffffff;
+      border: 1px solid $stitch-border-dark;
+      color: $stitch-text-secondary;
+      &:hover { background: $stitch-slate-100; }
+    }
+
+    &--emerald {
+      background: $stitch-emerald-600;
+      color: white;
+      &:hover { background: $stitch-emerald-700; }
+    }
+
+    &--purple {
+      background: $stitch-purple-600;
+      color: white;
+      &:hover { background: darken($stitch-purple-600, 8%); }
+    }
+
+    &--blue {
+      background: $stitch-brand-600;
+      color: white;
+      &:hover { background: $stitch-brand-700; }
+    }
+
+    &--ex-excel {
+      background: $stitch-emerald-50;
+      border: 1px solid #a7f3d0;
+      color: $stitch-emerald-700;
+      font-weight: 700;
+      &:hover { background: #dcfce7; }
+    }
+
+    &--ex-pivot {
+      background: $stitch-indigo-50;
+      border: 1px solid #c7d2fe;
+      color: $stitch-indigo-700;
+      font-weight: 700;
+      &:hover { background: #e0e7ff; }
+    }
+  }
+
+  /* ── AGTable Body Wrapper ── */
+  &__grid-body {
+    flex: 1;
+    min-height: 200px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    .agtable {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 200px;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+
+      /* Hide old default AGTable toolbar */
+      .toolbar {
+        display: none !important;
+      }
+
+      .ag-theme-quartz {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+
+        .ag-root-wrapper {
+          border: none;
+        }
+
+        .ag-header {
+          background: #f1f5f9;
+          border-bottom: 1px solid $stitch-border-dark;
+          font-size: 10.5px;
+          font-weight: 700;
+          color: $stitch-slate-700;
+          text-transform: uppercase;
+        }
+
+        .ag-row {
+          font-size: 11px;
+          border-bottom: 1px solid #f1f5f9;
+
+          &.ag-row-selected {
+            background-color: rgba($stitch-brand-500, 0.08) !important;
+          }
+        }
+      }
+    }
+  }
+
+  /* ── Badges in Grid Cells ── */
+  .badge-approved-y {
+    display: inline-block;
+    padding: 2px 6px;
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #86efac;
+    border-radius: $stitch-radius;
+    font-weight: 700;
+    font-size: 10px;
+  }
+
+  .badge-approved-n {
+    display: inline-block;
+    padding: 2px 6px;
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+    border-radius: $stitch-radius;
+    font-weight: 700;
+    font-size: 10px;
+  }
+
+  .badge-duplicate-ok {
+    display: inline-block;
+    padding: 2px 6px;
+    background: #10b981;
+    color: white;
+    border-radius: $stitch-radius;
+    font-weight: 700;
+    font-size: 10px;
+  }
+
+  .badge-duplicate-ng {
+    display: inline-block;
+    padding: 2px 6px;
+    background: #f43f5e;
+    color: white;
+    border-radius: $stitch-radius;
+    font-weight: 700;
+    font-size: 10px;
+    animation: pulse 1.5s infinite;
+  }
+
+  /* ── Tab 2: Costing & BOM Split Layout ── */
+  &__costing-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+    overflow-y: auto;
+    background: $stitch-bg;
+  }
+
+  &__costing-top-ribbon {
+    background: $stitch-card;
+    border: 1px solid $stitch-border;
+    border-radius: $stitch-radius-lg;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: $stitch-shadow-xs;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      h3 {
+        font-size: 13px;
+        font-weight: 800;
+        color: $stitch-brand-700;
+        margin: 0;
+        text-transform: uppercase;
+        font-family: $stitch-font-display;
+      }
+
+      .tag {
+        font-size: 9.5px;
+        font-weight: 700;
+        padding: 2px 6px;
+        background: $stitch-brand-50;
+        border: 1px solid #bfdbfe;
+        color: $stitch-brand-700;
+        border-radius: $stitch-radius;
+      }
+    }
+  }
+
+  &__costing-grid {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 10px;
+    flex: 1;
+    min-height: 0;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__costing-card {
+    background: $stitch-card;
+    border: 1px solid $stitch-border;
+    border-radius: $stitch-radius-lg;
+    padding: 10px;
+    box-shadow: $stitch-shadow-xs;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 6px;
+      border-bottom: 1px solid $stitch-border;
+
+      .title {
+        font-size: 11.5px;
+        font-weight: 700;
+        color: $stitch-text;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        svg {
+          color: $stitch-brand-600;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  &__costing-summary-box {
+    background: $stitch-slate-50;
+    border: 1px solid $stitch-border;
+    border-radius: $stitch-radius;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 10.5px;
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &--total {
+        padding-top: 4px;
+        margin-top: 4px;
+        border-top: 1px solid $stitch-border-dark;
+        font-weight: 800;
+        font-size: 11.5px;
+        color: $stitch-rose-600;
+      }
+    }
+  }
+
+  /* Commercial Quotation Generator */
+  &__calc-generator {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    background: $stitch-slate-50;
+    border: 1px solid $stitch-border;
+    border-radius: $stitch-radius;
+    padding: 8px 10px;
+
+    @media (max-width: 800px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .calc-col {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      label {
+        font-size: 9.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: $stitch-slate-600;
+      }
+
+      input {
+        height: 28px;
+        padding: 2px 6px;
+        border: 1px solid $stitch-border-dark;
+        border-radius: $stitch-radius;
+        font-size: 11px;
+        font-weight: 700;
+        font-family: $stitch-font-mono;
+        background: #ffffff;
+
+        &--blue {
+          background: $stitch-brand-50;
+          border-color: #bfdbfe;
+          color: $stitch-brand-700;
+        }
+
+        &--amber {
+          background: $stitch-amber-50;
+          border-color: #fde68a;
+          color: $stitch-amber-600;
+        }
+      }
+    }
+  }
+
+  /* ── Tab 2: Full Enterprise Calc Workspace ── */
+  &__calc-container {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    overflow: hidden;
+    background: $stitch-slate-50;
+    gap: 8px;
+    padding: 6px;
+  }
+
+  /* Left: Product List Panel */
+  &__calc-left {
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    min-width: 260px;
+    flex-shrink: 0;
+    background: #ffffff;
+    border-radius: $stitch-radius-md;
+    border: 1px solid $stitch-border;
+    box-shadow: $stitch-shadow-xs;
+    overflow: hidden;
+    transition: width 0.2s ease;
+
+    &--collapsed {
+      width: 42px;
+      min-width: 42px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 8px;
+      background: linear-gradient(180deg, #ffffff, $stitch-slate-50);
+      border-bottom: 1px solid $stitch-border;
+
+      .title {
+        font-size: 11px;
+        font-weight: 800;
+        color: $stitch-slate-800;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+    }
+
+    .panel-grid {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+    }
+  }
+
+  /* Right: Interactive Costing Workspace */
+  &__calc-right {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    gap: 8px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+
+  /* Upper Row: BOM Grid & Product Visualizer */
+  &__calc-upper-row {
+    display: flex;
+    gap: 8px;
+    height: 320px;
+    min-height: 280px;
+
+    .bom-col {
+      flex: 3;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border-radius: $stitch-radius-md;
+      border: 1px solid $stitch-border;
+      box-shadow: $stitch-shadow-xs;
+      overflow: hidden;
+    }
+
+    .visualizer-col {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border-radius: $stitch-radius-md;
+      border: 1px solid $stitch-border;
+      box-shadow: $stitch-shadow-xs;
+      overflow: hidden;
+
+      .visualizer-body {
+        flex: 1;
+        min-height: 0;
+        background: #f8fafc;
+        overflow: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+      }
+
+      .drawing-link-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 10px;
+        background: #ffffff;
+        border-top: 1px solid $stitch-border;
+        font-size: 11px;
+      }
+    }
+  }
+
+  /* Middle Row: Standard Units (10 columns x 2 rows) */
+  &__calc-standards-card {
+    background: #ffffff;
+    border-radius: $stitch-radius-md;
+    border: 1px solid $stitch-border;
+    box-shadow: $stitch-shadow-xs;
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .standards-header {
+      font-size: 11px;
+      font-weight: 800;
+      color: $stitch-brand-700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .standards-row {
+      display: grid;
+      grid-template-columns: 90px repeat(10, 1fr);
+      gap: 4px;
+      align-items: center;
+
+      &--default {
+        background: #f8fafc;
+        padding: 4px;
+        border-radius: $stitch-radius;
+        border: 1px solid $stitch-border;
+
+        .row-tag {
+          font-size: 10px;
+          font-weight: 700;
+          color: $stitch-slate-600;
+        }
+
+        input {
+          height: 24px;
+          padding: 2px 4px;
+          font-size: 10.5px;
+          font-family: $stitch-font-mono;
+          border: 1px solid $stitch-border-dark;
+          border-radius: 3px;
+          background: #ffffff;
+          width: 100%;
+        }
+      }
+
+      &--current {
+        background: $stitch-brand-50;
+        padding: 4px;
+        border-radius: $stitch-radius;
+        border: 1px solid #bfdbfe;
+
+        .row-tag {
+          font-size: 10px;
+          font-weight: 800;
+          color: $stitch-brand-700;
+        }
+
+        input {
+          height: 24px;
+          padding: 2px 4px;
+          font-size: 10.5px;
+          font-family: $stitch-font-mono;
+          font-weight: 700;
+          color: $stitch-brand-900;
+          border: 1px solid #93c5fd;
+          border-radius: 3px;
+          background: #ffffff;
+          width: 100%;
+
+          &:focus {
+            outline: none;
+            border-color: $stitch-brand-600;
+            box-shadow: 0 0 0 1px $stitch-brand-500;
+          }
+        }
+      }
+    }
+  }
+
+  /* Lower Row: Cost Sheet (Left) + Pricing Controls & History Table (Right) */
+  &__calc-lower-row {
+    display: flex;
+    gap: 8px;
+    min-height: 380px;
+
+    .cost-sheet-col {
+      flex: 1.1;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border-radius: $stitch-radius-md;
+      border: 1px solid $stitch-border;
+      box-shadow: $stitch-shadow-xs;
+      overflow: hidden;
+    }
+
+    .pricing-history-col {
+      flex: 1.4;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+  /* Cost Sheet High-Density Table */
+  &__cost-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+
+    thead {
+      background: $stitch-slate-100;
+      color: $stitch-slate-700;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 10px;
+
+      th {
+        padding: 4px 6px;
+        border: 1px solid $stitch-border;
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid $stitch-border;
+
+        &:nth-child(even) {
+          background: #f8fafc;
+        }
+
+        &.row--total {
+          background: $stitch-brand-50;
+          font-weight: 800;
+          color: $stitch-brand-800;
+        }
+
+        td {
+          padding: 3px 6px;
+          border: 1px solid $stitch-border;
+
+          &.cell-name {
+            font-weight: 600;
+            color: $stitch-slate-800;
+          }
+
+          &.cell-val {
+            text-align: right;
+            font-family: $stitch-font-mono;
+            font-weight: 700;
+          }
+
+          &.cell-unit {
+            text-align: center;
+            font-size: 10px;
+            color: $stitch-slate-500;
+          }
+
+          input.cell-input {
+            width: 100%;
+            height: 22px;
+            padding: 1px 4px;
+            font-size: 10.5px;
+            font-family: $stitch-font-mono;
+            font-weight: 700;
+            border: 1px solid #93c5fd;
+            border-radius: 3px;
+            background: #eff6ff;
+            text-align: right;
+
+            &:focus {
+              outline: none;
+              border-color: $stitch-brand-600;
+              background: #ffffff;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Pricing Controls Strip */
+  &__pricing-box {
+    background: #ffffff;
+    border-radius: $stitch-radius-md;
+    border: 1px solid $stitch-border;
+    box-shadow: $stitch-shadow-xs;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        label {
+          font-size: 9.5px;
+          font-weight: 700;
+          text-transform: uppercase;
+          color: $stitch-slate-600;
+          white-space: nowrap;
+        }
+
+        input {
+          height: 26px;
+          padding: 2px 6px;
+          border: 1px solid $stitch-border-dark;
+          border-radius: $stitch-radius;
+          font-size: 11px;
+          font-weight: 700;
+          font-family: $stitch-font-mono;
+          background: #ffffff;
+        }
+
+        .unit-price-badge {
+          height: 26px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: $stitch-emerald-50;
+          border: 1px solid #a7f3d0;
+          color: $stitch-emerald-700;
+          font-weight: 800;
+          font-family: $stitch-font-mono;
+          font-size: 12px;
+          border-radius: $stitch-radius;
+        }
+      }
+    }
+
+    .pricing-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+  }
+
+  /* History Table Card */
+  &__history-card {
+    flex: 1;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border-radius: $stitch-radius-md;
+    border: 1px solid $stitch-border;
+    box-shadow: $stitch-shadow-xs;
+    overflow: hidden;
+
+    .history-header {
+      padding: 6px 10px;
+      background: linear-gradient(180deg, #ffffff, $stitch-slate-50);
+      border-bottom: 1px solid $stitch-border;
+      font-size: 11px;
+      font-weight: 800;
+      color: $stitch-slate-800;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .history-grid {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+    }
+  }
+
+  /* ── Tab 3: Audit Log ── */
+  &__audit-wrapper {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  /* ── Modals Overlay ── */
+  &__modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+  }
+
+  &__modal-box {
+    background: #ffffff;
+    border-radius: $stitch-radius-lg;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    border: 1px solid $stitch-border;
+    width: 100%;
+    max-width: 680px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: stitch-modal-pop 0.15s ease-out;
+
+    &--wide {
+      max-width: 95vw;
+      width: 1280px;
+      height: 85vh;
+    }
+  }
+
+  &__modal-header {
+    background: linear-gradient(135deg, $stitch-slate-800, $stitch-brand-900);
+    color: white;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h4 {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    button.close-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px;
+      border-radius: $stitch-radius;
+
+      &:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+
+  &__modal-body {
+    padding: 14px;
+    background: $stitch-slate-50;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  &__modal-footer {
+    padding: 8px 14px;
+    background: #ffffff;
+    border-top: 1px solid $stitch-border;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+}
+
+@keyframes stitch-modal-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* =========================================================================
+   Stitch Calc Quotation Dedicated Styles (Matching screen.png & code.html)
+   ========================================================================= */
+.stitch-calc {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: #f1f5f9;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  color: #1e293b;
+  overflow: hidden;
+  font-size: 11px;
+
+  /* Đảm bảo AGTable và ag-root-wrapper luôn căng đầy chiều cao */
+  .agtable {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 140px !important;
+    flex: 1 1 0px !important;
+
+    .toolbar {
+      display: none !important;
+    }
+
+    .ag-theme-quartz {
+      display: flex !important;
+      flex-direction: column !important;
+      flex: 1 1 0px !important;
+      min-height: 120px !important;
+      height: 100% !important;
+      width: 100% !important;
+    }
+
+    .ag-root-wrapper {
+      height: 100% !important;
+      min-height: 120px !important;
+    }
+
+    .ag-root-wrapper-body {
+      height: 100% !important;
+      min-height: 80px !important;
+    }
+
+    .ag-body-viewport {
+      min-height: 80px !important;
+    }
+  }
+
+  /* Top SubNav Banner */
+  &__subnav {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+
+    .subnav-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .sub-tab-btn {
+        padding: 3px 10px;
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 4px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: transparent;
+        color: #475569;
+
+        &:hover {
+          background: #f1f5f9;
+        }
+
+        &--active {
+          background: #eff6ff;
+          color: #1d4ed8;
+          border-color: #bfdbfe;
+          font-weight: 700;
+
+          .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #2563eb;
+          }
+        }
+      }
+    }
+
+    .subnav-center {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #1e293b;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 3px 24px;
+      border-radius: 4px;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .subnav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #64748b;
+
+      strong {
+        color: #1e293b;
+      }
+    }
+  }
+
+  /* Main 12-Column Grid */
+  &__grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 6px;
+    padding: 6px;
+    overflow: hidden;
+    background: rgba(226, 232, 240, 0.7);
+    min-height: 0;
+  }
+
+  /* Left Panel: 4/12 columns */
+  &__left-col {
+    grid-column: span 4;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    min-height: 0;
+
+    @media (max-width: 1024px) {
+      grid-column: span 12;
+      height: 300px;
+    }
+  }
+
+  /* Right Panel: 8/12 columns */
+  &__right-col {
+    grid-column: span 8;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow: hidden;
+    min-height: 0;
+
+    @media (max-width: 1024px) {
+      grid-column: span 12;
+    }
+  }
+
+  /* Emerald Header Bar */
+  &__header-bar {
+    background: #059669;
+    color: #ffffff;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+
+    .title {
+      font-size: 11.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tools {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      button {
+        padding: 2px 6px;
+        background: #047857;
+        color: #ffffff;
+        border: none;
+        border-radius: 3px;
+        font-size: 10.5px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+
+        &:hover {
+          background: #065f46;
+        }
+      }
+    }
+  }
+
+  /* Table Footer Status */
+  &__footer-bar {
+    background: #f1f5f9;
+    border-top: 1px solid #e2e8f0;
+    padding: 3px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10.5px;
+    color: #64748b;
+    flex-shrink: 0;
+
+    strong {
+      color: #1e293b;
+    }
+
+    strong.active-code {
+      color: #2563eb;
+    }
+  }
+
+  /* Standard Units Card (Middle) */
+  &__standards-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 6px;
+    flex-shrink: 0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+
+    .standards-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #334155;
+
+      .link-btn {
+        font-size: 10px;
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+
+      thead th {
+        background: rgba(219, 234, 254, 0.6);
+        color: #1e3a8a;
+        border: 1px solid #bfdbfe;
+        padding: 3px 4px;
+        text-align: center;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      tbody td {
+        border: 1px solid #e2e8f0;
+        padding: 2px;
+        text-align: center;
+
+        &.row-label {
+          font-weight: 700;
+          text-align: left;
+          padding-left: 6px;
+          background: #f8fafc;
+          white-space: nowrap;
+        }
+
+        input {
+          width: 100%;
+          height: 22px;
+          text-align: center;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 10.5px;
+          font-weight: 700;
+          border: 1px solid #cbd5e1;
+          border-radius: 2px;
+          background: #f8fafc;
+
+          &.active-input {
+            background: #ffffff;
+            border-color: #93c5fd;
+            color: #1e293b;
+
+            &:focus {
+              border-color: #2563eb;
+              outline: none;
+              box-shadow: 0 0 0 1px #2563eb;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Bottom Split: 2 columns */
+  &__bottom-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    flex: 1;
+    min-height: 0;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Cost Sheet Box (Bottom Left) */
+  &__cost-sheet {
+    background: #ffffff;
+    border: 1px solid #6ee7b7;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+
+    .table-container {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+
+      thead th {
+        background: #ecfdf5;
+        color: #064e3b;
+        font-weight: 700;
+        border-bottom: 1px solid #a7f3d0;
+        padding: 3px 6px;
+        font-size: 10.5px;
+      }
+
+      tbody td {
+        padding: 2px 5px;
+        border-bottom: 1px solid #f1f5f9;
+        border-right: 1px solid #e2e8f0;
+
+        &.item-name {
+          color: #334155;
+          font-weight: 600;
+        }
+
+        &.item-val {
+          text-align: right;
+          font-family: 'JetBrains Mono', monospace;
+          font-weight: 700;
+        }
+
+        &.item-unit {
+          text-align: center;
+          color: #64748b;
+          font-size: 10px;
+        }
+
+        input {
+          width: 100%;
+          height: 22px;
+          text-align: right;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 10.5px;
+          font-weight: 700;
+          border: 1px solid #93c5fd;
+          border-radius: 2px;
+          padding: 1px 4px;
+
+          &:focus {
+            outline: none;
+            border-color: #2563eb;
+          }
+        }
+
+        &.total-row {
+          background: #fef3c7;
+          font-weight: 800;
+          color: #78350f;
+
+          input {
+            background: rgba(254, 243, 199, 0.7);
+            border-color: #fcd34d;
+            color: #78350f;
+            font-weight: 800;
+          }
+        }
+      }
+    }
+  }
+
+  /* Pricing Form & History (Bottom Right) */
+  &__pricing-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 0;
+
+    .pricing-inputs-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex-shrink: 0;
+
+      .two-col-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+
+        label {
+          display: block;
+          font-size: 9.5px;
+          font-weight: 700;
+          text-transform: uppercase;
+          color: #475569;
+          margin-bottom: 2px;
+        }
+
+        .input-wrap {
+          position: relative;
+          display: flex;
+          align-items: center;
+
+          input {
+            width: 100%;
+            height: 24px;
+            padding: 2px 26px 2px 6px;
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 3px;
+          }
+
+          .suffix-tag {
+            position: absolute;
+            right: 5px;
+            font-size: 9px;
+            font-weight: 700;
+            color: #94a3b8;
+          }
+        }
+      }
+
+      .unit-price-box {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 4px;
+        padding: 4px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .label {
+          font-size: 11px;
+          font-weight: 800;
+          text-transform: uppercase;
+          color: #1e3a8a;
+          letter-spacing: 0.03em;
+        }
+
+        .price {
+          display: flex;
+          align-items: baseline;
+          gap: 3px;
+
+          .number {
+            font-size: 16px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            color: #1d4ed8;
+          }
+
+          .unit {
+            font-size: 10px;
+            font-weight: 700;
+            color: #3b82f6;
+          }
+        }
+      }
+
+      .actions-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        padding-top: 2px;
+
+        button {
+          height: 28px;
+          border-radius: 4px;
+          border: none;
+          font-weight: 700;
+          font-size: 11.5px;
+          color: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+          cursor: pointer;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+
+          &.btn-add {
+            background: #059669;
+            &:hover { background: #047857; }
+          }
+
+          &.btn-save {
+            background: #2563eb;
+            &:hover { background: #1d4ed8; }
+          }
+        }
+      }
+    }
+
+    .history-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+
+      .grid-container {
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+      }
+    }
+  }
+
+  /* Modal CodeVisualLize Overlay */
+  &__visual-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(3px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+
+    .modal-content {
+      background: #ffffff;
+      width: 100%;
+      max-width: 860px;
+      border-radius: 8px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+
+      .modal-header {
+        background: linear-gradient(135deg, #0f172a, #1e3a8a);
+        color: #ffffff;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        h4 {
+          margin: 0;
+          font-size: 13px;
+          font-weight: 800;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        button.close-btn {
+          background: transparent;
+          border: none;
+          color: rgba(255, 255, 255, 0.8);
+          cursor: pointer;
+          font-size: 18px;
+
+          &:hover { color: #ffffff; }
+        }
+      }
+
+      .modal-body {
+        padding: 12px;
+        background: #f8fafc;
+        max-height: 70vh;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .modal-footer {
+        padding: 8px 12px;
+        background: #ffffff;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+  }
+}
+

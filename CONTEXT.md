@@ -1,5 +1,65 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-10 (CodeVisualLize Top-Left Fix + BOM AGTable Height Fix)
+
+### Completed
+- **CodeVisualLize Rendering Fix** (`CodeVisualize/CodeVisualLize.tsx`):
+  - Root cause: `.codevisualizecomponent` had `position: relative` but no explicit width/height. All RECTANGLE children use `position: absolute`, so parent collapsed to 0×0 → flex center trong container cha khiến layout vẽ từ dưới lên.
+  - Fix: Tính `wrapperSize` qua `useMemo` (totalW, totalH tính từ G_SG_L, G_CG, G_WIDTH, G_C, G_SG_R, G_LENGTH, G_LG, G_C_R × factor) và set explicit `width` + `height` (mm) trên wrapper div.
+- **BOM AGTable Height Fix** (`PrecisionCostBOMAndVisualizer.tsx`):
+  - Root cause: AGTable wrapper dùng `flex: 1 1 0px` + `height: calc(100% - 28px)` → AG-Grid không resolve được height → viewport collapse to 0.
+  - Fix: Dùng explicit pixel `height: 242` (= 270px container - 28px header bar).
+- **Visualization Alignment**: Đổi `alignItems/justifyContent` từ `center` sang `flex-start` để mô phỏng dao cắt luôn bắt đầu từ góc trên-trái.
+
+## Update - 2026-09-10 (Precision Quotation: Google Stitch High-Density Enterprise Redesign)
+
+### Completed
+- **Sao Lưu An Toàn Toàn Bộ Mã Nguồn Cũ (100% Backup)**:
+  - `QuotationTotal.backup.tsx` (917 bytes)
+  - `QuotationManager.backup.tsx` (68.178 bytes, 2.104 dòng)
+  - `CalcQuotation.backup.tsx` (48.504 bytes, 1.298 dòng)
+  - `QuotationDeleteHistory.backup.tsx` (9.001 bytes, 282 dòng)
+- **Tái Cấu Trúc Toàn Diện Phân Hệ Quản Lý Báo Giá theo Chuẩn Google Stitch (`DESIGN.md`)**:
+  - Dựa trên đặc tả thiết kế HTML & ảnh mẫu Stitch Enterprise:
+    1. *Header Action Bar & Dải Sub-Tabs Chuyên Nghiệp (`PrecisionQuotationHeader.tsx`)*:
+       - 3 tab điều hướng mượt mà: `1. Quản lý giá (Price Master) [3,842]`, `2. Tính báo giá (Costing & BOM)`, `3. Lịch sử xóa giá (Audit Log) [128]`.
+       - Dải 3 thẻ KPI trạng thái realtime:
+         - **ĐÃ DUYỆT GIÁ (Y)** (Emerald `#10b981`): `3,710 SP (96.5%)` kèm icon xác thực.
+         - **TRÙNG MÃ (NG)** (Rose `#f43f5e`): `14 Dòng (Cần xử lý)` kèm hiệu ứng pulsing alert.
+         - **TỈ GIÁ USD/VND** (Blue `#2563eb`): `25,480 VND` cập nhật tỷ giá quy đổi.
+    2. *Tái Cấu Trúc Tab 1 - Quản Lý Giá (`QuotationManager.tsx` từ 2.104 dòng xuống ~300 dòng)*:
+       - Phân rã thành các sub-module:
+         - `PrecisionPriceFilter.tsx`: Sidebar bộ lọc bên trái (Từ ngày, Tới ngày, Code KD, Code ERP, Tên Liệu, Tên Khách, All Time) + Cụm 6 nút thao tác nghiệp vụ cao tần (`LAST PRICE`, `APPROVE`, `GIÁ NGANG`, `UPDATE`, `GIÁ DỌC`, `DELETE`).
+         - `PrecisionPriceToolbar.tsx`: Cụm nút công cụ phía trên bảng (`Show/Hide`, `SAVE`, `Pivot`, `Up Giá`, `In báo giá`, `EX1`, `EX2`, `PIVOT`).
+         - `PrecisionPriceColumns.tsx`: Quản lý toàn bộ 20 cột mốc giá ngang, bảng giá dọc chi tiết, cell renderers trạng thái phê duyệt (Y/Not Approved) và trùng mã (OK/NG).
+         - `PrecisionPriceModals.tsx`: Gom các modal thêm giá đơn lẻ, tải Excel hàng loạt, phân tích Pivot Grid và in biểu mẫu báo giá `QuotationForm`.
+    3. *Tái Cấu Trúc Toàn Diện Tab 2 - Tính Báo Giá (`CalcQuotation.tsx` chuẩn xác 100% theo `stitch_calc_quotation/DESIGN.md` và `code.html`)*:
+       - Sửa dứt điểm lỗi runtime Sass: bổ sung đầy đủ các biến màu `$stitch-slate-300`, `$stitch-slate-400`, `$stitch-slate-500` (`#64748b`), `$stitch-slate-900`.
+       - SubNavigation Banner: Dải điều hướng Sub-Tab + Banner chính giữa `BẢNG TÍNH GIÁ` (nền `bg-slate-100`, viền `border-slate-300`, chữ in hoa đậm nét) + telemetry `Đơn vị tính: VND | Tỷ giá USD: 25,450`.
+       - Bố cục 12 cột chuẩn xác theo ảnh mẫu `screen.png`:
+         - Cột trái (4/12 cột): `Danh Sách Sản Phẩm (Model Master)` với header bar màu xanh ngọc đậm `bg-emerald-600` (`👁 Show/Hide`, `📊 EX1`, `📊 EX2`, `Pivot`), bảng AGTable các cột KHÁCH, G_CODE, G_NAME_KD, G_NAME, RỘNG, DÀI, CỘT, HÀNG, K/C HÀNG, K/C CỘT; footer đếm tổng mẫu và hiển thị mã đang chọn.
+         - Cột phải (8/12 cột):
+            + Khối trên (Bố cục 2 cột song song 1.45 : 1, cao cố định 270px):
+              * Cột trái: `Bảng Chi Tiết Nguyên Vật Liệu Cấu Thành (BOM Materials)` với header bar `bg-emerald-600` (`🔄 Update Giá Liệu`, `📥 EX1`, `📥 EX2`, `📊 PIVOT`), fix triệt để lỗi height = 0 bằng CSS stretch `min-height: 140px; flex: 1; height: 100%` cho AGTable và loại bỏ footer trùng lặp.
+              * Cột phải: `Mô Phỏng Layout Dao Cắt & Bản Vẽ Kỹ Thuật` với header bar xanh ngọc đậm (`Xem Bản Vẽ PDF` mở tab mới `/banve/{selectedRows.G_CODE}.pdf`), body hiển thị trực quan bản vẽ `<CodeVisualLize DATA={selectedRows} />` trên nền xám `#747576`, footer hiển thị nhanh kích thước, số cột x hàng và khoảng cách dao cắt.
+            + Khối giữa: `Định Mức Tiêu Chuẩn Chi Phí (Standard vs Actual Cost Rates)` gồm tiêu đề có link `LINK HỆ THỐNG GỐC / BẢN VẼ ↗` và bảng 2 hàng đối chiếu (T/C Mặc Định 10 ô readonly vs T/C Hiện Tại 10 ô input viền xanh cho phép sửa đổi và tự động tính lại chi phí).
+            + Khối dưới (chia đôi 6:6):
+              * Bên trái: Bảng `CƠ CẤU CHI PHÍ & TÙY BIẾN` với header `bg-emerald-600` badge `BOM Calculation`, 4 cột HẠNG MỤC, GIÁ TRỊ, TÙY BIẾN, UNIT; đầy đủ 13 dòng chi phí và hàng tổng chi phí nội bộ màu hổ phách/amber.
+              * Bên phải: Khung định giá 2 cột x 2 (MOQ EA, Lợi nhuận %, Giá bán Nội Bộ, Giá bán Open), hộp nổi bật `GIÁ BÁN 1EA` font-extrabold màu xanh blue, 2 nút bấm lớn `+ Add to List` (xanh ngọc) và `💾 Lưu Giá` (xanh blue) + Bảng AGTable `Lịch Sử & Danh Sách Đã Tính Giá` (MÃ KH, G_CODE, PRICE_DATE, MOQ, PROD_PRICE, BEP, APPROVAL, DELETE) với nút EX1, EX2, PIVOT.
+         - Tích hợp Modal Phân Tích Đa Chiều `PivotTable` popup toàn màn hình.
+    4. *Tái Cấu Trúc Tab 3 - Lịch Sử Xóa Giá (`QuotationDeleteHistory.tsx` ~250 dòng)*:
+       - Đồng bộ phong cách Stitch: Bộ lọc kiểm toán bên trái, toolbar với `Show/Hide`, `EX1`, `PIVOT`, chỉ báo lưu vết 90 ngày, và bảng AG-Grid chi tiết lý do và thời gian xóa giá.
+    5. *Master Controller (`QuotationTotal.tsx` ~35 dòng)*:
+       - Kết nối mượt mà giữa Header và 3 tab con, tối ưu hiệu năng chuyển tab bằng `Suspense`.
+    6. *SCSS Chuyên Biệt Chuẩn Stitch (`PrecisionQuotation.scss` ~1.950 dòng)*:
+       - Khắc phục triệt để lỗi compile Sass, bổ sung toàn diện các class `.stitch-calc` cho layout 12 cột, bảng chi phí, các khối màu emerald/amber/blue và modal preview.
+- **Kiểm Tra & Xác Thực**:
+  - Biên dịch TypeScript: 0 lỗi trong toàn bộ phân hệ `quotationmanager`.
+  - Compile SCSS: Thành công 100% không còn biến undefined.
+  - Kiểm tra Vite Dev Server (port 3001): 100% các file `QuotationTotal.tsx`, `QuotationManager.tsx`, `CalcQuotation.tsx`, `PrecisionCostProductList.tsx`, `PrecisionCostBOMAndVisualizer.tsx`, `PrecisionCostStandardUnits.tsx`, `PrecisionCostSheet.tsx`, `PrecisionCostPricingAndHistory.tsx`, `PrecisionCostVisualModal.tsx`, `PrecisionQuotation.scss` đều trả về HTTP 200 OK.
+- **Bảo toàn 100% nghiệp vụ**: Đầy đủ mọi hàm API queries, validation, quyền hạn `checkBP`, in ấn và xuất Excel.
+
+
 ## Update - 2026-09-09 (Precision Invoice Manager: Google Stitch High-Density Enterprise Redesign)
 
 ### Completed

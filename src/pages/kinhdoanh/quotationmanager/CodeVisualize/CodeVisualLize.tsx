@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import "./CodeVisualLize.scss";
 import RECTANGLE from "../../../rnd/design_amazon/design_components/RECTANGLE";
 import { CODEDATA } from "../../interfaces/kdInterface";
@@ -13,20 +13,27 @@ const CodeVisualLize = ({ DATA }: { DATA: CODEDATA }) => {
       (DATA.G_LENGTH * DATA.G_C_R + DATA.G_LG * DATA.G_C_R);
   }
 
+  // Tính kích thước tổng thể của layout (mm) để set explicit width/height cho wrapper
+  const wrapperSize = useMemo(() => {
+    const totalW =
+      (DATA.G_SG_L +
+        (DATA.G_CG + DATA.G_WIDTH) * (DATA.G_C - 1) +
+        DATA.G_WIDTH +
+        DATA.G_SG_R) *
+      factor *
+      1.0;
+    const totalH = (DATA.G_LENGTH + DATA.G_LG) * DATA.G_C_R * factor * 1.0;
+    return { width: totalW, height: totalH };
+  }, [DATA, factor]);
+
   const [productArray, setProductArrray] = useState<Array<ReactElement>>([]);
   const renderProduct = () => {
     let tempProductArray: ReactElement[] = [
       <RECTANGLE
         key={9999}
         DATA={{
-          SIZE_W:
-            (DATA.G_SG_L +
-              (DATA.G_CG + DATA.G_WIDTH) * (DATA.G_C - 1) +
-              DATA.G_WIDTH +
-              DATA.G_SG_R) *
-            factor *
-            1.0,
-          SIZE_H: (DATA.G_LENGTH + DATA.G_LG) * DATA.G_C_R * factor * 1.0,
+          SIZE_W: wrapperSize.width,
+          SIZE_H: wrapperSize.height,
           CAVITY_PRINT: 2,
           DOITUONG_NAME: "",
           DOITUONG_NO: 1,
@@ -47,8 +54,6 @@ const CodeVisualLize = ({ DATA }: { DATA: CODEDATA }) => {
     let keydata: number = 0;
     for (let i = 0; i < DATA.G_C; i++) {
       for (let j = 0; j < DATA.G_C_R; j++) {
-        //console.log(DATA.G_WIDTH*i+DATA.G_CG);
-        //console.log(DATA.G_LENGTH*j+ DATA.G_LG);
         keydata++;
         tempProductArray.push(
           <RECTANGLE
@@ -84,10 +89,17 @@ const CodeVisualLize = ({ DATA }: { DATA: CODEDATA }) => {
 
   useEffect(() => {
     renderProduct();
-  }, [DATA]);
+  }, [DATA, wrapperSize]);
 
   return (
-    <div className="codevisualizecomponent" style={{ display: "flex" }}>
+    <div
+      className="codevisualizecomponent"
+      style={{
+        position: "relative",
+        width: `${wrapperSize.width}mm`,
+        height: `${wrapperSize.height}mm`,
+      }}
+    >
       {productArray}
     </div>
   );
