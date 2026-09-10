@@ -1,5 +1,28 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-10 (PlanManager: Google Stitch High-Density Enterprise Redesign)
+
+### Completed
+- **Backup 4 file gốc**: `PlanManager.backup.tsx`, `PlanManagerManageTab.backup.tsx`, `PlanManagerStatusTab.backup.tsx`, `PlanManagerAddTab.backup.tsx`
+- **Tạo thư mục `PrecisionPlan/`** với 4 file mới:
+  - `PrecisionPlan.scss`: SCSS tokens + layout Stitch (gridContainer, gridToolbar, gridBody, modal, footer)
+  - `PrecisionPlanHeader.tsx`: Sub-tabs inline (Quản lý Plan | Plan Status) + nút "+ Thêm Plan"
+  - `PrecisionPlanColumns.tsx`: Column definitions cho cả ManageTab và StatusTab (IS_INSPECTING badge, COVER_D1 OK/NG, D1-D15 cumulative styling)
+- **Cập nhật Modal Thêm Kế Hoạch (`PrecisionPlanAddModal.tsx` & `PrecisionPlan.scss`)**:
+  - Loại bỏ hoàn toàn các trường thừa (`PLAN_ID`, `G_NAME_KD`, `G_NAME`, `PROD_TYPE`, `PROD_MAIN_MATERIAL`, `PLAN_KT`, `PRIORITY`, `TOTAL_QTY`, `INSPECT_STATUS`).
+  - Chuẩn hóa form nhập thủ công chỉ bao gồm các trường cần thiết tương ứng với file Excel:
+    1. **Khách hàng (`CUST_CD`)**: Tích hợp MUI `Autocomplete` tìm kiếm thông minh từ danh mục khách hàng (`f_getcustomerlist`).
+    2. **Mã Sản Phẩm (`G_CODE`)**: Tích hợp MUI `Autocomplete` tìm kiếm thông minh từ danh mục sản phẩm (`f_getcodelist`), kèm badge hiển thị nhanh mã KD và tên sản phẩm.
+    3. **Ngày Plan (`PLAN_DATE`)**: Date picker.
+    4. **D1 đến D15**: Lưới 8 cột x 2 hàng nhập số lượng kèm ô `SUM D1-15` tính tổng realtime.
+    5. **Ghi chú (`REMARK` / Note)**: Textarea.
+  - Tham chiếu cấu trúc chọn Khách hàng & Mã sản phẩm tương tự `PoManager` (`PrecisionPoAddModal.tsx`).
+  - Hỗ trợ chế độ **Import File Excel** (Kéo thả, chọn file, tải template, CHECK/UP hàng loạt).
+  - Tích hợp SCSS chuyên biệt chuẩn Stitch (`.pp-modal-overlay`, `.pp-modal`, `.pp-manual`, `.pp-excel`, MUI Autocomplete popper z-index 120000).
+  - Biên dịch Vite: HTTP 200 OK trên cả `PrecisionPlanAddModal.tsx` và `PrecisionPlan.scss`.
+- **Tối Ưu Không Gian Chiều Dọc (`PlanManager.tsx`)**:
+  - Loại bỏ hoàn toàn thanh footer phụ (`Cập nhật tự động: 30s` & `Tổng cộng: -- dòng`) ở đáy màn hình, giải phóng 100% diện tích chiều dọc để AGTable kéo dài sát mép đáy mà không bị chiếm chỗ.
+
 ## Update - 2026-09-10 (CodeVisualLize Top-Left Fix + BOM AGTable Height Fix)
 
 ### Completed

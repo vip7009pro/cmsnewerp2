@@ -57,4 +57,11 @@
     5. `PrecisionCostPricingAndHistory.tsx`: Khối nhập MOQ, Margin %, Giá 1EA, nút Add to List, nút Lưu Giá Master (đồng bộ uploadgia + updateCurrentUnit + loadListCode) + Bảng AGTable Lịch sử giá của mã tương ứng.
   - Tab 3 (QuotationDeleteHistory): Đồng bộ bảng kiểm toán xóa giá và bộ lọc chuẩn Stitch.
   - Bảo toàn 100% sao lưu các file `.backup.tsx` và styles chuyên biệt `PrecisionQuotation.scss`.
+- [x] Redesign Plan Manager (`PlanManager.tsx`, `PlanManagerManageTab.tsx`, `PlanManagerStatusTab.tsx`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Header Action Bar tích hợp Sub-Tabs Navigation (Quản lý Plan, Plan Status) cùng nút "+ Thêm Plan Mới".
+  - Quản lý Plan: Tối ưu bộ lọc và thanh công cụ (Xóa Plan, Pivot Grid, EX1, EX2, Standard High-Density).
+  - Trạng thái kiểm tra Plan (Plan Status): Header kiểm tra ngày, CHECK PLAN, EX1, EX2, PIVOT, bảng trạng thái kiểm tra trực quan.
+  - Modal Thêm Kế Hoạch Sản Xuất (`PrecisionPlanAddModal.tsx` & `PrecisionPlan.scss`): Chuẩn hóa form theo cấu trúc file Excel & tham chiếu `PoManager`, loại bỏ các trường thừa; tích hợp MUI Autocomplete cho Khách Hàng (CUST_CD) & Mã Sản Phẩm (G_CODE), ngày Plan (PLAN_DATE), bảng D1-D15 (8 cột kèm SUM tự động) và Ghi chú (REMARK), cùng chế độ Import File Excel (kéo thả, tải template, CHECK/UP hàng loạt).
+  - Loại bỏ hoàn toàn thanh footer phụ (`Cập nhật tự động: 30s`) ở đáy màn hình, tối đa hóa không gian hiển thị chiều cao cho AGTable.
+
 
