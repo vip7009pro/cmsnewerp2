@@ -63,5 +63,14 @@
   - Trạng thái kiểm tra Plan (Plan Status): Header kiểm tra ngày, CHECK PLAN, EX1, EX2, PIVOT, bảng trạng thái kiểm tra trực quan.
   - Modal Thêm Kế Hoạch Sản Xuất (`PrecisionPlanAddModal.tsx` & `PrecisionPlan.scss`): Chuẩn hóa form theo cấu trúc file Excel & tham chiếu `PoManager`, loại bỏ các trường thừa; tích hợp MUI Autocomplete cho Khách Hàng (CUST_CD) & Mã Sản Phẩm (G_CODE), ngày Plan (PLAN_DATE), bảng D1-D15 (8 cột kèm SUM tự động) và Ghi chú (REMARK), cùng chế độ Import File Excel (kéo thả, tải template, CHECK/UP hàng loạt).
   - Loại bỏ hoàn toàn thanh footer phụ (`Cập nhật tự động: 30s`) ở đáy màn hình, tối đa hóa không gian hiển thị chiều cao cho AGTable.
+- [x] Redesign Forecast Manager (`FCSTManager.tsx`, `FCSTManagerManageTab.tsx`, `FCSTManagerAddTab.tsx`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Header Action Bar tích hợp Tab "Quản lý FCST (Forecast Master)" và cụm 5 nút hành động (`+ Thêm FCST Mới`, `Pivot Báo Cáo FCST`, `XÓA FCST`, `EX1`, `EX2`).
+  - Quản lý FCST (Forecast Master): Phân rã nguyên khối 1.043 dòng thành controller tinh gọn ~290 dòng + sidebar bộ lọc dọc 240px `PrecisionFCSTFilterPanel.tsx` (12 tiêu chí lọc) + bảng AGTable dữ liệu lớn.
+  - Tối ưu hóa cột `PrecisionFCSTColumns.tsx`: Rút gọn 700+ dòng lặp xuống ~100 dòng với vòng lặp tuần tự tạo W1-W22 (Số lượng) và W1A-W22A (Thành tiền), bảo toàn 100% logic kiểm tra phân quyền hiển thị giá (`SHOW_FCST_PRICE_AMNT`), định dạng số và màu sắc.
+  - Modal Thêm Dự Báo FCST (`PrecisionFCSTAddModal.tsx` & `PrecisionFCST.scss`): Chuyển đổi tab cũ thành Modal Dialog hiện đại với 2 chế độ:
+    + Nhập thủ công (Manual): Tích hợp MUI `Autocomplete` tìm kiếm thông minh Khách hàng (`f_getcustomerlist`) & Mã sản phẩm (`f_getcodelist`), Ngày FCST, ma trận 22 tuần W1-W22 kèm ô tính tổng realtime `SUM W1-W22`, Ghi chú.
+    + Import File Excel: Kéo thả / chọn file Excel `.xlsx`, `.xls`, tải template mẫu, bảng AGTable preview dữ liệu, nút `CHECK` kiểm tra trùng mã và nút `UP FCST` lưu vào hệ thống (`upload_fcst`).
+  - Tích hợp Modal Phân Tích Xoay Đa Chiều DevExtreme Pivot Grid (`PivotTable`) chuẩn Stitch.
+  - Bảo toàn 100% sao lưu các file `.backup.tsx`, bảo toàn 100% API queries, quyền hạn `checkBP(userData, ["KD"])`, và kiểm tra Vite compile 7/7 files HTTP 200 OK.
 
 

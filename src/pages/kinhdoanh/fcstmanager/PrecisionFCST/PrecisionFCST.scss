@@ -1,0 +1,1135 @@
+/* =========================================================================
+   PrecisionFCST.scss – Google Stitch High-Density Enterprise UI
+   Phân hệ Quản Lý Forecast (FCST Management, Add FCST Modal)
+   ========================================================================= */
+
+$pf-bg: #f8fafc;
+$pf-card: #ffffff;
+$pf-border: #e2e8f0;
+$pf-border-dark: #cbd5e1;
+$pf-text: #0f172a;
+$pf-text-secondary: #475569;
+$pf-text-muted: #94a3b8;
+
+$pf-brand-50: #eff6ff;
+$pf-brand-100: #dbeafe;
+$pf-brand-200: #bfdbfe;
+$pf-brand-500: #3b82f6;
+$pf-brand-600: #2563eb;
+$pf-brand-700: #1d4ed8;
+
+$pf-emerald-50: #ecfdf5;
+$pf-emerald-100: #d1fae5;
+$pf-emerald-500: #10b981;
+$pf-emerald-600: #059669;
+
+$pf-rose-50: #fff1f2;
+$pf-rose-100: #ffe4e6;
+$pf-rose-500: #f43f5e;
+$pf-rose-600: #e11d48;
+
+$pf-amber-50: #fffbeb;
+$pf-amber-500: #f59e0b;
+
+$pf-purple-50: #faf5ff;
+$pf-purple-100: #f3e8ff;
+$pf-purple-600: #9333ea;
+$pf-purple-700: #7c3aed;
+
+$pf-slate-50: #f8fafc;
+$pf-slate-100: #f1f5f9;
+$pf-slate-200: #e2e8f0;
+$pf-slate-300: #cbd5e1;
+$pf-slate-400: #94a3b8;
+$pf-slate-500: #64748b;
+$pf-slate-600: #475569;
+$pf-slate-700: #334155;
+$pf-slate-800: #1e293b;
+$pf-slate-900: #0f172a;
+
+$pf-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+$pf-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+$pf-radius: 4px;
+
+/* ── ROOT CONTAINER ── */
+.precision-fcst {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: $pf-bg;
+  overflow: hidden;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 11.5px;
+  color: $pf-text;
+
+  // Full-width/height trong chế độ Multi-tab
+  .component_element & {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* ── HEADER: Sub-Tabs + Action Buttons ── */
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    height: 40px;
+    min-height: 40px;
+    background: $pf-card;
+    border-bottom: 1px solid $pf-border;
+    flex-shrink: 0;
+    gap: 12px;
+
+    @media (max-width: 768px) {
+      flex-wrap: wrap;
+      height: auto;
+      min-height: 36px;
+      padding: 6px 10px;
+      gap: 6px;
+    }
+  }
+
+  &__tabs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    height: 30px;
+    border: 1px solid transparent;
+    border-radius: $pf-radius;
+    background: transparent;
+    color: $pf-text-secondary;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+
+    &:hover {
+      background: $pf-slate-100;
+      color: $pf-text;
+    }
+
+    &--active {
+      background: $pf-brand-50;
+      color: $pf-brand-600;
+      border-color: $pf-brand-200;
+      font-weight: 600;
+      box-shadow: $pf-shadow-xs;
+    }
+
+    svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+  }
+
+  &__headerRight {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  /* ── ACTION BUTTONS ── */
+  &__actionBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 10px;
+    height: 28px;
+    border-radius: $pf-radius;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    border: 1px solid transparent;
+
+    svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+
+    &--primary {
+      background: $pf-brand-600;
+      color: #fff;
+      border-color: $pf-brand-700;
+      box-shadow: $pf-shadow-xs;
+
+      &:hover {
+        background: $pf-brand-700;
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+
+    &--purple {
+      background: $pf-purple-50;
+      color: $pf-purple-700;
+      border-color: rgba($pf-purple-600, 0.2);
+
+      &:hover {
+        background: $pf-purple-100;
+      }
+    }
+
+    &--danger {
+      background: $pf-rose-50;
+      color: $pf-rose-600;
+      border-color: rgba($pf-rose-500, 0.2);
+
+      &:hover {
+        background: $pf-rose-100;
+      }
+    }
+
+    &--success {
+      background: $pf-emerald-50;
+      color: $pf-emerald-600;
+      border-color: rgba($pf-emerald-500, 0.2);
+
+      &:hover {
+        background: $pf-emerald-100;
+      }
+    }
+  }
+
+  /* ── BODY: Sidebar Filter + Data Grid ── */
+  &__body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* ── LEFT FILTER PANEL ── */
+  &__filterPanel {
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
+    display: flex;
+    flex-direction: column;
+    background: rgba($pf-slate-50, 0.75);
+    border-right: 1px solid $pf-border;
+    overflow-y: auto;
+    flex-shrink: 0;
+
+    @media (max-width: 1024px) {
+      width: 200px;
+      min-width: 200px;
+      max-width: 200px;
+    }
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  &__filterHeader {
+    padding: 8px 12px;
+    border-bottom: 1px solid $pf-border;
+    background: rgba($pf-slate-100, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  &__filterTitle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: $pf-slate-800;
+
+    svg {
+      width: 14px;
+      height: 14px;
+      color: $pf-brand-600;
+    }
+  }
+
+  &__filterReset {
+    font-size: 10px;
+    color: $pf-brand-600;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+    padding: 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__filterBody {
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__filterGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__filterLabel {
+    font-size: 10px;
+    font-weight: 600;
+    color: $pf-slate-600;
+    display: block;
+  }
+
+  &__filterInput {
+    width: 100%;
+    font-size: 11px;
+    padding: 4px 8px;
+    height: 26px;
+    border: 1px solid $pf-slate-300;
+    border-radius: $pf-radius;
+    background: $pf-card;
+    color: $pf-slate-700;
+    font-family: inherit;
+    box-sizing: border-box;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &::placeholder {
+      color: $pf-slate-400;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $pf-brand-500;
+      box-shadow: 0 0 0 2px rgba($pf-brand-600, 0.15);
+    }
+  }
+
+  &__filterRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  &__filterCheckbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-top: 4px;
+
+    input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid $pf-slate-300;
+      accent-color: $pf-brand-600;
+      cursor: pointer;
+    }
+
+    label {
+      font-size: 11px;
+      font-weight: 500;
+      color: $pf-slate-700;
+      cursor: pointer;
+    }
+  }
+
+  &__filterSearchBtn {
+    width: 100%;
+    padding: 7px 12px;
+    margin-top: 6px;
+    background: $pf-brand-600;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: $pf-shadow-sm;
+    transition: background 0.15s;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover {
+      background: $pf-brand-700;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  /* ── GRID CONTAINER ── */
+  &__gridContainer {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: $pf-card;
+  }
+
+  &__gridBody {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+
+    // Ẩn toolbar mặc định của AGTable
+    .toolbar {
+      display: none !important;
+    }
+  }
+
+  /* ── CONTENT (wraps body or tabs) ── */
+  &__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* ── STATUS BAR (footer) ── */
+  &__statusBar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 12px;
+    height: 24px;
+    min-height: 24px;
+    background: $pf-slate-100;
+    border-top: 1px solid $pf-border;
+    font-size: 10px;
+    color: $pf-slate-500;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', 'Inter', monospace;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    strong {
+      color: $pf-slate-700;
+      font-weight: 600;
+    }
+  }
+
+  /* ── MODAL OVERLAY ── */
+  &__modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba($pf-slate-900, 0.4);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 12px;
+    overflow-y: auto;
+    animation: pf-fadeIn 0.15s ease;
+  }
+
+  &__modal {
+    background: $pf-card;
+    width: 100%;
+    max-width: 1040px;
+    border-radius: 8px;
+    box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.15);
+    border: 1px solid $pf-slate-300;
+    display: flex;
+    flex-direction: column;
+    max-height: 95vh;
+    overflow: hidden;
+    margin: auto;
+  }
+
+  &__modalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: linear-gradient(to right, $pf-slate-50, $pf-card);
+    border-bottom: 1px solid $pf-border;
+    flex-shrink: 0;
+  }
+
+  &__modalHeaderLeft {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__modalIcon {
+    padding: 6px;
+    background: $pf-brand-50;
+    color: $pf-brand-600;
+    border-radius: $pf-radius;
+    border: 1px solid rgba($pf-brand-600, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &__modalTitle {
+    font-size: 14px;
+    font-weight: 700;
+    color: $pf-slate-800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__modalBadge {
+    font-size: 9.5px;
+    font-weight: 500;
+    padding: 2px 8px;
+    background: rgba($pf-brand-100, 0.7);
+    color: $pf-brand-700;
+    border-radius: 9999px;
+  }
+
+  &__modalClose {
+    color: $pf-slate-400;
+    background: none;
+    border: none;
+    border-radius: $pf-radius;
+    padding: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    &:hover {
+      color: $pf-rose-600;
+      background: $pf-rose-50;
+    }
+  }
+
+  /* ── MODAL MODE TABS ── */
+  &__modalModeTabs {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px 0;
+    border-bottom: 1px solid $pf-border;
+    background: rgba($pf-slate-50, 0.7);
+    flex-shrink: 0;
+  }
+
+  &__modalModeTabList {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__modalModeTab {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: $pf-slate-600;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 4px 4px 0 0;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+
+    &:hover {
+      color: $pf-slate-900;
+      background: $pf-slate-100;
+    }
+
+    &--active {
+      font-weight: 600;
+      color: $pf-brand-700;
+      border-bottom-color: $pf-brand-600;
+      background: $pf-card;
+      box-shadow: $pf-shadow-xs;
+    }
+  }
+
+  &__modalSyncStatus {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: $pf-slate-500;
+    padding-bottom: 6px;
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: $pf-emerald-500;
+    }
+
+    .status {
+      color: $pf-emerald-600;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+    }
+  }
+
+  /* ── MODAL BODY ── */
+  &__modalBody {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+  }
+
+  &__sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  &__sectionTitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: $pf-slate-800;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+
+    svg {
+      width: 14px;
+      height: 14px;
+      color: $pf-brand-600;
+    }
+  }
+
+  &__sectionNote {
+    font-size: 10px;
+    color: $pf-rose-500;
+    font-style: italic;
+  }
+
+  /* ── FORM GRID ── */
+  &__formGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+
+    @media (max-width: 900px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    &--span2 {
+      grid-column: span 2;
+    }
+
+    &--span3 {
+      grid-column: span 3;
+    }
+  }
+
+  &__formLabel {
+    font-size: 10px;
+    font-weight: 600;
+    color: $pf-slate-600;
+  }
+
+  &__formInput {
+    height: 30px;
+    padding: 0 8px;
+    border: 1px solid $pf-slate-300;
+    border-radius: $pf-radius;
+    background: $pf-card;
+    font-size: 12px;
+    font-family: inherit;
+    color: $pf-text;
+    box-sizing: border-box;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &::placeholder {
+      color: $pf-slate-400;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $pf-brand-500;
+      box-shadow: 0 0 0 2px rgba($pf-brand-600, 0.15);
+    }
+
+    &--readonly {
+      background: $pf-slate-50;
+      color: $pf-slate-500;
+    }
+  }
+
+  /* ── WEEK MATRIX ── */
+  &__weekMatrix {
+    margin-bottom: 16px;
+  }
+
+  &__weekMatrixHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding: 6px 10px;
+    background: $pf-slate-100;
+    border: 1px solid $pf-border;
+    border-radius: 6px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+      color: $pf-brand-600;
+    }
+  }
+
+  &__weekMatrixTitle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: $pf-slate-800;
+    text-transform: uppercase;
+  }
+
+  &__weekMatrixTotal {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: $pf-slate-600;
+
+    strong {
+      background: $pf-brand-600;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+  }
+
+  &__weekMatrixNote {
+    font-size: 10px;
+    color: $pf-slate-400;
+    font-style: italic;
+    margin-bottom: 6px;
+  }
+
+  &__weekGrid {
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    gap: 4px;
+
+    @media (max-width: 900px) {
+      grid-template-columns: repeat(6, 1fr);
+    }
+
+    @media (max-width: 600px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  &__weekCell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__weekLabel {
+    font-size: 9px;
+    font-weight: 600;
+    color: $pf-brand-600;
+    text-align: center;
+    text-transform: uppercase;
+    background: $pf-brand-50;
+    padding: 2px 0;
+    border-radius: 3px 3px 0 0;
+    border: 1px solid rgba($pf-brand-200, 0.5);
+    border-bottom: none;
+  }
+
+  &__weekInput {
+    height: 28px;
+    padding: 0 4px;
+    border: 1px solid $pf-slate-300;
+    border-radius: 0 0 3px 3px;
+    background: $pf-card;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    color: $pf-text;
+    text-align: right;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+
+    &:focus {
+      outline: none;
+      border-color: $pf-brand-500;
+      box-shadow: 0 0 0 1px rgba($pf-brand-600, 0.15);
+    }
+  }
+
+  &__weekFillBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    background: $pf-amber-50;
+    color: darken($pf-amber-500, 10%);
+    border: 1px solid rgba($pf-amber-500, 0.2);
+    border-radius: $pf-radius;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: darken($pf-amber-50, 2%);
+    }
+  }
+
+  /* ── REMARK & STATUS ROW ── */
+  &__remarkRow {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: end;
+    margin-bottom: 12px;
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__statusBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    height: 24px;
+
+    svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    &--ready {
+      background: $pf-emerald-50;
+      color: $pf-emerald-600;
+      border: 1px solid rgba($pf-emerald-500, 0.3);
+    }
+
+    &--ng {
+      background: $pf-rose-50;
+      color: $pf-rose-600;
+      border: 1px solid rgba($pf-rose-500, 0.3);
+    }
+  }
+
+  /* ── MODAL FOOTER ── */
+  &__modalFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-top: 1px solid $pf-border;
+    background: $pf-slate-50;
+    flex-shrink: 0;
+  }
+
+  &__modalSession {
+    font-size: 10px;
+    color: $pf-slate-400;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  &__modalFooterActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__modalBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 14px;
+    height: 32px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    &--ghost {
+      background: $pf-card;
+      color: $pf-text;
+      border-color: $pf-border;
+
+      &:hover {
+        background: $pf-slate-100;
+      }
+    }
+
+    &--primary {
+      background: $pf-brand-600;
+      color: #fff;
+      border-color: $pf-brand-700;
+      box-shadow: $pf-shadow-sm;
+
+      &:hover {
+        background: $pf-brand-700;
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+  }
+
+  /* ── EXCEL MODE ── */
+  &__excelUploadArea {
+    border: 2px dashed $pf-border;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    background: $pf-slate-50;
+    margin-bottom: 12px;
+    transition: border-color 0.15s;
+    cursor: pointer;
+
+    &:hover {
+      border-color: $pf-brand-500;
+    }
+
+    svg {
+      width: 32px;
+      height: 32px;
+      color: $pf-slate-400;
+      margin-bottom: 8px;
+    }
+  }
+
+  &__excelUploadText {
+    font-size: 12px;
+    color: $pf-slate-600;
+    font-weight: 500;
+  }
+
+  &__excelUploadSubtext {
+    font-size: 10px;
+    color: $pf-slate-400;
+    margin-top: 4px;
+  }
+
+  &__excelFileInfo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: $pf-brand-50;
+    border: 1px solid $pf-brand-200;
+    border-radius: 6px;
+    margin-bottom: 12px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      color: $pf-brand-600;
+    }
+
+    span {
+      font-size: 11px;
+      color: $pf-slate-700;
+      font-weight: 500;
+    }
+  }
+
+  &__excelActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  &__excelGrid {
+    flex: 1;
+    min-height: 200px;
+    max-height: 350px;
+    overflow: hidden;
+
+    .toolbar {
+      display: none !important;
+    }
+  }
+
+  /* ── PIVOT OVERLAY & MODAL ── */
+  &__pivotOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background-color: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: pf-fadeIn 0.15s ease-out;
+  }
+
+  &__pivotCard {
+    background: #ffffff;
+    border: 1px solid $pf-border-dark;
+    border-radius: 12px;
+    width: 95vw;
+    max-width: 1440px;
+    height: 88vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35);
+    overflow: hidden;
+  }
+
+  &__pivotHeader {
+    padding: 12px 18px;
+    background: $pf-slate-50;
+    border-bottom: 1px solid $pf-border;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  &__pivotTitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    color: $pf-slate-900;
+  }
+
+  &__pivotClose {
+    background: transparent;
+    border: none;
+    color: $pf-slate-500;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+
+    &:hover {
+      background: $pf-slate-200;
+      color: $pf-slate-900;
+    }
+  }
+
+  &__pivotBody {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 12px;
+  }
+
+  &__pivotFooter {
+    padding: 10px 18px;
+    background: $pf-slate-50;
+    border-top: 1px solid $pf-border;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+}
+
+@keyframes pf-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -1,5 +1,22 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-10 (FCSTManager: Google Stitch High-Density Enterprise Redesign)
+
+### Completed
+- **Backup 3 file gốc**: `FCSTManager.backup.tsx`, `FCSTManagerManageTab.backup.tsx`, `FCSTManagerAddTab.backup.tsx`
+- **Tạo module `PrecisionFCST/`** theo chuẩn Google Stitch High-Density Enterprise:
+  - `PrecisionFCST.scss` (~1.140 dòng): Hệ thống SCSS tokens (Electric Royal Blue `#2563eb`, Emerald `#10b981`, Rose `#f43f5e`, Slate `#0f172a`), flex full-viewport cho multi-tab, layout split 2 panel (sidebar bộ lọc 240px + data grid), modal dialog thêm FCST 2 chế độ, và modal DevExtreme Pivot Grid.
+  - `PrecisionFCSTHeader.tsx`: Dải header chuyên nghiệp với tab "Quản lý FCST (Forecast Master)" và cụm 5 nút hành động: `+ Thêm FCST Mới` (brand blue), `Pivot Báo Cáo FCST` (purple), `XÓA FCST` (rose), `EX1 (Hiển thị)` (emerald), `EX2 (Raw Data)` (emerald).
+  - `PrecisionFCSTColumns.tsx`: Tối ưu hóa 700+ dòng code lặp xuống ~100 dòng bằng loop pattern cho các cột W1-W22 (Số lượng) và W1A-W22A (Thành tiền), bảo toàn 100% logic kiểm tra phân quyền hiển thị giá (`SHOW_FCST_PRICE_AMNT`), định dạng số `toLocaleString("en-US")` và màu sắc.
+  - `PrecisionFCSTFilterPanel.tsx`: Sidebar bộ lọc bên trái (240px) thay thế dải form ngang cũ, gồm 12 tiêu chí lọc (Từ ngày, Tới ngày, Code KD, Code ERP, Nhân viên, Khách hàng, Loại SP, ID, PO No, Vật liệu, Over/OK, Invoice No, All Time checkbox) và nút "Tra cứu FCST" cố định.
+  - `PrecisionFCSTAddModal.tsx`: Chuyển đổi tab "Thêm FCST" cũ thành Modal Dialog hiện đại, hỗ trợ 2 tab chế độ:
+    1. **Nhập thủ công (Manual)**: Form chuẩn hóa với MUI `Autocomplete` tìm kiếm thông minh từ danh mục Khách hàng (`f_getcustomerlist`) & Mã sản phẩm (`f_getcodelist`), Ngày FCST, ma trận 22 tuần W1-W22 kèm ô tính tổng realtime `SUM W1-W22`, Ghi chú.
+    2. **Import File Excel**: Khu vực kéo thả / chọn file Excel `.xlsx`, `.xls`, tải template mẫu, bảng AGTable kiểm tra dữ liệu, nút `CHECK` kiểm tra trùng mã và nút `UP FCST` lưu vào hệ thống (`upload_fcst`).
+- **Tái cấu trúc `FCSTManager.tsx`** (~39 dòng): Loại bỏ `MyTabs`, chuyển sang kiến trúc Modern Workspace với `PrecisionFCSTHeader`, layout phân tách và `PrecisionFCSTAddModal`.
+- **Tái cấu trúc `FCSTManagerManageTab.tsx`** (~290 dòng từ 1.043 dòng): Tích hợp sidebar `PrecisionFCSTFilterPanel`, bảng AGTable dữ liệu lớn, kết nối các sự kiện header (Xóa FCST, Export EX1, Export EX2, Pivot), và tích hợp Modal popup DevExtreme PivotGrid (`PivotTable`).
+- **Bảo toàn 100% nghiệp vụ**: `traFcstDataFull`, `delete_fcst`, kiểm tra phân quyền `checkBP(userData, ["KD"])`, audit mode filter `CNDB` -> `TEM_NOI_BO`.
+- **Kiểm tra Vite Dev Server**: 100% 7/7 file đều trả về HTTP 200 OK.
+
 ## Update - 2026-09-10 (PlanManager: Google Stitch High-Density Enterprise Redesign)
 
 ### Completed
