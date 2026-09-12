@@ -129,10 +129,10 @@ const PrecisionYCSXToolbar: React.FC<Props> = ({
           type="button"
           className="precision-ycsx__toolBtn"
           onClick={onCheckBanVe}
-          title="Kiểm tra và in bản vẽ kỹ thuật"
+          title="Xem và In Bản Vẽ Kỹ Thuật Sản Xuất"
         >
-          <AiOutlineFileSearch size={14} />
-          <span>Check Bản Vẽ</span>
+          <FiPrinter />
+          <span>In Bản Vẽ</span>
         </button>
 
         <button

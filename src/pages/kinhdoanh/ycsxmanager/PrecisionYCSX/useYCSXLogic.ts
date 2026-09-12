@@ -1531,16 +1531,24 @@ export const useYCSXLogic = () => {
   // Print triggers
   const handlePrintYCSX = () => {
     if (ycsxdatatablefilter.current.length === 0) {
-      Swal.fire("Thông báo", "Vui lòng chọn ít nhất 1 YCSX để in", "warning");
-      return;
+      if (clickedRows && clickedRows.PROD_REQUEST_NO) {
+        ycsxdatatablefilter.current = [clickedRows];
+      } else {
+        Swal.fire("Thông báo", "Vui lòng tích chọn hoặc nhấp chọn ít nhất 1 YCSX trên bảng để in", "warning");
+        return;
+      }
     }
     setOpenYCSXPrint(true);
   };
 
   const handlePrintBanVe = () => {
     if (ycsxdatatablefilter.current.length === 0) {
-      Swal.fire("Thông báo", "Vui lòng chọn ít nhất 1 YCSX để in bản vẽ", "warning");
-      return;
+      if (clickedRows && clickedRows.PROD_REQUEST_NO) {
+        ycsxdatatablefilter.current = [clickedRows];
+      } else {
+        Swal.fire("Thông báo", "Vui lòng tích chọn hoặc nhấp chọn ít nhất 1 YCSX trên bảng để in bản vẽ", "warning");
+        return;
+      }
     }
     setOpenBanVePrint(true);
   };

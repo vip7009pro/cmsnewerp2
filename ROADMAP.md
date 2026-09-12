@@ -101,6 +101,21 @@
   - Đạt 0 diagnostics trong toàn bộ 99 files của `src/pages/kinhdoanh` (`PrecisionYCSXColumns.tsx`, `PrecisionAmzTab.tsx`, `PrecisionInvoiceModals.tsx`).
   - Quét và sửa sạch các lỗi TypeScript trong toàn bộ dự án: `useDocumentScrollIdleClass.ts`, `PrecisionDieuChuyenKpi.tsx`, `PrecisionUserProfilePanel.tsx`, `ChamCongCalculationUtils.ts`, `MachineTimeLine.tsx`, `INPUTPQC.tsx`, `MATERIAL_MANAGER.tsx`, `QUICKPLAN2.tsx`, `QUICKPLAN2_backup.tsx`, `QuanLyPhongBanNhanSu copy.tsx`, `AUDIT_HISTORY.tsx`, `NOLOWHOME.tsx`, `RelationshipsManager.tsx`.
   - Kiểm tra Vite dev server: 100% 18/18 files biên dịch thành công trả về HTTP 200 OK.
-
-
-
+- [x] Khắc phục và nâng cấp Modal Xem & In YCSX cùng Modal Xem & In Bản Vẽ theo chuẩn Google Stitch Enterprise:
+  - Khắc phục lỗi nút in bị "tàng hình" do biến CSS không tồn tại (`var(--brand-primary)`) kết hợp với chữ trắng trên nền trắng.
+  - Tách biệt và đổi tên nhãn nút in to rõ, dứt khoát: **`IN YCSX`** (xanh dương `#2563eb`) và **`IN BẢN VẼ`** (xanh ngọc `#059669`) kèm hiệu ứng đổ bóng 3D và badge phím tắt `Ctrl + P`.
+  - Chuẩn hóa tên nút trên Toolbar chính từ `Check Bản Vẽ` thành **`In Bản Vẽ`** (icon `<FiPrinter />`) đặt song hành bên cạnh nút **`In YCSX`**.
+  - Tự động fallback lấy dòng đang click (`[clickedRows]`) khi người dùng chưa kịp tích ô checkbox AG Grid, tránh cảnh báo lỗi gián đoạn thao tác.
+  - Tái thiết kế toàn diện layout modal theo chuẩn Google Stitch Enterprise:
+    + Header gradient nhận diện phân màu: Xanh dương cho YCSX, Xanh ngọc Emerald cho Bản vẽ kỹ thuật.
+    + Thanh điều khiển bản in (`.modal-print-toolbar`): Badge đếm số phiếu in (`badge-count`), nút `Tạo lại bản in (Re-render)` và Hero Print Button.
+    + Sân khấu xem trước bản in (`.modal-print-stage`): Nền bàn làm việc xám slate `#f1f5f9` tương phản cao làm nổi bật trang giấy in `.modal-print-sheet` trắng A4 với bóng đổ 3D (`box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12)`).
+    + Tích hợp phím tắt toàn cục: `Ctrl + P` / `Cmd + P` để ra lệnh in ngay tức thì, `Esc` để đóng modal nhanh.
+    + Cấu hình `pageStyle` chuẩn cho `react-to-print`: `@page { size: auto; margin: 6mm; } @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }`.
+  - Đạt 0 lỗi diagnostics TypeScript và kiểm tra Vite Dev Server 5/5 file liên quan trả về HTTP 200 OK.
+- [x] Bật Header Filter & Floating Filter cho bảng AG Table YCSX và bảng Data Amazon:
+  - Khắc phục tình trạng header filter bị ẩn do prop `showFilter={false}`.
+  - Bật `showFilter={true}` cho bảng Quản lý YCSX chính (`YCSXManager.tsx`), bảng Data Amazon (`PrecisionAmzTab.tsx`), bảng nạp Excel YCSX (`PrecisionYCSXAddModal.tsx`) và bảng nạp Excel Amazon (`PrecisionAmzAddModal.tsx`).
+  - Cập nhật dependency array của `defaultColDef` trong `AGTable.tsx` để đồng bộ ngay lập tức trạng thái `floatingFilter`.
+  - Tinh chỉnh SCSS `.ag-floating-filter` chuẩn Stitch Enterprise: Input nền trắng, bo góc 3px, viền `#cbd5e1`, focus ring xanh thương hiệu `#2563eb`.
+  - Đạt 0 lỗi diagnostics TypeScript và kiểm tra Vite Dev Server 100% HTTP 200 OK.

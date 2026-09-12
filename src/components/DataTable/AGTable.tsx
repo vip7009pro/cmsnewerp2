@@ -84,7 +84,7 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
       filter: true,
       headerCheckboxSelectionFilteredOnly: true,
     };
-  }, []);
+  }, [ag_data.showFilter, ag_data.columnWidth]);
 
   const defaultColumns = useMemo(() => {
     if (ag_data.data.length > 0) {

@@ -325,7 +325,7 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
               <AGTable
                 data={uploadExcelJson}
                 columns={amzColumns}
-                showFilter={false}
+                showFilter={true}
               />
             </div>
           </div>

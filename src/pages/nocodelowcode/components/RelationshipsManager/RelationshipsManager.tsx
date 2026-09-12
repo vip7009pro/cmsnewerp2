@@ -153,7 +153,7 @@ const RelationshipsManager: React.FC = () => {
   const relationShipAGTable = useMemo(() => {
     return (
       <AGTable
-      suppressRowClickSelection={false}
+        suppressRowClickSelection={false}
         toolbar={
           <>
             <IconButton
@@ -171,7 +171,7 @@ const RelationshipsManager: React.FC = () => {
             <IconButton
               className='buttonIcon'
               disabled={!selectedRelationship}
-              onClick={() => {  
+              onClick={() => {
                 if (!selectedRelationship) return;
                 deleteRel(selectedRelationship);
                 triggerFetchRelationships();
@@ -205,7 +205,7 @@ const RelationshipsManager: React.FC = () => {
         }}
         onSelectionChange={(params: any) => {
           //setSelectedRelationship(params.data);
-        }}  
+        }}
       />
     );
   }, [relationships, selectedRelationship]);

@@ -40,7 +40,25 @@
        + `MachineTimeLine.tsx`: Chuyển prop `sx` trên `GridClearIcon` sang `style`.
        + `INPUTPQC.tsx`, `MATERIAL_MANAGER.tsx`, `QUICKPLAN2.tsx`, `QUICKPLAN2_backup.tsx`, `QuanLyPhongBanNhanSu copy.tsx`: Khắc phục tương thích `GridRowSelectionModel` trong MUI v7/v8 với `new Set(ids as any)`.
        + `AUDIT_HISTORY.tsx`, `NOLOWHOME.tsx`, `RelationshipsManager.tsx`: Khắc phục deprecation `item` prop trên MUI v7 Grid container/item.
-- **Kiểm tra Vite Dev Server (port 3001)**: 100% toàn bộ 18 files liên quan đều được compile mượt mà và trả về HTTP 200 OK.
+  7. *Nâng Cấp Toàn Diện Modal XEM VÀ IN YÊU CẦU SẢN XUẤT & XEM VÀ IN BẢN VẼ SẢN XUẤT (Google Stitch Enterprise)*:
+     - Khắc phục lỗi nút in bị ẩn/tàng hình: Thay thế hoàn toàn mã CSS `var(--brand-primary)` cũ thành hệ màu nút Stitch sắc nét, đặt tên nút dứt khoát:
+       + Modal YCSX: Nút nổi bật **`IN YCSX`** màu xanh dương `#2563eb` (hover `#1d4ed8`, shadow đổ bóng 3D), icon `FiPrinter`, tag phím tắt `Ctrl + P`.
+       + Modal Bản Vẽ: Nút nổi bật **`IN BẢN VẼ`** màu xanh ngọc `#059669` (hover `#047857`, shadow đổ bóng 3D), icon `FiPrinter`, tag phím tắt `Ctrl + P`.
+     - Đổi tên nút trên Toolbar chính (`PrecisionYCSXToolbar.tsx`): Đổi nhãn `Check Bản Vẽ` thành **`In Bản Vẽ`** (icon `FiPrinter`) song hành cùng **`In YCSX`**, xóa bỏ hoàn toàn sự nhầm lẫn của người dùng.
+     - Cơ chế chọn dòng thông minh trong `useYCSXLogic.ts`: Tự động nhận diện dòng vừa nhấp chuột (`clickedRows`) nếu người dùng chưa kịp tích chọn ô checkbox trên bảng AG Grid.
+     - Thiết kế giao diện duyệt in chuẩn Google Stitch: Thanh công cụ thao tác với badge số phiếu in, nút `Tạo lại bản in (Re-render)` (icon `FiRefreshCw`), sân khấu duyệt in (`.modal-print-stage`) nền xám bàn làm việc `#f1f5f9` tương phản cao làm nổi bật tờ giấy in trắng (`.modal-print-sheet`), hỗ trợ phím tắt `Ctrl + P` / `Esc` và giao diện Empty State đẹp mắt.
+     - **Kiểm tra Vite Dev Server (port 3001)**: 100% các files (`PrecisionYCSXPrintModals.tsx`, `PrecisionYCSXToolbar.tsx`, `useYCSXLogic.ts`, `PrecisionYCSX.scss`, `YCSXManager.tsx`) đều được compile mượt mà và trả về HTTP 200 OK.
+  8. *Bật Header Filter & Floating Filter cho Bảng AG Table YCSX và Bảng Data Amazon*:
+     - Khắc phục tình trạng header filter bị ẩn do trước đó truyền `showFilter={false}`.
+     - Chuyển `showFilter={true}` cho:
+       + Bảng chính Quản lý YCSX (`YCSXManager.tsx`).
+       + Bảng Tra cứu & Quản lý Data Amazon (`PrecisionAmzTab.tsx`).
+       + Bảng xem trước dữ liệu tải Amazon hàng loạt (`PrecisionAmzAddModal.tsx`).
+       + Bảng xem trước dữ liệu YCSX tải từ Excel (`PrecisionYCSXAddModal.tsx`).
+     - Cập nhật dependency array của `defaultColDef` trong `AGTable.tsx`: thêm `[ag_data.showFilter, ag_data.columnWidth]` đảm bảo AG Grid luôn cập nhật trạng thái `floatingFilter` ngay lập tức khi prop thay đổi.
+     - Nâng cấp style `.ag-floating-filter` trong `PrecisionYCSX.scss`: Input lọc nền trắng, bo góc 3px, viền xám `#cbd5e1`, focus ring xanh `#2563eb`, nút icon lọc tinh gọn đồng bộ chuẩn Google Stitch Enterprise.
+     - **Kiểm tra Vite Dev Server (port 3001)**: 100% 6/6 files biên dịch hoàn hảo và trả về HTTP 200 OK.
+- **Kiểm tra Vite Dev Server (port 3001)**: 100% toàn bộ các files liên quan đều được compile mượt mà và trả về HTTP 200 OK.
 
 ## Update - 2026-09-10 (YCSXManager: Google Stitch High-Density Enterprise Redesign)
 

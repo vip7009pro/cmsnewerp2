@@ -309,7 +309,7 @@ const YCSXManager: React.FC = () => {
                 <AGTable
                   data={ycsx.ycsxDataTable}
                   columns={columns}
-                  showFilter={false}
+                  showFilter={true}
                   toolbar={null}
                   getRowStyle={getRowStyle}
                   suppressRowClickSelection={false}

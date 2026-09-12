@@ -654,7 +654,7 @@ const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
             <AGTable
               data={amzdatatable}
               columns={columns}
-              showFilter={false}
+              showFilter={true}
               toolbar={null}
               suppressRowClickSelection={false}
               onSelectionChange={(params: any) => {

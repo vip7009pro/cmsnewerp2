@@ -760,7 +760,7 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
               {/* Box 3: Bảng xem trước dữ liệu (Đảm bảo chiều cao hiển thị 380px) */}
               <div className="modal-agtable-wrapper">
                 <AGTable
-                  showFilter={false}
+                  showFilter={true}
                   columns={excelColumns}
                   data={uploadExcelJson}
                   toolbar={

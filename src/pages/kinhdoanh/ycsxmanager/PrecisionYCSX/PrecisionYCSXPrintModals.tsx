@@ -1,6 +1,12 @@
 import React, { memo, useRef, useEffect, useState, ReactElement } from "react";
 import { useReactToPrint } from "react-to-print";
-import { FiPrinter, FiRefreshCw, FiX } from "react-icons/fi";
+import {
+  FiPrinter,
+  FiRefreshCw,
+  FiX,
+  FiFileText,
+  FiAlertCircle,
+} from "react-icons/fi";
 import { renderBanVe, renderYCSX } from "../../../qlsx/QLSXPLAN/utils/khsxUtils";
 
 interface Props {
@@ -19,10 +25,39 @@ const PrecisionYCSXPrintModals: React.FC<Props> = ({
   const printRef = useRef<HTMLDivElement>(null);
   const [renderedContent, setRenderedContent] = useState<Array<ReactElement>>([]);
 
+  const isYCSX = openYCSXPrint;
+  const isBanVe = openBanVePrint;
+
+  // React-to-print hook with optimized print styles
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
+    documentTitle: isYCSX ? "YEU_CAU_SAN_XUAT" : "BAN_VE_SAN_XUAT",
+    pageStyle: `
+      @page {
+        size: auto;
+        margin: 6mm;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+      }
+    `,
   });
 
+  // Re-render trigger
+  const handleReRender = () => {
+    if (isYCSX && selectedRows.length > 0) {
+      setRenderedContent(renderYCSX(selectedRows));
+    } else if (isBanVe && selectedRows.length > 0) {
+      setRenderedContent(renderBanVe(selectedRows));
+    } else {
+      setRenderedContent([]);
+    }
+  };
+
+  // Sync rendered content when modal opens or selected rows change
   useEffect(() => {
     if (openYCSXPrint && selectedRows.length > 0) {
       setRenderedContent(renderYCSX(selectedRows));
@@ -33,139 +68,152 @@ const PrecisionYCSXPrintModals: React.FC<Props> = ({
     }
   }, [openYCSXPrint, openBanVePrint, selectedRows]);
 
+  // Global keyboard shortcuts: Esc to close, Ctrl+P to print
+  useEffect(() => {
+    if (!openYCSXPrint && !openBanVePrint) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "p") {
+        e.preventDefault();
+        handlePrint();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [openYCSXPrint, openBanVePrint, onClose, handlePrint]);
+
   if (!openYCSXPrint && !openBanVePrint) return null;
 
-  const isYCSX = openYCSXPrint;
-  const title = isYCSX ? "XEM VÀ IN YÊU CẦU SẢN XUẤT (YCSX)" : "XEM VÀ IN BẢN VẼ SẢN XUẤT";
+  const modalTitle = isYCSX
+    ? "XEM VÀ IN YÊU CẦU SẢN XUẤT (YCSX)"
+    : "XEM VÀ IN BẢN VẼ SẢN XUẤT";
 
-  const handleReRender = () => {
-    if (isYCSX) {
-      setRenderedContent(renderYCSX(selectedRows));
-    } else {
-      setRenderedContent(renderBanVe(selectedRows));
-    }
-  };
+  const modalSubtitle = isYCSX
+    ? `Đã chọn: ${selectedRows.length} lệnh YCSX • Sẵn sàng in biểu mẫu sản xuất tiêu chuẩn`
+    : `Đã chọn: ${selectedRows.length} bản vẽ • Sẵn sàng in bản vẽ kỹ thuật & tem kiểm soát`;
 
   return (
     <div className="precision-ycsx-modal-backdrop" onClick={onClose}>
       <div
-        className="precision-ycsx-modal-container"
-        style={{ maxWidth: 1000, width: "95vw", maxHeight: "92vh" }}
+        className="precision-ycsx-modal-container precision-ycsx-print-modal"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="modal-header">
           <div className="title-group">
-            <div className="badge-icon">
-              <FiPrinter />
+            <div
+              className={`badge-icon ${
+                isYCSX ? "badge-icon--blue" : "badge-icon--emerald"
+              }`}
+            >
+              {isYCSX ? <FiPrinter /> : <FiFileText />}
             </div>
             <div>
-              <h3>{title}</h3>
-              <p>Số lượng bản ghi được chọn để in: <strong>{selectedRows.length}</strong> phiếu</p>
+              <h3>{modalTitle}</h3>
+              <p>{modalSubtitle}</p>
             </div>
           </div>
-          <button className="btn-close" onClick={onClose} title="Đóng modal">
+          <button
+            type="button"
+            className="btn-close"
+            onClick={onClose}
+            title="Đóng cửa sổ (Esc)"
+          >
             <FiX />
           </button>
         </div>
 
-        {/* Action Toolbar */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "10px 16px",
-            backgroundColor: "var(--bg-card)",
-            borderBottom: "1px solid var(--border-color)",
-          }}
-        >
-          <div style={{ display: "flex", gap: "8px" }}>
-            <button
-              className="btn-secondary"
-              onClick={handleReRender}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "6px 12px",
-                fontSize: "12px",
-                borderRadius: "4px",
-                border: "1px solid var(--border-color)",
-                cursor: "pointer",
-                background: "var(--bg-body)",
-                color: "var(--text-primary)",
-              }}
+        {/* Operational Command Bar */}
+        <div className="modal-print-toolbar">
+          <div className="toolbar-left">
+            <div
+              className={`print-badge ${
+                isYCSX ? "print-badge--blue" : "print-badge--emerald"
+              }`}
             >
-              <FiRefreshCw /> Tạo lại bản in (Re-render)
+              <span className="dot" />
+              <span>
+                {selectedRows.length > 0
+                  ? `Sẵn sàng in (${selectedRows.length} phiếu)`
+                  : "Chưa chọn bản ghi"}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              className="btn-rerender"
+              onClick={handleReRender}
+              title="Tải lại định dạng và làm mới dữ liệu trang in"
+            >
+              <FiRefreshCw />
+              <span>Tạo lại bản in (Re-render)</span>
             </button>
           </div>
-          <div style={{ display: "flex", gap: "8px" }}>
+
+          <div className="toolbar-right">
+            {/* HERO PRINT BUTTON - PROMINENT & HIGH CONTRAST */}
+            {isYCSX ? (
+              <button
+                type="button"
+                className="btn-print-hero btn-print-hero--ycsx"
+                onClick={handlePrint}
+                title="Bắt đầu gửi lệnh in biểu mẫu Yêu Cầu Sản Xuất (Ctrl + P)"
+              >
+                <FiPrinter />
+                <span>IN YCSX</span>
+                <span className="shortcut-chip">Ctrl+P</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="btn-print-hero btn-print-hero--banve"
+                onClick={handlePrint}
+                title="Bắt đầu gửi lệnh in Bản Vẽ Kỹ Thuật (Ctrl + P)"
+              >
+                <FiPrinter />
+                <span>IN BẢN VẼ</span>
+                <span className="shortcut-chip">Ctrl+P</span>
+              </button>
+            )}
+
             <button
-              className="btn-primary"
-              onClick={handlePrint}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "6px 16px",
-                fontSize: "12px",
-                borderRadius: "4px",
-                background: "var(--brand-primary)",
-                color: "#fff",
-                border: "none",
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
-              <FiPrinter /> Tiến hành In (Print)
-            </button>
-            <button
-              className="btn-secondary"
+              type="button"
+              className="btn-close-action"
               onClick={onClose}
-              style={{
-                padding: "6px 12px",
-                fontSize: "12px",
-                borderRadius: "4px",
-                border: "1px solid var(--border-color)",
-                cursor: "pointer",
-                background: "transparent",
-                color: "var(--text-secondary)",
-              }}
+              title="Đóng cửa sổ xem trước"
             >
-              Đóng
+              <FiX />
+              <span>Đóng</span>
             </button>
           </div>
         </div>
 
-        {/* Body Render Area */}
-        <div
-          className="modal-body"
-          style={{
-            padding: "16px",
-            backgroundColor: "var(--bg-body)",
-            overflow: "auto",
-            maxHeight: "calc(92vh - 150px)",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            ref={printRef}
-            style={{
-              backgroundColor: "#ffffff",
-              color: "#000000",
-              padding: "16px",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-              borderRadius: "4px",
-              minWidth: "210mm",
-            }}
-          >
+        {/* Print Preview Stage */}
+        <div className="modal-print-stage">
+          <div className="modal-print-sheet">
             {renderedContent.length > 0 ? (
-              renderedContent
+              <div ref={printRef}>{renderedContent}</div>
             ) : (
-              <div style={{ padding: "40px", textAlign: "center", color: "#666" }}>
-                Chưa có dữ liệu bản in. Vui lòng kiểm tra lại dòng được chọn.
+              <div className="empty-print-state">
+                <FiAlertCircle />
+                <h4>Chưa có dữ liệu bản in</h4>
+                <p>
+                  Vui lòng đóng cửa sổ này, tích chọn ít nhất một dòng YCSX trên
+                  bảng danh sách chính, sau đó bấm nút{" "}
+                  <strong>{isYCSX ? "In YCSX" : "In Bản Vẽ"}</strong> trên thanh
+                  công cụ để xem trước và in ấn.
+                </p>
+                <button
+                  type="button"
+                  className="btn-close-action"
+                  style={{ marginTop: 8 }}
+                  onClick={onClose}
+                >
+                  Quay lại bảng dữ liệu
+                </button>
               </div>
             )}
           </div>
