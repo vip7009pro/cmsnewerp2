@@ -1,5 +1,21 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-12 (POandStockFull: Google Stitch High-Density Enterprise Redesign)
+
+### Completed
+- **Bảo toàn 100% mã nguồn gốc**: Đã tạo file sao lưu `POandStockFull.backup.tsx` (1.060 dòng).
+- **Phân rã kiến trúc monolith 1.060 dòng**: Tinh gọn Master Controller `POandStockFull.tsx` xuống còn 58 dòng và tạo module chuyên biệt trong thư mục `src/pages/kinhdoanh/poandstockfull/PrecisionPOandStockFull/`:
+  1. `PrecisionPOandStockFull.scss`: Hệ thống SCSS tokens công nghiệp chuẩn Google Stitch (Blue `#2563eb`, Cyan `#0891b2`, Emerald `#059669`, Indigo `#4f46e5`, Amber `#d97706`, Sky `#0284c7`, Orange `#ea580c`, Rose `#e11d48`, Dark Slate `#0f172a`), flex full-width và full-height co giãn theo viewport trong chế độ Multi-Tab, ẩn toolbar xanh lá mặc định của AGTable.
+  2. `PrecisionPOandStockFullColumns.tsx`: Tách riêng cấu hình cột cho 3 chế độ (`column_codeCMS2`, `column_codeKD2`, `column_codeERP_PVN2`), cải tiến cell renderers với định dạng số `toLocaleString("en-US")`, màu sắc phân cấp chuẩn Stitch (PO Balance đỏ nổi bật, Thừa thiếu âm đỏ / dương xanh / zero xám, Status chip MỞ / KHÓA).
+  3. `PrecisionPOandStockFullKpi.tsx`: Dải 8 thẻ chỉ số công nghiệp realtime (`PO BALANCE`, `BTP`, `CK`, `CNK`, `TP`, `BLOCK`, `TỔNG TỒN`, `THỪA THIẾU`) rực rỡ và sắc nét tương ứng đúng mẫu thiết kế Stitch.
+  4. `PrecisionPOandStockFullToolbar.tsx`: Cụm ô tìm kiếm Code (có icon quét mã và nút clear x nhanh), checkbox "Chỉ code tồn PO", 2 nút `Search(G_CODE)` và `Search(KD)`, tích hợp cụm chỉ số thống kê realtime ngay cùng hàng (Tổng PO Balance, Tổng tồn kho, Tỷ lệ đáp ứng dạng chip vàng hổ phách), các nút xuất `EX1 (Hiển thị)`, `EX2 (Raw Data)` và nút `PIVOT`.
+  5. `PrecisionPOandStockFullTab.tsx`: Component tab độc lập chứa 100% logic, state (`pofullSummary`, `pofulldatatable`, `codeCMS`, `alltime`), 2 hàm nghiệp vụ `handletraPOFullCMS` & `handletraPOFullKD` (bảo toàn `f_updateBTP_M100`, `f_updateTONKIEM_M100`, logic `CNDB` -> `TEM_NOI_BO`), đồng hồ realtime `liveTime`, loại bỏ thanh bottombar tùy biến ở footer để dùng thanh trạng thái chuẩn của AGTable và chuyển các chỉ số lên toolbar, tích hợp Modal DevExtreme Pivot Grid (`PivotTable`).
+- **Tái cấu trúc `POandStockFull.tsx`**: Rút gọn xuống 58 dòng, import `PrecisionPOandStockFullTab` vào Tab 1, bảo toàn 100% các tab phân hệ còn lại:
+  + Tab 2: `Phòng Kiểm Tra` (`<INSPECTION />`).
+  + Tab 3: `Kho Thành Phẩm` (`isCMS ? <KHOTP /> : <KHOTPNEW />`).
+  + Tab 4: `Kho Liệu` (`<KHOLIEU />`).
+- **Kiểm tra Vite Dev Server (port 3001)**: 100% 7/7 files liên quan đều được compile mượt mà và trả về HTTP 200 OK.
+
 ## Update - 2026-09-12 (YCSXManager & Amazon Modal: Google Stitch Enterprise Enhancements)
 
 ### Completed

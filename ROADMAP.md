@@ -119,3 +119,13 @@
   - Cập nhật dependency array của `defaultColDef` trong `AGTable.tsx` để đồng bộ ngay lập tức trạng thái `floatingFilter`.
   - Tinh chỉnh SCSS `.ag-floating-filter` chuẩn Stitch Enterprise: Input nền trắng, bo góc 3px, viền `#cbd5e1`, focus ring xanh thương hiệu `#2563eb`.
   - Đạt 0 lỗi diagnostics TypeScript và kiểm tra Vite Dev Server 100% HTTP 200 OK.
+- [x] Redesign PO Tích Hợp Tồn Kho (`POandStockFull.tsx`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Sao lưu toàn vẹn 100% mã nguồn gốc `POandStockFull.backup.tsx` (1.060 dòng).
+  - Phân rã kiến trúc monolith 1.060 dòng: Rút gọn master controller `POandStockFull.tsx` xuống còn 58 dòng và tạo module chuyên biệt trong thư mục `src/pages/kinhdoanh/poandstockfull/PrecisionPOandStockFull/`:
+    + `PrecisionPOandStockFull.scss`: Hệ thống SCSS tokens công nghiệp chuẩn Stitch, full-width & full-height co giãn theo viewport trong Multi-Tab, ẩn toolbar xanh lá cũ của AGTable.
+    + `PrecisionPOandStockFullColumns.tsx`: Tách riêng các bộ cột CMS, KD, PVN với cell renderers chuẩn Stitch (định dạng số `toLocaleString("en-US")`, PO Balance đỏ nổi bật, Thừa thiếu âm đỏ / dương xanh / zero xám, Status chip MỞ / KHÓA).
+    + `PrecisionPOandStockFullKpi.tsx`: Dải 8 thẻ KPI summary công nghiệp realtime (`PO BALANCE`, `BTP`, `CK`, `CNK`, `TP`, `BLOCK`, `TỔNG TỒN`, `THỪA THIẾU`) rực rỡ và sắc nét.
+    + `PrecisionPOandStockFullToolbar.tsx`: Cụm ô tìm kiếm Code (có icon quét mã và nút clear x nhanh), checkbox "Chỉ code tồn PO", 2 nút `Search(G_CODE)` và `Search(KD)`, tích hợp cụm chỉ số thống kê realtime ngay cùng hàng (Tổng PO Balance, Tổng tồn kho, Tỷ lệ đáp ứng dạng chip vàng hổ phách), các nút xuất `EX1 (Hiển thị)`, `EX2 (Raw Data)` và nút `PIVOT`.
+    + `PrecisionPOandStockFullTab.tsx`: Component tab độc lập chứa 100% logic, state (`pofullSummary`, `pofulldatatable`, `codeCMS`, `alltime`), 2 hàm nghiệp vụ `handletraPOFullCMS` & `handletraPOFullKD` (bảo toàn `f_updateBTP_M100`, `f_updateTONKIEM_M100`, logic `CNDB` -> `TEM_NOI_BO`), đồng hồ realtime `liveTime`, loại bỏ thanh bottombar tùy biến ở footer để dùng thanh trạng thái chuẩn của AGTable và chuyển các chỉ số lên toolbar, tích hợp Modal DevExtreme Pivot Grid (`PivotTable`).
+  - Bảo toàn 100% 3 tabs phân hệ còn lại: `Phòng Kiểm Tra` (`<INSPECTION />`), `Kho Thành Phẩm` (`isCMS ? <KHOTP /> : <KHOTPNEW />`), `Kho Liệu` (`<KHOLIEU />`).
+  - Đạt 0 lỗi diagnostics TypeScript và kiểm tra Vite Dev Server 100% 7/7 files liên quan trả về HTTP 200 OK.
