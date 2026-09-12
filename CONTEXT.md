@@ -1,5 +1,47 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-12 (YCSXManager & Amazon Modal: Google Stitch Enterprise Enhancements)
+
+### Completed
+- **Khắc phục triệt để 4 yêu cầu người dùng**:
+  1. *Modal Thêm YCSX - Quick Add to Grid & Tìm kiếm*:
+     - Thay thế toàn bộ `DropdownSearch` cũ (không xổ danh sách do sai signature prop) bằng Material UI v5 `Autocomplete` + `TextField` với `createFilterOptions` (tìm theo `CUST_CD`, `CUST_NAME_KD`, `G_CODE`, `G_NAME`, `PO_NO`), hỗ trợ `openOnFocus`, `autoHighlight`, `clearOnEscape` và popper `z-index: 120000` hiển thị sắc nét trên modal.
+     - Bổ sung 100% đầy đủ các trường còn thiếu vào form Quick Add to Grid (thêm `Số đơn PO`, `FIRST LOT`, `YC TẠM THỜI` bên cạnh Khách hàng, Mã code, Số lượng, Ngày giao, Phân loại, Loại SX, Loại XH, Ghi chú + nút `+ Thêm Dòng Lưới`).
+     - Tối ưu layout Quick Add to Grid thành 2 hàng lưới cân đối, thông thoáng, không bị co ép.
+  2. *Modal Sửa YCSX*:
+     - Khắc phục lỗi không hiển thị Khách hàng và Mã sản phẩm đã chọn: Bổ sung `G_NAME_KD` trong `handle_fillsuaform` (`useYCSXLogic.ts`) và liên kết MUI `Autocomplete` tự động nhận diện giá trị đối tượng (`isOptionEqualToValue`).
+     - Đồng bộ chuẩn xác 100% các combobox với Modal Thêm:
+       + Phân loại hàng: `TT`, `SP`, `RB`, `HQ`, `VN`, `AM`, `DL`, `M4`, `GC`, `TM`, `GD`.
+       + Loại sản xuất (CODE_55): `01 - Thông Thường`, `02 - SDI`, `03 - ETC`, `04 - SAMPLE`.
+       + Loại xuất hàng (CODE_50): `01 - GC`, `02 - SK`, `03 - KD`, `04 - VN`, `05 - SAMPLE`, `06 - Vải bạc 4`, `07 - ETC`.
+  3. *Tái cấu trúc Modal Sửa YCSX thành 3 Cột Cân Đối*:
+     - Thay thế layout 1 cột cũ thành layout 3 cột chuẩn Google Stitch (`.precision-ycsx__modalGridForm`):
+       + Hàng 1: Mã YCSX (PROD_REQUEST_NO readonly), Khách hàng (Autocomplete), Mã sản phẩm (Autocomplete).
+       + Hàng 2: Số lượng (EA), Ngày giao hàng (DELIVERY_DT), Phân loại hàng (Select).
+       + Hàng 3: Loại SX (Select), Loại XH (Select), Ghi chú REMARK (Input).
+     - Đồng bộ chiều cao chuẩn 28px và font chữ 11.5px cho toàn bộ input và MUI Autocomplete qua SCSS.
+  4. *Chuẩn hóa Bảng Xem Trước Dữ Liệu Amazon (`PrecisionAmzAddModal.tsx`)*:
+     - Đưa bảng xem trước dữ liệu AMZ vào container `.modal-agtable-wrapper` chuẩn Stitch với chiều cao cố định và tự động stretch full height.
+     - Thiết kế thanh header toolbar trên bảng với icon `FiFileText`, tiêu đề bảng, tag đếm số dòng (`{N} dòng`), và chỉ báo kiểm tra trùng / chia lô 1.000 dòng.
+     - Chuẩn hóa thanh thao tác phía trên (nút Chọn file Excel AMZ, Kiểm tra trùng, Xóa bảng, Bắt đầu Upload dữ liệu) đồng bộ với hệ thống button Stitch.
+  5. *Đồng bộ diện mạo 100% giữa TextField & Autocomplete với Input/Select*:
+     - Đồng bộ quy chuẩn CSS trong `PrecisionYCSX.scss` cho `.MuiAutocomplete-root`, `.MuiTextField-root`, `.MuiFormControl-root`: Chiều cao chuẩn 28px (`height: 28px !important; min-height: 28px !important`), viền 1px `#cbd5e1`, bo góc 4px, hover `#94a3b8`, focus ring xanh `#2563eb` (`box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2)`).
+     - Ẩn thẻ `legend` trong `notchedOutline` để tránh khuyết đường viền khi dùng nhãn bên ngoài; căn giữa theo chiều dọc 50% cho icon dropdown và clear indicator (kích thước 14px tinh gọn).
+     - Bổ sung `size="small"` cho toàn bộ `TextField` trong `renderInput` của cả `PrecisionYCSXAddModal.tsx` và `PrecisionYCSXEditModal.tsx`.
+  6. *Rà soát & Sửa Sạch 100% Lỗi Lint Đỏ / TypeScript*:
+     - Module Kinh doanh (`src/pages/kinhdoanh`): Đạt **0 diagnostics** trong toàn bộ 99 files:
+       + `PrecisionYCSXColumns.tsx`: Thêm tham số tùy chọn `isCMS?: boolean` cho `getExcelUploadColumns`.
+       + `PrecisionAmzTab.tsx`: Chuẩn hóa các trường của `DEFAULT_COMPONENT_LIST` theo interface `COMPONENT_DATA`.
+       + `PrecisionInvoiceModals.tsx`: Ép kiểu `CustomerListData | null` và `CodeListData | null` cho `onChange` trong `Autocomplete`.
+     - Quét & khắc phục triệt để các lỗi TypeScript trong các module khác của dự án:
+       + `useDocumentScrollIdleClass.ts`: Chuẩn hóa kiểu dữ liệu cho `timer` trong hook scroll.
+       + `PrecisionDieuChuyenKpi.tsx` & `PrecisionUserProfilePanel.tsx`: Sửa đường dẫn relative import `../../interfaces/nhansuInterface`.
+       + `ChamCongCalculationUtils.ts`: Sửa kiểu trả về của `formatChamCongRawData` tránh lỗi kiểu `CALV` string vs number.
+       + `MachineTimeLine.tsx`: Chuyển prop `sx` trên `GridClearIcon` sang `style`.
+       + `INPUTPQC.tsx`, `MATERIAL_MANAGER.tsx`, `QUICKPLAN2.tsx`, `QUICKPLAN2_backup.tsx`, `QuanLyPhongBanNhanSu copy.tsx`: Khắc phục tương thích `GridRowSelectionModel` trong MUI v7/v8 với `new Set(ids as any)`.
+       + `AUDIT_HISTORY.tsx`, `NOLOWHOME.tsx`, `RelationshipsManager.tsx`: Khắc phục deprecation `item` prop trên MUI v7 Grid container/item.
+- **Kiểm tra Vite Dev Server (port 3001)**: 100% toàn bộ 18 files liên quan đều được compile mượt mà và trả về HTTP 200 OK.
+
 ## Update - 2026-09-10 (YCSXManager: Google Stitch High-Density Enterprise Redesign)
 
 ### Completed

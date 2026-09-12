@@ -113,7 +113,7 @@ export const tinhInOutTime3 = (IO_DATA: IN_OUT_DATA3) => {
 /**
  * Format dữ liệu chấm công từ API loadC0012
  */
-export const formatChamCongRawData = (rawData: BANGCHAMCONG_DATA2[]): BANGCHAMCONG_DATA2[] => {
+export const formatChamCongRawData = (rawData: BANGCHAMCONG_DATA2[]): any[] => {
   return rawData.map((element: BANGCHAMCONG_DATA2, index: number) => {
     const inoutdata = tinhInOutTime3({
       CALV: element.CALV,

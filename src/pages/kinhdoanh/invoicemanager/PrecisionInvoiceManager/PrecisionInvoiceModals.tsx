@@ -94,7 +94,7 @@ const PrecisionInvoiceModals: React.FC<Props> = ({
                     <TextField {...params} label="Select customer" />
                   )}
                   value={selectedCust ?? null}
-                  onChange={(_, newValue) => onCustChange(newValue)}
+                  onChange={(_, newValue) => onCustChange(newValue as CustomerListData | null)}
                 />
               </div>
 
@@ -104,7 +104,6 @@ const PrecisionInvoiceModals: React.FC<Props> = ({
                 </span>
                 <Autocomplete
                   size="small"
-                  disablePortal
                   options={codeList}
                   filterOptions={filterOptions}
                   getOptionLabel={(opt: CodeListData | any) =>
@@ -114,7 +113,7 @@ const PrecisionInvoiceModals: React.FC<Props> = ({
                     <TextField {...params} label="Select code" />
                   )}
                   value={selectedCode ?? null}
-                  onChange={(_, newValue) => onCodeChange(newValue)}
+                  onChange={(_, newValue) => onCodeChange(newValue as CodeListData | null)}
                 />
               </div>
 

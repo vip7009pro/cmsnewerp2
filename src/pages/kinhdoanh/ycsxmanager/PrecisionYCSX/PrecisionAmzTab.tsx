@@ -46,9 +46,14 @@ const PrintTrigger = ({ onPrint }: { onPrint: () => void }) => {
 
 const DEFAULT_COMPONENT_LIST: COMPONENT_DATA[] = [
   {
-    CUST_CD: "0000",
-    PROD_PROJECT: "0000",
-    G_CODE: "0000",
+    G_CODE_MAU: "0000",
+    DOITUONG_NO: 1,
+    DOITUONG_NAME: "2D MATRIX",
+    DOITUONG_STT: "1",
+    CAVITY_PRINT: 1,
+    FONT_NAME: "Arial",
+    FONT_SIZE: 10,
+    FONT_STYLE: "Regular",
     PHANLOAI_DT: "2D MATRIX",
     GIATRI: "0000",
     POS_X: 2,
@@ -123,8 +128,8 @@ const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
                 getAuditMode() === 0
                   ? element?.G_NAME
                   : element?.G_NAME?.search("CNDB") === -1
-                  ? element?.G_NAME
-                  : "TEM_NOI_BO",
+                    ? element?.G_NAME
+                    : "TEM_NOI_BO",
               INS_DATE: moment(element.INS_DATE)
                 .utc()
                 .format("YYYY-MM-DD HH:mm:ss"),
@@ -313,7 +318,7 @@ const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
         headerName: "TRẠNG THÁI IN",
         width: 105,
         cellRenderer: (p: any) => {
-          if (p.value === "Y") {
+          if (p.value === "OK") {
             return (
               <span
                 style={{
@@ -324,7 +329,7 @@ const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
                   borderRadius: 4,
                 }}
               >
-                ĐÃ IN (Y)
+                OK
               </span>
             );
           }
@@ -338,7 +343,7 @@ const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
                 borderRadius: 4,
               }}
             >
-              CHƯA IN
+              NG
             </span>
           );
         },
@@ -438,9 +443,8 @@ const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
       <div className="precision-ycsx__mainBody">
         {/* Left 250px Filter Sidebar */}
         <aside
-          className={`precision-ycsx__filterPanel ${
-            isFilterHidden ? "precision-ycsx__filterPanel--hidden" : ""
-          }`}
+          className={`precision-ycsx__filterPanel ${isFilterHidden ? "precision-ycsx__filterPanel--hidden" : ""
+            }`}
         >
           <div className="precision-ycsx__filterHeader">
             <span className="precision-ycsx__filterTitle">

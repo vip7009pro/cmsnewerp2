@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { FiX, FiUploadCloud, FiCheckCircle, FiTrash2, FiInfo, FiLayers } from "react-icons/fi";
+import { FiX, FiUploadCloud, FiCheckCircle, FiTrash2, FiInfo, FiLayers, FiFileText } from "react-icons/fi";
 import { AiFillAmazonCircle } from "react-icons/ai";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { getAmazonUploadColumns } from "./PrecisionYCSXColumns";
@@ -160,29 +160,31 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              padding: "10px 14px",
-              backgroundColor: "var(--bg-card)",
-              borderRadius: "6px",
-              border: "1px solid var(--border-color)",
+              padding: "8px 12px",
+              backgroundColor: "#ffffff",
+              borderRadius: 6,
+              border: "1px solid #e2e8f0",
+              gap: 10,
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <label
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "6px",
+                  gap: 6,
                   padding: "6px 14px",
-                  borderRadius: "4px",
-                  border: "1px solid var(--border-color)",
+                  borderRadius: 4,
+                  border: "1px solid #cbd5e1",
                   cursor: "pointer",
-                  fontSize: "12px",
+                  fontSize: 11.5,
                   fontWeight: 600,
-                  backgroundColor: "var(--bg-body)",
-                  color: "var(--text-primary)",
+                  backgroundColor: "#f8fafc",
+                  color: "#0f172a",
+                  transition: "all 0.15s ease",
                 }}
               >
-                <FiUploadCloud style={{ fontSize: "16px", color: "var(--brand-primary)" }} /> Chọn File Excel AMZ
+                <FiUploadCloud style={{ fontSize: 15, color: "#2563eb" }} /> Chọn File Excel AMZ
                 <input
                   type="file"
                   accept=".xlsx, .xls"
@@ -191,9 +193,9 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
                 />
               </label>
 
-              <span style={{ fontSize: "12px", color: "var(--text-secondary)" }}>
+              <span style={{ fontSize: 11.5, color: "#64748b" }}>
                 Tổng số dòng đã nạp:{" "}
-                <strong style={{ color: uploadExcelJson.length > 0 ? "var(--brand-primary)" : "inherit" }}>
+                <strong style={{ color: uploadExcelJson.length > 0 ? "#2563eb" : "#0f172a", fontSize: 12 }}>
                   {uploadExcelJson.length.toLocaleString()}
                 </strong>
               </span>
@@ -201,12 +203,12 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
               {progressValue > 0 && (
                 <span
                   style={{
-                    fontSize: "11px",
+                    fontSize: 11,
                     fontWeight: 700,
                     padding: "2px 8px",
-                    borderRadius: "10px",
-                    backgroundColor: "rgba(16, 185, 129, 0.15)",
-                    color: "var(--success)",
+                    borderRadius: 10,
+                    backgroundColor: "#d1fae5",
+                    color: "#059669",
                   }}
                 >
                   Đã tải lên: {progressValue.toLocaleString()} / {uploadExcelJson.length.toLocaleString()}
@@ -214,84 +216,118 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
               )}
             </div>
 
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", gap: 8 }}>
               <button
+                type="button"
                 className="btn-secondary"
                 onClick={onCheckDuplicateAMZ}
                 disabled={uploadExcelJson.length === 0}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "6px",
+                  gap: 6,
                   padding: "6px 12px",
-                  fontSize: "12px",
-                  borderRadius: "4px",
-                  border: "1px solid var(--border-color)",
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  borderRadius: 4,
+                  border: "1px solid #cbd5e1",
+                  background: "#ffffff",
+                  color: uploadExcelJson.length === 0 ? "#94a3b8" : "#475569",
                   cursor: uploadExcelJson.length === 0 ? "not-allowed" : "pointer",
                 }}
               >
-                <FiCheckCircle /> Kiểm tra trùng
+                <FiCheckCircle size={14} style={{ color: "#10b981" }} /> 1. Kiểm tra trùng
               </button>
 
               <button
+                type="button"
                 className="btn-secondary"
                 onClick={onClearExcel}
                 disabled={uploadExcelJson.length === 0}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "6px",
+                  gap: 6,
                   padding: "6px 12px",
-                  fontSize: "12px",
-                  borderRadius: "4px",
-                  border: "1px solid var(--border-color)",
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  borderRadius: 4,
+                  border: "1px solid #fecdd3",
+                  background: "#ffffff",
+                  color: uploadExcelJson.length === 0 ? "#94a3b8" : "#e11d48",
                   cursor: uploadExcelJson.length === 0 ? "not-allowed" : "pointer",
                 }}
               >
-                <FiTrash2 /> Xóa bảng
+                <FiTrash2 size={14} /> Xóa bảng
               </button>
 
               <button
+                type="button"
                 className="btn-primary"
                 onClick={onUpAmazonData}
                 disabled={uploadExcelJson.length === 0}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "6px",
+                  gap: 6,
                   padding: "6px 16px",
-                  fontSize: "12px",
-                  borderRadius: "4px",
-                  fontWeight: 600,
+                  fontSize: 11.5,
+                  fontWeight: 700,
+                  borderRadius: 4,
+                  border: "none",
                   cursor: uploadExcelJson.length === 0 ? "not-allowed" : "pointer",
-                  background: uploadExcelJson.length === 0 ? "var(--border-color)" : "var(--success)",
+                  background: uploadExcelJson.length === 0 ? "#cbd5e1" : "#2563eb",
+                  color: "#ffffff",
                 }}
               >
-                <FiUploadCloud /> Bắt đầu Upload Dữ liệu
+                <FiUploadCloud size={14} /> 2. Bắt đầu Upload Dữ liệu
               </button>
             </div>
           </div>
 
-          {/* Table Preview */}
-          <div
-            style={{
-              flex: 1,
-              minHeight: "260px",
-              border: "1px solid var(--border-color)",
-              borderRadius: "6px",
-              overflow: "hidden",
-            }}
-          >
-            <AGTable
-              data={uploadExcelJson}
-              columns={amzColumns}
-              showFilter={false}
-              toolbar={
-                <div style={{ fontSize: "11px", fontWeight: 600, padding: "4px 8px" }}>
-                  Bảng xem trước dữ liệu AMZ ({uploadExcelJson.length} dòng)
-                </div>
-              }
-            />
+          {/* Table Preview: Bảng xem trước dữ liệu AMZ chuẩn Stitch */}
+          <div className="modal-agtable-wrapper" style={{ flex: 1, minHeight: 380, display: "flex", flexDirection: "column" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "6px 12px",
+                background: "#f8fafc",
+                borderBottom: "1px solid #e2e8f0",
+                fontSize: 11.5,
+                fontWeight: 700,
+                color: "#1e293b",
+                flexShrink: 0,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <FiFileText style={{ color: "#2563eb" }} />
+                <span>BẢNG XEM TRƯỚC DỮ LIỆU AMAZON</span>
+                <span
+                  style={{
+                    fontSize: 10.5,
+                    fontWeight: 700,
+                    background: uploadExcelJson.length > 0 ? "#2563eb" : "#94a3b8",
+                    color: "#ffffff",
+                    padding: "1px 7px",
+                    borderRadius: 10,
+                  }}
+                >
+                  {uploadExcelJson.length.toLocaleString()} dòng
+                </span>
+              </div>
+              <span style={{ fontSize: 11, fontWeight: 500, color: "#64748b" }}>
+                Tự động kiểm tra trùng & phân tách lô 1.000 dòng khi nạp
+              </span>
+            </div>
+            <div style={{ flex: 1, minHeight: 0, height: "100%" }}>
+              <AGTable
+                data={uploadExcelJson}
+                columns={amzColumns}
+                showFilter={false}
+              />
+            </div>
           </div>
         </div>
 

@@ -221,6 +221,7 @@ export const useYCSXLogic = () => {
       const selectedCodeFilter: CodeListData = {
         G_CODE: selectedRow.G_CODE,
         G_NAME: selectedRow.G_NAME,
+        G_NAME_KD: selectedRow.G_NAME_KD || selectedRow.G_NAME,
         PROD_LAST_PRICE: 0,
         USE_YN: "Y",
       };
@@ -1310,15 +1311,16 @@ export const useYCSXLogic = () => {
       G_CODE: selectedCode?.G_CODE,
       CUST_CD: selectedCust_CD?.CUST_CD,
       EMPL_NO: userData?.EMPL_NO,
-      REMK: newycsxremark,
+      REMK: newycsxremark || "",
       DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
-      PO_NO: selectedPoNo?.PO_NO,
+      PO_NO: selectedPoNo?.PO_NO || "",
       CHECKSTATUS: "Waiting",
       IS_TAM_THOI: is_tam_thoi,
+      FL_YN: isFirstLOT ? "Y" : "N",
       id: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
     };
-    if (newycsx_row.PROD_REQUEST_QTY === 0 || newycsx_row.REMK === "") {
-      Swal.fire("Thông báo", "Không được để trống thông tin cần thiết", "error");
+    if (!newycsx_row.G_CODE || !newycsx_row.CUST_CD || newycsx_row.PROD_REQUEST_QTY === 0) {
+      Swal.fire("Thông báo", "Vui lòng chọn Khách hàng, Mã code và Số lượng > 0", "error");
     } else {
       setUploadExcelJSon([...uploadExcelJson, newycsx_row]);
     }

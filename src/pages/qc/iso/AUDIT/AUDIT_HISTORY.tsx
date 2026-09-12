@@ -327,7 +327,7 @@ const AUDIT_HISTORY = () => {
         <DialogTitle>Thêm Audit mới</DialogTitle>
         <DialogContent style={{ padding: 24 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <Autocomplete
                 options={customerList}
                 getOptionLabel={(option: any) =>
@@ -359,7 +359,7 @@ const AUDIT_HISTORY = () => {
                 filterSelectedOptions
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="CUST_NAME_KD"
                 fullWidth
@@ -370,7 +370,7 @@ const AUDIT_HISTORY = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="AUDIT_ID"
                 type="number"
@@ -382,7 +382,7 @@ const AUDIT_HISTORY = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="AUDIT_DATE"
                 type="date"
@@ -395,7 +395,7 @@ const AUDIT_HISTORY = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="AUDIT_NAME"
                 fullWidth
@@ -406,7 +406,7 @@ const AUDIT_HISTORY = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="AUDIT_MAX_SCORE"
                 type="number"
@@ -421,7 +421,7 @@ const AUDIT_HISTORY = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="AUDIT_SCORE"
                 type="number"
@@ -436,7 +436,7 @@ const AUDIT_HISTORY = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="AUDIT_PASS_SCORE"
                 type="number"
@@ -451,7 +451,7 @@ const AUDIT_HISTORY = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="AUDIT_FILE_EXT"
                 fullWidth
@@ -498,7 +498,7 @@ const AUDIT_HISTORY = () => {
         <DialogTitle>Sửa thông tin Audit</DialogTitle>
         <DialogContent style={{ padding: 24 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <Autocomplete
                 options={customerList}
                 getOptionLabel={(option: any) =>
@@ -532,7 +532,7 @@ const AUDIT_HISTORY = () => {
                 filterSelectedOptions
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="CUST_NAME_KD"
                 fullWidth
@@ -547,7 +547,7 @@ const AUDIT_HISTORY = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="AUDIT_ID"
                 type="number"
@@ -563,7 +563,7 @@ const AUDIT_HISTORY = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="AUDIT_DATE"
                 fullWidth
@@ -580,7 +580,7 @@ const AUDIT_HISTORY = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="AUDIT_NAME"
                 fullWidth
@@ -595,7 +595,7 @@ const AUDIT_HISTORY = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="AUDIT_MAX_SCORE"
                 type="number"
@@ -614,7 +614,7 @@ const AUDIT_HISTORY = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="AUDIT_SCORE"
                 type="number"
@@ -630,7 +630,7 @@ const AUDIT_HISTORY = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="AUDIT_PASS_SCORE"
                 type="number"
@@ -649,7 +649,7 @@ const AUDIT_HISTORY = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid {...({ item: true, xs: 12, sm: 6 } as any)}>
               <TextField
                 label="AUDIT_FILE_EXT"
                 fullWidth

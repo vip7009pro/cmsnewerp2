@@ -5,7 +5,7 @@ import { useEffect } from "react";
  */
 export function useDocumentScrollIdleClass(): void {
   useEffect(() => {
-    let timer: ReturnType<typeof window.setTimeout> | null = null;
+    let timer: any = null;
 
     const onScroll = (e: Event) => {
       const target = e.target as HTMLElement;

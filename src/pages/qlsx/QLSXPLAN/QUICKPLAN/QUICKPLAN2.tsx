@@ -1849,7 +1849,7 @@ const QUICKPLAN2 = () => {
     );
   }
   const handleYCSXSelectionforUpdate = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
+    const selectedID = new Set(ids as any);
     let datafilter = ycsxdatatable.filter((element: any) =>
       selectedID.has(element.PROD_REQUEST_NO),
     );

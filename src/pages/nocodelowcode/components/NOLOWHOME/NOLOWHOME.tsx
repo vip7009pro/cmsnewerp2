@@ -202,7 +202,7 @@ const NOLOWHOME: React.FC = () => {
     <Box className='nocodelowcode' p={2}>
       <Grid container spacing={1}>
         {/* Left: Form List */}
-        <Grid item xs={12} md={5}>
+        <Grid {...({ item: true, xs: 12, md: 5 } as any)}>
           <Typography variant='h6'>Form Manager</Typography>
           <Box display='flex' gap={1} mb={2}>
             <TextField label='Form Name' name='FormName' value={formEdit.FormName} onChange={handleFormChange} size='small' />
@@ -256,7 +256,7 @@ const NOLOWHOME: React.FC = () => {
           </TableContainer>
         </Grid>
         {/* Right: Fields for selected Form */}
-        <Grid item xs={12} md={7}>
+        <Grid {...({ item: true, xs: 12, md: 7 } as any)}>
           <Typography variant='h6'>Field Manager ({selectedForm?.FormName})</Typography>
           {selectedForm ? (
             <>

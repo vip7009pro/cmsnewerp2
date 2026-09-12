@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { DiemDanhNhomData } from '../interfaces/nhansuInterface';
+import { DiemDanhNhomData } from '../../interfaces/nhansuInterface';
 
 interface PrecisionDieuChuyenKpiProps {
   tableData: DiemDanhNhomData[];

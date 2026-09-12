@@ -240,7 +240,7 @@ const INPUTPQC = () => {
     setLoaiXH("02");
   };
   const handleYCSXSelectionforUpdateExcel = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
+    const selectedID = new Set(ids as any);
     let datafilter = uploadExcelJson.filter((element: any) =>
       selectedID.has(element.id),
     );

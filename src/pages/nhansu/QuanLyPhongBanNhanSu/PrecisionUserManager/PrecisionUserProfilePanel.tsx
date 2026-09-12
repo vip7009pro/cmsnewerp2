@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { EmployeeTableData } from "../interfaces/nhansuInterface";
+import { EmployeeTableData } from "../../interfaces/nhansuInterface";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { BsPersonBadge } from "react-icons/bs";
 import { MdOutlineFingerprint, MdOutlineFace } from "react-icons/md";

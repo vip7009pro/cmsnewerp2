@@ -705,7 +705,7 @@ const QuanLyPhongBanNhanSu_Old = () => {
   ];
 
   const handleMainDeptSelection = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
+    const selectedID = new Set(ids as any);
     var datafilter = maindeptTable.filter((element: any) =>
       selectedID.has(element.id)
     );
@@ -732,7 +732,7 @@ const QuanLyPhongBanNhanSu_Old = () => {
   };
 
   const handlesubDeptSelection = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
+    const selectedID = new Set(ids as any);
     var datafilter = subdeptTable.filter((element: any) =>
       selectedID.has(element.id)
     );
@@ -763,7 +763,7 @@ const QuanLyPhongBanNhanSu_Old = () => {
   };
 
   const handleworkPositionSelection = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
+    const selectedID = new Set(ids as any);
     var datafilter = workpositionTable.filter((element: any) =>
       selectedID.has(element.id)
     );
@@ -779,7 +779,7 @@ const QuanLyPhongBanNhanSu_Old = () => {
   };
 
   const handleEmployeeSelection = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
+    const selectedID = new Set(ids as any);
     var datafilter = employeeTable.filter((element: any) =>
       selectedID.has(element.id)
     );

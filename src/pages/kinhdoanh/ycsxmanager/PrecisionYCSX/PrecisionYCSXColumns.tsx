@@ -650,7 +650,7 @@ export const getYCSXColumns = (options: ColumnOptions): any[] => {
 };
 
 /* ── Columns for Excel Bulk Upload Preview ── */
-export const getExcelUploadColumns = (): any[] => [
+export const getExcelUploadColumns = (isCMS?: boolean): any[] => [
   { field: "id", headerName: "id", width: 80, checkboxSelection: true },
   { field: "PROD_REQUEST_DATE", headerName: "NGAY YC", width: 90 },
   { field: "CODE_50", headerName: "CODE_50", width: 80 },

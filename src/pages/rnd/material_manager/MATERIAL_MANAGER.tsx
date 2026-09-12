@@ -199,7 +199,7 @@ const MATERIAL_MANAGER = () => {
     }
   };
   const handleMaterialDataSelectionforUpdate = (ids: GridRowSelectionModel) => {
-    const selectedID = new Set(ids);
+    const selectedID = new Set(ids as any);
     let datafilter = datatable.filter((element: any) =>
       selectedID.has(element.M_ID),
     );

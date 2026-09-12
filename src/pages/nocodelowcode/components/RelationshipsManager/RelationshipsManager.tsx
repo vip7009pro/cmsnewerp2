@@ -223,7 +223,7 @@ const RelationshipsManager: React.FC = () => {
         <DialogTitle>Tạo Relationship mới</DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid {...({ item: true, xs: 6 } as any)}>
               <FormControl fullWidth margin='normal'>
                 <InputLabel>Bảng chính</InputLabel>
                 <Select
@@ -243,7 +243,7 @@ const RelationshipsManager: React.FC = () => {
               </FormControl>
               <Box sx={{ background: 'transparent' }} mt={2}>
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
+                  <Grid {...({ item: true, xs: 6 } as any)}>
                     <Typography variant='subtitle1'>Chọn trường bảng chính</Typography>
                     <FormControl fullWidth margin='normal'>
                       <InputLabel>Field bảng chính</InputLabel>
@@ -266,7 +266,7 @@ const RelationshipsManager: React.FC = () => {
                 </Grid>
               </Box>
             </Grid>
-            <Grid item xs={6}>
+            <Grid {...({ item: true, xs: 6 } as any)}>
               <FormControl fullWidth margin='normal'>
                 <InputLabel>Bảng ngoại</InputLabel>
                 <Select
@@ -286,7 +286,7 @@ const RelationshipsManager: React.FC = () => {
               </FormControl>
               <Box sx={{ background: 'transparent' }} mt={2}>
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
+                  <Grid {...({ item: true, xs: 6 } as any)}>
                     <Typography variant='subtitle1'>Chọn trường bảng ngoại</Typography>
                     <FormControl fullWidth margin='normal'>
                       <InputLabel>Field bảng ngoại</InputLabel>
@@ -310,7 +310,7 @@ const RelationshipsManager: React.FC = () => {
             </Grid>
             {/* Hiển thị bảng các quan hệ đã tạo giữa 2 bảng */}
 
-            <Grid item xs={12}>
+            <Grid {...({ item: true, xs: 12 } as any)}>
               <FormControl fullWidth margin='normal'>
                 <InputLabel>Loại Relationship</InputLabel>
                 <Select value={relationshipType} onChange={(e: any) => setRelationshipType(e.target.value as string)} label='Loại Relationship'>

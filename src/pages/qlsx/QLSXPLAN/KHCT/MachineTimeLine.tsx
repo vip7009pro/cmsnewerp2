@@ -84,7 +84,7 @@ const MachineTimeLine: React.FC<MachineTimeLineProps> = ({ plans, onDoubleClick,
                       onClear(plan);  
                     }
                   }}>
-                    <GridClearIcon sx={{fontSize: '12px', position: 'absolute', top: '0', right: '0'}} />
+                    <GridClearIcon style={{fontSize: '12px', position: 'absolute', top: '0', right: '0'}} />
                   </IconButton>
                 </div>}
                 {plan.PROD_REQUEST_NO !== '-' && <div className="plan-content">

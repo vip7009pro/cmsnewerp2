@@ -11,10 +11,30 @@ import {
   FiGrid,
   FiFileText,
 } from "react-icons/fi";
-import DropdownSearch from "../../../../components/MyDropDownSearch/DropdownSearch";
+import { Autocomplete, TextField, createFilterOptions } from "@mui/material";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { getExcelUploadColumns } from "./PrecisionYCSXColumns";
 import { CodeListData, CustomerListData, PONOLIST } from "../../interfaces/kdInterface";
+
+const filterCustomerOptions = createFilterOptions<CustomerListData>({
+  matchFrom: "any",
+  limit: 100,
+  stringify: (opt: CustomerListData) =>
+    `${opt.CUST_CD || ""} ${opt.CUST_NAME_KD || ""} ${opt.CUST_NAME || ""}`,
+});
+
+const filterCodeOptions = createFilterOptions<CodeListData>({
+  matchFrom: "any",
+  limit: 100,
+  stringify: (opt: CodeListData) =>
+    `${opt.G_CODE || ""} ${opt.G_NAME_KD || ""} ${opt.G_NAME || ""}`,
+});
+
+const filterPoOptions = createFilterOptions<PONOLIST>({
+  matchFrom: "any",
+  limit: 100,
+  stringify: (opt: PONOLIST) => `${opt.PO_NO || ""} ${opt.G_CODE || ""}`,
+});
 
 interface Props {
   open: boolean;
@@ -170,45 +190,99 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                 {/* Khách hàng */}
                 <div className="precision-ycsx__modalField">
                   <label>Khách hàng *:</label>
-                  <DropdownSearch
-                    label="Chọn khách hàng"
-                    placeholder="Tìm mã hoặc tên KH..."
-                    suggestData={customerList}
-                    selectedObj={selectedCust_CD}
-                    setSelectedObj={onSelectCustomer}
-                    primaryKey="CUST_CD"
-                    searchFields={["CUST_CD", "CUST_NAME_KD"]}
-                    displayFormat="CUST_CD-CUST_NAME_KD"
+                  <Autocomplete
+                    size="small"
+                    options={customerList}
+                    filterOptions={filterCustomerOptions}
+                    isOptionEqualToValue={(opt, val) => opt?.CUST_CD === val?.CUST_CD}
+                    getOptionLabel={(opt) => {
+                      if (!opt) return "";
+                      if (typeof opt === "string") return opt;
+                      return `${opt.CUST_CD || ""}: ${opt.CUST_NAME_KD || opt.CUST_NAME || ""}`;
+                    }}
+                    value={selectedCust_CD}
+                    onChange={(_, val) => onSelectCustomer(val as CustomerListData)}
+                    openOnFocus
+                    autoHighlight
+                    clearOnEscape
+                    slotProps={{
+                      popper: { sx: { zIndex: 120000 } },
+                    }}
+                    noOptionsText="Không tìm thấy khách hàng"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        size="small"
+                        placeholder="Chọn hoặc gõ mã KH..."
+                        variant="outlined"
+                      />
+                    )}
                   />
                 </div>
 
                 {/* Mã sản phẩm */}
                 <div className="precision-ycsx__modalField" style={{ gridColumn: "span 2" }}>
                   <label>Mã sản phẩm G_CODE / G_NAME_KD *:</label>
-                  <DropdownSearch
-                    label="Chọn mã code"
-                    placeholder="Tìm kiếm mã code ERP hoặc Code KD..."
-                    suggestData={codeList}
-                    selectedObj={selectedCode}
-                    setSelectedObj={onSelectCode}
-                    primaryKey="G_CODE"
-                    searchFields={["G_CODE", "G_NAME_KD", "G_NAME"]}
-                    displayFormat="G_CODE-G_NAME_KD"
+                  <Autocomplete
+                    size="small"
+                    options={codeList}
+                    filterOptions={filterCodeOptions}
+                    isOptionEqualToValue={(opt, val) => opt?.G_CODE === val?.G_CODE}
+                    getOptionLabel={(opt) => {
+                      if (!opt) return "";
+                      if (typeof opt === "string") return opt;
+                      return `${opt.G_CODE || ""}: ${opt.G_NAME_KD || opt.G_NAME || ""}`;
+                    }}
+                    value={selectedCode}
+                    onChange={(_, val) => onSelectCode(val as CodeListData)}
+                    openOnFocus
+                    autoHighlight
+                    clearOnEscape
+                    slotProps={{
+                      popper: { sx: { zIndex: 120000 } },
+                    }}
+                    noOptionsText="Không tìm thấy mã sản phẩm"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        size="small"
+                        placeholder="Chọn hoặc gõ G_CODE, G_NAME_KD..."
+                        variant="outlined"
+                      />
+                    )}
                   />
                 </div>
 
                 {/* Số PO */}
                 <div className="precision-ycsx__modalField">
                   <label>Số đơn đặt hàng (PO No):</label>
-                  <DropdownSearch
-                    label="Chọn PO No"
-                    placeholder="Tìm PO..."
-                    suggestData={ponolist}
-                    selectedObj={selectedPoNo}
-                    setSelectedObj={onSelectPoNo}
-                    primaryKey="PO_NO"
-                    searchFields={["PO_NO", "G_CODE"]}
-                    displayFormat="PO_NO"
+                  <Autocomplete
+                    size="small"
+                    options={ponolist}
+                    filterOptions={filterPoOptions}
+                    isOptionEqualToValue={(opt, val) => opt?.PO_NO === val?.PO_NO}
+                    getOptionLabel={(opt) => {
+                      if (!opt) return "";
+                      if (typeof opt === "string") return opt;
+                      return `${opt.PO_NO || ""}${opt.RD_DATE ? ` (${opt.RD_DATE})` : ""}`;
+                    }}
+                    value={selectedPoNo}
+                    onChange={(_, val) => onSelectPoNo(val as PONOLIST)}
+                    openOnFocus
+                    autoHighlight
+                    clearOnEscape
+                    slotProps={{
+                      popper: { sx: { zIndex: 120000 } },
+                    }}
+                    noOptionsText="Không có PO phù hợp"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        size="small"
+                        placeholder="Chọn PO No..."
+                        variant="outlined"
+                      />
+                    )}
                   />
                 </div>
 
@@ -359,44 +433,78 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                   </span>
                 </div>
 
+                {/* Grid 2 hàng đầy đủ 100% các trường */}
                 <div
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "1.2fr 1.6fr 0.8fr 1fr 0.8fr 0.9fr 0.8fr 1.2fr auto",
+                    gridTemplateColumns: isCMS ? "1.2fr 1.8fr 1fr 0.9fr 1fr 1fr" : "1.2fr 2fr 1.2fr 1fr 1fr 1fr",
                     gap: 8,
                     alignItems: "flex-end",
                   }}
                 >
+                  {/* Hàng 1 */}
                   <div className="field-group">
-                    <label style={{ fontSize: 10 }}>Khách hàng:</label>
-                    <DropdownSearch
-                      label="KH"
-                      placeholder="Chọn KH..."
-                      suggestData={customerList}
-                      selectedObj={selectedCust_CD}
-                      setSelectedObj={onSelectCustomer}
-                      primaryKey="CUST_CD"
-                      searchFields={["CUST_CD", "CUST_NAME_KD"]}
-                      displayFormat="CUST_NAME_KD"
+                    <label style={{ fontSize: 10 }}>Khách hàng *:</label>
+                    <Autocomplete
+                      size="small"
+                      options={customerList}
+                      filterOptions={filterCustomerOptions}
+                      isOptionEqualToValue={(opt, val) => opt?.CUST_CD === val?.CUST_CD}
+                      getOptionLabel={(opt) => (typeof opt === "string" ? opt : `${opt?.CUST_CD || ""}: ${opt?.CUST_NAME_KD || ""}`)}
+                      value={selectedCust_CD}
+                      onChange={(_, val) => onSelectCustomer(val as CustomerListData)}
+                      openOnFocus
+                      autoHighlight
+                      clearOnEscape
+                      slotProps={{ popper: { sx: { zIndex: 120000 } } }}
+                      renderInput={(params) => (
+                        <TextField {...params} size="small" placeholder="Mã KH..." variant="outlined" />
+                      )}
                     />
                   </div>
 
                   <div className="field-group">
-                    <label style={{ fontSize: 10 }}>Mã sản phẩm *:</label>
-                    <DropdownSearch
-                      label="Code"
-                      placeholder="Chọn mã code..."
-                      suggestData={codeList}
-                      selectedObj={selectedCode}
-                      setSelectedObj={onSelectCode}
-                      primaryKey="G_CODE"
-                      searchFields={["G_CODE", "G_NAME_KD", "G_NAME"]}
-                      displayFormat="G_CODE-G_NAME_KD"
+                    <label style={{ fontSize: 10 }}>Mã sản phẩm (G_CODE) *:</label>
+                    <Autocomplete
+                      size="small"
+                      options={codeList}
+                      filterOptions={filterCodeOptions}
+                      isOptionEqualToValue={(opt, val) => opt?.G_CODE === val?.G_CODE}
+                      getOptionLabel={(opt) => (typeof opt === "string" ? opt : `${opt?.G_CODE || ""}: ${opt?.G_NAME_KD || opt?.G_NAME || ""}`)}
+                      value={selectedCode}
+                      onChange={(_, val) => onSelectCode(val as CodeListData)}
+                      openOnFocus
+                      autoHighlight
+                      clearOnEscape
+                      slotProps={{ popper: { sx: { zIndex: 120000 } } }}
+                      renderInput={(params) => (
+                        <TextField {...params} size="small" placeholder="Mã G_CODE hoặc tên..." variant="outlined" />
+                      )}
                     />
                   </div>
 
                   <div className="field-group">
-                    <label style={{ fontSize: 10 }}>Số lượng *:</label>
+                    <label style={{ fontSize: 10 }}>Số đơn PO:</label>
+                    <Autocomplete
+                      size="small"
+                      options={ponolist}
+                      filterOptions={filterPoOptions}
+                      isOptionEqualToValue={(opt, val) => opt?.PO_NO === val?.PO_NO}
+                      getOptionLabel={(opt) => (typeof opt === "string" ? opt : opt?.PO_NO || "")}
+                      value={selectedPoNo}
+                      onChange={(_, val) => onSelectPoNo(val as PONOLIST)}
+                      openOnFocus
+                      autoHighlight
+                      clearOnEscape
+                      slotProps={{ popper: { sx: { zIndex: 120000 } } }}
+                      renderInput={(params) => (
+                        <TextField {...params} size="small" placeholder="PO No..." variant="outlined" />
+                      )}
+                    />
+                  </div>
+
+                  <div className="field-group">
+                    <label style={{ fontSize: 10 }}>Số lượng (EA) *:</label>
                     <input
                       type="number"
                       min={0}
@@ -408,7 +516,7 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                   </div>
 
                   <div className="field-group">
-                    <label style={{ fontSize: 10 }}>Ngày giao *:</label>
+                    <label style={{ fontSize: 10 }}>Ngày giao hàng *:</label>
                     <input
                       type="date"
                       value={deliverydate ? deliverydate.slice(0, 10) : ""}
@@ -422,26 +530,37 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                       value={newphanloai}
                       onChange={(e) => setNewPhanLoai(e.target.value)}
                     >
-                      <option value="TT">TT</option>
-                      <option value="SP">SP</option>
-                      <option value="RB">RB</option>
-                      <option value="HQ">HQ</option>
-                      <option value="VN">VN</option>
-                      <option value="AM">AM</option>
-                      <option value="DL">DL</option>
-                      <option value="M4">M4</option>
-                      <option value="GC">GC</option>
-                      <option value="TM">TM</option>
+                      <option value="TT">Hàng Thường (TT)</option>
+                      <option value="SP">Sample sang FL (SP)</option>
+                      <option value="RB">Ribbon (RB)</option>
+                      <option value="HQ">Hàn Quốc (HQ)</option>
+                      <option value="VN">Việt Nam (VN)</option>
+                      <option value="AM">Amazon (AM)</option>
+                      <option value="DL">Đổi LOT (DL)</option>
+                      <option value="M4">NM4 (M4)</option>
+                      <option value="GC">Hàng Gia Công (GC)</option>
+                      <option value="TM">Hàng Thương Mại (TM)</option>
+                      {!isCMS && <option value="GD">Gia Công Đặc Biệt (GD)</option>}
                     </select>
                   </div>
+                </div>
 
+                {/* Hàng 2 */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: isCMS ? "1fr 1fr 1fr 1fr 2fr auto" : "1fr 1fr 2.5fr auto",
+                    gap: 8,
+                    alignItems: "flex-end",
+                  }}
+                >
                   <div className="field-group">
-                    <label style={{ fontSize: 10 }}>Loại SX:</label>
+                    <label style={{ fontSize: 10 }}>Loại SX (CODE_55):</label>
                     <select
                       value={loaisx}
                       onChange={(e) => setLoaiSX(e.target.value)}
                     >
-                      <option value="01">01 - Thường</option>
+                      <option value="01">01 - Thông Thường</option>
                       <option value="02">02 - SDI</option>
                       <option value="03">03 - ETC</option>
                       <option value="04">04 - SAMPLE</option>
@@ -449,7 +568,7 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                   </div>
 
                   <div className="field-group">
-                    <label style={{ fontSize: 10 }}>Loại XH:</label>
+                    <label style={{ fontSize: 10 }}>Loại XH (CODE_50):</label>
                     <select
                       value={loaixh}
                       onChange={(e) => setLoaiXH(e.target.value)}
@@ -459,16 +578,42 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                       <option value="03">03 - KD</option>
                       <option value="04">04 - VN</option>
                       <option value="05">05 - SAMPLE</option>
-                      <option value="06">06 - Vải bạc</option>
+                      <option value="06">06 - Vải bạc 4</option>
                       <option value="07">07 - ETC</option>
                     </select>
                   </div>
 
+                  {isCMS && (
+                    <div className="field-group">
+                      <label style={{ fontSize: 10 }}>FIRST LOT:</label>
+                      <select
+                        value={isFirstLOT ? "Y" : "N"}
+                        onChange={(e) => setIsFirstLot(e.target.value === "Y")}
+                      >
+                        <option value="N">Bình thường (N)</option>
+                        <option value="Y">First LOT (Y)</option>
+                      </select>
+                    </div>
+                  )}
+
+                  {isCMS && (
+                    <div className="field-group">
+                      <label style={{ fontSize: 10 }}>YC TẠM THỜI:</label>
+                      <select
+                        value={is_tam_thoi}
+                        onChange={(e) => setIs_Tam_Thoi(e.target.value)}
+                      >
+                        <option value="N">Bình thường (N)</option>
+                        <option value="Y">Tạm thời (Y)</option>
+                      </select>
+                    </div>
+                  )}
+
                   <div className="field-group">
-                    <label style={{ fontSize: 10 }}>Ghi chú:</label>
+                    <label style={{ fontSize: 10 }}>Ghi chú (REMARK):</label>
                     <input
                       type="text"
-                      placeholder="Ghi chú..."
+                      placeholder="Ghi chú thêm..."
                       value={newycsxremark}
                       onChange={(e) => setNewYcsxRemark(e.target.value)}
                     />
@@ -480,11 +625,11 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                     onClick={onInsertRow}
                     style={{
                       height: 28,
-                      padding: "0 12px",
+                      padding: "0 14px",
                       whiteSpace: "nowrap",
                       display: "inline-flex",
                       alignItems: "center",
-                      gap: 4,
+                      gap: 6,
                       fontSize: 11.5,
                       fontWeight: 700,
                       borderRadius: 4,
@@ -494,7 +639,7 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                       cursor: "pointer",
                     }}
                   >
-                    <FiPlus size={14} /> + Thêm Dòng
+                    <FiPlus size={14} /> + Thêm Dòng Lưới
                   </button>
                 </div>
               </div>

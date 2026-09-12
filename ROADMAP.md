@@ -89,5 +89,18 @@
   - Tích hợp Modal Pivot Table phân tích đa chiều số lượng theo khách hàng.
   - Bảo toàn 100% nghiệp vụ, phân quyền, in ấn, socket notification.
   - Kiểm tra Vite Dev Server (port 3001): 13/13 file đều trả về HTTP 200 OK.
+- [x] Nâng cấp & Hoàn thiện Modal YCSX & Amazon Bulk Upload (Google Stitch Enterprise):
+  - Khắc phục lỗi dropdown: Thay thế DropdownSearch bằng Material-UI v5 Autocomplete (hỗ trợ openOnFocus, autoHighlight, clearOnEscape, zIndex 120000) cho Khách hàng, Mã sản phẩm và PO No ở cả hai chế độ Thêm YCSX và Sửa YCSX.
+  - Bổ sung 100% trường vào Quick Add to Grid (PO No, FIRST LOT, YC Tạm thời, Loại SX, Loại XH, Phân loại, Ghi chú + Thêm Dòng Lưới) với layout 2 hàng lưới thông thoáng.
+  - Modal Sửa YCSX: Hiển thị đúng Khách hàng và Mã code/tên sản phẩm, đồng bộ chuẩn xác 100% các combobox (Phân loại hàng 11 options, Loại SX 4 options, Loại XH 7 options), và tái cấu trúc form thành 3 cột cân đối chuẩn Stitch.
+  - Modal Nhập Dữ Liệu Amazon: Bọc bảng xem trước dữ liệu AMZ vào `.modal-agtable-wrapper` full-height với toolbar header (icon, badge số dòng, subtitle chia lô 1.000) và cụm nút thao tác Stitch đồng bộ.
+  - Xác thực biên dịch Vite Dev Server: 100% 6/6 file liên quan trả về HTTP 200 OK.
+- [x] Đồng bộ diện mạo TextField & Autocomplete chuẩn Google Stitch (28px height, viền #cbd5e1, focus #2563eb, size small) và sửa sạch toàn bộ lỗi lint đỏ / TypeScript trong toàn dự án:
+  - Đồng bộ quy chuẩn CSS cho `.MuiAutocomplete-root`, `.MuiTextField-root`, `.MuiFormControl-root` trong `.field-group` và `.precision-ycsx__modalField`: Chiều cao chính xác 28px, padding 0 4px, căn giữa icon dropdown 50%, ẩn legend tránh khuyết viền.
+  - Bổ sung `size="small"` cho toàn bộ `TextField` trong `renderInput` của cả `PrecisionYCSXAddModal.tsx` và `PrecisionYCSXEditModal.tsx`.
+  - Đạt 0 diagnostics trong toàn bộ 99 files của `src/pages/kinhdoanh` (`PrecisionYCSXColumns.tsx`, `PrecisionAmzTab.tsx`, `PrecisionInvoiceModals.tsx`).
+  - Quét và sửa sạch các lỗi TypeScript trong toàn bộ dự án: `useDocumentScrollIdleClass.ts`, `PrecisionDieuChuyenKpi.tsx`, `PrecisionUserProfilePanel.tsx`, `ChamCongCalculationUtils.ts`, `MachineTimeLine.tsx`, `INPUTPQC.tsx`, `MATERIAL_MANAGER.tsx`, `QUICKPLAN2.tsx`, `QUICKPLAN2_backup.tsx`, `QuanLyPhongBanNhanSu copy.tsx`, `AUDIT_HISTORY.tsx`, `NOLOWHOME.tsx`, `RelationshipsManager.tsx`.
+  - Kiểm tra Vite dev server: 100% 18/18 files biên dịch thành công trả về HTTP 200 OK.
+
 
 

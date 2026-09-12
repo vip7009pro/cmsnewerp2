@@ -423,6 +423,7 @@ const YCSXManager: React.FC = () => {
         setNewYcsxRemark={ycsx.setNewYcsxRemark}
         onUpdate={ycsx.updateYCSX}
         onClear={ycsx.clearYCSXform}
+        isCMS={isCMS}
       />
 
       {/* Modal In YCSX & In Bản Vẽ */}
