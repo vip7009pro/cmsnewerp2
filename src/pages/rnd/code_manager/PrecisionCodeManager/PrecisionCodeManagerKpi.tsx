@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import { MdLayers, MdCategory, MdArchitecture, MdAllInbox } from "react-icons/md";
-import { CODE_FULL_INFO } from "../interfaces/rndInterface";
+import { CODE_FULL_INFO } from "../../interfaces/rndInterface";
 
 interface PrecisionCodeManagerKpiProps {
   data: CODE_FULL_INFO[];

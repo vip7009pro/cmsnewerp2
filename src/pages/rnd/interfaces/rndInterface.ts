@@ -232,6 +232,10 @@ export interface CODE_FULL_INFO {
   UPD_EMPL?: string;
   UPDATE_REASON?: string;
   APPROVED_YN?: string;
+  INS_EMPL?: string;
+  INS_DATE?: string;
+  REV_NO?: string;
+  PACKING_TYPE?: string;
 }
 export interface LIST_BOM_AMAZON {
   id: string;

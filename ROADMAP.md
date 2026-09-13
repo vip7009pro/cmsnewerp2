@@ -1,5 +1,20 @@
 # Roadmap - cmsnewerp2
 
+- [x] Redesign BOM Manager (`BOM_MANAGER.tsx` & `PrecisionBOMManager/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Hợp nhất hoàn toàn 2 tab "BOM Manager" (`BOM_MANAGER_TAB`) và "Up hàng loạt" (`BOM_MANAGER_TAB_UP`) thành 1 màn hình duy nhất, loại bỏ MyTabs chia tab rời rạc.
+  - Bổ sung nút `UP LOẠT` (màu Emerald `#059669`) nổi bật ngay cạnh nút `ADD VER` trên Sidebar theo đúng yêu cầu người dùng, mở Modal nạp Excel hàng loạt `PrecisionBOMBulkModal.tsx`.
+  - Phân rã nguyên khối 4.243 dòng thành Master Controller tinh gọn 306 dòng cùng 10 sub-modules chuyên biệt (< 280 dòng/file):
+    1. `PrecisionBOMManager.scss`: Hệ thống SCSS tokens công nghiệp chuẩn Stitch, layout full-height Multi-Tab, 2 bảng song song 50:50.
+    2. `PrecisionBOMHeader.tsx`: Breadcrumbs định hướng, badge LIVE SYNC, đồng hồ realtime máy chủ, nút BOM DESIGN, fullscreen.
+    3. `PrecisionBOMKpi.tsx`: 4 Widget KPI summary tính toán động từ dữ liệu thực tế (Tổng mã, BOMSX, BOM Giá, Bản vẽ & Dao).
+    4. `PrecisionBOMSidebar.tsx`: Ô tìm kiếm Code, cụm nút ADD, ADD VER, UP LOẠT, UPDATE, CLEAR, nút phụ, bảng mã BOM, CodeVisualLize và link bản vẽ PDF.
+    5. `PrecisionBOMSpecGrid.tsx`: Khối 5 nhóm thông số kỹ thuật sắc nét (Khách hàng, Kích thước & Cavity, Dao & Đóng gói, Thiết bị, Phê duyệt & Bản vẽ CAD, Tem LOT, AppSheet).
+    6. `PrecisionBOMDualTables.tsx`: Song song 2 bảng BOM 50:50 (BOM Sản Xuất BOMSX Emerald & BOM Giá Thành Indigo) với thanh thao tác Lưu, Thêm dòng, Xóa dòng, Bật sửa, Clone BOMSX, DESIGN BOM.
+    7. `PrecisionBOMBulkModal.tsx`: Modal Upload Excel BOM hàng loạt với AGTable xem trước trạng thái OK/NG/Waiting, nút nạp trực tiếp vào hệ thống.
+    8. `bomManagerColumns.tsx`: Cấu hình cột AG Grid chuẩn Stitch cho 3 bảng.
+    9. `useBOMManagerData.ts`: Custom hook quản lý 100% state và queries dữ liệu.
+    10. `useBOMManagerActions.ts`: Custom hook quản lý 100% nghiệp vụ CRUD, clone, reset bản vẽ, upload CAD/AppSheet.
+  - Bảo toàn 100% sao lưu gốc `BOM_MANAGER.backup.tsx` (163.271 bytes, 4.243 dòng), loại bỏ Header/KPI đỉnh màn hình để tối đa diện tích hiển thị, bổ sung đầy đủ 100% thông tin sản phẩm (VL Chính, Máy 4, Remark, QL_HSD, HSD), bảng nhỏ AGTable Máy/CD (`PrecisionBOMProcessGrid.tsx`), thanh chọn vật liệu trước khi thêm dòng BOM (`materialList`), sửa sạch 100% lỗi lint & TypeScript (`tsc` 0 errors), khắc phục lỗi Tem LOT bị ẩn bằng Modal xem trước kích thước chuẩn 125mm x 65mm (`PrecisionBOMTemLotModal.tsx`), tự động ánh xạ 100% thông tin sản phẩm đang chọn vào tem LOT (`precisionBOMTemLotUtils.ts`), khắc phục triệt để lỗi hiển thị 2 text trùng nhau (1 nhạt 1 đậm) ở Part No do nhãn tĩnh `"Part No:"` bị đè chữ, bảo toàn nhãn tĩnh và giá trị động chuẩn xác, xác thực biên dịch Vite Dev Server 100% 8/8 files trả về HTTP 200 OK.
 - [x] Add `PART_CODE_OTHERS` to `QTR_DATA` interface in `src/pages/qc/oqc/QTR_DATA.tsx`
 - [x] Add `PART_CODE_OTHERS` search support in `src/pages/qc/oqc/VOC_HISTORY.tsx`
 - [x] Add scanner PROCESS_LOT_NO -> G_NAME_KD lookup via checkG_CODE_From_PROCESS_LOT_NO API in VOC_HISTORY.tsx

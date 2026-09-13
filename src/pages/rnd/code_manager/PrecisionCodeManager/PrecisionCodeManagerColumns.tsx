@@ -3,7 +3,7 @@
 import React from "react";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { FiDownload, FiFileText } from "react-icons/fi";
-import { CODE_FULL_INFO } from "../interfaces/rndInterface";
+import { CODE_FULL_INFO } from "../../interfaces/rndInterface";
 
 interface GetColumnsParams {
   enableEdit: boolean;
