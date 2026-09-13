@@ -1,6 +1,28 @@
 # Roadmap - cmsnewerp2
 
-- [x] Redesign Giám Sát Hàng Sản Xuất Dư (`OVER_MONITOR.tsx` & `PrecisionOverMonitor/`) theo chuẩn Google Stitch High-Density Enterprise:
+- [x] Redesign Báo Cáo Kinh Doanh (`KinhDoanhReport.tsx` & `PrecisionKinhDoanhReport/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Sao lưu toàn vẹn 100% mã nguồn gốc `KinhDoanhReport.backup.tsx` (93.263 bytes, 2.353 dòng).
+  - Phân rã nguyên khối monolith 2.353 dòng thành Master Controller tinh gọn (144 dòng) và 10 sub-modules chuyên biệt (< 300 dòng/file):
+    1. `PrecisionKDReport.scss`: SCSS tokens công nghiệp chuẩn Stitch, layout full-width & full-height Multi-Tab, responsive glass cards, bảng biểu co giãn linh hoạt.
+    2. `PrecisionKDHeader.tsx`: Breadcrumb định hướng, badge NET_SERVER: 3007 (Online), nút làm mới dữ liệu, nút mở rộng toàn màn hình.
+    3. `PrecisionKDFilterToolbar.tsx`: Cụm Date Pickers (Từ ngày - Đến ngày), checkbox Mặc định (Default) & In nhanh (In nhanh), nút Tra cứu, và Segment Jump Tabs linh hoạt (Xem Toàn Diện, Doanh Thu & Chốt Số, Bảng Biểu KH, Phân Tích Trễ Hạn, Đơn Hàng PO & Dự Báo).
+    4. `PrecisionKDSummaryKpi.tsx`: 4 Thẻ KPI Doanh Thu điều hành (Hôm qua, Tuần này, Tháng này, Năm này) hiển thị giá trị USD lớn font JetBrains Mono, số lượng giao hàng EA, và growth pill % trực quan.
+    5. `PrecisionKDClosingSection.tsx`: Cụm 6 biểu đồ doanh thu Recharts (Daily, Weekly, Monthly, Yearly, Top 5 KH, PIC Phụ trách) tích hợp nút xuất Excel `SaveExcel` trực tiếp.
+    6. `PrecisionKDCustomerClosingTables.tsx`: Cụm 3 bảng dữ liệu AG Grid chốt số theo khách hàng (Daily, Weekly, Monthly) phân trang 8 dòng, nút xuất Excel riêng biệt.
+    7. `PrecisionKDOverdueSection.tsx`: Cụm 4 biểu đồ phân tích trễ giao hàng (Daily, Weekly, Monthly, Yearly Overdue) kèm nút xuất Excel.
+    8. `PrecisionKDPOSection.tsx`: Phân hệ quản lý đơn hàng PO & giao hàng (PO Balance, PO/Delivery by Week, PO Trending, cụm biểu đồ lọc tương tác theo Năm/Tuần khi CMS, bảng PO Balance theo loại sản phẩm).
+    9. `PrecisionKDFcstSection.tsx`: 2 Thẻ Forecast 4W & 8W và biểu đồ Samsung Forecast so sánh 2 tuần liền kề trực quan.
+    10. `kdReportQueries.ts` (233 dòng) & `kdReportPOQueries.ts` (100 dòng): Tách biệt logic truy vấn API thành 2 module chuyên biệt, đảm bảo quy tắc không quá 300 dòng/file.
+    11. `precisionKDColumns.tsx` (43 dòng): Quản lý cấu hình cột AG Grid cho các bảng dữ liệu chốt số.
+    12. `useKDReportData.ts` (299 dòng): Custom hook quản lý 100% state và 22 luồng nạp dữ liệu song song `Promise.all`, điều khiển tương tác click chọn năm/tuần trên biểu đồ tồn đơn.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ và tương tác cốt lõi**:
+    + Giữ nguyên toàn bộ 22 API queries song song trong `initFunction`.
+    + Tương tác click trên biểu đồ tồn đơn PO theo Năm (`handleSelectPOYear`) và theo Tuần (`handleSelectPOWeek`) để nạp chi tiết PO Balance theo Tuần & theo Khách Hàng.
+    + Phân quyền cờ công ty (`MAIN_URL.MAIN_URL_KHO_SERVER === 'CMS'` vs `PVN`), chỉ CMS mới hiện các biểu đồ PO theo tuần/năm và bảng loại sản phẩm.
+    + Bảo lưu toàn bộ các nút xuất Excel `SaveExcel` (Daily, Weekly, Monthly, Overdue, PO Balance).
+    + Chế độ checkbox `In nhanh` cho phép in báo cáo ngay lập tức sau khi nạp xong.
+  - Xác thực biên dịch Vite Dev Server 100% 13/13 files trả về HTTP 200 OK, không còn lỗi JSX hay cảnh báo cú pháp.
+
   - Sao lưu toàn vẹn 100% mã nguồn gốc `OVER_MONITOR.backup.tsx` (19.458 bytes, 463 dòng).
   - **Bảo lưu trọn vẹn 100% các tương tác Cell trong Datagrid theo yêu cầu người dùng**:
     + Cột `KD_CFM`: Cơ chế toggle xem nhãn / chỉnh sửa Radio buttons `NHẬP` (`Y`) & `HỦY` (`N`), kiểm tra quyền kinh doanh `checkBP`, kiểm tra trạng thái `HANDLE_STATUS === 'P'`, gọi cập nhật và gửi Socket thông báo realtime.

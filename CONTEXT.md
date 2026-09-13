@@ -1,5 +1,26 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-13 (KINH_DOANH_REPORT: Business Revenue & Executive Analytics Dashboard Google Stitch High-Density Enterprise Redesign)
+
+### Completed
+- **Bảo toàn 100% mã nguồn gốc**: Đã tạo file sao lưu `KinhDoanhReport.backup.tsx` (93.263 bytes, 2.353 dòng).
+- **Phân rã kiến trúc monolith 2.353 dòng thành Master Controller tinh gọn (144 dòng), 1 Custom Hook (`useKDReportData.ts`), 2 Sub-modules queries và 8 Sub-modules giao diện (< 300 dòng/file)** tại thư mục `src/pages/kinhdoanh/kinhdoanhreport/PrecisionKinhDoanhReport/`:
+  1. `PrecisionKDReport.scss` (420 dòng): SCSS tokens công nghiệp chuẩn Google Stitch (Primary `#2563eb`, Deep Slate `#0f172a`, Emerald `#059669`, Rose `#f43f5e`, Amber `#f59e0b`, Purple `#7c3aed`, Slate Canvas `#f8fafc`), hỗ trợ co giãn flex full-width và full-height trong Multi-Tab (`.component_element &`).
+  2. `kdReportQueries.ts` (233 dòng): Đóng gói toàn bộ các hàm API queries báo cáo độc lập: FCST Amount, Daily/Weekly/Monthly/Yearly Closing, Top 5 Customer Revenue, PIC Revenue.
+  3. `kdReportPOQueries.ts` (100 dòng): Đóng gói các hàm queries cho Overdue và phân hệ PO Balance.
+  4. `precisionKDColumns.tsx` (43 dòng): Quản lý hàm sinh cấu hình cột AG Grid tự động `buildKDClosingColumns` cho các bảng Daily, Weekly, Monthly Closing với định dạng tiền tệ và số liệu trực quan.
+  5. `useKDReportData.ts` (299 dòng): Custom Hook điều phối tập trung toàn bộ state, 22 luồng nạp dữ liệu song song `Promise.all` trong `initFunction`, các handlers tương tác lọc theo Năm (`PO_YEAR`) và Tuần (`PO_WEEK`).
+  6. `PrecisionKDHeader.tsx` (70 dòng): Sub-header với breadcrumb `KD • REPORT / Báo Cáo Doanh Thu & Chỉ Số Kinh Doanh (Executive Analytics)`, badge `NET_SERVER: 3007 (Online)` kèm pulse dot, nút làm mới và nút bật/tắt toàn màn hình.
+  7. `PrecisionKDFilterToolbar.tsx` (121 dòng): Thanh công cụ điều hành: Date Pickers Từ Ngày - Đến Ngày, Checkbox Mặc Định, Checkbox In Nhanh (chỉ PVN), nút Tra Cứu Dữ Liệu và thanh **Segment Jump Tabs** chuyển nhanh 4 phân hệ (Xem Toàn Diện, Doanh Thu & Chốt Số, Bảng Biểu Khách Hàng, Phân Tích Trễ Hạn, Đơn Hàng PO & Dự Báo).
+  8. `PrecisionKDSummaryKpi.tsx` (132 dòng): **4 Widget KPI Doanh Thu Đẳng Cấp**: Hôm qua, Tuần này, Tháng này, Năm này với định dạng tiền tệ USD lớn (`JetBrains Mono`), số lượng giao (EA), và chỉ báo tăng trưởng % (growth pill xanh/đỏ).
+  9. `PrecisionKDClosingSection.tsx` (185 dòng): Cụm 6 biểu đồ doanh thu và chốt số (Daily, Weekly, Monthly, Yearly, Top 5 Khách Hàng, Doanh Thu PIC) bọc trong các Executive Glass Cards với nút xuất Excel `SaveExcel`.
+  10. `PrecisionKDCustomerClosingTables.tsx` (109 dòng): Cụm 3 bảng dữ liệu khách hàng (Daily Closing, Weekly Closing, Monthly Closing) kèm nút xuất Excel.
+  11. `PrecisionKDOverdueSection.tsx` (129 dòng): Cụm 4 biểu đồ trễ giao hàng (Daily, Weekly, Monthly, Yearly Overdue) kèm nút xuất Excel.
+  12. `PrecisionKDPOSection.tsx` (260 dòng): Phân hệ đơn hàng PO & tồn đơn: Thẻ PO Balance Summary, PO By Week, Delivery By Week, PO Balance Trending, cụm biểu đồ tương tác lọc theo Năm/Tuần khi công ty là CMS, bảng PO Balance By Product Type.
+  13. `PrecisionKDFcstSection.tsx` (102 dòng): Phân hệ dự báo: 2 Thẻ FCST 4W / 8W và biểu đồ Samsung Forecast so sánh 2 tuần liền kề.
+- **Tái cấu trúc Master Controller `KinhDoanhReport.tsx`**: Rút gọn từ 2.353 dòng xuống 144 dòng sạch sẽ, kết nối toàn diện các phân hệ theo Segment Jump Tabs.
+- **Kiểm tra Vite Dev Server (port 3001)**: 100% 13/13 files liên quan đều được biên dịch mượt mà và trả về HTTP 200 OK.
+
 ## Update - 2026-09-13 (OVER_MONITOR: Production Over Monitor Google Stitch High-Density Enterprise Redesign)
 
 ### Completed
