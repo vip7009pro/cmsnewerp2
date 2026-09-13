@@ -1,16 +1,19 @@
-import { Button } from "@mui/material";
-import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
+import moment from "moment";
 import Swal from "sweetalert2";
+import { FiSearch, FiRefreshCw, FiDownload, FiPieChart } from "react-icons/fi";
 import { generalQuery, getAuditMode } from "../../../api/Api";
-import "./SPECDTC.scss";
+import { SaveExcel } from "../../../api/services/excelService";
 import AGTable from "../../../components/DataTable/AGTable";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 import { DTC_SPEC_DATA, TestListTable } from "../interfaces/qcInterface";
 import { f_loadDTC_TestList } from "../utils/qcUtils";
-const SPECDTC = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
+
+import "./PrecisionSPECDTC/PrecisionSPECDTC.scss";
+import PrecisionSPECDTCKpi from "./PrecisionSPECDTC/PrecisionSPECDTCKpi";
+import PrecisionSPECDTCSidebar from "./PrecisionSPECDTC/PrecisionSPECDTCSidebar";
+import { getPrecisionSPECDTCColumns } from "./PrecisionSPECDTC/PrecisionSPECDTCColumns";
+
+const SPECDTC: React.FC = () => {
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -20,75 +23,32 @@ const SPECDTC = () => {
   const [prodrequestno, setProdRequestNo] = useState("");
   const [alltime, setAllTime] = useState(false);
   const [id, setID] = useState("");
-  const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>(
-    [],
-  );
-  const [testlist, setTestList] = useState<Array<TestListTable>>([]);
   const [m_name, setM_Name] = useState("");
   const [m_code, setM_Code] = useState("");
+
+  const [inspectiondatatable, setInspectionDataTable] = useState<DTC_SPEC_DATA[]>([]);
+  const [testlist, setTestList] = useState<TestListTable[]>([]);
+  const [quickFilterText, setQuickFilterText] = useState("");
+
+  // Nạp danh mục các hạng mục kiểm tra
   const getTestList = async () => {
-    let tempList: TestListTable[] = await f_loadDTC_TestList();
-    tempList.unshift({ TEST_CODE: 0, TEST_NAME: 'ALL', SELECTED: false, })
+    const tempList: TestListTable[] = await f_loadDTC_TestList();
+    tempList.unshift({ TEST_CODE: 0, TEST_NAME: "ALL", SELECTED: false });
     setTestList(tempList);
-  }
-  const dtcSpecColumn = [    
-    { field: 'CUST_NAME_KD',headerName: 'CUST_NAME_KD', resizable: true,width: 100 },
-    { field: 'G_CODE',headerName: 'G_CODE', resizable: true,width: 100 },
-    { field: 'G_NAME',headerName: 'G_NAME', resizable: true,width: 100 },
-    { field: 'TEST_NAME',headerName: 'TEST_NAME', resizable: true,width: 100 },
-    { field: 'POINT_NAME',headerName: 'POINT_NAME', resizable: true,width: 100 },
-    { field: 'PRI',headerName: 'PRI', resizable: true,width: 100 },
-    { field: 'CENTER_VALUE',headerName: 'CENTER_VALUE', resizable: true,width: 100 },
-    { field: 'UPPER_TOR',headerName: 'UPPER_TOR', resizable: true,width: 100 },
-    { field: 'LOWER_TOR',headerName: 'LOWER_TOR', resizable: true,width: 100 },
-    { field: 'MIN_SPEC',headerName: 'MIN_SPEC', resizable: true,width: 100 },
-    { field: 'MAX_SPEC',headerName: 'MAX_SPEC', resizable: true,width: 100 },
-    { field: 'BARCODE_CONTENT',headerName: 'BARCODE_CONTENT', resizable: true,width: 100 },
-    { field: 'REMARK',headerName: 'REMARK', resizable: true,width: 100 },
-    { field: 'M_NAME',headerName: 'M_NAME', resizable: true,width: 100 },
-    { field: 'WIDTH_CD',headerName: 'WIDTH_CD', resizable: true,width: 100 },
-    { field: 'M_CODE',headerName: 'M_CODE', resizable: true,width: 100 },
-    { field: 'TDS',headerName: 'TDS', resizable: true,width: 100 },
-    { field: 'BANVE',headerName: 'BANVE', resizable: true,width: 100 },   
-  ]
-  const spectDTCTable = useMemo(() => {
-    return (
-      <AGTable
-        toolbar={
-          <div>
-          </div>}
-        columns={dtcSpecColumn}
-        data={inspectiondatatable}
-        onCellEditingStopped={(e: any) => {
-          //console.log(e.data)
-        }} onRowClick={(e: any) => {
-          //console.log(e.data)
-        }} onSelectionChange={(e: any) => {
-          //console.log(e!.api.getSelectedRows())
-        }}
-        onRowDoubleClick={async (e: any) => {
-          //console.log(e.data)
-        }}
-      />
-    )
-  }, [inspectiondatatable,])
-  const handleSearchCodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
-    if (e.key === "Enter") {
-      handletraDTCData();
-    }
   };
+
+  // Tra cứu dữ liệu SPEC DTC
   const handletraDTCData = () => {
     Swal.fire({
       title: "Tra cứu SPEC Vật liệu - Sản phẩm",
-      text: "Đang tải dữ liệu, hãy chờ chút",
+      text: "Đang tải dữ liệu, hãy chờ chút...",
       icon: "info",
       showCancelButton: false,
       allowOutsideClick: false,
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
+
     generalQuery("dtcspec", {
       ALLTIME: alltime,
       FROM_DATE: fromdate,
@@ -103,145 +63,214 @@ const SPECDTC = () => {
       ID: id,
     })
       .then((response) => {
-        //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: DTC_SPEC_DATA[] = response.data.data.map(
             (element: DTC_SPEC_DATA, index: number) => {
               return {
                 ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
+                G_NAME:
+                  getAuditMode() === 0
+                    ? element?.G_NAME
+                    : element?.G_NAME?.search("CNDB") === -1
+                    ? element?.G_NAME
+                    : "TEM_NOI_BO",
                 id: index,
               };
-            },
+            }
           );
           setInspectionDataTable(loadeddata);
           Swal.fire(
             "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success",
+            `Đã tải ${response.data.data.length.toLocaleString("vi-VN")} dòng tiêu chuẩn`,
+            "success"
           );
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.error("Error loading dtcspec:", error);
+        Swal.fire("Lỗi kết nối", "Không thể kết nối đến máy chủ", "error");
       });
   };
+
+  // Reset bộ lọc về mặc định
+  const handleResetFilter = () => {
+    setCodeKD("");
+    setCodeCMS("");
+    setM_Name("");
+    setM_Code("");
+    setTestName("0");
+    setProdRequestNo("");
+    setAllTime(false);
+    setQuickFilterText("");
+  };
+
+  // Lọc dữ liệu nhanh theo từ khoá
+  const filteredData = useMemo(() => {
+    if (!quickFilterText.trim()) return inspectiondatatable;
+    const query = quickFilterText.toLowerCase().trim();
+    return inspectiondatatable.filter((item) => {
+      return (
+        item.CUST_NAME_KD?.toLowerCase().includes(query) ||
+        item.G_CODE?.toLowerCase().includes(query) ||
+        item.G_NAME?.toLowerCase().includes(query) ||
+        item.TEST_NAME?.toLowerCase().includes(query) ||
+        item.POINT_NAME?.toLowerCase().includes(query) ||
+        item.M_NAME?.toLowerCase().includes(query) ||
+        item.M_CODE?.toLowerCase().includes(query) ||
+        item.BARCODE_CONTENT?.toLowerCase().includes(query) ||
+        item.REMARK?.toLowerCase().includes(query)
+      );
+    });
+  }, [inspectiondatatable, quickFilterText]);
+
+  // Xuất Excel EX1: Dữ liệu đang lọc
+  const handleExportEX1 = () => {
+    if (filteredData.length === 0) {
+      Swal.fire("Cảnh báo", "Không có dữ liệu để xuất Excel", "warning");
+      return;
+    }
+    SaveExcel(filteredData, `DTC_SPEC_FILTERED_${moment().format("YYYYMMDD_HHmm")}`);
+  };
+
+  // Xuất Excel EX2: Toàn bộ dữ liệu
+  const handleExportEX2 = () => {
+    if (inspectiondatatable.length === 0) {
+      Swal.fire("Cảnh báo", "Không có dữ liệu để xuất Excel", "warning");
+      return;
+    }
+    SaveExcel(inspectiondatatable, `DTC_SPEC_ALL_${moment().format("YYYYMMDD_HHmm")}`);
+  };
+
+  // Mở phân tích Pivot
+  const handleOpenPivot = () => {
+    Swal.fire("Tính năng PIVOT", "Bảng Pivot phân tích đang được cập nhật", "info");
+  };
+
   useEffect(() => {
-    //setColumnDefinition(column_inspect_output);
     getTestList();
   }, []);
+
+  const columns = useMemo(() => getPrecisionSPECDTCColumns(), []);
+
+  // Tên test đang chọn để gửi vào KPI
+  const activeTestObj = testlist.find((t) => String(t.TEST_CODE) === String(testname));
+  const activeTestLabel = activeTestObj ? activeTestObj.TEST_NAME : "ALL";
+
   return (
-    <div className="specdtc">
-      <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-          <div className="forminput">
-            <div className="forminputcolumn">
-              <label>
-                <b>Code KD:</b>{" "}
-                <input
-                  onKeyDown={(e: any) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type="text"
-                  placeholder="GH63-xxxxxx"
-                  value={codeKD}
-                  onChange={(e: any) => setCodeKD(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Code ERP:</b>{" "}
-                <input
-                  onKeyDown={(e: any) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type="text"
-                  placeholder="7C123xxx"
-                  value={codeCMS}
-                  onChange={(e: any) => setCodeCMS(e.target.value)}
-                ></input>
-              </label>
+    <div className="precision-specdtc">
+      {/* 1. Micro-cards KPI Realtime */}
+      <PrecisionSPECDTCKpi
+        tableData={filteredData}
+        activeTestName={activeTestLabel}
+      />
+
+      {/* 2. Main Workspace Split Layout (Sidebar Trái & AGTable Phải) */}
+      <div className="precision-specdtc__workspace">
+        {/* Panel Bộ Lọc 250px bên trái */}
+        <PrecisionSPECDTCSidebar
+          codeKD={codeKD}
+          setCodeKD={setCodeKD}
+          codeCMS={codeCMS}
+          setCodeCMS={setCodeCMS}
+          m_name={m_name}
+          setM_Name={setM_Name}
+          m_code={m_code}
+          setM_Code={setM_Code}
+          testname={testname}
+          setTestName={setTestName}
+          testlist={testlist}
+          prodrequestno={prodrequestno}
+          setProdRequestNo={setProdRequestNo}
+          alltime={alltime}
+          setAllTime={setAllTime}
+          onSearch={handletraDTCData}
+          onReset={handleResetFilter}
+        />
+
+        {/* Khung Chứa Bảng Dữ Liệu AGTable High-Density bên phải */}
+        <main className="precision-specdtc__gridContainer">
+          {/* Toolbar Phía Trên Bảng: Nút EX1, EX2, PIVOT, Quick Search, Refresh */}
+          <div className="precision-specdtc__gridToolbar">
+            <div className="precision-specdtc__gridTitle">
+              <span className="dot" />
+              <span>Bảng Tiêu Chuẩn Kỹ Thuật DTC (Spec Data Grid)</span>
+              <span className="badge-count">
+                {filteredData.length.toLocaleString("vi-VN")} / {inspectiondatatable.length.toLocaleString("vi-VN")} rows
+              </span>
             </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Tên Liệu:</b>{" "}
+
+            <div className="precision-specdtc__gridControls">
+              {/* Nút EX1 (Lọc) */}
+              <button
+                type="button"
+                className="precision-specdtc__btn precision-specdtc__btn--excel"
+                onClick={handleExportEX1}
+                title="Xuất Excel danh sách dữ liệu đang lọc"
+              >
+                <FiDownload style={{ fontSize: "12px" }} />
+                <span>EX1 (Lọc)</span>
+              </button>
+
+              {/* Nút EX2 (Toàn bộ) */}
+              <button
+                type="button"
+                className="precision-specdtc__btn precision-specdtc__btn--excelAll"
+                onClick={handleExportEX2}
+                title="Xuất toàn bộ dữ liệu ra Excel"
+              >
+                <FiDownload style={{ fontSize: "12px" }} />
+                <span>EX2 (Toàn bộ)</span>
+              </button>
+
+              {/* Nút PIVOT */}
+              <button
+                type="button"
+                className="precision-specdtc__btn precision-specdtc__btn--pivot"
+                onClick={handleOpenPivot}
+                title="Mở phân tích bảng Pivot đa chiều"
+              >
+                <FiPieChart style={{ fontSize: "12px" }} />
+                <span>PIVOT</span>
+              </button>
+
+              {/* Quick Search */}
+              <div className="precision-specdtc__searchBox">
+                <FiSearch style={{ color: "#94a3b8", fontSize: "11px" }} />
                 <input
-                  onKeyDown={(e: any) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
                   type="text"
-                  placeholder="SJ-203020HC"
-                  value={m_name}
-                  onChange={(e: any) => setM_Name(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Mã Liệu CMS:</b>{" "}
-                <input
-                  onKeyDown={(e: any) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type="text"
-                  placeholder="A123456"
-                  value={m_code}
-                  onChange={(e: any) => setM_Code(e.target.value)}
-                ></input>
-              </label>
+                  placeholder="Lọc nhanh trên lưới..."
+                  value={quickFilterText}
+                  onChange={(e) => setQuickFilterText(e.target.value)}
+                />
+              </div>
+
+              {/* Nút Refresh */}
+              <button
+                type="button"
+                className="precision-specdtc__btn precision-specdtc__btn--refresh"
+                onClick={handletraDTCData}
+                title="Tải lại dữ liệu"
+              >
+                <FiRefreshCw style={{ fontSize: "11px" }} />
+                <span>Refresh</span>
+              </button>
             </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Hạng mục test</b>
-                <select
-                  name="hangmuctest"
-                  value={testname}
-                  onChange={(e: any) => {
-                    setTestName(e.target.value);
-                  }}
-                >
-                 {testlist.map((item: TestListTable, index: number) => (
-                  <option key={index} value={item.TEST_CODE}>
-                    {item.TEST_NAME}
-                  </option>
-                ))}
-                </select>
-              </label>
-              <label>
-                <b>Số YCSX:</b>{" "}
-                <input
-                  onKeyDown={(e: any) => {
-                    handleSearchCodeKeyDown(e);
-                  }}
-                  type="text"
-                  placeholder="1H23456"
-                  value={prodrequestno}
-                  onChange={(e: any) => setProdRequestNo(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn"></div>
           </div>
-          <div className="formbutton">
-            <label>
-              <b>All Time:</b>
-              <input
-                onKeyDown={(e: any) => {
-                  handleSearchCodeKeyDown(e);
-                }}
-                type="checkbox"
-                name="alltimecheckbox"
-                defaultChecked={alltime}
-                onChange={() => setAllTime(!alltime)}
-              ></input>
-            </label>
-            <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#18a70b' }} onClick={() => {
-              handletraDTCData();
-            }}> Spec DTC</Button>
+
+          {/* Body Chứa AGTable */}
+          <div className="precision-specdtc__gridBody">
+            <AGTable
+              rowHeight={32}
+              columns={columns}
+              data={filteredData}
+            />
           </div>
-        </div>
-        <div className="tracuuYCSXTable">{spectDTCTable}</div>
+        </main>
       </div>
     </div>
   );
 };
-export default SPECDTC;
+
+export default React.memo(SPECDTC);

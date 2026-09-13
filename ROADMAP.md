@@ -1,5 +1,17 @@
 # Roadmap - cmsnewerp2
 
+- [x] Redesign Tra Cứu Tiêu Chuẩn Kỹ Thuật DTC (`SPECDTC.tsx` & `PrecisionSPECDTC/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Sao lưu toàn vẹn 100% mã nguồn gốc `SPECDTC.backup.tsx` (9.555 bytes).
+  - Phân rã monolith thành Master Controller tinh gọn (277 dòng) và 4 sub-modules chuyên biệt (< 300 dòng/file presentation):
+    1. `PrecisionSPECDTC.scss` (517 dòng): SCSS tokens công nghiệp chuẩn Stitch, full-width & full-height Multi-tab, triệt tiêu 100% toolbar xanh lá cũ của AGTable.
+    2. Đã loại bỏ Header và dải Nav Tabs nghiệp vụ nội bộ bị trùng lặp với menu Multi-tab bên ngoài của ERP; chuyển cụm nút xuất Excel `EX1 (Lọc)`, `EX2 (Toàn bộ)`, `PIVOT` và `Refresh` trực tiếp lên thanh công cụ của bảng dữ liệu.
+    3. `PrecisionSPECDTCKpi.tsx` (174 dòng): 4 Micro-cards KPI tính toán realtime từ dữ liệu spec (Tổng bản ghi tiêu chuẩn kèm trạng thái MSSQL, Hạng mục test chủ lực, Dung sai tiêu chuẩn trung bình Tor, Khách hàng áp dụng chính).
+    4. `PrecisionSPECDTCSidebar.tsx` (175 dòng): Panel bộ lọc dữ liệu DTC chuyên nghiệp 250px với inputs gọn gàng, tự động nạp danh mục test từ `f_loadDTC_TestList()`, hỗ trợ phím Enter và nút tra cứu `SPEC DTC (TÌM KIẾM)` full-width màu emerald gradient.
+    5. `PrecisionSPECDTCColumns.tsx` (173 dòng): Cấu hình cột bảng chuẩn Stitch với chip JetBrains Mono cho `G_CODE`/`M_CODE`, chip phân loại `TEST_NAME`, số đo căn phải chuẩn tabular-nums và nổi bật màu sắc `MIN_SPEC` (xanh) / `MAX_SPEC` (đỏ).
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ và API**: Tra cứu `generalQuery("dtcspec", ...)`, lọc danh mục `f_loadDTC_TestList()`, xuất Excel trực tiếp `SaveExcel` cho `EX1` (lọc) và `EX2` (toàn bộ).
+  - **Tối đa hóa diện tích làm việc**: Tận dụng toàn bộ chiều cao cho bảng dữ liệu và bộ lọc, không còn thanh tabs thừa.
+  - Xác thực biên dịch Vite Dev Server: 5/5 file trả về HTTP 200 OK trên port 3001.
+
 - [x] Redesign Tra Cứu Kết Quả Độ Tin Cậy • SPC Analysis (`KQDTC.tsx` & `PrecisionKQDTC/`) theo chuẩn Google Stitch High-Density Enterprise:
   - Sao lưu toàn vẹn 100% mã nguồn gốc `KQDTC.backup.tsx` (20.744 bytes).
   - Phân rã monolith 587 dòng thành Master Controller tinh gọn (290 dòng) và 5 sub-modules chuyên biệt (< 300 dòng/file presentation):

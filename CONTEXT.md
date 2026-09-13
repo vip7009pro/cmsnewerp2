@@ -1,5 +1,18 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-13 (QC: Tinh Gọn Giao Diện Tra Cứu Tiêu Chuẩn DTC - Bỏ Header Trùng Lặp Menu ERP trong SPECDTC.tsx)
+
+### Completed
+1. **Loại bỏ Header Tabs điều hướng nghiệp vụ DTC trùng lặp**:
+   - Gỡ bỏ hoàn toàn thanh tabs điều hướng (`TRA KQ ĐTC (SPC)`, `TRA SPEC ĐTC`, `ADD SPEC ĐTC`, `ĐKÝ TEST ĐTC`, `NHẬP KQ ĐTC`, `Quản lý hạng mục DTC`) vì đã có menu điều hướng bên ngoài của ERP quản lý.
+   - Xóa bỏ file `PrecisionSPECDTCToolbar.tsx`, dọn sạch CSS thừa trong `PrecisionSPECDTC.scss`.
+2. **Chuyển các nút thao tác xuống thanh công cụ bảng AGTable (`gridToolbar`)**:
+   - Tích hợp cụm nút: `EX1 (Lọc)`, `EX2 (Toàn bộ)`, `PIVOT`, ô tìm kiếm nhanh đa trường `quickFilterText` và nút `Refresh` nạp lại dữ liệu.
+   - Mở rộng tối đa không gian thẳng đứng cho thẻ KPI, Panel bộ lọc và bảng dữ liệu.
+3. **Kiểm tra Clean Code & Biên dịch**:
+   - Tất cả các file presentation đều < 300 dòng (`SPECDTC.tsx` 277 dòng, subcomponents 173-175 dòng).
+   - 5/5 file biên dịch thành công 100% với mã HTTP 200 OK trên Vite Dev Server (port 3001).
+
 ## Update - 2026-09-13 (QC: Tái Thiết Kế Toàn Diện Màn Hình Tra Cứu Kết Quả Độ Tin Cậy - KQDTC.tsx Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed
