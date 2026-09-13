@@ -2,10 +2,10 @@ import React from "react";
 import { Autocomplete, Button, IconButton, TextField, createFilterOptions } from "@mui/material";
 import { FiX, FiEdit3, FiPlusCircle } from "react-icons/fi";
 import CustomDialog from "../../../../components/Dialog/CustomDialog";
-import { FSC_LIST_DATA, MATERIAL_TABLE_DATA } from "../interfaces/muaInterface";
-import { CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
 import { checkBP } from "../../../../api/services/permissionService";
 import { getUserData } from "../../../../api/Api";
+import { FSC_LIST_DATA, MATERIAL_TABLE_DATA } from "../../interfaces/muaInterface";
+import { CustomerListData } from "../../../kinhdoanh/interfaces/kdInterface";
 
 interface PrecisionQLVLAddModalProps {
   isOpen: boolean;
