@@ -1,6 +1,19 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
-## Update - 2026-09-12 (POandStockFull: Google Stitch High-Density Enterprise Redesign)
+## Update - 2026-09-13 (INSPECTION: Google Stitch High-Density Enterprise Redesign)
+
+### Completed
+- **Bảo toàn 100% mã nguồn gốc**: Đã tạo file sao lưu `INSPECTION.backup.tsx` (91.877 bytes, 3.074 dòng).
+- **Phân rã kiến trúc monolith 3.074 dòng**: Tinh gọn Master Controller `INSPECTION.tsx` xuống còn ~380 dòng và tạo module chuyên biệt trong thư mục `src/pages/qc/inspection/PrecisionINSPECTION/`:
+  1. `PrecisionINSPECTION.scss`: Hệ thống SCSS tokens công nghiệp chuẩn Google Stitch (Blue `#2563eb`, Emerald `#059669`, Amber `#d97706`, Cyan `#0891b2`, Purple `#9333ea`, Red Alert `#dc2626`, Teal `#0d9488`, Bronze `#b45309`, Neutral Slate `#f1f5f9`), bố cục Split-Screen 2 Panel (Sidebar 256px + Data Grid Workspace flex: 1), flex full-width và full-height co giãn theo viewport trong chế độ Multi-Tab, ẩn hoàn toàn toolbar xanh lá mặc định của AGTable.
+  2. `PrecisionINSPECTIONPivotFields.ts`: Di chuyển toàn bộ 6 mảng cấu hình DevExtreme Pivot Grid khổng lồ (~1.850 dòng) ra file riêng: `fieldsinputkiem`, `fieldsoutputkiem`, `fieldsinoutputkiem`, `fieldsnhatkykiem`, `fieldsinspectbalance`, `fieldsinspectionpatrol`.
+  3. `PrecisionINSPECTIONColumns.tsx`: Tách riêng và chuẩn hóa 8 bộ cột AG Grid (`column_inspect_input`, `column_inspect_output`, `column_inspect_inoutycsx`, `column_inspection_NG`, `column_inspect_balance`, `column_inspect_patrol`, `column_khkt`, `column_lothistory`), cải tiến cell renderers với định dạng số `toLocaleString("en-US")`, mã code link xanh, status badge (OK / ĐANG KIỂM / CHỜ DUYỆT NG / CHỜ KIỂM).
+  4. `PrecisionINSPECTIONFilterPanel.tsx`: Sidebar bên trái 256px với Header (icon phễu, tiêu đề, nút Reset), 10 tiêu chí lọc compact (Từ ngày, Tới ngày, Code KD, Code ERP, Tên nhân viên, Khách hàng, Loại SP, Số YCSX, LOT SX, ID + All Time checkbox) và Palette 8 nút hành động công nghiệp Stitch phân màu rực rỡ kèm tag phím tắt F1-F4 / badge đếm.
+  5. `PrecisionINSPECTIONToolbar.tsx`: Cụm nút công cụ phía trên bảng gồm `Pivot` (tím nhạt), `EX1 (Excel đang lọc)`, `EX2 (Raw Data)`, `PIVOT ADVANCED` (hồng pastel), dải đếm cột `Hiển thị: {N} / {N} cột` và nút bật/tắt hàng lọc nhanh trên cột.
+- **Tái cấu trúc `INSPECTION.tsx`**: Rút gọn từ 3.074 dòng xuống ~380 dòng sạch sẽ, dễ bảo trì, bảo toàn 100% logic API queries (`get_inspection`, `loadChoKiemGop_NEW`, `loadInspectionPatrol`, `f_loadKHKT_ADUNG`, `f_loadTemLotKTHistory`, `f_updateTONKIEM_M100`, `f_updateTrueDiemKiemTra`), modal PivotTable xoay đa chiều, xuất Excel `SaveExcel`.
+- **Tối ưu không gian chiều dọc & loại bỏ footer thừa**: Đã loại bỏ hoàn toàn thanh footer phụ ở đáy màn hình (để AGTable sử dụng footer chuẩn của nó, tránh 2 footer trùng lặp); chuyển thông tin tổng số lượng kiểm tra (`sumaryINSPECT`) hiển thị nổi bật dạng chip xanh lá trên thanh Toolbar phía trên bảng.
+- **Kiểm tra Vite Dev Server (port 3001)**: 100% 8/8 files liên quan đều được biên dịch mượt mà và trả về HTTP 200 OK.
+
 
 ### Completed
 - **Bảo toàn 100% mã nguồn gốc**: Đã tạo file sao lưu `POandStockFull.backup.tsx` (1.060 dòng).
