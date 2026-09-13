@@ -188,13 +188,13 @@ const KQDTC = () => {
                 getAuditMode() === 0
                   ? element?.G_NAME
                   : element?.G_NAME?.search("CNDB") === -1
-                  ? element?.G_NAME
-                  : "TEM_NOI_BO",
+                    ? element?.G_NAME
+                    : "TEM_NOI_BO",
               TEST_FINISH_TIME: moment.utc(element.TEST_FINISH_TIME).format("YYYY-MM-DD HH:mm:ss"),
               REQUEST_DATETIME: moment.utc(element.REQUEST_DATETIME).format("YYYY-MM-DD HH:mm:ss"),
               DANHGIA:
                 element.RESULT >= element.CENTER_VALUE - element.LOWER_TOR &&
-                element.RESULT <= element.CENTER_VALUE + element.UPPER_TOR
+                  element.RESULT <= element.CENTER_VALUE + element.UPPER_TOR
                   ? "OK"
                   : "NG",
               id: index,
