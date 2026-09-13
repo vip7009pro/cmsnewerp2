@@ -21,7 +21,17 @@
     + Phân quyền cờ công ty (`MAIN_URL.MAIN_URL_KHO_SERVER === 'CMS'` vs `PVN`), chỉ CMS mới hiện các biểu đồ PO theo tuần/năm và bảng loại sản phẩm.
     + Bảo lưu toàn bộ các nút xuất Excel `SaveExcel` (Daily, Weekly, Monthly, Overdue, PO Balance).
     + Chế độ checkbox `In nhanh` cho phép in báo cáo ngay lập tức sau khi nạp xong.
-  - Xác thực biên dịch Vite Dev Server 100% 13/13 files trả về HTTP 200 OK, không còn lỗi JSX hay cảnh báo cú pháp.
+    + **Tái thiết kế toàn bộ biểu đồ tròn sang chuẩn Donut 3-in-1 chống xén & toàn diện dữ liệu**: Áp dụng đồng bộ cho `KDPOBalanceSummaryByCustomer.tsx`, `KDChartCustomerRevenue.tsx` (Top 5 Customer Weekly Revenue) và `ChartPICRevenue.tsx` (PIC Weekly Revenue). Hỗ trợ bộ chuyển 3 chế độ xem (Song Song 50:50, Biểu Đồ Full, Danh Sách Full), bán kính chống xén mép, tâm Donut thống kê tương tác theo hover, kèm bảng dữ liệu 100% đối tác/nhân sự có rank, thanh tiến trình tỷ trọng % và ô tìm kiếm tức thời.
+    + **Chuẩn hóa toàn bộ Toolbar AGTable bảng biểu theo phong cách High-Density SaaS**: Tạo component `PrecisionKDTableToolbar.tsx`, triệt tiêu hoàn toàn toolbar xanh lá mặc định của `AGTable`, tích hợp tìm kiếm nhanh QuickFilter, badge đếm dòng, cụm nút xuất Excel `EX1` (Lọc), `EX2` (Toàn bộ) và `PIVOT` đồng bộ cho `CustomerDailyClosing.tsx`, `CustomerWeeklyClosing.tsx`, `CustomerMonthlyClosing.tsx` và `CustomerPoBalanceByTypeNew.tsx`.
+    + **Khắc phục triệt để lỗi 3 biểu đồ bị trắng & hiển thị Data Labels trực quan (PO Balance Trending, PO Balance Summary By Week & Samsung Forecast)**:
+      - Loại bỏ wrapper cũ `CustomResponsiveContainer` gây sụp chiều cao ($0\text{px}$), thay bằng `<ResponsiveContainer width="100%" height={340}>`.
+      - **Tự động nạp dữ liệu theo NĂM MỚI NHẤT (năm lớn nhất)** cho `PO Balance Summary By Week` và khách hàng ngay khi mở trang; có cơ chế tự động fallback duyệt các năm trước nếu năm mới nhất chưa có tuần.
+      - Bổ sung cơ chế Fallback lùi năm cho Samsung Forecast (`checklastfcstweekno` fallback `currentYear - 1`), đảm bảo luôn nạp được dữ liệu so sánh 2 tuần FCST gần nhất.
+      - **Hiển thị Data Labels trực tiếp trên cả 3 biểu đồ**: Số lượng tồn EA & giá trị USD compact cho PO Trending, số lượng tồn EA cho PO Summary By Week, và nhãn tổng FCST tuần 1/tuần 2 trên nóc cột stack của Samsung Forecast.
+      - Hiển thị badge năm `selectedYW` trên Header card PO Balance Summary By Week và trỏ nút Excel xuất đúng dữ liệu tuần `pobalanceDetail`.
+      - Nâng cấp `KDPOBalanceSummaryByYear.tsx` sang `<ResponsiveContainer width="100%" height={340}>` và nhãn dữ liệu chuẩn Stitch.
+      - Tinh chỉnh tooltip chi tiết, hiển thị biến động tăng trưởng % và empty states chỉ dẫn trực quan.
+  - Xác thực biên dịch Vite Dev Server 100% các files liên quan trả về HTTP 200 OK, không còn lỗi JSX hay cảnh báo cú pháp.
 
   - Sao lưu toàn vẹn 100% mã nguồn gốc `OVER_MONITOR.backup.tsx` (19.458 bytes, 463 dòng).
   - **Bảo lưu trọn vẹn 100% các tương tác Cell trong Datagrid theo yêu cầu người dùng**:

@@ -59,19 +59,20 @@ const KDPOBalanceSummaryByCustomer: React.FC<KDPOProps> = ({ data }) => {
     const cos = Math.cos(-midAngle * RADIAN);
     const sx = cx + (outerRadius + 2) * cos;
     const sy = cy + (outerRadius + 2) * sin;
-    const mx = cx + (outerRadius + 14) * cos;
-    const my = cy + (outerRadius + 14) * sin;
-    const ex = mx + (cos >= 0 ? 1 : -1) * 12;
+    const mx = cx + (outerRadius + 11) * cos;
+    const my = cy + (outerRadius + 11) * sin;
+    const ex = mx + (cos >= 0 ? 1 : -1) * 10;
     const ey = my;
     const textAnchor = cos >= 0 ? "start" : "end";
     const color = ENTERPRISE_PALETTE[index % ENTERPRISE_PALETTE.length];
+    const displayName = name && name.length > 11 ? `${name.slice(0, 10)}…` : name;
 
     return (
       <g>
         <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={color} fill="none" strokeWidth={1.2} />
         <circle cx={ex} cy={ey} r={2} fill={color} />
         <text
-          x={ex + (cos >= 0 ? 1 : -1) * 4}
+          x={ex + (cos >= 0 ? 1 : -1) * 3}
           y={ey}
           textAnchor={textAnchor}
           fill="#1e293b"
@@ -79,7 +80,7 @@ const KDPOBalanceSummaryByCustomer: React.FC<KDPOProps> = ({ data }) => {
           fontSize={10}
           fontWeight={700}
         >
-          {`${name}: ${formatCompact(value)}`}
+          {`${displayName}: ${formatCompact(value)}`}
         </text>
       </g>
     );
@@ -181,8 +182,8 @@ const KDPOBalanceSummaryByCustomer: React.FC<KDPOProps> = ({ data }) => {
         {/* Phân Hệ Biểu Đồ Tròn / Donut */}
         {viewMode !== "list" && (
           <div className={`po-customer-chart__donut-pane ${viewMode === "chart" ? "full" : ""}`}>
-            <ResponsiveContainer width="100%" height={340}>
-              <PieChart margin={{ top: 15, right: 15, bottom: 15, left: 15 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
                 <Tooltip content={<CustomTooltip />} />
                 <Pie
                   data={sortedData}
@@ -191,8 +192,8 @@ const KDPOBalanceSummaryByCustomer: React.FC<KDPOProps> = ({ data }) => {
                   isAnimationActive={false}
                   cx="50%"
                   cy="50%"
-                  innerRadius={viewMode === "chart" ? 65 : 52}
-                  outerRadius={viewMode === "chart" ? 105 : 90}
+                  innerRadius={viewMode === "chart" ? 60 : 46}
+                  outerRadius={viewMode === "chart" ? 100 : 76}
                   paddingAngle={1}
                   activeIndex={activeIndex !== null ? activeIndex : undefined}
                   activeShape={renderActiveShape}

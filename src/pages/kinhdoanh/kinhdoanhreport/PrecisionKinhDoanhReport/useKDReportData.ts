@@ -225,9 +225,48 @@ export const useKDReportData = () => {
         setMonthlyvRevenuebyCustomer(monthRows);
         setColumnsMonth(buildKDClosingColumns(monthRows));
 
-        setPoBalanceSummary(values[18] || []);
-        setPoBalanceDetail(values[19] || []);
-        setPoBalanceCustomer(values[20] || []);
+        const summaryYears = values[18] || [];
+        setPoBalanceSummary(summaryYears);
+
+        // Tự động xác định năm mới nhất (năm lớn nhất) từ danh sách tồn đơn PO theo năm
+        let targetYear = moment().year();
+        const validYears = summaryYears
+          .map((item: any) => Number(item.PO_YEAR))
+          .filter((y: number) => !isNaN(y) && y > 2000)
+          .sort((a: number, b: number) => b - a);
+
+        if (validYears.length > 0) {
+          targetYear = validYears[0];
+        }
+        setSelectedYW(`Y${targetYear}`);
+
+        try {
+          let detailData = await f_load_PO_BALANCE_DETAIL({ PO_YEAR: targetYear });
+          let custData = await f_load_PO_BALANCE_CUSTOMER_BY_YEAR({ PO_YEAR: targetYear });
+
+          // Nếu năm mới nhất không có chi tiết tuần mà còn các năm trước trong danh sách, tự động fallback về năm gần nhất có dữ liệu
+          if ((!detailData || detailData.length === 0) && validYears.length > 1) {
+            for (let i = 1; i < validYears.length; i++) {
+              const fallbackYear = validYears[i];
+              const fbDetail = await f_load_PO_BALANCE_DETAIL({ PO_YEAR: fallbackYear });
+              if (fbDetail && fbDetail.length > 0) {
+                targetYear = fallbackYear;
+                detailData = fbDetail;
+                custData = await f_load_PO_BALANCE_CUSTOMER_BY_YEAR({ PO_YEAR: fallbackYear });
+                setSelectedYW(`Y${targetYear}`);
+                break;
+              }
+            }
+          }
+
+          setPoBalanceDetail(detailData || []);
+          setPoBalanceCustomer(custData || []);
+        } catch (detailErr) {
+          console.error("Lỗi nạp chi tiết PO Balance:", detailErr);
+          setPoBalanceDetail(values[19] || []);
+          setPoBalanceCustomer(values[20] || []);
+        }
+
         setCustomerNewPOByWeek(values[21] || []);
       }
     } catch (err) {

@@ -1,287 +1,252 @@
+import React, { useEffect, useState } from "react";
 import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
 import {
   ComposedChart,
-  Line,
-  Area,
   Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
-  Scatter,
-  Label,
+  ResponsiveContainer,
+  LabelList,
 } from "recharts";
-import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting } from "../../../api/Api";
-import { CustomResponsiveContainer, nFormatter } from "../../../api/services/utilService";
-import {WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { generalQuery } from "../../../api/Api";
 import { SamSungFCSTData } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 
-const ChartFCSTSamSung = () => {
-  const [runningPOData, setSamSungFCSTData] = useState<Array<SamSungFCSTData>>(
-    []
-  );
-    const formatCash = (n: number) => {  
-     return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
-   };
-  const labelFormatter = (value: number) => {
-    return new Intl.NumberFormat("en", {
-      notation: "compact",
-      compactDisplay: "short",
-    }).format(value);
+const formatCompact = (num: number) => {
+  if (!num) return "0";
+  if (num >= 1e9) return (num / 1e9).toFixed(2) + "B";
+  if (num >= 1e6) return (num / 1e6).toFixed(2) + "M";
+  if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
+  return num.toLocaleString("en-US");
+};
+
+const ChartFCSTSamSung: React.FC = () => {
+  const [runningPOData, setSamSungFCSTData] = useState<Array<SamSungFCSTData>>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [infoWeeks, setInfoWeeks] = useState<{ w1: number; w2: number; y1: number; y2: number }>({
+    w1: 0,
+    w2: 0,
+    y1: 0,
+    y2: 0,
+  });
+
+  const handleGetDailyClosing = async () => {
+    setLoading(true);
+    let fcstweek2: number = moment().add(1, "days").isoWeek();
+    let fcstyear2: number = moment().year();
+    let fcstyear1: number = moment().year();
+
+    try {
+      // Truy vấn tuần FCST gần nhất
+      let weekRes = await generalQuery("checklastfcstweekno", {
+        FCSTWEEKNO: fcstyear2,
+      });
+
+      if (weekRes?.data?.data?.[0]?.FCSTWEEKNO) {
+        fcstweek2 = weekRes.data.data[0].FCSTWEEKNO;
+      } else {
+        // Fallback năm trước nếu năm hiện tại chưa có dữ liệu
+        const fallbackRes = await generalQuery("checklastfcstweekno", {
+          FCSTWEEKNO: fcstyear2 - 1,
+        });
+        if (fallbackRes?.data?.data?.[0]?.FCSTWEEKNO) {
+          fcstyear2 = fcstyear2 - 1;
+          fcstyear1 = fcstyear2;
+          fcstweek2 = fallbackRes.data.data[0].FCSTWEEKNO;
+        }
+      }
+
+      let fcstweek1 = fcstweek2 - 1;
+      if (fcstweek2 <= 1) {
+        fcstweek1 = 52;
+        fcstyear1 = fcstyear2 - 1;
+      }
+
+      setInfoWeeks({ w1: fcstweek1, w2: fcstweek2, y1: fcstyear1, y2: fcstyear2 });
+
+      const res = await generalQuery("baocaofcstss", {
+        FCSTYEAR1: fcstyear1,
+        FCSTYEAR2: fcstyear2,
+        FCSTWEEKNUM1: fcstweek1,
+        FCSTWEEKNUM2: fcstweek2,
+      });
+
+      if (res?.data?.tk_status !== "NG" && res?.data?.data) {
+        const loadeddata: SamSungFCSTData[] = res.data.data.map(
+          (element: SamSungFCSTData, index: number) => {
+            return {
+              ...element,
+              WEEKNO:
+                fcstweek2 + index > 52
+                  ? "W" +
+                    (fcstweek2 + index - 52 - 1 === 0 ? 52 : 1) +
+                    "_W" +
+                    (fcstweek2 + index - 52)
+                  : "W" +
+                    (fcstweek2 + index - 1) +
+                    "_W" +
+                    (fcstweek2 + index),
+            };
+          }
+        );
+        setSamSungFCSTData(loadeddata.slice(0, 15));
+      }
+    } catch (err) {
+      console.error("Lỗi nạp báo cáo FCST Samsung:", err);
+    } finally {
+      setLoading(false);
+    }
   };
-  const CustomTooltip = ({
-    active,
-    payload,
-    label,
-  }: {
-    active?: any;
-    payload?: any;
-    label?: any;
-  }) => {
+
+  useEffect(() => {
+    handleGetDailyClosing();
+  }, []);
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
+      const w1Total =
+        (payload.find((p: any) => p.dataKey === "SEVT1")?.value || 0) +
+        (payload.find((p: any) => p.dataKey === "SEV1")?.value || 0) +
+        (payload.find((p: any) => p.dataKey === "SAMSUNG_ASIA1")?.value || 0);
+
+      const w2Total =
+        (payload.find((p: any) => p.dataKey === "SEVT2")?.value || 0) +
+        (payload.find((p: any) => p.dataKey === "SEV2")?.value || 0) +
+        (payload.find((p: any) => p.dataKey === "SAMSUNG_ASIA2")?.value || 0);
+
       return (
-        <div
-          className='custom-tooltip'
-          style={{
-            backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)",
-            padding: 20,
-            borderRadius: 5,
-          }}
-        >
-          <p>{label}:</p>
-          <p className='label'>
-            QTY Tuần Trước:{" "}
-            {`${(
-              payload[0]?.value +
-              payload[1]?.value +
-              payload[2]?.value
-            ).toLocaleString("en-US")}`}{" "}
-            EA
-          </p>
-          <p className='label'>
-            QTY Tuần Này:{" "}
-            {`${(
-              payload[3]?.value +
-              payload[4]?.value +
-              payload[5]?.value
-            ).toLocaleString("en-US")}`}{" "}
-            EA
-          </p>
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, padding: "8px 12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", fontSize: 11 }}>
+          <div style={{ fontWeight: 700, color: "#0f172a", marginBottom: 4 }}>Tuần: {label}</div>
+          <div style={{ color: "#64748b", display: "flex", justifyContent: "space-between", gap: 12 }}>
+            <span>Tuần W{infoWeeks.w1}:</span>
+            <strong style={{ fontFamily: "JetBrains Mono", color: "#2563eb" }}>{w1Total.toLocaleString("en-US")} EA</strong>
+          </div>
+          <div style={{ color: "#64748b", display: "flex", justifyContent: "space-between", gap: 12, marginTop: 2 }}>
+            <span>Tuần W{infoWeeks.w2}:</span>
+            <strong style={{ fontFamily: "JetBrains Mono", color: "#059669" }}>{w2Total.toLocaleString("en-US")} EA</strong>
+          </div>
+          {w1Total > 0 && (
+            <div style={{ marginTop: 4, fontSize: 10, color: w2Total >= w1Total ? "#059669" : "#dc2626", fontWeight: 700 }}>
+              Biến động: {(((w2Total - w1Total) / w1Total) * 100).toFixed(1)}%
+            </div>
+          )}
         </div>
       );
     }
     return null;
   };
-  //console.log(moment().add(1,'days').isoWeek());
-  const handleGetDailyClosing = async () => {
-    let fcstweek2: number = moment().add(1, "days").isoWeek();
-    let fcstyear2: number = moment().year();
-    let fcstweek1: number = moment().add(1, "days").isoWeek() - 1;
-    let fcstyear1: number = moment().year();
 
-    await generalQuery("checklastfcstweekno", {
-      FCSTWEEKNO: fcstyear2,
-    })
-      .then((response) => {
-        //console.log(response.data.data)
-        if (response.data.tk_status !== "NG") {
-          fcstweek2 = response.data.data[0].FCSTWEEKNO;
-          //console.log(response.data.data);
-        } else {
-          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    if (fcstweek2 === 1) {
-      fcstweek1 = 52;
-      fcstyear1 = fcstyear2 - 1;
-    } else if (fcstweek2 === 0) {
-      fcstweek2 = 1;
-      fcstweek1 = 52;
-      fcstyear1 = fcstyear2 - 1;
-    } else {
-      fcstweek1 = fcstweek2 - 1;
-    }
-
-    //console.log("fcst week 1", fcstweek1);
-    //console.log("fcst week 2", fcstweek2);
-
-    //console.log('fcst week 1',fcstweek1)
-    // console.log('fcst week 2',fcstweek2)
-
-    generalQuery("baocaofcstss", {
-      FCSTYEAR1: fcstyear1,
-      FCSTYEAR2: fcstyear2,
-      FCSTWEEKNUM1: fcstweek1,
-      FCSTWEEKNUM2: fcstweek2,
-    })
-      .then((response) => {
-        //console.log(response.data.data)
-        if (response.data.tk_status !== "NG") {          
-          const loadeddata: SamSungFCSTData[] = response.data.data.map(
-            (element: SamSungFCSTData, index: number) => {
-              return {
-                ...element,
-                WEEKNO:
-                  fcstweek2 + index > 52
-                    ? "W" +
-                      (fcstweek2 + index - 52 - 1 === 0 ? 52 : 1) +
-                      "_W" +
-                      (fcstweek2 + index - 52)
-                    : "W" +
-                      (fcstweek2 + index - 1) +
-                      "_W" +
-                      (fcstweek2 + index),
-              };
-            }
-          );
-          setSamSungFCSTData(loadeddata.splice(0, 15));
-          //console.log('fcst data', loadeddata);
-         /*  if (loadeddata[0].TT_SS1 !== null && loadeddata[0].TT_SS2 !== null) {
-            setSamSungFCSTData(loadeddata.splice(0, 15));
-          } else {
-            generalQuery("baocaofcstss", {
-              FCSTYEAR1: fcstweek1 - 1 === 0 ? fcstyear1 - 1 : fcstyear1,
-              FCSTYEAR2: fcstyear2,
-              FCSTWEEKNUM1: fcstweek1 - 1 === 0 ? 52 : fcstweek1 - 1,
-              FCSTWEEKNUM2: fcstweek2 - 1 === 0 ? 1 : fcstweek2 - 1,
-            })
-              .then((response) => {
-                
-                if (response.data.tk_status !== "NG") {
-                  const loadeddata: SamSungFCSTData[] = response.data.data.map(
-                    (element: SamSungFCSTData, index: number) => {
-                      return {
-                        ...element,
-                        WEEKNO:
-                          fcstweek2 + index > 52
-                            ? "W" +
-                              (fcstweek2 + index - 52 - 1 === 0 ? 52 : 1) +
-                              "_W" +
-                              (fcstweek2 + index - 52)
-                            : "W" +
-                              (fcstweek2 + index - 1) +
-                              "_W" +
-                              (fcstweek2 + index),
-                      };
-                    }
-                  );
-                  setSamSungFCSTData(loadeddata.splice(0, 15));
-                  
-                } else {
-                  
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          } */
-          //console.log(loadeddata);
-        } else {
-          //Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  useEffect(() => {
-    handleGetDailyClosing();
-  }, []);
-  return (
-    <CustomResponsiveContainer>
-      <ComposedChart
-        width={500}
-        height={300}
-        data={runningPOData}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
+  const renderTotalLabelW1 = (props: any) => {
+    const { x, y, width, index } = props;
+    const item = runningPOData[index];
+    const total = item?.TT_SS1 ?? ((item?.SEVT1 || 0) + (item?.SEV1 || 0) + (item?.SAMSUNG_ASIA1 || 0));
+    if (!total || total === 0) return null;
+    return (
+      <text
+        x={x + width / 2}
+        y={y - 4}
+        fill="#15803d"
+        textAnchor="middle"
+        fontSize={8.5}
+        fontWeight={700}
+        fontFamily="JetBrains Mono, monospace"
       >
-        {" "}
-        <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='WEEKNO'>
-          {" "}
-          <Label value='Tuần' offset={0} position='insideBottom' />
-        </XAxis>
-        <YAxis
-          yAxisId='left-axis'
-          label={{
-            value: "Số lượng",
-            angle: -90,
-            position: "insideLeft",
-          }}
-          tickFormatter={(value) =>
-            new Intl.NumberFormat("en", {
-              notation: "compact",
-              compactDisplay: "short",
-            }).format(value)
-          }
-          tickCount={12}
-        />
-        <Tooltip content={<CustomTooltip />} />
-        <Legend />
-        <Bar
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='SEVT1'
-          stroke='white'
-          fill='#44cc00'
-          stackId='ss1'
-        ></Bar>
-        <Bar
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='SEV1'
-          stroke='white'
-          fill='#ff80ff'
-          stackId='ss1'
-        ></Bar>
-        <Bar
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='SAMSUNG_ASIA1'
-          stroke='white'
-          fill='#4d94ff'
-          stackId='ss1'
-          label={{ position: "top", formatter: labelFormatter }}
-        ></Bar>
-        <Bar
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='SEVT2'
-          stroke='white'
-          fill='#44cc00'
-          stackId='ss2'
-        ></Bar>
-        <Bar
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='SEV2'
-          stroke='white'
-          fill='#ff80ff'
-          stackId='ss2'
-        ></Bar>
-        <Bar
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='SAMSUNG_ASIA2'
-          stroke='white'
-          fill='#4d94ff'
-          stackId='ss2'
-          label={{ position: "top", formatter: labelFormatter }}
-        ></Bar>
-      </ComposedChart>
-    </CustomResponsiveContainer>
+        {formatCompact(total)}
+      </text>
+    );
+  };
+
+  const renderTotalLabelW2 = (props: any) => {
+    const { x, y, width, index } = props;
+    const item = runningPOData[index];
+    const total = item?.TT_SS2 ?? ((item?.SEVT2 || 0) + (item?.SEV2 || 0) + (item?.SAMSUNG_ASIA2 || 0));
+    if (!total || total === 0) return null;
+    return (
+      <text
+        x={x + width / 2}
+        y={y - 4}
+        fill="#1d4ed8"
+        textAnchor="middle"
+        fontSize={8.5}
+        fontWeight={700}
+        fontFamily="JetBrains Mono, monospace"
+      >
+        {formatCompact(total)}
+      </text>
+    );
+  };
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 340, color: "#94a3b8", fontSize: 12 }}>
+        Đang tải dữ liệu so sánh dự báo Samsung...
+      </div>
+    );
+  }
+
+  if (runningPOData.length === 0) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: 340, color: "#94a3b8", fontSize: 12, gap: 6 }}>
+        <span>Chưa có dữ liệu dự báo Samsung FCST</span>
+        {infoWeeks.w2 > 0 && (
+          <span style={{ fontSize: 11, color: "#cbd5e1" }}>
+            Kỳ so sánh: Tuần W{infoWeeks.w1}/{infoWeeks.y1} vs Tuần W{infoWeeks.w2}/{infoWeeks.y2}
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ width: "100%", height: 340 }}>
+      <ResponsiveContainer width="100%" height={340}>
+        <ComposedChart
+          data={runningPOData}
+          margin={{ top: 28, right: 25, left: 15, bottom: 20 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+          <XAxis
+            dataKey="WEEKNO"
+            height={30}
+            tick={{ fontSize: 10, fill: "#64748b" }}
+            axisLine={{ stroke: "#e2e8f0" }}
+            tickLine={false}
+          />
+          <YAxis
+            yAxisId="left-axis"
+            width={55}
+            tick={{ fontSize: 10, fill: "#64748b" }}
+            axisLine={{ stroke: "#e2e8f0" }}
+            tickLine={false}
+            tickFormatter={(val) => formatCompact(val) + " EA"}
+          />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend
+            verticalAlign="top"
+            align="right"
+            iconType="circle"
+            iconSize={8}
+            wrapperStyle={{ paddingBottom: 8, fontSize: 10.5 }}
+          />
+          {/* Cột Tuần 1 (Stack ss1) */}
+          <Bar yAxisId="left-axis" dataKey="SEVT1" name={`SEVT (W${infoWeeks.w1})`} fill="#86efac" stackId="ss1" />
+          <Bar yAxisId="left-axis" dataKey="SEV1" name={`SEV (W${infoWeeks.w1})`} fill="#f472b6" stackId="ss1" />
+          <Bar yAxisId="left-axis" dataKey="SAMSUNG_ASIA1" name={`ASIA (W${infoWeeks.w1})`} fill="#93c5fd" stackId="ss1">
+            <LabelList content={renderTotalLabelW1} />
+          </Bar>
+
+          {/* Cột Tuần 2 (Stack ss2) */}
+          <Bar yAxisId="left-axis" dataKey="SEVT2" name={`SEVT (W${infoWeeks.w2})`} fill="#16a34a" stackId="ss2" />
+          <Bar yAxisId="left-axis" dataKey="SEV2" name={`SEV (W${infoWeeks.w2})`} fill="#db2777" stackId="ss2" />
+          <Bar yAxisId="left-axis" dataKey="SAMSUNG_ASIA2" name={`ASIA (W${infoWeeks.w2})`} fill="#2563eb" stackId="ss2">
+            <LabelList content={renderTotalLabelW2} />
+          </Bar>
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
-export default ChartFCSTSamSung;
+
+export default React.memo(ChartFCSTSamSung);

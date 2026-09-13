@@ -160,7 +160,7 @@ const PrecisionKDPOSection: React.FC<PrecisionKDPOSectionProps> = ({
               <span>Excel</span>
             </button>
           </div>
-          <div className="executive-card__body">
+          <div className="executive-card__body executive-card__body--chart-lg">
             <ChartPOBalance data={runningPOBalanceData} />
           </div>
         </div>
@@ -218,19 +218,24 @@ const PrecisionKDPOSection: React.FC<PrecisionKDPOSectionProps> = ({
               <div className="executive-card__header">
                 <div className="executive-card__title-wrap">
                   <FiLayers size={13} color="#d97706" />
-                  <span className="executive-card__title">PO Balance Summary By Week (Nhấp chọn tuần)</span>
+                  <span className="executive-card__title">PO Balance Summary By Week (Tồn Đơn Theo Tuần)</span>
+                  {selectedYW && (
+                    <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, backgroundColor: "#fef3c7", color: "#b45309", fontWeight: 700, fontFamily: "JetBrains Mono" }}>
+                      {selectedYW.startsWith("Y") ? `Năm ${selectedYW.replace("Y", "")}` : selectedYW}
+                    </span>
+                  )}
                 </div>
                 <button
                   type="button"
                   className="executive-card__btn-excel"
-                  onClick={() => SaveExcel(runningPOBalanceData, "RunningPOBalance")}
+                  onClick={() => SaveExcel(pobalanceDetail, `POBalanceWeek_${selectedYW}`)}
                   title="Xuất Excel tồn đơn theo tuần"
                 >
                   <FiDownload size={11} />
                   <span>Excel</span>
                 </button>
               </div>
-              <div className="executive-card__body">
+              <div className="executive-card__body executive-card__body--chart-lg">
                 <KDPOBalanceSummaryByWeek data={pobalanceDetail} onClick={onSelectPOWeek} />
               </div>
             </div>

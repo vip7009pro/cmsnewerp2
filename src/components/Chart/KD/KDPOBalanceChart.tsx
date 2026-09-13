@@ -1,159 +1,142 @@
-import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
+import React from "react";
 import {
   ComposedChart,
   Line,
-  Area,
   Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
-  Scatter,
-  Label,
+  ResponsiveContainer,
+  LabelList,
 } from "recharts";
-import Swal from "sweetalert2";
-import { generalQuery, getGlobalSetting } from "../../../api/Api";
-import { CustomResponsiveContainer, nFormatter } from "../../../api/services/utilService";
-import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
+import { nFormatter } from "../../../api/services/utilService";
 import { RunningPOData } from "../../../pages/kinhdoanh/interfaces/kdInterface";
-const ChartPOBalance = ({ data }: { data: Array<RunningPOData> }) => {
-  //const [runningPOData, setRunningPOData] = useState<Array<RunningPOData>>([]);
-  const formatCash = (n: number) => {
-    return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD' ? " $" : " đ");
-  };
-  const labelFormatter = (value: number) => {
-    return new Intl.NumberFormat("en", {
-      notation: "compact",
-      compactDisplay: "short",
-    }).format(value);
-  };
-  const CustomTooltip = ({
-    active,
-    payload,
-    label,
-  }: {
-    active?: any;
-    payload?: any;
-    label?: any;
-  }) => {
+
+interface ChartPOBalanceProps {
+  data: Array<RunningPOData>;
+}
+
+const formatCompact = (num: number) => {
+  if (!num) return "0";
+  if (num >= 1e9) return (num / 1e9).toFixed(2) + "B";
+  if (num >= 1e6) return (num / 1e6).toFixed(2) + "M";
+  if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
+  return num.toLocaleString("en-US");
+};
+
+const ChartPOBalance: React.FC<ChartPOBalanceProps> = ({ data }) => {
+  if (!data || data.length === 0) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 340, color: "#94a3b8", fontSize: 12, fontStyle: "italic" }}>
+        Chưa có dữ liệu xu hướng tồn đơn PO
+      </div>
+    );
+  }
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
+      const barItem = payload.find((p: any) => p.dataKey === "RUNNING_BALANCE_AMOUNT");
+      const lineItem = payload.find((p: any) => p.dataKey === "RUNNING_PO_BALANCE");
       return (
-        <div
-          className='custom-tooltip'
-          style={{
-            backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)",
-            padding: 20,
-            borderRadius: 5,
-          }}
-        >
-          <p>{label}:</p>
-          <p className='label'>
-            QTY: {`${payload[1].value.toLocaleString("en-US")}`} EA
-            <br></br>
-            AMOUNT: {`${payload[0].value.toLocaleString("en-US")}`} USD
-          </p>
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, padding: "8px 12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", fontSize: 11 }}>
+          <div style={{ fontWeight: 700, color: "#0f172a", marginBottom: 4 }}>Tuần: {label}</div>
+          {lineItem && (
+            <div style={{ color: "#059669", display: "flex", justifyContent: "space-between", gap: 12 }}>
+              <span>Số lượng tồn:</span>
+              <strong style={{ fontFamily: "JetBrains Mono" }}>{(lineItem.value * 1)?.toLocaleString("en-US")} EA</strong>
+            </div>
+          )}
+          {barItem && (
+            <div style={{ color: "#7c3aed", display: "flex", justifyContent: "space-between", gap: 12, marginTop: 2 }}>
+              <span>Giá trị tồn:</span>
+              <strong style={{ fontFamily: "JetBrains Mono" }}>${(barItem.value * 1)?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</strong>
+            </div>
+          )}
         </div>
       );
     }
     return null;
   };
-  const CustomLabel = (props: any) => {
-    return (
-      <g>
-        <rect
-          x={props.viewBox.x}
-          y={props.viewBox.y}
-          fill="#aaa"
-          style={{ transform: `rotate(90deg)` }}
-        />
-        <text x={props.viewBox.x} y={props.viewBox.y} fill="#000000" dy={20} dx={15} fontSize={'0.7rem'} fontWeight={'bold'}>
-          {formatCash(props.value)}
-        </text>
-      </g>
-    );
-  };
-  useEffect(() => {
-    //handleGetDailyClosing();
-  }, []);
+
   return (
-    <CustomResponsiveContainer>
-      <ComposedChart
-        width={500}
-        height={300}
-        data={data}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        {" "}
-        <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='YEAR_WEEK' height={40} tick={{ fontSize: '0.7rem' }}>
-          <Label value='Tuần' offset={0} position='insideBottom' style={{ fontWeight: 'normal', fontSize: '0.7rem' }} />
-        </XAxis>
-        <YAxis
-          width={50}
-          yAxisId='left-axis'
-          label={{
-            value: "Số lượng",
-            angle: -90,
-            position: "insideLeft",
-            fontSize: '0.7rem'
-          }}
-          tick={{ fontSize: '0.7rem' }}
-          tickFormatter={(value) =>
-            new Intl.NumberFormat("en", {
-              notation: "compact",
-              compactDisplay: "short",
-            }).format(value)
-          }
-          tickCount={12}
-        />
-        <YAxis
-          yAxisId='right-axis'
-          orientation='right'
-          label={{
-            value: "Số tiền",
-            angle: -90,
-            position: "insideRight",
-            fontSize: '0.7rem'
-          }}
-          tick={{ fontSize: '0.7rem' }}
-          tickFormatter={(value) => nFormatter(value, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE === 'USD' ? ' $' : ' đ')}
-          tickCount={12}
-        />
-        <Tooltip content={<CustomTooltip />} />
-        <Legend
-          verticalAlign="top"
-          align="center"
-          iconSize={15}
-          iconType="diamond"
-          formatter={(value, entry) => (
-            <span style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>{value}</span>
-          )}
-        />
-        <Bar
-          yAxisId='right-axis'
-          type='monotone'
-          dataKey='RUNNING_BALANCE_AMOUNT'
-          stroke='white'
-          fill='#c69ff3'
-          label={CustomLabel}
-        ></Bar>
-        <Line
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='RUNNING_PO_BALANCE'
-          stroke='green'
-          fill='#ff0000'
-          label={{ position: "top", formatter: labelFormatter }}
-        ></Line>
-      </ComposedChart>
-    </CustomResponsiveContainer>
+    <div style={{ width: "100%", height: 340 }}>
+      <ResponsiveContainer width="100%" height={340}>
+        <ComposedChart
+          data={data}
+          margin={{ top: 28, right: 35, left: 15, bottom: 20 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+          <XAxis
+            dataKey="YEAR_WEEK"
+            height={30}
+            tick={{ fontSize: 10.5, fill: "#64748b" }}
+            axisLine={{ stroke: "#e2e8f0" }}
+            tickLine={false}
+          />
+          <YAxis
+            yAxisId="left-axis"
+            width={55}
+            tick={{ fontSize: 10, fill: "#64748b" }}
+            axisLine={{ stroke: "#e2e8f0" }}
+            tickLine={false}
+            tickFormatter={(val) => formatCompact(val) + " EA"}
+          />
+          <YAxis
+            yAxisId="right-axis"
+            orientation="right"
+            width={60}
+            tick={{ fontSize: 10, fill: "#64748b" }}
+            axisLine={{ stroke: "#e2e8f0" }}
+            tickLine={false}
+            tickFormatter={(val) => "$" + nFormatter(val, 1)}
+          />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend
+            verticalAlign="top"
+            align="right"
+            iconType="circle"
+            iconSize={8}
+            wrapperStyle={{ paddingBottom: 8, fontSize: 11 }}
+          />
+          <Bar
+            yAxisId="right-axis"
+            dataKey="RUNNING_BALANCE_AMOUNT"
+            name="Giá Trị Tồn ($)"
+            fill="#c084fc"
+            radius={[3, 3, 0, 0]}
+            maxBarSize={30}
+          >
+            <LabelList
+              dataKey="RUNNING_BALANCE_AMOUNT"
+              position="top"
+              formatter={(val: any) => (val ? "$" + nFormatter(Number(val), 1) : "")}
+              style={{ fontSize: 9, fill: "#7c3aed", fontWeight: 700, fontFamily: "JetBrains Mono" }}
+            />
+          </Bar>
+          <Line
+            yAxisId="left-axis"
+            type="monotone"
+            dataKey="RUNNING_PO_BALANCE"
+            name="Số Lượng Tồn (EA)"
+            stroke="#059669"
+            strokeWidth={2.5}
+            dot={{ r: 3, fill: "#059669" }}
+            activeDot={{ r: 5 }}
+          >
+            <LabelList
+              dataKey="RUNNING_PO_BALANCE"
+              position="top"
+              offset={10}
+              formatter={(val: any) => (val ? formatCompact(Number(val)) : "")}
+              style={{ fontSize: 9, fill: "#047857", fontWeight: 700, fontFamily: "JetBrains Mono" }}
+            />
+          </Line>
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
-export default ChartPOBalance;
+
+export default React.memo(ChartPOBalance);

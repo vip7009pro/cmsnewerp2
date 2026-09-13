@@ -1,6 +1,5 @@
 import React from "react";
-import { FiTable, FiDownload } from "react-icons/fi";
-import { SaveExcel } from "../../../../api/services/excelService";
+import { FiTable } from "react-icons/fi";
 import CustomerDailyClosing from "../../../../components/DataTable/CustomerDailyClosing";
 import CustomerWeeklyClosing from "../../../../components/DataTable/CustomerWeeklyClosing";
 import CustomerMonthlyClosing from "../../../../components/DataTable/CustomerMonthlyClosing";
@@ -40,15 +39,6 @@ const PrecisionKDCustomerClosingTables: React.FC<PrecisionKDCustomerClosingTable
               <FiTable size={13} color="#2563eb" />
               <span className="executive-card__title">Customer Daily Closing (Khách Hàng Theo Ngày)</span>
             </div>
-            <button
-              type="button"
-              className="executive-card__btn-excel"
-              onClick={() => SaveExcel(dailyClosingData, "CustomerDailyClosing")}
-              title="Xuất Excel dữ liệu khách hàng theo ngày"
-            >
-              <FiDownload size={11} />
-              <span>Excel</span>
-            </button>
           </div>
           <div className="executive-card__body">
             <CustomerDailyClosing data={dailyClosingData} columns={columns} />
@@ -62,15 +52,6 @@ const PrecisionKDCustomerClosingTables: React.FC<PrecisionKDCustomerClosingTable
               <FiTable size={13} color="#059669" />
               <span className="executive-card__title">Customer Weekly Closing (Khách Hàng Theo Tuần)</span>
             </div>
-            <button
-              type="button"
-              className="executive-card__btn-excel"
-              onClick={() => SaveExcel(weeklyClosingData, "CustomerWeeklyClosing")}
-              title="Xuất Excel dữ liệu khách hàng theo tuần"
-            >
-              <FiDownload size={11} />
-              <span>Excel</span>
-            </button>
           </div>
           <div className="executive-card__body">
             <CustomerWeeklyClosing data={weeklyClosingData} columns={columnsweek} />
@@ -86,15 +67,6 @@ const PrecisionKDCustomerClosingTables: React.FC<PrecisionKDCustomerClosingTable
               <FiTable size={13} color="#d97706" />
               <span className="executive-card__title">Customer Monthly Closing (Khách Hàng Theo Tháng)</span>
             </div>
-            <button
-              type="button"
-              className="executive-card__btn-excel"
-              onClick={() => SaveExcel(monthlyvRevenuebyCustomer, "CustomerMonthlyClosing")}
-              title="Xuất Excel dữ liệu khách hàng theo tháng"
-            >
-              <FiDownload size={11} />
-              <span>Excel</span>
-            </button>
           </div>
           <div className="executive-card__body">
             <CustomerMonthlyClosing data={monthlyvRevenuebyCustomer} columns={columnsmonth} />

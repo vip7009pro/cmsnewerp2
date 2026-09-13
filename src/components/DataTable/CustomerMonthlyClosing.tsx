@@ -1,36 +1,64 @@
-import { useEffect, useMemo } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import AGTable from './AGTable';
-const CustomerMonthlyClosing = ({ data, columns }: { data: Array<any>, columns: Array<any> }) => {
-  //remove element from columns array which named id
-  columns = columns.filter((e) => e.field !== 'id');
-  const poDataAGTable = useMemo(() =>
-    <AGTable
-      suppressRowClickSelection={false}
-      showFilter={true}
-      toolbar={
-        <></>
-      }
-      columns={columns}
-      data={data}
-      onCellEditingStopped={(params: any) => {
-        //console.log(e.data)
-      }} onRowClick={(params: any) => {
-        //console.log(params.data)
-      }} onSelectionChange={(params: any) => {
-        //console.log(params)
-        //setSelectedRows(params!.api.getSelectedRows()[0]);
-        //console.log(e!.api.getSelectedRows())            
-      }}
-    />
-    , [data, columns]);
-  useEffect(() => {
-    return () => {
-    }
-  }, [])
-  return (
-    <div className='customerdailyclosing' style={{ height: '100%', width: '100%' }}>
-      {poDataAGTable}
-    </div>
-  )
+import PrecisionKDTableToolbar from '../../pages/kinhdoanh/kinhdoanhreport/PrecisionKinhDoanhReport/PrecisionKDTableToolbar';
+import { SaveExcel } from '../../api/services/excelService';
+
+interface CustomerMonthlyClosingProps {
+  data: Array<any>;
+  columns: Array<any>;
 }
-export default CustomerMonthlyClosing
+
+const CustomerMonthlyClosing: React.FC<CustomerMonthlyClosingProps> = ({ data, columns }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const gridRef = useRef<any>(null);
+
+  const cleanColumns = useMemo(() => {
+    return (columns || []).filter((e) => e.field !== 'id');
+  }, [columns]);
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchTerm(value);
+    if (gridRef.current?.api) {
+      gridRef.current.api.setQuickFilter(value);
+    }
+  }, []);
+
+  const handleExportFiltered = useCallback(() => {
+    if (gridRef.current?.api) {
+      const filteredRows: any[] = [];
+      gridRef.current.api.forEachNodeAfterFilterAndSort((node: any) => {
+        if (node.data) filteredRows.push(node.data);
+      });
+      SaveExcel(filteredRows.length > 0 ? filteredRows : data, 'CustomerMonthlyClosing_Filtered');
+    } else {
+      SaveExcel(data, 'CustomerMonthlyClosing');
+    }
+  }, [data]);
+
+  const handleExportAll = useCallback(() => {
+    SaveExcel(data, 'CustomerMonthlyClosing_All');
+  }, [data]);
+
+  return (
+    <div className="customerdailyclosing">
+      <PrecisionKDTableToolbar
+        title="Customer Monthly Closing"
+        totalRows={data?.length || 0}
+        searchValue={searchTerm}
+        onSearchChange={handleSearchChange}
+        onExportFiltered={handleExportFiltered}
+        onExportAll={handleExportAll}
+      />
+      <AGTable
+        ref={gridRef}
+        suppressRowClickSelection={false}
+        showFilter={true}
+        columns={cleanColumns}
+        data={data}
+        onSelectionChange={() => {}}
+      />
+    </div>
+  );
+};
+
+export default React.memo(CustomerMonthlyClosing);

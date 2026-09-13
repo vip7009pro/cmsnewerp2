@@ -89,7 +89,7 @@ const PrecisionKDFcstSection: React.FC<PrecisionKDFcstSectionProps> = ({ fcstDat
               <span className="executive-card__title">Samsung Forecast (So Sánh FCST 2 Tuần Liền Kề)</span>
             </div>
           </div>
-          <div className="executive-card__body">
+          <div className="executive-card__body executive-card__body--chart-lg">
             <ChartFCSTSamSung />
           </div>
         </div>

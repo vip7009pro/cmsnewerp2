@@ -150,7 +150,7 @@ const PrecisionKDClosingSection: React.FC<PrecisionKDClosingSectionProps> = ({
               <span>Excel</span>
             </button>
           </div>
-          <div className="executive-card__body">
+          <div className="executive-card__body executive-card__body--chart-lg">
             <ChartCustomerRevenue data={customerRevenue} />
           </div>
         </div>
@@ -172,7 +172,7 @@ const PrecisionKDClosingSection: React.FC<PrecisionKDClosingSectionProps> = ({
               <span>Excel</span>
             </button>
           </div>
-          <div className="executive-card__body">
+          <div className="executive-card__body executive-card__body--chart-lg">
             <ChartPICRevenue data={picRevenue} />
           </div>
         </div>

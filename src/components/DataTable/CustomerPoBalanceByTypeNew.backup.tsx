@@ -1,15 +1,10 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { generalQuery, getGlobalSetting } from '../../api/Api';
-import './CustomerPoBalanceByTypeNew.scss';
+import './CustomerPoBalanceByTypeNew.scss'
 import { WEB_SETTING_DATA } from '../../api/GlobalInterface';
 import AGTable from './AGTable';
-import PrecisionKDTableToolbar from '../../pages/kinhdoanh/kinhdoanhreport/PrecisionKinhDoanhReport/PrecisionKDTableToolbar';
-import { SaveExcel } from '../../api/services/excelService';
-
 const CustomerPobalancebyTypeNew = () => {
   const [pobalancecustomerbytypedata, setPoBalanceCustomerData] = useState<any>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const gridRef = useRef<any>(null);
   const loadpobalance = () => {
     generalQuery("customerpobalancebyprodtype_new", {
     })
@@ -373,57 +368,36 @@ const CustomerPobalancebyTypeNew = () => {
       }
     }
   ]
-  const handleSearchChange = useCallback((value: string) => {
-    setSearchTerm(value);
-    if (gridRef.current?.api) {
-      gridRef.current.api.setQuickFilter(value);
-    }
-  }, []);
-
-  const handleExportFiltered = useCallback(() => {
-    if (gridRef.current?.api) {
-      const filteredRows: any[] = [];
-      gridRef.current.api.forEachNodeAfterFilterAndSort((node: any) => {
-        if (node.data) filteredRows.push(node.data);
-      });
-      SaveExcel(filteredRows.length > 0 ? filteredRows : pobalancecustomerbytypedata, "POBalanceByProductType_Filtered");
-    } else {
-      SaveExcel(pobalancecustomerbytypedata, "POBalanceByProductType");
-    }
-  }, [pobalancecustomerbytypedata]);
-
-  const handleExportAll = useCallback(() => {
-    SaveExcel(pobalancecustomerbytypedata, "POBalanceByProductType_All");
-  }, [pobalancecustomerbytypedata]);
-
   const poDataAGTable = useMemo(() =>
     <AGTable
-      ref={gridRef}
       suppressRowClickSelection={false}
       showFilter={true}
+      toolbar={
+        <></>
+      }
       columns={columnsAG}
       data={pobalancecustomerbytypedata}
-      onSelectionChange={() => {}}
+      onCellEditingStopped={(params: any) => {
+        //console.log(e.data)
+      }} onRowClick={(params: any) => {
+        //console.log(params.data)
+      }} onSelectionChange={(params: any) => {
+        //console.log(params)
+        //setSelectedRows(params!.api.getSelectedRows()[0]);
+        //console.log(e!.api.getSelectedRows())            
+      }}
     />
     , [pobalancecustomerbytypedata, columnsAG]);
-
   useEffect(() => {
     loadpobalance();
     return () => {
     }
   }, [])
-
   return (
     <div className='customerpobalance'>
-      <PrecisionKDTableToolbar
-        title="PO Balance By Product Type"
-        totalRows={pobalancecustomerbytypedata?.length || 0}
-        searchValue={searchTerm}
-        onSearchChange={handleSearchChange}
-        onExportFiltered={handleExportFiltered}
-        onExportAll={handleExportAll}
-      />
-      {poDataAGTable}
+      {
+        poDataAGTable
+      }
     </div>
   )
 }

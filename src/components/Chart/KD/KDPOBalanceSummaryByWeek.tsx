@@ -1,152 +1,106 @@
-import { useEffect } from "react";
+import React from "react";
 import {
   ComposedChart,
-  Line,
   Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
-  Label,
+  ResponsiveContainer,
+  LabelList,
 } from "recharts";
-import { getGlobalSetting } from "../../../api/Api";
-import { CustomResponsiveContainer, nFormatter } from "../../../api/services/utilService";
-import { WEB_SETTING_DATA } from "../../../api/GlobalInterface";
 import { PO_BALANCE_DETAIL } from "../../../pages/kinhdoanh/interfaces/kdInterface";
-const KDPOBalanceSummaryByWeek = ({ data, onClick }: { data: Array<PO_BALANCE_DETAIL>, onClick: (e: any) => void }) => {
-  //const [runningPOData, setRunningPOData] = useState<Array<RunningPOData>>([]);
-  const formatCash = (n: number) => {
-    return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD' ? " $" : " đ");
-  };
-  const labelFormatter = (value: number) => {
-    return new Intl.NumberFormat("en", {
-      notation: "compact",
-      compactDisplay: "short",
-    }).format(value);
-  };
-  const CustomTooltip = ({
-    active,
-    payload,
-    label,
-  }: {
-    active?: any;
-    payload?: any;
-    label?: any;
-  }) => {
-    if (active && payload && payload.length) {      
+
+interface KDPOBalanceSummaryByWeekProps {
+  data: Array<PO_BALANCE_DETAIL>;
+  onClick: (e: any) => void;
+}
+
+const formatCompact = (num: number) => {
+  if (!num) return "0";
+  if (num >= 1e9) return (num / 1e9).toFixed(2) + "B";
+  if (num >= 1e6) return (num / 1e6).toFixed(2) + "M";
+  if (num >= 1e3) return (num / 1e3).toFixed(1) + "K";
+  return num.toLocaleString("en-US");
+};
+
+const KDPOBalanceSummaryByWeek: React.FC<KDPOBalanceSummaryByWeekProps> = ({ data, onClick }) => {
+  if (!data || data.length === 0) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: 340, color: "#94a3b8", fontSize: 12, gap: 6 }}>
+        <span>Chưa có dữ liệu tồn đơn theo tuần</span>
+        <span style={{ fontSize: 11, color: "#cbd5e1" }}>💡 Bạn có thể nhấp chọn một Năm ở biểu đồ "PO Balance Summary By Year" để tải dữ liệu</span>
+      </div>
+    );
+  }
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const item = payload[0]?.payload;
       return (
-        <div
-          className='custom-tooltip'
-          style={{
-            backgroundImage: "linear-gradient(to right, #ccffff, #00cccc)",
-            padding: 20,
-            borderRadius: 5,
-          }}
-        >
-          <p>{label}:</p>
-          <p className='label'>
-            YEAR: {`${payload[0]?.payload?.PO_YW}`}
-            <br></br>
-            BALANCE: {`${payload[0]?.payload?.PO_BALANCE?.toLocaleString("en-US")}`} EA
-          </p>
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #cbd5e1", borderRadius: 6, padding: "8px 12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", fontSize: 11 }}>
+          <div style={{ fontWeight: 700, color: "#0f172a", marginBottom: 4 }}>Tuần: {item?.PO_YW || label}</div>
+          <div style={{ color: "#059669", display: "flex", justifyContent: "space-between", gap: 12 }}>
+            <span>Số lượng tồn:</span>
+            <strong style={{ fontFamily: "JetBrains Mono" }}>{(item?.PO_BALANCE * 1)?.toLocaleString("en-US")} EA</strong>
+          </div>
         </div>
       );
     }
     return null;
   };
-  const CustomLabel = (props: any) => {
-    return (
-      <g>
-        <rect
-          x={props.viewBox.x}
-          y={props.viewBox.y}
-          fill="#aaa"
-          style={{ transform: `rotate(90deg)` }}
-        />
-        <text x={props.viewBox.x} y={props.viewBox.y} fill="#000000" dy={20} dx={15} fontSize={'0.7rem'} fontWeight={'bold'}>
-          {formatCash(props.value)}
-        </text>
-      </g>
-    );
-  };
-  const handleClick = (e: any) => {
-    // console.log(e)
-    onClick(e);
-  }
-  useEffect(() => {
-    //handleGetDailyClosing();
-  }, []);
+
   return (
-    <CustomResponsiveContainer>
-      <ComposedChart
-        onClick={(e) => { handleClick(e) }}
-        width={500}
-        height={300}
-        data={data}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        {" "}
-        <CartesianGrid strokeDasharray='3 3' className='chartGrid' />
-        <XAxis dataKey='PO_YW' height={40} tick={{ fontSize: '0.7rem' }}>
-          <Label value='Tuần' offset={0} position='insideBottom' style={{ fontWeight: 'normal', fontSize: '0.7rem' }} />
-        </XAxis>
-        <YAxis
-          width={50}
-          yAxisId='left-axis'
-          label={{
-            value: "Số lượng",
-            angle: -90,
-            position: "insideLeft",
-            fontSize: '0.7rem'
-          }}
-          tick={{ fontSize: '0.7rem' }}
-          tickFormatter={(value) =>
-            new Intl.NumberFormat("en", {
-              notation: "compact",
-              compactDisplay: "short",
-            }).format(value)
-          }
-          tickCount={12}
-        />
-        <YAxis
-          yAxisId='right-axis'
-          orientation='right'
-          label={{
-            value: "Số tiền",
-            angle: -90,
-            position: "insideRight",
-            fontSize: '0.7rem'
-          }}
-          tick={{ fontSize: '0.7rem' }}
-          tickFormatter={(value) => nFormatter(value, 2) + (getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === 'CURRENCY')[0]?.CURRENT_VALUE === 'USD' ? ' $' : ' đ')}
-          tickCount={12}
-        />
-        <Tooltip content={<CustomTooltip />} />
-        <Legend
-          verticalAlign="top"
-          align="center"
-          iconSize={15}
-          iconType="diamond"
-          formatter={(value, entry) => (
-            <span style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>{value}</span>
-          )}
-        />
-        <Bar
-          yAxisId='left-axis'
-          type='monotone'
-          dataKey='PO_BALANCE'
-          stroke='white'
-          fill='#37b46b'
-          label={{ position: "top", formatter: labelFormatter }}
-        ></Bar>
-      </ComposedChart>
-    </CustomResponsiveContainer>
+    <div style={{ width: "100%", height: 340 }}>
+      <ResponsiveContainer width="100%" height={340}>
+        <ComposedChart
+          data={data}
+          onClick={onClick}
+          margin={{ top: 28, right: 25, left: 15, bottom: 20 }}
+          style={{ cursor: "pointer" }}
+        >
+          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+          <XAxis
+            dataKey="PO_YW"
+            height={30}
+            tick={{ fontSize: 10, fill: "#64748b" }}
+            axisLine={{ stroke: "#e2e8f0" }}
+            tickLine={false}
+          />
+          <YAxis
+            width={55}
+            tick={{ fontSize: 10, fill: "#64748b" }}
+            axisLine={{ stroke: "#e2e8f0" }}
+            tickLine={false}
+            tickFormatter={(val) => formatCompact(val) + " EA"}
+          />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend
+            verticalAlign="top"
+            align="right"
+            iconType="circle"
+            iconSize={8}
+            wrapperStyle={{ paddingBottom: 8, fontSize: 11 }}
+          />
+          <Bar
+            dataKey="PO_BALANCE"
+            name="Tồn Đơn (EA - Nhấp để lọc)"
+            fill="#10b981"
+            radius={[3, 3, 0, 0]}
+            maxBarSize={32}
+          >
+            <LabelList
+              dataKey="PO_BALANCE"
+              position="top"
+              formatter={(val: any) => (val ? formatCompact(Number(val)) : "")}
+              style={{ fontSize: 9, fill: "#047857", fontWeight: 700, fontFamily: "JetBrains Mono" }}
+            />
+          </Bar>
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
-export default KDPOBalanceSummaryByWeek;
+
+export default React.memo(KDPOBalanceSummaryByWeek);
