@@ -161,4 +161,21 @@
   - Bảo toàn 100% nghiệp vụ: Toàn bộ API queries (`tranhaplieu`, `traxuatlieu`, `tratonlieu`, `updatelieuncc`), phân quyền `checkBP(userData, ["KHO"], ...)`, logic bảo mật audit mode `TEM_NOI_BO`, modal PivotTable xoay đa chiều, xuất Excel `SaveExcel`.
   - Tối ưu không gian hiển thị: Loại bỏ footer thừa thãi, dùng thanh trạng thái chuẩn của AGTable, bảng dữ liệu kéo dài sát đáy màn hình.
   - Kiểm tra Vite Dev Server (port 3001): 100% 8/8 files liên quan đều được biên dịch mượt mà và trả về HTTP 200 OK.
+- [x] Redesign 2 Modal Nhập Liệu & Xuất Liệu Kho Liệu (`NHAPLIEU.tsx` & `XUATLIEU.tsx`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Sao lưu 100% mã nguồn gốc: `NHAPLIEU.backup.tsx` (16.453 bytes) và `XUATLIEU.backup.tsx` (22.427 bytes).
+  - Modal Nhập Liệu (`NHAPLIEU.tsx` + `NHAPLIEU.scss`):
+    + Loại bỏ hoàn toàn background gradient lỗi thời, thay bằng hệ thống SCSS tokens công nghiệp chuẩn Google Stitch.
+    + Top Telemetry Status Bar hiển thị realtime: Tổng số dòng, Tổng số cuộn, Tổng số mét.
+    + Form Card Slate-border phân nhóm rõ ràng: Vendor, Vật liệu (MUI Autocomplete 28px, popper zIndex cao), Factory, Loại NK, Invoice, Ngày nhập, HSD, và bổ sung các ô quy cách (Số Lot, Cuộn/Lot, Mét/Cuộn, Số YCSX, Ghi chú) cho phép nhập ngay trước khi bấm Add.
+    + Cụm nút hành động công nghiệp: `+ Thêm Vào Danh Sách` (Emerald) và `Xác Nhận Nhập Kho` (Blue).
+    + Bảng AGTable full-height với toolbar tiêu đề, badge đếm dòng, nút `Xóa Dòng Chọn` (Red alert), bật `editable: true` cho phép chỉnh sửa trực tiếp trên lưới.
+  - Modal Xuất Liệu (`XUATLIEU.tsx` + `XUATLIEU.scss`):
+    + Phân rã monolith 585 dòng thành Master Controller (306 dòng) và 2 sub-components chuyên biệt: `XuatLieuScannerPanel.tsx` (178 dòng) và `XuatLieuTables.tsx` (137 dòng).
+    + Top Telemetry Status Bar hiển thị số mã yêu cầu ĐKXL và tổng số cuộn/mét đã quét barcode.
+    + Thiết kế Vùng Bắn Mã Vạch Hero (`scanner-hero-bar`) nổi bật cho thủ kho: Ô nhập `M_LOT_NO` font Mono lớn 13px, viền xanh lá đậm, focus ring nổi bật, badge phản hồi tên cuộn liệu vừa quét xong và nút `Xác Nhận Xuất Kho` (Blue).
+    + Bố cục Dual Grid thông thoáng: Bảng Đăng Ký Xuất Liệu (DKXL) bên trái và Bảng Cuộn Đã Bắn Barcode bên phải với nút Xóa cuộn chọn.
+    + Tự động tra tên nhân viên Giao/Nhận và hiển thị Badge tên nhân viên, hiển thị chip Tên sản phẩm PLAN_ID.
+  - Bảo toàn 100% logic API queries, phân quyền `checkBP`, cập nhật tồn kho `f_updateStockM090`, xuất kho `f_insertO302`, nhập kho `f_Insert_I221`/`f_Insert_I222`.
+  - Kiểm tra Vite Dev Server (port 3001): 100% 7/7 files liên quan đều được biên dịch mượt mà và trả về HTTP 200 OK.
+
 

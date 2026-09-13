@@ -1,5 +1,22 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-13 (KHOLIEU: Redesign 2 Modal Nhập Liệu & Xuất Liệu - Google Stitch High-Density Enterprise)
+
+### Completed
+- **Bảo toàn 100% mã nguồn gốc**: Đã tạo file sao lưu `NHAPLIEU.backup.tsx` (16.453 bytes) và `XUATLIEU.backup.tsx` (22.427 bytes).
+- **Nâng cấp Modal Nhập Liệu (`NHAPLIEU.tsx` + `NHAPLIEU.scss`)**:
+  1. `NHAPLIEU.scss`: Loại bỏ hoàn toàn CSS gradient cũ lòe loẹt, áp dụng SCSS tokens chuẩn Stitch Enterprise (Emerald `#059669`, Blue `#2563eb`, Slate `#f8fafc`, Border `#e2e8f0`).
+  2. `Top Telemetry Bar`: Hiển thị tức thời 3 chỉ số realtime: `Dòng`, `Tổng Cuộn`, và `Tổng Mét`.
+  3. `Form Card Nhập Liệu`: Chia lưới responsive gọn gàng, MUI Autocomplete 28px cho Vendor và Vật liệu, tích hợp nhập quy cách ngay trên form trước khi thêm (`LOT_QTY`, `ROLL_PER_LOT`, `MET_PER_ROLL`, `PROD_REQUEST_NO`, `REMARK`).
+  4. `Bảng AGTable & Thao Tác`: Chiếm trọn không gian, thanh toolbar với nút `Xóa Dòng Chọn` màu đỏ nổi bật, bật `editable: true` cho các cột quy cách để chỉnh sửa trực tiếp trên bảng.
+- **Nâng cấp & Phân rã Modal Xuất Liệu (`XUATLIEU.tsx` + `XUATLIEU.scss`)**:
+  1. `XUATLIEU.scss`: Bố cục Split cân đối (Scanner Control Card + Dual Grid Workspace), viền sắc nét, độ tương phản cao.
+  2. `XuatLieuScannerPanel.tsx` (178 dòng): Quản lý form thông tin (Customer, Factory, Ngày xuất, Số lần xuất), tự động tra tên nhân viên Giao/Nhận và hiển thị Badge tên nhân viên, hiển thị chip Tên sản phẩm PLAN_ID, và đặc biệt là **Khu Vực Bắn Mã Vạch Hero (Scanner Hero Zone)** với ô nhập `M_LOT_NO` chữ Mono lớn 13px, viền xanh lá đậm, focus ring nổi bật, badge phản hồi tên cuộn liệu vừa quét xong và nút Hero `Xác Nhận Xuất Kho` (Blue).
+  3. `XuatLieuTables.tsx` (137 dòng): Quản lý 2 bảng dữ liệu đồng thời: Bảng Đăng Ký Xuất Liệu (DKXL) bên trái và Bảng Cuộn Đã Bắn Barcode bên phải kèm nút `Xóa Cuộn Chọn`.
+  4. `XUATLIEU.tsx` (306 dòng): Master controller sạch sẽ, bảo toàn 100% logic API queries (`selectCustomerAndVendorList`, `checkEMPL_NO_mobile`, `checkPLAN_ID`, `checksolanout_O302`, `checkPLANID_O301`, `checkMNAMEfromLotI222XuatKho`, `f_insertO302`, `f_updateO301_OUT_CFM_QTY`, `f_updateStockM090`).
+- **Tối ưu modal-body trong `PrecisionKHOLIEU.scss`**: Tinh chỉnh `.modal-body` với `display: flex; flex-direction: column; height: calc(90vh - 50px); min-height: 520px;` giúp 2 modal co giãn full-height hoàn hảo.
+- **Kiểm tra Vite Dev Server (port 3001)**: 100% 7/7 files liên quan đều được biên dịch mượt mà và trả về HTTP 200 OK.
+
 ## Update - 2026-09-13 (KHOLIEU: Google Stitch High-Density Enterprise Redesign)
 
 ### Completed
