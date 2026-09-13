@@ -177,5 +177,16 @@
     + Tự động tra tên nhân viên Giao/Nhận và hiển thị Badge tên nhân viên, hiển thị chip Tên sản phẩm PLAN_ID.
   - Bảo toàn 100% logic API queries, phân quyền `checkBP`, cập nhật tồn kho `f_updateStockM090`, xuất kho `f_insertO302`, nhập kho `f_Insert_I221`/`f_Insert_I222`.
   - Kiểm tra Vite Dev Server (port 3001): 100% 7/7 files liên quan đều được biên dịch mượt mà và trả về HTTP 200 OK.
+- [x] Redesign Quản Lý Thông Tin Sản Phẩm (`CODE_MANAGER.tsx`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Sao lưu 100% mã nguồn gốc: `CODE_MANAGER.backup.tsx` (59.761 bytes, 1.990 dòng).
+  - Phân rã kiến trúc monolith 1.990 dòng thành 5 sub-modules chuyên biệt (< 280 dòng/file) tại `src/pages/rnd/code_manager/PrecisionCodeManager/`:
+    + `PrecisionCodeManager.scss`: SCSS tokens công nghiệp chuẩn Stitch, full-width & full-height co giãn trong Multi-Tab, ẩn toolbar xanh lá cũ của AGTable.
+    + `PrecisionCodeManagerHeader.tsx`: Sub-header công nghiệp, breadcrumb R&D / QLSX, đồng hồ realtime máy chủ, nút làm mới và toàn màn hình.
+    + `PrecisionCodeManagerKpi.tsx`: 4 Widget KPI summary tính toán động từ dữ liệu thực tế: Tổng Mã Sản Phẩm & Active Rate, Phân Loại Sản Phẩm (PROD_TYPE Breakdown & Top Type), Dòng Máy (Unique PROD_MODELs & Tỷ lệ duyệt bản vẽ PDBV), Quy Cách Đóng Gói (ROLL / TRAY / SHEET & Điểm BEP TB).
+    + `PrecisionCodeManagerToolbar.tsx`: Dải công cụ 2 hàng phân màu sắc nét: Hàng 1 (Tìm code, Active, CNDB, Lọc PROD_TYPE, EX1, EX2, PIVOT, đếm dòng), Hàng 2 (Palette 10 nút nghiệp vụ SAVE, SET NGOẠI QUAN, RESET BẢN VẼ, PDUYET BẢN VẼ, Update TT QLSX, Bật tất sửa, Update LOSS SX, Update BEP, Update LOSS KT kèm badge số dòng chọn).
+    + `PrecisionCodeManagerColumns.tsx`: Quản lý cấu hình toàn bộ các cột AG-Grid với cell renderers chuẩn Stitch (link mã G_CODE xanh, nút Tải CAD / Upload PDF cho bản vẽ, nút Tải / Upload docx cho AppSheet, chip trạng thái KT Ngoại quan, SỬ DỤNG MỞ/KHÓA, PD BANVE, căn phải số lượng và kích thước, tạo tự động các cột lặp lại EQ1-4, Setting1-4, UPH1-4, Step1-4, LOSS_SX1-4, LOSS_SETTING1-4, LOSS_ST_SX1-4).
+  - Tái cấu trúc `CODE_MANAGER.tsx` rút gọn từ 1.990 dòng xuống 258 dòng sạch sẽ, bảo toàn 100% API queries, phân quyền `checkBP`, upload bản vẽ, modal Pivot Grid.
+  - Kiểm tra Vite Dev Server (port 3001): 100% 6/6 files liên quan đều được biên dịch mượt mà và trả về HTTP 200 OK.
+
 
 

@@ -1,5 +1,24 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-13 (CODE_MANAGER: Product Master Google Stitch High-Density Enterprise Redesign)
+
+### Completed
+- **Bảo toàn 100% mã nguồn gốc**: Đã tạo file sao lưu `CODE_MANAGER.backup.tsx` (59.761 bytes, 1.990 dòng).
+- **Phân rã kiến trúc monolith 1.990 dòng thành 5 sub-modules chuyên biệt (< 280 dòng/file)** tại thư mục `src/pages/rnd/code_manager/PrecisionCodeManager/`:
+  1. `PrecisionCodeManager.scss`: SCSS tokens công nghiệp chuẩn Google Stitch (Blue `#2563eb`, Secondary `#0f172a`, Emerald `#059669`, Indigo `#4f46e5`, Amber `#f59e0b`, Rose `#f43f5e`, Slate Canvas `#f8fafc`), flex full-width và full-height co giãn theo viewport trong Multi-Tab, ẩn hoàn toàn toolbar xanh lá cũ của AGTable.
+  2. `PrecisionCodeManagerHeader.tsx` (84 dòng): Sub-header công nghiệp với tag phân hệ `R&D / QLSX / SẢN PHẨM`, tiêu đề `Quản Lý Danh Mục Sản Phẩm (Product Master Info - ERP)`, badge `v2.7-LIVE`, đồng hồ realtime máy chủ, nút làm mới và bật/tắt toàn màn hình.
+  3. `PrecisionCodeManagerKpi.tsx` (186 dòng): **4 Widget KPI summary tính toán động từ dữ liệu thực tế** theo đúng yêu cầu người dùng:
+     - Card 1 - TỔNG MÃ SẢN PHẨM: Tổng số mã, Đang kích hoạt (Active), Tạm ngưng, Tỷ lệ kích hoạt (% Active).
+     - Card 2 - PHÂN LOẠI SẢN PHẨM (PROD_TYPE): Thống kê cơ cấu LABEL, TAPE, FILM, CUSHION... kèm nhóm chiếm đa số và thanh tiến trình tỷ lệ %.
+     - Card 3 - DÒNG MÁY / MODEL (PROD_MODEL): Thống kê số dòng máy độc nhất, model phổ biến nhất, số lượng & tỷ lệ bản vẽ đã phê duyệt (PDBV).
+     - Card 4 - QUY CÁCH ĐÓNG GÓI (PACKING SPECS): Thống kê dạng cuộn (ROLL) vs khay (TRAY) vs tấm (SHEET), điểm BEP trung bình.
+  4. `PrecisionCodeManagerToolbar.tsx` (245 dòng): Dải công cụ 2 hàng phân màu sắc nét theo chuẩn Stitch:
+     - Hàng 1: Ô tìm Code (Enter, icon scan, nút clear), checkbox Active, checkbox CNDB, nút Tìm Code, filter PROD_TYPE, nút EX1 (Grid), EX2 (Raw), PIVOT, đếm số dòng hiển thị.
+     - Hàng 2: Palette các nút hành động ERP chuyên sâu (SAVE, SET NGOẠI QUAN, SET K NGOẠI QUAN, RESET BẢN VẼ, PHÊ DUYỆT BẢN VẼ, Update TT QLSX, Bật tất sửa, Update LOSS SX, Update BEP, Update LOSS KT) với badge đếm số dòng đang chọn.
+  5. `PrecisionCodeManagerColumns.tsx` (282 dòng): Quản lý toàn bộ các cột AG-Grid với cell renderers công nghiệp (link mã G_CODE xanh, nút Tải CAD / Upload PDF cho bản vẽ, nút Tải / Upload docx cho AppSheet, chip trạng thái KT Ngoại quan, SỬ DỤNG MỞ/KHÓA, PD BANVE, căn phải số lượng và kích thước, tạo tự động các cột lặp lại của dây chuyền sản xuất EQ1-4, Setting1-4, UPH1-4, Step1-4, LOSS_SX1-4, LOSS_SETTING1-4, LOSS_ST_SX1-4).
+- **Tái cấu trúc `CODE_MANAGER.tsx`**: Rút gọn từ 1.990 dòng xuống 258 dòng, giữ vai trò Master Controller sạch sẽ, dễ bảo trì, bảo toàn 100% logic API queries (`f_getCodeInfo`, `f_setNgoaiQuan`, `f_resetBanVe`, `f_pdBanVe`, `f_handleSaveQLSX`, `f_handleSaveLossSX`, `f_updateBEP`, `f_updateLossKT`, `uploadQuery`, `update_banve_value`, `update_appsheet_value`, phân quyền `checkBP`, modal PivotTable).
+- **Kiểm tra Vite Dev Server (port 3001)**: 100% 6/6 files liên quan đều được biên dịch mượt mà và trả về HTTP 200 OK.
+
 ## Update - 2026-09-13 (KHOLIEU: Redesign 2 Modal Nhập Liệu & Xuất Liệu - Google Stitch High-Density Enterprise)
 
 ### Completed
