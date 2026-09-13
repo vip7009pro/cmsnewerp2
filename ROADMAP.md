@@ -1,5 +1,17 @@
 # Roadmap - cmsnewerp2
 
+- [x] Redesign Tính Liệu Sản Xuất • MRP Engine (`TINHLIEU.tsx` & `PrecisionTinhLieu/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Sao lưu toàn vẹn 100% mã nguồn gốc `TINHLIEU.backup.tsx` (32.453 bytes).
+  - Phân rã monolith 777 dòng thành Controller chính tinh gọn (260 dòng) và 5 sub-modules chuyên biệt (< 300 dòng/file presentation):
+    1. `PrecisionTinhLieu.scss`: SCSS tokens công nghiệp chuẩn Stitch, full-width & full-height Multi-tab, triệt tiêu toolbar cũ của AGTable.
+    2. `PrecisionTinhLieuHeader.tsx`: Header phân hệ Mua hàng, mã `M120`, telemetry trực tuyến, badge chế độ tra cứu hiện tại.
+    3. `PrecisionTinhLieuKpi.tsx`: 4 Micro-cards KPI tính toán 100% động theo dữ liệu thực tế (Tổng số bản ghi, Tổng nhu cầu liệu NEED_M_QTY, Vật liệu thiếu cần bổ sung SHORTAGE, và Tỷ lệ mở liệu YCSX).
+    4. `PrecisionTinhLieuToolbar.tsx`: Bộ lọc thời gian Từ ngày - Tới ngày, Toggle All Time, cờ lọc Shortage / New PO, 3 Tab nạp dữ liệu (`MRP Detail`, `MRP Summary`, `MRP Plan 15D`), Nút `Mở Liệu` & `Khóa Liệu` kèm số dòng chọn, ô tìm kiếm nhanh và nút xuất Excel `EX1` / `EX2`.
+    5. `PrecisionTinhLieuColumns.tsx`: Cấu hình cột bảng chuẩn Stitch cho cả 4 chế độ (CMS PO, PVN YCSX, Summary, Plan 15D) với chip mã JetBrains Mono, chip trạng thái YES/NO/PENDING, heat-map 15 ngày `MD1` - `MD15` so sánh lũy kế.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ và API**: Tra cứu chi tiết theo PO & YCSX, tổng hợp toàn bộ MRP ALL, kế hoạch MRP 15 ngày `f_loadMRPPlan`, và thao tác Khóa/Mở liệu YCSX hàng loạt qua `generalQuery("setMaterial_YN", ...)`.
+  - **Triệt tiêu hoàn toàn khung 2 cột cũ kỹ**: Thay thế form dọc gradient chật chội 280px bằng toolbar ngang SaaS thoáng đãng, bảng AGTable chiếm trọn không gian thẳng đứng.
+  - Xác thực biên dịch Vite Dev Server: 6/6 file trả về HTTP 200 OK trên port 3001.
+
 - [x] Redesign Quản Lý Vật Liệu (`QLVL.tsx` & `PrecisionQLVL/`) theo chuẩn Google Stitch High-Density Enterprise:
   - Sao lưu toàn vẹn 100% mã nguồn gốc `QLVL.backup.tsx` (52.635 bytes).
   - Phân rã monolith 1.516 dòng thành Controller chính tinh gọn (284 dòng) và 7 subcomponents chuyên biệt (< 300 dòng/file presentation):

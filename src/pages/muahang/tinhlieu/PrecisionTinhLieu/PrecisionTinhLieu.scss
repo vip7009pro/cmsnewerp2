@@ -1,0 +1,675 @@
+// PrecisionTinhLieu.scss - Google Stitch High-Density Enterprise Style
+// Module: Mua Hàng • Tính Liệu Sản Xuất (MRP Engine - M120)
+
+.precision-tinhlieu {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: calc(100vh - 76px);
+  box-sizing: border-box;
+  padding: 6px 10px;
+  background: #f8fafc;
+  gap: 6px;
+  color: #0f172a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  // Hỗ trợ co giãn toàn diện Full Width & Full Height trong Multi-Tab
+  .component_element & {
+    width: 100% !important;
+    height: 100% !important;
+    flex: 1 1 auto;
+    align-self: stretch;
+    min-height: 0;
+  }
+
+  // ==========================================================================
+  // 1. SUB-HEADER
+  // ==========================================================================
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+
+  &__headerLeft {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__iconBadge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+  }
+
+  &__titleBlock {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__titleRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  &__codeBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10.5px;
+    font-weight: 700;
+    font-family: "JetBrains Mono", monospace;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+  }
+
+  &__modeBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 10.5px;
+    font-weight: 700;
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+  }
+
+  &__breadcrumb {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 1px;
+  }
+
+  &__headerRight {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__telemetryBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    font-size: 11px;
+    font-weight: 600;
+    color: #065f46;
+
+    .precision-tinhlieu__pulseDot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+      animation: pulse-dot 2s infinite ease-in-out;
+    }
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% {
+      transform: scale(0.9);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 1;
+    }
+  }
+
+  // ==========================================================================
+  // 2. REALTIME KPI CARDS
+  // ==========================================================================
+  &__kpiGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__kpiCard {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(15, 23, 42, 0.06);
+    }
+
+    &--blue {
+      border-left: 3.5px solid #2563eb;
+      .precision-tinhlieu__kpiIcon {
+        background: #eff6ff;
+        color: #2563eb;
+      }
+    }
+
+    &--purple {
+      border-left: 3.5px solid #7c3aed;
+      .precision-tinhlieu__kpiIcon {
+        background: #faf5ff;
+        color: #7c3aed;
+      }
+    }
+
+    &--rose {
+      border-left: 3.5px solid #e11d48;
+      .precision-tinhlieu__kpiIcon {
+        background: #fff1f2;
+        color: #e11d48;
+      }
+    }
+
+    &--emerald {
+      border-left: 3.5px solid #059669;
+      .precision-tinhlieu__kpiIcon {
+        background: #ecfdf5;
+        color: #059669;
+      }
+    }
+  }
+
+  &__kpiIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    flex-shrink: 0;
+  }
+
+  &__kpiContent {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__kpiLabel {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__kpiValue {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    font-family: "JetBrains Mono", monospace;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  &__kpiSub {
+    font-size: 10.5px;
+    color: #94a3b8;
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    b {
+      color: #334155;
+    }
+  }
+
+  // ==========================================================================
+  // 3. ACTION & FILTER TOOLBAR
+  // ==========================================================================
+  &__actionToolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 6px 10px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  }
+
+  &__filterRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__filterGroupLeft {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__filterItem {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #475569;
+
+    input[type="date"] {
+      height: 27px;
+      padding: 0 6px;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-family: inherit;
+      color: #1e293b;
+      outline: none;
+      background: #f8fafc;
+      transition: border-color 0.15s ease;
+
+      &:focus {
+        border-color: #2563eb;
+        background: #ffffff;
+      }
+    }
+  }
+
+  &__checkboxPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 27px;
+    padding: 0 8px;
+    border-radius: 5px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    font-size: 11px;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease;
+
+    input[type="checkbox"] {
+      cursor: pointer;
+      width: 13px;
+      height: 13px;
+      margin: 0;
+    }
+
+    &--active {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+      font-weight: 700;
+    }
+
+    &--warning {
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #b45309;
+    }
+  }
+
+  &__controlRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 4px;
+    border-top: 1px dashed #e2e8f0;
+  }
+
+  &__tabButtonGroup {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #f1f5f9;
+    padding: 2px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+  }
+
+  &__tabBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 25px;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: none;
+    background: transparent;
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      color: #0f172a;
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    &--active {
+      background: #ffffff !important;
+      color: #2563eb !important;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    &--active-purple {
+      background: #ffffff !important;
+      color: #7c3aed !important;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    &--active-emerald {
+      background: #ffffff !important;
+      color: #059669 !important;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  &__actionGroupRight {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 27px;
+    padding: 0 9px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+    user-select: none;
+
+    &--unlock {
+      background: #ecfdf5;
+      color: #065f46;
+      border-color: #a7f3d0;
+      &:hover {
+        background: #d1fae5;
+        border-color: #6ee7b7;
+      }
+    }
+
+    &--lock {
+      background: #fff1f2;
+      color: #9f1239;
+      border-color: #fecdd3;
+      &:hover {
+        background: #ffe4e6;
+        border-color: #fda4af;
+      }
+    }
+
+    &--excel {
+      background: #f0fdf4;
+      color: #065f46;
+      border-color: #a7f3d0;
+      &:hover {
+        background: #dcfce7;
+      }
+    }
+
+    .badge-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+      height: 16px;
+      border-radius: 9999px;
+      font-size: 9.5px;
+      font-family: "JetBrains Mono", monospace;
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  &__searchBox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: min(220px, 100%);
+    height: 27px;
+    padding: 0 8px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    transition: border-color 0.15s ease;
+
+    &:focus-within {
+      border-color: #2563eb;
+    }
+
+    input {
+      border: none;
+      outline: none;
+      font-size: 11.5px;
+      width: 100%;
+      background: transparent;
+      color: #1e293b;
+
+      &::placeholder {
+        color: #94a3b8;
+      }
+    }
+  }
+
+  // ==========================================================================
+  // 4. AGTABLE CONTAINER (FULL-HEIGHT & TRIỆT TIÊU TOOLBAR CŨ)
+  // ==========================================================================
+  &__gridContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0px;
+    min-height: 350px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+
+    .precision-tinhlieu__gridBody {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 0px;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+
+      .agtable {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0px;
+        height: 100%;
+        width: 100%;
+
+        // Triệt tiêu toolbar xanh lá mặc định của AGTable
+        .toolbar {
+          display: none !important;
+        }
+
+        .ag-theme-quartz {
+          display: flex;
+          flex-direction: column;
+          flex: 1 1 0px;
+          height: 100%;
+          width: 100%;
+
+          .ag-root-wrapper {
+            height: 100% !important;
+            border: none;
+          }
+
+          .ag-header {
+            background-color: #f1f5f9;
+            border-bottom: 1px solid #cbd5e1;
+          }
+
+          .ag-header-cell {
+            font-size: 11px;
+            font-weight: 700;
+            color: #334155;
+            letter-spacing: 0.01em;
+          }
+
+          .ag-row {
+            font-size: 11.5px;
+            border-bottom-color: #f1f5f9;
+            &:hover {
+              background-color: #f8fafc;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // ==========================================================================
+  // 5. CELL RENDERERS STYLING
+  // ==========================================================================
+  .tinhlieu-mono-chip {
+    display: inline-flex;
+    align-items: center;
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 11px;
+    color: #1e293b;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+  }
+
+  .tinhlieu-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+
+    &--yes {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+
+    &--no {
+      background: #fff1f2;
+      color: #be123c;
+      border: 1px solid #fecdd3;
+    }
+
+    &--pending {
+      background: #fffbeb;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+  }
+
+  .tinhlieu-qty {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 11px;
+
+    &--positive {
+      color: #047857;
+    }
+
+    &--negative {
+      color: #dc2626;
+      font-weight: 800;
+    }
+
+    &--neutral {
+      color: #1e293b;
+    }
+
+    &--primary {
+      color: #2563eb;
+    }
+  }
+
+  .tinhlieu-plan-cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    border-radius: 3px;
+
+    &--ok {
+      background: #ecfdf5;
+      color: #065f46;
+    }
+
+    &--shortage {
+      background: #fee2e2;
+      color: #b91c1c;
+      font-weight: 800;
+    }
+  }
+}

@@ -1,5 +1,32 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-13 (MUA_HANG: Tái Thiết Kế Toàn Diện Màn Hình Tính Liệu Sản Xuất - TINHLIEU.tsx Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Refactor toàn diện giao diện Tính Liệu Sản Xuất (`TINHLIEU.tsx`)**:
+   - **Bảo toàn 100% mã nguồn gốc**: Sao lưu `TINHLIEU.backup.tsx` (32.453 bytes).
+   - **Tối ưu kiến trúc Clean Code**: Phân rã từ 777 dòng xuống Controller chính chỉ còn 260 dòng (< 300 dòng/file presentation) trong thư mục con `PrecisionTinhLieu/`.
+   - **Loại bỏ hoàn toàn bố cục 2 cột cũ kỹ**: Khung lọc cũ 280px gradient xanh thô sơ được thay thế bằng Action & Filter Toolbar ngang chuẩn SaaS hiện đại, tối đa hóa không gian bảng AGTable.
+   - **4 Thẻ Micro-cards KPI tính toán tự động (`PrecisionTinhLieuKpi.tsx`)**:
+     + *Tổng số bản ghi*: Đếm tổng số dòng hiển thị và tổng số mã vật liệu duy nhất.
+     + *Tổng nhu cầu cấp liệu*: Tính tổng số mét/m² liệu cần sử dụng (`NEED_M_QTY`) theo đơn hàng hoặc tồn sẵn có (`TOTAL_STOCK` khi xem Plan).
+     + *Vật liệu cần bổ sung*: Đếm số mã bị thiếu (`M_SHORTAGE > 0`) và tổng lượng thiếu, hoặc số lượng YCSX đang bị khóa liệu.
+     + *Tỷ lệ mở liệu sản xuất*: Tỷ lệ % và số lượng YCSX đã được mở liệu (`MATERIAL_YN === 'Y'`).
+   - **Action & Filter Toolbar đa năng (`PrecisionTinhLieuToolbar.tsx`)**:
+     + Nhóm lọc thời gian: Từ ngày, Tới ngày, Toggle Checkbox All Time bo tròn hiện đại.
+     + Nhóm cờ lọc: `Chỉ Liệu Thiếu (Shortage)` và `Chỉ PO Mới (New PO)` dạng Toggle Pill trực quan.
+     + Nhóm 3 tab chuyển đổi chế độ tra cứu: `MRP CHI TIẾT (Detail)`, `MRP TỔNG HỢP (Summary)`, và `MRP THEO KẾ HOẠCH (Plan 15D)`.
+     + Nhóm nút phân quyền Quản trị liệu: `MỞ LIỆU (Unlock)` xanh ngọc và `KHÓA LIỆU (Lock)` đỏ hồng kèm badge đếm số dòng YCSX đang được tick chọn trên bảng.
+     + Thanh lọc nhanh tức thời đa trường (`searchKeyword`).
+     + Cụm nút xuất Excel `EX1` (dữ liệu đang lọc) và `EX2` (toàn bộ dữ liệu).
+   - **Cấu hình Cột Bảng Chuyên Nghiệp (`PrecisionTinhLieuColumns.tsx`)**:
+     + Đầy đủ cấu hình cho 4 trường hợp: `buildMRPTableCMS` (chi tiết theo PO), `buildMRPTablePVN` (chi tiết theo YCSX), `buildMRPTableSummary` (tổng hợp theo mã VL), `buildMRPTablePlan` (kế hoạch 15 ngày).
+     + Cell Renderers chuẩn Stitch: Chip mã YCSX/PO/VL font JetBrains Mono, định dạng số lượng có dấu phẩy ngăn cách hàng nghìn.
+     + Chip trạng thái liệu: YES (xanh lá), NO (đỏ hồng), PENDING (vàng cam).
+     + Heat-map 15 ngày kế hoạch `MD1` - `MD15`: Tự động so sánh lũy kế với `TOTAL_STOCK` để hiển thị màu cảnh báo đỏ/xanh chuẩn xác.
+   - **Hệ thống SCSS Tokens (`PrecisionTinhLieu.scss`)**: Bố cục co giãn linh hoạt Full-Width và Full-Height trong Multi-Tab (`min-height: calc(100vh - 76px)`), triệt tiêu hoàn toàn toolbar xanh lá mặc định của AGTable.
+   - **Xác thực Vite Dev Server**: 6/6 file liên quan biên dịch thành công 100% với mã HTTP 200 OK trên port 3001.
+
 ## Update - 2026-09-13 (MUA_HANG: Refactor Quản Lý Vật Liệu - QLVL.tsx sang Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed
