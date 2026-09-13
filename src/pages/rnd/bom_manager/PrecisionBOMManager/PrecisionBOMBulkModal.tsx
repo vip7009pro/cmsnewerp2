@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AiOutlineClose, AiOutlineCloudUpload } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineCloudUpload, AiOutlineDownload } from "react-icons/ai";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
@@ -7,6 +7,8 @@ import { zeroPad } from "../../../../api/services/utilService";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { DEFAULT_DM } from "../../../kinhdoanh/interfaces/kdInterface";
 import { CODE_FULL_INFO } from "../../interfaces/rndInterface";
+import { DEFAULT_BULK_EXCEL_COLUMNS, getDynamicBulkExcelColumns } from "./precisionBOMBulkColumns";
+import "./PrecisionBOMManager.scss";
 
 interface PrecisionBOMBulkModalProps {
   isOpen: boolean;
@@ -20,7 +22,7 @@ const PrecisionBOMBulkModal: React.FC<PrecisionBOMBulkModalProps> = ({
   onSuccessReload,
 }) => {
   const [currentTable, setCurrentTable] = useState<Array<any>>([]);
-  const [columns, setColumns] = useState<Array<any>>([]);
+  const [columns, setColumns] = useState<Array<any>>(DEFAULT_BULK_EXCEL_COLUMNS);
   const [defaultDM, setDefaultDM] = useState<DEFAULT_DM>({
     id: 0,
     WIDTH_OFFSET: 0,
@@ -38,7 +40,7 @@ const PrecisionBOMBulkModal: React.FC<PrecisionBOMBulkModalProps> = ({
   const loadDefaultDM = async () => {
     try {
       const res = await generalQuery("loadDefaultDM", {});
-      if (res.data.tk_status !== "NG") {
+      if (res.data.tk_status !== "NG" && res.data.data?.length > 0) {
         setDefaultDM(res.data.data[0]);
       }
     } catch (err) {
@@ -49,6 +51,10 @@ const PrecisionBOMBulkModal: React.FC<PrecisionBOMBulkModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       loadDefaultDM();
+      // Đảm bảo khi mở modal, bảng luôn hiển thị đầy đủ 44 cột mặc định
+      if (currentTable.length === 0) {
+        setColumns(DEFAULT_BULK_EXCEL_COLUMNS);
+      }
     }
   }, [isOpen]);
 
@@ -57,52 +63,70 @@ const PrecisionBOMBulkModal: React.FC<PrecisionBOMBulkModalProps> = ({
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
       reader.onload = (ev: any) => {
-        const data = ev.target.result;
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const json: any = XLSX.utils.sheet_to_json(worksheet);
+        try {
+          const data = ev.target.result;
+          const workbook = XLSX.read(data, { type: "array" });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const json: any = XLSX.utils.sheet_to_json(worksheet);
 
-        if (!json || json.length === 0) {
-          Swal.fire("Lỗi", "File Excel không có dữ liệu", "error");
-          return;
+          if (!json || json.length === 0) {
+            Swal.fire("Lỗi", "File Excel không có dữ liệu", "error");
+            return;
+          }
+
+          const filejson = json.map((element: any, index: number) => ({
+            ...element,
+            CHECKSTATUS: "Waiting",
+            id: index,
+          }));
+
+          const keysArray = Object.keys(filejson[0]);
+          setColumns(getDynamicBulkExcelColumns(keysArray));
+          setCurrentTable(filejson);
+        } catch (err: any) {
+          Swal.fire("Lỗi đọc file", err?.message || "Không thể đọc file Excel", "error");
         }
-
-        const filejson = json.map((element: any, index: number) => ({
-          ...element,
-          CHECKSTATUS: "Waiting",
-          id: index,
-        }));
-
-        const keysArray = Object.getOwnPropertyNames(filejson[0]);
-        const column_map = keysArray.map((e) => ({
-          field: e,
-          headerName: e,
-          width: e === "CHECKSTATUS" ? 140 : e === "G_NAME" || e === "DESCR" ? 180 : 95,
-          cellRenderer: (ele: any) => {
-            if (e === "CHECKSTATUS") {
-              const val = ele.data[e];
-              const bg = val === "OK" ? "#059669" : val === "NG" ? "#e11d48" : "#4f46e5";
-              return (
-                <div style={{ textAlign: "center", color: "#fff", background: bg, borderRadius: 3, fontWeight: 700, padding: "2px 6px" }}>
-                  {val}
-                </div>
-              );
-            }
-            return <span>{ele.data[e]}</span>;
-          },
-        }));
-
-        setColumns(column_map);
-        setCurrentTable(filejson);
       };
       reader.readAsArrayBuffer(e.target.files[0]);
     }
   };
 
+  const handleDownloadTemplate = () => {
+    const templateFields = DEFAULT_BULK_EXCEL_COLUMNS
+      .filter((c) => c.field !== "CHECKSTATUS")
+      .map((c) => c.field);
+    const sampleRow: Record<string, any> = {};
+    templateFields.forEach((f) => {
+      sampleRow[f] = "";
+    });
+    // Gợi ý dữ liệu mẫu cho dòng đầu
+    sampleRow["CUST_CD"] = "CUST01";
+    sampleRow["PROD_PROJECT"] = "PROJECT_A";
+    sampleRow["PROD_MODEL"] = "MODEL_01";
+    sampleRow["CODE_12"] = "7";
+    sampleRow["PROD_TYPE"] = "LABEL";
+    sampleRow["G_NAME_KD"] = "SAMPLE_CODE_KD";
+    sampleRow["DESCR"] = "Mô tả sản phẩm";
+    sampleRow["PROD_MAIN_MATERIAL"] = "PET";
+    sampleRow["G_NAME"] = "SAMPLE_PART_NO";
+    sampleRow["G_LENGTH"] = 30;
+    sampleRow["G_WIDTH"] = 20;
+    sampleRow["PD"] = 35;
+    sampleRow["USE_YN"] = "Y";
+    sampleRow["ROLE_EA_QTY"] = 1000;
+
+    const ws = XLSX.utils.json_to_sheet([sampleRow]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "BOM_TEMPLATE");
+    XLSX.writeFile(wb, "BOM_BULK_UPLOAD_TEMPLATE.xlsx");
+  };
+
   const checkG_NAME_KD_Exist = async (g_name_kd: string) => {
     try {
-      const res = await generalQuery("checkGNAMEKDExist", { G_NAME_KD: g_name_kd });
+      const res = await generalQuery("checkGNAMEKDExist", {
+        G_NAME_KD: g_name_kd,
+      });
       return res.data.tk_status !== "NG";
     } catch {
       return false;
@@ -117,7 +141,35 @@ const PrecisionBOMBulkModal: React.FC<PrecisionBOMBulkModalProps> = ({
     for (const [k, v] of Object.entries(abc)) {
       if (
         (v === null || v === "") &&
-        !["REMK", "FACTORY", "Setting1", "Setting2", "Setting3", "Setting4", "UPH1", "UPH2", "UPH3", "UPH4", "Step1", "Step2", "Step3", "Step4", "LOSS_SX1", "LOSS_SX2", "LOSS_SX3", "LOSS_SX4", "LOSS_SETTING1", "LOSS_SETTING2", "LOSS_SETTING3", "LOSS_SETTING4", "LOSS_ST_SX1", "LOSS_ST_SX2", "LOSS_ST_SX3", "LOSS_ST_SX4", "NOTE", "EQ3", "EQ4"].includes(k)
+        k !== "REMK" &&
+        k !== "FACTORY" &&
+        k !== "Setting1" &&
+        k !== "Setting2" &&
+        k !== "Setting3" &&
+        k !== "Setting4" &&
+        k !== "UPH1" &&
+        k !== "UPH2" &&
+        k !== "UPH3" &&
+        k !== "UPH4" &&
+        k !== "Step1" &&
+        k !== "Step2" &&
+        k !== "Step3" &&
+        k !== "Step4" &&
+        k !== "LOSS_SX1" &&
+        k !== "LOSS_SX2" &&
+        k !== "LOSS_SX3" &&
+        k !== "LOSS_SX4" &&
+        k !== "LOSS_SETTING1" &&
+        k !== "LOSS_SETTING2" &&
+        k !== "LOSS_SETTING3" &&
+        k !== "LOSS_SETTING4" &&
+        k !== "LOSS_ST_SX1" &&
+        k !== "LOSS_ST_SX2" &&
+        k !== "LOSS_ST_SX3" &&
+        k !== "LOSS_ST_SX4" &&
+        k !== "NOTE" &&
+        k !== "EQ3" &&
+        k !== "EQ4"
       ) {
         return false;
       }
@@ -125,9 +177,106 @@ const PrecisionBOMBulkModal: React.FC<PrecisionBOMBulkModalProps> = ({
     return true;
   };
 
+  const getNextG_CODE = async (CODE_12: string, CODE_27: string) => {
+    let nextseq = "";
+    let nextseqno = "";
+    try {
+      const response = await generalQuery("getNextSEQ_G_CODE", {
+        CODE_12: CODE_12,
+        CODE_27: CODE_27,
+      });
+      const currentseq = response.data.data[0].LAST_SEQ_NO;
+      if (response.data.tk_status !== "NG") {
+        if (CODE_12 === "9") {
+          nextseq = zeroPad(Number(currentseq) + 1, 6);
+          nextseqno = nextseq;
+        } else {
+          nextseq = zeroPad(Number(currentseq) + 1, 5) + "A";
+          nextseqno = zeroPad(Number(currentseq) + 1, 5);
+        }
+      } else {
+        if (CODE_12 === "9") {
+          nextseq = "000001";
+          nextseqno = nextseq;
+        } else {
+          nextseq = "00001A";
+          nextseqno = "00001";
+        }
+      }
+    } catch {
+      if (CODE_12 === "9") {
+        nextseq = "000001";
+        nextseqno = nextseq;
+      } else {
+        nextseq = "00001A";
+        nextseqno = "00001";
+      }
+    }
+    return { NEXT_G_CODE: CODE_12 + CODE_27 + nextseq, NEXT_SEQ_NO: nextseqno };
+  };
+
+  const handleinsertCodeTBG = (NEWG_CODE: string, codefullinfo: CODE_FULL_INFO) => {
+    generalQuery("insertM100BangTinhGia", {
+      G_CODE: NEWG_CODE,
+      DEFAULT_DM: defaultDM,
+      CODE_FULL_INFO: codefullinfo,
+    }).catch((error) => {
+      console.error(error);
+    });
+  };
+
+  const handleAddNewCode = async (codefullinfo: CODE_FULL_INFO) => {
+    if (Number(codefullinfo.CODE_12) < 6 || Number(codefullinfo.CODE_12) > 9) {
+      Swal.fire("Thông báo", "Code 12 phải là số từ 6 đến 9", "error");
+      return false;
+    }
+    let insertStatus = false;
+    const checkg_name_kd = await checkG_NAME_KD_Exist(
+      codefullinfo.G_NAME_KD === undefined ? "zzzzzzzzz" : codefullinfo.G_NAME_KD
+    );
+
+    const isCMS = getCompany() === "CMS";
+    const isValidCMS = isCMS && (await handleCheckCodeInfo(codefullinfo));
+    const isValidOther = !isCMS && checkg_name_kd === false;
+
+    if (isValidCMS || isValidOther) {
+      let CODE_27 = "C";
+      const pType = (codefullinfo.PROD_TYPE || "").trim().toUpperCase();
+      if (pType === "TSP" || pType === "OLED" || pType === "UV") {
+        CODE_27 = "C";
+      } else if (pType === "LABEL") {
+        CODE_27 = "A";
+      } else if (pType === "TAPE") {
+        CODE_27 = "B";
+      } else if (pType === "RIBBON") {
+        CODE_27 = "E";
+      }
+
+      const nextcodeinfo = await getNextG_CODE(codefullinfo.CODE_12, CODE_27);
+      const nextcode = nextcodeinfo.NEXT_G_CODE;
+      const nextgseqno = nextcodeinfo.NEXT_SEQ_NO;
+
+      try {
+        const response = await generalQuery("insertM100", {
+          G_CODE: nextcode,
+          CODE_27: CODE_27,
+          NEXT_SEQ_NO: nextgseqno,
+          CODE_FULL_INFO: codefullinfo,
+        });
+        if (response.data.tk_status !== "NG") {
+          insertStatus = true;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+      handleinsertCodeTBG(nextcode, codefullinfo);
+    }
+    return insertStatus;
+  };
+
   const addhangloat = async () => {
     if (currentTable.length === 0) {
-      Swal.fire("Thông báo", "Vui lòng chọn file Excel trước khi nạp", "warning");
+      Swal.fire("Thông báo", "Kéo file vào trước khi up", "warning");
       return;
     }
 
@@ -135,53 +284,27 @@ const PrecisionBOMBulkModal: React.FC<PrecisionBOMBulkModalProps> = ({
     const tempTable = [...currentTable];
 
     for (let i = 0; i < tempTable.length; i++) {
-      const gnamekdExist = await checkG_NAME_KD_Exist(tempTable[i].G_NAME_KD);
-      const rowValid = await handleCheckCodeInfo(tempTable[i]);
+      const insertStatus = await handleAddNewCode({
+        ...tempTable[i],
+        QL_HSD: tempTable[i]?.QL_HSD ?? "Y",
+        EXP_DATE: tempTable[i]?.EXP_DATE ?? "0",
+      });
 
-      if (!gnamekdExist && rowValid) {
-        let max_g_code = "";
-        const maxCodeRes = await generalQuery("checkmaxG_CODE", {
-          PROD_PROJECT: tempTable[i].PROD_PROJECT,
-          PROD_MODEL: tempTable[i].PROD_MODEL,
-          CODE_12: tempTable[i].CODE_12,
-        });
-
-        if (maxCodeRes.data.tk_status !== "NG") {
-          const max_seq: number = maxCodeRes.data.data[0].MAX_SEQ;
-          const current_seq: number = max_seq + 1;
-          max_g_code = `${tempTable[i].CODE_12}${tempTable[i].CODE_27}${zeroPad(current_seq, 5)}A`;
-        }
-
-        if (max_g_code) {
-          const uploadRes = await generalQuery("upload_codeinfo", {
-            ...tempTable[i],
-            G_CODE: max_g_code,
-            DEFAULT_DM: defaultDM,
-          });
-
-          if (uploadRes.data.tk_status === "OK") {
-            tempTable[i].CHECKSTATUS = "OK";
-          } else {
-            tempTable[i].CHECKSTATUS = "NG";
-            err_code += `${tempTable[i].G_NAME_KD}, `;
-          }
-        } else {
-          tempTable[i].CHECKSTATUS = "NG";
-          err_code += `${tempTable[i].G_NAME_KD}, `;
-        }
+      if (!insertStatus) {
+        err_code += `${tempTable[i].G_NAME_KD || "Mã"}: NG | `;
+        tempTable[i]["CHECKSTATUS"] = "NG";
       } else {
-        tempTable[i].CHECKSTATUS = "NG";
-        err_code += `${tempTable[i].G_NAME_KD}, `;
+        tempTable[i]["CHECKSTATUS"] = "OK";
       }
     }
 
     setCurrentTable([...tempTable]);
 
     if (err_code === "") {
-      Swal.fire("Thành công", "Đã nạp toàn bộ mã BOM thành công!", "success");
+      Swal.fire("Thông báo", "Up code hàng loạt thành công", "success");
       onSuccessReload();
     } else {
-      Swal.fire("Cảnh báo", `Nạp thất bại các mã: ${err_code}`, "error");
+      Swal.fire("Thông báo", `Up thất bại các code sau, hãy check lại thông tin: ${err_code}`, "error");
     }
   };
 
@@ -199,7 +322,7 @@ const PrecisionBOMBulkModal: React.FC<PrecisionBOMBulkModalProps> = ({
             <div>
               <div className="title">TRUNG TÂM NẠP MÃ BOM HÀNG LOẠT (EXCEL BULK IMPORT)</div>
               <div className="subtitle">
-                Hợp nhất quản lý BOM & Upload Excel - Tự động tạo G_CODE và đối soát thông số
+                Hợp nhất quản lý BOM & Upload Excel - Tự động tạo G_CODE và đối soát thông số theo bản gốc
               </div>
             </div>
           </div>
@@ -222,6 +345,19 @@ const PrecisionBOMBulkModal: React.FC<PrecisionBOMBulkModalProps> = ({
           </div>
 
           <div className="action-wrap">
+            <button
+              className="btn-up-code"
+              style={{
+                backgroundColor: "#0284c7",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 5,
+              }}
+              onClick={handleDownloadTemplate}
+              title="Tải file Excel mẫu gồm 43 cột chuẩn"
+            >
+              <AiOutlineDownload /> TẢI FILE MẪU
+            </button>
             <button className="btn-up-code" onClick={addhangloat}>
               XÁC NHẬN NẠP CODE HÀNG LOẠT
             </button>

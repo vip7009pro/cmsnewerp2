@@ -1,5 +1,23 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-13 (BOM_MANAGER: Khắc Phục Bảng Rỗng Hiển Thị 44 Cột Mặc Định Form Excel Cho Trung Tâm Nạp Mã BOM Hàng Loạt)
+
+### Completed
+1. **Khắc phục lỗi "bảng rỗng mặc định không show tên cột" trong Trung Tâm Nạp Mã BOM Hàng Loạt (Excel Bulk Import)**:
+   - Điều tra bản gốc `UpHangLoat.tsx`: Bản gốc định nghĩa danh sách 44 cột tiêu chuẩn `column_codeinfo` của form Excel cần nạp mã BOM và luôn truyền vào `AGTable` kể cả khi `currentTable` rỗng.
+   - Trước đó trong `PrecisionBOMBulkModal.tsx`, `columns` được khởi tạo bằng mảng rỗng `[]`, khiến bảng khi mới mở lên bị trống trơn, người dùng không nhìn thấy các cột cần chuẩn bị.
+2. **Triển khai giải pháp chuẩn Clean Code & Google Stitch**:
+   - Tạo sub-module chuyên biệt [precisionBOMBulkColumns.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/bom_manager/PrecisionBOMManager/precisionBOMBulkColumns.tsx) (112 dòng):
+     + `DEFAULT_BULK_EXCEL_COLUMNS`: Định nghĩa đầy đủ 44 cột tiêu chuẩn đối chiếu 100% từ `UpHangLoat.tsx`: `CUST_CD`, `PROD_PROJECT`, `PROD_MODEL`, `CODE_12`, `CODE_27`, `SEQ_NO`, `REV_NO`, `G_CODE`, `PROD_TYPE`, `G_NAME_KD`, `DESCR`, `PROD_MAIN_MATERIAL`, `G_NAME`, `G_LENGTH`, `G_WIDTH`, `PD`, `G_C`, `G_C_R`, `G_SG_L`, `G_SG_R`, `G_CG`, `G_LG`, `PACK_DRT`, `KNIFE_TYPE`, `KNIFE_LIFECYCLE`, `KNIFE_PRICE`, `CODE_33`, `ROLE_EA_QTY`, `RPM`, `PIN_DISTANCE`, `PROCESS_TYPE`, `EQ1`, `EQ2`, `EQ3`, `EQ4`, `PROD_DIECUT_STEP`, `PROD_PRINT_TIMES`, `REMK`, `USE_YN`, `PO_TYPE`, `FSC`, `PROD_DVT`, `FSC_CODE`, và `CHECKSTATUS` (pinned right với badge OK xanh / NG đỏ / Waiting tím).
+     + `getDynamicBulkExcelColumns`: Tự động tạo danh sách cột linh hoạt khi người dùng nạp file Excel thực tế.
+   - Cập nhật [PrecisionBOMBulkModal.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/bom_manager/PrecisionBOMManager/PrecisionBOMBulkModal.tsx):
+     + Khởi tạo `columns` mặc định bằng `DEFAULT_BULK_EXCEL_COLUMNS`, bảng rỗng ngay lập tức hiển thị đầy đủ 44 cột theo đúng form Excel cần upload.
+     + Đồng bộ 100% logic nạp mã chuẩn từ bản gốc: dùng `getNextSEQ_G_CODE` tạo chuỗi `G_CODE` tự động (5 số + 'A' hoặc 6 số cho code 9), gọi `insertM100` và `insertM100BangTinhGia` (thay cho lệnh `upload_codeinfo` không tồn tại ở backend).
+     + Bổ sung nút **`TẢI FILE MẪU`** (`AiOutlineDownload`, màu Sky Blue) cho phép người dùng tải ngay file Excel `.xlsx` mẫu chứa đầy đủ 43 trường thông tin mẫu để nhập liệu.
+3. **Xác thực hệ thống**:
+   - Vite Dev Server (port 3001): 100% các files (`precisionBOMBulkColumns.tsx`, `PrecisionBOMBulkModal.tsx`, `BOM_MANAGER.tsx`) trả về HTTP 200 OK.
+   - Giữ kích thước file < 260 dòng, tuân thủ nghiêm ngặt quy tắc Clean Code.
+
 ## Update - 2026-09-13 (BOM_MANAGER: Khắc Phục Lỗi Hiển Thị 2 Text Trùng Nhau G_NAME Đè Lên Nhau Trên Tem LOT)
 
 ### Completed
