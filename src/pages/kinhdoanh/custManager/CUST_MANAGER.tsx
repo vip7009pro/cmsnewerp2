@@ -1,491 +1,400 @@
-import { IconButton, Button } from "@mui/material";
-import moment from "moment";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import "./CUST_MANAGER.scss";
+import moment from "moment";
+import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import { generalQuery, getSocket, getUserData } from "../../../api/Api";
-import AGTable from "../../../components/DataTable/AGTable";
+import { SaveExcel } from "../../../api/services/excelService";
 import { f_insert_Notification_Data } from "../../../api/services/notificationService";
 import { zeroPad } from "../../../api/services/utilService";
-import { BiLoaderCircle } from "react-icons/bi";
-import { MdAdd } from "react-icons/md";
-import CustomDialog from "../../../components/Dialog/CustomDialog";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import AGTable from "../../../components/DataTable/AGTable";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { CUST_INFO } from "../interfaces/kdInterface";
-const CUST_MANAGER = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const [openDialog, setOpenDialog] = useState(false);
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-  const [custinfodatatable, setCUSTINFODataTable] = useState<Array<any>>([]);
-  const [selectedRows, setSelectedRows] = useState<CUST_INFO>({
-    id: "1",
-    CUST_TYPE: "KH",
-    CUST_CD: "",
-    CUST_NAME_KD: "",
-    CUST_NAME: "",
-    CUST_ADDR1: "",
-    CUST_ADDR2: "",
-    CUST_ADDR3: "",
-    EMAIL: "",
-    TAX_NO: "",
-    CUST_NUMBER: "",
-    BOSS_NAME: "",
-    TEL_NO1: "",
-    FAX_NO: "",
-    CUST_POSTAL: "",
-    REMK: "",
-    USE_YN: "Y",
-    INS_DATE: "",
-    INS_EMPL: "",
-    UPD_DATE: "",
-    UPD_EMPL: "",
-  });
-  const columns = [
-    { field: 'CUST_TYPE', headerName: 'CUST_TYPE', resizable: true, width: 100, headerCheckboxSelection: true, checkboxSelection: true },
-    { field: 'CUST_CD', headerName: 'CUST_CD', resizable: true, width: 100 },
-    { field: 'CUST_NAME_KD', headerName: 'CUST_NAME_KD', resizable: true, width: 100 },
-    { field: 'CUST_NAME', headerName: 'CUST_NAME', resizable: true, width: 100 },
-    { field: 'CUST_ADDR1', headerName: 'CUST_ADDR1', resizable: true, width: 100 },
-    { field: 'CUST_ADDR2', headerName: 'CUST_ADDR2', resizable: true, width: 100 },
-    { field: 'CUST_ADDR3', headerName: 'CUST_ADDR3', resizable: true, width: 100 },
-    { field: 'TAX_NO', headerName: 'TAX_NO', resizable: true, width: 100 },
-    { field: 'CUST_NUMBER', headerName: 'CUST_NUMBER', resizable: true, width: 100 },
-    { field: 'BOSS_NAME', headerName: 'BOSS_NAME', resizable: true, width: 100 },
-    { field: 'TEL_NO1', headerName: 'TEL_NO1', resizable: true, width: 100 },
-    { field: 'FAX_NO', headerName: 'FAX_NO', resizable: true, width: 100 },
-    { field: 'CUST_POSTAL', headerName: 'CUST_POSTAL', resizable: true, width: 100 },
-    { field: 'EMAIL', headerName: 'EMAIL', resizable: true, width: 100 },
-    { field: 'REMK', headerName: 'REMK', resizable: true, width: 100 },
-    { field: 'USE_YN', headerName: 'USE_YN', resizable: true, width: 50, cellRenderer: (params: any) => {
-      return (
-        <div style={{
-          backgroundColor: params.data.USE_YN === 'Y' ? '#4caf50' : '#f44336',
-          color: 'white',            
-          borderRadius: '4px',
-          textAlign: 'center'
-        }}>
-          {params.value === 'Y' ? 'USE' : 'NOT USE'}
-        </div>
-      )
-    } },
-    { field: 'INS_DATE', headerName: 'INS_DATE', resizable: true, width: 100 },
-    { field: 'INS_EMPL', headerName: 'INS_EMPL', resizable: true, width: 100 },
-    { field: 'UPD_DATE', headerName: 'UPD_DATE', resizable: true, width: 100 },
-    { field: 'UPD_EMPL', headerName: 'UPD_EMPL', resizable: true, width: 100 },
-  ];
+import PrecisionCustHeader from "./PrecisionCustManager/PrecisionCustHeader";
+import PrecisionCustKpi from "./PrecisionCustManager/PrecisionCustKpi";
+import PrecisionCustToolbar, { CustFilterType } from "./PrecisionCustManager/PrecisionCustToolbar";
+import { getPrecisionCustColumns } from "./PrecisionCustManager/PrecisionCustColumns";
+import PrecisionCustModal from "./PrecisionCustManager/PrecisionCustModal";
+import PrecisionCustPivotModal from "./PrecisionCustManager/PrecisionCustPivotModal";
+import "./PrecisionCustManager/PrecisionCustManager.scss";
 
-  const setCustInfo = (keyname: string, value: any) => {
-    let tempCustInfo: CUST_INFO = { ...selectedRows, [keyname]: value };
-    //console.log(tempcodefullinfo);
-    setSelectedRows(tempCustInfo);
-  };
-  const autogenerateCUST_CD = async (company_type: string) => {
-    let next_cust_cd: string = company_type + "001";
-    await generalQuery("checkcustcd", {
-      COMPANY_TYPE: company_type,
-    })
-      .then((response) => {
-        console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          let stt =
-            company_type === "KH"
-              ? response.data.data[0].CUST_CD.substring(2, 5)
-              : response.data.data[0].CUST_CD.substring(3, 6);
-          next_cust_cd = company_type + zeroPad(parseInt(stt) + 1, 3);
-          console.log("nex cust_cd", next_cust_cd);
-        } else {
-          //Swal.fire("Thông báo", " Có lỗi : " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire("Thông báo", " Có lỗi : " + error, "error");
-      });
-    return next_cust_cd;
-  };
-  const createNewCustomer = async (company_type: string) => {
-    let next_cust_cd = await autogenerateCUST_CD(company_type);
-    setSelectedRows({
-      id: "0",
-      CUST_TYPE: company_type,
-      BOSS_NAME: "",
-      CUST_ADDR1: "",
-      CUST_ADDR2: "",
-      CUST_ADDR3: "",
-      EMAIL: "",
-      CUST_CD: next_cust_cd,
-      CUST_NAME: "",
-      CUST_NAME_KD: "",
-      CUST_NUMBER: "",
-      CUST_POSTAL: "",
-      FAX_NO: "",
-      INS_DATE: "",
-      INS_EMPL: "",
-      REMK: "",
-      USE_YN: "Y",
-      TAX_NO: "",
-      TEL_NO1: "",
-      UPD_DATE: "",
-      UPD_EMPL: "",
-    });
-  };
-  const handleCUSTINFO = () => {
+const initialCustInfo: CUST_INFO = {
+  id: "0",
+  CUST_TYPE: "KH",
+  CUST_CD: "",
+  CUST_NAME_KD: "",
+  CUST_NAME: "",
+  CUST_ADDR1: "",
+  CUST_ADDR2: "",
+  CUST_ADDR3: "",
+  EMAIL: "",
+  TAX_NO: "",
+  CUST_NUMBER: "",
+  BOSS_NAME: "",
+  TEL_NO1: "",
+  FAX_NO: "",
+  CUST_POSTAL: "",
+  REMK: "",
+  USE_YN: "Y",
+  INS_DATE: "",
+  INS_EMPL: "",
+  UPD_DATE: "",
+  UPD_EMPL: "",
+};
+
+const CUST_MANAGER: React.FC = () => {
+  const [custinfodatatable, setCUSTINFODataTable] = useState<CUST_INFO[]>([]);
+  const [selectedRows, setSelectedRows] = useState<CUST_INFO>(initialCustInfo);
+  const [openModal, setOpenModal] = useState(false);
+  const [isNewMode, setIsNewMode] = useState(false);
+  const [currentFilter, setCurrentFilter] = useState<CustFilterType>("ALL");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [showPivot, setShowPivot] = useState(false);
+
+  // 1. Tải danh sách đối tác
+  const handleCUSTINFO = useCallback(() => {
     Swal.fire({
       title: "Tra data",
-      text: "Đang tra data",
+      text: "Đang nạp danh sách đối tác...",
       icon: "info",
-      showCancelButton: false,
-      allowOutsideClick: false,
-      confirmButtonText: "OK",
       showConfirmButton: false,
+      allowOutsideClick: false,
     });
+
     generalQuery("get_listcustomer", {})
       .then((response) => {
-        /// console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: CUST_INFO[] = response.data.data.map(
-            (element: CUST_INFO, index: number) => {
-              return {
-                ...element,
-                CUST_NAME: element.CUST_NAME ?? "",
-                CUST_NAME_KD: element.CUST_NAME_KD ?? "",
-                CUST_ADDR1: element.CUST_ADDR1 !== 'undefined' ? element.CUST_ADDR1 ?? "" : "",
-                CUST_ADDR2: element.CUST_ADDR2 !== 'undefined' ? element.CUST_ADDR2 ?? "" : "",
-                CUST_ADDR3: element.CUST_ADDR3 !== 'undefined' ? element.CUST_ADDR3 ?? "" : "",
-                EMAIL: element.EMAIL ?? "",
-                TAX_NO: element.TAX_NO ?? "",
-                CUST_NUMBER: element.CUST_NUMBER ?? "",
-                BOSS_NAME: element.BOSS_NAME ?? "",
-                TEL_NO1: element.TEL_NO1 ?? "",
-                FAX_NO: element.FAX_NO ?? "",
-                CUST_POSTAL: element.CUST_POSTAL ?? "",
-                REMK: element.REMK ?? "",
-                INS_DATE: element.INS_DATE !== null ? moment.utc(element.INS_DATE).format("YYYY-MM-DD") : "",
-                UPD_DATE: element.UPD_DATE !== null ? moment.utc(element.UPD_DATE).format("YYYY-MM-DD") : "",
-                id: index,
-              };
-            },
+            (element: CUST_INFO, index: number) => ({
+              ...element,
+              CUST_NAME: element.CUST_NAME ?? "",
+              CUST_NAME_KD: element.CUST_NAME_KD ?? "",
+              CUST_ADDR1: element.CUST_ADDR1 !== "undefined" ? element.CUST_ADDR1 ?? "" : "",
+              CUST_ADDR2: element.CUST_ADDR2 !== "undefined" ? element.CUST_ADDR2 ?? "" : "",
+              CUST_ADDR3: element.CUST_ADDR3 !== "undefined" ? element.CUST_ADDR3 ?? "" : "",
+              EMAIL: element.EMAIL ?? "",
+              TAX_NO: element.TAX_NO ?? "",
+              CUST_NUMBER: element.CUST_NUMBER ?? "",
+              BOSS_NAME: element.BOSS_NAME ?? "",
+              TEL_NO1: element.TEL_NO1 ?? "",
+              FAX_NO: element.FAX_NO ?? "",
+              CUST_POSTAL: element.CUST_POSTAL ?? "",
+              REMK: element.REMK ?? "",
+              INS_DATE: element.INS_DATE !== null ? moment.utc(element.INS_DATE).format("YYYY-MM-DD") : "",
+              UPD_DATE: element.UPD_DATE !== null ? moment.utc(element.UPD_DATE).format("YYYY-MM-DD") : "",
+              id: index.toString(),
+            })
           );
           setCUSTINFODataTable(loadeddata);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success",
-          );
+          Swal.fire("Thông báo", `Đã nạp thành công ${loadeddata.length} đối tác`, "success");
         } else {
           setCUSTINFODataTable([]);
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
+        Swal.fire("Lỗi", "Không thể kết nối máy chủ: " + error, "error");
       });
-  };
-  const handle_addCustomer = () => {
+  }, []);
+
+  // 2. Tự động sinh mã đối tác tiếp theo (autogenerateCUST_CD)
+  const autogenerateCUST_CD = useCallback(async (company_type: string) => {
+    let next_cust_cd = company_type + "001";
+    try {
+      const response = await generalQuery("checkcustcd", { COMPANY_TYPE: company_type });
+      if (response.data.tk_status !== "NG" && response.data.data?.length > 0) {
+        const lastCode = response.data.data[0].CUST_CD || "";
+        const stt = company_type === "KH" ? lastCode.substring(2, 5) : lastCode.substring(3, 6);
+        const nextNum = parseInt(stt, 10);
+        if (!isNaN(nextNum)) {
+          next_cust_cd = company_type + zeroPad(nextNum + 1, 3);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    return next_cust_cd;
+  }, []);
+
+  // 3. Mở modal thêm mới
+  const handleOpenAddNew = useCallback(async () => {
+    const nextCode = await autogenerateCUST_CD("KH");
+    setSelectedRows({
+      ...initialCustInfo,
+      CUST_TYPE: "KH",
+      CUST_CD: nextCode,
+    });
+    setIsNewMode(true);
+    setOpenModal(true);
+  }, [autogenerateCUST_CD]);
+
+  // 4. Mở modal chỉnh sửa dòng
+  const handleOpenEditRow = useCallback((row: CUST_INFO) => {
+    setSelectedRows({ ...row });
+    setIsNewMode(false);
+    setOpenModal(true);
+  }, []);
+
+  // 5. Thay đổi trường form
+  const handleChangeField = useCallback((key: string, value: any) => {
+    setSelectedRows((prev) => ({ ...prev, [key]: value }));
+  }, []);
+
+  // 6. Tự sinh mã trong modal
+  const handleModalAutoGenCode = useCallback(
+    async (type: string) => {
+      const nextCode = await autogenerateCUST_CD(type);
+      setSelectedRows((prev) => ({ ...prev, CUST_TYPE: type, CUST_CD: nextCode }));
+    },
+    [autogenerateCUST_CD]
+  );
+
+  // 7. Làm mới form trong modal
+  const handleClearModalForm = useCallback(async () => {
+    const currentType = selectedRows.CUST_TYPE || "KH";
+    const nextCode = await autogenerateCUST_CD(currentType);
+    setSelectedRows({
+      ...initialCustInfo,
+      CUST_TYPE: currentType,
+      CUST_CD: nextCode,
+    });
+  }, [autogenerateCUST_CD, selectedRows.CUST_TYPE]);
+
+  // 8. Thêm mới đối tác (handle_addCustomer)
+  const handle_addCustomer = useCallback(() => {
+    if (!selectedRows.CUST_CD || !selectedRows.CUST_NAME_KD) {
+      Swal.fire("Cảnh báo", "Vui lòng nhập Mã đối tác và Tên viết tắt", "warning");
+      return;
+    }
+
     generalQuery("add_customer", selectedRows)
       .then(async (response) => {
-        /// console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          let newNotification: NotificationElement = {
-            CTR_CD: '002',
+          const uData = getUserData();
+          const newNotification: NotificationElement = {
+            CTR_CD: "002",
             NOTI_ID: -1,
             NOTI_TYPE: "success",
-            TITLE: 'Thêm khách hàng mới',
-            CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã thêm một khách hàng mới:${selectedRows.CUST_CD}  - ${selectedRows.CUST_NAME_KD}  -  ${selectedRows.CUST_NAME} `,
+            TITLE: "Thêm đối tác mới",
+            CONTENT: `${uData?.EMPL_NO} (${uData?.MIDLAST_NAME} ${uData?.FIRST_NAME}) đã thêm đối tác mới: [${selectedRows.CUST_CD}] ${selectedRows.CUST_NAME_KD} - ${selectedRows.CUST_NAME}`,
             SUBDEPTNAME: "ALL",
             MAINDEPTNAME: "ALL",
-            INS_EMPL: 'NHU1903',
-            INS_DATE: '2024-12-30',
-            UPD_EMPL: 'NHU1903',
-            UPD_DATE: '2024-12-30',
-          }  
-          if(await f_insert_Notification_Data(newNotification))
-          {
+            INS_EMPL: uData?.EMPL_NO || "SYSTEM",
+            INS_DATE: moment.utc().format("YYYY-MM-DD"),
+            UPD_EMPL: uData?.EMPL_NO || "SYSTEM",
+            UPD_DATE: moment.utc().format("YYYY-MM-DD"),
+          };
+          if (await f_insert_Notification_Data(newNotification)) {
             getSocket().emit("notification_panel", newNotification);
           }
 
-          Swal.fire("Thông báo", "Thêm khách thành công", "success");
+          Swal.fire("Thành công", "Đã thêm đối tác mới thành công", "success");
+          setOpenModal(false);
           handleCUSTINFO();
         } else {
-          Swal.fire(
-            "Thông báo",
-            "Thêm khách thất bại: " + response.data.message,
-            "error",
-          );
+          Swal.fire("Lỗi", "Thêm đối tác thất bại: " + response.data.message, "error");
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
+        Swal.fire("Lỗi", "Có lỗi xảy ra: " + error, "error");
       });
-  };
-  const handle_editCustomer = () => {
+  }, [handleCUSTINFO, selectedRows]);
+
+  // 9. Cập nhật đối tác (handle_editCustomer)
+  const handle_editCustomer = useCallback(() => {
+    if (!selectedRows.CUST_CD || !selectedRows.CUST_NAME_KD) {
+      Swal.fire("Cảnh báo", "Vui lòng nhập Mã đối tác và Tên viết tắt", "warning");
+      return;
+    }
+
     generalQuery("edit_customer", selectedRows)
       .then(async (response) => {
-        /// console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          let newNotification: NotificationElement = {
-            CTR_CD: '002',
+          const uData = getUserData();
+          const newNotification: NotificationElement = {
+            CTR_CD: "002",
             NOTI_ID: -1,
             NOTI_TYPE: "info",
-            TITLE: 'Update thông tin khách hàng',
-            CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã sửa một khách hàng:${selectedRows.CUST_CD}  - ${selectedRows.CUST_NAME_KD}  -  ${selectedRows.CUST_NAME} `,
+            TITLE: "Cập nhật hồ sơ đối tác",
+            CONTENT: `${uData?.EMPL_NO} (${uData?.MIDLAST_NAME} ${uData?.FIRST_NAME}) đã sửa hồ sơ đối tác: [${selectedRows.CUST_CD}] ${selectedRows.CUST_NAME_KD} - ${selectedRows.CUST_NAME}`,
             SUBDEPTNAME: "ALL",
             MAINDEPTNAME: "ALL",
-            INS_EMPL: 'NHU1903',
-            INS_DATE: '2024-12-30',
-            UPD_EMPL: 'NHU1903',
-            UPD_DATE: '2024-12-30',
-          }  
-          if(await f_insert_Notification_Data(newNotification))
-          {
+            INS_EMPL: uData?.EMPL_NO || "SYSTEM",
+            INS_DATE: moment.utc().format("YYYY-MM-DD"),
+            UPD_EMPL: uData?.EMPL_NO || "SYSTEM",
+            UPD_DATE: moment.utc().format("YYYY-MM-DD"),
+          };
+          if (await f_insert_Notification_Data(newNotification)) {
             getSocket().emit("notification_panel", newNotification);
           }
-          Swal.fire("Thông báo", "Sửa khách thành công", "success");
+
+          Swal.fire("Thành công", "Đã cập nhật thông tin đối tác thành công", "success");
+          setOpenModal(false);
           handleCUSTINFO();
         } else {
-          Swal.fire(
-            "Thông báo",
-            "Sửa khách thất bại: " + response.data.message,
-            "error",
-          );
+          Swal.fire("Lỗi", "Cập nhật thất bại: " + response.data.message, "error");
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
+        Swal.fire("Lỗi", "Có lỗi xảy ra: " + error, "error");
       });
-  };
-  const customerDataTableAG = useMemo(() => {
-    return (
-      <AGTable
-        suppressRowClickSelection={false}
-        toolbar={
-          <div>
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                handleCUSTINFO();
-              }}
-            >
-              <BiLoaderCircle color="#06cc70" size={15} />
-              Load Data
-            </IconButton>
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                handleOpenDialog();
-              }}
-            >
-              <MdAdd color="#1c44f5" size={15} />
-              Add/Update
-            </IconButton>
-          </div>}
-        columns={columns}
-        data={custinfodatatable}
-        onCellEditingStopped={(params: any) => {
-          //console.log(e.data)
-        }} onRowClick={(params: any) => {
-          setSelectedRows(params.data);
-          //console.log(e.data) 
-        }} onSelectionChange={(params: any) => {
-          //console.log(params)
-          //setSelectedRows(params!.api.getSelectedRows()[0]);
-          //console.log(e!.api.getSelectedRows())
-        }}
-      />
-    )
-  }, [custinfodatatable])
+  }, [handleCUSTINFO, selectedRows]);
+
+  // 10. Lọc dữ liệu theo Segment Filter và Search Keyword
+  const filteredData = useMemo(() => {
+    let list = custinfodatatable;
+
+    // Lọc theo phân loại
+    if (currentFilter === "KH") {
+      list = list.filter((d) => (d.CUST_TYPE || "").trim().toUpperCase() === "KH");
+    } else if (currentFilter === "NCC") {
+      list = list.filter((d) => (d.CUST_TYPE || "").trim().toUpperCase() === "NCC");
+    } else if (currentFilter === "USE") {
+      list = list.filter((d) => d.USE_YN === "Y");
+    } else if (currentFilter === "NOT_USE") {
+      list = list.filter((d) => d.USE_YN !== "Y");
+    }
+
+    // Lọc theo từ khóa tìm kiếm
+    if (searchKeyword.trim() !== "") {
+      const q = searchKeyword.trim().toLowerCase();
+      list = list.filter(
+        (d) =>
+          d.CUST_CD?.toLowerCase().includes(q) ||
+          d.CUST_NAME_KD?.toLowerCase().includes(q) ||
+          d.CUST_NAME?.toLowerCase().includes(q) ||
+          d.TAX_NO?.toLowerCase().includes(q) ||
+          d.TEL_NO1?.toLowerCase().includes(q) ||
+          d.EMAIL?.toLowerCase().includes(q) ||
+          d.BOSS_NAME?.toLowerCase().includes(q) ||
+          d.CUST_ADDR1?.toLowerCase().includes(q)
+      );
+    }
+
+    return list;
+  }, [currentFilter, custinfodatatable, searchKeyword]);
+
+  // Đếm số lượng theo nhóm
+  const counts = useMemo(() => {
+    const total = custinfodatatable.length;
+    let kh = 0;
+    let ncc = 0;
+    let use = 0;
+    let off = 0;
+    custinfodatatable.forEach((d) => {
+      if ((d.CUST_TYPE || "").trim().toUpperCase() === "KH") kh++;
+      else ncc++;
+      if (d.USE_YN === "Y") use++;
+      else off++;
+    });
+    return { total, kh, ncc, use, off };
+  }, [custinfodatatable]);
+
+  // Xuất Excel
+  const handleExportEX1 = useCallback(() => {
+    SaveExcel(filteredData, "DANH_SACH_DOI_TAC_LOC");
+  }, [filteredData]);
+
+  const handleExportEX2 = useCallback(() => {
+    SaveExcel(custinfodatatable, "DANH_SACH_DOI_TAC_FULL");
+  }, [custinfodatatable]);
+
+  // Cấu hình Pivot Table
+  const pivotDataSource = useMemo(() => {
+    return new PivotGridDataSource({
+      fields: [
+        { caption: "Phân loại", dataField: "CUST_TYPE", area: "row" },
+        { caption: "Trạng thái", dataField: "USE_YN", area: "column" },
+        { caption: "Tên KD", dataField: "CUST_NAME_KD", area: "filter" },
+        { caption: "Địa chỉ", dataField: "CUST_ADDR1", area: "filter" },
+        { summaryType: "count", area: "data", caption: "Số lượng đối tác" },
+      ],
+      store: custinfodatatable,
+    });
+  }, [custinfodatatable]);
+
+  // Cột AG-Grid
+  const columns = useMemo(() => getPrecisionCustColumns(handleOpenEditRow), [handleOpenEditRow]);
+
   useEffect(() => {
     handleCUSTINFO();
-  }, []);
+  }, [handleCUSTINFO]);
+
   return (
-    <div className="cust_manager">
-      <div className="tracuuDataInspection">       
-          <CustomDialog
-            isOpen={openDialog}
-            onClose={handleCloseDialog}
-            title={`Add/Update Customer (CUST_CD: ${selectedRows?.CUST_CD})`}
-            content={<div className="forminput" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-              <div className="forminputcolumn">
-                <label>
-                  <b>Mã KH:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Mã khách hàng"
-                    value={selectedRows?.CUST_CD}
-                    onChange={(e) => setCustInfo("CUST_CD", e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Tên KH(KD):</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Tên khách hàng"
-                    value={selectedRows?.CUST_NAME_KD}
-                    onChange={(e) => setCustInfo("CUST_NAME_KD", e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Tên KH(FULL):</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Tên khách hàng"
-                    value={selectedRows?.CUST_NAME}
-                    onChange={(e) => setCustInfo("CUST_NAME", e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Địa chỉ chính:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Địa chỉ"
-                    value={selectedRows?.CUST_ADDR1}
-                    onChange={(e) => setCustInfo("CUST_ADDR1", e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Địa chỉ 2:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Địa chỉ"
-                    value={selectedRows?.CUST_ADDR2}
-                    onChange={(e) => setCustInfo("CUST_ADDR2", e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Địa chỉ 3:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Địa chỉ"
-                    value={selectedRows?.CUST_ADDR3}
-                    onChange={(e) => setCustInfo("CUST_ADDR3", e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>MST</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Mã số thuế"
-                    value={selectedRows?.TAX_NO}
-                    onChange={(e) => setCustInfo("TAX_NO", e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Số ĐT:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Số điện thoại"
-                    value={selectedRows?.CUST_NUMBER}
-                    onChange={(e) => setCustInfo("CUST_NUMBER", e.target.value)}
-                  ></input>
-                </label>
-              </div>
+    <div className="precision-cust">
+      {/* 1. Sub-Header */}
+      <PrecisionCustHeader onRefresh={handleCUSTINFO} />
 
-              <div className="forminputcolumn">
+      {/* 2. Realtime KPI Cards */}
+      <PrecisionCustKpi custData={custinfodatatable} />
 
-                <label>
-                  <b>Tên chủ:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Tên chủ"
-                    value={selectedRows?.BOSS_NAME}
-                    onChange={(e) => setCustInfo("BOSS_NAME", e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Số phone:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Số phone"
-                    value={selectedRows?.TEL_NO1}
-                    onChange={(e) => setCustInfo("TEL_NO1", e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Fax:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="FAX"
-                    value={selectedRows?.FAX_NO}
-                    onChange={(e) => setCustInfo("FAX_NO", e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Mã bưu điện:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Mã bưu điện"
-                    value={selectedRows?.CUST_POSTAL}
-                    onChange={(e) => setCustInfo("CUST_POSTAL", e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Remark:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Ghi chú"
-                    value={selectedRows?.REMK}
-                    onChange={(e) => setCustInfo("REMK", e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Email:</b>{" "}
-                  <input
-                    type="text"
-                    placeholder="Email"
-                    value={selectedRows?.EMAIL}
-                    onChange={(e) => setCustInfo("EMAIL", e.target.value)}
-                  ></input>
-                </label>
-                <label>
-                  <b>Phân loại:</b>{" "}
-                  <select
-                    name="plvendor"
-                    value={selectedRows?.CUST_TYPE}
-                    onChange={(e) => {
-                      setCustInfo("CUST_TYPE", e.target.value);
-                    }}
-                  >
-                    <option value="KH">Khách Hàng</option>
-                    <option value="NCC">Nhà Cung Cấp</option>
-                  </select>
-                </label>
-                <label>
-                  <b>Mở/Khóa:</b>{" "}
-                  <select
-                    name="plvendor"
-                    value={selectedRows?.USE_YN}
-                    onChange={(e) => {
-                      setCustInfo("USE_YN", e.target.value);
-                    }}
-                  >
-                    <option value="Y">Mở</option>
-                    <option value="N">Khóa</option>
-                  </select>
-                </label>
-              </div>
-            </div>}
-            actions={<div className="formbutton">
-              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#0bb937' }} onClick={() => {
-                createNewCustomer(selectedRows.CUST_TYPE);
-              }}>Clear</Button>
-              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#f626da' }} onClick={() => {
-                handle_addCustomer();
-              }}>Add</Button>
-              <Button color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#d19342' }} onClick={() => {
-                handle_editCustomer();
-              }}>Update</Button>
-            </div>}
+      {/* 3. Action Toolbar */}
+      <PrecisionCustToolbar
+        currentFilter={currentFilter}
+        onChangeFilter={setCurrentFilter}
+        searchKeyword={searchKeyword}
+        onChangeSearch={setSearchKeyword}
+        onAddNew={handleOpenAddNew}
+        onRefresh={handleCUSTINFO}
+        onExportEX1={handleExportEX1}
+        onExportEX2={handleExportEX2}
+        onOpenPivot={() => setShowPivot(true)}
+        counts={counts}
+      />
+
+      {/* 4. AG-Grid Workspace */}
+      <div className="precision-cust__gridContainer">
+        <div className="grid-meta-bar">
+          <div className="meta-left">
+            <span>
+              Đang hiển thị: <strong>{filteredData.length}</strong> / {custinfodatatable.length} đối tác
+            </span>
+            {selectedRows.CUST_CD && (
+              <span>
+                • Đang chọn: <strong>{selectedRows.CUST_CD}</strong> ({selectedRows.CUST_NAME_KD})
+              </span>
+            )}
+          </div>
+          <div className="meta-right">
+            <span>Dữ liệu máy chủ ERP chuẩn hóa</span>
+          </div>
+        </div>
+
+        <div className="grid-body">
+          <AGTable
+            columns={columns}
+            data={filteredData}
+            showFilter={true}
+            onRowClick={(params: any) => {
+              setSelectedRows(params.data);
+            }}
           />
-        <div className="tracuuYCSXTable">{customerDataTableAG}</div>
+        </div>
       </div>
+
+      {/* 5. Modal Thêm / Sửa Đối Tác Siêu Đẹp Chuẩn Stitch */}
+      <PrecisionCustModal
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+        custInfo={selectedRows}
+        onChangeField={handleChangeField}
+        onAutoGenCode={handleModalAutoGenCode}
+        onClearForm={handleClearModalForm}
+        onSaveAdd={handle_addCustomer}
+        onSaveEdit={handle_editCustomer}
+        isNewMode={isNewMode}
+      />
+
+      {/* 6. Modal Phân Tích Pivot Table */}
+      <PrecisionCustPivotModal
+        isOpen={showPivot}
+        onClose={() => setShowPivot(false)}
+        dataSource={pivotDataSource}
+      />
     </div>
   );
 };
-export default CUST_MANAGER;
+
+export default React.memo(CUST_MANAGER);

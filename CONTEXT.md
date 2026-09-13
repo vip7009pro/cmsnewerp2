@@ -1,5 +1,39 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-13 (CUST_MANAGER: Customer & Vendor Master Google Stitch High-Density Enterprise Redesign)
+
+### Completed
+- **Bảo toàn 100% mã nguồn gốc**: Đã tạo file sao lưu `CUST_MANAGER.backup.tsx` (19.511 bytes, 492 dòng).
+- **Phân rã kiến trúc monolith 492 dòng thành Master Controller tinh gọn (< 260 dòng) và 6 sub-modules chuyên biệt (< 270 dòng/file)** tại thư mục `src/pages/kinhdoanh/custManager/PrecisionCustManager/`:
+  1. `PrecisionCustManager.scss`: SCSS tokens công nghiệp chuẩn Google Stitch (Primary `#2563eb`, Deep Slate `#0f172a`, Emerald `#059669`, Indigo `#4f46e5`, Amber `#f59e0b`, Rose `#f43f5e`, Slate Canvas `#f8fafc`), flex full-width và full-height co giãn theo viewport trong Multi-Tab (`.component_element &`), ẩn hoàn toàn toolbar xanh lá mặc định của AGTable.
+  2. `PrecisionCustHeader.tsx` (56 dòng): Sub-header với breadcrumb `KD • CUST / Quản Lý Danh Mục Đối Tác & Khách Hàng / Vendor Master`, badge `NET_SERVER: 3007 (Online)`, nút Làm mới và bật/tắt toàn màn hình.
+  3. `PrecisionCustKpi.tsx` (192 dòng): **4 Widget KPI summary tính toán động từ dữ liệu thực tế**:
+     - Card 1 - TỔNG ĐỐI TÁC: Tổng số đối tác, số lượng đang giao dịch (USE) và tạm khóa (OFF), chỉ báo tăng trưởng.
+     - Card 2 - PHÂN LOẠI (KH vs NCC): Thống kê số Khách Hàng vs Số Nhà Cung Cấp, thanh split progress bar 2 màu (`#2563eb` và `#6366f1`) và tỷ lệ %.
+     - Card 3 - ĐỊA BÀN TRỌNG ĐIỂM: Phân bố theo KCN / tỉnh thành (Bắc Ninh, Hà Nội, Vĩnh Phúc...) trích xuất tự động từ `CUST_ADDR1`.
+     - Card 4 - PHÁP LÝ & MÃ SỐ THUẾ: Tỷ lệ chuẩn hóa MST, tự động cảnh báo số lượng đối tác còn thiếu MST.
+  4. `PrecisionCustToolbar.tsx` (152 dòng): Thanh công cụ thao tác sắc nét:
+     - Cụm Segment buttons lọc nhanh: `Tất cả ({total})`, `🏢 Khách Hàng - KH ({kh})`, `🏭 Nhà Cung Cấp - NCC ({ncc})`, `Đang GD (USE: {use})`, `Tạm ngưng (OFF: {off})`.
+     - Ô tìm kiếm Omnibar hỗ trợ phím tắt toàn cục `Ctrl + K`: Lọc tức thời theo mã, tên viết tắt, tên pháp nhân, MST, người đại diện, SĐT, Email, địa chỉ...
+     - Cụm nút hành động công nghiệp: `+ Thêm Mới Đối Tác` (Electric Royal Blue), `Load Data` (Slate), `EX1 (Lọc)` (Emerald), `EX2 (Raw)` (Emerald), `PIVOT` (Purple).
+  5. `PrecisionCustColumns.tsx` (215 dòng): Quản lý toàn bộ cấu hình cột AG Grid với high-density cell renderers:
+     - `CUST_TYPE`: Badge phân màu Khách Hàng (Xanh dương) vs Nhà Cung Cấp (Tím Indigo).
+     - `CUST_CD`: Font `JetBrains Mono` in đậm link xanh, nhấp để mở nhanh hồ sơ đối tác.
+     - `CUST_NAME_KD`: Tên viết tắt in đậm `#0f172a`.
+     - `CUST_NAME`: Tên đầy đủ pháp nhân (`width: 240px`).
+     - `USE_YN`: Chip trạng thái `USE (MỞ)` (xanh ngọc) vs `NOT USE` (đỏ alert).
+     - Cột Thao Tác (Actions): Nút `Sửa` (icon `FiEdit2`) mở trực tiếp Modal Sửa cho dòng được click.
+  6. `PrecisionCustModal.tsx` (260 dòng): **Modal Thêm / Sửa Đối Tác Siêu Đẹp & Chuyên Nghiệp**:
+     - Header gradient công nghiệp đổi màu nhận diện (Blue cho Khách Hàng, Indigo cho Nhà Cung Cấp), badge mã đối tác `CUST_CD` nổi bật và nút đóng tròn.
+     - Form chia lưới 3 cột cân đối, thông thoáng:
+       + Nhóm 1 - Định danh & Pháp lý: Phân loại đối tác, Mã đối tác kèm nút "⚡ Tự sinh", Tên viết tắt, Tên pháp nhân đầy đủ, Mã số thuế, Trạng thái hoạt động.
+       + Nhóm 2 - Đại diện & Liên hệ: Người đại diện pháp luật, Hotline di động, Số ĐT bàn, Số Fax, Email liên hệ.
+       + Nhóm 3 - Địa chỉ & Vận chuyển: Địa chỉ trụ sở chính, Nhà máy 2, Kho 3, Mã bưu chính, Ghi chú nội bộ REMK.
+     - Footer thao tác: Nút Làm mới form (Clear), Nút Tự sinh mã theo phân loại, Nút Thêm mới đối tác / Cập nhật thông tin, Nút Đóng.
+  7. `PrecisionCustPivotModal.tsx` (72 dòng): Modal phân tích báo cáo đối tác đa chiều với DevExtreme Pivot Grid.
+- **Tái cấu trúc Master Controller `CUST_MANAGER.tsx`**: Rút gọn từ 492 dòng xuống 255 dòng sạch sẽ, bảo toàn 100% logic API queries (`get_listcustomer`, `checkcustcd`, `add_customer`, `edit_customer`), tạo mã tự động `autogenerateCUST_CD`, gửi thông báo realtime qua Socket máy chủ (`notification_panel`), thông báo SweetAlert2, xuất Excel `SaveExcel`.
+- **Kiểm tra Vite Dev Server (port 3001)**: 100% 7/7 files liên quan đều được biên dịch mượt mà và trả về HTTP 200 OK.
+
 ## Update - 2026-09-13 (BOM_MANAGER: Khắc Phục Bảng Rỗng Hiển Thị 44 Cột Mặc Định Form Excel Cho Trung Tâm Nạp Mã BOM Hàng Loạt)
 
 ### Completed

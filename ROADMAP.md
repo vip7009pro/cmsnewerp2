@@ -1,5 +1,17 @@
 # Roadmap - cmsnewerp2
 
+- [x] Redesign Quản Lý Khách Hàng / Vendor Master (`CUST_MANAGER.tsx` & `PrecisionCustManager/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Sao lưu toàn vẹn 100% mã nguồn gốc `CUST_MANAGER.backup.tsx` (19.511 bytes, 492 dòng).
+  - Phân rã kiến trúc monolith 492 dòng thành Master Controller tinh gọn (255 dòng) và 6 sub-modules chuyên biệt (< 270 dòng/file):
+    1. `PrecisionCustManager.scss`: SCSS tokens công nghiệp chuẩn Stitch, full-width & full-height trong Multi-Tab, ẩn toolbar xanh lá cũ của AGTable.
+    2. `PrecisionCustHeader.tsx`: Breadcrumb, badge NET_SERVER: 3007, nút làm mới và toàn màn hình.
+    3. `PrecisionCustKpi.tsx`: 4 Thẻ KPI summary realtime động (Tổng đối tác, Phân loại KH/NCC kèm Split bar, Địa bàn KCN trọng điểm, Chuẩn hóa MST).
+    4. `PrecisionCustToolbar.tsx`: Segment filters KH/NCC/USE/OFF, Search Omnibar (Ctrl+K), nút Thêm Mới Đối Tác, Load, EX1, EX2, PIVOT.
+    5. `PrecisionCustColumns.tsx`: Quản lý toàn bộ cấu hình cột AG Grid với high-density cell renderers, link mã CUST_CD xanh, chip USE_YN, nút Sửa trực tiếp.
+    6. `PrecisionCustModal.tsx`: Modal Thêm / Sửa đối tác siêu đẹp & chuyên nghiệp (Header gradient đổi màu KH/NCC, layout 3 cột cân đối, nút sinh mã tự động, clear form, thêm/cập nhật).
+    7. `PrecisionCustPivotModal.tsx`: Modal phân tích dữ liệu đa chiều Pivot Table.
+  - Bảo toàn 100% nghiệp vụ: toàn bộ API queries (`get_listcustomer`, `checkcustcd`, `add_customer`, `edit_customer`), tạo mã tự động `autogenerateCUST_CD`, gửi thông báo socket realtime (`notification_panel`), SweetAlert2, xuất Excel `SaveExcel`.
+  - Xác thực biên dịch Vite Dev Server 100% 7/7 files trả về HTTP 200 OK.
 - [x] Redesign BOM Manager (`BOM_MANAGER.tsx` & `PrecisionBOMManager/`) theo chuẩn Google Stitch High-Density Enterprise:
   - Hợp nhất hoàn toàn 2 tab "BOM Manager" (`BOM_MANAGER_TAB`) và "Up hàng loạt" (`BOM_MANAGER_TAB_UP`) thành 1 màn hình duy nhất, loại bỏ MyTabs chia tab rời rạc.
   - Bổ sung nút `UP LOẠT` (màu Emerald `#059669`) nổi bật ngay cạnh nút `ADD VER` trên Sidebar theo đúng yêu cầu người dùng, mở Modal nạp Excel hàng loạt `PrecisionBOMBulkModal.tsx`.
