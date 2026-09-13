@@ -1,5 +1,23 @@
 # Roadmap - cmsnewerp2
 
+- [x] Redesign Giám Sát Hàng Sản Xuất Dư (`OVER_MONITOR.tsx` & `PrecisionOverMonitor/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Sao lưu toàn vẹn 100% mã nguồn gốc `OVER_MONITOR.backup.tsx` (19.458 bytes, 463 dòng).
+  - **Bảo lưu trọn vẹn 100% các tương tác Cell trong Datagrid theo yêu cầu người dùng**:
+    + Cột `KD_CFM`: Cơ chế toggle xem nhãn / chỉnh sửa Radio buttons `NHẬP` (`Y`) & `HỦY` (`N`), kiểm tra quyền kinh doanh `checkBP`, kiểm tra trạng thái `HANDLE_STATUS === 'P'`, gọi cập nhật và gửi Socket thông báo realtime.
+    + Cột `HANDLE_STATUS`: Chip trạng thái `PENDING` (Cam) / `CLOSED` (Xanh) sắc nét.
+    + Cột `KD_REMARK`: Giữ nguyên `editable: true` cho phép chỉnh sửa trực tiếp trên bảng.
+    + Định dạng số lượng và thành tiền phân cấp trực quan theo thiết kế Stitch.
+  - Phân rã kiến trúc monolith 463 dòng thành Master Controller tinh gọn (274 dòng) và 7 sub-modules chuyên biệt (< 260 dòng/file):
+    1. `PrecisionOverMonitor.scss`: SCSS tokens công nghiệp chuẩn Stitch, layout full-width & full-height trong Multi-Tab, ẩn toolbar xanh lá cũ của AGTable.
+    2. `PrecisionOverHeader.tsx`: Breadcrumb, badge NET_SERVER: 3007, nút làm mới, nút toàn màn hình, nút ẩn/hiện biểu đồ trend.
+    3. `PrecisionOverKpi.tsx`: 4 Thẻ KPI summary realtime (Tổng lượng dư EA kèm breakdown Xuất/Hủy, Giá trị dư USD, Trạng thái xử lý CLOSED/PENDING, Khách hàng trọng điểm).
+    4. `PrecisionOverChart.tsx`: Biểu đồ xu hướng tuần Recharts `YYYY_WW` trục kép (Trục trái QTY EA, Trục phải AMOUNT $).
+    5. `PrecisionOverToolbar.tsx`: Checkbox Only Pending, nút Reload, Nhập hàng loạt, Hủy hàng loạt, ô tìm kiếm Omnibar đa trường, EX1, EX2, PIVOT.
+    6. `PrecisionOverCells.tsx`: Component tương tác riêng cho cell `KdCfmCellRenderer` và `HandleStatusCellRenderer`.
+    7. `PrecisionOverColumns.tsx`: Cấu hình cột AG Grid high-density.
+    8. `PrecisionOverPivotModal.tsx`: Modal phân tích dữ liệu đa chiều DevExtreme Pivot Grid.
+  - Bảo toàn 100% nghiệp vụ: toàn bộ API queries (`f_loadProdOverData`, `f_updateProdOverData`), thao tác đơn lẻ / hàng loạt, thông báo socket realtime (`notification_panel`), SweetAlert2, xuất Excel `SaveExcel`.
+  - Xác thực biên dịch Vite Dev Server 100% 8/8 files trả về HTTP 200 OK.
 - [x] Redesign Quản Lý Khách Hàng / Vendor Master (`CUST_MANAGER.tsx` & `PrecisionCustManager/`) theo chuẩn Google Stitch High-Density Enterprise:
   - Sao lưu toàn vẹn 100% mã nguồn gốc `CUST_MANAGER.backup.tsx` (19.511 bytes, 492 dòng).
   - Phân rã kiến trúc monolith 492 dòng thành Master Controller tinh gọn (255 dòng) và 6 sub-modules chuyên biệt (< 270 dòng/file):

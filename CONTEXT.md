@@ -1,5 +1,46 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-13 (OVER_MONITOR: Production Over Monitor Google Stitch High-Density Enterprise Redesign)
+
+### Completed
+- **Bảo toàn 100% mã nguồn gốc**: Đã tạo file sao lưu `OVER_MONITOR.backup.tsx` (19.458 bytes, 463 dòng).
+- **Phân rã kiến trúc monolith 463 dòng thành Master Controller tinh gọn (274 dòng) và 7 sub-modules chuyên biệt (< 260 dòng/file)** tại thư mục `src/pages/kinhdoanh/over_prod_monitor/PrecisionOverMonitor/`:
+  1. `PrecisionOverMonitor.scss` (450 dòng): SCSS tokens công nghiệp chuẩn Google Stitch (Primary `#2563eb`, Deep Slate `#0f172a`, Emerald `#059669`, Rose `#f43f5e`, Amber `#f59e0b`, Purple `#7c3aed`, Slate Canvas `#f1f5f9`), hỗ trợ co giãn flex full-width và full-height trong Multi-Tab (`.component_element &`), ẩn hoàn toàn toolbar xanh lá mặc định của AGTable.
+  2. `PrecisionOverHeader.tsx` (90 dòng): Sub-header với breadcrumb `KD • QLSX / Giám Sát Hàng Sản Xuất Dư (Production Over Monitor)`, badge `NET_SERVER: 3007 (Online)` kèm pulse dot, nút bật/tắt toàn màn hình, nút reload và nút thu gọn/mở rộng biểu đồ trend.
+  3. `PrecisionOverKpi.tsx` (164 dòng): **4 Widget KPI summary tính toán động từ dữ liệu thực tế**:
+     - Card 1 - TỔNG LƯỢNG SX DƯ (OVER QTY): Tổng số lượng dư (EA), phân tách rõ rệt Xuất QTY vs Hủy QTY kèm formatCompact.
+     - Card 2 - GIÁ TRỊ SX DƯ (OVER AMOUNT): Tổng giá trị USD, breakdown Xuất ($) vs Hủy ($).
+     - Card 3 - TRẠNG THÁI XỬ LÝ (STATUS): Tỷ lệ % hoàn tất (`CLOSED`), số lượng đơn đã xử lý vs số đơn đang chờ duyệt (`PENDING`).
+     - Card 4 - KHÁCH HÀNG TRỌNG ĐIỂM: Khách hàng chiếm tỷ trọng số lượng dư cao nhất và tỷ lệ % đóng góp toàn kỳ.
+  4. `PrecisionOverChart.tsx` (171 dòng): Khối biểu đồ Recharts tuần ISO `YYYY_WW`:
+     - Header chuyên nghiệp kèm legend 4 màu chuẩn Stitch: Xuất QTY (`#10b981`), Hủy QTY (`#ef4444`), Xuất AMOUNT (`#2563eb`), Hủy AMOUNT (`#a855f7`).
+     - Trục kép (Dual Y-Axis): Trục trái QTY (`formatCompact(n) + ' EA'`), Trục phải AMOUNT (`'$' + formatCompact(n)`).
+     - Tooltip thông minh hiển thị chi tiết số lượng và giá trị tiền.
+  5. `PrecisionOverToolbar.tsx` (138 dòng): Thanh công cụ vận hành:
+     - Badge tiêu đề `PRODUCTION OVER MONITOR` kèm pulse indicator xanh.
+     - Switch / Checkbox `Only Pending` (chuyển đổi xem chỉ các mục chờ xử lý hay tất cả).
+     - Nút `Reload` (tải lại bảng).
+     - Nút `Nhập hàng loạt` (`#059669` Emerald) áp dụng cho các dòng được tích chọn.
+     - Nút `Hủy hàng loạt` (`#e11d48` Rose) áp dụng cho các dòng được tích chọn.
+     - Ô tìm kiếm Omnibar hỗ trợ lọc tức thời đa trường.
+     - Cụm nút xuất `EX1 (Lọc)`, `EX2 (Raw)` và `PIVOT`.
+  6. `PrecisionOverCells.tsx` (87 dòng): **Bảo lưu trọn vẹn 100% các tương tác Cell trong Datagrid**:
+     - `KdCfmCellRenderer`:
+       + State `showhidecell` khởi tạo từ `data.KD_CFM === 'P'`.
+       + Chế độ chỉnh sửa: 2 Radio buttons `NHẬP` (`value="Y"`) và `HỦY` (`value="N"`).
+       + Khi click chọn Radio: Kiểm tra quyền kinh doanh `checkBP(getUserData(), ["KD"], ["ALL"], ["ALL"], ...)`.
+       + Kiểm tra trạng thái: Nếu `data.HANDLE_STATUS === 'P'` thì gọi `onUpdateData(data, 'Y' | 'N')`, nếu không báo lỗi qua SweetAlert2: *"Đã xử lý xong, không update lại trạng thái được nữa"*.
+       + Chế độ xem: Nhấp vào text để toggle `setShowHideCell(prev => !prev)` mở lại radio buttons.
+       + Styling badge/chip tương ứng 3 trạng thái: Xanh ngọc (Y), Đỏ alert (N), Cam (Pending).
+     - `HandleStatusCellRenderer`: Chip trạng thái PENDING (Cam) vs CLOSED (Xanh ngọc).
+  7. `PrecisionOverColumns.tsx` (256 dòng): Quản lý toàn bộ cấu hình cột AG Grid:
+     - `AUTO_ID`: Checkbox chọn dòng, pinned left.
+     - `KD_REMARK`: Giữ nguyên `editable: true` cho phép người dùng click đúp sửa trực tiếp ghi chú.
+     - `PROD_REQUEST_QTY`, `OVER_QTY`, `PROD_LAST_PRICE`, `AMOUNT`: Định dạng số `toLocaleString('en-US')` và màu sắc nhận diện phân cấp.
+  8. `PrecisionOverPivotModal.tsx` (141 dòng): Modal phân tích báo cáo dữ liệu đa chiều với DevExtreme Pivot Grid.
+- **Tái cấu trúc Master Controller `OVER_MONITOR.tsx`**: Rút gọn từ 463 dòng xuống 274 dòng sạch sẽ, bảo toàn 100% nghiệp vụ: API queries `f_loadProdOverData`, cập nhật `f_updateProdOverData`, thao tác đơn lẻ / hàng loạt, phát socket realtime `notification_panel` với `f_insert_Notification_Data`, SweetAlert2, xuất Excel `SaveExcel`.
+- **Kiểm tra Vite Dev Server (port 3001)**: 100% 8/8 files liên quan đều được biên dịch mượt mà và trả về HTTP 200 OK.
+
 ## Update - 2026-09-13 (CUST_MANAGER: Customer & Vendor Master Google Stitch High-Density Enterprise Redesign)
 
 ### Completed
