@@ -1,6 +1,33 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
-## Update - 2026-09-13 (INSPECTION: Google Stitch High-Density Enterprise Redesign)
+## Update - 2026-09-13 (KHOLIEU: Google Stitch High-Density Enterprise Redesign)
+
+### Completed
+- **Bảo toàn 100% mã nguồn gốc**: Đã tạo file sao lưu `KHOLIEU.backup.tsx` (23.195 bytes, 685 dòng).
+- **Phân rã kiến trúc monolith 685 dòng**: Tinh gọn Master Controller `KHOLIEU.tsx` và tạo module chuyên biệt trong thư mục `src/pages/kho/kholieu/PrecisionKHOLIEU/`:
+  1. `PrecisionKHOLIEU.scss`: Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Blue `#2563eb`, Emerald `#059669`, Amber `#f59e0b`, Rose `#e11d48`, Indigo `#4f46e5`, Dark Slate `#0f172a`, Light Slate `#f8fafc`), bố cục Split-Screen 2 Panel (Sidebar 260px + Data Grid Workspace flex: 1), flex full-width và full-height co giãn theo viewport trong chế độ Multi-Tab, ẩn hoàn toàn toolbar xanh lá cũ của AGTable, không có footer thừa thãi.
+  2. `PrecisionKHOLIEUColumns.tsx`: Quản lý 3 bộ cột AG Grid (`column_NHAPLIEUDATA`, `column_XUATLIEUDATA`, `column_STOCK_LIEU`), đồng bộ 100% chính xác tên cột (`headerName`) và độ rộng cột (`width`) theo đúng bản gốc `KHOLIEU.backup.tsx`.
+  3. `PrecisionKHOLIEUKpi.tsx`: Dải 4 thẻ KPI summary realtime gồm `TỔNG CUỘN / MÃ OK`, `TỔNG SỐ LƯỢNG (OUTPUT QTY)`, `TỔNG LÔ NHÀ CUNG CẤP`, và `CẢNH BÁO FIFO / KHÓA / BIỆT TRỮ`.
+  4. `PrecisionKHOLIEUFilterPanel.tsx`: Sidebar bên trái 260px với các tiêu chí lọc compact (Từ ngày, Tới ngày, M_NAME, M_CODE, Code KD, YCSX, PLAN_ID, STT Cuộn, LOT NCC kèm nút UPD LOT NCC), các checkbox và nút Hero `TRA CỨU DỮ LIỆU (LOAD)` cùng dải 3 nút quick jump (`DATA NHẬP`, `DATA XUẤT`, `TỒN LIỆU`).
+  5. `PrecisionKHOLIEUToolbar.tsx`: Cụm nút công cụ phía trên bảng gồm `Nhập Liệu`, `Xuất Liệu`, `EX1 (Grid)`, `EX2 (Raw)`, `PIVOT`, badge đếm số dòng/cuộn và nút bật/tắt hàng lọc nhanh trên cột.
+- **Tái cấu trúc `KHOLIEU.tsx`**: Rút gọn controller sạch sẽ, dễ bảo trì, bảo toàn 100% logic API queries (`tranhaplieu`, `traxuatlieu`, `tratonlieu`, `updatelieuncc`), phân quyền `checkBP(userData, ["KHO"], ...)`, modal PivotTable xoay đa chiều, xuất Excel `SaveExcel`, modal dialogs chuẩn Stitch cho Nhập/Xuất liệu, không tạo footer thừa.
+- **Đồng bộ headerName & width**: Chuẩn hóa lại toàn bộ `headerName` và `width` cho cả Kho Liệu (`PrecisionKHOLIEUColumns.tsx`) và Kho Thành Phẩm (`PrecisionKHOTPColumns.tsx`) trùng khớp 100% với bản gốc, không tự ý dịch hay đổi tên cột.
+- **Kiểm tra Vite Dev Server (port 3001)**: 100% các files liên quan đều được biên dịch mượt mà và trả về HTTP 200 OK.
+
+## Update - 2026-09-13 (KHOTP: Google Stitch High-Density Enterprise Redesign)
+
+### Completed
+- **Bảo toàn 100% mã nguồn gốc**: Đã tạo file sao lưu `KHOTP.backup.tsx` (55.357 bytes, 1.745 dòng).
+- **Phân rã kiến trúc monolith 1.745 dòng**: Tinh gọn Master Controller `KHOTP.tsx` xuống còn ~250 dòng và tạo module chuyên biệt trong thư mục `src/pages/kho/khotp/PrecisionKHOTP/`:
+  1. `PrecisionKHOTP.scss`: Hệ thống SCSS tokens công nghiệp chuẩn Google Stitch (Blue `#2563eb`, Emerald `#059669`, Teal `#0d9488`, Amber `#d97706`, Purple `#9333ea`, Rose `#dc2626`, Slate `#f1f5f9`), bố cục Split-Screen 2 Panel (Sidebar 256px + Data Grid Workspace flex: 1), flex full-width và full-height co giãn theo viewport trong chế độ Multi-Tab, ẩn hoàn toàn toolbar xanh lá mặc định của AGTable, không có footer phụ thừa.
+  2. `PrecisionKHOTPColumns.tsx`: Quản lý toàn bộ 5 bộ cột AG Grid (`column_WH_IN_OUT`, `column_XUATPACK`, `column_STOCK_CMS`, `column_STOCK_KD`, `column_STOCK_TACH`), cải tiến cell renderers với định dạng số `toLocaleString("en-US")` font mono, mã code link xanh, status badge (Closed / Pending) và kết quả kiểm tra chất lượng (OK xanh / NG đỏ / N/A xám).
+  3. `PrecisionKHOTPKpi.tsx`: Dải 4 thẻ KPI summary realtime gồm `TỔNG SỐ LƯỢNG (TOTAL QTY)` dạng gradient Emerald hero, `TỔNG GIAO DỊCH / DÒNG`, `SỐ MÃ SẢN PHẨM KHẢ DỤNG`, và `CẢNH BÁO LƯU KHO / PENDING`.
+  4. `PrecisionKHOTPFilterPanel.tsx`: Sidebar bên trái 256px với Header (icon thanh trượt, tiêu đề, nút Làm mới), chọn Chế độ xem (Nhập Kho, Xuất Kho, Xuất Pack, Tồn theo G_CODE, Tồn theo Code KD, Tồn theo vị trí kho), Từ ngày - Tới ngày, Code KD, Code ERP, Khách hàng, các checkbox (All Time, Tính cả xuất cấp bù, Chỉ code có tồn), và nút bấm Hero `TRA CỨU DỮ LIỆU (LOAD)` với icon tia sét `FiZap`.
+  5. `PrecisionKHOTPToolbar.tsx`: Cụm nút công cụ phía trên bảng gồm `EX1 (Hiển thị)`, `EX2 (Raw Data)`, `PIVOT`, `PIVOT ADVANCED`, dải nút chuyển nhanh chế độ xem (Quick view buttons), dải đếm cột `Hiển thị: {N} / {N} cột` và nút bật/tắt hàng lọc nhanh trên cột.
+- **Tái cấu trúc `KHOTP.tsx`**: Rút gọn từ 1.745 dòng xuống còn ~250 dòng sạch sẽ, dễ bảo trì, bảo toàn 100% logic API queries (`trakhotpInOut` cho Nhập/Xuất kho, `xuatpackkhotp` cho Xuất Pack, `traSTOCKCMS_NEW`/`traSTOCKCMS`, `traSTOCKKD_NEW`/`traSTOCKKD`, `traSTOCKTACH`, `f_updateBTP_M100`), modal PivotTable xoay đa chiều, xuất Excel `SaveExcel`, không tạo footer thừa.
+- **Sửa lỗi command backend**: Khắc phục lỗi `Command 'traWH_IN_OUT_CMS' not supported` bằng cách khôi phục chính xác 100% tên command backend từ bản gốc (`trakhotpInOut` với tham số `INOUT`, `xuatpackkhotp` với tham số `CUST_NAME_KD` và định dạng date chuẩn UTC).
+- **Kiểm tra Vite Dev Server (port 3001)**: 100% 8/8 files liên quan đều được biên dịch mượt mà và trả về HTTP 200 OK.
+
 
 ### Completed
 - **Bảo toàn 100% mã nguồn gốc**: Đã tạo file sao lưu `INSPECTION.backup.tsx` (91.877 bytes, 3.074 dòng).

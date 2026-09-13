@@ -1,20 +1,38 @@
-import { Button,} from "@mui/material";
+// KHOTP.tsx - Master Controller Kho Thành Phẩm (Google Stitch High-Density Enterprise)
 
+import React, { useState, useMemo, useCallback } from "react";
 import moment from "moment";
-import React, { useContext, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
-import "./KHOTP.scss";
-
+import { AiFillCloseCircle } from "react-icons/ai";
+import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import PivotTable from "../../../components/PivotChart/PivotChart";
 import AGTable from "../../../components/DataTable/AGTable";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
+import { SaveExcel } from "../../../api/services/excelService";
 import { f_updateBTP_M100 } from "../../../api/services/inventoryService";
-import { TONKIEMGOP_CMS, TONKIEMGOP_KD, TONKIEMTACH, WH_IN_OUT, XUATPACK_DATA } from "../interfaces/khoInterface";
-const KHOTP = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const [readyRender, setReadyRender] = useState(false);
-  const [isLoading, setisLoading] = useState(false);
+import {
+  TONKIEMGOP_CMS,
+  TONKIEMGOP_KD,
+  TONKIEMTACH,
+  WH_IN_OUT,
+  XUATPACK_DATA,
+} from "../interfaces/khoInterface";
+
+// Styles & Sub-modules
+import "./PrecisionKHOTP/PrecisionKHOTP.scss";
+import PrecisionKHOTPFilterPanel from "./PrecisionKHOTP/PrecisionKHOTPFilterPanel";
+import PrecisionKHOTPToolbar from "./PrecisionKHOTP/PrecisionKHOTPToolbar";
+import PrecisionKHOTPKpi from "./PrecisionKHOTP/PrecisionKHOTPKpi";
+import {
+  column_WH_IN_OUT,
+  column_XUATPACK,
+  column_STOCK_CMS,
+  column_STOCK_KD,
+  column_STOCK_TACH,
+} from "./PrecisionKHOTP/PrecisionKHOTPColumns";
+
+const KHOTP: React.FC = () => {
+  // Filter States
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
   const [codeKD, setCodeKD] = useState("");
@@ -23,1313 +41,80 @@ const KHOTP = () => {
   const [alltime, setAllTime] = useState(false);
   const [capbu, setCapBu] = useState(false);
   const [justbalancecode, setJustBalanceCode] = useState(true);
-  const [whdatatable, setWhDataTable] = useState<Array<any>>([]);
-  const [sumaryWH, setSummaryWH] = useState("");
   const [buttonselected, setbuttonselected] = useState("GR");
-  const column_STOCK_TACH = [
-    { field: "KHO_NAME", headerName: "KHO_NAME", width: 90 },
-    { field: "LC_NAME", headerName: "LC_NAME", width: 90 },
-    { field: "G_CODE", headerName: "G_CODE", width: 90 },
-    { field: "G_NAME", headerName: "G_NAME", width: 180 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 180 },
-    {
-      field: "NHAPKHO",
-      headerName: "NHAPKHO",
-      width: 120,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>{params.data.NHAPKHO?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "XUATKHO",
-      headerName: "XUATKHO",
-      width: 120,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>{params.data.XUATKHO?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TONKHO",
-      headerName: "TONKHO",
-      width: 100,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.TONKHO?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "BLOCK_QTY",
-      headerName: "BLOCK_QTY",
-      width: 100,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.data.BLOCK_QTY?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "GRAND_TOTAL_TP",
-      headerName: "GRAND_TOTAL_TP",
-      width: 150,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "green" }}>
-            <b>{params.data.GRAND_TOTAL_TP?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-  ];
-  const column_STOCK_CMS = [
-    { field: "G_CODE", headerName: "G_CODE", width: 90 },
-    { field: "G_NAME", headerName: "G_NAME", width: 180 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 180 },
-    {
-      field: "CHO_KIEM",
-      headerName: "CHO_KIEM",
-      width: 120,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>{params.data.CHO_KIEM?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CHO_CS_CHECK",
-      headerName: "WAIT CS",
-      width: 120,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>{params.data.CHO_CS_CHECK?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CHO_KIEM_RMA",
-      headerName: "WAIT RMA",
-      width: 120,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>{params.data.CHO_KIEM_RMA?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TONG_TON_KIEM",
-      headerName: "TONG_TON_KIEM",
-      width: 120,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.TONG_TON_KIEM?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "BTP",
-      headerName: "BTP",
-      width: 100,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.BTP?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_TP",
-      headerName: "TON_TP",
-      width: 100,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.TON_TP?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "PENDINGXK",
-      headerName: "PENDINGXK",
-      width: 100,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#9031FA" }}>
-            <b>{params.data.PENDINGXK?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_TPTT",
-      headerName: "TON_TPTT",
-      width: 100,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.TON_TPTT?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "BLOCK_QTY",
-      headerName: "BLOCK_QTY",
-      width: 100,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.data.BLOCK_QTY?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "GRAND_TOTAL_STOCK",
-      headerName: "GRAND_TOTAL_STOCK",
-      width: 150,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "green" }}>
-            <b>{params.data.GRAND_TOTAL_STOCK?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-  ];
-  const column_STOCK_KD = [
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 180 },
-    {
-      field: "CHO_KIEM",
-      headerName: "CHO_KIEM",
-      width: 120,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>{params.data.CHO_KIEM?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CHO_CS_CHECK",
-      headerName: "WAIT CS",
-      width: 120,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>{params.data.CHO_CS_CHECK?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "CHO_KIEM_RMA",
-      headerName: "WAIT RMA",
-      width: 120,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "gray" }}>
-            <b>{params.data.CHO_KIEM_RMA?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TONG_TON_KIEM",
-      headerName: "TONG_TON_KIEM",
-      width: 120,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.TONG_TON_KIEM?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "BTP",
-      headerName: "BTP",
-      width: 100,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.BTP?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_TP",
-      headerName: "TON_TP",
-      width: 100,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.TON_TP?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "PENDINGXK",
-      headerName: "PENDINGXK",
-      width: 100,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#9031FA" }}>
-            <b>{params.data.PENDINGXK?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "TON_TPTT",
-      headerName: "TON_TPTT",
-      width: 100,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.TON_TPTT?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "BLOCK_QTY",
-      headerName: "BLOCK_QTY",
-      width: 100,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{params.data.BLOCK_QTY?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    {
-      field: "GRAND_TOTAL_STOCK",
-      headerName: "GRAND_TOTAL_STOCK",
-      width: 150,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "green" }}>
-            <b>{params.data.GRAND_TOTAL_STOCK?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-  ];
-  const column_WH_IN_OUT = [
-    { field: "G_CODE", headerName: "G_CODE", width: 90 },
-    { field: "G_NAME", headerName: "G_NAME", width: 180 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
-    { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 150 },
-    {
-      field: "Customer_ShortName",
-      headerName: "Customer_ShortName",
-      width: 150,
-    },
-    { field: "IO_Date", headerName: "IO_Date", width: 150 },
-    { field: "INPUT_DATETIME", headerName: "IN_OUT_TIME", width: 150 },
-    { field: "IO_Shift", headerName: "IO_Shift", width: 80 },
-    { field: "IO_Type", headerName: "IO_Type", width: 80 },
-    {
-      field: "IO_Status",
-      headerName: "IO_Status",
-      width: 80,
-      cellRenderer: (params: any) => {
-        if (params.data.IO_Status === "Pending") {
-          return (
-            <span style={{ color: "red" }}>
-              <b>Pending</b>
-            </span>
-          );
-        } else {
-          return (
-            <span style={{ color: "green" }}>
-              <b>Closed</b>
-            </span>
-          );
-        }
-      },
-    },
-    {
-      field: "IO_Qty",
-      headerName: "IO_Qty",
-      width: 80,
-      cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "green" }}>
-            <b>{params.data.IO_Qty?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    { field: "IO_Note", headerName: "IO_Note", width: 150 },
-    { field: "IO_Number", headerName: "IO_Number", width: 100 },
-  ];
-  const column_XUATPACK = [
-    { field: "G_CODE", headerName: "G_CODE", width: 90 },
-    { field: "G_NAME", headerName: "G_NAME", width: 180 },
-    { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 100 },
-    { field: "PROD_MODEL", headerName: "PROD_MODEL", width: 90 },
-    { field: "OutID", headerName: "OutID", width: 90 },
-    {
-      field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 110, cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "#B008B0" }}>
-            <b>{params.data.CUST_NAME_KD}</b>
-          </span>
-        );
-      }
-    },
-    { field: "Customer_SortName", headerName: "Customer_SortName", width: 110 },
-    {
-      field: "OUT_DATE", headerName: "OUT_DATE", width: 90, cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "blue" }}>
-            <b>{params.data.OUT_DATE}</b>
-          </span>
-        );
-      }
-    },
-    { field: "OUT_DATETIME", headerName: "OUT_DATETIME", width: 155 },
-    {
-      field: "Out_Qty", headerName: "Out_Qty", width: 90, cellRenderer: (params: any) => {
-        return (
-          <span style={{ color: "green" }}>
-            <b>{params.data.Out_Qty?.toLocaleString("en-US")}</b>
-          </span>
-        );
-      },
-    },
-    { field: "SX_DATE", headerName: "SX_DATE", width: 90 },
-    { field: "INSPECT_LOT_NO", headerName: "INSPECT_LOT_NO", width: 110 },
-    { field: "PROCESS_LOT_NO", headerName: "PROCESS_LOT_NO", width: 110 },
-    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 110 },
-    { field: "LOTNCC", headerName: "LOTNCC", width: 110 },
-    { field: "M_NAME", headerName: "M_NAME", width: 120 },
-    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 90 },
-    { field: "SX_EMPL", headerName: "SX_EMPL", width: 90 },
-    { field: "LINEQC_EMPL", headerName: "LINEQC_EMPL", width: 90 },
-    { field: "INSPECT_EMPL", headerName: "INSPECT_EMPL", width: 100 },
-    { field: "EXP_DATE", headerName: "EXP_DATE", width: 100 },
-    { field: "Outtype", headerName: "Outtype", width: 90 },
-    { field: "PLAN_ID", headerName: "PLAN_ID", width: 90 },
-    { field: 'PROD_REQUEST_NO', headerName: 'YCSX_NO', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true },
-    { field: 'KQ_Kích_thước', headerName: 'KQ_Kích_thước', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      }
-     },
-    { field: 'KQ_Kéo_keo', headerName: 'KQ_Kéo_keo', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_XRF', headerName: 'KQ_XRF', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_Điện_trở', headerName: 'KQ_Điện_trở', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_Tĩnh_điện', headerName: 'KQ_Tĩnh_điện', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_Độ_bóng', headerName: 'KQ_Độ_bóng', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_Phtalate', headerName: 'KQ_Phtalate', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_FTIR', headerName: 'KQ_FTIR', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_Mài_mòn', headerName: 'KQ_Mài_mòn', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_Màu_sắc', headerName: 'KQ_Màu_sắc', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_TVOC', headerName: 'KQ_TVOC', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_Cân_nặng', headerName: 'KQ_Cân_nặng', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_Scanbarcode', headerName: 'KQ_Scanbarcode', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_Nhiệt_cao_Ẩm_cao', headerName: 'KQ_Nhiệt_Ẩm', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_Shock_nhiệt', headerName: 'KQ_Shock_nhiệt', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_Kéo_keo_2', headerName: 'KQ_Kéo_keo_2', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_Ngoại_quan', headerName: 'KQ_Ngoại_quan', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
-    { field: 'KQ_Độ_dày', headerName: 'KQ_Độ_dày', width: 80,  resizable: true,floatingFilter: true, filter: true, editable: true,
-      cellRenderer: (params: any) => {
-        if (params.value < 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>N/A</b>
-            </span>
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>OK</b>
-            </span>
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            <span style={{ color: "white" }}>
-              <b>NG</b>
-            </span>
-          );
-        }
-        return (
-          <span style={{ color: "white" }}>
-            <b>Unkown</b>
-          </span>
-        );
-      },
-      cellStyle: (params: any) => {
-        if (params.value < 0) {
-          return (
-            {backgroundColor: "gray", color: "white", textAlign: "center"}
-          );
-        } 
-        else if (params.value > 0) {
-          return (
-            {backgroundColor: "#44d157", color: "white", textAlign: "center"}
-          );
-        }
-        else if (params.value === 0) {
-          return (
-            {backgroundColor: "red", color: "white", textAlign: "center"}
-          );
-        }
-        return (
-          {backgroundColor: "gray", color: "white", textAlign: "center"}
-        )
-      } },
 
-  ];
-  const [columnDefinition, setColumnDefinition] =
-    useState<Array<any>>(column_STOCK_CMS);
-  const handletraXuatPack = () => {    
-    let inout_qty: number = 0;
-    setSummaryWH("");
-    setisLoading(true);
+  // Data & Table States
+  const [whdatatable, setWhDataTable] = useState<Array<any>>([]);
+  const [columnDefinition, setColumnDefinition] = useState<Array<any>>(column_WH_IN_OUT);
+  const [showFilter, setShowFilter] = useState(true);
+  const [showPivotModal, setShowPivotModal] = useState(false);
+
+  // Helper hiển thị Swal Loading
+  const showLoading = (title: string = "Tra data", text: string = "Đang tra data, vui lòng chờ...") => {
+    Swal.fire({
+      title,
+      text,
+      icon: "info",
+      showCancelButton: false,
+      allowOutsideClick: false,
+      showConfirmButton: false,
+    });
+  };
+
+  // 1. Nghiệp vụ: Nhập / Xuất Kho (IN / OUT)
+  const handletraWHInOut = useCallback(
+    (in_out: string) => {
+      showLoading("Tra cứu dữ liệu", in_out === "IN" ? "Đang tải dữ liệu Nhập Kho..." : "Đang tải dữ liệu Xuất Kho...");
+      generalQuery("trakhotpInOut", {
+        G_CODE: codeCMS.trim(),
+        G_NAME: codeKD.trim(),
+        ALLTIME: alltime,
+        JUSTBALANCE: justbalancecode,
+        CUST_NAME: cust_name.trim(),
+        FROM_DATE: fromdate,
+        TO_DATE: todate,
+        INOUT: in_out,
+        CAPBU: capbu,
+      })
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            const loadeddata: WH_IN_OUT[] = response.data.data.map(
+              (element: WH_IN_OUT, index: number) => ({
+                ...element,
+                G_NAME:
+                  getAuditMode() === 0
+                    ? element?.G_NAME
+                    : element?.G_NAME?.search("CNDB") === -1
+                    ? element?.G_NAME
+                    : "TEM_NOI_BO",
+                G_NAME_KD:
+                  getAuditMode() === 0
+                    ? element?.G_NAME_KD
+                    : element?.G_NAME?.search("CNDB") === -1
+                    ? element?.G_NAME_KD
+                    : "TEM_NOI_BO",
+                IO_Date: moment.utc(element.IO_Date).format("YYYY-MM-DD"),
+                INPUT_DATETIME: moment
+                  .utc(element.INPUT_DATETIME)
+                  .format("YYYY-MM-DD HH:mm:ss"),
+                id: index,
+              })
+            );
+            setWhDataTable(loadeddata);
+            setColumnDefinition(column_WH_IN_OUT);
+            Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
+          } else {
+            Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
+          }
+        })
+        .catch((error) => console.log(error));
+    },
+    [alltime, fromdate, todate, cust_name, codeCMS, codeKD, justbalancecode, capbu]
+  );
+
+  // 2. Nghiệp vụ: Xuất Pack
+  const handletraXuatPack = useCallback(() => {
+    showLoading("Tra cứu dữ liệu", "Đang tải dữ liệu Xuất Pack...");
     generalQuery("xuatpackkhotp", {
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
@@ -1341,101 +126,45 @@ const KHOTP = () => {
       CAPBU: capbu,
     })
       .then((response) => {
-        //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
-          //console.log(response.data.data)
           const loadeddata: XUATPACK_DATA[] = response.data.data.map(
-            (element: XUATPACK_DATA, index: number) => {
-              inout_qty += element.Out_Qty;
-              return {
-                ...element,
-                id: index,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-                G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-                OUT_DATE: moment.utc(element.OUT_DATE).format("YYYY-MM-DD"),
-                OUT_DATETIME: moment.utc(element.OUT_DATETIME.slice(0, element.OUT_DATETIME.length - 2)).format("YYYY-MM-DD HH:mm:ss"),
-                SX_DATE: moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
-                EXP_DATE: moment.utc(element.EXP_DATE).format("YYYY-MM-DD"),
-              };
-            },
+            (element: XUATPACK_DATA, index: number) => ({
+              ...element,
+              G_NAME:
+                getAuditMode() === 0
+                  ? element?.G_NAME
+                  : element?.G_NAME?.search("CNDB") === -1
+                  ? element?.G_NAME
+                  : "TEM_NOI_BO",
+              G_NAME_KD:
+                getAuditMode() === 0
+                  ? element?.G_NAME_KD
+                  : element?.G_NAME?.search("CNDB") === -1
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
+              OUT_DATE: moment.utc(element.OUT_DATE).format("YYYY-MM-DD"),
+              OUT_DATETIME: moment
+                .utc(element.OUT_DATETIME.slice(0, element.OUT_DATETIME.length - 2))
+                .format("YYYY-MM-DD HH:mm:ss"),
+              SX_DATE: moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
+              EXP_DATE: moment.utc(element.EXP_DATE).format("YYYY-MM-DD"),
+              id: index,
+            })
           );
           setWhDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
-          setSummaryWH(
-            "TOTAL QTY: " + inout_qty.toLocaleString("en-US") + "EA",
-          );
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success",
-          );
+          setColumnDefinition(column_XUATPACK);
+          Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handletraWHInOut = (inout: string) => {
-    let inout_qty: number = 0;
-    setSummaryWH("");
-    setisLoading(true);
-    generalQuery("trakhotpInOut", {
-      G_CODE: codeCMS.trim(),
-      G_NAME: codeKD.trim(),
-      ALLTIME: alltime,
-      JUSTBALANCE: justbalancecode,
-      CUST_NAME: cust_name.trim(),
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      INOUT: inout,
-      CAPBU: capbu,
-    })
-      .then((response) => {
-        //console.log(response.data.data);
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: WH_IN_OUT[] = response.data.data.map(
-            (element: WH_IN_OUT, index: number) => {
-              inout_qty += element.IO_Qty;
-              return {
-                ...element,
-                id: index,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-                IO_Date: moment.utc(element.IO_Date).format("YYYY-MM-DD"),
-                INPUT_DATETIME: moment
-                  .utc(element.INPUT_DATETIME)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-              };
-            },
-          );
-          setWhDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
-          setSummaryWH(
-            "TOTAL QTY: " + inout_qty.toLocaleString("en-US") + "EA",
-          );
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success",
-          );
-        } else {
-          Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handletraWHSTOCKCMS = async () => {
+      .catch((error) => console.log(error));
+  }, [alltime, fromdate, todate, cust_name, codeCMS, codeKD, justbalancecode, capbu]);
+
+  // 3. Nghiệp vụ: Tồn theo G_CODE (CMS)
+  const handletraWHSTOCKCMS = useCallback(async () => {
+    showLoading("Tra cứu tồn kho", "Đang cập nhật tồn BTP và tải dữ liệu tồn theo G_CODE...");
     await f_updateBTP_M100();
-    setSummaryWH("");
-    setisLoading(true);
     await generalQuery(getCompany() === "CMS" ? "traSTOCKCMS_NEW" : "traSTOCKCMS", {
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
@@ -1446,39 +175,39 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       TO_DATE: todate,
     })
       .then((response) => {
-        //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: TONKIEMGOP_CMS[] = response.data.data.map(
-            (element: TONKIEMGOP_CMS, index: number) => {
-              return {
-                ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-                id: index,
-              };
-            },
+            (element: TONKIEMGOP_CMS, index: number) => ({
+              ...element,
+              G_NAME:
+                getAuditMode() === 0
+                  ? element?.G_NAME
+                  : element?.G_NAME?.search("CNDB") === -1
+                  ? element?.G_NAME
+                  : "TEM_NOI_BO",
+              G_NAME_KD:
+                getAuditMode() === 0
+                  ? element?.G_NAME_KD
+                  : element?.G_NAME?.search("CNDB") === -1
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
+              id: index,
+            })
           );
           setWhDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success",
-          );
+          setColumnDefinition(column_STOCK_CMS);
+          Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handletraWHSTOCKKD = async () => {
+      .catch((error) => console.log(error));
+  }, [codeCMS, codeKD, alltime, justbalancecode, cust_name, fromdate, todate]);
+
+  // 4. Nghiệp vụ: Tồn theo Code KD
+  const handletraWHSTOCKKD = useCallback(async () => {
+    showLoading("Tra cứu tồn kho", "Đang cập nhật tồn BTP và tải dữ liệu tồn theo Code KD...");
     await f_updateBTP_M100();
-    setSummaryWH("");
-    setisLoading(true);
     await generalQuery(getCompany() === "CMS" ? "traSTOCKKD_NEW" : "traSTOCKKD", {
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
@@ -1489,37 +218,32 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
       TO_DATE: todate,
     })
       .then((response) => {
-        //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: TONKIEMGOP_KD[] = response.data.data.map(
-            (element: TONKIEMGOP_KD, index: number) => {
-              return {
-                ...element,                
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME_KD?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-                id: index,
-              };
-            },
+            (element: TONKIEMGOP_KD, index: number) => ({
+              ...element,
+              G_NAME_KD:
+                getAuditMode() === 0
+                  ? element?.G_NAME_KD
+                  : element?.G_NAME_KD?.search("CNDB") === -1
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
+              id: index,
+            })
           );
           setWhDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success",
-          );
+          setColumnDefinition(column_STOCK_KD);
+          Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handletraWHSTOCKTACH = () => {
-    setSummaryWH("");
-    setisLoading(true);
+      .catch((error) => console.log(error));
+  }, [codeCMS, codeKD, alltime, justbalancecode, cust_name, fromdate, todate]);
+
+  // 5. Nghiệp vụ: Tồn theo vị trí kho (Tách)
+  const handletraWHSTOCKTACH = useCallback(() => {
+    showLoading("Tra cứu tồn kho", "Đang tải dữ liệu tồn theo vị trí kho...");
     generalQuery("traSTOCKTACH", {
       G_CODE: codeCMS.trim(),
       G_NAME: codeKD.trim(),
@@ -1530,215 +254,192 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME_KD?.search(
       TO_DATE: todate,
     })
       .then((response) => {
-        //console.log(response.data.data);
         if (response.data.tk_status !== "NG") {
           const loadeddata: TONKIEMTACH[] = response.data.data.map(
-            (element: TONKIEMTACH, index: number) => {
-              return {
-                ...element,
-                G_NAME: getAuditMode() == 0? element?.G_NAME : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME : 'TEM_NOI_BO',
-G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CNDB') ==-1 ? element?.G_NAME_KD : 'TEM_NOI_BO',
-                KHO_NAME: element.KHO_NAME === 'NM1' ? 'SK1' : element.KHO_NAME === 'NM3' ? 'SK3' : element.KHO_NAME,
-                id: index,
-              };
-            },
+            (element: TONKIEMTACH, index: number) => ({
+              ...element,
+              G_NAME:
+                getAuditMode() === 0
+                  ? element?.G_NAME
+                  : element?.G_NAME?.search("CNDB") === -1
+                  ? element?.G_NAME
+                  : "TEM_NOI_BO",
+              G_NAME_KD:
+                getAuditMode() === 0
+                  ? element?.G_NAME_KD
+                  : element?.G_NAME?.search("CNDB") === -1
+                  ? element?.G_NAME_KD
+                  : "TEM_NOI_BO",
+              KHO_NAME: element.KHO_NAME === "NM1" ? "SK1" : element.KHO_NAME === "NM3" ? "SK3" : element.KHO_NAME,
+              id: index,
+            })
           );
           setWhDataTable(loadeddata);
-          setReadyRender(true);
-          setisLoading(false);
-          Swal.fire(
-            "Thông báo",
-            "Đã load " + response.data.data.length + " dòng",
-            "success",
-          );
+          setColumnDefinition(column_STOCK_TACH);
+          Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
-          setisLoading(false);
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const warehouseDataTableAG = useMemo(()=> {
+      .catch((error) => console.log(error));
+  }, [codeCMS, codeKD, alltime, justbalancecode, cust_name, fromdate, todate]);
+
+  // Hàm điều phối Load dữ liệu theo mode
+  const handleExecuteQuery = useCallback(
+    (mode: string = buttonselected) => {
+      switch (mode) {
+        case "GR":
+          handletraWHInOut("IN");
+          break;
+        case "GI":
+          handletraWHInOut("OUT");
+          break;
+        case "GI_PACK":
+          handletraXuatPack();
+          break;
+        case "STOCKG_CODE":
+          handletraWHSTOCKCMS();
+          break;
+        case "STOCKG_NAME_KD":
+          handletraWHSTOCKKD();
+          break;
+        case "STOCKG_TACH":
+          handletraWHSTOCKTACH();
+          break;
+        default:
+          handletraWHInOut("IN");
+      }
+    },
+    [buttonselected, handletraWHInOut, handletraXuatPack, handletraWHSTOCKCMS, handletraWHSTOCKKD, handletraWHSTOCKTACH]
+  );
+
+  // Xử lý chuyển nhanh chế độ xem trên Toolbar
+  const handleQuickModeChange = useCallback(
+    (newMode: string) => {
+      setbuttonselected(newMode);
+      handleExecuteQuery(newMode);
+    },
+    [handleExecuteQuery]
+  );
+
+  // Xử lý Reset bộ lọc
+  const handleResetFilters = useCallback(() => {
+    setFromDate(moment().format("YYYY-MM-DD"));
+    setToDate(moment().format("YYYY-MM-DD"));
+    setCodeKD("");
+    setCodeCMS("");
+    setCustName("");
+    setAllTime(false);
+    setCapBu(false);
+    setJustBalanceCode(true);
+  }, []);
+
+  // Xử lý Xuất Excel
+  const handleExportEX1 = useCallback(() => {
+    if (whdatatable.length === 0) {
+      Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel", "warning");
+      return;
+    }
+    SaveExcel(whdatatable, `KHOTP_${buttonselected}_EX1`);
+  }, [whdatatable, buttonselected]);
+
+  const handleExportEX2 = useCallback(() => {
+    if (whdatatable.length === 0) {
+      Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel", "warning");
+      return;
+    }
+    SaveExcel(whdatatable, `KHOTP_${buttonselected}_EX2_RAW`);
+  }, [whdatatable, buttonselected]);
+
+  // AGTable Component
+  const warehouseDataTableAG = useMemo(() => {
     return (
       <AGTable
-        toolbar={
-          <div
-            style={{
-              fontWeight: "bold",
-              fontSize: "1rem",
-              paddingLeft: 20,
-              color: "blue",
-            }}
-          >         
-            {sumaryWH}
-          </div>}
+        showFilter={showFilter}
         columns={columnDefinition}
         data={whdatatable}
-        onCellEditingStopped={(e: any) => {
-          //console.log(e.data)
-        }} onRowClick={(e: any) => {
-          //console.log(e.data)
-        }} onSelectionChange={(e: any) => {
-          //console.log(e!.api.getSelectedRows())
-        }}
       />
-    )
-  },[whdatatable,columnDefinition])
-  useEffect(() => { }, []);
-  return (
-    <div className="khotp">
-      <div className="tracuuDataWH">
-        <div className="tracuuDataWHform" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-          <div className="forminput">
-            <div className="forminputcolumn">
-              <label>
-                <b>Từ ngày:</b>
-                <input
-                  type="date"
-                  value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Tới ngày:</b>{" "}
-                <input
-                  type="date"
-                  value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Code KD:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="GH63-xxxxxx"
-                  value={codeKD}
-                  onChange={(e) => setCodeKD(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Code ERP:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="7C123xxx"
-                  value={codeCMS}
-                  onChange={(e) => setCodeCMS(e.target.value)}
-                ></input>
-              </label>
-            </div>            
-            <div className="forminputcolumn">
-              <label>
-                <b>Khách:</b>{" "}
-                <input
-                  type="text"
-                  placeholder="SEVT"
-                  value={cust_name}
-                  onChange={(e) => setCustName(e.target.value)}
-                ></input>
-              </label>
-              <div className="forminputcolumn">
-              <label>
-                <b>CHỌN:</b>
-                <select
-                  name="chondatakho"
-                  value={buttonselected}
-                  onChange={(e) => {
-                    setbuttonselected(e.target.value);
-                  }}
-                >
-                  <option value="GR">Nhập Kho</option>
-                  <option value="GI">Xuất Kho</option>
-                  <option value="GI_PACK">Xuất Pack</option>                 
-                  <option value="STOCKG_CODE">Tồn theo G_CODE</option>
-                  <option value="STOCKG_NAME_KD">Tồn theo Code KD</option>                  
-                  <option value="STOCKG_TACH">Tồn theo vị trí kho</option>                  
-                </select>
-              </label>              
-            </div>
-              <label>
-                <b>All Time:</b>
-                <input
-                  type="checkbox"
-                  name="alltimecheckbox"
-                  defaultChecked={alltime}
-                  onChange={() => setAllTime(!alltime)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>Tính cả xuất cấp bù:</b>
-                <input
-                  type="checkbox"
-                  name="alltimecheckbox"
-                  defaultChecked={capbu}
-                  onChange={() => setCapBu(!capbu)}
-                ></input>
-              </label>
-              <label>
-                <b>Chỉ code có tồn:</b>
-                <input
-                  type="checkbox"
-                  name="alltimecheckbox"
-                  defaultChecked={justbalancecode}
-                  onChange={() => setJustBalanceCode(!justbalancecode)}
-                ></input>
-              </label>
-            </div>
-            
-          </div>
-          <div className="formbutton">
-            <Button fullWidth={true} color={'success'} variant="contained" size="small" sx={{ fontSize: '0.7rem', padding: '3px', backgroundColor: '#31ad00' }} onClick={() => {
-              Swal.fire({
-                title: "Tra data",
-                text: "Đang tra data",
-                icon: "info",
-                showCancelButton: false,
-                allowOutsideClick: false,
-                confirmButtonText: "OK",
-                showConfirmButton: false,
-              });
-              setisLoading(true);
-              setReadyRender(false);              
-              switch (buttonselected) {
-                case "GR":
-                  setColumnDefinition(column_WH_IN_OUT);
-                  handletraWHInOut("IN");                  
-                  break;
-                case "GI":
-                  setColumnDefinition(column_WH_IN_OUT);
-                  handletraWHInOut("OUT");
-                  break;               
-                case "GI_PACK":
-                  setColumnDefinition(column_XUATPACK);
-                  handletraXuatPack();
-                  break;               
-                case "STOCKG_CODE":
-                  setColumnDefinition(column_STOCK_CMS);
-                  handletraWHSTOCKCMS();
-                  break;
-                case "STOCKG_NAME_KD":
-                  setColumnDefinition(column_STOCK_KD);
-                  handletraWHSTOCKKD();
-                  break;
-                case "STOCKG_TACH":
-                  setColumnDefinition(column_STOCK_TACH);
-                  handletraWHSTOCKTACH();
-                  break;
-              }
+    );
+  }, [whdatatable, columnDefinition, showFilter]);
 
-            }}>Load</Button>           
+  // Pivot DataSource
+  const pivotDataSource = useMemo(() => {
+    return new PivotGridDataSource({
+      store: whdatatable,
+    });
+  }, [whdatatable]);
+
+  return (
+    <div className="precision-khotp">
+      {/* 1. Sidebar Bộ Lọc Tra Cứu */}
+      <PrecisionKHOTPFilterPanel
+        buttonselected={buttonselected}
+        setbuttonselected={setbuttonselected}
+        fromdate={fromdate}
+        setFromDate={setFromDate}
+        todate={todate}
+        setToDate={setToDate}
+        codeKD={codeKD}
+        setCodeKD={setCodeKD}
+        codeCMS={codeCMS}
+        setCodeCMS={setCodeCMS}
+        cust_name={cust_name}
+        setCustName={setCustName}
+        alltime={alltime}
+        setAllTime={setAllTime}
+        capbu={capbu}
+        setCapBu={setCapBu}
+        justbalancecode={justbalancecode}
+        setJustBalanceCode={setJustBalanceCode}
+        onReset={handleResetFilters}
+        onLoadData={() => handleExecuteQuery(buttonselected)}
+      />
+
+      {/* 2. Workspace Bảng Dữ Liệu AG Grid */}
+      <main className="precision-khotp__workspace">
+        {/* Dải 4 Thẻ KPI Summary Realtime */}
+        <PrecisionKHOTPKpi data={whdatatable} mode={buttonselected} />
+
+        {/* Action Toolbar */}
+        <PrecisionKHOTPToolbar
+          totalColumns={columnDefinition.length}
+          currentMode={buttonselected}
+          onModeChange={handleQuickModeChange}
+          onExportEX1={handleExportEX1}
+          onExportEX2={handleExportEX2}
+          onPivotClick={() => setShowPivotModal(true)}
+          onToggleFilter={() => setShowFilter(!showFilter)}
+        />
+
+        {/* Khung Bảng AG Table Full-Height (Sử dụng footer chuẩn AGTable) */}
+        <div className="precision-khotp__tableContainer">
+          {warehouseDataTableAG}
+        </div>
+      </main>
+
+      {/* 3. Modal Phân Tích Pivot Table */}
+      {showPivotModal && (
+        <div className="precision-khotp__pivotBackdrop">
+          <div className="precision-khotp__pivotDialog">
+            <div className="precision-khotp__pivotHeader">
+              <span>BẢNG PHÂN TÍCH XOAY ĐA CHIỀU (PIVOT GRID) - KHO THÀNH PHẨM</span>
+              <button
+                type="button"
+                onClick={() => setShowPivotModal(false)}
+                title="Đóng bảng Pivot"
+              >
+                <AiFillCloseCircle color="#dc2626" size={14} />
+                <span>Đóng</span>
+              </button>
+            </div>
+            <div className="precision-khotp__pivotContent">
+              <PivotTable datasource={pivotDataSource} tableID="khotppivot" />
+            </div>
           </div>
         </div>
-        <div className="tracuuWHTable">
-          {warehouseDataTableAG}          
-        </div>
-      </div>
+      )}
     </div>
   );
 };
-export default KHOTP;
+
+export default React.memo(KHOTP);

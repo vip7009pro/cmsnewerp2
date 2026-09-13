@@ -1,0 +1,799 @@
+// PrecisionKHOTP.scss - Google Stitch High-Density Enterprise Style cho Kho Thành Phẩm
+
+.precision-khotp {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: #f1f5f9;
+  overflow: hidden;
+  font-family: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 11.5px;
+  color: #1e293b;
+
+  // Quan trọng: Full-width và Full-height trong chế độ Multi-Tab
+  .component_element & {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    flex: 1 1 0px;
+    min-height: 0;
+  }
+
+  // ========================================================
+  // 1. SIDEBAR BỘ LỌC TRA CỨU BÊN TRÁI (W-64 / 256px)
+  // ========================================================
+  &__sidebar {
+    width: 256px;
+    min-width: 256px;
+    max-width: 256px;
+    background: #f8fafc;
+    border-right: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex-shrink: 0;
+    box-shadow: 1px 0 3px rgba(15, 23, 42, 0.03);
+    user-select: none;
+
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+  }
+
+  &__sidebarHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  &__sidebarTitle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #334155;
+
+    svg {
+      color: #2563eb;
+      font-size: 14px;
+    }
+  }
+
+  &__resetBtn {
+    font-size: 11px;
+    font-weight: 600;
+    color: #2563eb;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: all 0.15s ease;
+
+    &:hover {
+      color: #1d4ed8;
+      text-decoration: underline;
+    }
+  }
+
+  &__sidebarContent {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+
+  // Khối chọn chế độ xem chính
+  &__modeSection {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: #334155;
+
+      .badge-mode {
+        font-size: 10px;
+        font-weight: 600;
+        color: #059669;
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        padding: 1px 5px;
+        border-radius: 3px;
+        text-transform: none;
+      }
+    }
+
+    select {
+      width: 100%;
+      height: 32px;
+      padding: 0 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1d4ed8;
+      background: #ffffff;
+      border: 1px solid #93c5fd;
+      border-radius: 6px;
+      outline: none;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.06);
+      transition: all 0.15s ease;
+
+      &:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+      }
+    }
+  }
+
+  // Khối khoảng thời gian Từ ngày - Tới ngày
+  &__dateCard {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
+
+    .date-row {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      span {
+        font-size: 10px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+      }
+
+      input[type="date"] {
+        width: 100%;
+        height: 26px;
+        padding: 0 6px;
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+        color: #0f172a;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        outline: none;
+
+        &:focus {
+          background: #ffffff;
+          border-color: #2563eb;
+        }
+      }
+    }
+  }
+
+  // Các trường input lọc
+  &__fieldGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+    }
+
+    input[type="text"],
+    select {
+      width: 100%;
+      height: 27px;
+      padding: 0 8px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: #0f172a;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      outline: none;
+      transition: all 0.15s ease;
+
+      &:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+      }
+
+      &::placeholder {
+        color: #94a3b8;
+        font-weight: 400;
+      }
+    }
+  }
+
+  // Checkbox Options
+  &__checkboxGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 2px;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      color: #475569;
+      cursor: pointer;
+
+      input[type="checkbox"] {
+        width: 14px;
+        height: 14px;
+        accent-color: #2563eb;
+        cursor: pointer;
+      }
+
+      &.highlight {
+        color: #065f46;
+        font-weight: 700;
+
+        input[type="checkbox"] {
+          accent-color: #059669;
+        }
+      }
+    }
+  }
+
+  // Nút Hero TRA CỨU DỮ LIỆU (LOAD)
+  &__loadBtn {
+    width: 100%;
+    height: 36px;
+    background: linear-gradient(135deg, #059669 0%, #0d9488 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.25);
+    transition: all 0.15s ease;
+
+    svg {
+      font-size: 14px;
+    }
+
+    &:hover {
+      background: linear-gradient(135deg, #047857 0%, #0f766e 100%);
+      box-shadow: 0 6px 10px -1px rgba(5, 150, 105, 0.35);
+      transform: translateY(-0.5px);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  // Infobox dưới sidebar
+  &__infobox {
+    padding: 10px 12px;
+    background: #eff6ff;
+    border-top: 1px solid #dbeafe;
+    font-size: 10.5px;
+    color: #1e40af;
+    line-height: 1.35;
+
+    .info-title {
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 2px;
+
+      svg {
+        font-size: 13px;
+        color: #2563eb;
+      }
+    }
+  }
+
+  // ========================================================
+  // 2. MAIN DATA WORKSPACE (BÊN PHẢI)
+  // ========================================================
+  &__workspace {
+    flex: 1 1 0px;
+    display: flex;
+    flex-direction: column;
+    background: #f1f5f9;
+    overflow: hidden;
+    min-width: 0;
+    height: 100%;
+  }
+
+  // Dải 4 Thẻ KPI Summary Bar
+  &__kpiBar {
+    padding: 8px 12px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  &__kpiCard {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+
+    &--hero {
+      background: linear-gradient(135deg, #059669 0%, #0f766e 100%);
+      border: none;
+      color: #ffffff;
+      box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+
+      .kpi-title {
+        color: #ccfbf1 !important;
+        span.live-tag {
+          background: rgba(255, 255, 255, 0.22);
+          color: #ffffff;
+        }
+      }
+      .kpi-value {
+        color: #ffffff !important;
+      }
+      .kpi-sub {
+        color: #ccfbf1 !important;
+      }
+      .kpi-bg-icon {
+        color: rgba(255, 255, 255, 0.12);
+      }
+    }
+
+    .kpi-left {
+      display: flex;
+      flex-direction: column;
+      z-index: 1;
+
+      .kpi-title {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        span.live-tag {
+          font-size: 9px;
+          padding: 0 4px;
+          border-radius: 3px;
+          background: #dcfce7;
+          color: #15803d;
+          font-weight: 800;
+        }
+      }
+
+      .kpi-value {
+        font-size: 18px;
+        font-weight: 800;
+        font-family: "JetBrains Mono", monospace;
+        color: #0f172a;
+        line-height: 1.2;
+        margin-top: 2px;
+
+        span.unit {
+          font-size: 11px;
+          font-weight: 600;
+          font-family: "Plus Jakarta Sans", sans-serif;
+          margin-left: 2px;
+        }
+      }
+
+      .kpi-sub {
+        font-size: 10px;
+        color: #64748b;
+        margin-top: 1px;
+      }
+    }
+
+    .kpi-iconBox {
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+
+      &--blue {
+        background: #eff6ff;
+        color: #2563eb;
+      }
+      &--green {
+        background: #ecfdf5;
+        color: #059669;
+      }
+      &--amber {
+        background: #fffbeb;
+        color: #d97706;
+      }
+    }
+
+    .kpi-bg-icon {
+      position: absolute;
+      right: -6px;
+      bottom: -8px;
+      font-size: 48px;
+      pointer-events: none;
+    }
+  }
+
+  // Toolbar Action Bar
+  &__toolbar {
+    height: 36px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  &__toolbarLeft {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+  }
+
+  &__toolBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 25px;
+    padding: 0 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+
+    svg {
+      font-size: 12px;
+    }
+
+    &:hover {
+      transform: translateY(-0.5px);
+    }
+
+    &--excel {
+      background: #059669;
+      color: #ffffff;
+      border: none;
+      &:hover { background: #047857; }
+    }
+
+    &--excelDark {
+      background: #0f766e;
+      color: #ffffff;
+      border: none;
+      &:hover { background: #115e59; }
+    }
+
+    &--pivot {
+      background: #7c3aed;
+      color: #ffffff;
+      border: none;
+      &:hover { background: #6d28d9; }
+    }
+
+    &--pivotAdv {
+      background: #db2777;
+      color: #ffffff;
+      border: none;
+      &:hover { background: #be185d; }
+    }
+  }
+
+  // Cụm nút chuyển nhanh chế độ xem
+  &__quickModes {
+    display: inline-flex;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-left: 4px;
+
+    button {
+      padding: 0 8px;
+      height: 25px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+      background: #ffffff;
+      border: none;
+      border-right: 1px solid #e2e8f0;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:last-child {
+        border-right: none;
+      }
+
+      &:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+      }
+
+      &.is-active {
+        background: #eff6ff;
+        color: #2563eb;
+        font-weight: 700;
+      }
+    }
+  }
+
+  &__toolbarRight {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__colCountBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 24px;
+    padding: 0 8px;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 10.5px;
+    color: #475569;
+
+    strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+  }
+
+  &__iconToolBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+  }
+
+  // ========================================================
+  // 3. KHUNG BẢNG AG-GRID FULL-HEIGHT (KHÔNG FOOTER THỪA)
+  // ========================================================
+  &__tableContainer {
+    flex: 1 1 0px;
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: #ffffff;
+
+    .agtable {
+      flex: 1 1 0px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      min-height: 200px;
+
+      // Ẩn hoàn toàn toolbar xanh lá cũ của AGTable
+      .toolbar {
+        display: none !important;
+      }
+
+      .ag-theme-quartz {
+        flex: 1 1 0px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+
+        .ag-root-wrapper {
+          height: 100% !important;
+          min-height: 200px;
+          border: none;
+        }
+
+        .ag-header {
+          background: #f8fafc;
+          border-bottom: 1px solid #cbd5e1;
+          font-size: 10.5px;
+          font-weight: 700;
+          color: #475569;
+          text-transform: uppercase;
+        }
+
+        .ag-header-cell {
+          border-right: 1px solid #e2e8f0;
+        }
+
+        .ag-floating-filter-input {
+          background: #ffffff !important;
+          border: 1px solid #cbd5e1 !important;
+          border-radius: 3px !important;
+          font-size: 10.5px !important;
+          height: 22px !important;
+          padding: 0 4px !important;
+          color: #1e293b !important;
+
+          &:focus-within {
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2) !important;
+          }
+        }
+
+        .ag-row {
+          font-size: 11px;
+          border-bottom: 1px solid #f1f5f9;
+
+          &:hover {
+            background-color: #f8fafc !important;
+          }
+
+          &.ag-row-selected {
+            background-color: #eff6ff !important;
+          }
+        }
+
+        .ag-cell {
+          display: flex;
+          align-items: center;
+          padding-left: 8px;
+          padding-right: 8px;
+          border-right: 1px solid #f1f5f9;
+        }
+      }
+    }
+  }
+
+  // ========================================================
+  // 4. POPUP PIVOT GRID MODAL
+  // ========================================================
+  &__pivotBackdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(2px);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  &__pivotDialog {
+    width: 95vw;
+    height: 90vh;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #cbd5e1;
+  }
+
+  &__pivotHeader {
+    height: 40px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 700;
+    color: #334155;
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      color: #64748b;
+      cursor: pointer;
+      font-weight: 600;
+
+      &:hover {
+        background: #fee2e2;
+        color: #dc2626;
+        border-color: #fca5a5;
+      }
+    }
+  }
+
+  &__pivotContent {
+    flex: 1;
+    overflow: auto;
+    padding: 8px;
+  }
+}
+
+// Media Query Responsive
+@media (max-width: 1024px) {
+  .precision-khotp {
+    &__kpiBar {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .precision-khotp {
+    flex-direction: column;
+
+    &__sidebar {
+      width: 100%;
+      min-width: 100%;
+      max-width: 100%;
+      max-height: 260px;
+      border-right: none;
+      border-bottom: 1px solid #e2e8f0;
+    }
+  }
+}
