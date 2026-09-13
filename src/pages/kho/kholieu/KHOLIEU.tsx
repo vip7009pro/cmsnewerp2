@@ -133,8 +133,8 @@ const KHOLIEU: React.FC = () => {
                 getAuditMode() === 0
                   ? element?.G_NAME
                   : element?.G_NAME?.search("CNDB") === -1
-                  ? element?.G_NAME
-                  : "TEM_NOI_BO",
+                    ? element?.G_NAME
+                    : "TEM_NOI_BO",
               id: index,
               INS_DATE: moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss"),
             })
@@ -452,7 +452,7 @@ const KHOLIEU: React.FC = () => {
               </button>
             </div>
             <div className="modal-body" style={{ height: "calc(100% - 50px)" }}>
-              <PivotTable datasource={pivotDataSource} />
+              <PivotTable datasource={pivotDataSource} tableID={""} />
             </div>
           </div>
         </div>
