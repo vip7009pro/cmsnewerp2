@@ -1,5 +1,41 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-13 (MUA_HANG: Refactor Quản Lý Vật Liệu - QLVL.tsx sang Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Refactor toàn diện giao diện Quản Lý Vật Liệu (`QLVL.tsx`)**:
+   - **Bảo toàn 100% mã nguồn gốc**: Sao lưu `QLVL.backup.tsx` (52.635 bytes).
+   - **Tối ưu kiến trúc Clean Code**: Phân rã module từ 1.516 dòng xuống Controller chính chỉ còn 284 dòng (< 300 dòng/file presentation) trong thư mục con `PrecisionQLVL/`.
+   - **Loại bỏ triệt để Footer thừa**: Tuyệt đối không render footer database status bar giả ở đáy trang như bản mẫu HTML; bảng AGTable chiếm trọn không gian dọc tối đa.
+   - **4 Thẻ KPI tính toán động theo thực tế dữ liệu (`PrecisionQLVLKpi.tsx`)**:
+     + *Tổng danh mục vật liệu*: Đếm chính xác tổng số mã, số mã đang sử dụng (`USE_YN === 'Y'`) và số mã khóa (`USE_YN === 'N'`).
+     + *Hồ sơ MSDS / TDS / SGS*: Tính tỷ lệ % mã đã có hồ sơ kỹ thuật (`TDS_VER > 0 || SGS_VER > 0 || MSDS_VER > 0 || TDS === 'Y'`), số mã đã thẩm định và số mã cần bổ sung.
+     + *Tiêu chuẩn chứng chỉ FSC*: Đếm số mã đạt chuẩn FSC (`FSC === 'Y'`) và số mã `NO_FSC`.
+     + *Giá TB & Phí xẻ Slitting*: Tính giá Open Price (`SSPRICE`) trung bình và phí xẻ Slitting (`SLITTING_PRICE`) trung bình của các mã đang áp dụng.
+   - **Toolbar chuẩn SaaS (`PrecisionQLVLToolbar.tsx`)**: Tích hợp các nút hành động chính (`+ Thêm Vật Liệu`, `Load Data`, `Tra Cứu Hồ Sơ Docs`), thanh tìm kiếm tức thì đa trường (`searchKeyword`), và cụm nút xuất Excel `EX1` (lọc), `EX2` (toàn bộ) và `PIVOT`.
+   - **AGTable High-Density & Cột bảng (`PrecisionQLVLColumns.tsx`)**:
+     + Loại bỏ hoàn toàn toolbar xanh lá mặc định của AGTable.
+     + Cell Renderers chuyên nghiệp: Chip mã vật liệu JetBrains Mono, giá USD xanh lá in đậm, chip trạng thái Active/Locked và FSC, link xem PDF trực tiếp cho TDS/SGS/MSDS, nút mở Docs mở rộng.
+     + Phân quyền đầy đủ cho CMS (hệ thống hồ sơ kỹ thuật) và PVN (upload TDS PDF).
+   - **Dialog Thêm mới / Cập nhật vật liệu (`PrecisionQLVLAddModal.tsx`)**: Thiết kế form 2 cột tinh tế, Autocomplete vendor với MUI Dense, checkbox trạng thái đổi màu động, bảo lưu toàn bộ phân quyền `checkBP`.
+   - **Tách cấu hình PivotGridDataSource (`PrecisionQLVLPivotConfig.ts` & `PrecisionQLVLPivotModal.tsx`)**: Đưa hơn 600 dòng cấu hình fields Pivot sang file riêng và bọc modal Pivot gọn gàng.
+   - **SCSS High-Density (`PrecisionQLVL.scss`)**: Hỗ trợ chuẩn Multi-tab co giãn 100% full width và full height, flexbox liên tục từ container đến `.ag-root-wrapper`.
+   - **Xác thực Vite Dev Server**: 10/10 file trả về HTTP 200 OK trên port 3001.
+   - **Bổ sung nút Cập Nhật (Update) và mở nhanh Update Modal**:
+     + Đặt nút `Cập Nhật (Update)` nổi bật với tông màu vàng cam Amber trên toolbar (`PrecisionQLVLToolbar.tsx`), tự động cảnh báo người dùng chọn dòng nếu chưa chọn hoặc mở trực tiếp form cập nhật cho vật liệu đang chọn.
+     + Hỗ trợ mở Update Modal thông qua nhấp đúp chuột (`onRowDoubleClicked`) trên bất kỳ dòng nào của bảng AGTable hoặc nhấp chuột vào mã vật liệu (`M_NAME`).
+     + Nâng cấp header của `PrecisionQLVLAddModal.tsx` phân biệt rõ ràng giữa chế độ Thêm Mới vs Cập Nhật (kèm mã `#M_ID`, tên vật liệu và icon tương ứng).
+2. **Khắc phục chiều cao bảng vật liệu Full-Height dính sát đáy trang**:
+   - Thêm `min-height: calc(100vh - 76px);` và `.component_element & { width: 100% !important; height: 100% !important; flex: 1 1 auto; align-self: stretch; min-height: 0; }`.
+   - Cập nhật `.precision-qlvl__gridContainer` và `.precision-qlvl__gridBody` sang `flex: 1 1 0px; height: 100%; min-height: 250px;` giúp chuỗi flexbox từ container đến `.ag-root-wrapper` luôn bám sát tận đáy trang, không để lại khoảng trống thừa.
+3. **Tái thiết kế toàn diện Modal Hồ Sơ Kỹ Thuật Vật Liệu (`VLDOC.tsx`)**:
+   - Sao lưu toàn vẹn mã nguồn gốc `VLDOC.backup.tsx` (18.937 bytes).
+   - Override CustomDialog bằng class `.precision-qlvl-doc-dialog` (loại bỏ hoàn toàn nền gradient xanh lá cũ `#5deea5`), thiết kế header Dark Slate `#0f172a` sang trọng với icon Folder và nút đóng `FiX`.
+   - Toolbar tra cứu chuẩn SaaS: Input Material Name với icon, Dropdown lọc loại hồ sơ (ALL/TDS/SGS/MSDS), nút `Tìm Kiếm`, `+ Upload Tài Liệu (PDF)`, `Lưu Cập Nhật` và badge đếm số lượng hồ sơ.
+   - Bảng AGTable chiếm trọn 100% chiều cao modal: Cell renderers chip trạng thái `USE`/`LOCKED`, chip loại DOC_TYPE màu sắc trực quan, version `v.X`, nút `Xem (View)` và `Tải Về (Download)` khi đủ 3 bộ phận phê duyệt.
+   - Trạng thái phê duyệt PUR/DTC/RND: Chờ duyệt (`P`) hiển thị cặp nút `Duyệt`/`Từ Chối` compact, đã duyệt (`Y`) hiển thị badge xanh lá `ĐÃ DUYỆT`, từ chối (`N`) hiển thị badge đỏ `TỪ CHỐI`, có kiểm tra phân quyền `checkBP`.
+   - Tái thiết kế Popup Viewer xem tài liệu PDF (`DocumentComponent`): Loại bỏ hoàn toàn khung hồng thô kệch `rgba(238, 196, 196, 0.5)`, thay thế bằng Popup Overlay cao cấp có backdrop blur, header Dark Slate bo góc 12px và nút đóng tinh tế.
+
 ## Update - 2026-09-13 (KINH_DOANH_REPORT: Fix Blank Charts - PO Balance Trending, PO Balance Summary By Week & Samsung Forecast)
 
 ### Completed

@@ -1,5 +1,22 @@
 # Roadmap - cmsnewerp2
 
+- [x] Redesign Quản Lý Vật Liệu (`QLVL.tsx` & `PrecisionQLVL/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Sao lưu toàn vẹn 100% mã nguồn gốc `QLVL.backup.tsx` (52.635 bytes).
+  - Phân rã monolith 1.516 dòng thành Controller chính tinh gọn (284 dòng) và 7 subcomponents chuyên biệt (< 300 dòng/file presentation):
+    1. `PrecisionQLVL.scss`: SCSS tokens công nghiệp chuẩn Stitch, hỗ trợ Multi-tab full-width & full-height, triệt tiêu toolbar AGTable cũ.
+    2. `PrecisionQLVLHeader.tsx`: Header phân hệ Mua hàng, mã `M090`, badge telemetry trực tuyến.
+    3. `PrecisionQLVLKpi.tsx`: 4 Micro-cards KPI tính toán 100% động từ dữ liệu thực tế (Tổng mã, Tỷ lệ hồ sơ MSDS/TDS/SGS, Số mã đạt FSC, Đơn giá & Phí xẻ Slitting trung bình).
+    4. `PrecisionQLVLToolbar.tsx`: Nút thêm vật liệu `+ Thêm Vật Liệu`, nút `Cập Nhật (Update)`, nạp lại dữ liệu, mở docs, thanh lọc nhanh tức thời, cụm nút `EX1`, `EX2`, `PIVOT`.
+    5. `PrecisionQLVLColumns.tsx`: Cấu hình cột bảng chuẩn Stitch, Cell Renderers chip mã JetBrains Mono (nhấp vào mở form cập nhật), giá USD xanh lá, trạng thái Active/Locked, liên kết mở PDF trực tiếp, phân quyền CMS vs PVN.
+    6. `PrecisionQLVLAddModal.tsx`: Dialog thêm mới/sửa thông tin 2 cột chuẩn MUI Dense, header phân biệt Thêm Mới vs Cập Nhật, Autocomplete vendor, phân quyền `checkBP`.
+    7. `PrecisionQLVLPivotConfig.ts` & `PrecisionQLVLPivotModal.tsx`: Tách hơn 600 dòng cấu hình DevExtreme Pivot DataSource sang module riêng và bọc modal Pivot hiện đại.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ và API**: Thêm mới, cập nhật, upload TDS PDF, tra cứu hồ sơ kỹ thuật VLDOC, xuất Excel lọc & toàn bộ, phân tích Pivot đa chiều.
+  - **Khắc phục bảng full-height dính sát đáy trang**: Sử dụng `min-height: calc(100vh - 76px)` và `flex: 1 1 0px` cho container và `.ag-root-wrapper`.
+  - **Bổ sung nút Cập Nhật (Update) và mở Update Modal đa kênh**: Thêm nút trên toolbar, hỗ trợ nhấp đúp hàng (`onRowDoubleClicked`) và nhấp vào mã vật liệu (`M_NAME`).
+  - **Tái thiết kế toàn diện Modal Hồ Sơ Kỹ Thuật Vật Liệu (`VLDOC.tsx`)**: Sao lưu `VLDOC.backup.tsx`, override CustomDialog với `.precision-qlvl-doc-dialog`, header Dark Slate, toolbar tìm kiếm & upload, bảng hồ sơ AGTable full-height, chip trạng thái duyệt PUR/DTC/RND, và Popup Viewer xem tài liệu PDF cao cấp với backdrop blur.
+  - **Triệt tiêu toàn bộ footer thừa**: Không render bất kỳ footer hay status bar giả nào ở đáy trang.
+  - Xác thực biên dịch Vite Dev Server: 10/10 file trả về HTTP 200 OK.
+
 - [x] Redesign Báo Cáo Kinh Doanh (`KinhDoanhReport.tsx` & `PrecisionKinhDoanhReport/`) theo chuẩn Google Stitch High-Density Enterprise:
   - Sao lưu toàn vẹn 100% mã nguồn gốc `KinhDoanhReport.backup.tsx` (93.263 bytes, 2.353 dòng).
   - Phân rã nguyên khối monolith 2.353 dòng thành Master Controller tinh gọn (144 dòng) và 10 sub-modules chuyên biệt (< 300 dòng/file):
