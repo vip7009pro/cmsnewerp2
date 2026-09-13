@@ -1,5 +1,17 @@
 # Roadmap - cmsnewerp2
 
+- [x] Redesign Tra Cứu Kết Quả Độ Tin Cậy • SPC Analysis (`KQDTC.tsx` & `PrecisionKQDTC/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Sao lưu toàn vẹn 100% mã nguồn gốc `KQDTC.backup.tsx` (20.744 bytes).
+  - Phân rã monolith 587 dòng thành Master Controller tinh gọn (290 dòng) và 5 sub-modules chuyên biệt (< 300 dòng/file presentation):
+    1. `PrecisionKQDTC.scss`: SCSS tokens công nghiệp chuẩn Stitch, full-width & full-height Multi-tab, triệt tiêu toolbar cũ của AGTable.
+    2. Đã loại bỏ Header và Sub-nav workflow nội bộ để tối đa hóa diện tích làm việc trong Multi-Tab ERP.
+    3. `PrecisionKQDTCKpi.tsx`: 4 Micro-cards KPI tính toán realtime (Tổng mẫu kiểm tra & tỷ lệ % Đạt OK/NG, Năng lực quy trình Cpk, Đường tâm kiểm soát X̄, và Biên độ biến thiên R).
+    4. `PrecisionKQDTCSidebar.tsx`: Panel bộ lọc dữ liệu DTC chuyên nghiệp 250px với inputs gọn gàng, hỗ trợ nạp tự động danh mục test từ `f_loadDTC_TestList()`, nút tra cứu Royal Blue gradient full-width.
+    5. `PrecisionKQDTCCharts.tsx`: Khung 4 Biểu đồ SPC (Histogram, Xbar, R, Cpk) kèm banner ngữ cảnh (Sản phẩm, Liệu, Test, Point) và nút Toggle Ẩn/Hiện biểu đồ.
+    6. `PrecisionKQDTCColumns.tsx`: Cấu hình cột bảng chuẩn Stitch với chip JetBrains Mono cho các mã và chip đánh giá OK (xanh) / NG (đỏ).
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ và API**: Tra cứu `generalQuery("dtcdata")`, lọc danh mục `f_loadDTC_TestList()`, nhấp đúp dòng nạp đồng thời `loadXbarData`, `loadCPKTrend`, `loadHistogram` để hiển thị 4 biểu đồ SPC, hỗ trợ xuất Excel `EX1` (lọc) và `EX2` (toàn bộ).
+  - Xác thực biên dịch Vite Dev Server: 7/7 file trả về HTTP 200 OK trên port 3001.
+
 - [x] Redesign Tính Liệu Sản Xuất • MRP Engine (`TINHLIEU.tsx` & `PrecisionTinhLieu/`) theo chuẩn Google Stitch High-Density Enterprise:
   - Sao lưu toàn vẹn 100% mã nguồn gốc `TINHLIEU.backup.tsx` (32.453 bytes).
   - Phân rã monolith 777 dòng thành Controller chính tinh gọn (260 dòng) và 5 sub-modules chuyên biệt (< 300 dòng/file presentation):

@@ -1,5 +1,28 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-13 (QC: Tái Thiết Kế Toàn Diện Màn Hình Tra Cứu Kết Quả Độ Tin Cậy - KQDTC.tsx Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Refactor toàn diện giao diện Độ Tin Cậy & SPC Analysis (`KQDTC.tsx`)**:
+   - **Bảo toàn 100% mã nguồn gốc**: Sao lưu `KQDTC.backup.tsx` (20.744 bytes).
+   - **Tối ưu kiến trúc Clean Code**: Phân rã từ 587 dòng monolith xuống Controller chính chỉ còn 290 dòng (< 300 dòng/file presentation) trong thư mục con `PrecisionKQDTC/`.
+   - **Bố cục Không Gian Split Workspace Hiện Đại**:
+     + *Loại bỏ Header thừa*: Đã xóa phần header và sub-nav workflow nội bộ trong `KQDTC.tsx` để tối ưu hóa diện tích hiển thị cho Multi-Tab ERP.
+     + *4 Thẻ Micro-cards KPI Realtime (`PrecisionKQDTCKpi.tsx`)*: Tính toán tức thì theo dữ liệu bảng và mẫu đo:
+       1. Tổng Mẫu Kiểm Tra: Đếm tổng bản ghi, tỷ lệ % Đạt (OK) vs NG, số lượng mẫu lỗi cần xử lý.
+       2. Năng Lực Quy Trình Cpk: Tính trung bình Cpk từ API, so sánh với ngưỡng chuẩn 6-Sigma (≥ 1.33).
+       3. Đường Tâm Kiểm Soát X_CL: Giá trị trung bình X̄, giới hạn UCL / LCL và trạng thái kiểm soát sai số.
+       4. Phạm Vi Biến Thiên R_CL: Biên độ dao động n=5 và giới hạn R_UCL.
+     + *Panel Bộ Lọc Dữ Liệu Chuyên Nghiệp (`PrecisionKQDTCSidebar.tsx`)*: Bố trí bên trái rộng 250px, chuẩn hóa input gọn gàng 26px font 11.5px, hỗ trợ nạp tự động danh mục hạng mục test từ `f_loadDTC_TestList()`, nút tra cứu Royal Blue gradient full-width.
+     + *Khung 4 Biểu Đồ SPC Tương Tác (`PrecisionKQDTCCharts.tsx`)*: Banner ngữ cảnh gradient (Sản phẩm, Vật liệu, Hạng mục test, Test point) kèm nút Toggle Ẩn/Hiện biểu đồ. Bố trí 4 biểu đồ sắc nét: `HISTOGRAM_CHART`, `XBAR_CHART (n=5)`, `R_CHART (n=5)`, `CPK_CHART (n=32)`. Hiển thị gợi ý thao tác nhấp đúp dòng khi chưa nạp biểu đồ.
+     + *Bảng AGTable High-Density & Cột Chuẩn Stitch (`PrecisionKQDTCColumns.tsx`)*:
+       - Toolbar chuẩn SaaS với nút `EX1 (Lọc)`, `EX2 (Toàn bộ)`, ô tìm kiếm nhanh tức thời đa trường `searchKeyword`, badge đếm số lượng dòng hiển thị.
+       - Triệt tiêu 100% toolbar xanh lá mặc định của AGTable.
+       - Chip mã DTC_ID, YCSX, G_CODE, M_CODE font JetBrains Mono.
+       - Chip đánh giá: OK (xanh ngọc `#ecfdf5`, `#047857`), NG (đỏ hồng `#fff1f2`, `#be123c`).
+   - **Hệ thống SCSS Tokens (`PrecisionKQDTC.scss`)**: Bố cục co giãn linh hoạt Full-Width và Full-Height trong Multi-Tab (`min-height: calc(100vh - 76px)`).
+   - **Xác thực Vite Dev Server**: 7/7 file liên quan biên dịch thành công 100% với mã HTTP 200 OK trên port 3001.
+
 ## Update - 2026-09-13 (MUA_HANG: Tái Thiết Kế Toàn Diện Màn Hình Tính Liệu Sản Xuất - TINHLIEU.tsx Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed

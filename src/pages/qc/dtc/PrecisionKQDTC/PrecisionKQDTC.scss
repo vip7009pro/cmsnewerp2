@@ -1,0 +1,829 @@
+// PrecisionKQDTC.scss - Google Stitch High-Density Enterprise Style
+// Module: Quản Lý Chất Lượng • Độ Tin Cậy (DTC - Reliability Test & SPC Analysis - Q040)
+
+.precision-kqdtc {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: calc(100vh - 76px);
+  box-sizing: border-box;
+  padding: 6px 10px;
+  background: #f8fafc;
+  gap: 6px;
+  color: #0f172a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  // Hỗ trợ co giãn toàn diện Full Width & Full Height trong Multi-Tab
+  .component_element & {
+    width: 100% !important;
+    height: 100% !important;
+    flex: 1 1 auto;
+    align-self: stretch;
+    min-height: 0;
+  }
+
+  // ==========================================================================
+  // 1. HEADER & WORKFLOW NAVIGATION STRIP
+  // ==========================================================================
+  &__header {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+  }
+
+  &__topBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 12px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  &__headerLeft {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__iconBadge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+  }
+
+  &__titleBlock {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__titleRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  &__codeBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10.5px;
+    font-weight: 700;
+    font-family: "JetBrains Mono", monospace;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+  }
+
+  &__breadcrumb {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 1px;
+  }
+
+  &__headerRight {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__sigmaBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    font-size: 11px;
+    font-weight: 700;
+    color: #b45309;
+  }
+
+  &__telemetryBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    font-size: 11px;
+    font-weight: 600;
+    color: #065f46;
+
+    .precision-kqdtc__pulseDot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+      animation: pulse-dot 2s infinite ease-in-out;
+    }
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% {
+      transform: scale(0.9);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 1;
+    }
+  }
+
+  &__workflowStrip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 8px;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+    overflow-x: auto;
+  }
+
+  &__navGroup {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__navBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 24px;
+    padding: 0 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    &--active {
+      background: #eff6ff !important;
+      color: #1d4ed8 !important;
+      border-color: #bfdbfe !important;
+      font-weight: 700;
+    }
+  }
+
+  // ==========================================================================
+  // 2. REALTIME KPI CARDS
+  // ==========================================================================
+  &__kpiGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__kpiCard {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(15, 23, 42, 0.06);
+    }
+
+    &--blue {
+      border-left: 3.5px solid #2563eb;
+      .precision-kqdtc__kpiIcon {
+        background: #eff6ff;
+        color: #2563eb;
+      }
+    }
+
+    &--emerald {
+      border-left: 3.5px solid #059669;
+      .precision-kqdtc__kpiIcon {
+        background: #ecfdf5;
+        color: #059669;
+      }
+    }
+
+    &--indigo {
+      border-left: 3.5px solid #4f46e5;
+      .precision-kqdtc__kpiIcon {
+        background: #eef2ff;
+        color: #4f46e5;
+      }
+    }
+
+    &--amber {
+      border-left: 3.5px solid #d97706;
+      .precision-kqdtc__kpiIcon {
+        background: #fffbeb;
+        color: #d97706;
+      }
+    }
+  }
+
+  &__kpiIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    flex-shrink: 0;
+  }
+
+  &__kpiContent {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__kpiLabel {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__kpiValue {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    font-family: "JetBrains Mono", monospace;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  &__kpiSub {
+    font-size: 10.5px;
+    color: #94a3b8;
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    b {
+      color: #334155;
+    }
+  }
+
+  // ==========================================================================
+  // 3. MAIN SPLIT WORKSPACE
+  // ==========================================================================
+  &__workspace {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 0px;
+    min-height: 0;
+    gap: 6px;
+    overflow: hidden;
+
+    @media (max-width: 900px) {
+      flex-direction: column;
+    }
+  }
+
+  // Left Filter Sidebar
+  &__sidebar {
+    width: 250px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: hidden;
+
+    @media (max-width: 900px) {
+      width: 100%;
+      max-height: 240px;
+    }
+  }
+
+  &__sidebarHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 11px;
+    font-weight: 700;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  &__sidebarBody {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 10px;
+    overflow-y: auto;
+    flex: 1 1 0px;
+  }
+
+  &__formItem {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    select {
+      height: 26px;
+      padding: 0 6px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-family: inherit;
+      color: #0f172a;
+      outline: none;
+      background: #ffffff;
+      transition: border-color 0.15s ease;
+
+      &:focus {
+        border-color: #2563eb;
+      }
+    }
+
+    input.font-mono {
+      font-family: "JetBrains Mono", monospace;
+    }
+  }
+
+  &__checkboxItem {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+
+    input[type="checkbox"] {
+      cursor: pointer;
+      width: 13px;
+      height: 13px;
+      margin: 0;
+    }
+  }
+
+  &__sidebarFooter {
+    padding: 8px 10px;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+  }
+
+  &__btnSubmit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    height: 30px;
+    border-radius: 5px;
+    border: none;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #ffffff;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(37, 99, 235, 0.4);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  // Right Main Panel
+  &__mainPanel {
+    flex: 1 1 0px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    gap: 6px;
+    overflow: hidden;
+  }
+
+  // ==========================================================================
+  // 4. SPC CHARTS WORKSPACE
+  // ==========================================================================
+  &__chartsSection {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  &__chartBanner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 4px 10px;
+    background: linear-gradient(90deg, #059669, #0d9488, #2563eb);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  &__bannerLeft {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .tag-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      span.label {
+        font-size: 10px;
+        opacity: 0.85;
+        text-transform: uppercase;
+      }
+      span.val {
+        padding: 1px 5px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.2);
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+      }
+      span.val--highlight {
+        background: #fef08a;
+        color: #854d0e;
+      }
+    }
+
+    .divider {
+      opacity: 0.4;
+    }
+  }
+
+  &__bannerRight {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    button {
+      background: rgba(255, 255, 255, 0.18);
+      border: none;
+      color: #ffffff;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+
+  &__chartsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    padding: 6px;
+    background: #f8fafc;
+
+    @media (max-width: 1280px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__chartCard {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    min-height: 210px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
+
+    .chart-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+      margin-bottom: 4px;
+
+      h4 {
+        font-size: 11px;
+        font-weight: 800;
+        color: #1e293b;
+        margin: 0;
+        letter-spacing: 0.02em;
+      }
+
+      .legend-chips {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 9.5px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+      }
+    }
+
+    .chart-card-body {
+      flex: 1 1 0px;
+      width: 100%;
+      height: 175px;
+      position: relative;
+    }
+  }
+
+  // ==========================================================================
+  // 5. AGTABLE CONTAINER & DATA MATRIX
+  // ==========================================================================
+  &__tableSection {
+    flex: 1 1 0px;
+    min-height: 250px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+  }
+
+  &__tableToolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 4px 8px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+  }
+
+  &__toolbarLeft {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  &__btnAction {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    padding: 0 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+
+    &--ex1 {
+      background: #ecfdf5;
+      color: #065f46;
+      border-color: #a7f3d0;
+      &:hover {
+        background: #d1fae5;
+      }
+    }
+
+    &--ex2 {
+      background: #f0fdf4;
+      color: #166534;
+      border-color: #bbf7d0;
+      &:hover {
+        background: #dcfce7;
+      }
+    }
+  }
+
+  &__toolbarRight {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__searchBox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: min(210px, 100%);
+    height: 26px;
+    padding: 0 8px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+
+    &:focus-within {
+      border-color: #2563eb;
+    }
+
+    input {
+      border: none;
+      outline: none;
+      font-size: 11.5px;
+      width: 100%;
+      background: transparent;
+      color: #1e293b;
+
+      &::placeholder {
+        color: #94a3b8;
+      }
+    }
+  }
+
+  &__countBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+    font-size: 11px;
+    font-weight: 800;
+    font-family: "JetBrains Mono", monospace;
+  }
+
+  &__tableBody {
+    flex: 1 1 0px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+
+    .agtable {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 0px;
+      height: 100%;
+      width: 100%;
+
+      // Triệt tiêu toolbar xanh lá cũ của AGTable
+      .toolbar {
+        display: none !important;
+      }
+
+      .ag-theme-quartz {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0px;
+        height: 100%;
+        width: 100%;
+
+        .ag-root-wrapper {
+          height: 100% !important;
+          border: none;
+        }
+
+        .ag-header {
+          background-color: #f1f5f9;
+          border-bottom: 1px solid #cbd5e1;
+        }
+
+        .ag-header-cell {
+          font-size: 11px;
+          font-weight: 700;
+          color: #334155;
+          letter-spacing: 0.01em;
+        }
+
+        .ag-row {
+          font-size: 11.5px;
+          border-bottom-color: #f1f5f9;
+          &:hover {
+            background-color: #eff6ff;
+          }
+        }
+      }
+    }
+  }
+
+  // ==========================================================================
+  // 6. CELL RENDERERS
+  // ==========================================================================
+  .kqdtc-mono {
+    display: inline-flex;
+    align-items: center;
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 11px;
+    color: #1e293b;
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+  }
+
+  .kqdtc-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    &--ok {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+
+    &--ng {
+      background: #fff1f2;
+      color: #be123c;
+      border: 1px solid #fecdd3;
+    }
+  }
+
+  .kqdtc-val {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 11px;
+  }
+}
