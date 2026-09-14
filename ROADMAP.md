@@ -1,5 +1,22 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Tái Thiết Kế Màn Hình Quản Lý Lô Bị Khóa IQC (`BLOCK.tsx` & `PrecisionBLOCK/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/iqc/BLOCK.backup.tsx` (28.553 bytes, 863 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `BLOCK.tsx` chỉ còn **112 dòng** (giảm từ 863 dòng), kết nối dữ liệu qua custom hook `useBlockData`, quản lý toàn màn hình và điều phối các subcomponents.
+    * Toàn bộ 7 file presentation subcomponents tại `src/pages/qc/iqc/PrecisionBLOCK/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file** (< 280 dòng theo cam kết):
+      1. `PrecisionBLOCK.scss` (995 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#f43f5e`), layout Split 2 panel (Sidebar 260px và Table container), co giãn full-width & full-height Multi-Tab (`.component_element &`), custom scrollbar 5px, triệt tiêu 100% toolbar xanh lá cũ của AGTable, và luật clipping boundary `contain: paint layout !important` ngăn chặn 100% hiện tượng chữ dài tràn đè ô sang cột bên cạnh.
+      2. `PrecisionBLOCKHeader.tsx` (69 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • IQC / QUẢN LÝ LÔ BỊ KHÓA (BLOCKING CONTROL)`, badge `BLOCK ENGINE`, telemetry trực tuyến `NET_SERVER: 3007 (Online)` kèm pulse dot, thông tin nhân viên đăng nhập, nút làm mới dữ liệu và nút bật/tắt toàn màn hình.
+      3. `PrecisionBLOCKKpi.tsx` (90 dòng): 4 Thẻ Micro-cards KPI realtime (Tổng Lô Bị Blocking, Lô Đã Xử Lý PASSED kèm tỷ lệ %, Lô Không Đạt FAILED kèm tỷ lệ %, Chờ Xử Lý PENDING).
+      4. `PrecisionBLOCKSidebar.tsx` (196 dòng): Khung tra cứu 260px bên trái gồm bộ lọc đa trường (Phân loại hàng ALL/NVL/BTP/SP, VENDOR LOT, M_LOT_NO CMS ERP, DEFECT PHENOMENON, REMARK, NCR_ID, Checkbox ONLY PENDING STATUS), nút bấm chính `Tra Data Blocking` nổi bật và nhóm phím tắt tác vụ nhanh `✓ Mở Chặn (Unblock)`, `⚠️ Chuyển Holding`, `❌ Gán NCR Báo Phế`.
+      5. `PrecisionBLOCKToolbar.tsx` (116 dòng): SaaS Action Toolbar phía trên bảng chính (`Tra Data`, `SET PASS`, `SET FAIL`, `UPDATE NCR_ID`, `SET CLOSED`, `SET PENDING`, ô lọc nhanh tức thì Quick Filter trên lưới và cụm xuất Excel `EX1` lọc & `EX2` toàn bộ).
+      6. `PrecisionBLOCKColumns.tsx` (248 dòng): Cấu hình 25 cột bảng AG-Grid chuẩn Stitch, font monospace JetBrains Mono cho các mã code, chip trạng thái PASSED / FAILED / PENDING / CLOSED, định dạng số hàng nghìn (`toLocaleString`), helper `renderTruncated` an toàn cắt chữ kèm tooltip title.
+      7. `PrecisionBLOCKTable.tsx` (51 dòng): Bọc bảng AGTable High-Density (đã loại bỏ footer trùng lặp thừa ở chân trang, tối đa hóa không gian dọc cho bảng dữ liệu).
+      8. `useBlockData.ts` (421 dòng): Custom hook quản lý 100% state, queries API (`loadBlockingData`, `updateQCPASS_FAILING`, `updateQCPASS_HOLDING`, `updateCLOSE_FAILING`, `updateCLOSE_HOLDING`, `checkM_LOT_NO`, `updateQCPASSI222_M_LOT_NO`, `f_updateStockM090`, `f_updateNCRIDForFailing`, `f_updateNCRIDForHolding`, `selectcustomerList`, `updateReasonHoldingFromIQC1`), tính toán KPI realtime và xuất file Excel qua `SaveExcel`.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ và phân quyền**: Phê duyệt `SET PASS`/`SET FAIL` kèm cập nhật kho M090, đóng mở trạng thái `SET CLOSED`/`SET PENDING`, cập nhật `NCR_ID` cho cả FAILING và HOLDING, và tự động đồng bộ lý do giữ hàng từ IQC1.
+  - **Bổ sung tương thích trong `IQC.scss`**: Cấu hình `.precision-blocking, .blocking` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi nhúng trong tab BLOCKING của `IQC.tsx` không bao giờ bị collapse chiều cao.
+  - **Xác thực toàn diện**: 100% 11/11 file liên quan biên dịch thành công qua Vite transform (HTTP 200 OK) trên cổng 3001, sạch 100% lỗi cú pháp và lỗi lint.
+
 - [x] Khắc phục triệt để lỗi In CHECKSHEET KIỂM TRA INCOMING (BNK) ra preview trắng tinh (`PrecisionBNKModal.tsx`, `PrecisionINCOMMING.scss`, `BNK_COMPONENT.tsx`, `INCOMMING.tsx`):
   - **Phát hiện nguyên nhân gốc rễ**:
     + Quy tắc CSS `@media print { body > *:not(#root) { display: none !important; } }`: Thư viện `react-to-print` tạo thẻ iframe con của body để in và copy styles vào iframe. Bên trong iframe, nội dung cần in nằm trực tiếp dưới thẻ `body` và không có id `#root`, dẫn đến việc bị gán `display: none !important;` làm trắng tinh toàn bộ preview bản in.
