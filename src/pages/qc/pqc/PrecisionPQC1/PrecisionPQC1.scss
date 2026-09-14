@@ -1,0 +1,837 @@
+/* ==========================================================================
+   PRECISION PQC1 - GOOGLE STITCH HIGH-DENSITY ENTERPRISE STYLING
+   ========================================================================== */
+
+$slate-50: #f8fafc;
+$slate-100: #f1f5f9;
+$slate-200: #e2e8f0;
+$slate-300: #cbd5e1;
+$slate-400: #94a3b8;
+$slate-500: #64748b;
+$slate-600: #475569;
+$slate-700: #334155;
+$slate-800: #1e293b;
+$slate-900: #0f172a;
+
+$primary: #2563eb;
+$primary-hover: #1d4ed8;
+$primary-light: #eff6ff;
+
+$emerald-500: #10b981;
+$emerald-600: #059669;
+$emerald-light: #ecfdf5;
+
+$amber-500: #f59e0b;
+$amber-600: #d97706;
+$amber-light: #fffbeb;
+
+$rose-500: #f43f5e;
+$rose-600: #e11d48;
+$rose-light: #fff1f2;
+
+$purple-500: #8b5cf6;
+$purple-600: #7c3aed;
+$purple-light: #f5f3ff;
+
+.precision-pqc1 {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background-color: $slate-50;
+  color: $slate-800;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  /* Co giãn full-width & full-height trong hệ thống Multi-Tab ERP */
+  .component_element & {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+  }
+}
+
+/* ==========================================================================
+   1. HEADER BAR
+   ========================================================================== */
+.precision-pqc1-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 38px;
+  min-height: 38px;
+  padding: 0 12px;
+  background: #ffffff;
+  border-bottom: 1px solid $slate-200;
+  box-sizing: border-box;
+  flex-shrink: 0;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffffff;
+      background: linear-gradient(135deg, $primary 0%, #1d4ed8 100%);
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .breadcrumb-separator {
+      color: $slate-300;
+      font-size: 12px;
+    }
+
+    .breadcrumb-title {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: $slate-800;
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .telemetry-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      background: $emerald-light;
+      border: 1px solid #a7f3d0;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      color: $emerald-600;
+
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        background-color: $emerald-500;
+        border-radius: 50%;
+        box-shadow: 0 0 0 2px rgba($emerald-500, 0.2);
+        animation: pulseDot 2s infinite ease-in-out;
+      }
+    }
+
+    .user-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      background: $slate-100;
+      border: 1px solid $slate-200;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: $slate-700;
+    }
+
+    .header-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      background: transparent;
+      border: 1px solid $slate-200;
+      border-radius: 4px;
+      color: $slate-600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:hover {
+        background: $slate-100;
+        color: $primary;
+        border-color: $primary;
+      }
+    }
+  }
+}
+
+@keyframes pulseDot {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* ==========================================================================
+   2. KPI MICRO-CARDS
+   ========================================================================== */
+.precision-pqc1-kpi {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 6px 12px;
+  background: $slate-50;
+  border-bottom: 1px solid $slate-200;
+  flex-shrink: 0;
+
+  .kpi-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+    border: 1px solid $slate-200;
+    border-radius: 6px;
+    padding: 6px 10px;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: $slate-300;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    &__info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    &__label {
+      font-size: 10px;
+      font-weight: 600;
+      color: $slate-500;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    &__value {
+      font-size: 15px;
+      font-weight: 700;
+      color: $slate-900;
+      font-feature-settings: "tnum";
+      font-variant-numeric: tabular-nums;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+
+      .unit {
+        font-size: 10.5px;
+        font-weight: 500;
+        color: $slate-400;
+      }
+    }
+
+    &__sub {
+      font-size: 9.5px;
+      color: $slate-400;
+      display: flex;
+      gap: 4px;
+    }
+
+    &__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      font-size: 14px;
+      flex-shrink: 0;
+
+      &.blue {
+        background: $primary-light;
+        color: $primary;
+      }
+      &.emerald {
+        background: $emerald-light;
+        color: $emerald-600;
+      }
+      &.amber {
+        background: $amber-light;
+        color: $amber-600;
+      }
+      &.rose {
+        background: $rose-light;
+        color: $rose-600;
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   3. WORK AREA: INPUT & DIRECTIVE CARDS
+   ========================================================================== */
+.precision-pqc1-workarea {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px 4px 12px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+
+  &.collapsed {
+    padding-bottom: 2px;
+  }
+}
+
+/* --- 3A. INPUT CARD --- */
+.precision-pqc1-inputcard {
+  flex: 1.1;
+  background: #ffffff;
+  border: 1px solid $slate-200;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid $slate-100;
+    padding-bottom: 5px;
+
+    .title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: $slate-800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .badge-setting {
+        padding: 1px 6px;
+        font-size: 9.5px;
+        background: $primary-light;
+        color: $primary;
+        border-radius: 3px;
+        font-weight: 600;
+      }
+    }
+
+    .emp-tags {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    align-items: flex-end;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: $slate-600;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+
+      .req {
+        color: $rose-500;
+      }
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      input, select {
+        width: 100%;
+        height: 28px;
+        padding: 0 8px;
+        font-size: 11.5px;
+        color: $slate-800;
+        background: $slate-50;
+        border: 1px solid $slate-200;
+        border-radius: 4px;
+        outline: none;
+        transition: all 0.15s ease;
+        box-sizing: border-box;
+
+        &:focus {
+          background: #ffffff;
+          border-color: $primary;
+          box-shadow: 0 0 0 2px rgba($primary, 0.15);
+        }
+
+        &::placeholder {
+          color: $slate-400;
+          font-size: 11px;
+        }
+
+        &:disabled {
+          background: $slate-100;
+          color: $slate-500;
+          cursor: not-allowed;
+        }
+      }
+
+      .icon-end {
+        position: absolute;
+        right: 8px;
+        font-size: 12px;
+        color: $slate-400;
+        pointer-events: none;
+      }
+    }
+
+    .field-hint {
+      font-size: 9.5px;
+      color: $slate-500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-height: 14px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+
+      &.qc-name {
+        color: $emerald-600;
+        font-weight: 600;
+      }
+
+      &.leader-name {
+        color: $purple-600;
+        font-weight: 600;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-top: 2px;
+
+    .btn-input {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      height: 28px;
+      padding: 0 14px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #ffffff;
+      background: linear-gradient(135deg, $primary 0%, #1d4ed8 100%);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba($primary, 0.25);
+      transition: all 0.15s ease;
+
+      &:hover {
+        background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+        box-shadow: 0 2px 4px rgba($primary, 0.35);
+      }
+
+      &:active {
+        transform: translateY(1px);
+      }
+    }
+
+    .btn-update-qty {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      height: 28px;
+      padding: 0 12px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #ffffff;
+      background: linear-gradient(135deg, $emerald-500 0%, $emerald-600 100%);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba($emerald-500, 0.25);
+      transition: all 0.15s ease;
+
+      &:hover {
+        background: linear-gradient(135deg, $emerald-600 0%, #047857 100%);
+        box-shadow: 0 2px 4px rgba($emerald-500, 0.35);
+      }
+
+      &:active {
+        transform: translateY(1px);
+      }
+    }
+  }
+}
+
+/* --- 3B. DIRECTIVE CARD --- */
+.precision-pqc1-directivecard {
+  flex: 1.2;
+  background: #ffffff;
+  border: 1px solid $slate-200;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid $slate-100;
+    padding-bottom: 5px;
+
+    .title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: $slate-800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .badge-directive {
+        padding: 1px 6px;
+        font-size: 9.5px;
+        background: $slate-100;
+        color: $slate-700;
+        border-radius: 3px;
+        font-weight: 600;
+      }
+    }
+
+    .badge-dtc {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      font-size: 10.5px;
+      font-weight: 700;
+      border-radius: 4px;
+
+      &.dkt {
+        background: $emerald-light;
+        color: $emerald-600;
+        border: 1px solid #a7f3d0;
+      }
+
+      &.ckt {
+        background: $amber-light;
+        color: $amber-600;
+        border: 1px solid #fde68a;
+      }
+    }
+  }
+
+  &__content {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px 10px;
+
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+
+      &.span-2 {
+        grid-column: span 2;
+      }
+
+      .spec-label {
+        font-size: 10px;
+        font-weight: 600;
+        color: $slate-400;
+        text-transform: uppercase;
+        letter-spacing: 0.2px;
+      }
+
+      .spec-value {
+        font-size: 11.5px;
+        font-weight: 600;
+        color: $slate-800;
+        font-family: "JetBrains Mono", Consolas, monospace;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &.highlight {
+          color: $primary;
+        }
+
+        &.text-normal {
+          font-family: inherit;
+        }
+      }
+    }
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 4px;
+    border-top: 1px dashed $slate-200;
+    font-size: 10px;
+    color: $slate-500;
+
+    .nvl-info {
+      display: flex;
+      gap: 10px;
+
+      b {
+        color: $slate-700;
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   4. SAAS ACTION TOOLBAR
+   ========================================================================== */
+.precision-pqc1-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 34px;
+  min-height: 34px;
+  padding: 0 12px;
+  background: #ffffff;
+  border-top: 1px solid $slate-200;
+  border-bottom: 1px solid $slate-200;
+  box-sizing: border-box;
+  flex-shrink: 0;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 24px;
+      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 600;
+      background: #ffffff;
+      border: 1px solid $slate-200;
+      border-radius: 4px;
+      color: $slate-700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:hover {
+        background: $slate-100;
+        border-color: $slate-300;
+      }
+
+      &.primary {
+        background: $primary-light;
+        color: $primary;
+        border-color: #bfdbfe;
+
+        &:hover {
+          background: #dbeafe;
+        }
+      }
+
+      &.danger {
+        color: $rose-600;
+        border-color: #fecdd3;
+
+        &:hover {
+          background: $rose-light;
+        }
+      }
+    }
+
+    .toolbar-divider {
+      width: 1px;
+      height: 14px;
+      background: $slate-200;
+      margin: 0 2px;
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      input {
+        width: 160px;
+        height: 24px;
+        padding: 0 24px 0 8px;
+        font-size: 11px;
+        border: 1px solid $slate-200;
+        border-radius: 4px;
+        background: $slate-50;
+        outline: none;
+        transition: all 0.15s ease;
+
+        &:focus {
+          width: 200px;
+          background: #ffffff;
+          border-color: $primary;
+          box-shadow: 0 0 0 2px rgba($primary, 0.15);
+        }
+
+        &::placeholder {
+          color: $slate-400;
+        }
+      }
+
+      .search-icon {
+        position: absolute;
+        right: 6px;
+        font-size: 12px;
+        color: $slate-400;
+        pointer-events: none;
+      }
+    }
+
+    .btn-export {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      height: 24px;
+      padding: 0 7px;
+      font-size: 10.5px;
+      font-weight: 600;
+      background: #ffffff;
+      border: 1px solid $slate-200;
+      border-radius: 4px;
+      color: $slate-600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:hover {
+        background: $emerald-light;
+        color: $emerald-600;
+        border-color: #a7f3d0;
+      }
+    }
+
+    .count-chip {
+      padding: 2px 7px;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: $slate-500;
+      background: $slate-100;
+      border-radius: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+}
+
+/* ==========================================================================
+   5. AG-TABLE CONTAINER & CELL STYLES
+   ========================================================================== */
+.precision-pqc1-table {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+  background: #ffffff;
+  overflow: hidden;
+
+  /* Loại bỏ toàn bộ thanh công cụ xanh lá cũ của AGTable */
+  .ag-table-toolbar,
+  .agtable_toolbar,
+  .toolbar,
+  .custom-toolbar {
+    display: none !important;
+  }
+
+  /* Loại bỏ thanh status bar / footer tĩnh thừa */
+  .ag-status-bar,
+  .ag-paging-panel {
+    border-top: 1px solid $slate-200 !important;
+    font-size: 11px !important;
+    min-height: 24px !important;
+    height: 24px !important;
+  }
+
+  /* Clip boundary chống tràn chữ */
+  .ag-cell {
+    contain: paint layout !important;
+    font-size: 11.5px !important;
+    display: flex;
+    align-items: center;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  .ag-header-cell-label {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: $slate-700 !important;
+  }
+
+  .ag-row-selected {
+    background-color: #eff6ff !important;
+  }
+}
+
+/* Cell renderers */
+.pqc1-cell-mono {
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 11px;
+}
+
+.pqc1-cell-date {
+  color: $primary;
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 11px;
+}
+
+.pqc1-cell-rate {
+  color: $rose-600;
+  font-weight: 700;
+  font-family: "JetBrains Mono", Consolas, monospace;
+}
+
+.pqc1-cell-img-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: $primary;
+  background: $primary-light;
+  border-radius: 3px;
+  text-decoration: none;
+
+  &:hover {
+    background: #dbeafe;
+    text-decoration: underline;
+  }
+}
+
+.pqc1-cell-no-img {
+  color: $slate-400;
+  font-size: 10px;
+}

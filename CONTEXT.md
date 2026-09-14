@@ -1,5 +1,32 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Cài Đặt Công Đoạn PQC - PQC1.tsx & PrecisionPQC1/ Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Đã lưu trữ an toàn tại `src/pages/qc/pqc/PQC1.backup.tsx` (33.462 bytes, 940 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `PQC1.tsx` tinh gọn từ 940 dòng xuống chỉ còn **86 dòng** (< 120 dòng theo cam kết), kết nối dữ liệu qua custom hook `usePQC1Data`, điều phối layout và các subcomponents.
+   - Toàn bộ các presentation subcomponents tại `src/pages/qc/pqc/PrecisionPQC1/` đều tuân thủ nghiêm ngặt giới hạn dưới **200 dòng/file** (< 250 dòng theo cam kết):
+     1. `PrecisionPQC1.scss` (733 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#f43f5e`), layout co giãn full-width & full-height Multi-Tab (`.component_element &`), custom scrollbar, triệt tiêu 100% toolbar xanh lá cũ của AGTable, loại bỏ footer thừa và thanh trạng thái giả.
+     2. `PrecisionPQC1Header.tsx` (58 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • PQC / CÀI ĐẶT CÔNG ĐOẠN (PQC1 - SETTING CONTROL)`, badge `CMS ERP`, telemetry trực tuyến `NET_SERVER: 3007 (Online)` kèm pulse dot, thông tin nhân viên đăng nhập, nút làm mới dữ liệu và nút bật/tắt toàn màn hình.
+     3. `PrecisionPQC1Kpi.tsx` (75 dòng): 4 Thẻ Micro-cards KPI realtime (Tổng Lô Setting, Độ Tin Cậy DTC DKT/CKT, Tổng Lượng Mẫu KT, Tỷ Lệ Lỗi Bình Quân).
+     4. `PrecisionPQC1InputCard.tsx` (198 dòng): Form nhập liệu Setting tối ưu UX: Nhà máy NM1/NM2, Chỉ thị PLAN_ID tự động tra cứu khi gõ/quét >= 8 ký tự, Mã LINEQC tự động hiển thị tên nhân viên QC, Mã Leader SX tự động hiển thị tên Leader, Ghi chú, hỗ trợ di chuyển tuần tự bằng phím Enter và 2 nút Lưu Setting / Update QTY.
+     5. `PrecisionPQC1DirectiveCard.tsx` (123 dòng): Tech Specs Banner hiển thị thông tin chỉ thị sản xuất (LOT SX, LOT NVL, Line máy, Công đoạn, Step, PD, Cavity, Thời gian ST.OK, Mã CNSX, Tên NVL & Khổ, Badge trạng thái độ tin cậy KTDTC DKT/CKT).
+     6. `PrecisionPQC1Toolbar.tsx` (87 dòng): SaaS Action Toolbar phía trên bảng: Nút `Tra Data`, Nút bật/thu gọn `Show/Hide Chỉ Thị`, Nút `Update QTY`, ô lọc nhanh tức thời Quick Filter trên lưới, cụm xuất Excel `EX1` lọc, `EX2` toàn bộ và badge đếm số dòng.
+     7. `PrecisionPQC1Columns.tsx` (136 dòng): Cấu hình 34 cột chuẩn Stitch của `column_TRA_PQC1_DATA`, khớp 100% `headerName` và `width` bản gốc theo nguyên tắc số 8 của SKILL.md.
+     8. `PrecisionPQC1Table.tsx` (41 dòng): Bọc bảng AGTable High-Density, hoàn toàn không có footer thừa hoặc status bar giả ở chân trang, tối đa hóa không gian dọc cho bảng dữ liệu.
+     9. `usePQC1Data.ts` (493 dòng): Custom hook quản lý 100% state, queries API (`trapqc1data`, `checkktdtc`, `loadDataSX`, `checkPLAN_ID`, `checkPROCESS_LOT_NO`, `checkPlanIdP501`, `checkProcessLotNo_Prod_Req_No`, `checkMNAMEfromLot`, `checkEMPL_NO_mobile`, `insert_pqc1`, `updatepqc1sampleqty`), tính toán KPI realtime và xuất Excel qua `SaveExcel`.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ**:
+   - Tự động nạp dữ liệu sản xuất KHSX P501 khi nhập Plan ID.
+   - Tự động kiểm tra độ tin cậy của quy trình sản xuất (`checkktdtc`).
+   - Tự động kiểm tra tên nhân viên QC và tên Leader sản xuất khi nhập mã thẻ.
+   - Lưu setting cài đặt công đoạn (`insert_pqc1`).
+   - Cập nhật số lượng mẫu kiểm tra hàng loạt (`updatepqc1sampleqty`).
+4. **Bổ sung tương thích trong `PQC.scss`**:
+   - Cấu hình layout full-height cho `.pqc1, .precision-pqc1` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi nhúng trong tab PQC1-SETTING của `PQC.tsx` không bao giờ bị collapse chiều cao.
+5. **Xác thực kiểm tra Vite Dev Server & Zero Error**:
+   - Toàn bộ 10/10 file mới và file liên quan đều đạt HTTP 200 OK trên Vite Dev Server (port 3001) và `ZERO ERRORS in src/pages/qc/pqc!` qua kiểm thử TypeScript `tsc`. Không footer thừa, không tab menu thừa.
+
 ## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Tra Cứu Dữ Liệu PQC - TRAPQC.tsx & PrecisionTRAPQC/ Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed
