@@ -294,6 +294,7 @@ export const useIncomingData = () => {
       M_THICKNESS_UPPER: 0,
       M_THICKNESS_LOWER: 0,
       M_WIDTH: 0,
+      CHECKSHEET: ""
     };
     setIQC1DataTable((prev) => [...prev, tempRow]);
     Swal.fire("Thông báo", "Đã thêm dòng vào danh sách kiểm tra", "success");

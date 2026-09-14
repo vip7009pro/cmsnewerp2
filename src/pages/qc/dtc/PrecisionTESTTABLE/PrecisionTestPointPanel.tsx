@@ -140,8 +140,8 @@ const PrecisionTestPointPanel: React.FC<PrecisionTestPointPanelProps> = ({
           <AGTable
             data={data}
             columns={columns}
-            onRowClick={() => {}}
-            onSelectionChange={() => {}}
+            onRowClick={() => { }}
+            onSelectionChange={() => { }}
           />
         ) : (
           <div className="precision-testtable__emptyState">

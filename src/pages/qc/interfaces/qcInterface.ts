@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 //CS data
 export interface CSCONFIRM_DATA {
   YEAR_WEEK: string;
@@ -84,6 +86,7 @@ export interface DTC_REG_DATA {
   LOTCMS: string;
 }
 export interface TestListTable {
+  TEST_TIME: ReactNode;
   TEST_CODE: number;
   TEST_NAME: string;
   SELECTED?: boolean;
@@ -104,6 +107,7 @@ export interface DTC_RESULT_INPUT {
   REMARK: number;
 }
 export interface DTC_DATA {
+  DANHGIA: string;
   DTC_ID: number;
   FACTORY: string;
   TEST_FINISH_TIME: string;
@@ -310,6 +314,7 @@ export interface InSpectionSummaryData {
 
 //iqc data
 export interface IQC_INCOMMING_DATA {
+  CHECKSHEET: string;
   id?: number;
   IQC1_ID: number;
   NCR_ID?: string | null;
@@ -588,763 +593,763 @@ export interface CNDB_DATA {
   G_NAME: string;
 }
 export interface OQC_NG_BY_PRODTYPE {
-    PROD_TYPE: string;
-    NG_LOT: number;
-  }
-  export interface OQC_NG_BY_CUSTOMER {
-    CUST_NAME_KD: string;
-    NG_LOT: number;
-  }
+  PROD_TYPE: string;
+  NG_LOT: number;
+}
+export interface OQC_NG_BY_CUSTOMER {
+  CUST_NAME_KD: string;
+  NG_LOT: number;
+}
 
-  export interface DEFECT_TRENDING_DATA {
-    INSPECT_DATE?: string;
-    INSPECT_YW?: string;
-    INSPECT_YM?: string;
-    INSPECT_YEAR?: number;
-    INSPECT_MONTH?: number;
-    INSPECT_WEEK?: number;
-    INSPECT_TOTAL_QTY: number;
-    INSPECT_OK_QTY: number;
-    INSPECT_NG_QTY: number;
-    ERR1: number;
-    ERR2: number;
-    ERR3: number;
-    ERR4: number;
-    ERR5: number;
-    ERR6: number;
-    ERR7: number;
-    ERR8: number;
-    ERR9: number;
-    ERR10: number;
-    ERR11: number;
-    ERR12: number;
-    ERR13: number;
-    ERR14: number;
-    ERR15: number;
-    ERR16: number;
-    ERR17: number;
-    ERR18: number;
-    ERR19: number;
-    ERR20: number;
-    ERR21: number;
-    ERR22: number;
-    ERR23: number;
-    ERR24: number;
-    ERR25: number;
-    ERR26: number;
-    ERR27: number;
-    ERR28: number;
-    ERR29: number;
-    ERR30: number;
-    ERR31: number;
-    ERR32: number;
-  }
-  export interface INSPECT_PATROL {
-    INS_PATROL_ID: number;
-    PROD_REQUEST_NO: string;
-    PLAN_ID: string;
-    PROCESS_LOT_NO: string;
-    G_CODE: string;
-    ERR_CODE: string;
-    INSPECT_QTY: number;
-    DEFECT_QTY: number;
-    DEFECT_PHENOMENON: string;
-    LINEQC_PIC: string;
-    INSP_PIC: string;
-    PROD_PIC: string;
-    INS_DATE: string;
-    PHANLOAI: string;
-    REMARK: string;
-    OCCURR_TIME: string;
-    LABEL_ID: string;
-    EQUIPMENT_CD: string;
-    CUST_CD: string;
-    FACTORY: string;
-    G_NAME: string;
-    G_NAME_KD: string;
-    CUST_NAME_KD: string;
-  }
-  export interface PQC_PPM_DATA {
-    SETTING_DATE?: string;
-    SETTING_YEAR?: string;
-    SETTING_YM?: string;
-    SETTING_YW?: string;
-    TOTAL_LOT: number;
-    OK_LOT: number;
-    NG_LOT: number;
-    INSPECT_AMOUNT: number;
-    NG_RATE: number;
-    KPI_VALUE?: number;
-  }
-  export interface OQC_TREND_DATA {
-    DELIVERY_DATE?: string;
-    DELIVERY_YEAR?: string;
-    DELIVERY_YM?: string;
-    DELIVERY_YW?: string;
-    TOTAL_LOT: number;
-    OK_LOT: number;
-    NG_LOT: number;
-    NG_RATE: number;
-  }
-  export interface PQCSummary {
-    TOTAL_LOT: number;
-    NG_LOT: number;
-    NG_RATE: number;
-    INSPECT_AMOUNT: number;
-  }
-  export interface CS_CONFIRM_TRENDING_DATA {
-    CONFIRM_DATE?: string;
-    CONFIRM_YW?: string;
-    CONFIRM_YM?: string;
-    CONFIRM_YEAR?: number;
-    C: number;
-    K: number;
-    TOTAL: number;
-  }
-  export interface CS_CONFIRM_BY_CUSTOMER_DATA {
-    CUST_NAME_KD: string;
-    EMPL_NAME?: string;
-    TOTAL: number;
-  }
-  export interface CS_REDUCE_AMOUNT_DATA {
-    CONFIRM_DATE?: string;
-    CONFIRM_YW?: string;
-    CONFIRM_YM?: string;
-    CONFIRM_YEAR?: number;
-    REDUCE_AMOUNT: number;
-  }
-  export interface CS_RMA_AMOUNT_DATA {
-    RT_DATE?: string;
-    RT_YW?: string;
-    RT_YM?: string;
-    RT_YEAR?: number;
-    HT: number;
-    MD: number;
-    CD: number;
-    TT: number;
-  }
-  export interface CS_TAXI_AMOUNT_DATA {
-    TAXI_DATE?: string;
-    TAXI_YW?: string;
-    TAXI_YM?: string;
-    TAXI_YEAR?: string;
-    TAXI_AMOUNT: number;
-  }
-  export interface CSFCOST {
-    RMA_DATA: CS_RMA_AMOUNT_DATA[];
-    TAXI_DATA: CS_TAXI_AMOUNT_DATA[];
-  }
-  export interface RNR_DATA {
-    FACTORY: string;
-    TEST_DATE: string;
-    TEST_ID: string;
-    TEST_NO: number;
-    TEST_TYPE: string;
-    FULL_NAME: string;
-    SUBDEPTNAME: string;
-    TEST_EMPL_NO: string;
-    UPD_DATE: string;
-    UPD_EMPL: string;
-    TEST_NUMBER: number;
-    TEST_NUMBER2: number;
-    RESULT_OK_NG: number;
-    RESULT_DETAIL: string;
-    TEST_RESULT1: number;
-    TEST_REUST2: number;
-    MIX1: number;
-    MIX2: number;
-  }
-  export interface RNR_DATA_EMPL {
-    FULL_NAME: string;
-    SUBDEPTNAME: string;
-    TEST_ID: string;
-    TEST_TYPE: string;
-    TEST_NO: number;
-    COUNT1: number;
-    COUNT2: number;
-    SO_CAU: number;
-    SCORE1: number;
-    SCORE2: number;
-    MIX1: number;
-    MIX2: number;
-    JUDGE1: string;
-    JUDGE2: string;
-    BAT_NHAM1: number;
-    BAT_NHAM2: number;
-    BO_SOT1: number;
-    BO_SOT2: number;
-    BN_RATE1: number;
-    BN_RATE2: number;
-    BS_RATE1: number;
-    BS_RATE2: number;
-  }
-  export interface AUDIT_LIST {
-    AUDIT_ID: number;
-    AUDIT_NAME: string;
-    CUST_NAME_KD: string;
-    PASS_SCORE: number;
-  }
-  export interface AUDIT_CHECK_LIST {
-    id: number;
-    AUDIT_DETAIL_ID: number;
-    AUDIT_ID: number;
-    AUDIT_NAME: string;
-    MAIN_ITEM_NO: number;
-    MAIN_ITEM_CONTENT: string;
-    SUB_ITEM_NO: number;
-    SUB_ITEM_CONTENT: string;
-    LEVEL_CAT: string;
-    DETAIL_VN: string;
-    DETAIL_KR: string;
-    DETAIL_EN: string;
-    MAX_SCORE: number;
-    INS_DATE: string;
-    INS_EMPL: string;
-    UPD_DATE: string;
-    UPD_EMPL: string;
-  }
-  export interface AUDIT_RESULT {
-    AUDIT_RESULT_ID: number;
-    AUDIT_ID: number;
-    AUDIT_NAME: string;
-    AUDIT_DATE: string;
-    REMARK: string;
-    INS_DATE: string;
-    INS_EMPL: string;
-    UPD_DATE: string;
-    UPD_EMPL: string;
-  }
-  export interface AUDIT_CHECKLIST_RESULT {
-    AUDIT_RESULT_DETAIL_ID: number;
-    AUDIT_RESULT_ID: number;
-    AUDIT_DETAIL_ID: number;
-    AUDIT_ID: number;
-    AUDIT_NAME: string;
-    MAIN_ITEM_NO: number;
-    MAIN_ITEM_CONTENT: string;
-    SUB_ITEM_NO: number;
-    SUB_ITEM_CONTENT: string;
-    LEVEL_CAT: string;
-    DETAIL_VN: string;
-    DETAIL_KR: string;
-    DETAIL_EN: string;
-    MAX_SCORE: number;
-    AUDIT_SCORE: number;
-    AUDIT_EVIDENT: string;
-    REMARK: string;
-    DEPARTMENT: string;
-    INS_DATE: string;
-    INS_EMPL: string;
-    UPD_DATE: string;
-    UPD_EMPL: string;
-  }
-  export interface CHO_KIEM_DATA {
-    G_CODE: string;
-    G_NAME: string;
-    G_NAME_KD: string;
-    INSPECT_BALANCE_QTY: number;
-    WAIT_CS_QTY: number;
-    WAIT_SORTING_RMA: number;
-    TOTAL_WAIT: number;
-  }
+export interface DEFECT_TRENDING_DATA {
+  INSPECT_DATE?: string;
+  INSPECT_YW?: string;
+  INSPECT_YM?: string;
+  INSPECT_YEAR?: number;
+  INSPECT_MONTH?: number;
+  INSPECT_WEEK?: number;
+  INSPECT_TOTAL_QTY: number;
+  INSPECT_OK_QTY: number;
+  INSPECT_NG_QTY: number;
+  ERR1: number;
+  ERR2: number;
+  ERR3: number;
+  ERR4: number;
+  ERR5: number;
+  ERR6: number;
+  ERR7: number;
+  ERR8: number;
+  ERR9: number;
+  ERR10: number;
+  ERR11: number;
+  ERR12: number;
+  ERR13: number;
+  ERR14: number;
+  ERR15: number;
+  ERR16: number;
+  ERR17: number;
+  ERR18: number;
+  ERR19: number;
+  ERR20: number;
+  ERR21: number;
+  ERR22: number;
+  ERR23: number;
+  ERR24: number;
+  ERR25: number;
+  ERR26: number;
+  ERR27: number;
+  ERR28: number;
+  ERR29: number;
+  ERR30: number;
+  ERR31: number;
+  ERR32: number;
+}
+export interface INSPECT_PATROL {
+  INS_PATROL_ID: number;
+  PROD_REQUEST_NO: string;
+  PLAN_ID: string;
+  PROCESS_LOT_NO: string;
+  G_CODE: string;
+  ERR_CODE: string;
+  INSPECT_QTY: number;
+  DEFECT_QTY: number;
+  DEFECT_PHENOMENON: string;
+  LINEQC_PIC: string;
+  INSP_PIC: string;
+  PROD_PIC: string;
+  INS_DATE: string;
+  PHANLOAI: string;
+  REMARK: string;
+  OCCURR_TIME: string;
+  LABEL_ID: string;
+  EQUIPMENT_CD: string;
+  CUST_CD: string;
+  FACTORY: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  CUST_NAME_KD: string;
+}
+export interface PQC_PPM_DATA {
+  SETTING_DATE?: string;
+  SETTING_YEAR?: string;
+  SETTING_YM?: string;
+  SETTING_YW?: string;
+  TOTAL_LOT: number;
+  OK_LOT: number;
+  NG_LOT: number;
+  INSPECT_AMOUNT: number;
+  NG_RATE: number;
+  KPI_VALUE?: number;
+}
+export interface OQC_TREND_DATA {
+  DELIVERY_DATE?: string;
+  DELIVERY_YEAR?: string;
+  DELIVERY_YM?: string;
+  DELIVERY_YW?: string;
+  TOTAL_LOT: number;
+  OK_LOT: number;
+  NG_LOT: number;
+  NG_RATE: number;
+}
+export interface PQCSummary {
+  TOTAL_LOT: number;
+  NG_LOT: number;
+  NG_RATE: number;
+  INSPECT_AMOUNT: number;
+}
+export interface CS_CONFIRM_TRENDING_DATA {
+  CONFIRM_DATE?: string;
+  CONFIRM_YW?: string;
+  CONFIRM_YM?: string;
+  CONFIRM_YEAR?: number;
+  C: number;
+  K: number;
+  TOTAL: number;
+}
+export interface CS_CONFIRM_BY_CUSTOMER_DATA {
+  CUST_NAME_KD: string;
+  EMPL_NAME?: string;
+  TOTAL: number;
+}
+export interface CS_REDUCE_AMOUNT_DATA {
+  CONFIRM_DATE?: string;
+  CONFIRM_YW?: string;
+  CONFIRM_YM?: string;
+  CONFIRM_YEAR?: number;
+  REDUCE_AMOUNT: number;
+}
+export interface CS_RMA_AMOUNT_DATA {
+  RT_DATE?: string;
+  RT_YW?: string;
+  RT_YM?: string;
+  RT_YEAR?: number;
+  HT: number;
+  MD: number;
+  CD: number;
+  TT: number;
+}
+export interface CS_TAXI_AMOUNT_DATA {
+  TAXI_DATE?: string;
+  TAXI_YW?: string;
+  TAXI_YM?: string;
+  TAXI_YEAR?: string;
+  TAXI_AMOUNT: number;
+}
+export interface CSFCOST {
+  RMA_DATA: CS_RMA_AMOUNT_DATA[];
+  TAXI_DATA: CS_TAXI_AMOUNT_DATA[];
+}
+export interface RNR_DATA {
+  FACTORY: string;
+  TEST_DATE: string;
+  TEST_ID: string;
+  TEST_NO: number;
+  TEST_TYPE: string;
+  FULL_NAME: string;
+  SUBDEPTNAME: string;
+  TEST_EMPL_NO: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  TEST_NUMBER: number;
+  TEST_NUMBER2: number;
+  RESULT_OK_NG: number;
+  RESULT_DETAIL: string;
+  TEST_RESULT1: number;
+  TEST_REUST2: number;
+  MIX1: number;
+  MIX2: number;
+}
+export interface RNR_DATA_EMPL {
+  FULL_NAME: string;
+  SUBDEPTNAME: string;
+  TEST_ID: string;
+  TEST_TYPE: string;
+  TEST_NO: number;
+  COUNT1: number;
+  COUNT2: number;
+  SO_CAU: number;
+  SCORE1: number;
+  SCORE2: number;
+  MIX1: number;
+  MIX2: number;
+  JUDGE1: string;
+  JUDGE2: string;
+  BAT_NHAM1: number;
+  BAT_NHAM2: number;
+  BO_SOT1: number;
+  BO_SOT2: number;
+  BN_RATE1: number;
+  BN_RATE2: number;
+  BS_RATE1: number;
+  BS_RATE2: number;
+}
+export interface AUDIT_LIST {
+  AUDIT_ID: number;
+  AUDIT_NAME: string;
+  CUST_NAME_KD: string;
+  PASS_SCORE: number;
+}
+export interface AUDIT_CHECK_LIST {
+  id: number;
+  AUDIT_DETAIL_ID: number;
+  AUDIT_ID: number;
+  AUDIT_NAME: string;
+  MAIN_ITEM_NO: number;
+  MAIN_ITEM_CONTENT: string;
+  SUB_ITEM_NO: number;
+  SUB_ITEM_CONTENT: string;
+  LEVEL_CAT: string;
+  DETAIL_VN: string;
+  DETAIL_KR: string;
+  DETAIL_EN: string;
+  MAX_SCORE: number;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+}
+export interface AUDIT_RESULT {
+  AUDIT_RESULT_ID: number;
+  AUDIT_ID: number;
+  AUDIT_NAME: string;
+  AUDIT_DATE: string;
+  REMARK: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+}
+export interface AUDIT_CHECKLIST_RESULT {
+  AUDIT_RESULT_DETAIL_ID: number;
+  AUDIT_RESULT_ID: number;
+  AUDIT_DETAIL_ID: number;
+  AUDIT_ID: number;
+  AUDIT_NAME: string;
+  MAIN_ITEM_NO: number;
+  MAIN_ITEM_CONTENT: string;
+  SUB_ITEM_NO: number;
+  SUB_ITEM_CONTENT: string;
+  LEVEL_CAT: string;
+  DETAIL_VN: string;
+  DETAIL_KR: string;
+  DETAIL_EN: string;
+  MAX_SCORE: number;
+  AUDIT_SCORE: number;
+  AUDIT_EVIDENT: string;
+  REMARK: string;
+  DEPARTMENT: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+}
+export interface CHO_KIEM_DATA {
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  INSPECT_BALANCE_QTY: number;
+  WAIT_CS_QTY: number;
+  WAIT_SORTING_RMA: number;
+  TOTAL_WAIT: number;
+}
 
-  export interface OQC_DATA {
-    OQC_ID: number;
-    DELIVERY_DATE: string;
-    SHIFT_CODE: string;
-    FACTORY_NAME: string;
-    FULL_NAME: string;
-    CUST_NAME_KD: string;
-    PROD_REQUEST_NO: string;
-    PROCESS_LOT_NO: string;
-    M_LOT_NO: string;
-    LOTNCC: string;
-    LABEL_ID: string;
-    PROD_REQUEST_DATE: string;
-    PROD_REQUEST_QTY: number;
-    G_CODE: string;
-    G_NAME: string;
-    G_NAME_KD: string;
-    DELIVERY_QTY: number;
-    SAMPLE_QTY: number;
-    SAMPLE_NG_QTY: number;
-    PROD_LAST_PRICE: number;
-    DELIVERY_AMOUNT: number;
-    SAMPLE_NG_AMOUNT: number;
-    REMARK: string;
-    RUNNING_COUNT: number;
-  }
-  export interface CS_RMA_DATA {
-    RMA_ID: number;
-    CONFIRM_ID: number;
-    G_NAME_KD: string;
-    RETURN_DATE: string;
-    PROD_REQUEST_NO: string;
-    G_CODE: string;
-    RMA_TYPE: string;
-    RMA_EMPL_NO: string;
-    INS_DATETIME: string;
-    FACTORY: string;
-    RETURN_QTY: number;
-    SORTING_OK_QTY: number;
-    SORTING_NG_QTY: number;
-    RMA_DELIVERY_QTY: number;
-    PROD_LAST_PRICE: number;
-    RETURN_AMOUNT: number;
-    SORTING_OK_AMOUNT: number;
-    SORTING_NG_AMOUNT: number;
-    G_NAME: string;
-    PROD_TYPE: string;
-    PROD_MODEL: string;
-    CONFIRM_DATE: string;
-    CS_EMPL_NO: string;
-    CONTENT: string;
-    INSPECT_QTY: number;
-    NG_QTY: number;
-    REPLACE_RATE: number;
-    REDUCE_QTY: number;
-  }
-  export interface CS_CNDB_DATA {
-    SA_ID: number;
-    SA_REQUEST_DATE: string;
-    CONTACT_ID: number;
-    CS_EMPL_NO: string;
-    G_CODE: string;
-    G_NAME: string;
-    CUST_NAME_KD: string;
-    PROD_REQUEST_NO: string;
-    REQUEST_DATETIME: string;
-    CONTENT: string;
-    SA_QTY: number;
-    RESULT: string;
-    SA_STATUS: string;
-    SA_REMARK: string;
-    INS_DATETIME: string;
-    SA_CUST_CD: string;
-  }
-  export interface CS_TAXI_DATA {
-    TAXI_ID: number;
-    CONFIRM_ID: number;
-    SA_ID: number;
-    CHIEU: number;
-    CONG_VIEC: string;
-    TAXI_DATE: string;
-    TAXI_SHIFT: string;
-    CS_EMPL_NO: string;
-    DIEM_DI: string;
-    DIEM_DEN: string;
-    TAXI_AMOUNT: number;
-    TRANSPORTATION: string;
-    TAXI_REMARK: string;
-    INS_DATETIME: string;
-  }
-  export interface INSP_PATROL_DATA {
-    INS_PATROL_ID: number;
-    PROD_REQUEST_NO: string;
-    PLAN_ID: string;
-    PROCESS_LOT_NO: string;
-    G_CODE: string;
-    ERR_CODE: string;
-    INSPECT_QTY: number;
-    DEFECT_QTY: number;
-    DEFECT_PHENOMENON: string;
-    DEFECT_IMAGE_LINK: string;
-    LINEQC_PIC: string;
-    PROD_PIC: string;
-    INSP_PIC: string;
-    INS_DATE: string;
-    INS_EMPL: string;
-    UPD_DATE: string;
-    UPD_EMPL: string;
-    PHANLOAI: string;
-    REMARK: string;
-    G_NAME_KD: string;
-    CUST_NAME_KD: string;
-    EQUIPMENT_CD: string;
-    FACTORY: string;
-    OCCURR_TIME: string;
-  }
-  export interface DTC_PATROL_DATA {
-    CTR_CD: string;
-    PATROL_ID: number;
-    DTC_ID: number;
-    TEST_CODE: number;
-    TEST_TYPE_CODE: string;
-    DEFECT_PHENOMENON: string;
-    DEFECT_IMAGE_LINK: string;
-    INS_DATE: string;
-    INS_EMPL: string;
-    UPD_DATE: string;
-    UPD_EMPL: string;
-    FILE_: string;
-    G_NAME_KD: string;
-    G_NAME: string;
-    M_NAME: string;
-    WIDTH_CD: number;
-    TEST_TYPE_NAME: string;
-    TEST_NAME: string;
-    G_CODE: string;
-    M_LOT_NO: string;
-    M_CODE: string;
-    WORK_POSITION_CODE: string;
-    WORK_POSITION_NAME: string;
-    CUST_NAME_KD: string;
-    VENDOR: string;
-    M_FACTORY: string;
-    FACTORY: string;
-  }
+export interface OQC_DATA {
+  OQC_ID: number;
+  DELIVERY_DATE: string;
+  SHIFT_CODE: string;
+  FACTORY_NAME: string;
+  FULL_NAME: string;
+  CUST_NAME_KD: string;
+  PROD_REQUEST_NO: string;
+  PROCESS_LOT_NO: string;
+  M_LOT_NO: string;
+  LOTNCC: string;
+  LABEL_ID: string;
+  PROD_REQUEST_DATE: string;
+  PROD_REQUEST_QTY: number;
+  G_CODE: string;
+  G_NAME: string;
+  G_NAME_KD: string;
+  DELIVERY_QTY: number;
+  SAMPLE_QTY: number;
+  SAMPLE_NG_QTY: number;
+  PROD_LAST_PRICE: number;
+  DELIVERY_AMOUNT: number;
+  SAMPLE_NG_AMOUNT: number;
+  REMARK: string;
+  RUNNING_COUNT: number;
+}
+export interface CS_RMA_DATA {
+  RMA_ID: number;
+  CONFIRM_ID: number;
+  G_NAME_KD: string;
+  RETURN_DATE: string;
+  PROD_REQUEST_NO: string;
+  G_CODE: string;
+  RMA_TYPE: string;
+  RMA_EMPL_NO: string;
+  INS_DATETIME: string;
+  FACTORY: string;
+  RETURN_QTY: number;
+  SORTING_OK_QTY: number;
+  SORTING_NG_QTY: number;
+  RMA_DELIVERY_QTY: number;
+  PROD_LAST_PRICE: number;
+  RETURN_AMOUNT: number;
+  SORTING_OK_AMOUNT: number;
+  SORTING_NG_AMOUNT: number;
+  G_NAME: string;
+  PROD_TYPE: string;
+  PROD_MODEL: string;
+  CONFIRM_DATE: string;
+  CS_EMPL_NO: string;
+  CONTENT: string;
+  INSPECT_QTY: number;
+  NG_QTY: number;
+  REPLACE_RATE: number;
+  REDUCE_QTY: number;
+}
+export interface CS_CNDB_DATA {
+  SA_ID: number;
+  SA_REQUEST_DATE: string;
+  CONTACT_ID: number;
+  CS_EMPL_NO: string;
+  G_CODE: string;
+  G_NAME: string;
+  CUST_NAME_KD: string;
+  PROD_REQUEST_NO: string;
+  REQUEST_DATETIME: string;
+  CONTENT: string;
+  SA_QTY: number;
+  RESULT: string;
+  SA_STATUS: string;
+  SA_REMARK: string;
+  INS_DATETIME: string;
+  SA_CUST_CD: string;
+}
+export interface CS_TAXI_DATA {
+  TAXI_ID: number;
+  CONFIRM_ID: number;
+  SA_ID: number;
+  CHIEU: number;
+  CONG_VIEC: string;
+  TAXI_DATE: string;
+  TAXI_SHIFT: string;
+  CS_EMPL_NO: string;
+  DIEM_DI: string;
+  DIEM_DEN: string;
+  TAXI_AMOUNT: number;
+  TRANSPORTATION: string;
+  TAXI_REMARK: string;
+  INS_DATETIME: string;
+}
+export interface INSP_PATROL_DATA {
+  INS_PATROL_ID: number;
+  PROD_REQUEST_NO: string;
+  PLAN_ID: string;
+  PROCESS_LOT_NO: string;
+  G_CODE: string;
+  ERR_CODE: string;
+  INSPECT_QTY: number;
+  DEFECT_QTY: number;
+  DEFECT_PHENOMENON: string;
+  DEFECT_IMAGE_LINK: string;
+  LINEQC_PIC: string;
+  PROD_PIC: string;
+  INSP_PIC: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  PHANLOAI: string;
+  REMARK: string;
+  G_NAME_KD: string;
+  CUST_NAME_KD: string;
+  EQUIPMENT_CD: string;
+  FACTORY: string;
+  OCCURR_TIME: string;
+}
+export interface DTC_PATROL_DATA {
+  CTR_CD: string;
+  PATROL_ID: number;
+  DTC_ID: number;
+  TEST_CODE: number;
+  TEST_TYPE_CODE: string;
+  DEFECT_PHENOMENON: string;
+  DEFECT_IMAGE_LINK: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  FILE_: string;
+  G_NAME_KD: string;
+  G_NAME: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  TEST_TYPE_NAME: string;
+  TEST_NAME: string;
+  G_CODE: string;
+  M_LOT_NO: string;
+  M_CODE: string;
+  WORK_POSITION_CODE: string;
+  WORK_POSITION_NAME: string;
+  CUST_NAME_KD: string;
+  VENDOR: string;
+  M_FACTORY: string;
+  FACTORY: string;
+}
 
 
-  export interface DailyPPMData {
-    INSPECT_DATE?: string;
-    INSPECT_TOTAL_QTY?: number;
-    MATERIAL_NG?: number;
-    PROCESS_NG?: number;
-    TOTAL_NG?: number;
-    TOTAL_PPM?: number;
-    MATERIAL_PPM?: number;
-    PROCESS_PPM?: number;
-    KPI_VALUE?: number;
-  }
-  export interface PPMData {
-    INSPECT_DATE?: string;
-    YEAR_WEEK?: number;
-    YEAR_NUM?: number;
-    WEEK_NUM?: number;
-    YEAR_MONTH?: string;
-    MONTH_NUM?: number;
-    INSPECT_TOTAL_QTY?: number;
-    MATERIAL_NG?: number;
-    PROCESS_NG?: number;
-    TOTAL_NG?: number;
-    TOTAL_PPM?: number;
-    MATERIAL_PPM?: number;
-    PROCESS_PPM?: number;
-  }
-  export interface DailyData {
-    dldata?: DailyPPMData[];
-    processColor?: string;
-    materialColor?: string;
-  }
-  export interface FcostData {
-    dldata?: InspectSummary[];
-    dlppmdata?: PPMData[];
-    processColor?: string;
-    materialColor?: string;
-  }
-  export interface NguoiHangData {
-    dldata?: TREND_NGUOI_HANG_DATA[];
-    processColor?: string;
-    materialColor?: string;
-  }
-  export interface MonthlyPPMData {
-    YEAR_MONTH?: string;
-    YEAR_NUM?: number;
-    MONTH_NUM?: number;
-    INSPECT_TOTAL_QTY?: number;
-    MATERIAL_NG?: number;
-    PROCESS_NG?: number;
-    TOTAL_NG?: number;
-    TOTAL_PPM?: number;
-    MATERIAL_PPM?: number;
-    PROCESS_PPM?: number;
-    KPI_VALUE?: number;
-  }
-  export interface MonthlyData {
-    dldata?: MonthlyPPMData[];
-    processColor?: string;
-    materialColor?: string;
-  }
-  export interface WeeklyPPMData {
-    YEAR_WEEK?: number;
-    YEAR_NUM?: number;
-    WEEK_NUM?: number;
-    INSPECT_TOTAL_QTY?: number;
-    MATERIAL_NG?: number;
-    PROCESS_NG?: number;
-    TOTAL_NG?: number;
-    TOTAL_PPM?: number;
-    MATERIAL_PPM?: number;
-    PROCESS_PPM?: number;
-    KPI_VALUE?: number;
-  }
-  export interface WeeklyData {
-    dldata?: WeeklyPPMData[];
-    processColor?: string;
-    materialColor?: string;
-  }
-  export interface YearlyPPMData {
-    YEAR_NUM?: number;
-    INSPECT_TOTAL_QTY?: number;
-    MATERIAL_NG?: number;
-    PROCESS_NG?: number;
-    TOTAL_NG?: number;
-    TOTAL_PPM?: number;
-    MATERIAL_PPM?: number;
-    PROCESS_PPM?: number;
-    KPI_VALUE?: number;
-  }
-  export interface YearlyData {
-    dldata?: YearlyPPMData[];
-    processColor?: string;
-    materialColor?: string;
-  }
-  export interface FCSTAmountData {
-    FCSTYEAR: number;
-    FCSTWEEKNO: number;
-    FCST4W_QTY: number;
-    FCST4W_AMOUNT: number;
-    FCST8W_QTY: number;
-    FCST8W_AMOUNT: number;
-  }
-  export interface WorstData {
-    ERR_CODE: string;
-    ERR_NAME_VN: string;
-    ERR_NAME_KR: string;
-    NG_QTY: number;
-    NG_AMOUNT: number;
-    id: number;
-  }
-  export interface WorstCodeData {
-    G_CODE: string;
-    G_NAME_KD: string;
-    INSPECT_TOTAL_QTY: number;
-    NG_QTY: number;
-    NG_AMOUNT: number;
-    id: number;
-  }
-  export interface WidgetData_POBalanceSummary {
-    po_balance_qty: number;
-    po_balance_amount: number;
-  }
-  export interface InspectSummary {
-    INSPECT_DATE?: string;
-    INSPECT_YEAR?: string;
-    INSPECT_YM?: string;
-    INSPECT_YW?: string;
-    INSPECT_MONTH?: string;
-    INSPECT_WEEK?: string;
-    ISP_TT_QTY: number;
-    INSP_OK_QTY: number;
-    M_NG_QTY: number;
-    P_NG_QTY: number;
-    T_NG_QTY: number;
-    ISP_TT_AMOUNT: number;
-    INSP_OK_AMOUNT: number;
-    M_NG_AMOUNT: number;
-    P_NG_AMOUNT: number;
-    T_NG_AMOUNT: number;
-    M_RATE: number;
-    P_RATE: number;
-    T_RATE: number;
-    M_A_RATE: number;
-    P_A_RATE: number;
-    T_A_RATE: number;
-    KPI_VALUE?: number;
-  }
+export interface DailyPPMData {
+  INSPECT_DATE?: string;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
+  KPI_VALUE?: number;
+}
+export interface PPMData {
+  INSPECT_DATE?: string;
+  YEAR_WEEK?: number;
+  YEAR_NUM?: number;
+  WEEK_NUM?: number;
+  YEAR_MONTH?: string;
+  MONTH_NUM?: number;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
+}
+export interface DailyData {
+  dldata?: DailyPPMData[];
+  processColor?: string;
+  materialColor?: string;
+}
+export interface FcostData {
+  dldata?: InspectSummary[];
+  dlppmdata?: PPMData[];
+  processColor?: string;
+  materialColor?: string;
+}
+export interface NguoiHangData {
+  dldata?: TREND_NGUOI_HANG_DATA[];
+  processColor?: string;
+  materialColor?: string;
+}
+export interface MonthlyPPMData {
+  YEAR_MONTH?: string;
+  YEAR_NUM?: number;
+  MONTH_NUM?: number;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
+  KPI_VALUE?: number;
+}
+export interface MonthlyData {
+  dldata?: MonthlyPPMData[];
+  processColor?: string;
+  materialColor?: string;
+}
+export interface WeeklyPPMData {
+  YEAR_WEEK?: number;
+  YEAR_NUM?: number;
+  WEEK_NUM?: number;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
+  KPI_VALUE?: number;
+}
+export interface WeeklyData {
+  dldata?: WeeklyPPMData[];
+  processColor?: string;
+  materialColor?: string;
+}
+export interface YearlyPPMData {
+  YEAR_NUM?: number;
+  INSPECT_TOTAL_QTY?: number;
+  MATERIAL_NG?: number;
+  PROCESS_NG?: number;
+  TOTAL_NG?: number;
+  TOTAL_PPM?: number;
+  MATERIAL_PPM?: number;
+  PROCESS_PPM?: number;
+  KPI_VALUE?: number;
+}
+export interface YearlyData {
+  dldata?: YearlyPPMData[];
+  processColor?: string;
+  materialColor?: string;
+}
+export interface FCSTAmountData {
+  FCSTYEAR: number;
+  FCSTWEEKNO: number;
+  FCST4W_QTY: number;
+  FCST4W_AMOUNT: number;
+  FCST8W_QTY: number;
+  FCST8W_AMOUNT: number;
+}
+export interface WorstData {
+  ERR_CODE: string;
+  ERR_NAME_VN: string;
+  ERR_NAME_KR: string;
+  NG_QTY: number;
+  NG_AMOUNT: number;
+  id: number;
+}
+export interface WorstCodeData {
+  G_CODE: string;
+  G_NAME_KD: string;
+  INSPECT_TOTAL_QTY: number;
+  NG_QTY: number;
+  NG_AMOUNT: number;
+  id: number;
+}
+export interface WidgetData_POBalanceSummary {
+  po_balance_qty: number;
+  po_balance_amount: number;
+}
+export interface InspectSummary {
+  INSPECT_DATE?: string;
+  INSPECT_YEAR?: string;
+  INSPECT_YM?: string;
+  INSPECT_YW?: string;
+  INSPECT_MONTH?: string;
+  INSPECT_WEEK?: string;
+  ISP_TT_QTY: number;
+  INSP_OK_QTY: number;
+  M_NG_QTY: number;
+  P_NG_QTY: number;
+  T_NG_QTY: number;
+  ISP_TT_AMOUNT: number;
+  INSP_OK_AMOUNT: number;
+  M_NG_AMOUNT: number;
+  P_NG_AMOUNT: number;
+  T_NG_AMOUNT: number;
+  M_RATE: number;
+  P_RATE: number;
+  T_RATE: number;
+  M_A_RATE: number;
+  P_A_RATE: number;
+  T_A_RATE: number;
+  KPI_VALUE?: number;
+}
 
-  export interface TREND_NGUOI_HANG_DATA {
-    INSPECT_DATE?: string;
-    INSPECT_YEAR?: number;
-    INSPECT_MONTH?: number;
-    INSPECT_WEEK?: number;
-    INSPECT_YM?: string;
-    INSPECT_YW?: string;
-    EMPL_NUMBER: string;
-    INSPECT_HOUR: number;
-    INSPECT_TOTAL_QTY: number;
-  }
-  export interface CNT_GAP_DATA {
-    GAP: number;
-    CNT: number;
-    RATE: number;
-  }
-  export interface CNT_GAP_DATA2 {
-    GAP: number;
-    CNT_TOTAL: number;
-    CNT_SX: number;
-    CNT_QC: number;
-    CNT_OK: number;
-    RATE_SX: number;
-    RATE_QC: number;
-    RATE_OK: number;
-  }
-  export interface TRUOCHAN_BACK_DATA {
-    PROD_REQUEST_NO: string;
-    NGAY_GH: string;
-    MAX_DATE: string;
-    GAP: number;
-  }
-  export interface TRUOCHAN_BACK_DATA2 {
-    PROD_REQUEST_NO: string;
-    NGAY_GH: string;
-    LAST_INPUT_DATE: string;
-    LAST_OUTPUT_DATE: string;
-    GAP: number;
-    SX_CHAM: string;
-    QC_CHAM: string;
-  }
-  export interface ALL_GAP_RATE_BACK_DATA {
-    PROD_REQUEST_NO: string;
-    NGAY_YC: string;
-    MAX_DATE: string;
-    GAP: number;
-  }
-  export interface KT_GAP_RATE_BACK_DATA {
-    PROD_REQUEST_NO: string;
-    MIN_DATE: string;
-    MAX_DATE: string;
-    GAP: number;
-  }
-  export interface SX_GAP_RATE_BACK_DATA {
-    PROD_REQUEST_NO: string;
-    MIN_DATE: string;
-    MAX_DATE: string;
-    GAP: number;
-  }
-  export interface KD_YC_GAP_RATE_BACK_DATA {
-    PROD_REQUEST_NO: string;
-    G_CODE: string;
-    G_NAME_KD: string;
-    G_NAME: string;
-    EMPL_NO: string;
-    PROD_REQUEST_DATE: string;
-    DELIVERY_DT: string;
-    NGAY_YC: string;
-    NGAY_GH: string;
-    GAP: number;
-  }
-  export interface AUDIT_HISTORY_DATA {
-    id: number;
-    CTR_CD: string;
-    CUST_CD: string;
-    CUST_NAME_KD: string;
-    AUDIT_ID: number;
-    AUDIT_DATE: string;
-    AUDIT_NAME: string;
-    AUDIT_MAX_SCORE: number;
-    AUDIT_SCORE: number;
-    AUDIT_PASS_SCORE: number;
-    AUDIT_RESULT: string;
-    AUDIT_FILE_EXT: string;
-    INS_DATE: string;
-    INS_EMPL: string;
-    UPD_DATE: string;
-    UPD_EMPL: string;
-  }
-  
-  export interface XBAR_DATA {
-    GRP_ID: number;
-    CENTER_VALUE: number;
-    LOWER_VALUE: number;
-    UPPER_VALUE: number;
-    MIN_VALUE: number;
-    MAX_VALUE: number;
-    R_VALUE: number;
-    AVG_VALUE: number;
-    X_UCL: number;
-    X_CL: number;
-    X_LCL: number;
-    R_UCL: number;
-    R_CL: number;
-    R_LCL: number;
-  }
-  export interface CPK_DATA {
-    GRP_ID: number;
-    CENTER_VALUE: number;
-    LOWER_VALUE: number;
-    UPPER_VALUE: number;
-    STD_DEV_VALUE: number;
-    AVG_VALUE: number;
-    CPU: number;
-    CPL: number;
-    CPK: number;
-    CPK1: number;
-    CPK2: number;
-  }
-  export interface HISTOGRAM_DATA {
-    RESULT: string;
-    CNT: number;
-  }
-  export interface DTC_TEST_LIST {
-    TEST_CODE: number;
-    TEST_NAME: string;
-  }
-  export interface DTC_TEST_POINT {
-    POINT_CODE: number;
-    POINT_NAME: string;
-    TEST_CODE: number;
-    TEST_NAME: string;
-  }
-  export interface NCR_DATA {
-    NCR_ID: number;
-    FACTORY: string;
-    NCR_NO: string;
-    NCR_DATE: string;
-    RESPONSE_REQ_DATE: string;
-    CUST_CD: string;
-    VENDOR: string;
-    M_CODE: string;
-    WIDTH_CD: number;
-    M_NAME: string;
-    CMS_LOT: string;
-    VENDOR_LOT: string;
-    DEFECT_TITLE: string;
-    DEFECT_DETAIL: string;
-    DEFECT_IMAGE: string;
-    PROCESS_STATUS: string;
-    USE_YN: string;
-    INS_DATE: string;
-    INS_EMPL: string;
-    UPD_DATE: string;
-    UPD_EMPL: string;
-    REMARK: string;
-    COUNTERMEASURE?: string;
-    COUNTERMEASURE_EXT?: string;
-  }
-  export interface HOLDDING_BY_NCR_ID {
-    NCR_ID: number;
-    VENDOR_LOT: string;
-    M_CODE: string;
-    M_NAME: string;
-    WIDTH_CD: number;
-    TOTAL_HOLDING_ROLL: number;
-    TOTAL_HOLDING_M: number;
-    TOTAL_HOLDING_SQM: number;
-    TYPE: string;
-  }
+export interface TREND_NGUOI_HANG_DATA {
+  INSPECT_DATE?: string;
+  INSPECT_YEAR?: number;
+  INSPECT_MONTH?: number;
+  INSPECT_WEEK?: number;
+  INSPECT_YM?: string;
+  INSPECT_YW?: string;
+  EMPL_NUMBER: string;
+  INSPECT_HOUR: number;
+  INSPECT_TOTAL_QTY: number;
+}
+export interface CNT_GAP_DATA {
+  GAP: number;
+  CNT: number;
+  RATE: number;
+}
+export interface CNT_GAP_DATA2 {
+  GAP: number;
+  CNT_TOTAL: number;
+  CNT_SX: number;
+  CNT_QC: number;
+  CNT_OK: number;
+  RATE_SX: number;
+  RATE_QC: number;
+  RATE_OK: number;
+}
+export interface TRUOCHAN_BACK_DATA {
+  PROD_REQUEST_NO: string;
+  NGAY_GH: string;
+  MAX_DATE: string;
+  GAP: number;
+}
+export interface TRUOCHAN_BACK_DATA2 {
+  PROD_REQUEST_NO: string;
+  NGAY_GH: string;
+  LAST_INPUT_DATE: string;
+  LAST_OUTPUT_DATE: string;
+  GAP: number;
+  SX_CHAM: string;
+  QC_CHAM: string;
+}
+export interface ALL_GAP_RATE_BACK_DATA {
+  PROD_REQUEST_NO: string;
+  NGAY_YC: string;
+  MAX_DATE: string;
+  GAP: number;
+}
+export interface KT_GAP_RATE_BACK_DATA {
+  PROD_REQUEST_NO: string;
+  MIN_DATE: string;
+  MAX_DATE: string;
+  GAP: number;
+}
+export interface SX_GAP_RATE_BACK_DATA {
+  PROD_REQUEST_NO: string;
+  MIN_DATE: string;
+  MAX_DATE: string;
+  GAP: number;
+}
+export interface KD_YC_GAP_RATE_BACK_DATA {
+  PROD_REQUEST_NO: string;
+  G_CODE: string;
+  G_NAME_KD: string;
+  G_NAME: string;
+  EMPL_NO: string;
+  PROD_REQUEST_DATE: string;
+  DELIVERY_DT: string;
+  NGAY_YC: string;
+  NGAY_GH: string;
+  GAP: number;
+}
+export interface AUDIT_HISTORY_DATA {
+  id: number;
+  CTR_CD: string;
+  CUST_CD: string;
+  CUST_NAME_KD: string;
+  AUDIT_ID: number;
+  AUDIT_DATE: string;
+  AUDIT_NAME: string;
+  AUDIT_MAX_SCORE: number;
+  AUDIT_SCORE: number;
+  AUDIT_PASS_SCORE: number;
+  AUDIT_RESULT: string;
+  AUDIT_FILE_EXT: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+}
 
-  export interface BLOCK_DATA {
-    CTR_CD: string;
-    NCR_ID: number;
-    PL_BLOCK: string;
-    BLOCK_ID: number;
-    PLAN_ID: string;
-    M_CODE: string;
-    M_LOT_NO: string;
-    PROCESS_LOT_NO: string;
-    BLOCK_ROLL_QTY: number;
-    BLOCK_TOTAL_QTY: number;
-    USE_YN: string;
-    DEFECT: string;
-    QC_PASS: string;
-    QC_PASS_DATE: string;
-    QC_PASS_EMPL: string;
-    STATUS: string;
-    PROCESS_EMPL: string;
-    PROCESS_DATE: string;
-    FACTORY: string;
-    INS_DATE: string;
-    INS_EMPL: string;
-    UPD_DATE: string;
-    UPD_EMPL: string;
-    LOT_VENDOR: string;
-    M_NAME: string;
-    WIDTH_CD: number;
-    VENDOR_NAME: string;
-  }
+export interface XBAR_DATA {
+  GRP_ID: number;
+  CENTER_VALUE: number;
+  LOWER_VALUE: number;
+  UPPER_VALUE: number;
+  MIN_VALUE: number;
+  MAX_VALUE: number;
+  R_VALUE: number;
+  AVG_VALUE: number;
+  X_UCL: number;
+  X_CL: number;
+  X_LCL: number;
+  R_UCL: number;
+  R_CL: number;
+  R_LCL: number;
+}
+export interface CPK_DATA {
+  GRP_ID: number;
+  CENTER_VALUE: number;
+  LOWER_VALUE: number;
+  UPPER_VALUE: number;
+  STD_DEV_VALUE: number;
+  AVG_VALUE: number;
+  CPU: number;
+  CPL: number;
+  CPK: number;
+  CPK1: number;
+  CPK2: number;
+}
+export interface HISTOGRAM_DATA {
+  RESULT: string;
+  CNT: number;
+}
+export interface DTC_TEST_LIST {
+  TEST_CODE: number;
+  TEST_NAME: string;
+}
+export interface DTC_TEST_POINT {
+  POINT_CODE: number;
+  POINT_NAME: string;
+  TEST_CODE: number;
+  TEST_NAME: string;
+}
+export interface NCR_DATA {
+  NCR_ID: number;
+  FACTORY: string;
+  NCR_NO: string;
+  NCR_DATE: string;
+  RESPONSE_REQ_DATE: string;
+  CUST_CD: string;
+  VENDOR: string;
+  M_CODE: string;
+  WIDTH_CD: number;
+  M_NAME: string;
+  CMS_LOT: string;
+  VENDOR_LOT: string;
+  DEFECT_TITLE: string;
+  DEFECT_DETAIL: string;
+  DEFECT_IMAGE: string;
+  PROCESS_STATUS: string;
+  USE_YN: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  REMARK: string;
+  COUNTERMEASURE?: string;
+  COUNTERMEASURE_EXT?: string;
+}
+export interface HOLDDING_BY_NCR_ID {
+  NCR_ID: number;
+  VENDOR_LOT: string;
+  M_CODE: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  TOTAL_HOLDING_ROLL: number;
+  TOTAL_HOLDING_M: number;
+  TOTAL_HOLDING_SQM: number;
+  TYPE: string;
+}
 
-  export interface ALL_DOC_DATA {
+export interface BLOCK_DATA {
+  CTR_CD: string;
+  NCR_ID: number;
+  PL_BLOCK: string;
+  BLOCK_ID: number;
+  PLAN_ID: string;
+  M_CODE: string;
+  M_LOT_NO: string;
+  PROCESS_LOT_NO: string;
+  BLOCK_ROLL_QTY: number;
+  BLOCK_TOTAL_QTY: number;
+  USE_YN: string;
+  DEFECT: string;
+  QC_PASS: string;
+  QC_PASS_DATE: string;
+  QC_PASS_EMPL: string;
+  STATUS: string;
+  PROCESS_EMPL: string;
+  PROCESS_DATE: string;
+  FACTORY: string;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+  LOT_VENDOR: string;
+  M_NAME: string;
+  WIDTH_CD: number;
+  VENDOR_NAME: string;
+}
+
+export interface ALL_DOC_DATA {
   CTR_CD: string;
   DOC_ID: number;
   DEPARTMENT: string;
@@ -1577,13 +1582,12 @@ export interface IQC_FAILING_TREND_DATA {
   PENDING_QTY: number;
   COMPLETE_RATE: number;
 }
-export interface IQC_FAIL_PENDING
- {
-  CUST_NAME_KD: string; 
+export interface IQC_FAIL_PENDING {
+  CUST_NAME_KD: string;
   FAIL_QTY: number;
- }
+}
 
- export interface KPI_NV_KIEMTRA {
+export interface KPI_NV_KIEMTRA {
   EMPL_NO: string;
   CODE_COUNT: number;
   INSPECT_MINUTE: number;
@@ -1600,16 +1604,15 @@ export interface IQC_FAIL_PENDING
   RATE_TT: number;
   TOTAL_KIEMTRA_KPI: number;
   DIEM_CON: number;
-  FINAL_KPI: number;  
- }
+  FINAL_KPI: number;
+}
 
- export interface DM_VITRI_DATA {
-   CTR_CD: string;
-   PHANLOAI: string;
-   KPI_VALUE: number;
-   INS_DATE: string;
-   INS_EMPL: string;
-   UPD_DATE: string;
-   UPD_EMPL: string;
- }
- 
+export interface DM_VITRI_DATA {
+  CTR_CD: string;
+  PHANLOAI: string;
+  KPI_VALUE: number;
+  INS_DATE: string;
+  INS_EMPL: string;
+  UPD_DATE: string;
+  UPD_EMPL: string;
+}
