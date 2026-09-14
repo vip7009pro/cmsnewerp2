@@ -1,5 +1,31 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Tra Cứu Dữ Liệu PQC - TRAPQC.tsx & PrecisionTRAPQC/ Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Đã lưu trữ an toàn tại `src/pages/qc/pqc/TRAPQC.backup.tsx` (33.172 bytes, 932 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `TRAPQC.tsx` tinh gọn từ 932 dòng xuống chỉ còn **95 dòng** (< 120 dòng theo cam kết), kết nối dữ liệu qua custom hook `useTrapqcData`, điều phối layout và các subcomponents.
+   - Toàn bộ các presentation subcomponents tại `src/pages/qc/pqc/PrecisionTRAPQC/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file**:
+     1. `PrecisionTRAPQC.scss` (769 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#f43f5e`, Purple `#7c3aed`), layout Split 2 panel (Sidebar 270px, Main Table container), co giãn full-width & full-height Multi-Tab (`.component_element &`), custom scrollbar, triệt tiêu 100% toolbar xanh lá cũ của AGTable, loại bỏ footer thừa, và luật clipping boundary `contain: paint layout !important` ngăn chặn tràn chữ đè ô sang cột bên cạnh.
+     2. `PrecisionTrapqcHeader.tsx` (69 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • PQC / TRA CỨU DỮ LIỆU KIỂM TRA (PQC DATA EXPLORER)`, badge `CMS ERP`, telemetry trực tuyến `NET_SERVER: 3007 (Online)` kèm pulse dot, nút làm mới dữ liệu và nút bật/tắt toàn màn hình.
+     3. `PrecisionTrapqcKpi.tsx` (117 dòng): 4 Thẻ Micro-cards KPI realtime (Tổng Bản Ghi, Phân Hệ Nguồn Dữ Liệu, Sản Lượng Kiểm Tra, Lỗi Khuyết Tật & Tỷ Lệ %).
+     4. `PrecisionTrapqcSidebar.tsx` (239 dòng): Khung tra cứu 270px bên trái: Bộ lọc đa trường (All Time, Từ ngày - Đến ngày, Nhà máy, Code KD, Code ERP, Nhân viên, Khách hàng, Loại SP, Số YCSX, LOT SX, ID), hỗ trợ phím Enter và nút Tra Cứu nổi bật.
+     5. `PrecisionTrapqcToolbar.tsx` (112 dòng): SaaS Action Toolbar phía trên bảng: **Segment Switcher 4 Chế Độ** (`SETTING`, `DEFECT`, `DAO-FILM`, `CNĐB`), ô lọc nhanh tức thời Quick Filter trên lưới, cụm xuất Excel `EX1` lọc, `EX2` toàn bộ, `PIVOT` và badge đếm số dòng.
+     6. `PrecisionTrapqcColumns.tsx` (138 dòng): Cấu hình 4 bảng cột chuẩn Stitch (`column_TRA_PQC1_DATA` 34 cột, `column_pqc3_data` 29 cột, `column_daofilm_data` 15 cột, `column_cndb_data` 15 cột), khớp 100% `headerName` và `width` bản gốc theo nguyên tắc số 8 của SKILL.md.
+     7. `PrecisionTrapqcTable.tsx` (44 dòng): Bọc bảng AGTable High-Density, hoàn toàn không có footer thừa hoặc status bar giả ở chân trang, tối đa hóa không gian dọc cho bảng dữ liệu.
+     8. `PrecisionTrapqcNNDSModal.tsx` (102 dòng): Modal popup Cập nhật Nguyên Nhân & Đối Sách bọc trọn vẹn `PATROL_COMPONENT`, textarea có label song ngữ rõ ràng và nút Lưu Đối Sách emerald gradient.
+     9. `useTrapqcData.ts` (407 dòng): Custom hook quản lý 100% state, queries API (`trapqc1data`, `trapqc3data`, `tradaofilm`, `traCNDB`, `updatenndspqc`), tính toán KPI realtime và xuất Excel qua `SaveExcel`.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ**:
+   - Tra cứu đầy đủ 4 chế độ PQC1 Setting, PQC3 Defect, Bàn giao Dao Film và Chấp Nhận Đặc Biệt.
+   - Bảo lưu cơ chế kiểm toán `getAuditMode()` để ẩn/hiện mã tem nhãn nội bộ an toàn.
+   - Cập nhật Nguyên nhân và Đối sách cho lỗi PQC3.
+   - Mở xem ảnh kiểm tra `IMG_1/2/3` và link ảnh lỗi PNG.
+4. **Bổ sung tương thích trong `PQC.scss`**:
+   - Cấu hình layout full-height cho `.pqc > .tabs-container > .tab-content > .tab-pane` và `.trapqc, .precision-trapqc` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi nhúng trong tab DATA PQC của `PQC.tsx` không bao giờ bị collapse chiều cao.
+5. **Xác thực kiểm tra Vite Dev Server & Zero Lint Error**:
+   - Toàn bộ 100% 12/12 file mới và file liên quan (gồm cả `PQC.tsx` và `PQC.scss`) đều đạt HTTP 200 OK trên Vite Dev Server (port 3001) và 0 lint errors. Không footer thừa, không tab menu thừa.
+
 ## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Báo Cáo IQC - IQC_REPORT.tsx & PrecisionIQCReport/ Theo Chuẩn KinhDoanhReport & Google Stitch High-Density Enterprise)
 
 ### Completed

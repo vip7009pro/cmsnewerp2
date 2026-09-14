@@ -1,0 +1,769 @@
+/* ==========================================================================
+   PRECISION TRAPQC - GOOGLE STITCH HIGH-DENSITY ENTERPRISE STYLING
+   ========================================================================== */
+
+$slate-50: #f8fafc;
+$slate-100: #f1f5f9;
+$slate-200: #e2e8f0;
+$slate-300: #cbd5e1;
+$slate-400: #94a3b8;
+$slate-500: #64748b;
+$slate-600: #475569;
+$slate-700: #334155;
+$slate-800: #1e293b;
+$slate-900: #0f172a;
+
+$primary: #2563eb;
+$primary-hover: #1d4ed8;
+$primary-light: #eff6ff;
+
+$emerald-500: #10b981;
+$emerald-600: #059669;
+$emerald-light: #ecfdf5;
+
+$amber-500: #f59e0b;
+$amber-600: #d97706;
+$amber-light: #fffbeb;
+
+$rose-500: #f43f5e;
+$rose-600: #e11d48;
+$rose-light: #fff1f2;
+
+$purple-500: #8b5cf6;
+$purple-600: #7c3aed;
+$purple-light: #f5f3ff;
+
+.precision-trapqc {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background-color: $slate-50;
+  color: $slate-800;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  /* Co giãn full-width & full-height trong hệ thống Multi-Tab ERP */
+  .component_element & {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+  }
+}
+
+/* ==========================================================================
+   1. HEADER BAR
+   ========================================================================== */
+.precision-trapqc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 38px;
+  min-height: 38px;
+  padding: 0 12px;
+  background: #ffffff;
+  border-bottom: 1px solid $slate-200;
+  box-sizing: border-box;
+  flex-shrink: 0;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__badge-brand {
+    font-size: 10px;
+    font-weight: 800;
+    color: #ffffff;
+    background: linear-gradient(135deg, $primary 0%, #1d4ed8 100%);
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  &__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: $slate-500;
+
+    .active {
+      color: $slate-900;
+      font-weight: 600;
+    }
+  }
+
+  &__telemetry {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: $slate-100;
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid $slate-200;
+    font-size: 10px;
+    color: $slate-600;
+    font-family: "JetBrains Mono", Consolas, monospace;
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: $emerald-500;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    padding: 0 8px;
+    background: #ffffff;
+    border: 1px solid $slate-200;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    color: $slate-700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: $slate-100;
+      border-color: $slate-300;
+      color: $slate-900;
+    }
+
+    &:active {
+      background: $slate-200;
+    }
+  }
+}
+
+/* ==========================================================================
+   2. WORKSPACE SPLIT LAYOUT (SIDEBAR + MAIN CONTENT)
+   ========================================================================== */
+.precision-trapqc-workspace {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   3. SIDEBAR FORM BỘ LỌC (270px)
+   ========================================================================== */
+.precision-trapqc-sidebar {
+  width: 270px;
+  min-width: 270px;
+  max-width: 270px;
+  height: 100%;
+  background: #ffffff;
+  border-right: 1px solid $slate-200;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow-y: auto;
+  flex-shrink: 0;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $slate-300;
+    border-radius: 2px;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 36px;
+    padding: 0 10px;
+    background: $slate-50;
+    border-bottom: 1px solid $slate-200;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: $slate-800;
+  }
+
+  &__form-body {
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: $slate-600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    select {
+      height: 27px;
+      padding: 0 8px;
+      background: #ffffff;
+      border: 1px solid $slate-300;
+      border-radius: 4px;
+      font-size: 11px;
+      color: $slate-800;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.15s ease;
+
+      &:focus {
+        border-color: $primary;
+      }
+    }
+  }
+
+  &__toggle-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 26px;
+    padding: 0 8px;
+    background: $slate-100;
+    border: 1px solid $slate-200;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 11px;
+    font-weight: 500;
+    color: $slate-700;
+    margin-bottom: 2px;
+
+    input[type="checkbox"] {
+      cursor: pointer;
+      accent-color: $primary;
+      margin: 0;
+    }
+  }
+
+  &__btn-search {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 32px;
+    margin-top: 4px;
+    background: linear-gradient(135deg, $primary 0%, #1d4ed8 100%);
+    border: none;
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+}
+
+/* ==========================================================================
+   4. MAIN CONTENT CONTAINER (RIGHT)
+   ========================================================================== */
+.precision-trapqc-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: $slate-50;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   5. KPI SUMMARY MICRO-CARDS
+   ========================================================================== */
+.precision-trapqc-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 8px 10px 0 10px;
+  flex-shrink: 0;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .kpi-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+    border: 1px solid $slate-200;
+    border-radius: 6px;
+    padding: 6px 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+
+    &--blue {
+      border-left: 3px solid $primary;
+      .kpi-icon-wrap { background: $primary-light; color: $primary; }
+    }
+    &--emerald {
+      border-left: 3px solid $emerald-500;
+      .kpi-icon-wrap { background: $emerald-light; color: $emerald-600; }
+    }
+    &--amber {
+      border-left: 3px solid $amber-500;
+      .kpi-icon-wrap { background: $amber-light; color: $amber-600; }
+    }
+    &--purple {
+      border-left: 3px solid $purple-500;
+      .kpi-icon-wrap { background: $purple-light; color: $purple-600; }
+    }
+
+    .kpi-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .kpi-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: $slate-500;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .kpi-amount {
+      font-size: 16px;
+      font-weight: 800;
+      color: $slate-900;
+      font-family: "JetBrains Mono", Consolas, monospace;
+      line-height: 1.1;
+
+      .unit {
+        font-size: 10px;
+        font-weight: 600;
+        color: $slate-500;
+        margin-left: 3px;
+      }
+    }
+
+    .kpi-meta {
+      font-size: 10px;
+      color: $slate-600;
+    }
+
+    .kpi-icon-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+/* ==========================================================================
+   6. SAAS ACTION TOOLBAR
+   ========================================================================== */
+.precision-trapqc-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #ffffff;
+  border-top: 1px solid $slate-200;
+  border-bottom: 1px solid $slate-200;
+  margin-top: 8px;
+  flex-shrink: 0;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  /* Segmented Switcher */
+  &__segment-switcher {
+    display: inline-flex;
+    align-items: center;
+    background: $slate-100;
+    border: 1px solid $slate-200;
+    border-radius: 5px;
+    padding: 2px;
+    gap: 2px;
+
+    .segment-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 24px;
+      padding: 0 8px;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      color: $slate-600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:hover {
+        color: $slate-900;
+      }
+
+      &--active {
+        background: #ffffff;
+        color: $primary;
+        font-weight: 700;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+      }
+    }
+  }
+
+  &__quick-search {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 26px;
+    padding: 0 8px;
+    background: #ffffff;
+    border: 1px solid $slate-300;
+    border-radius: 4px;
+    font-size: 11px;
+
+    input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 11px;
+      color: $slate-800;
+      width: 130px;
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__badge-count {
+    font-size: 11px;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-weight: 600;
+    color: $slate-700;
+    background: $slate-100;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid $slate-200;
+  }
+
+  &__btn-excel {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    padding: 0 8px;
+    background: #ffffff;
+    border: 1px solid $emerald-500;
+    border-radius: 4px;
+    color: $emerald-600;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: $emerald-light;
+      border-color: $emerald-600;
+    }
+  }
+
+  &__btn-pivot {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    padding: 0 8px;
+    background: #ffffff;
+    border: 1px solid $purple-500;
+    border-radius: 4px;
+    color: $purple-600;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: $purple-light;
+      border-color: $purple-600;
+    }
+  }
+}
+
+/* ==========================================================================
+   7. TABLE CONTAINER & ZERO FOOTER
+   ========================================================================== */
+.precision-trapqc-table-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: #ffffff;
+
+  /* Triệt tiêu 100% toolbar xanh lá cũ của AGTable */
+  .agtable .toolbar {
+    display: none !important;
+  }
+
+  /* Loại bỏ footer thừa */
+  .agtable .footer {
+    display: none !important;
+  }
+
+  .ag-theme-quartz,
+  .ag-theme-alpine {
+    width: 100% !important;
+    height: 100% !important;
+    font-size: 11px;
+
+    .ag-header-cell {
+      background-color: #f1f5f9 !important;
+      color: #1e293b !important;
+      font-weight: 700 !important;
+      font-size: 10.5px !important;
+      border-right: 1px solid #e2e8f0 !important;
+    }
+
+    .ag-cell {
+      line-height: 24px !important;
+      font-size: 11px !important;
+      box-sizing: border-box !important;
+      contain: paint layout !important; /* Chống tràn chữ đè ô bên cạnh */
+      border-right: 1px solid #f1f5f9 !important;
+    }
+
+    .cell-truncate {
+      display: inline-block;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .code-mono {
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 600;
+
+      &--ok { background: $emerald-light; color: $emerald-600; border: 1px solid rgba(16, 185, 129, 0.3); }
+      &--ng { background: $rose-light; color: $rose-600; border: 1px solid rgba(244, 63, 94, 0.3); }
+      &--pending { background: $amber-light; color: $amber-600; border: 1px solid rgba(245, 158, 11, 0.3); }
+    }
+
+    .link-blue {
+      color: $primary;
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+      &:hover { color: $primary-hover; }
+    }
+
+    .btn-nnds-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      height: 20px;
+      padding: 0 6px;
+      background: $purple-light;
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      border-radius: 3px;
+      color: $purple-600;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      &:hover { background: rgba(124, 58, 237, 0.15); }
+    }
+  }
+}
+
+/* ==========================================================================
+   8. MODAL CẬP NHẬT NGUYÊN NHÂN ĐỐI SÁCH (GLASSMORHISM)
+   ========================================================================== */
+.precision-trapqc-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.precision-trapqc-modal {
+  background: #ffffff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 780px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 42px;
+    padding: 0 14px;
+    background: $slate-50;
+    border-bottom: 1px solid $slate-200;
+
+    .modal-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: $slate-800;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: $slate-400;
+      cursor: pointer;
+      &:hover { color: $rose-500; }
+    }
+  }
+
+  &__body {
+    padding: 12px 14px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: $slate-700;
+      margin-bottom: 2px;
+    }
+
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px;
+      border: 1px solid $slate-300;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-family: inherit;
+      outline: none;
+      resize: vertical;
+      &:focus { border-color: $primary; }
+    }
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    height: 46px;
+    padding: 0 14px;
+    background: $slate-50;
+    border-top: 1px solid $slate-200;
+
+    .btn-save {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 28px;
+      padding: 0 12px;
+      background: linear-gradient(135deg, $emerald-500 0%, $emerald-600 100%);
+      border: none;
+      border-radius: 4px;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      &:hover { opacity: 0.95; }
+    }
+
+    .btn-cancel {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 28px;
+      padding: 0 12px;
+      background: #ffffff;
+      border: 1px solid $slate-300;
+      border-radius: 4px;
+      color: $slate-700;
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+      &:hover { background: $slate-100; }
+    }
+  }
+}
