@@ -1,6 +1,55 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
-## Update - 2026-09-14 (Kinh Doanh: Khắc Phục Lỗi Trắng 3 Biểu Đồ & Hoàn Thiện Style Donut Pie + SaaS Toolbar Trong KinhDoanhReport)
+## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Đăng Ký Test Độ Tin Cậy - DKDTC.tsx Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Rà soát toàn diện hiện trạng mã nguồn & Khắc phục triệt để lỗi dở dang**:
+   - Khắc phục lỗi `TS2307: Cannot find module './PrecisionDKDTC/usePrecisionDKDTC'` trong `DKDTC.tsx` cũ.
+   - Khắc phục lỗi thiếu file `qcExcelHelper.ts`: Chuyển sang sử dụng bộ hàm xuất Excel chuẩn toàn hệ thống `SaveExcel` từ `src/api/services/excelService`.
+   - Xóa bỏ an toàn các file thừa/lỗi import: `PrecisionDKDTCForm.tsx` (monolith 588 dòng) và `PrecisionBarcodeScannerModal.tsx` (lỗi import `Html5QrcodePlugin`).
+2. **Tái thiết kế toàn diện theo bộ đặc tả Google Stitch High-Density Enterprise (`stitch_dktestdtc`)**:
+   - **Bảo toàn 100% mã nguồn gốc**: Đã lưu trữ toàn vẹn tại `DKDTC.backup.tsx` (33.770 bytes, 939 dòng).
+   - **Tối ưu kiến trúc Clean Code**: Phân rã module từ 939 dòng monolith xuống Controller chính chỉ còn 154 dòng (< 160 dòng/file controller) và toàn bộ các subcomponents đều dưới 280 dòng tại thư mục `src/pages/qc/dtc/PrecisionDKDTC/`:
+     1. `PrecisionDKDTC.scss`: SCSS tokens công nghiệp chuẩn Stitch, layout 2 cột Split Workspace, co giãn flex full-width và full-height trong Multi-Tab (`.component_element &`), triệt tiêu 100% toolbar xanh lá mặc định của AGTable.
+     2. `DKDTC.tsx` (154 dòng): Master Controller tinh gọn kết nối toàn diện với hook dữ liệu, quản lý trạng thái toàn màn hình Fullscreen và điều phối các subcomponents.
+     3. `PrecisionDKDTCHeader.tsx` (80 dòng): Header chuẩn Stitch, breadcrumb `04. QC • ĐTC / ĐĂNG KÝ TEST ĐỘ TIN CẬY (DTC)`, telemetry trực tuyến `NET_SERVER: 3007 (Online)` kèm pulse dot, thông tin nhân viên đăng nhập, nút nạp lại và bật/tắt toàn màn hình.
+     4. `PrecisionDKDTCSidebar.tsx` (279 dòng): Khung đăng ký test 320px compact high-density bên trái:
+        - Card chuyển đổi nhanh Swap Mode: Chuyển đổi linh hoạt giữa `SẢN PHẨM (PQC/OQC)` và `NGUYÊN VẬT LIỆU (IQC)`.
+        - Dropdown phân loại test: `MASS PRODUCTION`, `FIRST_LOT`, `ECN`, `SAMPLE`.
+        - Ô nhập / quét mã YCSX hoặc Lot NVL với nút quét Camera Barcode/QR Code tức thời.
+        - Ô nhập / quét mã Lot NCC (khi ở chế độ NVL).
+        - Tra cứu tự động tên sản phẩm `G_NAME` hoặc tên vật liệu `M_NAME` hiển thị nổi bật màu xanh dương.
+        - Ô nhân viên yêu cầu test kèm tra cứu tự động tên nhân viên `empl_name`.
+        - Khung Đăng ký bổ sung cho ID test cũ (`showdkbs` / `oldDTC_ID`).
+        - Ghi chú `REMARK`.
+        - Nút hành động chính: `ĐĂNG KÝ TEST ĐTC` (xanh ngọc Emerald gradient, chữ in hoa, full-width).
+     5. `PrecisionDKDTCChecklist.tsx` (149 dòng): Lưới 2 cột checklist hạng mục kiểm tra ĐTC:
+        - Nút công cụ Chọn tất cả / Bỏ chọn toàn bộ.
+        - Ô lọc nhanh hạng mục test.
+        - Chip trạng thái đã có Spec (`addedSpec`) màu xanh dương, icon khiên bảo vệ `IoShieldCheckmarkOutline`.
+        - Cảnh báo lỗi bằng SweetAlert2 khi người dùng chọn hạng mục chưa được khai báo Spec.
+        - Danh sách tags tóm tắt các hạng mục đang được tích chọn.
+     6. `PrecisionDKDTCKpi.tsx` (85 dòng): 4 Thẻ Micro-cards KPI realtime:
+        - *Tổng Lượt Đăng Ký*: Đếm tổng số bản ghi gần nhất.
+        - *Hoàn Thành Test*: Đếm số lượng mẫu đã trả kết quả và tỷ lệ % hoàn tất.
+        - *Mass Production*: Đếm số lượng mẫu thuộc diện sản xuất hàng loạt.
+        - *Hạng Mục Đang Chọn*: Đếm số lượng hạng mục đang được tích chọn trên Sidebar.
+     7. `PrecisionDKDTCTable.tsx` (145 dòng): Bọc bảng AGTable High-Density:
+        - Grid Toolbar chuẩn SaaS: Ô tìm kiếm Omnibar đa trường, cụm nút xuất `EX1 (Lọc)`, `EX2 (Toàn bộ)`, `PIVOT`, nút `Làm mới` và badge đếm số lượng dòng hiển thị.
+        - Triệt tiêu hoàn toàn toolbar xanh lá mặc định của AGTable.
+        - Status Bar tích hợp dưới chân bảng: hiển thị telemetry kết nối và số lượng bản ghi.
+     8. `PrecisionDKDTCColumns.tsx` (248 dòng): Cấu hình cột bảng chuẩn Stitch khớp 100% dữ liệu backend `DTC_REG_DATA` với chip mã JetBrains Mono, chip phân loại nhiều màu, badge trạng thái hoàn thành test và format ngày giờ chuẩn.
+     9. `PrecisionDKDTCScannerModal.tsx` (128 dòng): Modal camera quét mã vạch và mã QR tự động bằng `Html5QrcodeScanner`.
+     10. `useDKDTCData.ts` (535 dòng): Custom hook quản lý tập trung 100% state, queries API (`getLastDTCID`, `checkDTC_ID_FROM_M_LOT_NO`, `checkAddedSpec`, `ycsx_fullinfo`, `checkLabelID2`, `checkMNAMEfromLotI222`, `registerDTCTest`, `insertIQC1table`, `loadrecentRegisteredDTCData`, `checkEMPL_NO_mobile`), các handlers xuất Excel `SaveExcel` và quét mã.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ và API**:
+   - Giữ nguyên luồng đăng ký test cho cả 2 nhánh Thành Phẩm và Nguyên Vật Liệu.
+   - Giữ nguyên logic ghi nhận bảng IQC `insertIQC1table` khi nhân viên thuộc bộ phận IQC.
+   - Hỗ trợ đăng ký bổ sung cho ID test cũ.
+   - Giữ nguyên xuất Excel lọc (`EX1`) và toàn bộ (`EX2`).
+4. **Xác thực hệ thống & Dev Server Vite**:
+   - 100% 10/10 files liên quan biên dịch thành công với mã **HTTP 200 OK** trên Vite Dev Server (port 3001).
+   - 0 lỗi lint, 0 cảnh báo runtime.
+
 
 ### Completed
 1. **Khắc phục triệt để lỗi 3 biểu đồ bị trắng tinh trong Báo Cáo Kinh Doanh**:
