@@ -1,0 +1,626 @@
+/* ==========================================================================
+   PRECISION IQC REPORT - GOOGLE STITCH HIGH-DENSITY ENTERPRISE STYLING
+   ========================================================================== */
+
+$slate-50: #f8fafc;
+$slate-100: #f1f5f9;
+$slate-200: #e2e8f0;
+$slate-300: #cbd5e1;
+$slate-400: #94a3b8;
+$slate-500: #64748b;
+$slate-600: #475569;
+$slate-700: #334155;
+$slate-800: #1e293b;
+$slate-900: #0f172a;
+
+$primary: #2563eb;
+$primary-hover: #1d4ed8;
+$primary-light: #eff6ff;
+
+$emerald-500: #10b981;
+$emerald-600: #059669;
+$emerald-light: #ecfdf5;
+
+$amber-500: #f59e0b;
+$amber-600: #d97706;
+$amber-light: #fffbeb;
+
+$rose-500: #f43f5e;
+$rose-600: #e11d48;
+$rose-light: #fff1f2;
+
+$purple-500: #8b5cf6;
+$purple-600: #7c3aed;
+$purple-light: #f5f3ff;
+
+$cyan-500: #06b6d4;
+$cyan-600: #0891b2;
+$cyan-light: #ecfeff;
+
+.precision-iqc-report {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background-color: $slate-50;
+  color: $slate-800;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  /* Khi nhúng trong hệ thống Multi-Tab ERP */
+  .component_element & {
+    height: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+  }
+}
+
+/* ==========================================================================
+   1. HEADER BAR
+   ========================================================================== */
+.precision-iqc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 38px;
+  min-height: 38px;
+  padding: 0 12px;
+  background: #ffffff;
+  border-bottom: 1px solid $slate-200;
+  box-sizing: border-box;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__badge-brand {
+    font-size: 10px;
+    font-weight: 800;
+    color: #ffffff;
+    background: linear-gradient(135deg, $primary 0%, #1d4ed8 100%);
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  &__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: $slate-500;
+
+    .active {
+      color: $slate-900;
+      font-weight: 600;
+    }
+  }
+
+  &__telemetry {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: $slate-100;
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid $slate-200;
+    font-size: 10px;
+    color: $slate-600;
+    font-family: "JetBrains Mono", Consolas, monospace;
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: $emerald-500;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    padding: 0 8px;
+    background: #ffffff;
+    border: 1px solid $slate-200;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    color: $slate-700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: $slate-100;
+      border-color: $slate-300;
+      color: $slate-900;
+    }
+
+    &:active {
+      background: $slate-200;
+    }
+  }
+}
+
+/* ==========================================================================
+   2. TOOLBAR & CONTROLS
+   ========================================================================== */
+.precision-iqc-toolbar {
+  background: #ffffff;
+  border-bottom: 1px solid $slate-200;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 12px 0 12px;
+  gap: 6px;
+  box-sizing: border-box;
+
+  &__controls-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  &__filters-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  &__date-picker,
+  &__select-control,
+  &__text-input {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 28px;
+    padding: 0 8px;
+    background: #ffffff;
+    border: 1px solid $slate-300;
+    border-radius: 4px;
+    font-size: 11px;
+    color: $slate-700;
+    box-sizing: border-box;
+
+    label {
+      font-weight: 600;
+      color: $slate-600;
+      white-space: nowrap;
+      font-size: 10.5px;
+    }
+
+    input,
+    select {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 11px;
+      color: $slate-800;
+      font-weight: 500;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  &__autocomplete-wrap {
+    min-width: 220px;
+    max-width: 280px;
+
+    .MuiAutocomplete-root {
+      .MuiOutlinedInput-root {
+        padding: 0 4px !important;
+        height: 28px !important;
+        font-size: 11px !important;
+
+        .MuiOutlinedInput-input {
+          padding: 2px 4px !important;
+          font-size: 11px !important;
+        }
+
+        fieldset {
+          border-color: $slate-300 !important;
+        }
+
+        &:hover fieldset {
+          border-color: $slate-400 !important;
+        }
+
+        &.Mui-focused fieldset {
+          border-color: $primary !important;
+          border-width: 1px !important;
+        }
+      }
+    }
+  }
+
+  &__chip-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 22px;
+    padding: 0 6px;
+    background: $slate-100;
+    border: 1px solid $slate-200;
+    border-radius: 11px;
+    font-size: 10px;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    color: $slate-700;
+
+    .chip-clear {
+      cursor: pointer;
+      color: $slate-400;
+      &:hover {
+        color: $rose-500;
+      }
+    }
+  }
+
+  &__checkbox-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 28px;
+    padding: 0 8px;
+    background: $slate-100;
+    border: 1px solid $slate-200;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 11px;
+    font-weight: 500;
+    color: $slate-700;
+    transition: all 0.15s ease;
+
+    input[type="checkbox"] {
+      cursor: pointer;
+      accent-color: $primary;
+      margin: 0;
+    }
+
+    &:hover {
+      background: $slate-200;
+    }
+  }
+
+  &__btn-search {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 28px;
+    padding: 0 12px;
+    background: linear-gradient(135deg, $primary 0%, #1d4ed8 100%);
+    border: none;
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+
+  /* Segmented Jump Tabs */
+  &__nav-tabs {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    border-top: 1px solid $slate-100;
+    padding-top: 4px;
+    overflow-x: auto;
+
+    &::-webkit-scrollbar {
+      height: 2px;
+    }
+
+    .nav-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 28px;
+      padding: 0 10px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      border-radius: 4px 4px 0 0;
+      font-size: 11px;
+      font-weight: 500;
+      color: $slate-600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+
+      &:hover {
+        color: $slate-900;
+        background: $slate-100;
+      }
+
+      &--active {
+        color: $primary;
+        font-weight: 600;
+        background: $primary-light;
+        border-bottom-color: $primary;
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   3. SCROLLABLE BODY CONTAINER
+   ========================================================================== */
+.precision-iqc-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px 14px 24px 14px;
+  box-sizing: border-box;
+
+  /* Custom Slim Scrollbar */
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $slate-300;
+    border-radius: 3px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: $slate-400;
+  }
+}
+
+/* ==========================================================================
+   4. KPI SUMMARY MICRO-CARDS
+   ========================================================================== */
+.precision-iqc-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+    border: 1px solid $slate-200;
+    border-radius: 8px;
+    padding: 10px 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    &--blue {
+      border-left: 3px solid $primary;
+      .kpi-icon-wrap { background: $primary-light; color: $primary; }
+    }
+    &--emerald {
+      border-left: 3px solid $emerald-500;
+      .kpi-icon-wrap { background: $emerald-light; color: $emerald-600; }
+    }
+    &--amber {
+      border-left: 3px solid $amber-500;
+      .kpi-icon-wrap { background: $amber-light; color: $amber-600; }
+    }
+    &--rose {
+      border-left: 3px solid $rose-500;
+      .kpi-icon-wrap { background: $rose-light; color: $rose-600; }
+    }
+
+    .kpi-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: $slate-500;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .kpi-amount {
+      font-size: 18px;
+      font-weight: 800;
+      color: $slate-900;
+      font-family: "JetBrains Mono", Consolas, monospace;
+      line-height: 1.2;
+
+      .unit {
+        font-size: 11px;
+        font-weight: 600;
+        color: $slate-500;
+        margin-left: 3px;
+      }
+    }
+
+    .kpi-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10.5px;
+      color: $slate-600;
+
+      .qty-val {
+        color: $slate-800;
+        font-family: "JetBrains Mono", Consolas, monospace;
+      }
+    }
+
+    .kpi-icon-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+/* ==========================================================================
+   5. SECTIONS & EXECUTIVE CARDS
+   ========================================================================== */
+.precision-iqc-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 4px;
+    border-bottom: 1px solid $slate-200;
+
+    .section-badge-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: $slate-800;
+
+      .icon-circle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: $primary-light;
+        color: $primary;
+        font-size: 12px;
+      }
+    }
+
+    .section-meta {
+      font-size: 11px;
+      color: $slate-500;
+      font-family: "JetBrains Mono", Consolas, monospace;
+    }
+  }
+
+  .two-col-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .executive-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid $slate-200;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+
+    &__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 34px;
+      padding: 0 12px;
+      background: #fafbfc;
+      border-bottom: 1px solid $slate-200;
+    }
+
+    &__title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    &__title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: $slate-800;
+    }
+
+    &__btn-excel {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 22px;
+      padding: 0 6px;
+      background: #ffffff;
+      border: 1px solid $emerald-500;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      color: $emerald-600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:hover {
+        background: $emerald-light;
+        color: $emerald-600;
+        border-color: $emerald-600;
+      }
+
+      &:active {
+        transform: translateY(1px);
+      }
+    }
+
+    &__body {
+      padding: 8px;
+      box-sizing: border-box;
+      height: 380px;
+      position: relative;
+
+      &--chart-lg {
+        height: 400px;
+      }
+    }
+  }
+}

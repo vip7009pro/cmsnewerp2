@@ -44,7 +44,8 @@
     .precision-blocking, .blocking,
     .precision-holding, .holding,
     .precision-failing, .failing,
-    .precision-ncr, .ncr_management {
+    .precision-ncr, .ncr_management,
+    .precision-iqc-report, .iqcreport {
       height: 100% !important;
       flex: 1 1 auto;
       min-height: 0;

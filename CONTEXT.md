@@ -1,5 +1,28 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Báo Cáo IQC - IQC_REPORT.tsx & PrecisionIQCReport/ Theo Chuẩn KinhDoanhReport & Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Đã lưu trữ an toàn tại `src/pages/qc/iqc/IQC_REPORT.backup.tsx` (24.718 bytes, 569 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt theo phong cách KinhDoanhReport**:
+   - Master Controller `IQC_REPORT.tsx` tinh gọn từ 569 dòng xuống chỉ còn **89 dòng** (< 120 dòng theo cam kết), kết nối dữ liệu qua custom hook `useIQCReportData`, điều phối layout và các subcomponents.
+   - Toàn bộ các presentation subcomponents tại `src/pages/qc/iqc/PrecisionIQCReport/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file**:
+     1. `PrecisionIQCReport.scss` (626 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#f43f5e`, Purple `#7c3aed`), layout co giãn full-width & full-height Multi-Tab (`.component_element &`), custom scrollbar 6px, responsive two-column grid và executive card container.
+     2. `PrecisionIQCReportHeader.tsx` (69 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • IQC / BÁO CÁO CHỈ SỐ CHẤT LƯỢNG & XU HƯỚNG LỖI PPM (QUALITY ANALYTICS)`, badge `CMS ERP`, telemetry trực tuyến `NET_SERVER: 3007 (Online)` kèm pulse dot, nút làm mới dữ liệu và nút bật/tắt toàn màn hình.
+     3. `PrecisionIQCReportToolbar.tsx` (226 dòng): SaaS Action Toolbar phía trên: Bộ lọc đa năng (Từ ngày, Đến ngày, Worst By AMOUNT/QTY, NG Type ALL/PROCESS/MATERIAL, Autocomplete chọn mã hàng, Khách hàng, Checkbox Default, nút Tra Cứu) và **Segment Navigation Tabs** chuyển đổi tức thời giữa 4 phân hệ (`Xem Toàn Diện`, `Xu Hướng Tỷ Lệ Lỗi PPM`, `Lỗi Nhà Cung Cấp`, `Kho Lỗi & Giữ Hàng`).
+     4. `PrecisionIQCReportKpi.tsx` (119 dòng): 4 Thẻ Micro-cards KPI realtime (Today NG, This Week NG, This Month NG, This Year NG) hiển thị chỉ số PPM, bóc tách cụ thể lỗi Liệu vs Công đoạn.
+     5. `PrecisionIQCReportPPMSection.tsx` (132 dòng): Phân hệ 1 hiển thị 4 biểu đồ xu hướng PPM (Daily, Weekly, Monthly, Yearly) kèm nút xuất file Excel độc lập.
+     6. `PrecisionIQCReportVendorSection.tsx` (83 dòng): Phân hệ 2 hiển thị 2 biểu đồ xu hướng khuyết tật theo Vendor (Weekly & Monthly) kèm nút xuất file Excel.
+     7. `PrecisionIQCReportFailingSection.tsx` (146 dòng): Phân hệ 3 hiển thị 4 biểu đồ Kho Lỗi Failing và Hàng Giữ Nghi Vấn Holding (Trending & Pending) kèm nút xuất file Excel.
+     8. `useIQCReportData.ts` (309 dòng): Custom hook quản lý 100% state, queries API backend (`f_loadIQCDailyNGTrend`, `f_loadIQCWeeklyTrend`, `f_loadIQCMonthlyTrend`, `f_loadIQCYearlyTrend`, `f_loadVendorIncomingNGRateByWeek`, `f_loadVendorIncomingNGRateByMonth`, `f_loadIQCFailTrending`, `f_loadIQCHoldingTrending`, `f_loadIQCFailPending`, `f_loadIQCHoldingPending`), các handlers chọn/xóa mã hàng, tính toán và xuất Excel qua `SaveExcel`.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ và queries CSDL**:
+   - Bảo tồn 100% logic nạp 10 bộ dữ liệu biểu đồ và xuất Excel đúng định dạng tên file gốc.
+   - Không còn footer thừa, không có tab menu thừa lặp lại.
+4. **Bổ sung tương thích trong `IQC.scss`**:
+   - Cấu hình `.precision-iqc-report, .iqcreport` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi nhúng trong tab BÁO CÁO IQC của `IQC.tsx` không bao giờ bị collapse chiều cao.
+5. **Xác thực kiểm tra Vite Dev Server & Zero Lint Error**:
+   - Toàn bộ 100% 10/10 file mới và file liên quan đều đạt HTTP 200 OK trên Vite Dev Server (port 3001) và 0 lint errors.
+
 ## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Quản Lý Biên Bản Bất Thường IQC - NCR_MANAGER.tsx & PrecisionNCR/ Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed
