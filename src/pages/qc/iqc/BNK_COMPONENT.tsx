@@ -170,7 +170,7 @@ const BNK_COMPONENT = ({
     getMThickness();
     getMWidth();
     getMWidthAnDMThicknessResult();
-  }, []);
+  }, [data?.M_NAME, data?.IQC1_ID]);
   return (
     <div className="material-check">
       <div className="header">
@@ -227,10 +227,11 @@ const BNK_COMPONENT = ({
             <td>Nhà cung cấp</td>
             <td>{data?.CUST_NAME_KD}</td>
             <td>Ngày nhập</td>
-            <td>{`20${data?.M_LOT_NO.substring(0, 2)}-${data?.M_LOT_NO.substring(
-              2,
-              4
-            )}-${data?.M_LOT_NO.substring(4, 6)}`}</td>
+            <td>
+              {data?.M_LOT_NO && data.M_LOT_NO.length >= 6
+                ? `20${data.M_LOT_NO.substring(0, 2)}-${data.M_LOT_NO.substring(2, 4)}-${data.M_LOT_NO.substring(4, 6)}`
+                : data?.M_LOT_NO || ""}
+            </td>
           </tr>
           <tr>
             <td>Lot {getCompany()}</td>
@@ -238,7 +239,7 @@ const BNK_COMPONENT = ({
             <td>Chiều rộng</td>
             <td>{data?.WIDTH_CD} mm</td>
             <td>Ngày kiểm tra</td>
-            <td>{moment(data?.INS_DATE).utc().format("YYYY-MM-DD")}</td>
+            <td>{data?.INS_DATE ? moment(data.INS_DATE).utc().format("YYYY-MM-DD") : ""}</td>
           </tr>
           <tr>
             <td>Lot Vendor</td>

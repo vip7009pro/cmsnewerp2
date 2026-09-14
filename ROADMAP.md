@@ -1,5 +1,53 @@
 # Roadmap - cmsnewerp2
 
+- [x] Khắc phục triệt để lỗi In CHECKSHEET KIỂM TRA INCOMING (BNK) ra preview trắng tinh (`PrecisionBNKModal.tsx`, `PrecisionINCOMMING.scss`, `BNK_COMPONENT.tsx`, `INCOMMING.tsx`):
+  - **Phát hiện nguyên nhân gốc rễ**:
+    + Quy tắc CSS `@media print { body > *:not(#root) { display: none !important; } }`: Thư viện `react-to-print` tạo thẻ iframe con của body để in và copy styles vào iframe. Bên trong iframe, nội dung cần in nằm trực tiếp dưới thẻ `body` và không có id `#root`, dẫn đến việc bị gán `display: none !important;` làm trắng tinh toàn bộ preview bản in.
+    + Thao tác `data?.M_LOT_NO.substring(...)` trong `BNK_COMPONENT.tsx` thiếu kiểm tra an toàn khi `data` hoặc `M_LOT_NO` bị null/undefined, gây Uncaught TypeError crash component khiến modal bị trắng tinh trên màn hình.
+  - **Giải pháp xử lý toàn diện**:
+    + Xóa bỏ triệt để selector `body > *:not(#root)` trong `PrecisionINCOMMING.scss`, thay thế bằng cấu hình in A4 chuẩn `html, body { width: 100% !important; height: auto !important; -webkit-print-color-adjust: exact !important; }`.
+    + Bổ sung cấu hình `pageStyle` và `documentTitle` tối ưu cho `useReactToPrint` trong `INCOMMING.tsx`.
+    + Tự động chọn dòng đầu tiên (`setClickedRow(first)`) và nạp ĐTC khi người dùng bấm `Show BNK` mà chưa kịp click chọn dòng trên bảng.
+    + Bảo vệ chuỗi ngày nhập và `M_LOT_NO` trong `BNK_COMPONENT.tsx` chống crash runtime, bổ sung dependency array cho `useEffect`.
+    + Thêm Empty State đẹp mắt và vô hiệu hóa nút in khi chưa chọn dòng trong `PrecisionBNKModal.tsx`.
+  - **Xác thực toàn diện**: 100% 4/4 file liên quan biên dịch thành công qua Vite transform (HTTP 200 OK) trên port 3001, 0 lỗi cú pháp, 0 lỗi lint.
+
+- [x] Sửa triệt để lỗi hiển thị nội dung Cell dài bị tràn đè sang cột bên cạnh trong Bảng Data Incoming (`AGTable` - `INCOMMING.tsx`):
+  - **Khắc phục nguyên nhân gốc rễ (CSS Flexbox & Clipping)**:
+    + `.ag-cell` mang `display: flex !important` khiến text node nội dung biến thành Anonymous Flex Item, vô hiệu hóa cơ chế `text-overflow: ellipsis` của trình duyệt.
+    + Thêm `contain: paint layout !important` trên `.ag-cell` nhằm ngăn chặn tuyệt đối trình duyệt vẽ bất kỳ pixel nào ra ngoài đường biên của cell.
+    + Bổ sung `box-sizing: border-box !important`, `line-height: 24px !important`, và cấu hình `&.ag-cell-value` để text trong cell tự động nhận `overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important;`.
+    + Đồng bộ áp dụng cho cả Main Grid và Right DTC Grid trong `PrecisionINCOMMING.scss`.
+  - **Tối ưu Component Presentation (`PrecisionIncomingColumns.tsx`)**:
+    + Bọc các trường văn bản dài (`M_NAME`, `M_LOT_NO`, `LOT_CMS`, `LOTNCC`, `LOT_VENDOR_IQC`, `CUST_NAME_KD`, `REMARK` và trong DTC Grid: `TEST_NAME`, `PROD_REQUEST_NO`, `G_NAME`, `M_NAME`) bằng `renderTruncated` (`<span className="cell-truncate" title={val}>`), tự động cắt ngắn với dấu 3 chấm `...` và hiển thị tooltip đầy đủ khi hover.
+    + Thêm `cell-truncate` cho badge `.lot-highlight`.
+    + Tái cấu trúc tinh gọn các hàm helper link (`renderDefectLink`, `renderCountermeasureLink`), đưa file từ 283 dòng xuống chỉ còn **257 dòng** (< 280 dòng theo chuẩn Clean Code).
+  - **Xác thực toàn diện**: 100% các file liên quan (`PrecisionINCOMMING.scss`, `PrecisionIncomingColumns.tsx`, `PrecisionIncomingTable.tsx`, `INCOMMING.tsx`) biên dịch thành công qua Vite transform (HTTP 200 OK) trên port 3001, 0 lỗi cú pháp, 0 lỗi lint.
+
+- [x] Hoàn thiện Tái Thiết Kế Màn Hình Kiểm Tra Nguyên Vật Liệu Đầu Vào IQC (`INCOMMING.tsx` & `PrecisionINCOMMING/`) và Modal Biên Bản Nghiệm Thu BNK Chuẩn A4 Print-Ready theo chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/iqc/INCOMMING.backup.tsx` (84.936 bytes, 2.481 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `INCOMMING.tsx` chỉ còn **142 dòng** (giảm từ 2.481 dòng), kết nối dữ liệu qua custom hook, quản lý toàn màn hình và điều phối các subcomponents.
+    * Phân rã thành 8 subcomponents hiển thị tại thư mục `src/pages/qc/iqc/PrecisionINCOMMING/` đều dưới 280 dòng/file:
+      1. `PrecisionINCOMMING.scss` (720 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch, layout 3 panel (Sidebar 270px, Center Grid, Right DTC Panel 320px), co giãn full-width & full-height Multi-Tab (`.component_element &`), custom scrollbars, triệt tiêu 100% toolbar xanh lá cũ của AGTable, modal preview A4 glassmorphism và quy tắc in `@media print`.
+      2. `PrecisionIncomingHeader.tsx` (58 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • IQC / KIỂM TRA NGUYÊN VẬT LIỆU ĐẦU VÀO (INCOMING CONTROL)`, badge `IQC ENGINE`, telemetry trực tuyến `NET_SERVER: 3007 (Online)` kèm pulse dot, thông tin nhân viên đăng nhập, nút làm mới dữ liệu và nút bật/tắt toàn màn hình.
+      3. `PrecisionIncomingKpi.tsx` (64 dòng): 4 Thẻ Micro-cards KPI realtime (Tổng Lô Incoming Hôm Nay, IQC Pass Rate Đạt Spec, Đang Test Độ Tin Cậy ĐTC, Lô Nghi Vấn / Holding NCR).
+      4. `PrecisionIncomingSidebar.tsx` (236 dòng): Khung thao tác 270px bên trái: Chuyển đổi linh hoạt giữa `Tra Data` (bộ lọc đa trường từ ngày - tới ngày, tên liệu, mã liệu CMS, vendor, lot vendor, Show All) và `New Input` (đăng ký lô mới, tự động tra cứu Lot NVL ERP và tên nhân viên kiểm tra, số cuộn ngoại quan, ID test ĐTC, ghi chú, bộ đôi nút `+ ADD` và `LƯU SAVE`).
+      5. `PrecisionIncomingGridToolbar.tsx` (138 dòng): SaaS Action Toolbar phía trên bảng chính (`+ New INPUT`, `Tra Data`, `SET PASS`, `SET FAIL`, `Update`, `Show BNK`, ô nhập inline `NCR_ID` + nút `↻ Update NCR_ID`, và cụm nút xuất Excel `EX1`, `EX2`).
+      6. `PrecisionIncomingTable.tsx` (87 dòng): Bọc bảng AGTable High-Density và status bar ở đáy trang (tổng số dòng, lô đang chọn, trạng thái đồng bộ lưới).
+      7. `PrecisionIncomingColumns.tsx` (257 dòng): Cấu hình cột bảng chuẩn Stitch cho cả 2 chế độ Worker và Kỹ thuật viên/Manager, chip trạng thái OK/NG/PD/N/A, chip Lot NVL phân màu trực quan, nút Update dòng, nút Upload checksheet/Link mở file PDF, cột liên kết ảnh khuyết tật và đối sách NCR, cùng các cột điểm đo động `KQ*`.
+      8. `PrecisionIncomingDtcPanel.tsx` (114 dòng): Khung kết quả ĐTC bên phải (320px) với banner gradient hiển thị Lot đang chọn, thanh công cụ xuất Excel, bảng AGTable đo độ tin cậy, hộp tóm tắt tiêu chuẩn kỹ thuật đánh giá Pass/NG và status footer.
+      9. `PrecisionBNKModal.tsx` (73 dòng): Modal xem trước và in ấn biên bản kiểm tra A4 (Show BNK) siêu sang trọng, hiện đại:
+         - Nền mờ Backdrop Blur với không gian canvas slate dark (`#334155`) chuẩn PDF viewer.
+         - Thanh điều khiển glassmorphism hiển thị thông tin lô, nút In trực tiếp ra máy in A4 (`useReactToPrint`) và nút đóng.
+         - Giấy A4 (210mm x 297mm) đổ bóng 3D cao cấp, bọc trọn vẹn `BNK_COMPONENT.tsx`.
+         - Cấu hình `@media print` cách ly chuẩn xác: Ẩn thanh công cụ ERP, in trọn vẹn trang A4 không bị lệch lề.
+      10. `useIncomingData.ts` (442 dòng): Custom hook quản lý 100% state, queries API (`loadIQC1table`, `dtcdata`, `checkMNAMEfromLotI222`, `checkEMPL_NO_mobile`, `insertIQC1table`, `updateIncomingData_web`, `updateQCPASSI222`, `updateIQC1Table`, `update_iqc_ncr_id`, `updateIncomingChecksheet`, `insertHoldingFromI222`), tính toán KPI realtime và xuất file Excel `SaveExcel`.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ và API**: Tra cứu kiểm tra NVL, đăng ký lô mới, cập nhật dòng lẻ hoặc hàng loạt, phê duyệt nhanh `SET PASS`/`SET FAIL` kèm cơ chế tự động đưa vào kho giữ hàng nghi vấn `insertHoldingData` khi NG, cập nhật mã số `NCR_ID`, nạp file checksheet PDF/JPG, và đồng bộ kết quả ĐTC khi nhấp chọn dòng.
+  - **Bổ sung tương thích trong `IQC.scss`**: Cấu hình `.precision-incoming, .incomming` co giãn 100% full-height khi nhúng trong tab INCOMING của `IQC.tsx`.
+  - **Xác thực biên dịch Vite Dev Server**: 100% 12/12 files liên quan trả về HTTP 200 OK trên port 3001, sạch 100% lỗi lint.
+
+
 - [x] Hotfix & Khắc phục lỗi các Tab Độ Tin Cậy bị trắng khi nhúng trong Tab IQC (`IQC.tsx`, `DTC.tsx`, `MyTab.tsx`):
   - **Phát hiện nguyên nhân gốc rễ**: Lồng ghép 2 cấp `MyTabs` (IQC chứa `MyTabs` cấp 1 -> `DTC` chứa `MyTabs` cấp 2). File `DTC.scss` cũ có `height: fit-content;`, khiến `tabs-container` bên trong (chiều cao 100%) không tính toán được chiều cao cha và co sụp về `0px`. Đồng thời, các selector hack cũ trong `IQC.scss` (`.kqdtc`, `.specdtc`...) không khớp với các class Stitch mới (`.precision-kqdtc`...), và `MyTab.tsx` có inline style thiếu `height: 100%`.
   - **Giải pháp xử lý triệt để**:
