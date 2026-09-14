@@ -1,5 +1,35 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Quản Lý Biên Bản Bất Thường IQC - NCR_MANAGER.tsx & PrecisionNCR/ Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Đã lưu trữ an toàn tại `src/pages/qc/iqc/NCR_MANAGER.backup.tsx` (36.779 bytes, 940 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `NCR_MANAGER.tsx` tinh gọn từ 940 dòng xuống chỉ còn **79 dòng** (< 120 dòng theo cam kết), kết nối dữ liệu qua custom hook `useNCRData`, điều phối layout và các subcomponents.
+   - Toàn bộ các presentation subcomponents tại `src/pages/qc/iqc/PrecisionNCR/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file**:
+     1. `PrecisionNCR.scss` (1.117 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#f43f5e`, Purple `#7c3aed`), layout Split 3 panel (Sidebar 260px, Center Grid, Right Panel 320px), co giãn full-width & full-height Multi-Tab (`.component_element &`), custom scrollbar 5px, triệt tiêu 100% toolbar xanh lá cũ của AGTable, và luật clipping boundary `contain: paint layout !important` ngăn chặn 100% hiện tượng chữ dài tràn đè ô sang cột bên cạnh.
+     2. `PrecisionNCRHeader.tsx` (60 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • IQC / QUẢN LÝ BIÊN BẢN BẤT THƯỜNG (NCR MANAGEMENT)`, badge `NCR ENGINE`, telemetry trực tuyến `NET_SERVER: 3007 (Online)` kèm pulse dot, thông tin nhân viên đăng nhập, nút làm mới dữ liệu và nút bật/tắt toàn màn hình.
+     3. `PrecisionNCRKpi.tsx` (86 dòng): 4 Thẻ Micro-cards KPI realtime (Tổng Số Phiếu NCR, Đã Đóng COMPLETED kèm tỷ lệ %, Đang Xử Lý PENDING, Lô Liên Quan Chặn Giữ Cuộn/Mét).
+     4. `PrecisionNCRSidebar.tsx` (242 dòng): Khung thao tác 260px bên trái tích hợp **Segmented Switcher 2 chế độ (TRA DATA / NEW NCR)**, chuyển đổi linh hoạt giữa bộ lọc tra cứu chuyên sâu và Form đăng ký mới mà không chèn đè lên bảng dữ liệu chính.
+     5. `PrecisionNCRFormInput.tsx` (191 dòng): Form đăng ký phiếu NCR mới: Cơ chế tự động tra cứu Lot NVL ERP (`checkLotNVL`) và mã nhân viên IQC (`checkEMPL_NAME`), nút `+ ADD DÒNG` và `LƯU NCR`.
+     6. `PrecisionNCRToolbar.tsx` (145 dòng): SaaS Action Toolbar phía trên bảng chính (`NEW NCR`, `Tra Data`, `Export NCR`, `SET COMPLETED`, `SET PENDING`, ô Quick Filter trên lưới và cụm xuất Excel `EX1` lọc, `EX2` toàn bộ & `PIVOT`).
+     7. `PrecisionNCRColumns.tsx` (138 dòng): Cấu hình 23 cột bảng NCR và 9 cột bảng Holding Detail chuẩn Stitch, khớp 100% `headerName` và `width` bản gốc theo nguyên tắc số 8 của SKILL.md.
+     8. `ncrCellRenderers.tsx` (110 dòng): Cell renderers cho upload/link ảnh lỗi PNG, upload/link file đối sách (PDF, DOCX...), badge trạng thái COMPLETED/PENDING, font monospace JetBrains Mono, định dạng số hàng nghìn (`toLocaleString`), helper `renderTruncated` an toàn cắt chữ kèm tooltip title.
+     9. `PrecisionNCRTable.tsx` (66 dòng): Bọc bảng AGTable NCR Detail High-Density, hoàn toàn không có footer thừa hoặc status bar giả ở chân trang, tối đa hóa không gian dọc cho bảng dữ liệu.
+     10. `PrecisionNCRRightPanel.tsx` (176 dòng): Khung bên phải 320px gồm: Card Ảnh Lỗi (Defect Image) hiển thị trực quan kèm nút mở to/tải ảnh gốc + Card Bảng Holding - Failing Detail kèm mini toolbar xuất Excel/Pivot và tóm tắt tổng số cuộn/mét chặn giữ.
+     11. `useNCRData.ts` (567 dòng): Custom hook quản lý 100% state, queries API (`loadNCRData`, `loadHoldingMaterialByNCR_ID`, `update_ncr_process_status`, `checkMNAMEfromLotI222`, `checkEMPL_NO_mobile`, `insertNCRData`, upload ảnh & đối sách), phân quyền QC, tính KPI realtime và xuất Excel qua `SaveExcel`.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ và phân quyền**:
+   - Nghiệp vụ đăng ký mới phiếu NCR (tự động điền tên liệu/khổ khi nhập Lot NVL, tự động kiểm tra tên nhân viên IQC).
+   - Nghiệp vụ cập nhật trạng thái `SET COMPLETED` / `SET PENDING` cho QC.
+   - Nghiệp vụ upload và xem trực tiếp ảnh lỗi PNG (`uploadQuery`, `update_ncr_image`).
+   - Nghiệp vụ upload và xem file đối sách đa định dạng PDF/DOCX/PPTX/XLSX (`uploadQuery`, `update_ncr_countermeasure`).
+   - Nghiệp vụ tra cứu danh sách lô chặn giữ / phế liệu liên quan theo NCR ID (`loadHoldingMaterialByNCR_ID`).
+4. **Bổ sung tương thích trong `IQC.scss`**:
+   - Cấu hình `.precision-ncr, .ncr_management` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi nhúng trong tab NCR MANAGEMENT của `IQC.tsx` không bao giờ bị collapse chiều cao.
+5. **Xác thực kiểm tra Vite Dev Server & Zero Lint Error**:
+   - Toàn bộ 100% các file mới trong `src/pages/qc/iqc/PrecisionNCR/` và `NCR_MANAGER.tsx` đều đạt HTTP 200 OK và 0 lint errors.
+   - Không còn footer thừa, không có tab menu thừa lặp lại.
+
 ## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Quản Lý Kho Lỗi IQC - FAILING.tsx & PrecisionFAILING/ Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed
