@@ -28,8 +28,7 @@ export const PrecisionBLOCKTable: React.FC<PrecisionBLOCKTableProps> = ({
         row.DEFECT?.toLowerCase().includes(query) ||
         row.M_CODE?.toLowerCase().includes(query) ||
         row.PLAN_ID?.toLowerCase().includes(query) ||
-        row.SUPPLIER?.toLowerCase().includes(query) ||
-        row.MAKER?.toLowerCase().includes(query) ||
+        row.VENDOR_NAME?.toLowerCase().includes(query) ||
         String(row.BLOCK_ID).includes(query) ||
         String(row.NCR_ID).includes(query)
       );

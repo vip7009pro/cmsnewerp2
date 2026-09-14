@@ -18,7 +18,7 @@ Skill này thiết lập quy trình chuẩn hóa từng bước để tự độ
 > 5. **MODULE HÓA - KHÔNG VIẾT FILE HÀNG NGHÌN DÒNG**: Tách nhỏ các thành phần giao diện (Header, Toolbar, KPI Cards, Cells, Modals) thành các file riêng dưới 300 dòng.
 > 6. **ĐẢM BẢO RESPONSIVE CHO CẢ DESKTOP & MOBILE**: Luôn code SCSS với media query để đảm bảo giao diện hiển thị tốt trên cả desktop và mobile.
 > 7. **ĐẢM BẢO KHÔNG CÓ LỖI LINT, TRÁNH RUNTIME ERROR**: Nếu có lỗi lint hoặc runtime thì phải sửa ngay, không được bỏ qua.
----
+> 8. **Các bảng dữ liệu headerName giữ nguyên so với bản gốc**: Các bảng dữ liệu (Như AGTable) nếu có thì headerName và column width phải giữ nguyên so với bản gốc
 
 ## 🛠️ QUY TRÌNH 5 BƯỚC REFACTOR TỰ ĐỘNG
 

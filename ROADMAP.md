@@ -1,5 +1,22 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Tái Thiết Kế Màn Hình Quản Lý Lô Giữ Hàng IQC (`HOLDING.tsx` & `PrecisionHOLDING/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/iqc/HOLDING.backup.tsx` (20.379 bytes, 600 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `HOLDING.tsx` chỉ còn **102 dòng** (giảm từ 600 dòng), kết nối dữ liệu qua custom hook `useHoldingData`, quản lý toàn màn hình và điều phối các subcomponents.
+    * Toàn bộ các presentation subcomponents tại `src/pages/qc/iqc/PrecisionHOLDING/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file**:
+      1. `PrecisionHOLDING.scss` (826 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Amber `#f59e0b`, Emerald `#10b981`, Rose `#f43f5e`, Royal Blue `#2563eb`), layout Split 2 panel (Sidebar 260px và Main Content container), co giãn full-width & full-height Multi-Tab (`.component_element &`), custom scrollbar 5px, triệt tiêu 100% toolbar xanh lá cũ của AGTable, và luật clipping boundary `contain: paint layout !important` ngăn chặn 100% hiện tượng chữ dài tràn đè ô sang cột bên cạnh.
+      2. `PrecisionHoldingHeader.tsx` (64 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • IQC / QUẢN LÝ LÔ GIỮ HÀNG (HOLDING CONTROL)`, badge `HOLD ENGINE`, telemetry trực tuyến `NET_SERVER: 3007 (Online)` kèm pulse dot, thông tin nhân viên đăng nhập, nút làm mới dữ liệu và nút bật/tắt toàn màn hình.
+      3. `PrecisionHoldingKpi.tsx` (85 dòng): 4 Thẻ Micro-cards KPI realtime (Tổng Lô Giữ Hàng, Lô Đã Xử Lý PASS kèm tỷ lệ %, Lô Không Đạt FAIL kèm tỷ lệ %, Chờ Xử Lý PENDING).
+      4. `PrecisionHoldingSidebar.tsx` (223 dòng): Khung tra cứu 260px bên trái gồm bộ lọc đa trường (Toggle All Time, Từ ngày - Đến ngày, Tên liệu M_NAME, Mã liệu CMS M_CODE, Mã LOT CMS M_LOT_NO, Trạng thái ALL/Y/N, NCR ID, ID Holding), nút bấm chính `Tra Data Holding` nổi bật và nhóm phím tắt tác vụ nhanh (`SET PASS`, `SET FAIL`, `UPDATE NCR ID`, `UPDATE REASON`).
+      5. `PrecisionHoldingToolbar.tsx` (110 dòng): SaaS Action Toolbar phía trên bảng chính (`Tra Data`, `SET PASS`, `SET FAIL`, `UPDATE NCR ID`, `UPDATE REASON`, ô lọc nhanh tức thì Quick Filter trên lưới và cụm xuất Excel `EX1` lọc & `EX2` toàn bộ).
+      6. `PrecisionHoldingColumns.tsx` (243 dòng): Cấu hình 28 cột bảng AG-Grid chuẩn Stitch, khớp 100% `headerName` và `width` bản gốc theo nguyên tắc số 8 của SKILL.md, font monospace JetBrains Mono cho các mã code, chip trạng thái QC_PASS, định dạng số hàng nghìn (`toLocaleString`), helper `renderTruncated` an toàn cắt chữ kèm tooltip title.
+      7. `PrecisionHoldingTable.tsx` (48 dòng): Bọc bảng AGTable High-Density, hoàn toàn không có footer thừa hoặc status bar giả ở chân trang, tối đa hóa không gian dọc cho bảng dữ liệu.
+      8. `useHoldingData.ts` (344 dòng): Custom hook quản lý 100% state, queries API (`traholdingmaterial`, `updateQCPASS_HOLDING`, `updateQCPASSI222_M_LOT_NO`, `f_updateNCRIDForHolding`, `updateMaterialHoldingReason`, `updateReasonHoldingFromIQC1`), tính toán KPI realtime và xuất file Excel qua `SaveExcel`.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ và phân quyền**: Phê duyệt `SET PASS`/`SET FAIL` cho bộ phận IQC kèm cập nhật I222, cập nhật mã số `NCR_ID` cho lô giữ hàng, cập nhật lý do giữ hàng, và tự động đồng bộ lý do giữ hàng từ IQC1.
+  - **Bổ sung tương thích trong `IQC.scss`**: Cấu hình `.precision-holding, .holding` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi nhúng trong tab HOLDING của `IQC.tsx` không bao giờ bị collapse chiều cao.
+  - **Xác thực toàn diện**: 100% các file mới đạt 0 lỗi TypeScript (tsc) và 0 lint error. Không footer thừa, không tab menu thừa.
+
 - [x] Hoàn thiện Tái Thiết Kế Màn Hình Quản Lý Lô Bị Khóa IQC (`BLOCK.tsx` & `PrecisionBLOCK/`) theo chuẩn Google Stitch High-Density Enterprise:
   - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/iqc/BLOCK.backup.tsx` (28.553 bytes, 863 dòng).
   - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
