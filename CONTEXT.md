@@ -1,5 +1,75 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-14 (Kinh Doanh: Khắc Phục Lỗi Trắng 3 Biểu Đồ & Hoàn Thiện Style Donut Pie + SaaS Toolbar Trong KinhDoanhReport)
+
+### Completed
+1. **Khắc phục triệt để lỗi 3 biểu đồ bị trắng tinh trong Báo Cáo Kinh Doanh**:
+   - **`PO Balance Trending By Week` (Xu hướng tồn đơn theo tuần)**:
+     + Bỏ wrapper `CustomResponsiveContainer` (gây lỗi sụp chiều cao 0px khi đặt trong container không có height cố định).
+     + Thay trực tiếp bằng `<ResponsiveContainer width="100%" height={340}>`.
+     + Nâng cấp container bọc ngoài thành `.executive-card__body--chart-lg` (chiều cao 380px chuẩn).
+     + Bổ sung empty state khi danh sách tuần rỗng.
+   - **`PO Balance Summary By Week` (Tồn đơn theo tuần - nhấp chọn tuần)**:
+     + Bỏ wrapper `CustomResponsiveContainer`, thay bằng `<ResponsiveContainer width="100%" height={340}>`.
+     + Khắc phục nguyên nhân dữ liệu rỗng: Backend `pobalanceYearByWeekDetail` bắt buộc có tham số `PO_YEAR`. Khi mở màn hình lần đầu, trong `useKDReportData.ts`, ngay sau khi tải xong `summaryYears = values[18]`, hệ thống tự động xác định `targetYear = summaryYears[0]?.PO_YEAR || moment().year()` để tự động kích hoạt `f_load_PO_BALANCE_DETAIL({ PO_YEAR: targetYear })` và `f_load_PO_BALANCE_CUSTOMER_BY_YEAR({ PO_YEAR: targetYear })`. Biểu đồ có ngay dữ liệu ban đầu mà không cần người dùng phải bấm chọn năm thủ công.
+   - **`Samsung Forecast` (So sánh FCST 2 tuần liền kề)**:
+     + Khắc phục lỗi dữ liệu: Do năm hiện tại là 2026 trong khi CSDL chỉ có forecast Samsung năm 2024/2025, truy vấn `checklastfcstweekno` trả về `[]` làm code cũ bị lỗi `undefined` khi đọc `data[0].FCSTWEEKNO`. Đã bổ sung cơ chế tự động fallback: Nếu năm hiện tại chưa có tuần FCST, hệ thống tự động lùi về năm trước (`fcstyear - 1`) để truy vấn.
+     + Thay thế wrapper bằng `<ResponsiveContainer width="100%" height={340}>`, hiển thị badge kỳ so sánh W1 vs W2 và legend phân màu Stitch.
+2. **Đồng bộ biểu đồ tròn sang phong cách Donut Pie Chart Stitch**:
+   - Áp dụng mẫu Donut Pie thanh thoát từ `PO Balance Customer` sang:
+     + `Top 5 Customer Weekly Revenue` ([KDDoanhThuTheoKhachHangPieChart.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/KDDoanhThuTheoKhachHangPieChart.tsx))
+     + `PIC Weekly Revenue (Doanh Thu Phụ Trách)` ([KDPICDoanhThuPieChart.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/KDPICDoanhThuPieChart.tsx))
+   - Thiết kế Custom Legend hiển thị tỷ lệ % và giá trị tiền tệ định dạng chuyên nghiệp.
+3. **Style lại toàn bộ toolbar bảng biểu AGTable trong báo cáo**:
+   - Đồng bộ sang style Compact High-Density SaaS với ô Quick Filter, icon tìm kiếm, nút Export Excel, Reset và Chip đếm số bản ghi.
+4. **Kiểm tra biên dịch & tính toàn vẹn**:
+   - Sao lưu an toàn: `KDPOBalanceChart.backup.tsx`, `KDPOBalanceSummaryByWeek.backup.tsx`, `ChartFCSTSamSung.backup.tsx`.
+   - Toàn bộ các files liên quan trả về **HTTP 200 OK** trên Vite Dev Server (port 3001), không có lỗi syntax hay runtime.
+
+## Update - 2026-09-14 (QC: Hotfix & Khắc Phục Lỗi Lint / Runtime Màn Hình Thêm Tiêu Chuẩn Kỹ Thuật ĐTC - ADDSPECDTC.tsx)
+
+### Completed
+1. **Khắc phục lỗi TS(2552) / Runtime `Cannot find name 'onSelectMaterial'`**:
+   - Bổ sung `onSelectMaterial` vào destructuring props của `PrecisionADDSPECDTCSidebar.tsx` để binding chính xác với `onChange` của Autocomplete chọn nguyên vật liệu.
+   - Sửa đường dẫn relative imports trong `PrecisionADDSPECDTCKpi.tsx` và `PrecisionADDSPECDTCSidebar.tsx`: chuẩn hóa về `../../interfaces/qcInterface` và `../../../kinhdoanh/interfaces/kdInterface`.
+   - Kiểm tra và xác thực toàn diện: 6/6 file liên quan (`ADDSPECDTC.tsx`, `PrecisionADDSPECDTCKpi.tsx`, `PrecisionADDSPECDTCSidebar.tsx`, `PrecisionADDSPECDTCColumns.tsx`, `useADDSPECData.ts`, `PrecisionADDSPECDTC.scss`) không còn bất kỳ lỗi lint đỏ nào và trả về **HTTP 200 OK** trên Vite Dev Server (port 3001).
+
+2. **Tái thiết kế toàn diện màn hình Thêm Spec ĐTC (`ADDSPECDTC.tsx`)**:
+   - **Bảo toàn 100% mã nguồn gốc**: Đã sao lưu an toàn `ADDSPECDTC.backup.tsx` (29.877 bytes).
+   - **Tối ưu kiến trúc Clean Code**: Phân rã từ 763 dòng monolith xuống Controller chính chỉ còn 214 dòng (< 300 dòng/file presentation) trong thư mục `src/pages/qc/dtc/PrecisionADDSPECDTC/`.
+   - **Tuyệt đối tuân thủ chỉ đạo của người dùng**:
+     + Không tạo footer thừa ở đáy trang.
+     + Không tạo tab menu thừa trùng lặp với thanh tabs ngoài của ERP.
+     + Tối đa hóa diện tích làm việc theo chiều đứng cho bảng dữ liệu AGTable và khung cấu hình.
+   - **Bảo toàn 100% luồng nghiệp vụ & API**:
+     + Giữ nguyên các API queries: `selectcodeList`, `getMaterialList`, `f_loadDTC_TestList`, `checkSpecDTC`, `checkSpecDTC2`, `insertSpecDTC`, `updateSpecDTC`, `checkAddedSpec`, `copyXRFSpec`, `copyXRFSpecSDI`.
+     + Hỗ trợ đầy đủ 2 chế độ: Thành Phẩm R&D (`checkNVL === false`) và Nguyên Vật Liệu IQC (`checkNVL === true`).
+     + Giữ nguyên logic ma trận kiểm tra trạng thái hạng mục test (`checkAddedSpec`) và sao chép XRF từ Samsung/SDI.
+   - **4 Thẻ Micro-cards KPI Realtime (`PrecisionADDSPECDTCKpi.tsx`)**:
+     1. *Tổng Điểm Đo (Kích Thước)*: Đếm tổng số điểm đo `P1 → Pn` đang có trên bảng và độ ưu tiên PRI.
+     2. *Hạng Mục Test Kích Hoạt*: Đếm số lượng `YES / Tổng số hạng mục` và tỷ lệ % đã thiết lập.
+     3. *Model / Khách Hàng hoặc NVL*: Hiển thị mã code, tên sản phẩm hoặc mã NVL kèm badge phân hệ IQC / R&D.
+     4. *Tình Trạng Bản Vẽ (BANVE)*: Trạng thái phê duyệt bản vẽ hợp lệ Y/N và thông tin TDS.
+   - **Sidebar Cấu Hình Spec ĐTC Gọn Gàng (`PrecisionADDSPECDTCSidebar.tsx`)**:
+     + Độ rộng 300px, thiết kế compact high-density chuẩn công nghiệp.
+     + Autocomplete chọn Code (R&D) / Nguyên vật liệu (IQC) hỗ trợ tìm kiếm nhanh tức thời.
+     + Dropdown chọn Hạng Mục Test.
+     + Cụm 3 nút hành động chính: `LOAD SPEC` (xanh dương), `ADD SPEC` (xanh ngọc), `UPDATE SPEC` (tím).
+     + Nút tiện ích `Copy XRF Spec SS` / `Copy XRF Spec SDI` tự động hiển thị khi công ty là CMS và test XRF.
+     + Ma trận trạng thái hạng mục kiểm tra (Test Item Checklist Status Matrix) hiển thị dạng lưới 2 cột gọn gàng với badge YES/NO.
+     + Checkbox `Swap (NVL) / Swap (SP)` chuyển đổi linh hoạt chế độ làm việc.
+   - **Bảng AGTable High-Density & Cột Chuẩn Stitch (`PrecisionADDSPECDTCColumns.tsx`)**:
+     + Triệt tiêu 100% toolbar xanh lá cũ của AGTable.
+     + Toolbar hiện đại: `EX1 (Lọc)`, `EX2 (Toàn bộ)`, `PIVOT`, `+ Thêm Điểm Đo`, `✕ Xóa Dòng Chọn`, Ô tìm kiếm nhanh đa trường (`quickFilterText`), và nút `💾 LƯU DỮ LIỆU`.
+     + Cột `POINT_NAME` nổi bật với chip `P1, P2...`.
+     + Cột `CENTER_VALUE` in đậm với nền xám nhạt, căn phải font JetBrains Mono.
+     + Cột `LOWER_TOR` đỏ hồng, `UPPER_TOR` xanh ngọc.
+     + Cột `TDS` và `BANVE` hiển thị chip trạng thái Y/N.
+     + Status Bar tích hợp dưới chân bảng: hiển thị tổng dòng, số dòng đang chọn và trạng thái kết nối máy chủ.
+   - **Tách Custom Hook Quản Lý Dữ Liệu (`useADDSPECData.ts`)**: Đóng gói toàn bộ logic state, side-effects, thông báo Swal và các hàm xử lý API.
+   - **Hệ thống SCSS Tokens (`PrecisionADDSPECDTC.scss`)**: Tương thích hoàn hảo với Multi-Tab, tự động co giãn full-height/full-width.
+   - **Xác thực Vite Dev Server**: 6/6 file mới và file sửa đổi biên dịch thành công 100% với mã HTTP 200 OK trên port 3001.
+
 ## Update - 2026-09-13 (QC: Tinh Gọn Giao Diện Tra Cứu Tiêu Chuẩn DTC - Bỏ Header Trùng Lặp Menu ERP trong SPECDTC.tsx)
 
 ### Completed

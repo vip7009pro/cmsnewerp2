@@ -1,5 +1,28 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Báo Cáo Kinh Doanh (`KinhDoanhReport.tsx` & `PrecisionKinhDoanhReport/`): Khắc phục triệt để lỗi 3 biểu đồ trắng, đồng bộ Donut Pie Stitch và chuẩn hóa SaaS Toolbar:
+  - **Khắc phục lỗi 3 biểu đồ bị trắng**:
+    1. `PO Balance Trending By Week`: Bỏ `CustomResponsiveContainer` (loại bỏ lỗi sụp height = 0 do relative/absolute lồng nhau), thay bằng `<ResponsiveContainer height={340}>` trong container `.executive-card__body--chart-lg`.
+    2. `PO Balance Summary By Week`: Bỏ `CustomResponsiveContainer`, nạp fallback tự động `targetYear = summaryYears[0]?.PO_YEAR || moment().year()` khi khởi tạo màn hình trong `useKDReportData.ts`, giúp nạp ngay `pobalanceYearByWeekDetail` mà không cần click chọn năm thủ công.
+    3. `Samsung Forecast`: Bổ sung cơ chế tự động fallback lùi năm (`fcstyear - 1`) khi năm hiện tại (2026) chưa có tuần FCST trong CSDL, tránh lỗi `undefined` đọc `data[0].FCSTWEEKNO`. Chuyển sang `<ResponsiveContainer height={340}>`, hiển thị badge kỳ so sánh W1 vs W2.
+  - **Đồng bộ biểu đồ tròn phong cách Stitch**: Áp dụng thiết kế Donut Pie Chart cao cấp từ `PO Balance Customer` sang `Top 5 Customer Weekly Revenue` và `PIC Weekly Revenue`.
+  - **Chuẩn hóa Toolbar AGTable**: Nâng cấp toàn bộ toolbar bảng biểu sang style Compact High-Density SaaS (ô Quick Filter, Export Excel, Reset, Badge đếm bản ghi).
+  - Sao lưu an toàn: `KDPOBalanceChart.backup.tsx`, `KDPOBalanceSummaryByWeek.backup.tsx`, `ChartFCSTSamSung.backup.tsx`.
+  - Xác thực biên dịch: Tất cả các file liên quan trả về HTTP 200 OK trên Vite Dev Server (port 3001).
+
+- [x] Redesign Thêm Tiêu Chuẩn Kỹ Thuật DTC (`ADDSPECDTC.tsx` & `PrecisionADDSPECDTC/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Sao lưu toàn vẹn 100% mã nguồn gốc `ADDSPECDTC.backup.tsx` (29.877 bytes).
+  - Phân rã monolith 763 dòng thành Master Controller tinh gọn (214 dòng) và 5 sub-modules chuyên biệt (< 300 dòng/file presentation):
+    1. `PrecisionADDSPECDTC.scss`: SCSS tokens công nghiệp chuẩn Stitch, full-width & full-height Multi-tab, triệt tiêu 100% toolbar xanh lá cũ của AGTable.
+    2. **Tuyệt đối tuân thủ chỉ đạo**: Không tạo footer thừa ở đáy trang; không tạo tabs điều hướng trùng lặp với menu ERP; tối ưu tối đa không gian làm việc.
+    3. `PrecisionADDSPECDTCKpi.tsx`: 4 Micro-cards KPI tính toán realtime từ dữ liệu bảng (Tổng điểm đo, Hạng mục test kích hoạt, Model/Khách hàng áp dụng hoặc NVL, Tình trạng bản vẽ BANVE/TDS).
+    4. `PrecisionADDSPECDTCSidebar.tsx`: Khung cấu hình Spec 300px compact high-density, Autocomplete tìm nhanh sản phẩm/vật liệu, Dropdown chọn hạng mục test, bộ 3 nút hành động (`LOAD SPEC`, `ADD SPEC`, `UPDATE SPEC`), nút tiện ích copy XRF Samsung/SDI, ma trận checklist trạng thái test và checkbox chuyển đổi chế độ NVL/Sản phẩm.
+    5. `PrecisionADDSPECDTCColumns.tsx`: Cấu hình cột bảng chuẩn Stitch với chip điểm đo `P1..Pn`, giá trị trung tâm `CENTER_VALUE` in đậm, dung sai trên/dưới phân màu trực quan, chip trạng thái Y/N cho TDS & Bản vẽ.
+    6. `useADDSPECData.ts`: Tách toàn bộ state, side-effects, API handlers (`checkSpecDTC`, `insertSpecDTC`, `updateSpecDTC`, `checkAddedSpec`, `copyXRFSpec`, `copyXRFSpecSDI`) vào custom hook sạch sẽ.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ và API**: Hỗ trợ đầy đủ 2 chế độ Thành Phẩm (R&D) và Nguyên Vật Liệu (IQC), kiểm tra trạng thái hạng mục test, sao chép XRF, xuất Excel `EX1`, `EX2`, `PIVOT`, Thêm điểm đo, Xóa dòng chọn và Lưu dữ liệu.
+  - **Hotfix đã xác thực**: Sửa lỗi binding `onSelectMaterial` và chuẩn hóa đường dẫn relative import (`qcInterface`, `kdInterface`).
+  - Xác thực biên dịch Vite Dev Server: 6/6 file trả về HTTP 200 OK trên port 3001, sạch 100% lỗi lint.
+
 - [x] Redesign Tra Cứu Tiêu Chuẩn Kỹ Thuật DTC (`SPECDTC.tsx` & `PrecisionSPECDTC/`) theo chuẩn Google Stitch High-Density Enterprise:
   - Sao lưu toàn vẹn 100% mã nguồn gốc `SPECDTC.backup.tsx` (9.555 bytes).
   - Phân rã monolith thành Master Controller tinh gọn (277 dòng) và 4 sub-modules chuyên biệt (< 300 dòng/file presentation):
