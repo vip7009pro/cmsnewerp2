@@ -1,5 +1,21 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Tái Thiết Kế Màn Hình Nhập Kết Quả Đo Độ Tin Cậy DTC (`DTCRESULT.tsx` & `PrecisionDTCRESULT/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - Sao lưu toàn vẹn 100% mã nguồn gốc `DTCRESULT.backup.tsx` (26.206 bytes, 700 dòng).
+  - Phân rã monolith 700 dòng thành Master Controller tinh gọn (126 dòng) và 8 sub-modules chuyên biệt (< 280 dòng/file presentation) tại thư mục `src/pages/qc/dtc/PrecisionDTCRESULT/`:
+    1. `PrecisionDTCRESULT.scss` (826 dòng): SCSS tokens công nghiệp chuẩn Stitch, co giãn flex full-width và full-height trong Multi-Tab (`.component_element &`), custom scrollbars, triệt tiêu 100% toolbar xanh lá cũ của AGTable.
+    2. `DTCRESULT.tsx` (126 dòng): Master Controller tinh gọn kết nối với hook dữ liệu, quản lý Fullscreen và re-export đầy đủ interfaces/utilities để đảm bảo tính tương thích ngược.
+    3. `PrecisionDTCResultHeader.tsx` (87 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • ĐTC / NHẬP KẾT QUẢ ĐO ĐỘ TIN CẬY (DTC RESULT)`, badge `RESULT ENTRY`, telemetry trực tuyến `NET_SERVER: 3007 (Online)` kèm pulse dot, thông tin nhân viên đăng nhập, nút nạp lại và bật/tắt toàn màn hình.
+    4. `PrecisionDTCResultControl.tsx` (179 dòng): Card điều khiển trung tâm compact trên cùng: Thẻ chuyển đổi Swap Mode ID ĐTC vs LOT NVL, ô nhập mã tự động focus/tra cứu, Context Pill hiển thị tên sản phẩm / vật liệu / NCC, ô ghi chú REMARK, công cụ nạp file Excel đo quang phổ XRF/RoHS, checkbox Up hàng loạt, nút `LƯU KẾT QUẢ ĐO` nổi bật emerald gradient, và nhúng thanh phân loại hạng mục test.
+    5. `PrecisionDTCResultPills.tsx` (64 dòng): Dải nút chọn hạng mục test vuốt ngang nằm ngay dưới ô điều khiển với indicator dot, badge đếm hạng mục đã đăng ký và highlight active.
+    6. `PrecisionDTCResultKpi.tsx` (86 dòng): 4 Thẻ Micro-cards KPI realtime (Tổng Điểm Đo Points, Số Mẫu Đo Samples n, Tỷ Lệ Đạt % OK Rate với thanh tiến độ mini, Điểm Lỗi NG với badge cảnh báo).
+    7. `PrecisionDTCResultTable.tsx` (165 dòng): Bọc bảng AGTable High-Density, Toolbar SaaS hiện đại (ô Quick Filter Omnibar, nút `+ Thêm Mẫu Đo`, cụm nút xuất `EX1 (Lọc)`, `EX2 (Toàn bộ)`, `PIVOT`, `Tải lại`, badge đếm dòng) và Status bar ở đáy.
+    8. `PrecisionDTCResultColumns.tsx` (241 dòng): Cấu hình cột bảng chuẩn Stitch với ô nhập liệu số đo `RESULT` và `REMARK` có thể chỉnh sửa trực tiếp, tự động so sánh dung sai `CENTER_VALUE ± UPPER_TOR / LOWER_TOR` để hiển thị chip đánh giá OK (xanh)/NG (đỏ)/WAIT (vàng) realtime.
+    9. `dtcResultUtils.ts` (166 dòng): Khai báo kiểu dữ liệu `DTC_RESULT_INPUT`, `InputData`, `OutputData`, hàm `handletraDTCData_HangLoat` và hàm `unpivotJsonArray` giải nén file Excel đo quang phổ XRF thành danh sách kết quả đo.
+    10. `useDTCResultData.ts` (438 dòng): Custom hook quản lý 100% state, queries API (`getinputdtcspec`, `checkM_NAME_IQC`, `checkRegisterdDTCTEST`, `getidDTCfromlotNVL`, `insert_dtc_result`, `updateDTC_TEST_EMPL`), giải nén file Excel XRF, tính toán KPI realtime và xuất Excel `SaveExcel`.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ và API**: Tra cứu thông tin theo cả DTC_ID hoặc Lot NVL, nạp file Excel kết quả XRF và unpivot tự động, thêm mẫu đo mới theo từng point, tính toán dung sai tự động khi sửa ô kết quả, lưu kết quả đo vào CSDL kèm cập nhật nhân viên thực hiện test.
+  - **Xác thực biên dịch Vite & Lint**: 100% 10/10 files liên quan biên dịch thành công qua Vite transform (HTTP 200 OK) trên port 3001, 0 lỗi cú pháp, 0 lỗi lint.
+
 - [x] Hoàn thiện Redesign Đăng Ký Test Độ Tin Cậy DTC (`DKDTC.tsx` & `PrecisionDKDTC/`) theo chuẩn Google Stitch High-Density Enterprise:
   - Sao lưu toàn vẹn 100% mã nguồn gốc `DKDTC.backup.tsx` (33.770 bytes, 939 dòng).
   - Phân rã monolith 939 dòng thành Master Controller tinh gọn (154 dòng) và 8 sub-modules chuyên biệt (< 280 dòng/file presentation):

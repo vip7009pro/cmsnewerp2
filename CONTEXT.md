@@ -1,5 +1,32 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Nhập Kết Quả Đo Độ Tin Cậy - DTCRESULT.tsx Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Bảo toàn 100% mã nguồn gốc**: Đã lưu trữ an toàn tại `src/pages/qc/dtc/DTCRESULT.backup.tsx` (26.206 bytes, 700 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `DTCRESULT.tsx` chỉ còn **126 dòng** (giảm từ 700 dòng), điều phối luồng dữ liệu, quản lý trạng thái toàn màn hình và re-export đầy đủ interfaces/utilities để duy trì tính tương thích ngược với toàn hệ thống.
+   - Toàn bộ các subcomponents hiển thị đều dưới **280 dòng** tại thư mục `src/pages/qc/dtc/PrecisionDTCRESULT/`:
+     1. `PrecisionDTCRESULT.scss` (826 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch, co giãn full-width và full-height trong Multi-Tab (`.component_element &`), thanh cuộn siêu mỏng 6px, triệt tiêu 100% toolbar xanh lá cũ của AGTable.
+     2. `PrecisionDTCResultHeader.tsx` (87 dòng): Sub-header chuẩn Stitch với breadcrumb `04. QC • ĐTC / NHẬP KẾT QUẢ ĐO ĐỘ TIN CẬY (DTC RESULT)`, badge `RESULT ENTRY`, telemetry trực tuyến `NET_SERVER: 3007 (Online)` kèm pulse dot, hiển thị tài khoản người dùng đăng nhập, nút làm mới và nút mở rộng toàn màn hình.
+     3. `PrecisionDTCResultControl.tsx` (179 dòng): Card điều khiển trung tâm compact: Thẻ chuyển đổi Swap Mode ID ĐTC vs LOT NVL, ô nhập mã hỗ trợ phím Enter và tự động tra cứu, Context Pill hiển thị tên sản phẩm / vật liệu / khách hàng / lot NCC, ô ghi chú REMARK, công cụ nạp file Excel đo quang phổ XRF/RoHS, checkbox Up hàng loạt, nút `LƯU KẾT QUẢ ĐO` nổi bật emerald gradient, và nhúng thanh phân loại hạng mục test.
+     4. `PrecisionDTCResultPills.tsx` (64 dòng): Dải nút chọn hạng mục test vuốt ngang nằm ngay dưới ô điều khiển với indicator dot, badge đếm hạng mục đã đăng ký và highlight active.
+     5. `PrecisionDTCResultKpi.tsx` (86 dòng): 4 Thẻ Micro-cards KPI realtime (Tổng Điểm Đo Points, Số Mẫu Đo Samples n, Tỷ Lệ Đạt % OK Rate kèm mini progress bar, Điểm Lỗi NG với badge cảnh báo).
+     6. `PrecisionDTCResultTable.tsx` (165 dòng): Bọc bảng AGTable High-Density, Toolbar SaaS hiện đại (ô Quick Filter Omnibar, nút `+ Thêm Mẫu Đo`, cụm nút xuất `EX1 (Lọc)`, `EX2 (Toàn bộ)`, `PIVOT`, `Tải lại`, badge đếm dòng) và Status bar ở đáy.
+     7. `PrecisionDTCResultColumns.tsx` (241 dòng): Cấu hình cột bảng chuẩn Stitch với ô nhập liệu số đo `RESULT` và `REMARK` có thể chỉnh sửa trực tiếp, tự động so sánh dung sai `CENTER_VALUE ± UPPER_TOR / LOWER_TOR` để hiển thị chip đánh giá OK (xanh)/NG (đỏ)/WAIT (vàng) realtime.
+     8. `dtcResultUtils.ts` (166 dòng): Khai báo kiểu dữ liệu `DTC_RESULT_INPUT`, `InputData`, `OutputData`, hàm `handletraDTCData_HangLoat` và hàm `unpivotJsonArray` giải nén file Excel đo quang phổ XRF thành danh sách kết quả đo.
+     9. `useDTCResultData.ts` (438 dòng): Custom hook quản lý 100% state, queries API (`getinputdtcspec`, `checkM_NAME_IQC`, `checkRegisterdDTCTEST`, `getidDTCfromlotNVL`, `insert_dtc_result`, `updateDTC_TEST_EMPL`), giải nén file Excel XRF, tính toán KPI realtime và xuất Excel `SaveExcel`.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ và API**:
+   - Tra cứu linh hoạt theo cả ID ĐTC (`checkRegisterdDTCTEST`) và LOT NVL (`getidDTCfromlotNVL`, `checkM_NAME_IQC`).
+   - Nạp file Excel đo thành phần độc hại XRF (Br, Pb, Hg, Cd, As, Cr...) và unpivot tự động vào lưới kết quả.
+   - Tính năng thêm mẫu đo mới (`+ Thêm Mẫu Đo`) nhân bản toàn bộ points với sample no mới `n+1`.
+   - Tính toán dung sai tự động khi người dùng chỉnh sửa ô kết quả đo.
+   - Lưu kết quả đo vào CSDL kèm cập nhật nhân viên thực hiện test.
+   - Xuất Excel bảng đang lọc (`EX1`) và toàn bộ (`EX2`) bằng chuẩn `SaveExcel`.
+4. **Xác thực biên dịch Vite & Lint**:
+   - 100% 10/10 files liên quan biên dịch thành công qua Vite transform (HTTP 200 OK) trên port 3001.
+   - Sạch 100% lỗi cú pháp và lỗi lint.
+
 ## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Đăng Ký Test Độ Tin Cậy - DKDTC.tsx Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed
