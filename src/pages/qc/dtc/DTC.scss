@@ -1,11 +1,60 @@
 @media only screen and (max-width: 5000px) {
   .dtc {
     width: 100%;
+    height: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
     display: flex;
-    flex-direction: column;  
-    height: fit-content; 
+    flex-direction: column;
+    box-sizing: border-box;
+
+    > .tabs-container {
+      width: 100%;
+      height: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+
+      > .tab-content {
+        width: 100%;
+        height: calc(100% - 32px);
+        max-height: calc(100% - 32px);
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+
+        > .tab-pane {
+          width: 100%;
+          height: 100% !important;
+          max-height: 100% !important;
+          flex: 1 1 auto !important;
+          min-height: 0 !important;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
+      }
+    }
+
+    // Đảm bảo tất cả component con bên trong DTC luôn chiếm trọn diện tích
+    .precision-kqdtc,
+    .precision-specdtc,
+    .precision-addspecdtc,
+    .precision-dkdtc,
+    .precision-dtcresult,
+    .precision-testtable {
+      width: 100% !important;
+      height: 100% !important;
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      box-sizing: border-box;
+    }
   }
 }
+
 @media only screen and (max-width: 768px) {
 }
 @media only screen and (max-width: 320px) {

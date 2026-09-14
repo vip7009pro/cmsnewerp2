@@ -1,5 +1,13 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hotfix & Khắc phục lỗi các Tab Độ Tin Cậy bị trắng khi nhúng trong Tab IQC (`IQC.tsx`, `DTC.tsx`, `MyTab.tsx`):
+  - **Phát hiện nguyên nhân gốc rễ**: Lồng ghép 2 cấp `MyTabs` (IQC chứa `MyTabs` cấp 1 -> `DTC` chứa `MyTabs` cấp 2). File `DTC.scss` cũ có `height: fit-content;`, khiến `tabs-container` bên trong (chiều cao 100%) không tính toán được chiều cao cha và co sụp về `0px`. Đồng thời, các selector hack cũ trong `IQC.scss` (`.kqdtc`, `.specdtc`...) không khớp với các class Stitch mới (`.precision-kqdtc`...), và `MyTab.tsx` có inline style thiếu `height: 100%`.
+  - **Giải pháp xử lý triệt để**:
+    1. Cập nhật `src/components/MyTab/MyTab.tsx`: Bổ sung `height: '100%'` và chuyển `flex: '1 0 auto'` thành `flex: '1 1 auto'` cho thẻ `.tab-pane`.
+    2. Cập nhật `src/pages/qc/dtc/DTC.scss` & `DTC.tsx`: Chuyển `.dtc` sang `height: 100%; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column;`, cho phép co giãn 100% qua chuỗi `tabs-container > tab-content > tab-pane`.
+    3. Cập nhật `src/pages/qc/iqc/IQC.scss`: Cấu hình layout flex full-height cho `.iqc` và `.dtc`, áp dụng `height: 100% !important; flex: 1 1 auto !important; min-height: 0 !important;` cho toàn bộ các class Stitch mới (`.precision-kqdtc`, `.precision-specdtc`, `.precision-addspecdtc`, `.precision-dkdtc`, `.precision-dtcresult`, `.precision-testtable`).
+  - **Xác thực kiểm tra**: Tất cả các files biên dịch thành công qua Vite transform (HTTP 200 OK) trên port 3001, sạch 100% lỗi lint.
+
 - [x] Hoàn thiện Tái Thiết Kế Màn Hình Danh Mục Hạng Mục & Điểm Đo ĐTC (`TEST_TABLE.tsx` & `PrecisionTESTTABLE/`) theo chuẩn Google Stitch High-Density Enterprise:
   - Sao lưu toàn vẹn 100% mã nguồn gốc `TEST_TABLE.backup.tsx` (6.934 bytes, 203 dòng).
   - Phân rã code thành Master Controller tinh gọn (118 dòng) và 8 sub-modules chuyên biệt (< 280 dòng/file presentation) tại thư mục `src/pages/qc/dtc/PrecisionTESTTABLE/`:

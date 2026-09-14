@@ -8,10 +8,22 @@ import DTCRESULT from "./DTCRESULT";
 import TEST_TABLE from "./TEST_TABLE";
 import { getCompany } from "../../../api/Api";
 import MyTabs from "../../../components/MyTab/MyTab";
+
 const DTC = () => {
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
   return (
-    <div className="dtc">
+    <div
+      className="dtc"
+      style={{
+        width: "100%",
+        height: "100%",
+        flex: "1 1 auto",
+        minHeight: 0,
+        display: "flex",
+        flexDirection: "column",
+        boxSizing: "border-box",
+      }}
+    >
       <MyTabs defaultActiveTab={0}>
         <MyTabs.Tab title={"TRA KQ ĐTC"}>
           <KQDTC />
@@ -37,4 +49,5 @@ const DTC = () => {
     </div>
   );
 };
+
 export default DTC;

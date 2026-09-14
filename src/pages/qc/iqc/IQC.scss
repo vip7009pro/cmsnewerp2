@@ -4,32 +4,101 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    .kholieu {
-      height: calc(100vh - 85px) !important;
+    flex: 1 1 auto;
+    min-height: 0;
+    box-sizing: border-box;
+
+    > .tabs-container {
+      width: 100%;
+      height: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+
+      > .tab-content {
+        width: 100%;
+        height: calc(100% - 32px);
+        max-height: calc(100% - 32px);
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+
+        > .tab-pane {
+          width: 100%;
+          height: 100% !important;
+          max-height: 100% !important;
+          flex: 1 1 auto !important;
+          min-height: 0 !important;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
+      }
     }
+
+    .kholieu, .precision-kholieu {
+      height: 100% !important;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
     .dtc {
-      .kqdtc {
-        height: calc(100vh - 110px) !important;
+      width: 100%;
+      height: 100% !important;
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      display: flex;
+      flex-direction: column;
+
+      > .tabs-container {
+        width: 100%;
+        height: 100%;
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+
+        > .tab-content {
+          width: 100%;
+          height: calc(100% - 32px);
+          max-height: calc(100% - 32px);
+          flex: 1 1 auto;
+          min-height: 0;
+          display: flex;
+          flex-direction: column;
+
+          > .tab-pane {
+            width: 100%;
+            height: 100% !important;
+            max-height: 100% !important;
+            flex: 1 1 auto !important;
+            min-height: 0 !important;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+          }
+        }
       }
-      .specdtc {
-        height: calc(100vh - 110px) !important;
-      }
-      .addspecdtc {
-        height: calc(100vh - 110px) !important;
-      }
-      .dkdtc {
-        height: calc(100vh - 110px) !important;
-      }
-      .dtcresult {
-        height: calc(100vh - 110px) !important;
-      }
-      .testtable {
-        height: calc(100vh - 110px) !important;
+
+      .precision-kqdtc, .kqdtc,
+      .precision-specdtc, .specdtc,
+      .precision-addspecdtc, .addspecdtc,
+      .precision-dkdtc, .dkdtc,
+      .precision-dtcresult, .dtcresult,
+      .precision-testtable, .testtable {
+        width: 100% !important;
+        height: 100% !important;
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
       }
     }
-   
   }
 }
+
 @media only screen and (max-width: 768px) {
 }
 @media only screen and (max-width: 320px) {

@@ -1,5 +1,32 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-14 (QC: Hotfix & Khắc Phục Lỗi Các Tab Độ Tin Cậy Bị Trắng Khi Nhúng Trong Tab IQC - DTC.tsx & IQC.scss & MyTab)
+
+### Root Cause & Problem Analysis
+1. **Sụp chiều cao do lồng ghép MyTabs 2 tầng (Nested MyTabs Height Collapse)**:
+   - Trong `IQC.tsx`, phân hệ `DTC` được nhúng trong tab con thứ 2 (`ĐỘ TIN CẬY`) của `MyTabs` ngoài.
+   - Bên trong `DTC.tsx`, hệ thống tiếp tục render một `MyTabs` bên trong gồm 6 tabs con (`TRA KQ ĐTC`, `TRA SPEC ĐTC`, `ADD SPEC ĐTC`, `ĐKÝ TEST ĐTC`, `NHẬP KQ ĐTC`, `Quản lý hạng mục ĐTC`).
+   - File `DTC.scss` cũ thiết lập `.dtc { height: fit-content; }`. Trong chuẩn CSS, khi component cha có `height: fit-content`, container `tabs-container` bên trong (có `height: 100%`) không thể giải quyết được chiều cao phần trăm, khiến `.tab-content` bên trong (có `height: calc(100% - 32px)` và `max-height: calc(100% - 32px)`) bị tính toán ra `0px`.
+   - Thuộc tính `overflow-y: auto; overflow-x: hidden;` của `MyTab.scss` cắt hoàn toàn nội dung hiển thị về 0px, dẫn đến việc chỉ nhìn thấy thanh tab (32px) còn toàn bộ vùng làm việc bên dưới bị trắng tinh.
+2. **Quy tắc CSS cũ trong `IQC.scss` không còn khớp với các component Stitch mới**:
+   - `IQC.scss` cũ sử dụng các selector hack: `.dtc { .kqdtc { height: calc(100vh - 110px) !important; } ... }`.
+   - Sau khi refactor sang Google Stitch High-Density Enterprise, các class đã được chuẩn hóa thành `.precision-kqdtc`, `.precision-specdtc`, `.precision-addspecdtc`, `.precision-dkdtc`, `.precision-dtcresult`, `.precision-testtable`. Các rule cũ bị vô hiệu hóa hoàn toàn.
+3. **Inline style của `MyTab.tsx` ghi đè class SCSS**:
+   - Trong `MyTab.tsx`, thẻ `.tab-pane` có inline style `flex: '1 0 auto', minHeight: '100%'`, thiếu `height: '100%'`, làm mất khả năng tự động co giãn 100% chiều cao của các component con bên trong.
+
+### Completed Fixes
+1. **Cập nhật `MyTab.tsx`**:
+   - Bổ sung `height: '100%'` và chuyển `flex: '1 0 auto'` thành `flex: '1 1 auto'` trên thẻ `.tab-pane`, đảm bảo mọi component nhúng trong tab luôn nhận đủ 100% chiều cao mà không bị co sụp.
+2. **Cập nhật `DTC.scss` & `DTC.tsx`**:
+   - Thay thế `height: fit-content;` bằng `height: 100%; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column;`.
+   - Cấu hình co giãn xuyên suốt 100% cho chuỗi `tabs-container > tab-content > tab-pane` bên trong `DTC`.
+   - Bổ sung inline flex style an toàn trên thẻ `<div className="dtc">` của `DTC.tsx`.
+3. **Cập nhật `IQC.scss`**:
+   - Bổ sung cấu hình flex layout và full-height cho `.iqc` và `.dtc`.
+   - Áp dụng `height: 100% !important; flex: 1 1 auto !important; min-height: 0 !important;` cho toàn bộ các class Stitch mới (`.precision-kqdtc`, `.precision-specdtc`, `.precision-addspecdtc`, `.precision-dkdtc`, `.precision-dtcresult`, `.precision-testtable`) lẫn class cũ.
+4. **Xác thực toàn diện**:
+   - 100% các file liên quan (`IQC.tsx`, `IQC.scss`, `DTC.tsx`, `DTC.scss`, `MyTab.tsx`, `MyTab.scss`, và 6 màn hình con của DTC) biên dịch thành công qua Vite transform (HTTP 200 OK) trên port 3001, 0 lỗi cú pháp, 0 lỗi lint.
+
 ## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Danh Mục Hạng Mục & Điểm Đo ĐTC - TEST_TABLE.tsx Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed
