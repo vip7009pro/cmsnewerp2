@@ -1,5 +1,31 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Danh Mục Hạng Mục & Điểm Đo ĐTC - TEST_TABLE.tsx Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Bảo toàn 100% mã nguồn gốc**: Đã lưu trữ an toàn tại `src/pages/qc/dtc/TEST_TABLE.backup.tsx` (6.934 bytes, 203 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `TEST_TABLE.tsx` chỉ còn **118 dòng**, điều phối luồng dữ liệu, quản lý trạng thái toàn màn hình và điều phối các subcomponents.
+   - Toàn bộ các subcomponents hiển thị đều dưới **280 dòng** tại thư mục `src/pages/qc/dtc/PrecisionTESTTABLE/`:
+     1. `PrecisionTESTTABLE.scss` (1019 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch, layout Split Master-Detail Workspace 2 cột, co giãn flex full-width và full-height trong Multi-Tab (`.component_element &`), custom scrollbars, triệt tiêu 100% toolbar xanh lá cũ của AGTable, modal luxury styling.
+     2. `PrecisionTestTableHeader.tsx` (87 dòng): Sub-header chuẩn Stitch với breadcrumb `04. QC • ĐTC / DANH MỤC HẠNG MỤC & ĐIỂM ĐO ĐTC (TEST & POINT MASTER)`, badge `CONFIG MASTER`, telemetry trực tuyến `NET_SERVER: 3007 (Online)` kèm pulse dot, hiển thị tài khoản người dùng đăng nhập, nút làm mới và nút mở rộng toàn màn hình.
+     3. `PrecisionTestTableKpi.tsx` (81 dòng): 4 Thẻ Micro-cards KPI realtime (Tổng Hạng Mục Test, Hạng Mục Đang Chọn, Số Điểm Đo Hiện Tại, Trạng Thái Cơ Sở Dữ Liệu MSSQL).
+     4. `PrecisionTestItemPanel.tsx` (138 dòng): Khung bảng Hạng Mục Test (Master) bên trái (45%): SaaS Toolbar (ô lọc Omnibar, nút `+ Thêm Hạng Mục`, xuất Excel `SaveExcel`, nút Tải lại, badge đếm dòng) và bảng AGTable với code chip monospace JetBrains Mono.
+     5. `PrecisionTestPointPanel.tsx` (169 dòng): Khung bảng Điểm Đo Test (Detail) bên phải (55%): Banner ngữ cảnh nổi bật Hạng mục đang chọn, SaaS Toolbar (ô lọc Omnibar, nút `+ Thêm Điểm Đo`, xuất Excel, Tải lại, badge đếm dòng), trạng thái Empty State trực quan khi chưa chọn hạng mục.
+     6. `PrecisionAddTestItemModal.tsx` (162 dòng): Modal thêm mới Hạng Mục Đo siêu đẹp, sang trọng với backdrop blur, tự động đề xuất mã code tiếp theo (`max + 1`), validation tên bắt buộc, hướng dẫn quy chuẩn đặt tên và nút `LƯU HẠNG MỤC` emerald gradient.
+     7. `PrecisionAddTestPointModal.tsx` (175 dòng): Modal thêm mới Điểm Đo siêu đẹp, sang trọng với thẻ hiển thị rõ Hạng mục đang liên kết, tự động gợi ý mã điểm đo tiếp theo, validation rõ ràng và nút `LƯU ĐIỂM ĐO` indigo gradient.
+     8. `PrecisionTestTableColumns.tsx` (98 dòng): Cấu hình cột bảng chuẩn Stitch cho cả 2 bảng (chip mã monospace, chip điểm đo `P.x`, tên nổi bật, thời gian test).
+     9. `useTestTableData.ts` (245 dòng): Custom hook quản lý 100% state, queries API (`f_loadDTC_TestList`, `f_loadDTC_TestPointList`, `f_addTestItem`, `f_addTestPoint`), tự động tính toán mã code kế tiếp, lọc tìm kiếm realtime và xuất file Excel qua `SaveExcel`.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ và API**:
+   - Tải danh sách hạng mục qua `f_loadDTC_TestList`.
+   - Tải danh sách điểm đo tương ứng qua `f_loadDTC_TestPointList(testCode)` khi nhấp chọn dòng.
+   - Thêm hạng mục đo mới qua `f_addTestItem(testCode, testName)`.
+   - Thêm điểm đo mới qua `f_addTestPoint(testCode, pointCode, pointName)`.
+   - Bổ sung chức năng xuất Excel chuẩn `SaveExcel` và lọc tìm kiếm đa trường tức thời cho cả 2 bảng.
+4. **Xác thực biên dịch Vite & Lint**:
+   - 100% 11/11 files liên quan biên dịch thành công qua Vite transform (HTTP 200 OK) trên port 3001.
+   - Sạch 100% lỗi cú pháp và lỗi lint.
+
 ## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Nhập Kết Quả Đo Độ Tin Cậy - DTCRESULT.tsx Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed

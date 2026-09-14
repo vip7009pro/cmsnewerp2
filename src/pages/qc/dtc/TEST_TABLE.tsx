@@ -1,202 +1,117 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import AGTable from '../../../components/DataTable/AGTable';
-import './TESTTABLE.scss';
-import { Button, Dialog, DialogContent, DialogTitle, IconButton, TextField } from '@mui/material';
-import { AiOutlinePlus, AiOutlineReload } from 'react-icons/ai';
-import { DTC_TEST_POINT, TestListTable } from '../interfaces/qcInterface';
-import { f_addTestItem, f_addTestPoint, f_loadDTC_TestList, f_loadDTC_TestPointList } from '../utils/qcUtils';
+import React, { useState, useCallback } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { UserData } from "../../../api/GlobalInterface";
+import { useTestTableData } from "./PrecisionTESTTABLE/useTestTableData";
+import PrecisionTestTableHeader from "./PrecisionTESTTABLE/PrecisionTestTableHeader";
+import PrecisionTestTableKpi from "./PrecisionTESTTABLE/PrecisionTestTableKpi";
+import PrecisionTestItemPanel from "./PrecisionTESTTABLE/PrecisionTestItemPanel";
+import PrecisionTestPointPanel from "./PrecisionTESTTABLE/PrecisionTestPointPanel";
+import PrecisionAddTestItemModal from "./PrecisionTESTTABLE/PrecisionAddTestItemModal";
+import PrecisionAddTestPointModal from "./PrecisionTESTTABLE/PrecisionAddTestPointModal";
+import "./PrecisionTESTTABLE/PrecisionTESTTABLE.scss";
+
 const TEST_TABLE: React.FC = () => {
-  const [testList, setTestList] = useState<TestListTable[]>([]);
-  const [testPointList, setTestPointList] = useState<DTC_TEST_POINT[]>([]);
-  const [open, setOpen] = useState(false);
-  const [openAddPoint, setOpenAddPoint] = useState(false);
-  const [pointCode, setPointCode] = useState(0);
-  const [pointName, setPointName] = useState('');
-  //create testCode and testName
-  const [testCode, setTestCode] = useState(0);
-  const [testName, setTestName] = useState('');
-  const loadTestList = async () => {
-    const data = await f_loadDTC_TestList();
-    setTestList(data);
-  };
-  useEffect(() => {   
+  const userData: UserData | undefined = useSelector(
+    (state: RootState) => state.totalSlice.userData
+  );
+
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
+  const {
+    testList,
+    testPointList,
+    selectedTestItem,
+    itemSearch,
+    setItemSearch,
+    pointSearch,
+    setPointSearch,
+    openAddItemModal,
+    setOpenAddItemModal,
+    openAddPointModal,
+    setOpenAddPointModal,
+    suggestedNextTestCode,
+    suggestedNextPointCode,
+    filteredItems,
+    filteredPoints,
+    kpis,
+    loadTestList,
+    loadTestPointList,
+    handleSelectTestItem,
+    handleCreateTestItem,
+    handleCreateTestPoint,
+    handleExportItems,
+    handleExportPoints,
+  } = useTestTableData();
+
+  const handleRefreshAll = useCallback(() => {
     loadTestList();
-  }, []);
-  //load test point list from test code
-  const loadTestPointList = async (testCode: number) => {
-    const data = await f_loadDTC_TestPointList(testCode);
-    setTestPointList(data);
-  };
-  const testListColumns = useMemo(() => [
-    { field: 'TEST_CODE', headerName: 'Test Code', width: 120 },
-    { field: 'TEST_NAME', headerName: 'Test Name', width: 200 },
-    { field: 'TEST_TIME', headerName: 'Test Time', width: 200 },
-  ], []);
-  const handleTestListRowClick = (params: any) => {
-    setTestCode(params.data.TEST_CODE);
-    loadTestPointList(params.data.TEST_CODE);
-  };
-//create selectedTestPointsColumns using DTC_TEST_POINT interface
-const selectedTestPointsColumns = useMemo(() => [
-  { field: 'POINT_CODE', headerName: 'Point Code', width: 120 },
-  { field: 'POINT_NAME', headerName: 'Point Name', width: 200 },
-  { field: 'TEST_CODE', headerName: 'Test Code', width: 120 },
-  { field: 'TEST_NAME', headerName: 'Test Name', width: 200 },
-], []);
+    loadTestPointList();
+  }, [loadTestList, loadTestPointList]);
+
   return (
-    <div className='testtable'>      
-      <div className='testtable-left'>
-        <AGTable
-        toolbar={<>        
-        <IconButton          
-          onClick={() => {
-            //open add item dialog
-            setOpen(true);
-          }}
-          size='small'
-        >          
-          <AiOutlinePlus color="green" size={15}/> <span style={{fontSize:'0.8rem'}}>Add Test Item</span>
-        </IconButton>         
-        <IconButton          
-          onClick={() => {
-            loadTestList();
-          }}
-          size='small'
-        >          
-          <AiOutlineReload color="green" size={15}/> <span style={{fontSize:'0.8rem'}}>Refresh</span>
-        </IconButton>  
-        </>}
-          data={testList}
-          columns={testListColumns}
-        onRowClick={handleTestListRowClick}
-        onSelectionChange={()=>{}}
-       
+    <div
+      className={`precision-testtable ${
+        isFullscreen ? "precision-testtable--fullscreen" : ""
+      }`}
+    >
+      {/* Top Banner / Breadcrumb & Telemetry Header */}
+      <PrecisionTestTableHeader
+        userData={userData}
+        onRefresh={handleRefreshAll}
+        isFullscreen={isFullscreen}
+        onToggleFullscreen={() => setIsFullscreen((prev) => !prev)}
       />
-      <Dialog
-        fullWidth={true}
-        open={open}
-        onClose={() => {
-          setOpen(false);
-        }}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle align='center' id="alert-dialog-title">{"Add Test Item"}</DialogTitle>
-        <DialogContent> 
-        <TextField
-          autoFocus
-          margin="dense"
-          id="testCode"
-          label="Test Code"
-          type="number"
-          fullWidth
-          variant="standard"
-          onChange={(e)=>{setTestCode(Number(e.target.value))}}
-        />  
-        <TextField
-          margin="dense"
-          id="name"
-          label="Test Name"
-          type="text"
-          fullWidth
-          variant="standard"
-          onChange={(e)=>{setTestName(e.target.value)}}
-        />   
-        <div style={{display:'flex', justifyContent:'center'}}>
-        <Button        
-          variant="contained"
-          color="primary"
-          onClick={async () => {
-           await f_addTestItem(testCode, testName);
-           loadTestList();
-            // Close the dialog
-            setOpen(false);
-          }}
-        >
-          Add Test Item
-        </Button>
-        </div>       
-        </DialogContent>
-      </Dialog> 
+
+      {/* Realtime Micro-KPI Ribbon */}
+      <PrecisionTestTableKpi kpis={kpis} />
+
+      {/* Split 2-Panel Master-Detail Workspace */}
+      <div className="precision-testtable__workspace">
+        {/* Left Panel: Test Items (Master) */}
+        <PrecisionTestItemPanel
+          data={filteredItems}
+          totalCount={testList.length}
+          selectedItem={selectedTestItem}
+          searchTerm={itemSearch}
+          setSearchTerm={setItemSearch}
+          onSelectItem={handleSelectTestItem}
+          onOpenAddModal={() => setOpenAddItemModal(true)}
+          onExport={handleExportItems}
+          onRefresh={loadTestList}
+        />
+
+        {/* Right Panel: Test Points (Detail) */}
+        <PrecisionTestPointPanel
+          data={filteredPoints}
+          totalCount={testPointList.length}
+          selectedItem={selectedTestItem}
+          searchTerm={pointSearch}
+          setSearchTerm={setPointSearch}
+          onOpenAddModal={() => setOpenAddPointModal(true)}
+          onExport={handleExportPoints}
+          onRefresh={loadTestPointList}
+        />
       </div>
-      <div className='testtable-right'>        
-      <AGTable
-        toolbar={<>
-        <IconButton          
-          onClick={() => {
-            //open add item dialog
-            setOpenAddPoint(true);
-          }}
-          size='small'
-        >          
-          <AiOutlinePlus color="green" size={15}/> <span style={{fontSize:'0.8rem'}}>Add Test Point</span>
-        </IconButton>    
-        <IconButton          
-          onClick={() => {
-            loadTestPointList(testCode);
-          }}
-          size='small'
-        >          
-          <AiOutlineReload color="green" size={15}/> <span style={{fontSize:'0.8rem'}}>Refresh</span>
-        </IconButton>         
-        </>}
-        data={testPointList}
-        columns={selectedTestPointsColumns}
-        onSelectionChange={()=>{}}        
+
+      {/* Luxury Modal: Thêm Hạng Mục Test Mới */}
+      <PrecisionAddTestItemModal
+        isOpen={openAddItemModal}
+        onClose={() => setOpenAddItemModal(false)}
+        suggestedCode={suggestedNextTestCode}
+        onSubmit={handleCreateTestItem}
       />
-      <Dialog
-        fullWidth={true}
-        open={openAddPoint}
-        onClose={() => {
-          setOpenAddPoint(false);
-        }}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      > 
-      <DialogTitle align='center' id="alert-dialog-title">{"Add Test Point"}</DialogTitle>
-        <DialogContent>         
-        <TextField
-          margin="dense"
-          id="pointCode"
-          label="Point Code" 
-          type="number"
-          fullWidth
-          variant="standard"
-          onChange={(e)=>{setPointCode(Number(e.target.value))}}
-        />   
-        <TextField
-          margin="dense"
-          id="name"
-          label="Point Name" 
-          type="text"
-          fullWidth
-          variant="standard"
-          onChange={(e)=>{setPointName(e.target.value)}}
-        />   
-        <div style={{display:'flex', justifyContent:'center'}}>
-        <Button        
-          variant="contained"
-          color="primary"
-          onClick={async () => {
-            if(testCode === 0 || pointCode === 0 || pointName === ''){      
-              alert('Please enter all fields');
-            }
-            else {
-              await f_addTestPoint(testCode, pointCode, pointName);
-              loadTestPointList(testCode);
-               // Close the dialog
-               setOpenAddPoint(false);
-            }
-          
-          }}
-        > 
-          Add Test Point
-        </Button>        
-        </div>       
-        </DialogContent>
-      </Dialog> 
-      </div>
+
+      {/* Luxury Modal: Thêm Điểm Đo Mới */}
+      <PrecisionAddTestPointModal
+        isOpen={openAddPointModal}
+        onClose={() => setOpenAddPointModal(false)}
+        selectedItem={selectedTestItem}
+        suggestedPointCode={suggestedNextPointCode}
+        onSubmit={handleCreateTestPoint}
+      />
     </div>
   );
 };
+
 export default TEST_TABLE;
