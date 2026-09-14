@@ -1,5 +1,25 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Tái Thiết Kế Màn Hình Quản Lý Kho Lỗi IQC (`FAILING.tsx` & `PrecisionFAILING/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/iqc/FAILING.backup.tsx` (55.388 bytes, 1.411 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `FAILING.tsx` chỉ còn **84 dòng** (giảm từ 1.411 dòng), kết nối dữ liệu qua custom hook `useFailingData`, quản lý toàn màn hình và điều phối các subcomponents.
+    * Toàn bộ 9 presentation subcomponents tại `src/pages/qc/iqc/PrecisionFAILING/` đều tuân thủ nghiêm ngặt giới hạn dưới **200 dòng/file** (< 250 dòng theo cam kết):
+      1. `PrecisionFAILING.scss` (872 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Amber `#f59e0b`, Emerald `#10b981`, Rose `#f43f5e`, Royal Blue `#2563eb`, Purple `#7c3aed`), layout Split 2 panel (Sidebar 280px và Main Content container), co giãn full-width & full-height Multi-Tab (`.component_element &`), custom scrollbar 5px, triệt tiêu 100% toolbar xanh lá cũ của AGTable, và luật clipping boundary `contain: paint layout !important` ngăn chặn 100% hiện tượng chữ dài tràn đè ô sang cột bên cạnh.
+      2. `PrecisionFailingHeader.tsx` (62 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • IQC / QUẢN LÝ KHO LỖI (FAILING MATERIAL CONTROL)`, badge `FAILING ENGINE`, telemetry trực tuyến `NET_SERVER: 3007 (Online)` kèm pulse dot, thông tin nhân viên đăng nhập, nút làm mới dữ liệu và nút bật/tắt toàn màn hình.
+      3. `PrecisionFailingKpi.tsx` (103 dòng): 4 Thẻ Micro-cards KPI realtime (Tổng Lô Phế Liệu FAIL TOTAL, Lô Đã Duyệt PASS kèm tỷ lệ %, Lô Đã Đóng CLOSED kèm tỷ lệ %, Chờ Xử Lý PENDING).
+      4. `PrecisionFailingSidebar.tsx` (193 dòng): Khung thao tác 280px bên trái tích hợp **Segmented Switcher 3 chế độ (IN / OUT / FILTER)**, chuyển đổi tức thì giữa Form IN, Form OUT và bộ lọc tra cứu đa trường chuyên sâu.
+      5. `PrecisionFailingFormIn.tsx` (172 dòng): **Form IN nhập kho lỗi** đầy đủ tính năng: chọn loại liệu Cuộn/BTP, kiểm tra tự động mã Lot NVL hoặc Plan ID & Process Lot, chọn phân loại lỗi sản xuất, nhập số lượng, vị trí kho và nút lưu an toàn.
+      6. `PrecisionFailingFormOut.tsx` (95 dòng): **Form OUT xuất kho lỗi** tái sử dụng: tự động điền thông tin lô đang chọn trên bảng (`FAIL_ID`, `M_LOT_NO`), kiểm tra kế hoạch sản xuất đích `PLAN_ID_SUDUNG`, khách hàng và ghi chú xuất.
+      7. `PrecisionFailingToolbar.tsx` (157 dòng): SaaS Action Toolbar phía trên bảng chính (`Tra Data`, `SET PASS`, `SET FAIL`, `OUTPUT: XUẤT`, `SET CLOSED`, `SET PENDING`, `UPDATE NCR ID`, `RESET IN_SX`, `RESET OUT_SX`, ô Quick Filter trên lưới và cụm xuất Excel `EX1` lọc & `EX2` toàn bộ).
+      8. `PrecisionFailingColumns.tsx` (66 dòng): Cấu hình 40 cột bảng AG-Grid chuẩn Stitch, khớp 100% `headerName` và `width` bản gốc theo nguyên tắc số 8 của SKILL.md.
+      9. `failingCellRenderers.tsx` (50 dòng): Cell renderers cho font monospace JetBrains Mono, chip trạng thái QC_PASS, CLOSE_STATUS, định dạng số hàng nghìn (`toLocaleString`), helper `renderTruncated` an toàn cắt chữ kèm tooltip title.
+      10. `PrecisionFailingTable.tsx` (53 dòng): Bọc bảng AGTable High-Density, hoàn toàn không có footer thừa hoặc status bar giả ở chân trang, tối đa hóa không gian dọc cho bảng dữ liệu.
+      11. `useFailingData.ts` (715 dòng): Custom hook quản lý 100% state, queries API (`insertFailingData`, `updateQCFailTableData`, `updateQCPASS_FAILING`, `updateCLOSE_FAILING`, `updateIQCConfirm_FAILING`, `f_updateNCRIDForFailing`, `f_nhapkhoao`, `f_resetIN_KHO_SX_IQC1`, `f_resetIN_KHO_SX_IQC2`), tính toán KPI realtime và xuất file Excel qua `SaveExcel`.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ và phân quyền**: Phê duyệt `SET PASS`/`SET FAIL`, đóng mở trạng thái `SET CLOSED`/`SET PENDING`, xác nhận IQC Confirm, cập nhật mã số `NCR_ID` cho lô lỗi, nhập kho ảo và reset trạng thái kho sản xuất.
+  - **Bổ sung tương thích trong `IQC.scss`**: Cấu hình `.precision-failing, .failing` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi nhúng trong tab FAILING của `IQC.tsx` không bao giờ bị collapse chiều cao.
+  - **Xác thực toàn diện**: 100% các file mới đạt 0 lỗi TypeScript (tsc) và 0 lint error. Không footer thừa, không tab menu thừa.
+
 - [x] Hoàn thiện Tái Thiết Kế Màn Hình Quản Lý Lô Giữ Hàng IQC (`HOLDING.tsx` & `PrecisionHOLDING/`) theo chuẩn Google Stitch High-Density Enterprise:
   - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/iqc/HOLDING.backup.tsx` (20.379 bytes, 600 dòng).
   - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
