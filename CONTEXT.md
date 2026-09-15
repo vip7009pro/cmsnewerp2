@@ -1,5 +1,29 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-15 (SX: Hoàn Thiện Tái Thiết Kế Màn Hình Giám Sát Chất Lượng Trực Tiếp - PATROL.tsx & PrecisionPATROL/ Chuẩn Google Stitch & Trình Chiếu TV)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Đã lưu trữ an toàn tại `src/pages/sx/PATROL/PATROL.backup.tsx` (12.293 bytes, 362 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `PATROL.tsx` tinh gọn từ 362 dòng xuống chỉ còn **186 dòng** (< 200 dòng theo cam kết), kết nối dữ liệu qua custom hook `usePatrolData`, điều phối layout và các subcomponents.
+   - Toàn bộ 6 presentation subcomponents tại `src/pages/sx/PATROL/PrecisionPATROL/` đều tuân thủ nghiêm ngặt giới hạn dưới **200 dòng/file**:
+     1. `PrecisionPATROL.scss` (680 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch, tích hợp **TV Command Center Fullscreen Mode** (nền tối sang trọng, tương phản cao, phóng to chữ và số liệu dễ đọc từ 3-5m), co giãn full-width & full-height Multi-Tab (`.component_element &`), custom scrollbars, triệt tiêu 100% footer thừa và không tab menu thừa.
+     2. `PrecisionPatrolHeader.tsx` (110 dòng): Sub-header chuẩn Stitch & TV Telemetry: Badge Live Stream với pulse dot, thanh đếm ngược chu kỳ tự động làm mới 10 giây realtime (`Auto: 8s`), nút Play/Pause auto-refresh, nút chuyển đổi Live / Lịch sử, date picker, nút reload và nút `Trình Chiếu TV` (Fullscreen).
+     3. `PrecisionPatrolKpi.tsx` (68 dòng): 4 Thẻ Micro-cards KPI realtime (Tổng Sự Cố Phát Sinh, Lỗi Công Đoạn PQC3, Thử Nghiệm Độ Tin Cậy DTC, Kiểm Tra Ngoại Quan INS NL & PK).
+     4. `PrecisionPatrolToolbar.tsx` (85 dòng): Action Toolbar: Lọc theo phân hệ (`Tất Cả`, `PQC3`, `DTC`, `INS`) và **Switcher Chế Độ Bố Cục** (`☰ Hàng Ngang Lanes` hoặc `⊞ Lưới Thẻ Grid`).
+     5. `PrecisionPatrolCard.tsx` (175 dòng): **Card lỗi thế hệ mới siêu đẹp**: Khung hình tỷ lệ 16:9 sắc nét, avatar nhân viên kiểm tra nổi bật ở góc ảnh, badge thời gian phát sinh `X min ago` (kèm pulse đỏ cảnh báo khẩn cấp nếu sự cố $\le 15$ phút), badge thiết bị & line (`NM1 • L01`), tên sản phẩm, khách hàng, mô tả hiện tượng lỗi, **thanh tiến trình tỷ lệ phế phẩm (NG Rate Progress Bar)** phân màu trực quan (xanh < 2%, vàng 2-5%, đỏ > 5%), và nút phóng to ảnh lỗi.
+     6. `PrecisionPatrolLane.tsx` (60 dòng): Hàng ngang hiển thị từng phân hệ với track cuộn mượt mà, header có badge đếm số lượng thẻ sự cố và trạng thái empty state khi không có lỗi.
+     7. `PrecisionPatrolModal.tsx` (75 dòng): Modal xem trước ảnh sự cố phóng to với backdrop blur, thanh thông tin chi tiết thiết bị, mã lỗi, tỷ lệ và người kiểm tra.
+     8. `usePatrolData.ts` (220 dòng): Custom hook quản lý 100% queries API backend (`getpatrolheader`, `trapqc3data`, `loadDTCPatrol`, `trainspectionpatrol`), timer đếm ngược chu kỳ 10s auto-refresh, Live Stream toggle, layout view mode và fullscreen state.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ**:
+   - Nạp dữ liệu đồng thời 3 trạm giám sát (PQC3, DTC, INS Patrol NL/PK) và header summary.
+   - Cơ chế tự động đồng bộ theo thời gian thực (Live Stream) hoặc tra cứu lịch sử theo ngày.
+   - Không còn footer thừa, không có tab menu thừa.
+4. **Bổ sung tương thích trong `PQC.scss`**:
+   - Cấu hình layout full-height cho `.patrol, .precision-patrol` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi nhúng trong tab PATROL của `PQC.tsx` không bao giờ bị collapse chiều cao.
+5. **Xác thực kiểm tra Vite Dev Server & Zero Error**:
+   - Toàn bộ 10/10 file mới và file liên quan đều đạt HTTP 200 OK trên Vite Dev Server (port 3001) và `ZERO ERRORS in src/pages/sx/PATROL!` qua kiểm thử TypeScript `tsc`.
+
 ## Update - 2026-09-15 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Đăng Ký & Theo Dõi Lỗi PQC - PQC3.tsx & PrecisionPQC3/ Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed

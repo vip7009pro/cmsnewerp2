@@ -1,0 +1,947 @@
+// ============================================================================
+// PRECISION PATROL - GOOGLE STITCH HIGH-DENSITY & TV COMMAND CENTER STYLING
+// Module: SX • Quality Patrol Live Dashboard
+// ============================================================================
+
+.precision-patrol {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background-color: #f1f5f9;
+  padding: 6px 10px;
+  gap: 6px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #1e293b;
+
+  // Cấu hình bắt buộc full-width và full-height trong chế độ Multi-Tab
+  .component_element & {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  // --------------------------------------------------------------------------
+  // TV COMMAND CENTER FULLSCREEN MODE (Tối ưu cho TV xưởng & phòng họp)
+  // --------------------------------------------------------------------------
+  &.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99999;
+    background: #090d16;
+    color: #f8fafc;
+    width: 100vw;
+    height: 100vh;
+    padding: 10px 14px;
+    gap: 8px;
+
+    .precision-patrol-header {
+      background: #0f172a;
+      border-color: #1e293b;
+
+      &__left {
+        .breadcrumb-title {
+          color: #f8fafc;
+        }
+      }
+
+      &__right {
+        .btn-live,
+        .btn-action,
+        .btn-fullscreen {
+          background: #1e293b;
+          border-color: #334155;
+          color: #f8fafc;
+
+          &:hover {
+            background: #334155;
+          }
+        }
+
+        .date-input {
+          background: #1e293b;
+          border-color: #334155;
+          color: #f8fafc;
+        }
+      }
+    }
+
+    .precision-patrol-kpi {
+      &__card {
+        background: #0f172a;
+        border-color: #1e293b;
+
+        .kpi-value {
+          color: #f8fafc;
+        }
+      }
+    }
+
+    .precision-patrol-toolbar {
+      background: #0f172a;
+      border-color: #1e293b;
+
+      .segment-tab {
+        color: #94a3b8;
+        &.active {
+          background: #1e293b;
+          color: #38bdf8;
+        }
+      }
+    }
+
+    .patrol-lane {
+      background: #0f172a;
+      border-color: #1e293b;
+
+      &__header {
+        background: #131d33;
+        border-bottom-color: #1e293b;
+        .lane-title {
+          color: #38bdf8;
+        }
+      }
+    }
+
+    .precision-patrol-card {
+      background: #131d33;
+      border-color: #1e293b;
+
+      &:hover {
+        border-color: #38bdf8;
+      }
+
+      &__body {
+        .card-code {
+          color: #f8fafc;
+        }
+        .card-defect {
+          color: #fb7185;
+        }
+        .rate-label {
+          color: #94a3b8;
+        }
+      }
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // 1. SUB-HEADER CHUẨN STITCH & TV TELEMETRY
+  // --------------------------------------------------------------------------
+  &-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 34px;
+    min-height: 34px;
+    padding: 0 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    flex-shrink: 0;
+
+    &__left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+
+      .brand-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: #ffffff;
+        font-size: 9.5px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      .live-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 2px 7px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+
+        &.active {
+          background: #fee2e2;
+          color: #b91c1c;
+          border: 1px solid #fca5a5;
+
+          .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #ef4444;
+            animation: pulse-red 1.5s infinite;
+          }
+        }
+
+        &.history {
+          background: #f1f5f9;
+          color: #475569;
+          border: 1px solid #cbd5e1;
+
+          .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #94a3b8;
+          }
+        }
+      }
+
+      .breadcrumb-separator {
+        color: #cbd5e1;
+        font-weight: 400;
+      }
+
+      .breadcrumb-title {
+        color: #0f172a;
+        font-size: 11.5px;
+      }
+    }
+
+    &__right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .countdown-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #059669;
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        padding: 2px 7px;
+        border-radius: 4px;
+        font-family: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      }
+
+      .btn-live {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 25px;
+        padding: 0 8px;
+        border-radius: 4px;
+        font-size: 10.5px;
+        font-weight: 700;
+        cursor: pointer;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #334155;
+        transition: all 0.15s ease;
+
+        &.active {
+          background: #eff6ff;
+          border-color: #bfdbfe;
+          color: #1d4ed8;
+        }
+
+        &:hover {
+          border-color: #94a3b8;
+        }
+      }
+
+      .dates-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        .date-input {
+          height: 25px;
+          padding: 0 5px;
+          border-radius: 4px;
+          border: 1px solid #cbd5e1;
+          font-size: 10.5px;
+          outline: none;
+          color: #0f172a;
+          background: #ffffff;
+
+          &:disabled {
+            background: #f1f5f9;
+            color: #94a3b8;
+            cursor: not-allowed;
+          }
+        }
+      }
+
+      .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 25px;
+        height: 25px;
+        border-radius: 4px;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: #f1f5f9;
+          color: #1e293b;
+          border-color: #94a3b8;
+        }
+      }
+
+      .btn-fullscreen {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 25px;
+        padding: 0 8px;
+        border-radius: 4px;
+        font-size: 10.5px;
+        font-weight: 700;
+        cursor: pointer;
+        background: #2563eb;
+        border: 1px solid #1d4ed8;
+        color: #ffffff;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: #1d4ed8;
+        }
+      }
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // 2. MICRO-CARDS KPI REALTIME
+  // --------------------------------------------------------------------------
+  &-kpi {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    flex-shrink: 0;
+
+    &__card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 12px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+      transition: transform 0.15s ease;
+
+      &:hover {
+        transform: translateY(-1px);
+      }
+
+      &.card-total {
+        border-left: 3px solid #2563eb;
+        .kpi-icon { background: #dbeafe; color: #1d4ed8; }
+      }
+      &.card-pqc {
+        border-left: 3px solid #e11d48;
+        .kpi-icon { background: #ffe4e6; color: #be123c; }
+      }
+      &.card-dtc {
+        border-left: 3px solid #7c3aed;
+        .kpi-icon { background: #ede9fe; color: #6d28d9; }
+      }
+      &.card-ins {
+        border-left: 3px solid #059669;
+        .kpi-icon { background: #d1fae5; color: #047857; }
+      }
+
+      .kpi-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+
+        .kpi-label {
+          font-size: 9.5px;
+          font-weight: 700;
+          color: #64748b;
+          text-transform: uppercase;
+        }
+
+        .kpi-value {
+          font-size: 15px;
+          font-weight: 800;
+          color: #0f172a;
+          font-family: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+          line-height: 1.2;
+        }
+
+        .kpi-subtext {
+          font-size: 9px;
+          color: #94a3b8;
+        }
+      }
+
+      .kpi-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // 3. ACTION TOOLBAR & VIEW CONTROLLER
+  // --------------------------------------------------------------------------
+  &-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 3px 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    flex-shrink: 0;
+
+    &__left {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      .segment-group {
+        display: inline-flex;
+        align-items: center;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        padding: 1px;
+        gap: 2px;
+
+        .segment-tab {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          height: 23px;
+          padding: 0 8px;
+          border-radius: 3px;
+          font-size: 10.5px;
+          font-weight: 700;
+          color: #64748b;
+          border: none;
+          background: transparent;
+          cursor: pointer;
+          transition: all 0.15s ease;
+
+          &:hover {
+            color: #0f172a;
+          }
+
+          &.active {
+            background: #ffffff;
+            color: #2563eb;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+          }
+        }
+      }
+
+      .toolbar-divider {
+        width: 1px;
+        height: 18px;
+        background: #cbd5e1;
+        margin: 0 2px;
+      }
+    }
+
+    &__right {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      .btn-view-mode {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 23px;
+        padding: 0 7px;
+        border-radius: 3px;
+        font-size: 10.5px;
+        font-weight: 700;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #475569;
+        cursor: pointer;
+
+        &.active {
+          background: #eff6ff;
+          border-color: #93c5fd;
+          color: #2563eb;
+        }
+      }
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // 4. CONTENT WORKSPACE (LANES HOẶC GRID)
+  // --------------------------------------------------------------------------
+  &-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 4px;
+
+    // Chế độ Grid Gallery
+    &.grid-mode {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 10px;
+      align-content: start;
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // 5. PATROL LANE (HÀNG NGANG CUỘN MƯỢT)
+  // --------------------------------------------------------------------------
+  .patrol-lane {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    overflow: hidden;
+    flex-shrink: 0;
+
+    &__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 28px;
+      padding: 0 10px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      flex-shrink: 0;
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        .lane-badge {
+          font-size: 9.5px;
+          font-weight: 800;
+          padding: 1px 6px;
+          border-radius: 3px;
+          text-transform: uppercase;
+
+          &.pqc { background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; }
+          &.dtc { background: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
+          &.ins { background: #d1fae5; color: #047857; border: 1px solid #a7f3d0; }
+        }
+
+        .lane-title {
+          font-size: 11px;
+          font-weight: 800;
+          color: #0f172a;
+          text-transform: uppercase;
+        }
+
+        .lane-desc {
+          font-size: 10px;
+          color: #64748b;
+        }
+      }
+
+      .header-right {
+        .count-badge {
+          font-size: 10px;
+          font-weight: 700;
+          padding: 1px 6px;
+          border-radius: 999px;
+          background: #e2e8f0;
+          color: #334155;
+          font-family: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+      }
+    }
+
+    &__body {
+      width: 100%;
+      padding: 8px 10px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      box-sizing: border-box;
+
+      .cards-track {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        align-items: stretch;
+      }
+
+      .empty-state {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        font-size: 11.5px;
+        color: #94a3b8;
+        font-style: italic;
+      }
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // 6. PRECISION PATROL CARD (THẺ LỖI THẾ HỆ MỚI SIÊU ĐẸP)
+  // --------------------------------------------------------------------------
+  &-card {
+    display: flex;
+    flex-direction: column;
+    width: 360px;
+    min-width: 360px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    flex-shrink: 0;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+      border-color: #93c5fd;
+    }
+
+    &__topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 26px;
+      padding: 0 8px;
+      background: #f8fafc;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 10px;
+
+      .tag-category {
+        font-weight: 800;
+        padding: 1px 5px;
+        border-radius: 3px;
+        text-transform: uppercase;
+        font-size: 9px;
+
+        &.pqc { background: #fee2e2; color: #b91c1c; }
+        &.dtc { background: #ede9fe; color: #6d28d9; }
+        &.ins { background: #dcfce7; color: #15803d; }
+      }
+
+      .tag-eq {
+        font-family: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 700;
+        color: #0284c7;
+        background: #f0f9ff;
+        padding: 1px 5px;
+        border-radius: 3px;
+      }
+
+      .tag-time {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 9.5px;
+        font-weight: 700;
+        color: #64748b;
+        font-family: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+        &.urgent {
+          color: #e11d48;
+          .pulse-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #e11d48;
+            animation: pulse-red 1s infinite;
+          }
+        }
+      }
+    }
+
+    &__image-box {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      background: #0f172a;
+      overflow: hidden;
+      cursor: pointer;
+
+      img.defect-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.25s ease;
+
+        &:hover {
+          transform: scale(1.04);
+        }
+      }
+
+      .avatar-badge {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 2px solid #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+        background: #334155;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .zoom-overlay-btn {
+        position: absolute;
+        bottom: 6px;
+        right: 6px;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        padding: 2px 6px;
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(4px);
+        color: #ffffff;
+        border-radius: 4px;
+        font-size: 9.5px;
+        font-weight: 600;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: rgba(37, 99, 235, 0.9);
+        }
+      }
+    }
+
+    &__body {
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .card-row-title {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 6px;
+
+        .card-code {
+          font-size: 12px;
+          font-weight: 800;
+          color: #0f172a;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .card-customer {
+          font-size: 9.5px;
+          font-weight: 700;
+          color: #db2777;
+          background: #fdf2f8;
+          padding: 1px 5px;
+          border-radius: 3px;
+          flex-shrink: 0;
+        }
+      }
+
+      .card-defect {
+        font-size: 11px;
+        font-weight: 700;
+        color: #be123c;
+        line-height: 1.3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      // Thanh tiến trình NG Rate
+      .card-rate-section {
+        margin-top: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        .rate-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 9.5px;
+
+          .rate-label {
+            color: #64748b;
+            font-weight: 600;
+          }
+
+          .rate-value {
+            font-weight: 800;
+            font-family: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+            &.rate-green { color: #16a34a; }
+            &.rate-amber { color: #d97706; }
+            &.rate-red { color: #dc2626; }
+          }
+        }
+
+        .progress-track {
+          width: 100%;
+          height: 5px;
+          background: #e2e8f0;
+          border-radius: 999px;
+          overflow: hidden;
+
+          .progress-bar {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.3s ease;
+
+            &.bar-green { background: #16a34a; }
+            &.bar-amber { background: #f59e0b; }
+            &.bar-red { background: #ef4444; }
+          }
+        }
+      }
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // 7. IMAGE PREVIEW MODAL
+  // --------------------------------------------------------------------------
+  &-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100000;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+
+    &__dialog {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 900px;
+      width: 100%;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    &__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: #1e293b;
+      color: #f8fafc;
+
+      .title {
+        font-size: 12.5px;
+        font-weight: 700;
+      }
+
+      .btn-close {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        font-size: 18px;
+        cursor: pointer;
+
+        &:hover {
+          color: #ffffff;
+        }
+      }
+    }
+
+    &__body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 14px;
+      background: #020617;
+      overflow: auto;
+
+      img {
+        max-width: 100%;
+        max-height: 65vh;
+        object-fit: contain;
+        border-radius: 4px;
+      }
+
+      .modal-info-strip {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        width: 100%;
+        padding: 8px 12px;
+        background: #0f172a;
+        border-radius: 6px;
+        border: 1px solid #1e293b;
+        font-size: 11px;
+        color: #cbd5e1;
+
+        strong {
+          color: #ffffff;
+        }
+      }
+    }
+  }
+}
+
+// Keyframes
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+  70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}

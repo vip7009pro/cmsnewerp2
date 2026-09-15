@@ -1,362 +1,191 @@
-import React, { useEffect, useRef, useState } from 'react'
-import './PATROL.scss'
-import PATROL_COMPONENT from './PATROL_COMPONENT'
+import React, { useMemo, useCallback } from "react";
+import "./PrecisionPATROL/PrecisionPATROL.scss";
+import { usePatrolData } from "./PrecisionPATROL/usePatrolData";
+import PrecisionPatrolHeader from "./PrecisionPATROL/PrecisionPatrolHeader";
+import PrecisionPatrolKpi from "./PrecisionPATROL/PrecisionPatrolKpi";
+import PrecisionPatrolToolbar from "./PrecisionPATROL/PrecisionPatrolToolbar";
+import PrecisionPatrolLane from "./PrecisionPATROL/PrecisionPatrolLane";
+import PrecisionPatrolCard, { PatrolCardData } from "./PrecisionPATROL/PrecisionPatrolCard";
+import PrecisionPatrolModal from "./PrecisionPATROL/PrecisionPatrolModal";
 
-import { generalQuery } from '../../../api/Api'
-import { Button, Checkbox, FormControlLabel } from '@mui/material'
-import moment from 'moment'
-import Swal from 'sweetalert2'
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
-import { PATROL_HEADER_DATA } from '../../qlsx/QLSXPLAN/interfaces/khsxInterface'
-import { DTC_PATROL_DATA, INSP_PATROL_DATA, PQC3_DATA } from '../../qc/interfaces/qcInterface'
+const PATROL: React.FC = () => {
+  const patrol = usePatrolData();
 
-const PATROL = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const [patrolheaderdata, setPatrolHeaderData] = useState<PATROL_HEADER_DATA[]>([]);
-  const [fullScreen, setFullScreen] = useState(false);
-  const [pqcdatatable, setPqcDataTable] = useState<Array<PQC3_DATA>>([]);
-  const [inspectionPatrolTable, setInspectionPatrolTable] = useState<Array<INSP_PATROL_DATA>>([]);
-  const [dtcPatrolTable, setDtcPatrolTable] = useState<Array<DTC_PATROL_DATA>>([]);
-  const fromdateRef = useRef((moment().format("YYYY-MM-DD")));
-  const todateRef = useRef((moment().format("YYYY-MM-DD")));
-  const liveStream = useRef(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [trigger, setTrigger] = useState(false);
+  // Mở modal xem ảnh chi tiết
+  const handleOpenModal = useCallback((cardData: PatrolCardData) => {
+    patrol.setPreviewModal({
+      isOpen: true,
+      imageUrl: cardData.LINK || "",
+      title: `${cardData.CATEGORY} - ${cardData.G_NAME_KD || "Sự cố chất lượng"}`,
+      emplNo: cardData.EMPL_NO,
+      defect: cardData.DEFECT,
+      eq: cardData.EQ,
+      factory: cardData.FACTORY,
+      custName: cardData.CUST_NAME_KD,
+      gName: cardData.G_NAME_KD,
+      time: cardData.TIME,
+      ngRate: `${cardData.INSPECT_NG}/${cardData.INSPECT_QTY}`,
+    });
+  }, [patrol]);
 
-  const getPatrolHeaderData = async () => {
-    console.log('vao get patrol header')
-    setIsLoading(true);
-    await generalQuery("getpatrolheader", {
-      FROM_DATE: liveStream?.current ? moment().format('YYYY-MM-DD') : fromdateRef.current,
-      TO_DATE: liveStream?.current ? moment().format('YYYY-MM-DD') : todateRef.current,
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: PATROL_HEADER_DATA[] = response.data.data.map(
-            (element: PATROL_HEADER_DATA, index: number) => {
-              return {
-                ...element,
-              };
-            }
-          );
-          setIsLoading(false);
-          setPatrolHeaderData(loadeddata);
-        } else {
-          setIsLoading(true);
-          setPatrolHeaderData([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  // Chuẩn hóa dữ liệu thẻ PQC3
+  const pqcCardItems: PatrolCardData[] = useMemo(() => {
+    return patrol.pqcdatatable.map((ele) => ({
+      CATEGORY: "PQC3" as const,
+      CUST_NAME_KD: ele.CUST_NAME_KD,
+      DEFECT: `${ele.ERR_CODE}: ${ele.DEFECT_PHENOMENON}`,
+      EQ: ele.LINE_NO,
+      FACTORY: ele.FACTORY,
+      G_NAME_KD: ele.G_NAME_KD,
+      INSPECT_QTY: ele.INSPECT_QTY,
+      INSPECT_NG: ele.DEFECT_QTY,
+      LINK: `/pqc/PQC3_${ele.PQC3_ID + 1}.png`,
+      TIME: ele.OCCURR_TIME,
+      EMPL_NO: ele.LINEQC_PIC,
+    }));
+  }, [patrol.pqcdatatable]);
 
-  const getInspectionPatrol = () => {
-    generalQuery("trainspectionpatrol", {
-      FROM_DATE: liveStream?.current ? moment().format('YYYY-MM-DD') : fromdateRef.current,
-      TO_DATE: liveStream?.current ? moment().format('YYYY-MM-DD') : todateRef.current,
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: INSP_PATROL_DATA[] = response.data.data.map(
-            (element: INSP_PATROL_DATA, index: number) => {
-              return {
-                ...element,
-                id: index
-              };
-            }
-          );
-          setInspectionPatrolTable(loadeddata);
-        } else {
-          setInspectionPatrolTable([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  // Chuẩn hóa dữ liệu thẻ DTC
+  const dtcCardItems: PatrolCardData[] = useMemo(() => {
+    return patrol.dtcPatrolTable.map((ele) => ({
+      CATEGORY: "DTC" as const,
+      CUST_NAME_KD: ele.M_CODE !== "B0000035" ? ele.VENDOR : ele.CUST_NAME_KD,
+      DEFECT: ele.DEFECT_PHENOMENON,
+      EQ: ele.TEST_NAME,
+      FACTORY: ele.M_CODE !== "B0000035" ? ele.M_FACTORY : ele.FACTORY,
+      G_NAME_KD: ele.M_CODE !== "B0000035" ? `${ele.M_NAME}|${ele.WIDTH_CD}` : ele.G_NAME_KD,
+      INSPECT_QTY: 5,
+      INSPECT_NG: 5,
+      LINK: `/DTC_PATROL/${ele.DTC_ID}_${ele.TEST_CODE}${ele.FILE_}`,
+      TIME: ele.INS_DATE,
+      EMPL_NO: ele.INS_EMPL,
+    }));
+  }, [patrol.dtcPatrolTable]);
 
-  const traPQC3 = () => {
-    console.log('liveStream', liveStream.current);
-    generalQuery("trapqc3data", {
-      ALLTIME: false,
-      FROM_DATE: liveStream.current ? moment().format('YYYY-MM-DD') : fromdateRef.current,
-      TO_DATE: liveStream.current ? moment().format('YYYY-MM-DD') : todateRef.current,
-      CUST_NAME: '',
-      PROCESS_LOT_NO: '',
-      G_CODE: '',
-      G_NAME: '',
-      PROD_TYPE: '',
-      EMPL_NAME: '',
-      PROD_REQUEST_NO: '',
-      ID: '',
-      FACTORY: 'All',
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: PQC3_DATA[] = response.data.data.map(
-            (element: PQC3_DATA, index: number) => {
-              return {
-                ...element,
-                OCCURR_TIME: moment
-                  .utc(element.OCCURR_TIME)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                id: index,
-              };
-            },
-          );
-          if (loadeddata.length > 3) {
-            setPqcDataTable(loadeddata.slice(0, 3));
-          }
-          else {
-            setPqcDataTable(loadeddata);
-          }
-        } else {
-          setPqcDataTable([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  // Chuẩn hóa dữ liệu thẻ INS Patrol
+  const insCardItems: PatrolCardData[] = useMemo(() => {
+    return patrol.filteredInsData.map((ele) => ({
+      CATEGORY: "INS" as const,
+      CUST_NAME_KD: ele.CUST_NAME_KD,
+      DEFECT: `${ele.ERR_CODE}: ${ele.DEFECT_PHENOMENON}`,
+      EQ: ele.EQUIPMENT_CD,
+      FACTORY: ele.FACTORY,
+      G_NAME_KD: ele.G_NAME_KD,
+      INSPECT_QTY: ele.INSPECT_QTY,
+      INSPECT_NG: ele.DEFECT_QTY,
+      LINK: `/INS_PATROL/INS_PATROL_${ele.INS_PATROL_ID}.png`,
+      TIME: ele.OCCURR_TIME,
+      EMPL_NO: ele.INSP_PIC,
+    }));
+  }, [patrol.filteredInsData]);
 
-  const loadDTCPatrolData = () => {
-    generalQuery("loadDTCPatrol", {
-      FROM_DATE: liveStream?.current ? moment().format('YYYY-MM-DD') : fromdateRef.current,
-      TO_DATE: liveStream?.current ? moment().format('YYYY-MM-DD') : todateRef.current,
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          const loadeddata: DTC_PATROL_DATA[] = response.data.data.map(
-            (element: DTC_PATROL_DATA, index: number) => {
-              return {
-                ...element,
-                INS_DATE: moment
-                  .utc(element.INS_DATE)
-                  .format("YYYY-MM-DD HH:mm:ss"),
-                id: index
-              };
-            }
-          );
-          setDtcPatrolTable(loadeddata);
-        } else {
-          setDtcPatrolTable([]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
-  const initFunction = () => {
-    if (liveStream.current) {
-      fromdateRef.current = moment().format('YYYY-MM-DD')
-      todateRef.current = moment().format('YYYY-MM-DD')
+  // Tổng hợp dữ liệu cho chế độ xem Grid
+  const allCardItems: PatrolCardData[] = useMemo(() => {
+    let result: PatrolCardData[] = [];
+    if (patrol.filterLane === "ALL" || patrol.filterLane === "PQC3") {
+      result = result.concat(pqcCardItems);
     }
-    if (!isLoading) {
-      getPatrolHeaderData();
+    if (patrol.filterLane === "ALL" || patrol.filterLane === "DTC") {
+      result = result.concat(dtcCardItems);
     }
-    else {
-      Swal.fire('Thông báo', 'Đang load đợi tý', 'warning');
+    if (patrol.filterLane === "ALL" || patrol.filterLane === "INS") {
+      result = result.concat(insCardItems);
     }
-    traPQC3();
-    getInspectionPatrol();
-    loadDTCPatrolData();
-  }
-
-  useEffect(() => {
-    initFunction();
-    let intervalID = window.setInterval(() => {
-      initFunction();
-    }, 10000);
-    return () => {
-      clearInterval(intervalID);
-    }
-  }, [])
-
-  const renderLane = (
-    title: string,
-    subtitle: string,
-    items: any[],
-    renderItem: (ele: any, index: number) => React.ReactNode,
-  ) => {
-    if (!items || items.length === 0) return null;
-    return (
-      <section className="patrol_lane">
-        <div className="patrol_lane__header">
-          <div className="patrol_lane__title">{title}</div>
-          <div className="patrol_lane__subtitle">
-            {subtitle}
-            <span className="patrol_lane__count">{items.length}</span>
-          </div>
-        </div>
-        <div className="patrol_lane__body">
-          <div className="patrol_lane__track">
-            {items.map((ele: any, index: number) => renderItem(ele, index))}
-          </div>
-        </div>
-      </section>
-    );
-  };
+    return result;
+  }, [patrol.filterLane, pqcCardItems, dtcCardItems, insCardItems]);
 
   return (
-    <div className="patrol" style={{
-      position: fullScreen ? `fixed` : `relative`,
-      top: fullScreen ? `0` : `0`,
-      left: fullScreen ? `0` : `0`,
-      zIndex: fullScreen ? `99999` : '9'
-    }}>
-      <div className="patrol_header" style={{ backgroundImage: theme.CMS.backgroundImage }}>
-        <div className="patrol_header__left">
-          <div className="patrol_header__title">PATROL</div>
-          <div className="patrol_header__subtitle">Auto refresh 10s • Double-check events</div>
-        </div>
-        <div className="patrol_header__right">
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => {
-              initFunction();
-            }}
-          >
-            Load
-          </Button>
+    <div className={`precision-patrol ${patrol.isFullScreen ? "fullscreen" : ""}`}>
+      {/* 1. Sub-Header Stitch & TV Telemetry */}
+      <PrecisionPatrolHeader
+        isLive={patrol.isLive}
+        fromDate={patrol.fromDate}
+        setFromDate={patrol.setFromDate}
+        toDate={patrol.toDate}
+        setToDate={patrol.setToDate}
+        isFullScreen={patrol.isFullScreen}
+        onToggleFullScreen={() => patrol.setIsFullScreen((prev) => !prev)}
+        autoRefresh={patrol.autoRefresh}
+        onToggleAutoRefresh={() => patrol.setAutoRefresh((prev) => !prev)}
+        countdown={patrol.countdown}
+        onReload={patrol.refreshAll}
+        onToggleLive={patrol.handleToggleLive}
+      />
 
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={fullScreen}
-                onChange={() => {
-                  setFullScreen(!fullScreen);
-                }}
-              />
-            }
-            label="Full Screen"
-          />
+      {/* 2. Micro-cards KPI realtime */}
+      <PrecisionPatrolKpi kpis={patrol.kpis} />
 
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={liveStream.current}
-                onChange={() => {
-                  liveStream.current = !liveStream.current
-                  if (liveStream.current === true) {
-                    fromdateRef.current = moment().format('YYYY-MM-DD')
-                    todateRef.current = moment().format('YYYY-MM-DD')
-                  }
-                  setTrigger(!trigger);
-                }}
-              />
-            }
-            label="Live"
-          />
+      {/* 3. Action Toolbar & View Controller */}
+      <PrecisionPatrolToolbar
+        layoutView={patrol.layoutView}
+        onLayoutChange={patrol.setLayoutView}
+        filterLane={patrol.filterLane}
+        onFilterLaneChange={patrol.setFilterLane}
+        kpis={patrol.kpis}
+      />
 
-          <div className="patrol_header__dates">
-            <label>
-              <b>FROM:</b>
-              <input
-                type="date"
-                value={fromdateRef.current.toString()}
-                onChange={(e) => {
-                  fromdateRef.current = e.target.value;
-                  setTrigger(!trigger)
-                }}
-                disabled={liveStream.current}
-              ></input>
-            </label>
-            <label>
-              <b>TO:</b>{" "}
-              <input
-                type="date"
-                value={todateRef.current.toString()}
-                onChange={(e) => {
-                  todateRef.current = e.target.value;
-                  setTrigger(!trigger)
-                }}
-                disabled={liveStream.current}
-              ></input>
-            </label>
-          </div>
-        </div>
-      </div>
-      <div className="patrol_content">
-        {renderLane(
-          "PQC3",
-          liveStream.current ? "Today" : `${fromdateRef.current} → ${todateRef.current}`,
-          pqcdatatable,
-          (ele: PQC3_DATA, index: number) => {
-            return (
-              <PATROL_COMPONENT
-                key={ele.PQC3_ID ?? index}
-                data={{
-                  CUST_NAME_KD: ele.CUST_NAME_KD,
-                  DEFECT: ele.ERR_CODE + ':' + ele.DEFECT_PHENOMENON,
-                  EQ: ele.LINE_NO,
-                  FACTORY: ele.FACTORY,
-                  G_NAME_KD: ele.G_NAME_KD,
-                  INSPECT_QTY: ele.INSPECT_QTY,
-                  INSPECT_NG: ele.DEFECT_QTY,
-                  LINK: `/pqc/PQC3_${ele.PQC3_ID + 1}.png`,
-                  TIME: ele.OCCURR_TIME,
-                  EMPL_NO: ele.LINEQC_PIC
-                }}
+      {/* 4. Content Workspace: Chế độ Lanes hoặc Lưới Grid */}
+      <div
+        className={`precision-patrol-content ${
+          patrol.layoutView === "GRID" ? "grid-mode" : ""
+        }`}
+      >
+        {patrol.layoutView === "LANES" ? (
+          <>
+            {(patrol.filterLane === "ALL" || patrol.filterLane === "PQC3") && (
+              <PrecisionPatrolLane
+                category="PQC3"
+                title="Sự Cố Lỗi Công Đoạn (PQC3)"
+                subtitle={patrol.isLive ? "Hôm nay" : `${patrol.fromDate} → ${patrol.toDate}`}
+                items={pqcCardItems}
+                onOpenModal={handleOpenModal}
               />
-            )
-          }
-        )}
+            )}
 
-        {renderLane(
-          "DTC",
-          liveStream.current ? "Today" : `${fromdateRef.current} → ${todateRef.current}`,
-          dtcPatrolTable,
-          (ele: DTC_PATROL_DATA, index: number) => {
-            return (
-              <PATROL_COMPONENT
-                key={ele.DTC_ID ?? index}
-                data={{
-                  CUST_NAME_KD: ele.M_CODE !=='B0000035' ? ele.VENDOR: ele.CUST_NAME_KD,
-                  DEFECT: ele.DEFECT_PHENOMENON,
-                  EQ: ele.TEST_NAME,
-                  FACTORY: ele.M_CODE !=='B0000035'? ele.M_FACTORY: ele.FACTORY,
-                  G_NAME_KD: ele.M_CODE !=='B0000035' ?  ele.M_NAME + '|' + ele.WIDTH_CD :  ele.G_NAME_KD,
-                  INSPECT_QTY: 5,
-                  INSPECT_NG: 5,
-                  LINK: `/DTC_PATROL/${ele.DTC_ID}_${ele.TEST_CODE}${ele.FILE_}`,
-                  TIME: ele.INS_DATE,
-                  EMPL_NO: ele.INS_EMPL
-                }}
+            {(patrol.filterLane === "ALL" || patrol.filterLane === "DTC") && (
+              <PrecisionPatrolLane
+                category="DTC"
+                title="Thử Nghiệm Độ Tin Cậy (DTC)"
+                subtitle={patrol.isLive ? "Hôm nay" : `${patrol.fromDate} → ${patrol.toDate}`}
+                items={dtcCardItems}
+                onOpenModal={handleOpenModal}
               />
-            )
-          }
-        )}
+            )}
 
-        {renderLane(
-          "INS Patrol",
-          "NL / PK",
-          inspectionPatrolTable.filter((element: INSP_PATROL_DATA) => element.PHANLOAI === 'NL' || element.PHANLOAI === 'PK'),
-          (ele: INSP_PATROL_DATA, index: number) => {
-            return (
-              <PATROL_COMPONENT
-                key={ele.INS_PATROL_ID ?? index}
-                data={{
-                  CUST_NAME_KD: ele.CUST_NAME_KD,
-                  DEFECT: ele.ERR_CODE + ':' + ele.DEFECT_PHENOMENON,
-                  EQ: ele.EQUIPMENT_CD,
-                  FACTORY: ele.FACTORY,
-                  G_NAME_KD: ele.G_NAME_KD,
-                  INSPECT_QTY: ele.INSPECT_QTY,
-                  INSPECT_NG: ele.DEFECT_QTY,
-                  LINK: `/INS_PATROL/INS_PATROL_${ele.INS_PATROL_ID}.png`,
-                  TIME: ele.OCCURR_TIME,
-                  EMPL_NO: ele.INSP_PIC
-                }}
+            {(patrol.filterLane === "ALL" || patrol.filterLane === "INS") && (
+              <PrecisionPatrolLane
+                category="INS"
+                title="Kiểm Tra Ngoại Quan (INS Patrol)"
+                subtitle="Nguyên liệu (NL) & Phụ kiện (PK)"
+                items={insCardItems}
+                onOpenModal={handleOpenModal}
               />
-            )
-          }
+            )}
+          </>
+        ) : (
+          allCardItems.map((item, idx) => (
+            <PrecisionPatrolCard
+              key={`grid_${item.CATEGORY}_${idx}`}
+              data={item}
+              onOpenModal={handleOpenModal}
+            />
+          ))
         )}
       </div>
+
+      {/* 5. Modal xem trước ảnh lỗi phóng to */}
+      <PrecisionPatrolModal
+        data={patrol.previewModal}
+        onClose={() =>
+          patrol.setPreviewModal({
+            isOpen: false,
+            imageUrl: "",
+            title: "",
+          })
+        }
+      />
     </div>
-  )
-}
-export default PATROL
+  );
+};
+
+export default React.memo(PATROL);
