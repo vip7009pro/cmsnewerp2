@@ -1,5 +1,36 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-15 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Đăng Ký & Theo Dõi Lỗi PQC - PQC3.tsx & PrecisionPQC3/ Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Đã lưu trữ an toàn tại `src/pages/qc/pqc/PQC3.backup.tsx` (26.363 bytes, 793 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `PQC3.tsx` tinh gọn từ 793 dòng xuống chỉ còn **132 dòng** (< 150 dòng theo cam kết), kết nối dữ liệu qua custom hook `usePQC3Data`, điều phối layout và các subcomponents.
+   - Toàn bộ 9 presentation subcomponents tại `src/pages/qc/pqc/PrecisionPQC3/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file**:
+     1. `PrecisionPQC3.scss` (680 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Rose `#f43f5e`, Amber `#f59e0b`, Emerald `#10b981`), layout co giãn full-width & full-height Multi-Tab (`.component_element &`), custom scrollbars, triệt tiêu 100% toolbar xanh lá cũ của AGTable, loại bỏ hoàn toàn footer thừa và thanh trạng thái giả.
+     2. `PrecisionPQC3Header.tsx` (60 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • PQC / ĐĂNG KÝ & THEO DÕI LỖI CÔNG ĐOẠN (PQC3 CONTROL)`, badge `CMS ERP` & `DEFECT PQC3`, telemetry trực tuyến `NET_SERVER: 3007 (Online)` kèm pulse dot, thông tin nhân viên đăng nhập, nút làm mới dữ liệu và nút bật/tắt toàn màn hình.
+     3. `PrecisionPQC3Kpi.tsx` (62 dòng): 4 Thẻ Micro-cards KPI realtime (Tổng Sự Cố Lỗi PQC3, Tổng Sản Phẩm Lỗi NG EA, Tổng Lượng Mẫu KT, Tỷ Lệ Lỗi TB PPM/%).
+     4. `PrecisionPQC3DirectiveCard.tsx` (80 dòng): Banner ngữ cảnh hiển thị thông tin chỉ thị kỹ thuật (PLAN_ID, LOT SX, G_CODE, G_NAME, YCSX_NO, YCSX_DATE, Badge liên kết PQC1_ID và PQC3_ID đang chọn).
+     5. `PrecisionPQC3InputCard.tsx` (220 dòng): Form đăng ký sự cố lỗi PQC3 tối ưu UX: Nhà máy NM1/NM2, Lot SX tự động tra cứu khi gõ/quét >= 8 ký tự, Mã LINEQC tự động hiển thị tên nhân viên QC, phân loại mã lỗi, hiện tượng lỗi, thời gian phát sinh, ghi chú, lượng mẫu KT & lượng phế phẩm, chọn ảnh đính kèm, hỗ trợ phím Enter tuần tự và bộ đôi nút `Lưu Sự Cố (Input Data)` & `Update Ảnh`.
+     6. `PrecisionPQC3Toolbar.tsx` (110 dòng): SaaS Action Toolbar phía trên bảng: Nút `Tra Data Lỗi`, Nút bật/thu gọn `Ẩn/Hiện Form Nhập`, **Segment Switcher 3 Chế Độ** (`⚠️ LỖI PQC3`, `⚙️ CÀI ĐẶT PQC1`, `◫ SONG SONG DUAL`), ô lọc nhanh tức thời Quick Filter trên lưới, cụm xuất Excel `EX1` lọc & `EX2` toàn bộ, và badge đếm số dòng.
+     7. `PrecisionPQC3Columns.tsx` (220 dòng): Cấu hình 29 cột bảng PQC1 và 29 cột bảng PQC3 chuẩn Stitch, khớp 100% `headerName` và `width` bản gốc theo nguyên tắc số 8 của SKILL.md, định dạng số hàng nghìn và nút xem ảnh lỗi trực quan.
+     8. `PrecisionPQC3Table.tsx` (98 dòng): Bọc bảng AGTable High-Density, hỗ trợ chế độ xem đơn lẻ hoặc song song Dual View, hoàn toàn không có footer thừa hoặc status bar giả ở chân trang, tối đa hóa không gian dọc cho bảng dữ liệu.
+     9. `PrecisionPQC3ImageModal.tsx` (68 dòng): Modal xem trước ảnh lỗi phóng to trực quan với backdrop blur mờ nền và fallback khi ảnh chưa tồn tại.
+     10. `usePQC3Data.ts` (588 dòng): Custom hook quản lý 100% state, queries API (`trapqc1data`, `trapqc3data`, `checkPLAN_ID`, `checkPROCESS_LOT_NO`, `checkEMPL_NO_mobile`, `loadErrTable`, `insert_pqc3`, `getlastestPQC3_ID`, `uploadFile2`), tự động liên kết PQC1_ID khi click dòng, tính toán KPI realtime và xuất Excel qua `SaveExcel`.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ**:
+   - Đăng ký lỗi PQC3 kèm upload ảnh lỗi tự động (`insert_pqc3`, `uploadFile2`).
+   - Tự động tra cứu Lot SX và chỉ thị sản xuất (`checkPROCESS_LOT_NO`, `checkPLAN_ID`).
+   - Tự động tra cứu tên nhân viên QC khi gõ mã thẻ (`checkEMPL_NO_mobile`).
+   - Nạp danh mục mã lỗi từ CSDL (`loadErrTable`).
+   - Tự động liên kết `PQC1_ID` khi nhấp chọn dòng trên bảng PQC1.
+   - Cập nhật ảnh cho dòng lỗi PQC3 đã chọn trên bảng.
+   - Xuất dữ liệu Excel chuẩn hóa EX1 (dữ liệu lọc) và EX2 (toàn bộ).
+4. **Bổ sung tương thích trong `PQC.scss`**:
+   - Cấu hình layout full-height cho `.pqc3, .precision-pqc3` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi nhúng trong tab PQC3-DEFECT của `PQC.tsx` không bao giờ bị collapse chiều cao.
+5. **Xác thực kiểm tra Vite Dev Server & Zero Error**:
+   - Toàn bộ 12/12 file mới và file liên quan đều đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi TypeScript trong `src/pages/qc/pqc/`.
+   - Hoàn toàn không có footer thừa, không có tab menu thừa.
+
 ## Update - 2026-09-14 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Cài Đặt Công Đoạn PQC - PQC1.tsx & PrecisionPQC1/ Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed
