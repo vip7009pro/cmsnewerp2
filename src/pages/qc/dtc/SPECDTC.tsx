@@ -33,7 +33,10 @@ const SPECDTC: React.FC = () => {
   // Nạp danh mục các hạng mục kiểm tra
   const getTestList = async () => {
     const tempList: TestListTable[] = await f_loadDTC_TestList();
-    tempList.unshift({ TEST_CODE: 0, TEST_NAME: "ALL", SELECTED: false });
+    tempList.unshift({
+      TEST_CODE: 0, TEST_NAME: "ALL", SELECTED: false,
+      TEST_TIME: undefined
+    });
     setTestList(tempList);
   };
 
@@ -72,8 +75,8 @@ const SPECDTC: React.FC = () => {
                   getAuditMode() === 0
                     ? element?.G_NAME
                     : element?.G_NAME?.search("CNDB") === -1
-                    ? element?.G_NAME
-                    : "TEM_NOI_BO",
+                      ? element?.G_NAME
+                      : "TEM_NOI_BO",
                 id: index,
               };
             }
