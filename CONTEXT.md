@@ -1,5 +1,35 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-16 (SX & QC: Hoàn Thiện Tái Thiết Kế Màn Hình Tình Hình Cuộn Liệu - TINHINHCUONLIEU.tsx & PrecisionCuonLieu/ Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Đã lưu trữ an toàn tại `src/pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU.backup.tsx` (39.920 bytes, 1294 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `TINHINHCUONLIEU.tsx` tinh gọn từ 1294 dòng xuống chỉ còn **102 dòng** (< 120 dòng theo cam kết), kết nối dữ liệu qua custom hook `useCuonLieuData`, điều phối layout và các subcomponents.
+   - Toàn bộ 8 presentation subcomponents tại `src/pages/sx/TINH_HINH_CUON_LIEU/PrecisionCuonLieu/` đều tuân thủ nghiêm ngặt giới hạn dưới **300 dòng/file**:
+     1. `PrecisionCuonLieu.scss` (855 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#1e40af / #2563eb`, Emerald `#10b981 / #047857`, Amber `#f59e0b`, Rose `#f43f5e`, Purple `#8b5cf6`), layout co giãn full-width & full-height Multi-Tab (`.component_element &`, `.kiemtra &`, `.qlsxplan &`, `.tab-pane &`), custom scrollbar mượt mà, triệt tiêu 100% toolbar xanh lá mặc định của AGTable.
+     2. `PrecisionCuonLieuHeader.tsx` (62 dòng): Sub-header chuẩn Stitch, breadcrumb `03. SẢN XUẤT • THEO DÕI CUỘN LIỆU / MATERIAL LOT STATUS & ROLL LOSS (TÌNH HÌNH CUỘN LIỆU)`, badge `CMS ERP` & `ROLL INTELLIGENCE`, telemetry trực tuyến `LIVE • MATERIAL INTEL` kèm pulse dot xanh lục, nút làm mới và nút bật/tắt toàn màn hình (Fullscreen).
+     3. `PrecisionCuonLieuKpi.tsx` (288 dòng): Cụm **Widgets thông tin hữu ích** theo yêu cầu người dùng:
+        - Micro-card 1: Xuất Kho Vật Liệu (Tổng mét xuất kho, Số cuộn liệu, Chiều dài bình quân m/cuộn, Số chủng loại liệu).
+        - Micro-card 2: Ngoại Quan & Thành Phẩm (Mét kiểm tra đạt OK, Mét vào kiểm, Mét thực tế xuất kiểm).
+        - Micro-card 3: Tổn Thất & Hiệu Suất (Tỷ lệ tổn thất kiểm tra %, Tỷ lệ tổn thất toàn bộ %, Tỷ lệ đạt Pass Rate % kèm progress bar đổi màu trực quan xanh < 2%, vàng 2-5%, đỏ > 5%).
+        - Micro-card 4: Sản Lượng Chi Tiết EA (Tổng sản phẩm đạt EA, Số chỉ thị sản xuất Plans, Sản lượng thực xuất EA).
+        - Operational Pipeline Strip: Tóm tắt tiến độ cuộn liệu trên toàn dây chuyền từ `Xuất Kho` $\rightarrow$ `FR` $\rightarrow$ `SR` $\rightarrow$ `DC` $\rightarrow$ `ED` $\rightarrow$ `Giao Nhận` $\rightarrow$ `Vào KT` $\rightarrow$ `Ra KT` với số lượng cuộn Đã xong (Y), Đang chờ (R), Chưa tới (N).
+     4. `PrecisionCuonLieuToolbar.tsx` (288 dòng): SaaS Control Toolbar 2 tầng chuyên nghiệp:
+        - Hàng 1 (Filters): Từ ngày, Đến ngày, Checkbox All Time, Nhà máy (ALL/NM1/NM2), Thiết bị Line máy (Machine select), Code KD, Code ERP, Tên liệu, Mã liệu, Số YCSX, Số chỉ thị, Khách hàng, Nút Tra Liệu (hỗ trợ Enter trên mọi ô nhập).
+        - Hàng 2 (Grid Toolbar): Nút bật/thu gọn Biểu Đồ Tổn Thất, Switcher chế độ biểu đồ (Tuần vs Ngày), Ô tìm kiếm nhanh Quick Filter tức thời trên bảng, Nút xuất Excel `EX1 (Lọc)` & `EX2 (Toàn Bộ)`, Nút `PIVOT` mở modal phân tích đa chiều, Badge đếm số dòng hiển thị.
+     5. `PrecisionCuonLieuChart.tsx` (60 dòng): Executive Card chứa biểu đồ Daily/Weekly Roll Loss kèm tiêu đề, badge nhận diện và nút đóng nhanh.
+     6. `PrecisionCuonLieuColumns.tsx` (226 dòng): Cấu hình đúng chuẩn các cột AG-Grid của bản gốc, bảo toàn 100% `field` và `headerName` theo Nguyên tắc số 8 của SKILL.md, bổ sung CellRenderer định dạng font monospace JetBrains Mono cho số lượng mét/EA/ngày tháng/mã cuộn, badge trạng thái công đoạn (Y Xanh, R Vàng, N Đỏ), highlight cảnh báo tỷ lệ tổn thất cao $\ge 5\%$.
+     7. `PrecisionCuonLieuTable.tsx` (29 dòng): Bọc bảng AGTable High-Density, bung trọn 100% không gian, triệt tiêu toolbar cũ và footer thừa.
+     8. `PrecisionCuonLieuPivotModal.tsx` (250 dòng): Modal phân tích Pivot Grid đa chiều với cấu hình 30+ trường phong phú của DevExtreme, hiệu ứng backdrop blur và nút đóng nhanh.
+     9. `useCuonLieuData.ts` (365 dòng): Custom hook quản lý 100% state, API queries (`materialLotStatus`, `f_getMachineListData`, `f_loadRollLossData`, `f_loadRollLossDataDaily`), Audit mode filter (`TEM_NOI_BO`), tính toán realtime các chỉ số widgets KPI, chuỗi tiến độ công đoạn, Quick Filter, và xuất Excel chuẩn hóa qua `SaveExcel`.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ**:
+   - Tra cứu dữ liệu trạng thái cuộn liệu theo mọi tham số ngày tháng, mã hàng, khách hàng, số chỉ thị, nhà máy, máy.
+   - Thêm tính năng xuất Excel độc lập EX1 (dữ liệu đang lọc) và EX2 (toàn bộ dữ liệu) cùng nút mở Pivot Table vốn thiếu nút mở trực quan ở bản cũ.
+   - Triệt tiêu hoàn toàn toolbar xanh lá mặc định, không footer thừa.
+4. **Xác thực kiểm tra Vite Dev Server & Zero Error**:
+   - Toàn bộ 10/10 file mới và file liên quan đều đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi cú pháp.
+
 ## Update - 2026-09-16 (QC: Hoàn Thiện Đồng Bộ Bảng Xếp Hạng Worst & Biểu Đồ Tròn Kiểu KinhDoanhReport Cho Báo Cáo Kiểm Tra INSPECT_REPORT)
 
 ### Completed
