@@ -1,5 +1,31 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-16 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Báo Cáo OQC - OQC_REPORT.tsx & PrecisionOQCReport/ Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**:
+   - Đã lưu trữ an toàn tại `src/pages/qc/oqc/OQC_REPORT.backup.tsx` (29.976 bytes, 829 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `OQC_REPORT.tsx` tinh gọn từ 829 dòng xuống chỉ còn **103 dòng** (< 120 dòng theo cam kết), kết nối dữ liệu qua custom hook `useOQCReportData`, điều phối toàn diện các phân hệ báo cáo.
+   - Toàn bộ các presentation subcomponents tại `src/pages/qc/oqc/PrecisionOQCReport/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file**:
+     1. `PrecisionOQCReport.scss` (529 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#0f172a`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#f43f5e`, Purple `#7c3aed`), layout co giãn full-width & full-height Multi-Tab, executive chart cards, grid 2 cột responsive, custom scrollbar 6px mượt mà.
+     2. `PrecisionOQCReportHeader.tsx` (76 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • OQC / BÁO CÁO TOÀN DIỆN CHỈ SỐ CHẤT LƯỢNG (OQC QUALITY ANALYTICS)`, badge `CMS ERP` & `OQC INTELLIGENCE`, telemetry `LIVE • OQC INTEL` kèm pulse dot xanh lá, nút làm mới và nút Fullscreen.
+     3. `PrecisionOQCReportToolbar.tsx` (174 dòng): SaaS Control Toolbar 2 tầng:
+        - Hàng 1 (Filters): Từ ngày, Đến ngày, Tên khách hàng (Customer), Checkbox Default, Nút Tìm kiếm (Search).
+        - Hàng 2 (Segment Switcher): Chuyển đổi linh hoạt giữa 4 phân hệ: `⊞ Xem Toàn Diện`, `📉 Tỷ Lệ Lỗi OQC`, `📊 Inspection PPM (CMS)`, `👥 Khách Hàng & Loại SP`.
+     4. `PrecisionOQCReportKpi.tsx` (123 dòng): 4 Thẻ Micro-cards KPI realtime (Today NG, This Week NG, This Month NG, This Year NG) với tỷ lệ lỗi % sắc nét và badge màu trạng thái (Tiêu chuẩn / Theo dõi / Vượt ngưỡng).
+     5. `PrecisionOQCReportNGRateSection.tsx` (149 dòng): Phân hệ 4 biểu đồ tỷ lệ lỗi OQC (Daily, Weekly, Monthly, Yearly NG Rate) bọc trong Executive Cards độc lập kèm nút xuất Excel riêng biệt (`SaveExcel`).
+     6. `PrecisionOQCReportInspectionPPMSection.tsx` (154 dòng): Phân hệ 4 biểu đồ PPM kiểm tra xuất hàng CMS (Daily, Weekly, Monthly, Yearly PPM) kèm nút xuất Excel.
+     7. `PrecisionOQCReportCustomerProdSection.tsx` (83 dòng): Phân hệ phân tích sự cố theo Khách hàng và Chủng loại sản phẩm (NG By Customer & NG By Product Type) với chiều cao chuẩn 540px, kèm nút xuất Excel.
+     8. `oqcReportApi.ts` (119 dòng): Module chuyên trách gọi các truy vấn API `dailyOQCTrendingData`, `weeklyOQCTrendingData`, `monthlyOQCTrendingData`, `yearlyOQCTrendingData`, `inspect_..._oqc`, `ngbyCustomerOQC`, `ngbyProTypeOQC`.
+     9. `useOQCReportData.ts` (195 dòng): Custom hook quản lý 100% state, loading SweetAlert2, các hàm xuất Excel độc lập và Fullscreen API.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ**:
+   - Nạp dữ liệu OQC theo khoảng ngày, lọc theo khách hàng, xuất Excel riêng từng biểu đồ, triệt tiêu hoàn toàn dải màu cũ và footer thừa.
+4. **Bổ sung tương thích trong `OQC.scss`**:
+   - Cấu hình layout full-height cho `.precision-oqc-report` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi chọn tab "Báo Cáo OQC" trong `OQC.tsx` hiển thị bung tràn 100% màn hình, không bị bẹp hay collapse chiều cao.
+5. **Xác thực kiểm tra Vite Dev Server & Zero Error**:
+   - Toàn bộ 100% các file mới và file liên quan đều đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi TypeScript.
+
 ## Update - 2026-09-16 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Khiếu Nại Khách Hàng VOC - VOC_HISTORY.tsx & PrecisionVOCHistory/ Chuẩn Google Stitch & TV Command Center & Tối Ưu Barcode Scanner)
 
 ### Completed
