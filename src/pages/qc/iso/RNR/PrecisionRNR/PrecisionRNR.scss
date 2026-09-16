@@ -1,0 +1,694 @@
+// PrecisionRNR.scss - Google Stitch High-Density Enterprise Design Tokens
+.precision-rnr {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  background: #f8fafc;
+  gap: 8px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #0f172a;
+
+  // QUAN TRỌNG: Full-width và Full-height trong Multi-tab ERP & ISO tabs
+  .component_element &,
+  .iso &,
+  .rnr &,
+  .tab-pane & {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+  }
+
+  // 1. SUB-HEADER STITCH
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    flex-shrink: 0;
+  }
+
+  &__headerLeft {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  &__breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #1e293b;
+    letter-spacing: 0.2px;
+
+    .code-prefix {
+      color: #2563eb;
+      font-weight: 800;
+    }
+
+    .divider {
+      color: #94a3b8;
+    }
+
+    .title {
+      color: #0f172a;
+      text-transform: uppercase;
+    }
+  }
+
+  &__badges {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+
+    &--blue {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    &--purple {
+      background: #faf5ff;
+      color: #6b21a8;
+      border: 1px solid #e9d5ff;
+    }
+  }
+
+  &__headerRight {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__telemetry {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #15803d;
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+      animation: pulse-rnr 2s infinite;
+    }
+  }
+
+  &__headerBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 26px;
+    padding: 0 8px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+      border-color: #94a3b8;
+    }
+
+    .material-symbols-outlined {
+      font-size: 15px;
+    }
+  }
+
+  // 2. KPI MICRO-CARDS
+  &__kpiGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    flex-shrink: 0;
+
+    @media (max-width: 960px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__kpiCard {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+    }
+
+    &--blue::before { background: #2563eb; }
+    &--emerald::before { background: #10b981; }
+    &--amber::before { background: #f59e0b; }
+    &--purple::before { background: #8b5cf6; }
+    &--rose::before { background: #f43f5e; }
+  }
+
+  &__kpiHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  &__kpiTitle {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  &__kpiIcon {
+    font-size: 15px;
+    color: #94a3b8;
+  }
+
+  &__kpiValueRow {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  &__kpiValue {
+    font-family: "JetBrains Mono", "SF Mono", Consolas, monospace;
+    font-size: 19px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+
+    &--emerald { color: #047857; }
+    &--blue { color: #1d4ed8; }
+    &--amber { color: #b45309; }
+    &--purple { color: #6d28d9; }
+    &--rose { color: #be123c; }
+  }
+
+  &__kpiSub {
+    font-size: 10.5px;
+    color: #64748b;
+  }
+
+  &__kpiProgress {
+    width: 100%;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 999px;
+    margin-top: 6px;
+    overflow: hidden;
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+
+      &--emerald { background: #10b981; }
+      &--blue { background: #2563eb; }
+      &--amber { background: #f59e0b; }
+      &--rose { background: #f43f5e; }
+    }
+  }
+
+  // OPERATIONAL STRIP
+  &__strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 4px 10px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 11px;
+    color: #475569;
+    flex-shrink: 0;
+
+    .strip-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      strong {
+        color: #0f172a;
+        font-family: "JetBrains Mono", monospace;
+      }
+    }
+  }
+
+  // 3. SAAS ACTION TOOLBAR
+  &__toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    flex-shrink: 0;
+  }
+
+  &__toolbarRow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: space-between;
+  }
+
+  &__filterGroup {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex: 1;
+  }
+
+  &__filterItem {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+
+    label {
+      white-space: nowrap;
+    }
+
+    input[type="date"],
+    input[type="text"],
+    select {
+      height: 26px;
+      padding: 0 7px;
+      font-size: 11px;
+      color: #1e293b;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      outline: none;
+      transition: all 0.15s ease;
+
+      &:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+      }
+    }
+
+    input[type="date"] {
+      width: 112px;
+    }
+
+    input[type="text"] {
+      width: 115px;
+    }
+
+    select {
+      cursor: pointer;
+    }
+  }
+
+  &__checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    user-select: none;
+
+    input[type="checkbox"] {
+      cursor: pointer;
+      accent-color: #2563eb;
+    }
+  }
+
+  &__searchBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 26px;
+    padding: 0 12px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+
+    .material-symbols-outlined {
+      font-size: 15px;
+    }
+  }
+
+  // SEGMENT SWITCHER
+  &__segmentNav {
+    display: inline-flex;
+    align-items: center;
+    background: #f1f5f9;
+    padding: 2px;
+    border-radius: 6px;
+    gap: 2px;
+    border: 1px solid #e2e8f0;
+  }
+
+  &__segmentBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 24px;
+    padding: 0 9px;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      color: #0f172a;
+    }
+
+    &.active {
+      background: #ffffff;
+      color: #2563eb;
+      font-weight: 700;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    }
+
+    .material-symbols-outlined {
+      font-size: 14px;
+    }
+  }
+
+  // 4. MAIN AGTABLE CONTAINER
+  &__gridContainer {
+    flex: 1 1 auto;
+    min-height: 220px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+
+  &__gridToolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 5px 12px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+  }
+
+  &__gridToolbarLeft {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  &__quickSearch {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: min(240px, 100%);
+    height: 26px;
+    padding: 0 8px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+
+    .material-symbols-outlined {
+      font-size: 15px;
+      color: #94a3b8;
+    }
+
+    input {
+      border: none;
+      outline: none;
+      font-size: 11px;
+      width: 100%;
+      color: #1e293b;
+
+      &::placeholder {
+        color: #94a3b8;
+      }
+    }
+  }
+
+  &__gridActions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  &__actionBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    padding: 0 7px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    transition: all 0.15s ease;
+
+    .material-symbols-outlined {
+      font-size: 14px;
+    }
+
+    .badge-sub {
+      font-size: 9.5px;
+      font-weight: 600;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    &--excel {
+      color: #065f46;
+      border-color: #a7f3d0;
+      background: #f0fdf4;
+
+      .badge-sub {
+        background: #dcfce7;
+        color: #065f46;
+      }
+
+      &:hover {
+        background: #dcfce7;
+        border-color: #6ee7b7;
+      }
+    }
+  }
+
+  &__gridMeta {
+    font-size: 11px;
+    color: #64748b;
+
+    strong {
+      color: #0f172a;
+      font-family: "JetBrains Mono", monospace;
+    }
+  }
+
+  // CẤU TRÚC ÉP BẢNG FULL HEIGHT & ẨN TOOLBAR CŨ
+  &__gridBody {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 200px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+
+    .agtable {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 200px;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+
+      // Ẩn triệt để toolbar xanh lá mặc định
+      .toolbar {
+        display: none !important;
+      }
+
+      .ag-theme-quartz {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-height: 200px;
+        height: 100%;
+        width: 100%;
+
+        .ag-root-wrapper {
+          height: 100% !important;
+          min-height: 200px;
+          border: none;
+        }
+
+        .ag-header {
+          background: #f8fafc;
+          border-bottom: 1px solid #cbd5e1;
+          font-size: 11px;
+          font-weight: 700;
+          color: #475569;
+          text-transform: uppercase;
+          letter-spacing: 0.2px;
+        }
+
+        .ag-row {
+          font-size: 11.5px;
+          border-bottom: 1px solid #f1f5f9;
+
+          &:hover {
+            background-color: #f8fafc !important;
+          }
+        }
+      }
+    }
+  }
+
+  // CELL RENDERERS
+  .rnr-cell-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10.5px;
+    font-weight: 700;
+    line-height: 1.2;
+
+    &--true,
+    &--pass {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+
+    &--false,
+    &--fail {
+      background: #fff1f2;
+      color: #be123c;
+      border: 1px solid #fecdd3;
+    }
+
+    &--na {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+    }
+  }
+
+  .rnr-score-cell {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 12px;
+
+    &--high { color: #047857; }
+    &--low { color: #be123c; }
+    &--na { color: #94a3b8; }
+  }
+
+  .rnr-code-cell {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: #334155;
+  }
+}
+
+@keyframes pulse-rnr {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(34, 197, 94, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}

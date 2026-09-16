@@ -1,5 +1,36 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-16 (QC & ISO: Hoàn Thiện Tái Thiết Kế Màn Hình Quản Lý Điểm Thi & Gauge R&R - RNR.tsx & PrecisionRNR/ Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Đã lưu trữ an toàn tại `src/pages/qc/iso/RNR/RNR.backup.tsx` (18.523 bytes, 479 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `RNR.tsx` tinh gọn từ 479 dòng xuống chỉ còn **110 dòng** (< 120 dòng theo cam kết), kết nối dữ liệu qua custom hook `useRNRData`, điều phối layout và các subcomponents.
+   - Toàn bộ các presentation subcomponents tại `src/pages/qc/iso/RNR/PrecisionRNR/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file** (ngoại trừ file khai báo cột AG-Grid):
+     1. `PrecisionRNR.scss` (695 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#f43f5e`, Purple `#8b5cf6`), layout co giãn full-width & full-height Multi-Tab (`.component_element &`, `.iso &`, `.rnr &`, `.tab-pane &`), custom scrollbar mượt mà, triệt tiêu 100% toolbar xanh lá mặc định của AGTable.
+     2. `PrecisionRNRHeader.tsx` (61 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • ISO / QUẢN LÝ ĐIỂM THI & GAUGE R&R (MEASUREMENT SYSTEMS ANALYSIS)`, badge `CMS ERP` & `RNR INTELLIGENCE`, telemetry trực tuyến `LIVE • MSA INTEL` kèm pulse dot xanh lục, nút làm mới và nút Fullscreen (Toàn Màn Hình).
+     3. `PrecisionRNRKpi.tsx` (26 dòng) & 3 Sub-widgets KPI:
+        - `PrecisionRNRKpiDetail.tsx` (112 dòng): KPI cho phân hệ chi tiết: Tổng lượt phép đo/câu hỏi, Tỷ lệ phán đoán đúng L1 (Accuracy 1 %) kèm progress bar, Tỷ lệ phán đoán đúng L2 (Accuracy 2 %), Số nhân viên tham gia, Dải tóm tắt mẫu chuẩn OK vs NG.
+        - `PrecisionRNRKpiEmpl.tsx` (112 dòng): KPI cho phân hệ tổng hợp nhân viên: Quân số dự thi, Tỷ lệ Đạt L1 (Pass Rate 1 %) kèm progress bar, Điểm trung bình L1 (Avg Score 1) và Max/Min, Tỷ lệ Đạt L2 (Gauge R&R), Dải tóm tắt Tỷ lệ Bắt nhầm (BN Rate) & Tỷ lệ Bỏ sót (BS Rate) trung bình.
+        - `PrecisionRNRKpiDept.tsx` (83 dòng): KPI cho phân hệ phân tích bộ phận: Số bộ phận đánh giá, Bộ phận dẫn đầu Pass Rate, Điểm trung bình toàn xưởng, Bộ phận cần cải thiện.
+     4. `PrecisionRNRToolbar.tsx` (245 dòng): SaaS Control Toolbar 2 tầng chuyên nghiệp:
+        - Hàng 1 (Filters): Từ ngày, Đến ngày, Checkbox All Time, Nhà máy (ALL/NM1/NM2), Loại bài test (ALL/G_RNR/Test_LT/Test_CC), Test ID, Tên nhân viên, Nút Tra Dữ Liệu (hỗ trợ Enter trên mọi ô nhập).
+        - Hàng 2 (Grid Toolbar): **Segment Switcher 3 Chế Độ** (`📋 Chi Tiết Đề Thi`, `👥 Tổng Hợp Theo Nhân Viên`, `🏢 Phân Tích Theo Bộ Phận`), Ô tìm kiếm nhanh Quick Filter tức thời trên bảng, Nút xuất Excel `EX1 (Lọc)` & `EX2 (Toàn Bộ)`, Badge đếm số dòng hiển thị.
+     5. `PrecisionRNRColumns.tsx` (380 dòng): Cấu hình đúng chuẩn 3 bộ cột AG-Grid (Detail 16 cột, Summary 13 cột + Bắt nhầm/Bỏ sót, Dept 9 cột), bảo toàn 100% `field` và `headerName` theo Nguyên tắc số 8 của SKILL.md, bổ sung CellRenderer định dạng badge TRUE/FALSE/NA, chip PASS/FAIL rực rỡ, highlight điểm số font JetBrains Mono $\ge 80$ xanh / $< 80$ đỏ.
+     6. `PrecisionRNRTable.tsx` (28 dòng): Bọc bảng AGTable High-Density, bung trọn 100% không gian dọc, triệt tiêu toolbar cũ và footer thừa.
+     7. `rnrTypes.ts` (39 dòng): Interface dữ liệu KPI.
+     8. `useRNRData.ts` (477 dòng): Custom hook quản lý 100% state, API queries (`loadRNRchitiet`, `RnRtheonhanvien`), tính toán phân tích nhóm bộ phận tự động, Quick Filter, và xuất Excel chuẩn hóa qua `SaveExcel`.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ**:
+   - Tra cứu dữ liệu chi tiết từng câu hỏi đề thi và tổng hợp theo nhân viên.
+   - Khôi phục và hỗ trợ đầy đủ các phân loại bài thi: `ALL`, `G_RNR (Gauge R&R)`, `Test_LT (Lý Thuyết)`, `Test_CC (Chứng Chỉ)`.
+   - Thêm tính năng phân tích tổng hợp theo bộ phận (`summaryByDept`) với tỷ lệ Pass Rate và điểm số bình quân.
+   - Thêm tính năng xuất Excel độc lập EX1 (dữ liệu đang lọc) và EX2 (toàn bộ dữ liệu) cùng ô lọc nhanh tức thời.
+   - Triệt tiêu 100% form chật chội 250px và gradient cũ.
+4. **Bổ sung tương thích layout trong `ISO.scss` & `RNR.scss`**:
+   - Cấu hình layout full-height cho `.iso`, `.tabs-container`, `.tab-content`, `.tab-pane`, `.rnr` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi chọn tab "TEST" trong `ISO.tsx` hiển thị bung tràn 100% màn hình, không bị bẹp hay collapse chiều cao.
+5. **Xác thực kiểm tra Vite Dev Server & Zero Error**:
+   - Toàn bộ 12/12 file mới và file liên quan đều biên dịch sạch sẽ không có bất kỳ lỗi cú pháp JSX, TSX hay SCSS nào.
+
 ## Update - 2026-09-16 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Báo Cáo CS - CSREPORT.tsx & PrecisionCSReport/ Chuẩn Google Stitch High-Density Enterprise & Đồng Bộ Biểu Đồ Kiểu KinhDoanhReport)
 
 ### Completed

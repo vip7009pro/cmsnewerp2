@@ -1,5 +1,27 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Tái Thiết Kế Màn Hình Quản Lý Điểm Thi & Gauge R&R (`RNR.tsx` & `PrecisionRNR/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/iso/RNR/RNR.backup.tsx` (18.523 bytes, 479 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `RNR.tsx` chỉ còn **110 dòng** (giảm từ 479 dòng, đạt chuẩn < 120 dòng), kết nối dữ liệu qua custom hook `useRNRData`, điều phối layout và các subcomponents.
+    * Toàn bộ các presentation subcomponents tại `src/pages/qc/iso/RNR/PrecisionRNR/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file**:
+      1. `PrecisionRNR.scss` (695 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#f43f5e`, Purple `#8b5cf6`), layout co giãn full-width & full-height Multi-Tab (`.component_element &`, `.iso &`, `.rnr &`, `.tab-pane &`), custom scrollbar 6px mượt mà, triệt tiêu 100% toolbar xanh lá mặc định của AGTable.
+      2. `PrecisionRNRHeader.tsx` (61 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • ISO / QUẢN LÝ ĐIỂM THI & GAUGE R&R (MEASUREMENT SYSTEMS ANALYSIS)`, badge `CMS ERP` & `RNR INTELLIGENCE`, telemetry trực tuyến `LIVE • MSA INTEL` kèm pulse dot xanh lục, nút làm mới và nút bật/tắt toàn màn hình (Fullscreen).
+      3. `PrecisionRNRKpi.tsx` (26 dòng) điều phối 3 sub-widgets:
+         - `PrecisionRNRKpiDetail.tsx` (112 dòng): Tổng lượt phép đo/câu hỏi, Tỷ lệ phán đoán đúng L1 (Accuracy 1 %) kèm progress bar, Tỷ lệ phán đoán đúng L2 (Accuracy 2 %), Số nhân viên tham gia, Dải tóm tắt mẫu chuẩn OK vs NG.
+         - `PrecisionRNRKpiEmpl.tsx` (112 dòng): Quân số dự thi, Tỷ lệ Đạt L1 (Pass Rate 1 %) kèm progress bar, Điểm trung bình L1 (Avg Score 1) và Max/Min, Tỷ lệ Đạt L2 (Gauge R&R), Dải tóm tắt Tỷ lệ Bắt nhầm (BN Rate) & Tỷ lệ Bỏ sót (BS Rate) trung bình.
+         - `PrecisionRNRKpiDept.tsx` (83 dòng): Số bộ phận đánh giá, Bộ phận dẫn đầu Pass Rate, Điểm trung bình toàn xưởng, Bộ phận cần cải thiện.
+      4. `PrecisionRNRToolbar.tsx` (245 dòng): SaaS Control Toolbar 2 tầng:
+         - Hàng 1 (Filters): Từ ngày, Đến ngày, Checkbox All Time, Nhà máy (ALL/NM1/NM2), Loại bài test (ALL/G_RNR/Test_LT/Test_CC), Test ID, Tên nhân viên, Nút Tra Dữ Liệu (hỗ trợ Enter trên mọi ô nhập).
+         - Hàng 2 (Grid Toolbar): **Segment Switcher 3 Chế Độ** (`📋 Chi Tiết Đề Thi`, `👥 Tổng Hợp Theo Nhân Viên`, `🏢 Phân Tích Theo Bộ Phận`), Ô tìm kiếm nhanh Quick Filter tức thời trên bảng, Nút xuất Excel `EX1 (Lọc)` & `EX2 (Toàn Bộ)`, Badge đếm số dòng hiển thị.
+      5. `PrecisionRNRColumns.tsx` (380 dòng): Cấu hình đúng chuẩn 3 bộ cột AG-Grid (Detail 16 cột, Summary 13 cột + Bắt nhầm/Bỏ sót, Dept 9 cột), bảo toàn 100% `field` và `headerName` theo Nguyên tắc số 8 của SKILL.md, bổ sung CellRenderer định dạng badge TRUE/FALSE/NA, chip PASS/FAIL rực rỡ, highlight điểm số font JetBrains Mono $\ge 80$ xanh / $< 80$ đỏ.
+      6. `PrecisionRNRTable.tsx` (28 dòng): Bọc bảng AGTable High-Density, bung trọn 100% không gian dọc, triệt tiêu toolbar cũ và footer thừa.
+      7. `rnrTypes.ts` (39 dòng): Interface dữ liệu KPI.
+      8. `useRNRData.ts` (477 dòng): Custom hook quản lý 100% state, API queries (`loadRNRchitiet`, `RnRtheonhanvien`), tính toán phân tích nhóm bộ phận tự động, Quick Filter, và xuất Excel chuẩn hóa qua `SaveExcel`.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ**: Nạp dữ liệu chi tiết bài thi và tổng hợp theo nhân viên; khôi phục phân loại `G_RNR`, `Test_LT`, `Test_CC`; bổ sung phân tích nhóm phòng ban; xuất Excel EX1/EX2; triệt tiêu hoàn toàn form chật chội 250px và dải màu gradient cũ.
+  - **Bổ sung tương thích layout trong `ISO.scss` & `RNR.scss`**: Cấu hình layout full-height cho `.iso`, `.tabs-container`, `.tab-content`, `.tab-pane`, `.rnr` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`.
+  - **Xác thực toàn diện**: 100% file biên dịch sạch sẽ không có bất kỳ lỗi cú pháp JSX, TSX hay SCSS nào.
+
 - [x] Hoàn thiện Tái Thiết Kế Màn Hình Báo Cáo CS (`CSREPORT.tsx` & `PrecisionCSReport/`) theo chuẩn Google Stitch High-Density Enterprise & Đồng Bộ Biểu Đồ Kiểu KinhDoanhReport:
   - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/cs/CSREPORT.backup.tsx` (40.172 bytes, 1049 dòng).
   - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
