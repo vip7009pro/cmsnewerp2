@@ -1,5 +1,51 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Tái Thiết Kế Màn Hình Báo Cáo CS (`CSREPORT.tsx` & `PrecisionCSReport/`) theo chuẩn Google Stitch High-Density Enterprise & Đồng Bộ Biểu Đồ Kiểu KinhDoanhReport:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/cs/CSREPORT.backup.tsx` (40.172 bytes, 1049 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `CSREPORT.tsx` chỉ còn **103 dòng** (giảm từ 1049 dòng, đạt chuẩn < 120 dòng), kết nối dữ liệu qua custom hook `useCSReportData`, điều phối layout và các phân hệ báo cáo.
+    * Toàn bộ các presentation subcomponents tại `src/pages/qc/cs/PrecisionCSReport/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file**:
+      1. `PrecisionCSReport.scss` (1021 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#f43f5e`, Purple `#7c3aed`), layout co giãn full-width & full-height Multi-Tab (`.component_element &`, `.qcreport &`, `.totalcs &`, `.baocaocs &`), custom scrollbar 6px mượt mà, executive cards container, grid 2 cột responsive.
+      2. `PrecisionCSReportHeader.tsx` (59 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • CS / BÁO CÁO DỊCH VỤ KHÁCH HÀNG & SỰ CỐ CHẤT LƯỢNG (CS QUALITY & ISSUE ANALYTICS)`, badge `CMS ERP` & `CS INTELLIGENCE`, telemetry trực tuyến `LIVE • CS INTEL` kèm pulse dot xanh lục, nút làm mới và nút Fullscreen (Toàn Màn Hình).
+      3. `PrecisionCSReportToolbar.tsx` (241 dòng): SaaS Control Toolbar 2 tầng:
+         - Hàng 1 (Filters): Từ ngày, Đến ngày, Worst By (AMOUNT / QTY), NG Type (ALL / PROCESS / MATERIAL), Autocomplete chọn mã hàng (Code hàng), chip đếm số mã đã chọn (hỗ trợ click để xóa nhanh), Tên khách hàng (Customer), Checkbox Default, Nút Tìm kiếm (Tra cứu).
+         - Hàng 2 (Segment Switcher): Chuyển đổi tức thời giữa 5 phân hệ: `⊞ Xem Toàn Diện`, `⚠️ Phản Hồi Sự Cố`, `👥 Khách Hàng & PIC`, `💰 Tiết Kiệm Chi Phí`, `📉 Chi Phí F-Cost`.
+      4. `PrecisionCSReportKpi.tsx` (148 dòng): 4 Thẻ Micro-cards KPI realtime (Hôm nay, Tuần này, Tháng này, Năm này) bóc tách rõ ràng số lượng sự cố CMS (C) và sự cố Khách hàng (K); cùng **Operational Financial Strip** tóm tắt tài chính: Tổng tiền tiết kiệm Cost Saving ($), Chi phí RMA ($), Chi phí Taxi ($), và Tổng tổn thất F-Cost ($) với font monospace JetBrains Mono.
+      5. `CSChartCustomerIssue.tsx` (215 dòng): Biểu đồ Donut phân bổ sự cố theo Khách hàng được nâng cấp lên chuẩn cao cấp `KinhDoanhReport` (`KDChartCustomerRevenue.tsx`): 3 Chế độ xem linh hoạt (`Song Song` / `Biểu Đồ` / `Danh Sách`), tương tác tâm Donut hiển thị tỷ trọng %, thanh tiến trình (progress bar), bảng xếp hạng với badge Top #1/#2/#3, ô tìm kiếm nhanh tức thì và bộ 24 màu `ENTERPRISE_PALETTE`.
+      6. `CSChartPICIssue.tsx` (219 dòng): Biểu đồ Donut phân bổ sự cố theo Nhân sự phụ trách PIC chuẩn `KinhDoanhReport`: Tích hợp đầy đủ Split / Chart / List view modes, Donut center, progress bars, tìm kiếm theo tên nhân sự PIC.
+      7. `csDonutHelpers.tsx` (80 dòng): Module dùng chung chia sẻ bảng màu công nghiệp `ENTERPRISE_PALETTE`, hàm định dạng `formatCompact`, renderer hình khối hover `renderActiveShape` và đường kẻ dẫn nhãn cong chống xén mép `renderCustomizedLabel`.
+      8. `PrecisionCSReportFeedbackSection.tsx` (147 dòng): Phân hệ 4 biểu đồ phản hồi sự cố (Daily, Weekly, Monthly, Yearly Issue Feedback) bọc trong Executive Cards độc lập kèm nút xuất Excel riêng biệt (`SaveExcel`).
+      9. `PrecisionCSReportBreakdownSection.tsx` (79 dòng): Phân hệ phân tích cơ cấu sự cố chứa 2 biểu đồ Donut khách hàng và PIC trong Executive Cards kèm nút xuất Excel.
+      10. `PrecisionCSReportCostSavingSection.tsx` (185 dòng): Phân hệ Tiết kiệm chi phí: Bảng tóm tắt Cost Saving gọn gàng Slate typography + 4 biểu đồ Cost Saving Trending (Daily, Weekly, Monthly, Yearly) kèm nút xuất Excel độc lập cho từng biểu đồ.
+      11. `PrecisionCSReportFCostSection.tsx` (174 dòng): Phân hệ Chi phí tổn thất F-Cost: Bảng tóm tắt F-Cost (RMA, Taxi, Tổng cộng) + 4 biểu đồ RMA Trending + 4 biểu đồ Taxi Trending kèm nút xuất Excel độc lập.
+      12. `useCSReportData.ts` (698 dòng): Custom hook quản lý 100% state, 18 API queries (`csdailyconfirmdata`, `csweeklyconfirmdata`, `csmonthlyconfirmdata`, `csyearlyconfirmdata`, `csConfirmDataByCustomer`, `csConfirmDataByPIC`, `csdailyreduceamount`, `csweeklyreduceamount`, `csmonthlyreduceamount`, `csyearlyreduceamount`, `csdailyRMAAmount`, `csweeklyRMAAmount`, `csmonthlyRMAAmount`, `csyearlyRMAAmount`, `csdailyTaxiAmount`, `csweeklyTaxiAmount`, `csmonthlyTaxiAmount`, `csyearlyTaxiAmount`), autocomplete mã hàng, tính toán KPI tài chính realtime, và Browser Fullscreen API.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ**: Nạp đầy đủ 18 nguồn dữ liệu chất lượng CS và tài chính; thêm tính năng xuất Excel độc lập cho toàn bộ 16 biểu đồ trending và 2 biểu đồ phân bổ Donut; tối ưu bảng Cost Saving và F-Cost sang High-Density card; triệt tiêu 100% thanh toolbar vàng-cam cũ, không footer thừa.
+  - **Bổ sung tương thích layout trong `CSTOTAL.scss` & `QCReport.scss`**: Cấu hình layout full-height cho `.baocaocs`, `.csreport` và tabs container nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`.
+  - **Xác thực toàn diện**: 100% file đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi cú pháp.
+
+- [x] Hoàn thiện Tái Thiết Kế Màn Hình Dữ Liệu CS (`CS_DATA.tsx` & `PrecisionCSData/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/cs/CS_DATA.backup.tsx` (45.650 bytes, 1662 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `CS_DATA.tsx` chỉ còn **113 dòng** (giảm từ 1662 dòng, đạt chuẩn < 120 dòng), kết nối dữ liệu qua custom hook `useCSData`, quản lý toàn màn hình và điều phối layout.
+    * Toàn bộ các presentation subcomponents tại `src/pages/qc/cs/PrecisionCSData/`:
+      1. `PrecisionCSData.scss` (962 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#1e40af / #2563eb`, Emerald `#10b981 / #047857`, Amber `#f59e0b`, Rose `#f43f5e`, Purple `#8b5cf6`), layout co giãn full-width & full-height Multi-Tab (`.component_element &`, `.totalcs &`, `.datacs &`), custom scrollbar 6px mượt mà, triệt tiêu 100% toolbar xanh lá mặc định và footer thừa của AGTable.
+      2. `PrecisionCSDataHeader.tsx` (62 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • CS / THEO DÕI & XỬ LÝ SỰ CỐ KHÁCH HÀNG (CUSTOMER QUALITY DATA)`, badge `CMS ERP` & `CS INTELLIGENCE`, telemetry trực tuyến `LIVE • CS INTEL` kèm pulse dot xanh lục, nút làm mới và nút bật/tắt toàn màn hình (Fullscreen).
+      3. `PrecisionCSDataKpi.tsx` (341 dòng): Cụm **Widgets thông tin hữu ích** thích ứng theo 4 phân hệ:
+         - Phân hệ Xác Nhận Lỗi (CS): Tổng số vụ khiếu nại CS, số vụ đã hoàn thành đối sách (NNDS Rate %), tổng tiền giảm trừ/bồi thường ($ REDUCE_AMOUNT), số lượng đổi trả, sản lượng kiểm tra & phế phẩm NG, tỷ lệ thay thế % kèm progress bar, phạm vi khách hàng & SKUs; cùng thanh trạng thái hồ sơ: Tỷ lệ có ảnh lỗi hiện trường, có file đối sách tiếng Việt, có file đối sách tiếng Hàn.
+         - Phân hệ RMA: Tổng vụ RMA, tổng lượng trả về (EA), tổng tiền RMA ($), kết quả sorting OK vs NG.
+         - Phân hệ Xin CNĐB: Tổng vụ xin CNĐB, tổng lượng xin (EA), số vụ khách chấp nhận OK vs từ chối NG.
+         - Phân hệ Taxi: Tổng lượt đi taxi, tổng chi phí taxi (VND), chi phí bình quân/lượt, số nhân sự CS sử dụng.
+      4. `PrecisionCSDataToolbar.tsx` (217 dòng): SaaS Control Toolbar 2 tầng:
+         - Hàng 1 (Filters): Từ ngày, Đến ngày, Code KD, Code ERP, Số YCSX, Khách hàng, Nút Tra Dữ Liệu (hỗ trợ Enter trên mọi ô nhập).
+         - Hàng 2 (Grid Toolbar): **Segment Switcher 4 Chế Độ** (`📋 Xác Nhận Lỗi (CS)`, `🔄 Lịch Sử RMA`, `⚠️ Xin CNĐB (SA)`, `🚕 Chi Phí Taxi`), Ô tìm kiếm nhanh Quick Filter tức thời trên bảng, Nút xuất Excel `EX1 (Lọc)` & `EX2 (Toàn Bộ)`, Nút `PIVOT` mở modal phân tích đa chiều cho phân hệ Xác Nhận Lỗi, Badge đếm số dòng hiển thị.
+      5. `PrecisionCSDataColumns.tsx` (404 dòng): Cấu hình đúng chuẩn 4 bộ cột AG-Grid của bản gốc (Confirm 36 cột, RMA 37 cột, CNDB 16 cột, Taxi 14 cột), bảo toàn 100% `field` và `headerName` theo Nguyên tắc số 8 của SKILL.md, bổ sung CellRenderer định dạng thumbnail ảnh khuyết tật hover zoom, link tải PPTX, nút upload vi mô, nút Sửa NNDS trực tiếp và font monospace JetBrains Mono cho số lượng/tiền tệ.
+      6. `PrecisionCSDataTable.tsx` (32 dòng): Bọc bảng AGTable High-Density, hỗ trợ chiều cao 56px cho bảng có thumbnail ảnh và 28px cho bảng thường, bung trọn 100% không gian dọc, triệt tiêu toolbar cũ và footer thừa.
+      7. `PrecisionCSDataNNDSModal.tsx` (126 dòng): Modal cập nhật Nguyên Nhân - Đối Sách công thái học: Hiển thị tóm tắt sự cố, ảnh khuyết tật phóng to, 2 khung textarea song ngữ Hàn-Việt (Nguyên nhân viền đỏ, Đối sách viền xanh), cụm nút Lưu Đối Sách và Hủy bỏ.
+      8. `PrecisionCSDataPivotModal.tsx` (230 dòng): Modal phân tích Pivot Grid đa chiều với cấu hình 27 trường phong phú của DevExtreme, hiệu ứng backdrop blur và nút đóng nhanh.
+      9. `useCSData.ts` (462 dòng): Custom hook quản lý 100% state, API queries (`tracsconfirm`, `tracsrma`, `tracsCNDB`, `tracsTAXI`, `updatenndscs`, `updateCSImageStatus`, `updateCSDoiSachVNStatus`, `updateCSDoiSachKRStatus`), upload file ảnh/PPTX, tính toán realtime các chỉ số widgets KPI, Quick Filter, và xuất Excel chuẩn hóa qua `SaveExcel`.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ**: Tra cứu dữ liệu CS theo cả 4 phân hệ (Xác nhận lỗi, RMA, Xin CNĐB, Taxi); bổ sung xuất Excel EX1/EX2 và mở Pivot Table đa chiều; cập nhật Nguyên Nhân - Đối Sách và tải lên ảnh lỗi/file PPTX trực tiếp; triệt tiêu hoàn toàn toolbar xanh lá mặc định, không footer thừa.
+  - **Xác thực toàn diện**: 100% file đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi cú pháp.
+
 - [x] Hoàn thiện Tái Thiết Kế Màn Hình Tình Hình Cuộn Liệu (`TINHINHCUONLIEU.tsx` & `PrecisionCuonLieu/`) theo chuẩn Google Stitch High-Density Enterprise:
   - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/sx/TINH_HINH_CUON_LIEU/TINHINHCUONLIEU.backup.tsx` (39.920 bytes, 1294 dòng).
   - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:

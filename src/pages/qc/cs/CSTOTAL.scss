@@ -1,7 +1,35 @@
 .totalcs {
-  width: 100%;  
+  width: 100%;
+  height: calc(100vh - 85px);
+  max-height: calc(100vh - 85px);
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  .component_element & {
+    height: 100% !important;
+    max-height: 100% !important;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .tabs-container,
+  .tab-content,
+  .tab-pane,
+  .baocaocs,
+  .datacs {
+    width: 100%;
+    height: 100% !important;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
   .mininavbar {
     display: flex;
     flex-direction: row;
@@ -27,3 +55,4 @@
     }
   }
 }
+
