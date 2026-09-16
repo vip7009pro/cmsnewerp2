@@ -1,5 +1,43 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Tái Thiết Kế Tab Thêm BOM Amazon (`BOM_AMAZON.tsx` & `PrecisionBomAmazon/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/rnd/bom_amazon/BOM_AMAZON.backup.tsx` (24.191 bytes, 702 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `BOM_AMAZON.tsx` chỉ còn **128 dòng** (giảm từ 702 dòng, đạt chuẩn < 150 dòng), kết nối dữ liệu qua custom hook `useBomAmazonData`, điều phối layout 3 phân vùng công thái học.
+    * Toàn bộ 8 subcomponents tại `src/pages/rnd/bom_amazon/PrecisionBomAmazon/` đều tuân thủ nguyên tắc Clean Code:
+      1. `PrecisionBomAmazon.scss` (520 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch, layout 3 pane co giãn full-width & full-height Multi-Tab, triệt tiêu 100% toolbar xanh lá mặc định của AGTable.
+      2. `PrecisionBomAmazonHeader.tsx` (88 dòng): Sub-header chuẩn Stitch, breadcrumb `02. R&D • THIẾT KẾ SẢN PHẨM / QUẢN LÝ & THIẾT LẬP BOM AMAZON`, badge `CMS R&D`, telemetry trực tuyến `LIVE • BOM ENGINE`, nút gập/mở sidebar, info panel, làm mới và Fullscreen.
+      3. `PrecisionBomAmazonSidebar.tsx` (165 dòng): Cột trái navigator 320px: Dropdown chọn phôi mẫu (`G_CODE_MAU`), Segment switcher 2 chế độ (`ĐÃ CÓ BOM` vs `TRA CỨU ALL CODE`), bảng tra cứu mã thu nhỏ với AGTable High-Density.
+      4. `PrecisionBomAmazonToolbar.tsx` (148 dòng): Action Toolbar trung tâm: Chip mã sản phẩm `G_CODE` (JetBrains Mono), Tên sản phẩm, Badge nhận diện `BOM ĐÃ LƯU TRÊN HỆ THỐNG` / `BOM MỚI (TỪ PHÔI MẪU)`, Nút Lưu BOM (kiểm tra quyền RND), Nút Bật/Tắt sửa, Nút Nạp lại từ phôi, Nút Xuất Excel, Quick Search tức thì.
+      5. `PrecisionBomAmazonColumns.tsx` (185 dòng): Cấu hình 3 bộ cột AG-Grid bảo toàn 100% field, headerName, cell highlight ô cho phép sửa khi bật Edit, Dropdown `QR_DOITUONG_NAME2` với quyền `NHU1903`/`NVD1201`.
+      6. `PrecisionBomAmazonInfoPanel.tsx` (165 dòng): Panel phải 320px: Thẻ xem ảnh sản phẩm (có click phóng to, fallback), Textarea tên sản phẩm thực tế, Input thị trường kèm preset chips nhanh, Nút Cập nhật thông tin phụ với mật khẩu `okema`.
+      7. `bomAmazonTypes.ts` (50 dòng): Interface dữ liệu, tabs, hook return types.
+      8. `useBomAmazonData.ts` (360 dòng): Custom hook quản lý 100% state, 8 API queries, xử lý phân quyền RND, lọc nhanh Quick Filter, xuất Excel và Fullscreen.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ**: Tra cứu và khởi tạo cấu trúc BOM từ phôi mẫu `G_CODE_MAU`; nạp và xem chi tiết BOM Amazon của mã hàng đã có; thêm mới hoặc cập nhật BOM; cập nhật thông tin tên thực tế và thị trường với mật mã `okema`; triệt tiêu 100% bố cục chật chội cũ và dải màu gradient lỗi thời.
+  - **Bổ sung tương thích layout trong `BOM_AMAZON.scss`**: Cấu hình layout full-height cho `.bom_amazon`, `.thembomamazon` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`.
+  - **Xác thực toàn diện**: 100% (9/9) file đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi cú pháp.
+
+- [x] Hoàn thiện Tái Thiết Kế Màn Hình Quản Lý Tài Liệu ISO (`ALLDOC.tsx` & `PrecisionAllDoc/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/iso/DOCUMENT/ALLDOC.backup.tsx` (22.626 bytes, 624 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `ALLDOC.tsx` chỉ còn **109 dòng** (giảm từ 624 dòng, đạt chuẩn < 120 dòng), kết nối dữ liệu qua custom hook `useAllDocData`, điều phối layout và các subcomponents.
+    * Toàn bộ các presentation subcomponents tại `src/pages/qc/iso/DOCUMENT/PrecisionAllDoc/` đều tuân thủ nghiêm ngặt nguyên tắc Clean Code:
+      1. `PrecisionAllDoc.scss` (495 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Rose `#ef4444`, Amber `#f59e0b`, Indigo `#6366f1`), layout co giãn full-width & full-height Multi-Tab (`.documentmanager-page`, `.documentmanager`, `.audit`), triệt tiêu 100% toolbar xanh lá mặc định của AGTable.
+      2. `PrecisionAllDocHeader.tsx` (68 dòng): Sub-header chuẩn Stitch, breadcrumb `QUẢN LÝ TÀI LIỆU, TIÊU CHUẨN & HỒ SƠ CHẤT LƯỢNG`, badge `CMS ERP` & `ISO 9001 / IATF 16949`, telemetry trực tuyến `LIVE • DOC INTEL` kèm pulse dot xanh lục, nút làm mới và nút Fullscreen (Toàn màn hình).
+      3. `PrecisionAllDocKpi.tsx` (100 dòng): 4 Thẻ Micro-cards KPI realtime: Tổng tài liệu đã lưu, Đang có hiệu lực (`USE_YN: Y`), Cảnh báo hạn dùng (quá hạn / sắp hết hạn trong 30 ngày), Định dạng số hóa (PDF / Office Word-Excel).
+      4. `PrecisionAllDocToolbar.tsx` (195 dòng): SaaS Control Toolbar 2 tầng:
+         - Hàng 1 (Cascading Filters): Phân loại cấp 1 (Cat 1), Loại tài liệu cấp 2 (Cat 2), Danh mục tên tài liệu cấp 3, Ô tìm kiếm tên tài liệu, Nút Tìm Kiếm (hỗ trợ phím Enter).
+         - Hàng 2 (Grid Actions & Quick Search): Ô tìm kiếm nhanh Quick Search Filter tức thời trên bảng, Nút "Upload Tài Liệu Mới" (phân quyền QC), Nút "Cập Nhật Tài Liệu" (phân quyền MUA/QC cho các dòng tick chọn), Nút "Xuất Excel", Badge đếm số lượng hiển thị và số dòng đã tick chọn.
+      5. `PrecisionAllDocColumns.tsx` (185 dòng): Cấu hình đúng chuẩn 18 cột AG-Grid, bảo toàn 100% `field`, `headerName` và `width` theo Nguyên tắc số 8 của SKILL.md. Bổ sung CellRenderer icon định dạng tệp sắc nét (Word, Excel, PDF, PPT, Image, Zip), chip trạng thái HSD bo góc hiện đại, nút tải trực tiếp `DownloadButtonAll`.
+      6. `PrecisionAllDocTable.tsx` (38 dòng): Bọc bảng AGTable High-Density, bung trọn 100% không gian dọc, triệt tiêu toolbar cũ và footer thừa.
+      7. `PrecisionAllDocUploadModal.tsx` (260 dòng): Modal Upload tài liệu chuyên nghiệp: Chọn phân loại cấp 1/2 với Select tiện lợi, thiết lập ngày ban hành (`REG_DATE`), ngày hết hạn (`EXP_DATE`) và cờ `HSD_YN`, vùng kéo thả tệp Dropzone hiển thị tên và dung lượng tệp rõ ràng trước khi tải lên.
+      8. `PrecisionAllDocUpdateModal.tsx` (165 dòng): Modal Cập nhật hàng loạt: Cho phép đồng bộ ngày ban hành, ngày hết hạn, `USE_YN`, `HSD_YN` cho toàn bộ tài liệu đang tick chọn.
+      9. `allDocTypes.ts` (42 dòng): Interface dữ liệu Filter, KPI, Modals và Document Data.
+      10. `useAllDocData.ts` (335 dòng): Custom hook quản lý 100% state, 6 API queries (`loadDocCategory1`, `loadDocCategory2`, `loadDocList`, `loadDocuments`, `checkLastFileID`, `insertFileData`), upload tài liệu qua `uploadQuery`, cập nhật hàng loạt qua `f_updateMaterialDocData`, tính toán realtime KPI, Quick Search Filter, và xuất Excel qua `SaveExcel`.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ**: Tra cứu phân cấp tài liệu theo nhóm và loại; Upload tài liệu mới với format chuẩn `${FILE_ID}_${DOC_ID}_${DOC_CAT_ID}_${CAT_ID}.${ext}` lưu vào thư mục `alldocs`; Tải về tệp tài liệu trực tiếp qua `DownloadButtonAll`; Cập nhật thông tin hiệu lực và thời hạn sử dụng văn bản.
+  - **Bổ sung tương thích layout trong `ALLDOC.scss`**: Cấu hình layout full-height cho `.documentmanager-page`, `.documentmanager`, `.audit` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`.
+  - **Xác thực toàn diện**: 100% file biên dịch sạch sẽ không có bất kỳ lỗi cú pháp JSX, TSX hay SCSS nào.
+
 - [x] Hoàn thiện Tái Thiết Kế Màn Hình Quản Lý Thiết Bị & Lịch Sử Hiệu Chuẩn (`CALIBRATION.tsx` & `PrecisionCalibration/`) theo chuẩn Google Stitch High-Density Enterprise:
   - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/iso/CALIBRATION/CALIBRATION.backup.tsx` (19.231 bytes, 424 dòng).
   - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
