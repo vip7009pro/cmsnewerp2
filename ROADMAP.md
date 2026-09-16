@@ -1,5 +1,28 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Tái Thiết Kế Màn Hình Data QTR (`QTR_DATA.tsx` & `PrecisionQTRData/`) theo chuẩn Google Stitch High-Density Enterprise & Bổ Sung Cụm Widgets Sự Cố Hữu Ích:
+  - **Bảo toàn 100% mã nguồn gốc & Interface**: Lưu trữ an toàn tại `src/pages/qc/oqc/QTR_DATA.backup.tsx` (7.677 bytes, 208 dòng) và giữ nguyên `export interface QTR_DATA` đảm bảo tương thích toàn dự án.
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `QTR_DATA.tsx` chỉ còn **96 dòng** (giảm từ 208 dòng, đạt chuẩn < 100 dòng), kết nối dữ liệu qua custom hook `useQTRData`, quản lý toàn màn hình và điều phối layout.
+    * Toàn bộ các presentation subcomponents tại `src/pages/qc/oqc/PrecisionQTRData/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file**:
+      1. `PrecisionQTRData.scss` (480 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#f43f5e`, Purple `#7c3aed`), layout co giãn full-width & full-height Multi-Tab (`.component_element &` và `.oqc .trainspection`), custom scrollbar 6px mượt mà, triệt tiêu 100% toolbar xanh lá cũ và footer thừa của AGTable.
+      2. `PrecisionQTRDataHeader.tsx` (60 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • OQC / THEO DÕI SỰ CỐ CHẤT LƯỢNG (QUALITY TROUBLE REPORT - QTR)`, badge `CMS ERP` & `QTR INTELLIGENCE`, telemetry trực tuyến `SYSTEM ONLINE` kèm pulse dot xanh lá, nút làm mới dữ liệu và nút bật/tắt toàn màn hình (Fullscreen).
+      3. `PrecisionQTRDataKpi.tsx` (190 dòng): Cụm **Widgets thông tin hữu ích** theo yêu cầu người dùng:
+         - Micro-card 1: Tổng Sự Cố QTR & Tỷ Lệ Đóng (Total Cases, Đã duyệt đóng, Đang xử lý, Tỷ lệ đóng % với badge trạng thái màu).
+         - Micro-card 2: Lượng Phế Phẩm & PPM (Tổng lượng lỗi phát sinh, Tổng xuất kho EA, PPM bình quân).
+         - Micro-card 3: Cảnh Báo Sự Cố Ngưỡng Đỏ (Số vụ vượt ngưỡng Main Line $\ge 500$ PPM & Xuất $\ge 100$k EA).
+         - Micro-card 4: Phạm Vi Dự Án & Linh Kiện (Số dự án Projects, Số mã linh kiện Part Codes, Số mẫu test).
+         - Operational Summary Strip: Phân bổ theo Nhà máy (Plant NM1/NM2), Vị trí phát sinh (Main Line vs Sub/Khác) và Tiến độ phê duyệt.
+      4. `PrecisionQTRDataToolbar.tsx` (120 dòng): SaaS Control Toolbar 2 tầng chuyên nghiệp:
+         - Hàng 1 (Filters): Từ ngày, Đến ngày, Nút Tra Dữ Liệu QTR (hỗ trợ Enter).
+         - Hàng 2 (Grid Toolbar): Ô tìm kiếm nhanh Quick Filter tức thời trên bảng, Nút xuất Excel `EX1 (Lọc)` & `EX2 (Toàn Bộ)`, Badge đếm số dòng hiển thị.
+      5. `PrecisionQTRDataColumns.tsx` (250 dòng): Cấu hình đúng chuẩn 32 cột AG-Grid của bản gốc, bảo toàn 100% `field`, `headerName`, và `width` theo Nguyên tắc số 8 của SKILL.md, bổ sung CellRenderer định dạng font monospace JetBrains Mono cho số lượng/PPM, badge trạng thái phê duyệt (Hoàn thành vs Chưa duyệt) và highlight cảnh báo lỗi nghiêm trọng.
+      6. `PrecisionQTRDataTable.tsx` (40 dòng): Bọc bảng AGTable High-Density, bung trọn 100% không gian, triệt tiêu toolbar cũ và footer thừa.
+      7. `useQTRData.ts` (200 dòng): Custom hook quản lý 100% state, API query `f_loadQTRData`, tính toán realtime các chỉ số widgets KPI, Quick Filter, và xuất Excel chuẩn hóa qua `SaveExcel`.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ**: Nạp dữ liệu sự cố QTR theo khoảng ngày; thêm tính năng xuất Excel độc lập EX1/EX2; triệt tiêu hoàn toàn footer thừa.
+  - **Bổ sung tương thích trong `OQC.scss`**: Cấu hình layout full-height cho `.precision-qtr-data` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`.
+  - **Xác thực toàn diện**: 100% file đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi TypeScript trong `src/pages/qc/oqc/`.
+
 - [x] Hoàn thiện Tái Thiết Kế Màn Hình Data OQC (`OQC_DATA.tsx` & `PrecisionOQCData/`) theo chuẩn Google Stitch High-Density Enterprise & Bổ Sung Cụm Widgets Thông Tin Hữu Ích:
   - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/oqc/OQC_DATA.backup.tsx` (9.075 bytes, 255 dòng).
   - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
