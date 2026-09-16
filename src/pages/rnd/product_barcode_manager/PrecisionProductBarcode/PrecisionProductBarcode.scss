@@ -1,0 +1,684 @@
+// PrecisionProductBarcode.scss - Google Stitch High-Density Enterprise Theme
+.precision-barcode {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: calc(100vh - 85px);
+  min-height: 520px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  // Multi-tab container context
+  .component_element &,
+  .product_barcode_mamanger & {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  // 1. SUB-HEADER
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 14px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    flex-shrink: 0;
+  }
+
+  &__headerLeft {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  &__brandBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  &__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #334155;
+
+    .sep {
+      color: #94a3b8;
+      font-weight: 400;
+    }
+    .current {
+      color: #0f172a;
+      font-weight: 700;
+    }
+  }
+
+  &__telemetry {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 9999px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #475569;
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+      animation: pulseGreen 2s infinite;
+    }
+  }
+
+  &__headerRight {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__iconBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: #f8fafc;
+      color: #0f172a;
+      border-color: #94a3b8;
+    }
+  }
+
+  // 2. KPI MICRO-CARDS
+  &__kpiContainer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 8px 12px 0 12px;
+    flex-shrink: 0;
+
+    @media (max-width: 900px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &__kpiCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+
+    &--blue {
+      border-left: 3px solid #2563eb;
+    }
+    &--purple {
+      border-left: 3px solid #7c3aed;
+    }
+    &--emerald {
+      border-left: 3px solid #10b981;
+    }
+    &--amber {
+      border-left: 3px solid #f59e0b;
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      .label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+      }
+      .val {
+        font-size: 16px;
+        font-weight: 800;
+        font-family: "JetBrains Mono", monospace;
+        color: #0f172a;
+      }
+      .sub {
+        font-size: 10px;
+        color: #94a3b8;
+      }
+    }
+
+    .iconWrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: #f8fafc;
+      color: #64748b;
+    }
+  }
+
+  // 3. MAIN WORKSPACE (2 PANES: FORM + TABLE)
+  &__layout {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    padding: 8px 12px 10px;
+    gap: 8px;
+    box-sizing: border-box;
+  }
+
+  // LEFT PANE: FORM & LIVE VISUALIZER
+  &__formPane {
+    width: 360px;
+    min-width: 340px;
+    max-width: 380px;
+    height: 100%;
+    min-height: 0;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 10px 12px;
+    gap: 8px;
+    flex-shrink: 0;
+    transition: width 0.2s ease, transform 0.2s ease;
+
+    &--collapsed {
+      width: 0;
+      min-width: 0;
+      padding: 0;
+      overflow: hidden;
+      border: none;
+      display: none;
+    }
+  }
+
+  &__formTitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 6px;
+
+    h3 {
+      margin: 0;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .clearBtn {
+      font-size: 11px;
+      font-weight: 600;
+      color: #2563eb;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__formBody {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .formItem {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+
+      label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      input[type="text"],
+      select {
+        height: 28px;
+        width: 100%;
+        padding: 0 8px;
+        font-size: 11.5px;
+        color: #1e293b;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 5px;
+        outline: none;
+        box-sizing: border-box;
+        transition: border-color 0.15s;
+
+        &:focus {
+          border-color: #2563eb;
+          box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+        }
+
+        &:disabled {
+          background: #f8fafc;
+          color: #94a3b8;
+        }
+      }
+
+      .codeSelectWrap {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .productMeta {
+          font-size: 11px;
+          color: #2563eb;
+          font-weight: 600;
+          background: #eff6ff;
+          padding: 2px 6px;
+          border-radius: 4px;
+          border: 1px solid #dbeafe;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .formRow2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+  }
+
+  // LIVE BARCODE PREVIEW BOX
+  &__visualizerCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 8px;
+    gap: 6px;
+    margin-top: 2px;
+
+    .visTitle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .visBox {
+      width: 100%;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 6px;
+      box-sizing: border-box;
+      overflow: hidden;
+
+      .emptyHint {
+        font-size: 11px;
+        color: #94a3b8;
+        font-style: italic;
+      }
+    }
+  }
+
+  // FORM ACTION BUTTONS
+  &__formActions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 4px;
+
+    .btnAction {
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+
+      &--add {
+        background: #10b981;
+        color: #ffffff;
+        border-color: #059669;
+        &:hover {
+          background: #059669;
+        }
+      }
+
+      &--update {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #1d4ed8;
+        &:hover {
+          background: #1d4ed8;
+        }
+      }
+
+      &--delete {
+        background: #fff1f2;
+        color: #e11d48;
+        border-color: #fecdd3;
+        grid-column: span 2;
+        &:hover {
+          background: #ffe4e6;
+        }
+      }
+    }
+  }
+
+  // RIGHT PANE: TOOLBAR & TABLE
+  &__tablePane {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: hidden;
+  }
+
+  // TOOLBAR (TABLE ACTIONS)
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    flex-shrink: 0;
+  }
+
+  &__toolbarLeft {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  &__filterGroup {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #f1f5f9;
+    padding: 2px 4px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+
+    .filterBtn {
+      border: none;
+      background: transparent;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.12s;
+
+      &:hover {
+        color: #0f172a;
+      }
+
+      &--active {
+        background: #ffffff;
+        color: #2563eb;
+        font-weight: 700;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+    }
+  }
+
+  &__toolbarRight {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  &__quickSearch {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    input {
+      height: 26px;
+      width: 170px;
+      padding: 0 8px 0 24px;
+      font-size: 11px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      outline: none;
+      transition: all 0.15s;
+
+      &:focus {
+        background: #ffffff;
+        border-color: #2563eb;
+        width: 210px;
+      }
+    }
+
+    .icon {
+      position: absolute;
+      left: 6px;
+      color: #94a3b8;
+      font-size: 13px;
+    }
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    padding: 0 8px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    transition: all 0.15s;
+
+    &--excel {
+      color: #166534;
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+      &:hover {
+        background: #dcfce7;
+      }
+    }
+
+    &--pivot {
+      color: #6b21a8;
+      background: #faf5ff;
+      border-color: #e9d5ff;
+      &:hover {
+        background: #f3e8ff;
+      }
+    }
+  }
+
+  &__metaBadge {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    strong {
+      color: #0f172a;
+    }
+  }
+
+  // AG-GRID CONTAINER
+  &__gridContainer {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    .agtable {
+      height: 100%;
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+
+      .toolbar {
+        display: none !important;
+      }
+
+      .ag-theme-quartz {
+        height: 100% !important;
+        flex: 1 1 auto;
+        min-height: 0;
+
+        .ag-root-wrapper {
+          height: 100% !important;
+          border: none;
+        }
+
+        .ag-header {
+          background: #f1f5f9;
+          font-size: 11px;
+          font-weight: 700;
+          color: #334155;
+          text-transform: uppercase;
+        }
+
+        .ag-row {
+          font-size: 11.5px;
+          border-bottom: 1px solid #f1f5f9;
+        }
+      }
+    }
+  }
+}
+
+// CHIP RENDERERS CHO AG-GRID
+.barcode-status-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.3;
+
+  &--ok {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #86efac;
+  }
+
+  &--ng {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+  }
+
+  &--prod-yes {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+  }
+
+  &--prod-no {
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+  }
+}
+
+.barcode-type-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: "JetBrains Mono", monospace;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+}

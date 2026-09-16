@@ -64,7 +64,7 @@ const BOM_AMAZON: React.FC = () => {
   };
 
   return (
-    <div className="precision-bom-amz">
+    <div className="precision-bom-amz bom_amazon">
       {/* 1. SUB-HEADER CHUẨN STITCH */}
       <PrecisionBomAmazonHeader
         isFullscreen={isFullscreen}
@@ -121,6 +121,7 @@ const BOM_AMAZON: React.FC = () => {
               toolbar={<></>}
               columns={bomAmazonColumns}
               data={filteredBomData}
+              onSelectionChange={() => {}}
             />
           </div>
         </main>

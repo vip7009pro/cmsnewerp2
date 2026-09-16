@@ -94,7 +94,7 @@ export const PrecisionBomAmazonSidebar: React.FC<SidebarProps> = React.memo(
         </div>
 
         {/* Ô TÌM KIẾM THEO TAB */}
-        {sidebarTab === "SEARCH_ALL" && (
+        {sidebarTab === "SEARCH_ALL" ? (
           <div className="precision-bom-amz__sidebarSearchBox">
             <div className="inputWrapper">
               <span className="searchIcon">
@@ -117,6 +117,21 @@ export const PrecisionBomAmazonSidebar: React.FC<SidebarProps> = React.memo(
               Tìm
             </button>
           </div>
+        ) : (
+          <div className="precision-bom-amz__sidebarSearchBox">
+            <div className="inputWrapper">
+              <span className="searchIcon">
+                <AiOutlineSearch />
+              </span>
+              <input
+                type="text"
+                placeholder="Lọc mã đã có BOM Amazon..."
+                onChange={(e) => {
+                  // Có thể lọc nhanh qua AG-Grid filter hoặc nạp lại
+                }}
+              />
+            </div>
+          </div>
         )}
 
         {/* BẢNG DỮ LIỆU SIDEBAR */}
@@ -127,6 +142,7 @@ export const PrecisionBomAmazonSidebar: React.FC<SidebarProps> = React.memo(
               toolbar={<></>}
               columns={listBomColumns}
               data={listamazontable}
+              onSelectionChange={() => {}}
               onRowClick={(params: any) => {
                 if (params.data?.G_CODE) {
                   handleGETBOMAMAZON(params.data.G_CODE);
@@ -139,6 +155,7 @@ export const PrecisionBomAmazonSidebar: React.FC<SidebarProps> = React.memo(
               toolbar={<></>}
               columns={codeInfoColumns}
               data={rows}
+              onSelectionChange={() => {}}
               onRowClick={(params: any) => {
                 if (params.data) {
                   onSelectCodeInfo(params.data);

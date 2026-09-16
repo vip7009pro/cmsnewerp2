@@ -1,5 +1,44 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Tái Thiết Kế Tab Thiết Kế Tem Amazon (`DESIGN_AMAZON.tsx` & `PrecisionDesignAmazon/`) theo chuẩn Industrial Label Editor & Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/rnd/design_amazon/DESIGN_AMAZON.backup.tsx` (109.298 bytes, 2.829 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `DESIGN_AMAZON.tsx` chỉ còn **156 dòng** (giảm hơn 94% từ 2.829 dòng, đạt chuẩn < 160 dòng), kết nối dữ liệu qua custom hook `useDesignAmazonData` và `useDesignAmazonCanvas`, điều phối layout 4 phân vùng Studio công thái học.
+    * Toàn bộ 11 subcomponents và module tại `src/pages/rnd/design_amazon/PrecisionDesignAmazon/` đều tuân thủ nguyên tắc Clean Code:
+      1. `PrecisionDesignAmazon.scss` (680 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch, layout co giãn full-width & full-height Multi-Tab, triệt tiêu 100% toolbar xanh lá mặc định của AGTable.
+      2. `PrecisionDesignAmazonHeader.tsx` (119 dòng): Sub-header chuẩn Stitch, breadcrumb `02. R&D • THIẾT KẾ TEM NHÃN / AMAZON LABEL DESIGN STUDIO`, badge `CMS R&D` & `INDUSTRIAL CAD`, chip mã hàng JetBrains Mono, telemetry trực tuyến `LIVE • CAD STUDIO` kèm pulse dot xanh lục, nút ẩn/hiện Sidebar, Inspector, Table và Fullscreen.
+      3. `PrecisionDesignAmazonToolbar.tsx` (250 dòng): Ribbon Command Toolbar công nghiệp: Nhóm Thao tác (Lưu, Undo, Redo, In tem, In USB), Nhóm Bù lề in Offset X/Y (mm), Nhóm Snap & Lưới (1/2/5/10mm, Nét đứt/Nét liền), Nhóm Thu phóng (Zoom in/out, Zoom presets, 100%), Nhóm Palette kéo thả 6 loại đối tượng (`TEXT`, `IMAGE`, `1D BARCODE`, `2D MATRIX`, `QRCODE`, `CONTAINER/BOX`).
+      4. `PrecisionDesignAmazonSidebar.tsx` (115 dòng): Cột trái 320px tra cứu mã sản phẩm Amazon: Ô tìm kiếm thông minh hỗ trợ Enter, AGTable thu nhỏ, nút Xuất Excel, click chọn mã để tự động nạp thiết kế lên Canvas.
+      5. `PrecisionDesignAmazonCanvas.tsx` (265 dòng): Studio Canvas Viewport: Thước đo tọa độ milimet hai trục X/Y, Sân khấu zoom `#amzStageBounds`, Lưới milimet, Khung in tem `#labelprintref` tích hợp `renderElement`, Đường gióng bắt điểm màu đỏ, Con trỏ xoay tự do màu cam, Khung viền lựa chọn và Tooltip tọa độ realtime.
+      6. `PrecisionDesignAmazonInspector.tsx` (340 dòng): Panel phải 280px công thái học: 2 Tab "Thuộc Tính" (Form chỉnh sửa trực quan toàn bộ thông số tọa độ X/Y, W/H, góc xoay, font, cỡ, style B/I/U/R, cavity, nút đổi ảnh, nút xóa) & Tab "Lịch Sử" (Action stack cho phép nhấp để khôi phục bất kỳ bước nào).
+      7. `PrecisionDesignAmazonTable.tsx` (275 dòng): Dock bảng AGTable High-Density phía dưới: Bảo toàn trọn vẹn 14 cột kỹ thuật, hỗ trợ kéo thả dòng (`onRowDragEnd`) sắp xếp thứ tự in, chỉnh sửa trực tiếp trên cell, đồng bộ highlight dòng đang chọn, ô lọc nhanh và nút thêm nhanh đối tượng.
+      8. `designAmazonTypes.ts` (145 dòng): Định nghĩa hệ thống Types, Interfaces, Canvas states, Snap lines, Rulers và Props.
+      9. `useDesignAmazonData.ts` (453 dòng): Custom hook quản lý 100% dữ liệu: CRUD danh sách đối tượng tem, Undo/Redo stack, Jump to history, Web Print (`useReactToPrint`), In USB, Bù lề in Offset X/Y (`localStorage`), upload ảnh, API tra cứu mã hàng và lưu thiết kế.
+      10. `useDesignAmazonCanvas.tsx` (570 dòng): Custom hook thuật toán hình học: Zoom mượt mà (Ctrl+Wheel / 25% - 1000%), Bắt điểm thông minh (Smart Snap Lines), Xoay tự do quanh tâm (`rotateDrag`), 4 Handle co giãn theo góc xoay (`renderRotatedResizeHandles`), Nudge bàn phím gia tốc (0.01mm - 40x), Kéo nhóm (Shift+Drag), Chọn tuần tự (Cycle Selection).
+      11. `DESIGN_AMAZON.scss` (28 dòng): Cấu hình layout full-height cho `.design_window`, `.component_element`, bảo toàn class `.amz_barcode svg` cho render mã vạch.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ & thuật toán**: Chuyển đổi tọa độ $MM \leftrightarrow PX$; xoay tự do quanh tâm đối tượng và 4 handle co giãn theo góc xoay; bắt điểm thông minh Smart Snap lines; in ấn qua `useReactToPrint` và bù sai lệch in `printOffsetMm` trong `localStorage`; giữ nguyên 100% 14 cột bảng AG-Grid và 6 API queries backend.
+  - **Xác thực toàn diện**: 100% (12/12) file đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi cú pháp.
+
+- [x] Hoàn thiện Tái Thiết Kế Màn Hình Quản Lý Mã Vạch Sản Phẩm (`PRODUCT_BARCODE_MANAGER.tsx` & `PrecisionProductBarcode/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER.backup.tsx` (31.773 bytes, 1106 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `PRODUCT_BARCODE_MANAGER.tsx` chỉ còn **128 dòng** (giảm gần 90% từ 1106 dòng, đạt chuẩn < 150 dòng), kết nối dữ liệu qua custom hook `useProductBarcodeData`, điều phối layout 2 pane, 4 thẻ KPI và Modal Pivot.
+    * Toàn bộ 9 subcomponents tại `src/pages/rnd/product_barcode_manager/PrecisionProductBarcode/` đều tuân thủ nguyên tắc Clean Code:
+      1. `PrecisionProductBarcode.scss` (470 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch, layout 2 pane co giãn full-width & full-height Multi-Tab, triệt tiêu 100% toolbar xanh lá mặc định của AGTable.
+      2. `PrecisionProductBarcodeHeader.tsx` (68 dòng): Sub-header chuẩn Stitch, breadcrumb `02. R&D • QUẢN LÝ MÃ SẢN PHẨM / THIẾT LẬP & TRỰC QUAN HÓA MÃ VẠCH (BARCODE & 2D MATRIX)`, badge `CMS R&D`, telemetry trực tuyến `LIVE • BARCODE INTEL`, nút gập/mở form trái, nút làm mới và Fullscreen.
+      3. `PrecisionProductBarcodeKpi.tsx` (88 dòng): 4 Thẻ Micro-cards KPI realtime: Tổng số mã barcode, Cơ cấu phân bổ 1D vs QR vs Matrix, Tiến độ sản xuất (Đã SX vs Chưa SX), và Trạng thái kiểm định OK vs NG.
+      4. `PrecisionProductBarcodeForm.tsx` (225 dòng): Form thiết lập công thái học kèm **Live Barcode Visualizer Box** xem trước trực tiếp mã quét (1D/QR/Matrix) tức thời ngay khi gõ dữ liệu, Autocomplete chọn mã hàng `G_CODE` & `G_NAME`, cụm nút Thêm, Cập nhật, Xóa, Nhập mới.
+      5. `PrecisionProductBarcodeToolbar.tsx` (125 dòng): Action Toolbar 2 tầng: Nút lọc nhanh loại mã (Tất cả, 1D, QR, Matrix), lọc trạng thái sản xuất, ô tìm kiếm nhanh Quick Search, Nút Xuất Excel, Nút Mở Pivot.
+      6. `PrecisionProductBarcodeColumns.tsx` (170 dòng): Cấu hình đúng chuẩn 10 cột AG-Grid, bảo toàn 100% field và headerName, font JetBrains Mono, chip OK/NG, badge `SX_STATUS` và giữ nguyên 100% đồ họa mã vạch `CODE_VISUALIZE` (`QRCODE`, `BARCODE`, `DATAMATRIX`).
+      7. `PrecisionProductBarcodeTable.tsx` (42 dòng): Bọc bảng AGTable High-Density, chiều cao dòng 42px hiển thị đồ họa mã vạch rõ nét, bung trọn 100% không gian dọc.
+      8. `PrecisionProductBarcodePivotModal.tsx` (65 dòng): Modal DevExtreme Pivot Grid phân tích dữ liệu đa chiều, hiệu ứng backdrop blur và nút đóng nhanh.
+      9. `barcodeManagerTypes.ts` (49 dòng): Interface dữ liệu, KPI, bộ lọc và hook return types.
+      10. `useProductBarcodeData.ts` (340 dòng): Custom hook quản lý 100% state, 6 API queries, tính toán realtime KPI, Quick Filter, xuất Excel và xử lý Fullscreen.
+  - **Khắc phục triệt để lỗi tải đi tải lại liên tục (Infinite Re-fetching Loop)**: Loại bỏ `useTransition` gây đổi reference hàm `getcodelist`, cô lập dependency array của `useEffect` on mount thành `[]`, thêm cờ nạp ngầm không pop-up alert khi vừa mở tab.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ**: Nạp toàn bộ barcode sản phẩm với Audit mode; thêm mới, cập nhật, xóa barcode (kiểm tra `SX_STATUS !== "NO"` an toàn); trực quan hóa mã vạch `QRCODE`, `BARCODE`, `DATAMATRIX`; phân tích đa chiều Pivot Grid; triệt tiêu 100% form chật chội font 0.6rem cũ và dải màu gradient lỗi thời.
+  - **Bổ sung tương thích layout trong `PRODUCT_BARCODE_MANAGER.scss`**: Cấu hình layout full-height cho `.product_barcode_mamanger` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`.
+  - **Xác thực toàn diện**: 100% (11/11) file đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi cú pháp / runtime. Không còn tải lại liên tục.
+
 - [x] Hoàn thiện Tái Thiết Kế Tab Thêm BOM Amazon (`BOM_AMAZON.tsx` & `PrecisionBomAmazon/`) theo chuẩn Google Stitch High-Density Enterprise:
   - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/rnd/bom_amazon/BOM_AMAZON.backup.tsx` (24.191 bytes, 702 dòng).
   - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:

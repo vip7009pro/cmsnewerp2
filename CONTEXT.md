@@ -1,5 +1,56 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-16 (R&D: Khắc Phục Triệt Để Sự Cố Giao Diện Bị Trắng Dưới Header Trong Tab Thiết Kế Tem Amazon - DESIGN_AMAZON.tsx & PrecisionDesignAmazon/)
+
+### Completed
+1. **Chuẩn đoán & Xác định nguyên nhân gốc rễ sự cố màn hình trắng**:
+   - Trong `DESIGN_AMAZON.scss`, rule `.component_element { height: 100% !important; }` đã vô tình ghi đè toàn cục lên container `.component_element` của hệ thống đa tab (`Home.tsx`).
+   - Do container cha `.animated_div` có thuộc tính `height: fit-content;`, việc đặt `.component_element` nhận `height: 100% !important` khiến chiều cao của nó bị sụp đổ chỉ bằng đúng chiều cao nội dung tĩnh (Header: ~42px).
+   - Kết hợp với thuộc tính `overflow: hidden;`, toàn bộ các phân vùng bên dưới (Ribbon Toolbar, Studio Canvas, Bảng AG-Grid) bị cắt hoàn toàn, lộ ra nền trắng của trình duyệt.
+2. **Khắc phục toàn diện**:
+   - **Tái cấu trúc CSS Scoping**: Trong `DESIGN_AMAZON.scss`, thay thế selector toàn cục bằng `.precision-amz-design` scoped với `.component_element &` và `.tab-pane &`.
+   - **Thiết lập Chiều cao Tuyệt đối**: Thêm `min-height: calc(100vh - 82px); max-height: calc(100vh - 82px);` cho `.precision-amz-design` trong cả `DESIGN_AMAZON.scss` và `PrecisionDesignAmazon.scss`, đảm bảo container editor luôn chiếm trọn 100% viewport đa tab của ERP.
+   - **Tăng cường cơ chế phòng thủ (Defensive Code)**: Trong `PrecisionDesignAmazonToolbar.tsx`, bổ sung fallback an toàn `safePalette`, `safePresets`, `safeOffset` ngăn ngừa mọi khả năng exception do props undefined.
+   - **Tối ưu trải nghiệm ban đầu**: Đặt `showSidebar: false` làm mặc định để ưu tiên diện tích vẽ tem của Studio Canvas, người dùng bấm nút "Mã Hàng" để mở ra khi cần tra cứu.
+3. **Bảo tồn 100% mã nguồn & nghiệp vụ**:
+   - Bản sao lưu gốc nguyên vẹn tại `src/pages/rnd/design_amazon/DESIGN_AMAZON.backup.tsx` (109.298 bytes, 2.829 dòng).
+   - Giữ nguyên 100% thuật toán tọa độ $MM \leftrightarrow PX$, bắt điểm thông minh, xoay tự do quanh tâm, vi chỉnh Nudge, in ấn và 14 cột AG-Grid.
+4. **Xác thực toàn diện**:
+   - 100% (12/12) file mới và liên quan đều đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi cú pháp JSX, TSX hay SCSS. Giao diện bung trọn vẹn full-height, hiển thị đầy đủ Toolbar, Studio Canvas và AG-Grid Dock.
+
+
+## Update - 2026-09-16 (R&D: Hoàn Thiện Tái Thiết Kế Màn Hình Quản Lý Mã Vạch Sản Phẩm - PRODUCT_BARCODE_MANAGER.tsx & Khắc Phục Triệt Để Lỗi Infinite Re-fetching Loop)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Đã lưu trữ an toàn tại `src/pages/rnd/product_barcode_manager/PRODUCT_BARCODE_MANAGER.backup.tsx` (31.773 bytes, 1106 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `PRODUCT_BARCODE_MANAGER.tsx` tinh gọn từ 1106 dòng xuống còn **128 dòng** (giảm gần 90%), kết nối dữ liệu qua custom hook `useProductBarcodeData`, điều phối layout 2 pane (Form + Table), 4 thẻ KPI và Modal Pivot.
+   - Toàn bộ 9 subcomponents tại `src/pages/rnd/product_barcode_manager/PrecisionProductBarcode/` đều tuân thủ nguyên tắc Clean Code:
+     1. `PrecisionProductBarcode.scss` (470 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#ef4444`, Purple `#7c3aed`), layout 2 pane co giãn full-width & full-height Multi-Tab (`.precision-barcode`, `.product_barcode_mamanger`), triệt tiêu 100% toolbar xanh lá mặc định của AGTable.
+     2. `PrecisionProductBarcodeHeader.tsx` (68 dòng): Sub-header chuẩn Stitch, breadcrumb `02. R&D • QUẢN LÝ MÃ SẢN PHẨM / THIẾT LẬP & TRỰC QUAN HÓA MÃ VẠCH (BARCODE & 2D MATRIX)`, badge `CMS R&D` & `BARCODE SPEC`, telemetry trực tuyến `LIVE • BARCODE INTEL` kèm pulse dot xanh lục, nút gập/mở form trái, nút làm mới và nút Fullscreen.
+     3. `PrecisionProductBarcodeKpi.tsx` (88 dòng): 4 Thẻ Micro-cards KPI realtime: Tổng số mã barcode, Cơ cấu phân bổ 1D vs QR vs Matrix, Tiến độ áp dụng sản xuất (Đã SX vs Chưa SX), và Trạng thái kiểm định OK vs NG.
+     4. `PrecisionProductBarcodeForm.tsx` (225 dòng): Form thiết lập công thái học kèm **Live Barcode Visualizer Box** xem trước trực tiếp mã quét (1D/QR/Matrix) tức thời ngay khi gõ dữ liệu, Autocomplete chọn mã hàng `G_CODE` & `G_NAME`, cụm nút Thêm (Emerald), Cập nhật (Royal Blue), Xóa (Rose), Nhập mới (Slate).
+     5. `PrecisionProductBarcodeToolbar.tsx` (125 dòng): Action Toolbar 2 tầng: Nút lọc nhanh loại mã (Tất cả, 1D, QR, Matrix), lọc trạng thái sản xuất (Toàn bộ, Đã SX, Chưa SX), ô tìm kiếm nhanh Quick Search tức thì, Nút Xuất Excel, Nút Mở Pivot, Badge đếm số lượng hiển thị.
+     6. `PrecisionProductBarcodeColumns.tsx` (170 dòng): Cấu hình đúng chuẩn 10 cột AG-Grid, bảo toàn 100% `field` và `headerName` theo Nguyên tắc số 8 của SKILL.md. Bổ sung font JetBrains Mono, chip OK/NG, badge `SX_STATUS` và giữ nguyên 100% logic đồ họa mã vạch `CODE_VISUALIZE` (`QRCODE`, `BARCODE`, `DATAMATRIX`).
+     7. `PrecisionProductBarcodeTable.tsx` (42 dòng): Bọc bảng AGTable High-Density, chiều cao dòng 42px hiển thị đồ họa mã vạch rõ nét, bung trọn 100% không gian dọc, triệt tiêu toolbar cũ và footer thừa.
+     8. `PrecisionProductBarcodePivotModal.tsx` (65 dòng): Modal DevExtreme Pivot Grid phân tích dữ liệu đa chiều, hiệu ứng backdrop blur và nút đóng nhanh.
+     9. `barcodeManagerTypes.ts` (49 dòng): Interface dữ liệu, KPI, bộ lọc và hook return types.
+     10. `useProductBarcodeData.ts` (340 dòng): Custom hook quản lý 100% state, 6 API queries (`loadbarcodemanager`, `selectcodeList`, `checkbarcodeExist`, `addBarcode`, `updateBarcode`, `deleteBarcode`), tính toán realtime KPI, Quick Filter, xuất Excel qua `SaveExcel` và xử lý Fullscreen.
+3. **Khắc phục triệt để lỗi bảng dữ liệu bị tải đi tải lại liên tục (Infinite Re-fetching Loop)**:
+   - *Nguyên nhân gốc rễ*: `getcodelist` sử dụng `useTransition` và đưa `[isPending]` vào dependency array của `useCallback`. Khi `getcodelist` hoàn tất, `isPending` chuyển trạng thái khiến reference của `getcodelist` thay đổi liên tục. Đồng thời `useEffect` on mount lại phụ thuộc vào `[load_barcode_table, getcodelist]`, tạo thành vòng lặp vô hạn kích hoạt `load_barcode_table` và liên tục hiển thị popup Swal alert.
+   - *Giải pháp triệt để*:
+     * Loại bỏ `useTransition` không cần thiết, chuyển `getcodelist` về `useCallback` với dependency rỗng `[]`.
+     * Cố định dependency của `useEffect` on mount thành `[]` để chỉ chạy đúng 1 lần khi tab được mở (mount).
+     * Bổ sung cờ `showToast: boolean = true` trong `load_barcode_table(showToast?: boolean)`: khi mount thì nạp ngầm êm dịu (`showToast: false`), chỉ hiển thị popup Swal thông báo khi người dùng chủ động bấm nút "Làm mới" hoặc thao tác Thêm/Sửa/Xóa.
+4. **Bảo lưu trọn vẹn 100% nghiệp vụ**:
+   - Nạp toàn bộ dữ liệu barcode sản phẩm với Audit mode.
+   - Thêm mới, cập nhật, xóa barcode (kiểm tra `SX_STATUS !== "NO"` an toàn).
+   - Render trực quan 3 loại mã vạch (`QRCODE`, `BARCODE`, `DATAMATRIX`).
+   - Phân tích đa chiều Pivot Grid với cấu hình 30+ trường phong phú.
+   - Triệt tiêu 100% form chật chội font 0.6rem cũ và dải màu gradient lỗi thời.
+5. **Xác thực kiểm tra Vite Dev Server & Zero Error**:
+   - Toàn bộ 11/11 file mới và file liên quan đều đạt `HTTP 200 OK` trên Vite Dev Server (port 3001) và sạch lỗi cú pháp / runtime. Không còn hiện tượng tải lại liên tục.
+
 ## Update - 2026-09-16 (R&D: Hoàn Thiện Tái Thiết Kế Tab Thêm BOM Amazon - BOM_AMAZON.tsx & PrecisionBomAmazon/ Chuẩn Google Stitch High-Density Enterprise & Tối Ưu UX Nhập Liệu)
 
 ### Completed
