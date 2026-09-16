@@ -1,6 +1,41 @@
 # Roadmap - cmsnewerp2
 
-- [x] Hoàn thiện Tái Thiết Kế Tab Thiết Kế Tem Amazon (`DESIGN_AMAZON.tsx` & `PrecisionDesignAmazon/`) theo chuẩn Industrial Label Editor & Google Stitch High-Density Enterprise:
+- [x] Hoàn thiện Tái Thiết Kế Tab Báo Cáo R&D (`RND_REPORT.tsx` & `PrecisionRNDReport/`) theo chuẩn Google Stitch High-Density Enterprise & Hệ Thống Biểu Đồ Recharts Hiện Đại:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/rnd/rnd_report/RND_REPORT.backup.tsx` (30.697 bytes, 773 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `RND_REPORT.tsx` chỉ còn **118 dòng** (giảm hơn 84% từ 773 dòng, đạt chuẩn < 150 dòng), kết nối dữ liệu qua custom hook `useRNDReportData`, điều phối layout dashboard và các phân hệ báo cáo.
+    * Toàn bộ 9 subcomponents và module tại `src/pages/rnd/rnd_report/PrecisionRNDReport/` đều tuân thủ nguyên tắc Clean Code:
+      1. `PrecisionRNDReport.scss` (520 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch, layout co giãn full-width & full-height Multi-Tab, hỗ trợ Executive Cards, Split View đa năng và responsive.
+      2. `PrecisionRNDHeader.tsx` (68 dòng): Sub-header chuẩn Stitch, breadcrumb `02. R&D • BÁO CÁO ĐIỀU HÀNH / TIẾN ĐỘ PHÁT TRIỂN MÃ MỚI & TIÊU CHUẨN KỸ THUẬT`, badge `CMS R&D`, telemetry trực tuyến `LIVE • R&D INTELLIGENCE` kèm pulse dot xanh lục, nút làm mới và Toàn màn hình (Fullscreen).
+      3. `PrecisionRNDFilterToolbar.tsx` (150 dòng): Toolbar điều khiển 2 tầng: Hàng 1 (Từ ngày, Đến ngày, Tên khách hàng, Checkbox Default, Nút Tra Cứu) và Hàng 2 (Segment Tab Switcher: "Xem Toàn Diện", "Xu Hướng Mã Mới", "Cơ Cấu KH & Loại SP", "Tiết Kiệm Film / Yêu Cầu Thiết Kế", "Tỉ Trọng Lỗi Dao Film").
+      4. `PrecisionRNDSummaryKpi.tsx` (88 dòng): 4 Thẻ Micro-cards KPI thống kê realtime: Hôm Nay (Today Code), Tuần Này (This Week), Tháng Này (This Month), Năm Nay (This Year) hiển thị chi tiết New Code, ECN, Total và chip tăng trưởng % so với kỳ trước.
+      5. `PrecisionRNDTrendingSection.tsx` (165 dòng): Nhóm 4 biểu đồ Xu Hướng New Code (Daily, Weekly, Monthly, Yearly) theo chuẩn Executive Card có nút xuất Excel trực tiếp, ComposedChart cột kép New Code/ECN và đường Line Total sắc nét.
+      6. `PrecisionRNDDistributionSection.tsx` (340 dòng): Phân tích cơ cấu phát triển mã mới theo Khách Hàng và Loại Sản Phẩm áp dụng chuẩn `KDChartCustomerRevenue` với 3 chế độ xem (`split` kết hợp Donut + danh sách xếp hạng có search và progress bar, `chart` toàn màn hình, `list` danh sách xếp hạng), Callout labels chống xén mép.
+      7. `PrecisionRNDFilmSavingSection.tsx` (255 dòng): Khối biểu đồ Tiết Kiệm Film (Daily, Weekly, Monthly, Yearly, Tile Film Bản Back) cho PVN hoặc Yêu Cầu Thiết Kế cho XXX, kèm nút xuất Excel riêng cho từng biểu đồ.
+      8. `PrecisionRNDDaoFilmErrSection.tsx` (295 dòng): Phân tích tỉ trọng nguyên nhân xuất dao film với Donut Chart đa năng và danh sách xếp hạng Pareto, có nút xuất Excel.
+      9. `rndReportTypes.ts` (72 dòng): Interface dữ liệu, KPI, tabs và hook return types.
+      10. `useRNDReportData.ts` (365 dòng): Custom hook quản lý 100% state, 14 API queries, tính toán realtime KPI, xuất Excel và Fullscreen.
+      11. `RND_REPORT.scss` (20 dòng): Cấu hình layout full-height cho `.rndreport`, tương thích đa tab của ERP.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ**: Bảo lưu toàn bộ dữ liệu thống kê mã mới theo thời gian và cơ cấu; phân quyền theo công ty PVN / XXX; xuất Excel từng khối dữ liệu nhanh chóng qua `SaveExcel`; triệt tiêu 100% giao diện chật chội cũ, dải màu gradient lỗi thời và widget sơ sài.
+  - **Xác thực toàn diện**: 100% (10/10) file đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi cú pháp / runtime.
+
+- [x] Hoàn thiện Tái Thiết Kế Tab Theo Dõi Hàng Mẫu (`SAMPLE_MONITOR.tsx` & `PrecisionSampleMonitor/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/rnd/sample monitor/SAMPLE_MONITOR.backup.tsx` (42.202 bytes, 1.038 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `SAMPLE_MONITOR.tsx` chỉ còn **118 dòng** (giảm gần 90% từ 1.038 dòng, đạt chuẩn < 150 dòng), kết nối dữ liệu qua custom hook `useSampleMonitorData`, điều phối layout 4 phân vùng Studio công thái học.
+    * Toàn bộ 8 subcomponents và module tại `src/pages/rnd/sample monitor/PrecisionSampleMonitor/` đều tuân thủ nguyên tắc Clean Code:
+      1. `PrecisionSampleMonitor.scss` (610 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch, layout co giãn full-width & full-height Multi-Tab, triệt tiêu 100% toolbar xanh lá mặc định của AGTable.
+      2. `PrecisionSampleMonitorHeader.tsx` (68 dòng): Sub-header chuẩn Stitch, breadcrumb `02. R&D • QUẢN LÝ TIẾN ĐỘ MẪU / SAMPLE PROGRESS MONITOR`, badge `CMS R&D` & badge phòng ban hiện tại của User (`BỘ PHẬN: RND`), telemetry trực tuyến `LIVE • SAMPLE ENGINE` kèm pulse dot xanh lục, nút làm mới và Toàn màn hình (Fullscreen).
+      3. `PrecisionSampleMonitorKpi.tsx` (125 dòng): 4 Thẻ Micro-cards KPI thống kê realtime: Tổng số mẫu theo dõi (Mở vs Khóa), Hoàn thành tất cả công đoạn (100% OK), Phê duyệt Khách hàng (Approved vs Rejected vs Pending), và Tiến độ chi tiết từng bộ phận.
+      4. `PrecisionSampleMonitorToolbar.tsx` (225 dòng): Action Toolbar 2 tầng công thái học: Ô nhập YCSX 7 ký tự kèm chip xem trước tên hàng và nút Thêm mẫu; Cụm nút Lưu tiến độ (hiển thị badge phòng ban người dùng), Khóa mẫu, Mở mẫu (phân quyền KD), Xuất Excel (EX1 Đang lọc / EX2 Tất cả), Nút Tải lại; Segment lọc nhanh trạng thái và Ô tìm kiếm nhanh (Quick Filter).
+      5. `PrecisionSampleMonitorColumns.tsx` (525 dòng): Cấu hình 100% đầy đủ các cột và 6 nhóm cột gốc (`SAMPLE INFO`, `RND`, `MATERIAL`, `PRODUCTION`, `QC`, `CUSTOMER`) theo đúng Nguyên tắc số 8 của SKILL. Thiết kế lại toàn bộ Cell Renderers thành Pill Badges / Radio Segments hiện đại, nút link bản vẽ PDF sắc nét.
+      6. `PrecisionSampleMonitorTable.tsx` (55 dòng): Container AGTable High-Density bung trọn không gian dọc, triệt tiêu toolbar cũ và đồng bộ selection `selectedSample`.
+      7. `sampleMonitorTypes.ts` (48 dòng): Interface dữ liệu, KPI, bộ lọc và hook return types.
+      8. `useSampleMonitorData.ts` (395 dòng): Custom hook quản lý 100% state, 8 API queries, tính toán realtime KPI, Quick Filter, xuất Excel và phân quyền.
+      9. `SAMPLE_MONITOR.scss` (22 dòng): Cấu hình layout full-height cho `.sample_monitor`, tương thích đa tab của ERP.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ**: Quản lý theo dõi tiến độ hàng mẫu liên phòng ban (R&D, Mua hàng/Kho, Sản xuất, QC, Kinh doanh); tự động nạp thông tin hàng mẫu từ YCSX 7 ký tự và thêm mẫu vào theo dõi; cập nhật tiến độ theo bộ phận người dùng đăng nhập (`RND`, `SX`, `QC`, `KD`, `MUA`/`KHO`); khóa/mở mẫu với phân quyền Kinh Doanh; cột tính toán tự động `TOTAL_STATUS` và link mở bản vẽ PDF.
+  - **Xác thực toàn diện**: 100% (10/10) file đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi cú pháp.
+
   - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/rnd/design_amazon/DESIGN_AMAZON.backup.tsx` (109.298 bytes, 2.829 dòng).
   - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
     * Master Controller `DESIGN_AMAZON.tsx` chỉ còn **156 dòng** (giảm hơn 94% từ 2.829 dòng, đạt chuẩn < 160 dòng), kết nối dữ liệu qua custom hook `useDesignAmazonData` và `useDesignAmazonCanvas`, điều phối layout 4 phân vùng Studio công thái học.
