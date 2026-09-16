@@ -1,5 +1,28 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Tái Thiết Kế Màn Hình Data OQC (`OQC_DATA.tsx` & `PrecisionOQCData/`) theo chuẩn Google Stitch High-Density Enterprise & Bổ Sung Cụm Widgets Thông Tin Hữu Ích:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/oqc/OQC_DATA.backup.tsx` (9.075 bytes, 255 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `OQC_DATA.tsx` chỉ còn **73 dòng** (giảm từ 255 dòng, đạt chuẩn < 120 dòng), kết nối dữ liệu qua custom hook `useOQCData`, quản lý toàn màn hình và điều phối layout.
+    * Toàn bộ các presentation subcomponents tại `src/pages/qc/oqc/PrecisionOQCData/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file**:
+      1. `PrecisionOQCData.scss` (480 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#f43f5e`, Purple `#7c3aed`), layout co giãn full-width & full-height Multi-Tab (`.component_element &` và `.oqc .trainspection`), custom scrollbar 6px mượt mà, triệt tiêu 100% toolbar xanh lá cũ và footer thừa của AGTable.
+      2. `PrecisionOQCDataHeader.tsx` (60 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • OQC / DỮ LIỆU KIỂM TRA XUẤT HÀNG (OUTGOING QUALITY CONTROL)`, badge `CMS ERP` & `OQC INTELLIGENCE`, telemetry trực tuyến `SYSTEM ONLINE` kèm pulse dot xanh lá, nút làm mới dữ liệu và nút bật/tắt toàn màn hình (Fullscreen).
+      3. `PrecisionOQCDataKpi.tsx` (190 dòng): Cụm **Widgets thông tin hữu ích** theo yêu cầu người dùng:
+         - Micro-card 1: Tổng Lượt OQC & Tỷ Lệ Đạt (Total Inspections, Lô OK, Lô NG, Pass Rate % với badge trạng thái màu).
+         - Micro-card 2: Sản Lượng & Giá Trị Xuất Hàng (Tổng Qty xuất EA, Tổng giá trị xuất $ USD).
+         - Micro-card 3: Lấy Mẫu Kiểm Tra & Tỷ Lệ Lỗi (Lượng mẫu test, Lượng mẫu lỗi NG, Tỷ lệ phế phẩm % và PPM).
+         - Micro-card 4: Thiệt Hại Phế Phẩm Mẫu (Tổng tiền mẫu lỗi $ USD, Số mã hàng SKUs, Số khách hàng).
+         - Operational Summary Strip: Phân bổ theo Nhà máy (NM1 vs NM2) và Ca làm việc (Ngày vs Đêm).
+      4. `PrecisionOQCDataToolbar.tsx` (170 dòng): SaaS Control Toolbar 2 tầng chuyên nghiệp:
+         - Hàng 1 (Filters): Từ ngày, Đến ngày, Code KD, Code ERP, YCSX, Khách hàng, Nút Tra Dữ Liệu (hỗ trợ Enter trên mọi ô nhập).
+         - Hàng 2 (Grid Toolbar): Ô tìm kiếm nhanh Quick Filter tức thời trên bảng, Nút xuất Excel `EX1 (Lọc)` & `EX2 (Toàn Bộ)`, Badge đếm số dòng hiển thị.
+      5. `PrecisionOQCDataColumns.tsx` (240 dòng): Cấu hình đúng chuẩn 25 cột AG-Grid của bản gốc, bảo toàn 100% `field`, `headerName`, và `width` theo Nguyên tắc số 8 của SKILL.md, bổ sung CellRenderer định dạng font monospace JetBrains Mono cho số lượng/tiền tệ/ngày tháng và highlight các lô có lỗi NG.
+      6. `PrecisionOQCDataTable.tsx` (40 dòng): Bọc bảng AGTable High-Density, bung trọn 100% không gian, triệt tiêu toolbar cũ và footer thừa.
+      7. `useOQCData.ts` (240 dòng): Custom hook quản lý 100% state, API query `traOQCData`, tính toán realtime các chỉ số widgets KPI, Quick Filter, và xuất Excel chuẩn hóa qua `SaveExcel`.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ**: Nạp dữ liệu OQC theo ngày tháng, mã hàng, khách hàng, số chỉ thị YCSX; bổ sung xuất Excel EX1/EX2; triệt tiêu hoàn toàn footer thừa.
+  - **Bổ sung tương thích trong `OQC.scss`**: Cấu hình layout full-height cho `.trainspection, .precision-oqc-data` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`.
+  - **Xác thực toàn diện**: 100% file đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi TypeScript trong `src/pages/qc/oqc/`.
+
 - [x] Hoàn thiện Tái Thiết Kế Màn Hình Báo Cáo PQC (`PQC_REPORT.tsx` & `PrecisionPQCReport/`) theo chuẩn Google Stitch High-Density Enterprise & Báo Cáo IQC / Kinh Doanh:
   - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/pqc/PQC_REPORT.backup.tsx` (29.689 bytes, 803 dòng).
   - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:

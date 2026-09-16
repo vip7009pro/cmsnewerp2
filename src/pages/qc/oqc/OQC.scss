@@ -3,6 +3,31 @@
     width: 100%;   
     display: flex;
     flex-direction: column;
+    height: calc(100vh - 85px);
+
+    .component_element & {
+      width: 100%;
+      height: 100% !important;
+      max-height: 100% !important;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .trainspection {
+      width: 100%;
+      height: 100%;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+
+      .precision-oqc-data {
+        width: 100%;
+        height: 100% !important;
+        flex: 1 1 auto;
+        min-height: 0;
+      }
+    }
 
     .mininavbar {
       display: flex;
