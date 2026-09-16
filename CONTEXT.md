@@ -1,5 +1,33 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-16 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Báo Cáo PQC - PQC_REPORT.tsx & PrecisionPQCReport/ Chuẩn Google Stitch & IQC_REPORT / KinhDoanhReport)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Đã lưu trữ an toàn tại `src/pages/qc/pqc/PQC_REPORT.backup.tsx` (29.689 bytes, 803 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `PQC_REPORT.tsx` tinh gọn từ 803 dòng xuống chỉ còn **120 dòng** (< 150 dòng theo cam kết), kết nối dữ liệu qua custom hook `usePQCReportData`, điều phối layout và các section theo phân hệ.
+   - Toàn bộ các presentation subcomponents tại `src/pages/qc/pqc/PrecisionPQCReport/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file**:
+     1. `PrecisionPQCReport.scss` (485 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#f43f5e`, Purple `#7c3aed`), layout co giãn full-width & full-height Multi-Tab (`.component_element &`), custom scrollbar 6px mượt mà, executive cards container, grid 2 cột responsive, không footer thừa.
+     2. `PrecisionPQCReportHeader.tsx` (60 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • PQC / BÁO CÁO TOÀN DIỆN CHỈ SỐ CHẤT LƯỢNG & XU HƯỚNG LỖI (PQC ANALYTICS)`, badge `CMS ERP`, telemetry trực tuyến `LIVE • QUALITY INTEL` kèm pulse dot xanh lá, nút làm mới dữ liệu và nút bật/tắt toàn màn hình (Fullscreen).
+     3. `PrecisionPQCReportToolbar.tsx` (198 dòng): SaaS Control Toolbar 2 hàng chuyên nghiệp:
+        - Hàng 1 (Filters): Từ ngày, Đến ngày, Worst By (AMOUNT/QTY), NG Type (ALL/PROCESS/MATERIAL), Autocomplete chọn mã hàng, Danh sách mã hàng dạng chip tags (có thể xóa từng mã hoặc xóa tất cả), Nhập tên Customer, Checkbox Default, Nút Tra Cứu (Search).
+        - Hàng 2 (Segment Switcher): Chuyển đổi tức thời giữa 4 phân hệ: `⊞ Xem Toàn Diện`, `📈 Xu Hướng Tỷ Lệ Lỗi PPM`, `⚠️ Xu Hướng Khuyết Tật & Sự Cố`, `💰 Chi Phí Tổn Thất F-Cost`.
+     4. `PrecisionPQCReportKpi.tsx` (80 dòng): 4 Thẻ Micro-cards KPI realtime (Today NG, This Week NG, This Month NG, This Year NG) bóc tách rõ ràng: Tỷ lệ lỗi tổng (Total PPM/Rate %), Lỗi Công Đoạn (Process), Lỗi Vật Liệu (Material).
+     5. `PrecisionPQCReportPPMSection.tsx` (105 dòng): Phân hệ 1 hiển thị 4 biểu đồ PPM (Daily, Weekly, Monthly, Yearly) bọc trong Executive Cards độc lập kèm nút xuất Excel riêng biệt (`SaveExcel`).
+     6. `PrecisionPQCReportDefectsSection.tsx` (100 dòng): Phân hệ 2 hiển thị biểu đồ Daily Defect Trending (hỗ trợ click vào cột để lọc sự cố theo ngày) + Nút xuất Excel và cụm thẻ sự cố hiện trường `PATROL_COMPONENT2` được thiết kế hiển thị trên **1 hàng ngang duy nhất (Horizontal Scroll Track)** với thanh cuộn mượt mà và badge hướng dẫn, tối ưu diện tích và trải nghiệm duyệt lỗi liên tục.
+     7. `PrecisionPQCReportFCostSection.tsx` (115 dòng): Phân hệ 3 hiển thị chi phí tổn thất F-Cost: Bảng F-Cost Summary (`PQCFCOSTTABLE`) được **thu gọn kích thước gọn gàng và căn giữa trang (`fcost-summary-card`, max-width 680px, `margin: 0 auto;`)**, tránh dàn trải toàn màn hình, chuẩn hóa Slate header và JetBrains Mono số liệu; cùng 4 biểu đồ F-Cost Trending (Daily, Weekly, Monthly, Yearly) kèm nút xuất Excel độc lập cho từng biểu đồ.
+     8. `usePQCReportData.ts` (300 dòng): Custom hook quản lý 100% state, API queries (`pqcdailyppm`, `pqcweeklyppm`, `pqcmonthlyppm`, `pqcyearlyppm`, `dailyPQCDefectTrending`, `getPQCSummary`, `trapqc3data`, `selectcodeList`), cơ chế tải đồng thời `Promise.all`, điều hướng tab, và xuất Excel chuẩn hóa qua `SaveExcel`.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ**:
+   - Nạp đầy đủ 10 nguồn dữ liệu báo cáo chất lượng công đoạn PQC.
+   - Hỗ trợ click vào cột ngày trên biểu đồ Defect Trending để tra cứu sự cố chi tiết theo ngày đã chọn; thẻ sự cố cuộn ngang mượt mà.
+   - Bảng F-Cost thu gọn công thái học và căn giữa trang cân đối, không vỡ layout.
+   - Xuất dữ liệu Excel độc lập cho từng biểu đồ và phân hệ.
+   - Triệt tiêu hoàn toàn footer thừa, không có tab menu lặp lại.
+4. **Bổ sung tương thích trong `PQC.scss`**:
+   - Cấu hình layout full-height cho `.pqcreport, .precision-pqc-report` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi nhúng trong tab "Báo Cáo PQC" của `PQC.tsx` không bao giờ bị collapse chiều cao.
+5. **Xác thực kiểm tra Vite Dev Server & Zero Error**:
+   - Toàn bộ 9/9 file mới và file liên quan đều đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi TypeScript trong `src/pages/qc/pqc/`.
+
 ## Update - 2026-09-16 (R&D / PQC: Hoàn Thiện Tái Thiết Kế Màn Hình Quản Lý Giao Nhận Dao Film Tài Liệu - QLGN.tsx & PrecisionQLGN/ Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed

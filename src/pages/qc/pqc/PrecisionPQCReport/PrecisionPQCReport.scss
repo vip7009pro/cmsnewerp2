@@ -1,0 +1,617 @@
+// PrecisionPQCReport.scss - Google Stitch High-Density Enterprise Design System
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+.pqcreport,
+.precision-pqc-report {
+  width: 100%;
+  height: calc(100vh - 85px);
+  max-height: calc(100vh - 85px);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
+  position: relative;
+
+  .component_element & {
+    height: 100% !important;
+    max-height: 100% !important;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  // Header Sub-bar
+  .precision-pqc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 14px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    flex-shrink: 0;
+    z-index: 10;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .breadcrumb-item {
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        .brand-badge {
+          background: #eff6ff;
+          color: #2563eb;
+          padding: 2px 7px;
+          border-radius: 4px;
+          font-size: 0.72rem;
+          font-weight: 700;
+          border: 1px solid #bfdbfe;
+        }
+
+        .section-tag {
+          color: #64748b;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .telemetry-status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #f1f5f9;
+        padding: 3px 8px;
+        border-radius: 9999px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #334155;
+        border: 1px solid #e2e8f0;
+
+        .pulse-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #10b981;
+          box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+          animation: pulse-ring 2s infinite ease-in-out;
+        }
+      }
+
+      .btn-header-action {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #334155;
+        border-radius: 6px;
+        padding: 4px 9px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: #f8fafc;
+          border-color: #94a3b8;
+          color: #0f172a;
+        }
+
+        &:active {
+          transform: scale(0.98);
+        }
+      }
+    }
+  }
+
+  // SaaS Control Toolbar
+  .precision-pqc-toolbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 6px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+
+    .toolbar-row-filters {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      .filter-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        label {
+          font-size: 0.72rem;
+          font-weight: 600;
+          color: #475569;
+          white-space: nowrap;
+        }
+
+        input, select {
+          height: 28px;
+          padding: 2px 7px;
+          font-size: 0.75rem;
+          border: 1px solid #cbd5e1;
+          border-radius: 5px;
+          background: #ffffff;
+          color: #0f172a;
+          outline: none;
+          transition: border-color 0.15s ease;
+
+          &:focus {
+            border-color: #2563eb;
+          }
+        }
+
+        input[type="date"] {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.74rem;
+        }
+      }
+
+      .code-chips-container {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        max-width: 250px;
+        overflow-x: auto;
+
+        .code-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
+          background: #eff6ff;
+          color: #1d4ed8;
+          border: 1px solid #bfdbfe;
+          border-radius: 4px;
+          padding: 1px 5px;
+          font-size: 0.68rem;
+          font-family: 'JetBrains Mono', monospace;
+          font-weight: 600;
+          white-space: nowrap;
+
+          .chip-remove {
+            cursor: pointer;
+            color: #64748b;
+            &:hover { color: #ef4444; }
+          }
+        }
+      }
+
+      .btn-search {
+        height: 28px;
+        padding: 0 12px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: linear-gradient(135deg, #1d4ed8, #1e40af);
+        }
+
+        &:active {
+          transform: scale(0.98);
+        }
+      }
+    }
+
+    // Segment Navigation Tabs
+    .toolbar-row-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding-top: 4px;
+      border-top: 1px dashed #f1f5f9;
+
+      .nav-tab-btn {
+        height: 27px;
+        padding: 0 10px;
+        border-radius: 5px;
+        font-size: 0.73rem;
+        font-weight: 600;
+        border: 1px solid transparent;
+        background: #f1f5f9;
+        color: #475569;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: #e2e8f0;
+          color: #0f172a;
+        }
+
+        &.active {
+          background: #eff6ff;
+          border-color: #bfdbfe;
+          color: #1d4ed8;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+  // Scrollable Body
+  .precision-pqc-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 10px 14px 20px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    // KPI Micro-cards
+    .precision-pqc-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+
+      .kpi-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 7px;
+        padding: 8px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 3px;
+        }
+
+        &.blue::before { background: #2563eb; }
+        &.emerald::before { background: #10b981; }
+        &.amber::before { background: #f59e0b; }
+        &.rose::before { background: #f43f5e; }
+
+        .kpi-header-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          .kpi-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: #64748b;
+          }
+
+          .kpi-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 3px;
+            background: #f1f5f9;
+            color: #475569;
+          }
+        }
+
+        .kpi-main-stat {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: #0f172a;
+          line-height: 1.1;
+        }
+
+        .kpi-breakdown-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 0.68rem;
+          color: #64748b;
+          border-top: 1px dashed #f1f5f9;
+          padding-top: 3px;
+
+          .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+
+            .val {
+              font-family: 'JetBrains Mono', monospace;
+              font-weight: 600;
+              color: #1e293b;
+            }
+          }
+        }
+      }
+    }
+
+    // Section Containers
+    .precision-section {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 7px;
+        border-bottom: 1px solid #f1f5f9;
+
+        .section-title {
+          font-size: 0.8rem;
+          font-weight: 700;
+          color: #1e293b;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .section-actions {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+      }
+
+      // Charts Two-Column Grid
+      .charts-grid-2col {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+
+        @media (max-width: 1100px) {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      // Executive Chart Card
+      .executive-chart-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 8px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+
+        .chart-card-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          .chart-name {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #334155;
+          }
+
+          .btn-export-excel {
+            height: 22px;
+            padding: 0 6px;
+            border-radius: 4px;
+            border: 1px solid #10b981;
+            background: #ecfdf5;
+            color: #047857;
+            font-size: 0.68rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            transition: all 0.15s ease;
+
+            &:hover {
+              background: #10b981;
+              color: #ffffff;
+            }
+          }
+        }
+
+        .chart-content {
+          width: 100%;
+          min-height: 260px;
+        }
+
+        &.fcost-summary-card {
+          max-width: 680px;
+          align-self: center;
+          margin: 0 auto;
+          width: 100%;
+
+          @media (max-width: 768px) {
+            max-width: 100%;
+          }
+
+          .chart-card-header {
+            justify-content: center;
+            text-align: center;
+          }
+
+          .fcost-table-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            padding: 2px 0;
+
+            .fcosttable {
+              width: 100% !important;
+              max-width: 100% !important;
+              box-shadow: none !important;
+              -webkit-box-shadow: none !important;
+              background: transparent !important;
+              margin-bottom: 0 !important;
+              border-radius: 6px;
+              overflow: hidden;
+
+              table {
+                border: 1px solid #cbd5e1 !important;
+                width: 100% !important;
+                border-collapse: collapse;
+                border-radius: 6px;
+                overflow: hidden;
+              }
+
+              table thead tr td {
+                font-size: 0.72rem !important;
+                font-weight: 700 !important;
+                background: #f1f5f9 !important;
+                color: #475569 !important;
+                border: 1px solid #e2e8f0 !important;
+                padding: 5px 8px !important;
+                text-align: center !important;
+                letter-spacing: 0.02em;
+              }
+
+              table tbody tr td {
+                font-family: 'JetBrains Mono', monospace !important;
+                font-size: 0.88rem !important;
+                padding: 6px 8px !important;
+                border: 1px solid #e2e8f0 !important;
+                background: #ffffff !important;
+                text-align: center !important;
+              }
+            }
+          }
+        }
+
+        &.defect-incident-card {
+          .chart-card-header {
+            .scroll-hint {
+              font-size: 0.68rem;
+              color: #2563eb;
+              font-weight: 600;
+              background: #eff6ff;
+              padding: 2px 8px;
+              border-radius: 9999px;
+              border: 1px solid #bfdbfe;
+            }
+          }
+        }
+      }
+
+      // Defect Cards Track (Chỉ hiển thị 1 hàng và cho scroll ngang)
+      .defect-cards-track,
+      .defect-cards-grid {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 12px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 8px 8px 12px 8px;
+        background: #f8fafc;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        align-items: stretch;
+
+        &::-webkit-scrollbar {
+          height: 7px;
+        }
+        &::-webkit-scrollbar-thumb {
+          background: #94a3b8;
+          border-radius: 4px;
+        }
+        &::-webkit-scrollbar-track {
+          background: #f1f5f9;
+        }
+
+        .defect-empty-state {
+          padding: 20px;
+          text-align: center;
+          color: #64748b;
+          font-size: 0.8rem;
+          width: 100%;
+        }
+
+        .defect-item-container {
+          flex: 0 0 520px;
+          max-width: 520px;
+          min-width: 440px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          background: #ffffff;
+          padding: 8px;
+          border-radius: 8px;
+          border: 1px solid #e2e8f0;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+          box-sizing: border-box;
+
+          .defect-time-header {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #1e293b;
+            font-family: 'JetBrains Mono', monospace;
+            padding-left: 2px;
+          }
+
+          .patrolcomponent2 {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box;
+            box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+            background-image: linear-gradient(180deg, #ffffff 0%, #f0fdfa 100%);
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
