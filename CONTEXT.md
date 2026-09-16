@@ -1,5 +1,34 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-16 (QC & ISO: Hoàn Thiện Tái Thiết Kế Màn Hình Lịch Sử Audit - AUDIT_HISTORY.tsx & PrecisionAUDITHistory/ Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Đã lưu trữ an toàn tại `src/pages/qc/iso/AUDIT/AUDIT_HISTORY.backup.tsx` (24.275 bytes, 686 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `AUDIT_HISTORY.tsx` tinh gọn từ 686 dòng xuống chỉ còn **113 dòng** (giảm hơn 83%), kết nối dữ liệu qua custom hook `useAUDITHistoryData`, điều phối layout Header, KPI, Toolbar, AGTable và Dialog.
+   - Toàn bộ các presentation subcomponents tại `src/pages/qc/iso/AUDIT/PrecisionAUDITHistory/` đều tuân thủ nghiêm ngặt giới hạn dòng:
+     1. `PrecisionAUDITHistory.scss` (485 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Rose `#ef4444`, Amber `#f59e0b`, Indigo `#6366f1`), layout co giãn full-width & full-height Multi-Tab (`.audit-history-page`, `.kpinvsx`), triệt tiêu 100% toolbar xanh lá mặc định của AGTable.
+     2. `PrecisionAUDITHistoryHeader.tsx` (69 dòng): Sub-header chuẩn Stitch, breadcrumb `QUẢN LÝ LỊCH SỬ AUDIT KHÁCH HÀNG & NHÀ CUNG CẤP`, badge `CMS ERP` & `ISO 9001 / IATF 16949`, telemetry trực tuyến `LIVE • AUDIT HISTORY INTEL` kèm pulse dot xanh lục, nút làm mới và nút Fullscreen (Toàn màn hình).
+     3. `PrecisionAUDITHistoryKpi.tsx` (106 dòng): 4 Thẻ Micro-cards KPI realtime: Tổng đợt kiểm toán, Tỷ lệ Đạt yêu cầu kèm progress bar và số đợt PASS vs FAIL, Điểm số trung bình so với thang điểm tối đa, Tỷ lệ hồ sơ báo cáo đính kèm đã lưu trữ.
+     4. `PrecisionAUDITHistoryToolbar.tsx` (207 dòng): SaaS Control Toolbar 2 tầng:
+        - Hàng 1 (Filters): Từ ngày, Đến ngày, Nút chọn nhanh (7 ngày, 30 ngày, 90 ngày, 1 năm), Toggle badge "Tất cả thời gian", Nút Nạp Dữ Liệu.
+        - Hàng 2 (Grid Actions): Ô tìm kiếm nhanh Quick Search Filter tức thời trên bảng, Nút "Thêm Audit", Nút "Sửa", Nút "Xóa" (xác nhận SweetAlert2), Nút "Xuất Excel", Badge đếm số lượng hiển thị và số dòng đã tick chọn.
+     5. `PrecisionAUDITHistoryColumns.tsx` (124 dòng): Cấu hình đúng chuẩn 15 cột AG-Grid, bảo toàn 100% `field`, `headerName` và `width` theo Nguyên tắc số 8 của SKILL.md. Bổ sung CellRenderer định dạng chip `PASS` (emerald) / `FAIL` (rose) rực rỡ, điểm số font JetBrains Mono, hiển thị tag loại tệp (PDF/XLSX/DOCX), nút tải về trực tiếp qua `DownloadButtonAll`, nút thay thế tệp nhanh và nút tải lên vi mô với phản hồi SweetAlert2.
+     6. `PrecisionAUDITHistoryTable.tsx` (36 dòng): Bọc bảng AGTable High-Density, bung trọn 100% không gian dọc, triệt tiêu toolbar cũ và footer thừa.
+     7. `PrecisionAUDITHistoryDialog.tsx` (260 dòng): Modal Thêm/Sửa Audit hiện đại: Autocomplete chọn khách hàng thông minh, tự động điền đồng thời `CUST_CD` và `CUST_NAME_KD`, nhóm thông tin chung, điểm số và đánh giá. Thanh preview đánh giá tự động realtime PASS/FAIL theo thời gian thực khi nhập điểm, kèm ô đính kèm tệp tài liệu/báo cáo trực tiếp trong modal.
+     8. `auditHistoryTypes.ts` (33 dòng): Interface dữ liệu KPI, types cho form state và options khách hàng.
+     9. `useAUDITHistoryData.ts` (330 dòng): Custom hook quản lý 100% state, 5 API queries (`f_load_AUDIT_HISTORY_DATA`, `f_add_AUDIT_HISTORY_DATA`, `f_update_AUDIT_HISTORY_DATA`, `f_delete_AUDIT_HISTORY_DATA`, `f_updateFileInfo_AUDIT_HISTORY`, `f_getcustomerlist`), xử lý upload file qua `uploadQuery`, tính toán realtime KPI, Quick Filter, và xuất Excel qua `SaveExcel`.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ**:
+   - Tra cứu lịch sử audit theo khoảng ngày hoặc All Time.
+   - Thao tác Thêm / Sửa / Xóa đợt audit với đầy đủ các trường thông tin.
+   - Nâng cấp UX upload file đính kèm với format chuẩn `${getCtrCd()}_${auditRow.AUDIT_ID}.${ext}` và lưu trữ vào thư mục `audithistory`.
+   - Tải về tệp đính kèm với `DownloadButtonAll`.
+   - Triệt tiêu 100% form chật chội và dải màu gradient `#afd3d1, #86cfff` cũ.
+4. **Bổ sung tương thích layout trong `AUDIT_HISTORY.scss`**:
+   - Cấu hình layout full-height cho `.audit-history-page`, `.kpinvsx` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi chọn tab "AUDIT HISTORY" trong `ISO.tsx` hiển thị bung tràn 100% màn hình, không bị bẹp hay collapse chiều cao.
+5. **Xác thực kiểm tra Node Transpiler & Sass Compiler**:
+   - Toàn bộ 9/9 file mới và file liên quan đều biên dịch sạch sẽ không có bất kỳ lỗi cú pháp JSX, TSX hay SCSS nào.
+
 ## Update - 2026-09-16 (QC & ISO: Hoàn Thiện Tái Thiết Kế Màn Hình Quản Lý Checksheet Audit - AUDIT.tsx & PrecisionAUDIT/ Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed
