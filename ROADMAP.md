@@ -1,5 +1,10 @@
 # Roadmap - cmsnewerp2
 
+- [x] Khắc phục triệt để lỗi layout bảng dữ liệu lơ lửng, đảm bảo bám dính 100% full-height xuống tận cuối trang ở tab `INSPECTION.tsx` (`KIEMTRA.tsx`):
+  - **Khắc phục tại `KIEMTRA.scss`**: Bổ sung `height: calc(100vh - 85px)` và quy tắc Multi-Tab `.component_element &` (`height: 100% !important`), thiết lập full-height cho `.tabs-container`, `.tab-content`, `.tab-pane`, và container `.trainspection`.
+  - **Khắc phục tại `PrecisionINSPECTION.scss`**: Khởi tạo `.precision-ins` với fallback `height: calc(100vh - 85px)` và selector đa cấp `.component_element &, .trainspection &, .kiemtra &, .tab-pane &` (`height: 100% !important`), tối ưu `workspace` và `tableContainer` (`calc(100% - 36px)`), cùng bộ style toàn diện cho `.agtable`, `.ag-theme-quartz`, `.ag-root-wrapper`.
+  - **Xác thực**: Kiểm tra trên Vite Dev Server (port 3001) đạt `HTTP 200 OK`, bảng kéo dài 100% xuống sát đáy màn hình.
+
 - [x] Hoàn thiện Tái Thiết Kế Màn Hình Báo Cáo OQC (`OQC_REPORT.tsx` & `PrecisionOQCReport/`) theo chuẩn Google Stitch High-Density Enterprise (Đồng bộ Báo Cáo PQC, IQC & Kinh Doanh):
   - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/oqc/OQC_REPORT.backup.tsx` (29.976 bytes, 829 dòng).
   - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:

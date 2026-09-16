@@ -3,7 +3,8 @@
 .precision-ins {
   display: flex;
   flex-direction: row;
-  height: 100%;
+  height: calc(100vh - 85px);
+  max-height: calc(100vh - 85px);
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -12,15 +13,20 @@
   font-family: "Inter", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 11.5px;
   color: #1e293b;
+  flex: 1 1 auto;
+  min-height: 0;
 
-  // Quan trọng: Full-width và Full-height trong chế độ Multi-Tab
-  .component_element & {
-    width: 100%;
-    max-width: 100%;
-    height: 100%;
-    max-height: 100%;
-    flex: 1 1 0px;
-    min-height: 0;
+  // Quan trọng: Full-width và Full-height trong chế độ Multi-Tab hoặc container bọc ngoài
+  .component_element &,
+  .trainspection &,
+  .kiemtra &,
+  .tab-pane & {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
   }
 
   // ========================================================
@@ -30,6 +36,8 @@
     width: 256px;
     min-width: 256px;
     max-width: 256px;
+    height: 100%;
+    max-height: 100%;
     background: #f8fafc;
     border-right: 1px solid #e2e8f0;
     display: flex;
@@ -38,6 +46,7 @@
     flex-shrink: 0;
     box-shadow: 1px 0 3px rgba(15, 23, 42, 0.03);
     user-select: none;
+    box-sizing: border-box;
 
     &::-webkit-scrollbar {
       width: 5px;
@@ -288,13 +297,16 @@
   // 3. WORKSPACE BẢNG DỮ LIỆU BÊN PHẢI (FLEX: 1)
   // ========================================================
   &__workspace {
-    flex: 1 1 0px;
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     background: #ffffff;
     overflow: hidden;
     min-width: 0;
     height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    box-sizing: border-box;
   }
 
   // Thanh công cụ Action Toolbar
@@ -423,22 +435,26 @@
   // 4. BẢNG AG-GRID CONTAINER (FULL-HEIGHT CHỐNG CO SẬP)
   // ========================================================
   &__tableContainer {
-    flex: 1 1 0px;
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
-    min-height: 200px;
-    height: 100%;
+    min-height: 0;
+    height: calc(100% - 36px);
+    max-height: calc(100% - 36px);
     width: 100%;
     overflow: hidden;
     background: #ffffff;
+    box-sizing: border-box;
 
     .agtable {
-      flex: 1 1 0px;
+      flex: 1 1 auto;
       display: flex;
       flex-direction: column;
-      height: 100%;
-      width: 100%;
-      min-height: 200px;
+      height: 100% !important;
+      max-height: 100% !important;
+      width: 100% !important;
+      min-height: 0 !important;
+      box-sizing: border-box;
 
       // Ẩn hoàn toàn toolbar xanh lá cũ của AGTable
       .toolbar {
@@ -446,16 +462,27 @@
       }
 
       .ag-theme-quartz {
-        flex: 1 1 0px;
+        flex: 1 1 auto;
         display: flex;
         flex-direction: column;
-        height: 100%;
-        width: 100%;
+        height: 100% !important;
+        max-height: 100% !important;
+        width: 100% !important;
+        min-height: 0 !important;
+        box-sizing: border-box;
 
         .ag-root-wrapper {
           height: 100% !important;
-          min-height: 200px;
+          max-height: 100% !important;
+          min-height: 0 !important;
           border: none;
+          box-sizing: border-box;
+        }
+
+        .ag-root-wrapper-body {
+          height: 100% !important;
+          flex: 1 1 auto;
+          min-height: 0;
         }
 
         .ag-header {

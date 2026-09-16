@@ -1,5 +1,28 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-16 (QC: Khắc Phục Triệt Để Hiện Tượng Bảng Data Không Dính Đáy Trang Ở Tab INSPECTION.tsx / KIEMTRA.tsx)
+
+### Completed
+1. **Phân tích căn nguyên (Root Cause Analysis)**:
+   - Trong `KIEMTRA.tsx`, tab "Data Kiểm Tra" chứa `<div className="trainspection"><INSPECTION /></div>`.
+   - Trước khi sửa: `KIEMTRA.scss` không khai báo chiều cao (`height: calc(100vh - 85px)` hoặc `100%`) cho `.kiemtra`, `.tabs-container`, `.tab-content`, `.tab-pane`, và hoàn toàn không định nghĩa `.trainspection`.
+   - Do đó `.kiemtra` và `.trainspection` có chiều cao co cụm (`height: auto`). `height: 100%` của `.precision-ins` bị phụ thuộc hoàn toàn vào chiều cao nội dung cao nhất bên trong nó (cột Sidebar Filter Panel khoảng 500px). Bảng dữ liệu AG-Grid chỉ chiếm đúng phần chiều cao đó và dừng lại lưng chừng màn hình, không kéo xuống đáy trang.
+2. **Khắc phục toàn diện tại `KIEMTRA.scss`**:
+   - Cấu hình `.kiemtra` nhận `height: calc(100vh - 85px); max-height: calc(100vh - 85px); flex: 1 1 auto; min-height: 0; box-sizing: border-box; overflow: hidden;`.
+   - Hỗ trợ chế độ Multi-Tab `.component_element &`: `height: 100% !important; max-height: 100% !important; flex: 1 1 auto; min-height: 0;`.
+   - Cấu hình `.tabs-container`, `.tab-content`, và `.tab-pane` co giãn `height: 100% !important; flex: 1 1 auto; min-height: 0;`.
+   - Thiết lập `.trainspection`: `width: 100%; height: 100%; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden;`.
+   - Thiết lập `.precision-ins, .inspection`: `width: 100% !important; height: 100% !important; flex: 1 1 auto !important; min-height: 0 !important;`.
+3. **Khắc phục toàn diện tại `PrecisionINSPECTION.scss`**:
+   - Khởi tạo `.precision-ins`: `height: calc(100vh - 85px); max-height: calc(100vh - 85px); flex: 1 1 auto; min-height: 0;`.
+   - Bổ sung bộ chọn đa cấp `.component_element &, .trainspection &, .kiemtra &, .tab-pane &` nhận `height: 100% !important; max-height: 100% !important; flex: 1 1 auto !important; min-height: 0 !important;`.
+   - Cập nhật `.precision-ins__workspace`: `flex: 1 1 auto; height: 100%; max-height: 100%; min-height: 0; box-sizing: border-box;`.
+   - Cập nhật `.precision-ins__tableContainer`: `flex: 1 1 auto; min-height: 0; height: calc(100% - 36px); max-height: calc(100% - 36px); width: 100%;`.
+   - Bổ sung các quy tắc ép toàn diện cho `.agtable`, `.ag-theme-quartz`, `.ag-root-wrapper`, `.ag-root-wrapper-body` nhận `height: 100% !important; min-height: 0 !important; flex: 1 1 auto;`.
+4. **Kiểm tra và Xác thực**:
+   - `INSPECTION.tsx`, `KIEMTRA.tsx`, `KIEMTRA.scss`, `PrecisionINSPECTION.scss` đều trả về `HTTP 200 OK` trên Vite Dev Server (port 3001).
+   - Bảng dữ liệu AG-Grid cùng thanh trạng thái tổng số dòng (`.bottombar`) luôn bám dính chắc chắn xuống tận đáy màn hình dù mở trực tiếp hay qua Multi-Tab.
+
 ## Update - 2026-09-16 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Báo Cáo OQC - OQC_REPORT.tsx & PrecisionOQCReport/ Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed
