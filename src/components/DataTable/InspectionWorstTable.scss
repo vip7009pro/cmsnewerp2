@@ -1,11 +1,157 @@
+// High-Density Enterprise Style cho Bảng Xếp Hạng Worst Lỗi và Biểu Đồ Tròn Kế Bên
+.inspection-worst-table-wrapper {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  box-sizing: border-box;
+
+  @media (max-width: 1200px) {
+    flex-direction: column;
+  }
+
+  .worst-table-pane {
+    flex: 1 1 44%;
+    min-width: 360px;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+
+  .worst-table-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border-bottom: 1px solid #f1f5f9;
+    flex-shrink: 0;
+
+    &__badge {
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid rgba(37, 99, 235, 0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    &__title {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    &__hint {
+      margin-left: auto;
+      font-size: 0.65rem;
+      color: #64748b;
+      font-style: italic;
+
+      @media (max-width: 768px) {
+        display: none;
+      }
+    }
+  }
+
+  .worst-table-grid {
+    flex: 1 1 auto;
+    height: calc(100% - 38px);
+    width: 100%;
+    min-height: 440px;
+
+    .agtable {
+      height: 100% !important;
+      width: 100% !important;
+
+      .ag-theme-quartz {
+        height: 100% !important;
+      }
+    }
+  }
+
+  .worst-chart-pane {
+    flex: 1 1 56%;
+    min-width: 420px;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+}
+
+// Cell Renderers inside InspectionWorstTable
+.iwt-code-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #0f172a;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 3px;
+}
+
+.iwt-name-vn {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.iwt-name-kr {
+  font-size: 0.68rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.iwt-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #0f172a;
+  text-align: right;
+  display: block;
+}
+
+.iwt-amount {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #047857;
+  text-align: right;
+  display: block;
+}
+
+// Highlight dòng đang được chọn trong bảng
+.iwt-row-selected {
+  background-color: #dbeafe !important;
+  font-weight: 600 !important;
+
+  &:hover {
+    background-color: #bfdbfe !important;
+  }
+}
+
+// Hỗ trợ backwards compatibility với class cũ .worstable
 .worstable {
   display: flex;
-  .table {
-    display: flex;
-    flex:1.5;
-  }
-  .chartworstcode {
-    display: flex;
-    flex:2;
-  }
+  width: 100%;
+  height: 100%;
 }

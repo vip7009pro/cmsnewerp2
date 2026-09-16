@@ -1,5 +1,20 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Đồng Bộ Bảng Xếp Hạng Worst & Biểu Đồ Tròn Kiểu KinhDoanhReport (`INSPECT_REPORT.tsx` & `PrecisionInspectReport/`):
+  - **Donut Chart Top 5 Lỗi (`PrecisionInspectReportWorstDonut.tsx` - 272 dòng)**: 3 Chế độ xem Split/Chart/List, Donut Center tương tác, Ranking List kèm thanh tiến độ %, Enterprise Palette 24 màu.
+  - **Donut Chart Sản Phẩm Kế Bên (`ChartWorstCodeByErrCode.tsx` - 290 dòng)**: Donut Chart chuẩn KinhDoanhReport, nhấp vào tên sản phẩm mở bản vẽ PDF kỹ thuật `/banve/{G_CODE}.pdf`.
+  - **Bảng Xếp Hạng AGTable High-Density (`InspectionWorstTable.tsx` - 206 dòng & `InspectionWorstTable.scss`)**: Bố cục 2 pane (Bảng lỗi 44% + Biểu đồ tròn 56%), click dòng tự động cập nhật biểu đồ tròn bên cạnh, highlight dòng đang chọn (`iwt-row-selected`), typography JetBrains Mono.
+  - **Tinh gọn Master Section (`PrecisionInspectReportWorstSection.tsx` - 85 dòng)**: Phân rã Clean Code, toàn bộ file đều < 300 dòng.
+  - **Xác thực**: 100% file HTTP 200 OK trên Vite Dev Server (port 3001).
+
+- [x] Hoàn thiện Tái Thiết Kế Báo Cáo Kiểm Tra (`INSPECT_REPORT.tsx` & `PrecisionInspectReport/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100%**: Backup tại `INSPECT_REPORT.backup.tsx` (1117 dòng).
+  - **Phân rã module**: Master Controller 120 dòng + 9 subcomponents (Header, Toolbar, KPI, F-Cost, Người Hàng, Defects, Worst, Hook, SCSS).
+  - **5 Segment Switcher Tabs**: Toàn Diện / F-Cost / Người Hàng / Defects / Worst Products.
+  - **16 API queries bảo toàn**: PPM (NM1/NM2/ALL), F-Cost, Defect Trending, Người Hàng, Worst, Patrol Header.
+  - **Xác thực**: 11/11 file HTTP 200 OK.
+
+
 - [x] Khắc phục triệt để lỗi layout bảng dữ liệu lơ lửng, đảm bảo bám dính 100% full-height xuống tận cuối trang ở tab `INSPECTION.tsx` (`KIEMTRA.tsx`):
   - **Khắc phục tại `KIEMTRA.scss`**: Bổ sung `height: calc(100vh - 85px)` và quy tắc Multi-Tab `.component_element &` (`height: 100% !important`), thiết lập full-height cho `.tabs-container`, `.tab-content`, `.tab-pane`, và container `.trainspection`.
   - **Khắc phục tại `PrecisionINSPECTION.scss`**: Khởi tạo `.precision-ins` với fallback `height: calc(100vh - 85px)` và selector đa cấp `.component_element &, .trainspection &, .kiemtra &, .tab-pane &` (`height: 100% !important`), tối ưu `workspace` và `tableContainer` (`calc(100% - 36px)`), cùng bộ style toàn diện cho `.agtable`, `.ag-theme-quartz`, `.ag-root-wrapper`.

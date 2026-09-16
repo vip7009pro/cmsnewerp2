@@ -1,5 +1,48 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-16 (QC: Hoàn Thiện Đồng Bộ Bảng Xếp Hạng Worst & Biểu Đồ Tròn Kiểu KinhDoanhReport Cho Báo Cáo Kiểm Tra INSPECT_REPORT)
+
+### Completed
+1. **Biểu đồ tròn Donut Top 5 loại lỗi (`PrecisionInspectReportWorstDonut.tsx` - 272 dòng)**:
+   - Xây dựng Donut Chart cao cấp chuẩn Google Stitch & KinhDoanhReport (`KDChartCustomerRevenue.tsx`).
+   - 3 Chế độ xem linh hoạt: `Song Song` (Split) / `Biểu Đồ` (Chart Only) / `Danh Sách` (List Only).
+   - Donut Center tương tác hiển thị tổng giá trị/số lượng thiệt hại hoặc thông số loại lỗi khi hover lát cắt.
+   - Bảng xếp hạng Ranking List với thanh tiến độ (progress bar), badge thứ hạng #1 (Vàng), #2 (Bạc), #3 (Đồng), ô tìm kiếm nhanh tức thì.
+   - Bộ 24 màu công nghiệp `ENTERPRISE_PALETTE` hiện đại thay thế hoàn toàn bảng màu cũ.
+2. **Biểu đồ tròn Donut phân bổ sản phẩm theo lỗi kế bên bảng (`ChartWorstCodeByErrCode.tsx` - 290 dòng)**:
+   - Hiện đại hóa biểu đồ tròn kế bên bảng xếp hạng: tích hợp đầy đủ Split/Chart/List view modes, Donut Center, progress bars, tìm kiếm theo tên hoặc mã sản phẩm `G_CODE`.
+   - Bổ sung tính năng nhấp vào sản phẩm để mở ngay bản vẽ kỹ thuật PDF `/banve/${item.G_CODE}.pdf` trên tab mới.
+3. **Tối ưu Bảng xếp hạng Worst AGTable (`InspectionWorstTable.tsx` - 206 dòng & `InspectionWorstTable.scss` - 125 dòng)**:
+   - Tái thiết kế bố cục 2 pane responsive: Bảng lỗi 44% + Biểu đồ tròn sản phẩm 56% với viền bo góc, header thẻ card chuẩn Stitch.
+   - Xử lý sự kiện `onRowClick`: Tự động kích hoạt `getWorstByErrCode` khi nhấp chọn dòng lỗi để biểu đồ tròn bên cạnh cập nhật tức thời theo lỗi đó.
+   - Highlight dòng đang chọn (`iwt-row-selected`), áp dụng font monospace `JetBrains Mono` cho số lượng và giá trị tiền tệ USD.
+4. **Bổ sung SCSS toàn diện**:
+   - `PrecisionInspectReport.scss`: Khai báo đầy đủ các lớp `.pir-donut-*`, `.pir-vbtn`, `.pir-worst-tooltip`.
+5. **Tinh gọn Master Section (`PrecisionInspectReportWorstSection.tsx` - 85 dòng)**:
+   - Kết nối nhịp nhàng Donut Chart Top 5 Lỗi và Cụm Bảng Chi Tiết Kế Bên, phân rã Clean Code, toàn bộ file đều < 300 dòng.
+6. **Xác thực toàn diện**: 100% file đạt `HTTP 200 OK` trên Vite Dev Server (port 3001).
+
+## Update - 2026-09-16 (QC: Hoàn Thiện Tái Thiết Kế Báo Cáo Kiểm Tra - INSPECT_REPORT.tsx & PrecisionInspectReport/ Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/inspection/INSPECT_REPORT.backup.tsx` (1117 dòng, 50.769 bytes).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `INSPECT_REPORT.tsx` tinh gọn từ 1117 dòng xuống chỉ còn **120 dòng** (đạt chuẩn ≤ 120 dòng), kết nối dữ liệu qua custom hook `useInspectReportData`, điều phối toàn diện các phân hệ báo cáo.
+   - Toàn bộ các presentation subcomponents tại `src/pages/qc/inspection/PrecisionInspectReport/`:
+     1. `PrecisionInspectReport.scss` (597 dòng): SCSS tokens công nghiệp chuẩn Stitch, layout co giãn full-width & full-height Multi-Tab, executive chart cards, grid 2 cột responsive, custom scrollbar 6px.
+     2. `PrecisionInspectReportHeader.tsx` (70 dòng): Sub-header breadcrumb `04. QC • INSPECTION / BÁO CÁO TOÀN DIỆN CHẤT LƯỢNG KIỂM TRA`, badge `CMS ERP` & `INSPECTION INTELLIGENCE`, telemetry `LIVE • INSPECT INTEL`.
+     3. `PrecisionInspectReportToolbar.tsx` (144 dòng): SaaS Toolbar 2 tầng: Filters (Từ ngày, Đến ngày, Worst By, NG Type, Autocomplete code hàng, Customer, Default) + 5 Segment Switcher Tabs.
+     4. `PrecisionInspectReportKpi.tsx` (85 dòng): 4 Micro-cards KPI (Yesterday NG, This Week NG, This Month NG, This Year NG) với Total/Process/Material PPM và badge trạng thái.
+     5. `PrecisionInspectReportFCostSection.tsx` (73 dòng): 4 biểu đồ F-Cost (Daily/Weekly/Monthly/Yearly) trong Executive Cards.
+     6. `PrecisionInspectReportNguoiHangSection.tsx` (72 dòng): 4 biểu đồ Tỉ Lệ Người Hàng (Daily/Weekly/Monthly/Yearly).
+     7. `PrecisionInspectReportDefectsSection.tsx` (56 dòng): Biểu đồ Defect Trending + Patrol Header (Top 3 F-Cost Products).
+     8. `PrecisionInspectReportWorstSection.tsx` (61 dòng): Grid 2 cột Worst Table + Worst Chart.
+     9. `useInspectReportData.ts` (375 dòng): Custom hook quản lý 100% state, 16 API queries, export Excel, Fullscreen API.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ**: 16 API queries (PPM, F-Cost, Defect Trending, Người Hàng, Worst, Patrol Header, Code List), xuất Excel riêng từng biểu đồ.
+4. **Bổ sung tương thích trong `KIEMTRA.scss`**: Thêm `.precision-inspect-report, .inspectionreport` vào quy tắc full-height.
+5. **Xác thực**: 100% (11/11) file đạt HTTP 200 OK trên Vite Dev Server (port 3001).
+
+
 ## Update - 2026-09-16 (QC: Khắc Phục Triệt Để Hiện Tượng Bảng Data Không Dính Đáy Trang Ở Tab INSPECTION.tsx / KIEMTRA.tsx)
 
 ### Completed

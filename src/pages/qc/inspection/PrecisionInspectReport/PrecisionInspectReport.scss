@@ -1,0 +1,1057 @@
+// PrecisionInspectReport.scss - Google Stitch High-Density Enterprise
+$font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$font-mono: 'JetBrains Mono', 'Roboto Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+
+// Industrial Stitch Palette
+$slate-900: #0f172a;
+$slate-800: #1e293b;
+$slate-700: #334155;
+$slate-600: #475569;
+$slate-500: #64748b;
+$slate-400: #94a3b8;
+$slate-300: #cbd5e1;
+$slate-200: #e2e8f0;
+$slate-100: #f1f5f9;
+$slate-50:  #f8fafc;
+
+$blue-600:  #2563eb;
+$blue-500:  #3b82f6;
+$blue-50:   #eff6ff;
+
+$emerald-600: #059669;
+$emerald-500: #10b981;
+$emerald-50:  #ecfdf5;
+
+$amber-600: #d97706;
+$amber-500: #f59e0b;
+$amber-50:  #fffbeb;
+
+$rose-600:  #e11d48;
+$rose-500:  #f43f5e;
+$rose-50:   #fff1f2;
+
+$purple-600: #7c3aed;
+$purple-500: #8b5cf6;
+$purple-50:  #f5f3ff;
+
+.precision-inspect-report {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  font-family: $font-sans;
+  background-color: #f4f6fa;
+  color: $slate-800;
+  position: relative;
+  overflow: hidden;
+
+  // Full-width & Full-height in Multi-Tab Mode
+  .component_element &,
+  .trainspection &,
+  .kiemtra & {
+    width: 100%;
+    max-width: 100%;
+    height: 100% !important;
+    max-height: 100% !important;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  // --- SUB-HEADER ---
+  .pir-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #ffffff;
+    border-bottom: 1px solid $slate-200;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    z-index: 10;
+    flex-shrink: 0;
+
+    &__left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    &__badge-erp {
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: $blue-600;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+
+    &__badge-module {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: $purple-600;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+
+    &__breadcrumb-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: $slate-900;
+      letter-spacing: 0.01em;
+      margin: 0;
+    }
+
+    &__right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    &__status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: $emerald-600;
+      background: $emerald-50;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    &__pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: $emerald-500;
+      box-shadow: 0 0 6px $emerald-500;
+      animation: pulse-dot 1.5s infinite;
+    }
+
+    &__btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: $slate-700;
+      background: $slate-100;
+      border: 1px solid $slate-200;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:hover {
+        background: $slate-200;
+        color: $slate-900;
+      }
+    }
+  }
+
+  // --- TOOLBAR (2 TIERS) ---
+  .pir-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #ffffff;
+    border-bottom: 1px solid $slate-200;
+    flex-shrink: 0;
+
+    &__row-filters {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    &__filters-left {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    &__field-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: $slate-600;
+        white-space: nowrap;
+      }
+
+      input[type="date"],
+      input[type="text"],
+      select {
+        height: 28px;
+        padding: 0 8px;
+        border: 1px solid $slate-300;
+        border-radius: 4px;
+        font-size: 0.73rem;
+        font-family: $font-sans;
+        color: $slate-800;
+        background: #ffffff;
+        outline: none;
+        transition: border-color 0.15s ease;
+
+        &:focus {
+          border-color: $blue-500;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+        }
+      }
+
+      input[type="date"] { width: 130px; }
+      input[type="text"] { width: 120px; }
+      select { width: 100px; }
+    }
+
+    &__autocomplete {
+      width: 220px;
+
+      .MuiInputBase-root {
+        height: 28px;
+        font-size: 0.72rem;
+      }
+      .MuiOutlinedInput-notchedOutline {
+        border-color: $slate-300;
+      }
+      .MuiAutocomplete-input {
+        padding: 0 4px !important;
+        font-size: 0.72rem;
+      }
+    }
+
+    &__chip-tags {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      max-width: 300px;
+    }
+
+    &__chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 6px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      font-family: $font-mono;
+      background: $blue-50;
+      color: $blue-600;
+      border: 1px solid rgba(37, 99, 235, 0.2);
+      border-radius: 3px;
+      cursor: pointer;
+
+      &:hover {
+        background: rgba(37, 99, 235, 0.15);
+      }
+    }
+
+    &__btn-search {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 28px;
+      padding: 0 14px;
+      font-size: 0.73rem;
+      font-weight: 700;
+      color: #ffffff;
+      background: linear-gradient(135deg, $blue-600, $blue-500);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
+
+      &:hover {
+        background: linear-gradient(135deg, darken($blue-600, 5%), $blue-600);
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+      }
+    }
+
+    // Segment Switcher Tabs
+    &__segments {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+
+      &::-webkit-scrollbar { height: 3px; }
+      &::-webkit-scrollbar-thumb { background: $slate-300; border-radius: 3px; }
+    }
+
+    &__seg-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 28px;
+      padding: 0 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: $slate-600;
+      background: $slate-50;
+      border: 1px solid $slate-200;
+      border-radius: 5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+
+      &:hover {
+        background: $slate-100;
+        color: $slate-800;
+      }
+
+      &--active {
+        background: $blue-600;
+        color: #ffffff;
+        border-color: $blue-600;
+        box-shadow: 0 1px 4px rgba(37, 99, 235, 0.3);
+
+        &:hover {
+          background: darken($blue-600, 5%);
+        }
+      }
+    }
+  }
+
+  // --- SCROLLABLE BODY ---
+  .pir-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    &::-webkit-scrollbar { width: 6px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb { background: $slate-300; border-radius: 3px; }
+    &::-webkit-scrollbar-thumb:hover { background: $slate-400; }
+  }
+
+  // --- KPI CARDS ---
+  .pir-kpi {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    flex-shrink: 0;
+
+    @media (max-width: 1200px) { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 600px)  { grid-template-columns: 1fr; }
+
+    &__card {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px 14px;
+      background: #ffffff;
+      border: 1px solid $slate-200;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+      transition: box-shadow 0.2s ease;
+
+      &:hover {
+        box-shadow: 0 3px 8px rgba(15, 23, 42, 0.08);
+      }
+    }
+
+    &__card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    &__card-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: $slate-500;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    &__card-icon {
+      font-size: 18px !important;
+    }
+
+    &__card-main {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    &__card-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      font-family: $font-mono;
+      color: $slate-900;
+      line-height: 1;
+    }
+
+    &__card-unit {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: $slate-500;
+    }
+
+    &__card-badge {
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-left: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+
+      &--emerald {
+        background: $emerald-50;
+        color: $emerald-600;
+        border: 1px solid rgba(16, 185, 129, 0.25);
+      }
+      &--amber {
+        background: $amber-50;
+        color: $amber-600;
+        border: 1px solid rgba(245, 158, 11, 0.25);
+      }
+      &--rose {
+        background: $rose-50;
+        color: $rose-600;
+        border: 1px solid rgba(244, 63, 94, 0.25);
+      }
+    }
+
+    &__card-sub {
+      font-size: 0.68rem;
+      color: $slate-500;
+
+      strong {
+        font-weight: 700;
+        color: $slate-700;
+      }
+    }
+  }
+
+  // --- CHART SECTIONS ---
+  .pir-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    &__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid $slate-200;
+    }
+
+    &__title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    &__title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: $slate-900;
+      margin: 0;
+    }
+
+    &__tag {
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: $blue-50;
+      color: $blue-600;
+      border: 1px solid rgba(37, 99, 235, 0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    &__grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+
+      @media (max-width: 1200px) { grid-template-columns: 1fr; }
+    }
+
+    &__grid-single {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    &__grid-dual {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+
+      @media (max-width: 1200px) { grid-template-columns: 1fr; }
+    }
+  }
+
+  // --- CHART CARDS ---
+  .pir-chart-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid $slate-200;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+
+    &__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid $slate-100;
+      background: $slate-50;
+    }
+
+    &__title-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    &__badge {
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: $purple-50;
+      color: $purple-600;
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    &__title {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: $slate-700;
+    }
+
+    &__btn-excel {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 24px;
+      padding: 0 8px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #065f46;
+      background: #f0fdf4;
+      border: 1px solid #a7f3d0;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:hover {
+        background: #dcfce7;
+        box-shadow: 0 1px 3px rgba(5, 150, 105, 0.2);
+      }
+    }
+
+    &__chart-body {
+      padding: 8px;
+      min-height: 340px;
+    }
+
+    &__chart-body--tall {
+      padding: 8px;
+      min-height: 560px;
+    }
+  }
+
+  // --- WORST SECTION & DONUT CHARTS ---
+  .pir-worst {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 12px;
+    min-height: 520px;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: 1fr;
+    }
+
+    &__table-card,
+    &__chart-card {
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border: 1px solid $slate-200;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+    }
+
+    &__card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid $slate-100;
+      background: $slate-50;
+    }
+
+    &__card-title {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: $slate-700;
+    }
+
+    &__card-body {
+      flex: 1 1 auto;
+      padding: 8px;
+      min-height: 440px;
+    }
+  }
+
+  // --- DONUT CHARTS CONTROLS & CONTENT (Kiểu KDChartCustomerRevenue) ---
+  .pir-donut-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background: $slate-50;
+    border-bottom: 1px solid $slate-200;
+    flex-shrink: 0;
+
+    &__stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: $slate-600;
+
+      strong {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+        color: $slate-900;
+      }
+
+      .dot {
+        color: $slate-300;
+      }
+    }
+
+    &__btns {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      background: $slate-200;
+      padding: 2px;
+      border-radius: 4px;
+    }
+  }
+
+  .pir-vbtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 22px;
+    padding: 0 7px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: $slate-600;
+    background: transparent;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      color: $slate-900;
+    }
+
+    &.active {
+      background: #ffffff;
+      color: $blue-600;
+      font-weight: 700;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  .pir-donut-content {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 290px;
+    gap: 12px;
+    padding: 10px 12px;
+    overflow: hidden;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+
+  .pir-donut-pane {
+    flex: 1 1 48%;
+    height: 100%;
+    min-height: 270px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.full {
+      flex: 1 1 100%;
+    }
+  }
+
+  .pir-donut-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    pointer-events: none;
+    width: 110px;
+
+    &__label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: $slate-500;
+      text-transform: uppercase;
+      max-width: 100px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &__value {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: $slate-900;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.15;
+    }
+
+    &__unit {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: $blue-600;
+    }
+  }
+
+  .pir-donut-list {
+    flex: 1 1 52%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    overflow: hidden;
+    border-left: 1px solid $slate-100;
+    padding-left: 10px;
+
+    &.full {
+      flex: 1 1 100%;
+      border-left: none;
+      padding-left: 0;
+    }
+  }
+
+  .pir-donut-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 26px;
+    background: $slate-50;
+    border: 1px solid $slate-200;
+    border-radius: 4px;
+    padding: 0 8px;
+    flex-shrink: 0;
+
+    &__icon {
+      color: $slate-400;
+      margin-right: 5px;
+    }
+
+    input {
+      border: none;
+      background: transparent;
+      font-size: 0.7rem;
+      color: $slate-800;
+      width: 100%;
+      outline: none;
+
+      &::placeholder {
+        color: $slate-400;
+      }
+    }
+
+    &__clear {
+      background: none;
+      border: none;
+      color: $slate-400;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 0 2px;
+      line-height: 1;
+
+      &:hover {
+        color: $slate-700;
+      }
+    }
+  }
+
+  .pir-donut-list__header {
+    display: grid;
+    grid-template-columns: 24px 1fr 90px 70px;
+    gap: 4px;
+    padding: 4px 6px;
+    background: $slate-100;
+    border-radius: 3px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: $slate-500;
+    text-transform: uppercase;
+    flex-shrink: 0;
+
+    .col-val, .col-share {
+      text-align: right;
+    }
+  }
+
+  .pir-donut-list__body {
+    flex: 1 1 auto;
+    max-height: 240px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding-right: 2px;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: $slate-300;
+      border-radius: 2px;
+    }
+  }
+
+  .pir-donut-empty {
+    padding: 24px;
+    text-align: center;
+    font-size: 0.72rem;
+    color: $slate-400;
+    font-style: italic;
+  }
+
+  .pir-donut-row {
+    display: grid;
+    grid-template-columns: 24px 1fr 90px 70px;
+    gap: 4px;
+    padding: 4px 6px;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.1s ease;
+
+    &:hover,
+    &.active {
+      background: $blue-50;
+    }
+
+    .col-rank {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: $slate-400;
+      text-align: center;
+
+      &.rank-1 { color: #f59e0b; font-weight: 800; }
+      &.rank-2 { color: #64748b; font-weight: 800; }
+      &.rank-3 { color: #d97706; font-weight: 800; }
+    }
+
+    .col-name {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      overflow: hidden;
+
+      .color-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .name-text {
+        font-weight: 600;
+        color: $slate-800;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.68rem;
+      }
+    }
+
+    .col-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: $slate-800;
+      text-align: right;
+    }
+
+    .col-share {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+
+      .progress-track {
+        width: 32px;
+        height: 4px;
+        background: $slate-200;
+        border-radius: 2px;
+        overflow: hidden;
+        flex-shrink: 0;
+
+        .progress-fill {
+          height: 100%;
+          border-radius: 2px;
+        }
+      }
+
+      .pct-text {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.62rem;
+        font-weight: 700;
+        color: $slate-500;
+        min-width: 28px;
+        text-align: right;
+      }
+    }
+  }
+
+  .pir-worst-tooltip {
+    background: #ffffff;
+    border: 1px solid $slate-200;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+    padding: 8px 10px;
+    font-size: 0.7rem;
+    z-index: 50;
+    pointer-events: none;
+
+    &__title {
+      font-weight: 700;
+      color: $slate-800;
+      margin-bottom: 4px;
+      border-bottom: 1px solid $slate-100;
+      padding-bottom: 3px;
+      font-size: 0.72rem;
+    }
+
+    &__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 2px;
+
+      .label {
+        color: $slate-500;
+      }
+
+      .value {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+        color: $slate-900;
+      }
+
+      .badge {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+        color: $blue-600;
+        background: $blue-50;
+        padding: 1px 4px;
+        border-radius: 3px;
+        font-size: 0.65rem;
+      }
+    }
+  }
+
+  // --- PATROL HEADER CARD ---
+  .pir-patrol-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid $slate-200;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+
+    &__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-bottom: 1px solid $slate-100;
+      background: $slate-50;
+    }
+
+    &__title {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: $slate-700;
+    }
+
+    &__body {
+      padding: 8px;
+    }
+  }
+}
+
+// Pulse animation
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+// Spinning animation for refresh button
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
