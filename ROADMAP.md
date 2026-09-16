@@ -1,5 +1,22 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Tái Thiết Kế Màn Hình Quản Lý Giao Nhận Dao Film Tài Liệu (`QLGN.tsx` & `PrecisionQLGN/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/rnd/quanlygiaonhandaofilm/QLGN.backup.tsx` (21.058 bytes, 659 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `QLGN.tsx` chỉ còn **129 dòng** (giảm từ 659 dòng, đạt chuẩn < 150 dòng), kết nối dữ liệu qua custom hook `useQLGNData`, quản lý toàn màn hình và điều phối layout.
+    * Toàn bộ 6 presentation subcomponents tại `src/pages/rnd/quanlygiaonhandaofilm/PrecisionQLGN/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file**:
+      1. `PrecisionQLGN.scss` (485 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#f43f5e`, Purple `#7c3aed`), layout co giãn 2 panel (Sidebar Form 350px collapsible & Main Grid full-height), co giãn full-width & full-height Multi-Tab (`.component_element &`), custom scrollbar, triệt tiêu 100% toolbar cũ của AGTable và hoàn toàn không footer thừa.
+      2. `PrecisionQLGNHeader.tsx` (60 dòng): Sub-header chuẩn Stitch, breadcrumb `02. R&D • GIAO NHẬN / QUẢN LÝ GIAO NHẬN DAO - FILM - TÀI LIỆU`, badge `CMS ERP`, telemetry trực tuyến `LIVE • R&D SYSTEM` kèm pulse dot xanh lá, nút làm mới dữ liệu và nút bật/tắt toàn màn hình (Fullscreen).
+      3. `PrecisionQLGNKpi.tsx` (65 dòng): 4 Thẻ Micro-cards KPI realtime (Tổng Lượt Giao Nhận, Đã Phát Hành PH, Thu Hồi TH, Chờ Xác Nhận Pending CFM).
+      4. `PrecisionQLGNInputCard.tsx` (240 dòng): Form nhập liệu công thái học Ergonomic: Autocomplete Khách Hàng & Mã Sản Phẩm với bộ lọc nhanh, ngày bàn giao, phân loại phát hành PH/TH, phân loại tài liệu (Dao/Film/Tài liệu/Mắt dao), phân loại bàn giao (New Code/ECN/Update/Amendment), nhân sự 3 bên (R&D, QC, SX với validation bắt buộc $\ge 7$ ký tự), thông số thích ứng động (Mã dao film, vị trí tài liệu, kích thước Rộng x Dài, số lượng OHP Film), bộ đôi nút Lưu Bàn Giao (Royal Blue Gradient) & Làm Mới (Slate).
+      5. `PrecisionQLGNToolbar.tsx` (95 dòng): SaaS Action Toolbar: Nút Tra Data / Sync, nút bật/thu gọn Ẩn/Hiện Form Nhập, ô tìm kiếm nhanh Quick Filter trên bảng, cụm xuất Excel EX1 (lọc) & EX2 (toàn bộ) và badge đếm số dòng hiển thị.
+      6. `PrecisionQLGNColumns.tsx` (160 dòng): Cấu hình 24 cột AG-Grid theo đúng nguyên tắc số 8 của SKILL.md, khớp 100% `headerName` và `width` gốc, bổ sung CellRenderer tinh tế cho `CFM_GIAONHAN` (Đã Duyệt / Chờ Duyệt), `LOAIPHATHANH` (PH / TH), và định dạng font monospace JetBrains Mono cho các mã số, ngày tháng, số lượng.
+      7. `PrecisionQLGNTable.tsx` (60 dòng): Bọc bảng AGTable High-Density, chiếm trọn 100% chiều cao và độ rộng còn lại, triệt tiêu 100% footer thừa và thanh trạng thái giả.
+      8. `useQLGNData.ts` (230 dòng): Custom hook quản lý 100% state, API queries (`loadquanlygiaonhan`, `selectCustomerAndVendorList`, `selectcodeList`, `addbangiaodaofilmtailieu`), kiểm toán `getAuditMode()` che `TEM_NOI_BO` an toàn, validation dữ liệu, tính toán KPI realtime và xuất Excel qua `SaveExcel`.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ**: Tra cứu đầy đủ lịch sử giao nhận dao/film/tài liệu giữa R&D, PQC và SX; Thêm mới giao nhận với modal xác nhận SweetAlert2 và kiểm tra ràng buộc mã nhân viên $\ge 7$ ký tự và số lượng $> 0$; Xuất dữ liệu Excel chuẩn hóa EX1 (dữ liệu lọc) và EX2 (toàn bộ); Không còn footer thừa, không có tab menu thừa.
+  - **Bổ sung tương thích trong `PQC.scss`**: Cấu hình layout full-height cho `.qlgn, .precision-qlgn` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi nhúng trong tab "Giao Nhận Dao Film" của `PQC.tsx` không bao giờ bị collapse chiều cao.
+  - **Xác thực toàn diện**: 100% 9/9 file mới và liên quan đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi TypeScript trong `src/pages/rnd/quanlygiaonhandaofilm/`.
+
 - [x] Hoàn thiện Tái Thiết Kế Màn Hình Giám Sát Chất Lượng Trực Tiếp (`PATROL.tsx` & `PrecisionPATROL/`) theo chuẩn Google Stitch High-Density & Tối Ưu Trình Chiếu TV:
   - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/sx/PATROL/PATROL.backup.tsx` (12.293 bytes, 362 dòng).
   - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
