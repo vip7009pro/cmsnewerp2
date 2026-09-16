@@ -1,5 +1,25 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Tái Thiết Kế Màn Hình Quản Lý Thiết Bị & Lịch Sử Hiệu Chuẩn (`CALIBRATION.tsx` & `PrecisionCalibration/`) theo chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/iso/CALIBRATION/CALIBRATION.backup.tsx` (19.231 bytes, 424 dòng).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+    * Master Controller `CALIBRATION.tsx` chỉ còn **157 dòng** (giảm từ 424 dòng, đạt chuẩn < 160 dòng), kết nối dữ liệu qua custom hook `useCalibrationData`, điều phối layout và các subcomponents.
+    * Toàn bộ các presentation subcomponents tại `src/pages/qc/iso/CALIBRATION/PrecisionCalibration/` đều tuân thủ nghiêm ngặt nguyên tắc Clean Code:
+      1. `PrecisionCalibration.scss` (490 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Rose `#ef4444`, Amber `#f59e0b`, Purple `#7c3aed`), layout co giãn full-width & full-height Multi-Tab (`.calibration-page`, `.calibration`, `.calibration-tab`), triệt tiêu 100% toolbar xanh lá mặc định của AGTable.
+      2. `PrecisionCalibrationHeader.tsx` (68 dòng): Sub-header chuẩn Stitch, breadcrumb `QUẢN LÝ THIẾT BỊ & LỊCH SỬ HIỆU CHUẨN ĐO LƯỜNG`, badge `CMS ERP` & `ISO 9001 / IATF 16949`, telemetry trực tuyến `LIVE • CALIBRATION INTEL` kèm pulse dot xanh lục, nút làm mới và nút Fullscreen (Toàn màn hình).
+      3. `PrecisionCalibrationKpi.tsx` (120 dòng): 5 Thẻ Micro-cards KPI realtime tương tác (Tổng thiết bị, Quá hạn hiệu chuẩn, Sắp đến hạn trong 30 ngày, Trong hạn chuẩn, Đang sử dụng vs Đã hỏng) cho phép nhấp trực tiếp để kích hoạt bộ lọc tương ứng.
+      4. `PrecisionCalibrationToolbar.tsx` (195 dòng): SaaS Control Toolbar 2 tầng:
+         - Hàng 1 (Filter Tabs & Legend): Nút lọc nhanh theo trạng thái (Tất cả, Quá hạn, Sắp đến hạn, Trong hạn, Đã hỏng), giải thích màu sắc Legend trực quan, Nút Nạp Lại Dữ Liệu.
+         - Hàng 2 (Grid Actions & Quick Search): Ô tìm kiếm nhanh Quick Search Filter tức thời theo Tên TB, Số QL, Model, Maker, Vị trí, BP; Nút "+ Thêm Thiết Bị", Nút "+ Thêm Lịch Sử HC" (tự động kích hoạt khi chọn thiết bị), Nút "Xuất Excel", Badge hiển thị thiết bị đang chọn và số lượng.
+      5. `PrecisionCalibrationColumns.tsx` (225 dòng): Cấu hình đúng chuẩn 2 bộ cột AG-Grid (Thiết bị 14 cột, Lịch sử 7 cột), bảo toàn 100% `field`, `headerName` và `width` theo Nguyên tắc số 8 của SKILL.md. Bổ sung CellRenderer thumbnail ảnh bo góc có hiệu ứng hover zoom, chip trạng thái `IN_USE` / `BROKEN`, các nút thao tác Sửa/Xóa tinh tế.
+      6. `PrecisionCalibrationTables.tsx` (125 dòng): Layout Master-Detail phân cấp hiện đại: Bảng Thiết Bị (Master) phía trên + Bảng Lịch Sử (Detail) phía dưới với thanh header chi tiết hiển thị tên và số QL của thiết bị đang chọn cùng nút đóng panel linh hoạt.
+      7. `PrecisionCalibrationModals.tsx` (390 dòng): Gom các dialogs hiện đại: Modal Thêm/Sửa Thiết Bị có dropzone xem trước ảnh tức thời; Modal Thêm/Sửa Lịch Sử Hiệu Chuẩn với tính năng tự động tính `NEXT_CAL_DATE = CAL_DATE + CAL_PERIOD (tháng)` và dropzone ảnh tem; Modal `ImagePreviewModal` xem ảnh thiết bị và tem hiệu chuẩn phóng to full-HD sắc nét với nút mở tab mới.
+      8. `calibrationTypes.ts` (50 dòng): Interface dữ liệu Equipment, CalibrationHistory, KPI, UrgencyFilter và ImagePreviewState.
+      9. `useCalibrationData.ts` (335 dòng): Custom hook quản lý 100% state, 8 API queries (`qc_get_equipment_list`, `qc_insert_equipment`, `qc_update_equipment`, `qc_delete_equipment`, `qc_get_calibration_history`, `qc_insert_calibration`, `qc_update_calibration`, `qc_delete_calibration`), xử lý upload ảnh thiết bị và tem qua `uploadQuery`, tính toán realtime KPI, Quick Search Filter, và xuất Excel qua `SaveExcel`.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ**: Quản lý danh mục thiết bị đo lường toàn nhà máy; Quản lý chi tiết từng lượt hiệu chuẩn và tem kiểm định tương ứng với thiết bị; Upload ảnh thiết bị và tem kiểm định vào thư mục `calibration`; Lọc và cảnh báo trực quan các thiết bị quá hạn hiệu chuẩn hoặc sắp đến hạn trong 30 ngày tới.
+  - **Bổ sung tương thích layout trong `CALIBRATION.scss`**: Cấu hình layout full-height cho `.calibration-page`, `.calibration`, `.calibration-tab` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`.
+  - **Xác thực toàn diện**: 100% file biên dịch sạch sẽ không có bất kỳ lỗi cú pháp JSX, TSX hay SCSS nào.
+
 - [x] Hoàn thiện Tái Thiết Kế Màn Hình Lịch Sử Audit (`AUDIT_HISTORY.tsx` & `PrecisionAUDITHistory/`) theo chuẩn Google Stitch High-Density Enterprise:
   - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/qc/iso/AUDIT/AUDIT_HISTORY.backup.tsx` (24.275 bytes, 686 dòng).
   - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
