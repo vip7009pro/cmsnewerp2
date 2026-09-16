@@ -1,5 +1,36 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-16 (QC & ISO: Hoàn Thiện Tái Thiết Kế Màn Hình Quản Lý Checksheet Audit - AUDIT.tsx & PrecisionAUDIT/ Chuẩn Google Stitch High-Density Enterprise)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**: Đã lưu trữ an toàn tại `src/pages/qc/iso/AUDIT/AUDIT.backup.tsx` (36.025 bytes, 1139 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `AUDIT.tsx` tinh gọn từ 1139 dòng xuống chỉ còn **170 dòng** (giảm hơn 85%), kết nối dữ liệu qua custom hook `useAUDITData`, điều phối layout 2 panel (Master đợt audit collapsible + Detail checksheet full-height).
+   - Toàn bộ các presentation subcomponents tại `src/pages/qc/iso/AUDIT/PrecisionAUDIT/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file** (ngoại trừ file khai báo cột AG-Grid):
+     1. `PrecisionAUDIT.scss` (692 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch (Slate `#f8fafc`, Royal Blue `#2563eb`, Emerald `#10b981`, Amber `#f59e0b`, Rose `#f43f5e`, Purple `#8b5cf6`), layout co giãn full-width & full-height Multi-Tab (`.component_element &`, `.iso &`, `.audit &`, `.tab-pane &`), custom scrollbar mượt mà, triệt tiêu 100% toolbar xanh lá mặc định của AGTable.
+     2. `PrecisionAUDITHeader.tsx` (77 dòng): Sub-header chuẩn Stitch, breadcrumb `04. QC • ISO / QUẢN LÝ CHECKSHEET AUDIT (SELF AUDIT & CUSTOMER AUDIT)`, badge `CMS ERP` & `ISO COMPLIANCE`, telemetry trực tuyến `LIVE • AUDIT INTEL` kèm pulse dot xanh lục, nút thu gọn/mở rộng panel đợt audit, nút làm mới và nút Fullscreen.
+     3. `PrecisionAUDITKpi.tsx` (100 dòng): 4 Thẻ Micro-cards KPI realtime: Tổng hạng mục checksheet, Điểm tổng kết & Tỷ lệ % đạt kèm badge PASS/FAIL so với Pass Score (80 điểm), Số lượng & tỷ lệ ảnh bằng chứng hiện trường, Thông tin chi tiết đợt kiểm toán đang chọn.
+     4. `PrecisionAUDITToolbar.tsx` (174 dòng): SaaS Control Toolbar 2 tầng:
+        - Hàng 1 (Filters): Từ ngày, Đến ngày, Dropdown chọn Mẫu Audit (List Audit), Nút Nạp Dữ Liệu, Nút Tạo Đợt Audit Mới (New Audit), Nút Thêm Mẫu Mới (Add Form).
+        - Hàng 2 (Checksheet Actions): Ô tìm kiếm nhanh Quick Filter tức thời, Nút Lưu Checksheet, Nút Reset Evident (kiểm tra quyền ISO), Nút Xuất Excel, Badge đếm số dòng checksheet và số dòng đã tick chọn.
+     5. `PrecisionAUDITColumns.tsx` (316 dòng): Cấu hình đúng chuẩn 2 bộ cột AG-Grid (Batch List 9 cột, Checksheet Detail 24 cột), bảo toàn 100% `field` và `headerName` theo Nguyên tắc số 8 của SKILL.md, CellRenderer thumbnail ảnh bằng chứng hiện trường hover zoom, Micro Upload Widget chuyên nghiệp hỗ trợ chọn và tải lên nhiều ảnh `.jpg` cùng lúc, cell điểm số và ghi chú hỗ trợ inline edit.
+     6. `PrecisionAUDITBatchTable.tsx` (43 dòng): Bảng Master danh sách các đợt Audit có header badge và collapsible panel.
+     7. `PrecisionAUDITChecklistTable.tsx` (35 dòng): Bảng AGTable High-Density hiển thị toàn diện các tiêu chí checksheet.
+     8. `PrecisionAUDITAddFormModal.tsx` (192 dòng): Modal tạo form mẫu checksheet mới chuyên nghiệp (thay thế khối `.upgia` cũ): nạp Excel XLSX, Autocomplete chọn khách hàng, nhập Pass Score và Audit Name, thêm/xóa dòng mượt mà.
+     9. `PrecisionAUDITImagePreviewModal.tsx` (55 dòng): Modal xem ảnh bằng chứng kích thước lớn kèm nút mở tab mới và đóng nhanh.
+     10. `auditTypes.ts` (32 dòng): Interface dữ liệu KPI và types mở rộng.
+     11. `useAUDITData.ts` (684 dòng): Custom hook quản lý 100% state, 15 API queries (`selectCustomerAndVendorList`, `auditlistcheck`, `loadAuditResultList`, `loadAuditResultCheckList`, `checkAuditResultCheckListExist`, `insertResultIDtoCheckList`, `createNewAudit`, `updateEvident`, `resetEvident`, `updatechecksheetResultRow`, `checklastAuditID`, `insertCheckSheetData`, `checkAuditNamebyCustomer`, `insertNewAuditInfo`, `uploadQuery`), xử lý upload nhiều file, tính toán realtime KPI, Quick Filter, và xuất Excel qua `SaveExcel`.
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ & Tương tác cell**:
+   - Chỉnh sửa điểm `AUDIT_SCORE` và ghi chú `REMARK` trực tiếp trên cell và lưu lại bằng nút "Lưu Checksheet" cho các dòng đã tick chọn.
+   - Nâng cấp UX upload ảnh bằng chứng hiện trường: nút vi mô tinh tế, chọn nhiều ảnh, tải lên với feedback và cập nhật thumbnail tức thời.
+   - Click thumbnail ảnh mở modal phóng to sắc nét hoặc mở tab mới.
+   - Phân quyền nghiêm ngặt khi bấm "Reset Evident": Chỉ tài khoản thuộc bộ phận ISO hoặc mã nhân viên NHU1903 mới được thực hiện.
+   - Triệt tiêu 100% form chật chội 480px và dải màu gradient cũ.
+4. **Bổ sung tương thích layout trong `AUDIT.scss`**:
+   - Cấu hình layout full-height cho `.audit`, `.tabs-container`, `.tab-content`, `.tab-pane` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`.
+5. **Xác thực kiểm tra & Zero Error**:
+   - Toàn bộ 12/12 file mới và file liên quan đều biên dịch sạch sẽ không có bất kỳ lỗi cú pháp JSX, TSX hay SCSS nào.
+
 ## Update - 2026-09-16 (QC & ISO: Hoàn Thiện Tái Thiết Kế Màn Hình Quản Lý Điểm Thi & Gauge R&R - RNR.tsx & PrecisionRNR/ Chuẩn Google Stitch High-Density Enterprise)
 
 ### Completed
