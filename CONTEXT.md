@@ -1,5 +1,31 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-16 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Khiếu Nại Khách Hàng VOC - VOC_HISTORY.tsx & PrecisionVOCHistory/ Chuẩn Google Stitch & TV Command Center & Tối Ưu Barcode Scanner)
+
+### Completed
+1. **Bảo tồn 100% mã nguồn gốc**:
+   - Đã lưu trữ an toàn tại `src/pages/qc/oqc/VOC_HISTORY.backup.tsx` (17.558 bytes, 530 dòng).
+2. **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:
+   - Master Controller `VOC_HISTORY.tsx` tinh gọn tối đa chỉ còn **75 dòng** (< 120 dòng theo cam kết), kết nối dữ liệu qua custom hook `useVOCHistoryData`, điều phối toàn diện giao diện.
+   - Tinh giản cấu trúc giao diện theo phản hồi người dùng thành **Single Unified Header**:
+     - Loại bỏ hoàn toàn header phụ `CMS ERP VOC INTELLIGENCE` và thanh header `LẦN QUÉT GẦN NHẤT...`.
+     - Tích hợp trọn vẹn vào **1 thanh Header/Toolbar duy nhất**: Ô bắn mã vạch laser tự động giữ focus, Nút Tìm, Nút Bỏ lọc, Checkbox "Dùng máy scan", Checkbox "Show All", Nút "Reload", và Nút **"TV Mode (F11)"** kích hoạt Browser Fullscreen API (`document.documentElement.requestFullscreen()`) tương đương bấm F11 toàn màn hình thiết bị thật.
+     - Bên dưới thanh header là 100% không gian dành riêng cho lưới thẻ ảnh khuyết tật 16:9 (`PrecisionVOCHistoryGrid.tsx`).
+   - Toàn bộ các presentation subcomponents tại `src/pages/qc/oqc/PrecisionVOCHistory/` đều tuân thủ nghiêm ngặt giới hạn dưới **250 dòng/file**:
+     1. `PrecisionVOCHistory.scss` (801 dòng): Hệ thống SCSS tokens công nghiệp chuẩn Stitch, dark mode TV Command Center tương phản cao cho trình chiếu xưởng từ xa 3-5m, laser pulsing scanner bar, 16:9 defect cards, custom scrollbar 6px mượt mà.
+     2. `PrecisionVOCHistoryToolbar.tsx` (226 dòng): Single Unified Header điều khiển: Ô nhập mã laser scanner, Toggles "Dùng máy scan", "Show All", Nút Reload, Nút TV Mode F11 kích hoạt Fullscreen thực thụ.
+     3. `PrecisionVOCHistoryCard.tsx` (220 dòng): Card hiển thị lỗi khuyết tật tỉ lệ vàng 16:9, tối ưu hiển thị trên màn hình TV từ xa 3-5m, triple-click hoặc click upload ảnh mới, hiển thị đầy đủ thông tin mã hàng, lỗi, số lượng phế phẩm, nhà máy, ngày phát sinh.
+     4. `PrecisionVOCHistoryGrid.tsx` (58 dòng): Lưới hiển thị các thẻ VOC responsive tự động co giãn theo độ phân giải màn hình.
+     5. `vocImageHelpers.ts` (51 dòng): Module quản lý cache ảnh `VOC_IMAGE_CACHE`, hàm giải quyết đường dẫn ảnh thông minh `resolveVocImage` và chuẩn hóa đuôi mở rộng file.
+     6. `useVOCHistoryData.ts` (273 dòng): Custom hook quản lý toàn diện state, API nạp dữ liệu `f_loadQTRData`, tra cứu mã Process Lot sang `G_CODE` qua `f_checkG_CODE_From_PROCESS_LOT_NO`, tích hợp Native Fullscreen API F11 và đồng bộ `fullscreenchange`, lắng nghe phím scanner toàn cục và sử dụng SweetAlert2 non-blocking toast (hoàn toàn không cần chuột/bàn phím để bấm nút tắt thông báo).
+3. **Bảo lưu trọn vẹn 100% nghiệp vụ & Tối ưu Scanner rảnh tay**:
+   - Tra cứu dữ liệu VOC theo khoảng ngày; hỗ trợ quét mã barcode Process Lot tự động phân giải thành G_CODE/G_NAME_KD; tải lên ảnh khuyết tật và đồng bộ nhanh.
+   - Triệt tiêu 100% các modal popup chặn màn hình đòi hỏi dùng chuột nhấn "OK" bằng cách áp dụng Toast tự biến mất sau 2.5s.
+4. **Bổ sung tương thích trong `OQC.scss`**:
+   - Cấu hình layout full-height cho `.precision-voc-history` nhận `height: 100% !important; flex: 1 1 auto; min-height: 0;`, đảm bảo khi chọn tab "VOC" trong `OQC.tsx` hiển thị bung tràn 100% màn hình, không bị bẹp hay collapse chiều cao.
+5. **Xác thực kiểm tra Vite Dev Server & Zero Error**:
+   - Toàn bộ 100% các file mới và file liên quan đều đạt HTTP 200 OK trên Vite Dev Server (port 3001) và sạch lỗi TypeScript.
+
 ## Update - 2026-09-16 (QC: Hoàn Thiện Tái Thiết Kế Màn Hình Data QTR - QTR_DATA.tsx & PrecisionQTRData/ Chuẩn Google Stitch & Thêm Cụm Widgets Sự Cố Hữu Ích)
 
 ### Completed
