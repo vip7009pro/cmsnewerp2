@@ -1,5 +1,39 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Màn Hình Trạng Thái Chỉ Thị Sản Xuất (`PLAN_STATUS.tsx`) Chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% logic nghiệp vụ & 7 mốc quy trình sản xuất**:
+    * Duy trì toàn bộ các mốc trạng thái then chốt: Xuất dao (`XUATDAO`), BĐ Setting (`SETTING_START_TIME`), KT Setting / Chạy Mass (`MASS_START_TIME`), ĐK xuất liệu (`DKXL`), Xuất liệu chính (`XUATLIEU`), In tem (`IN_TEM`), Chốt báo cáo (`CHOTBC`).
+    * Duy trì công thức tính toán sản lượng thực tế `kq_tem` (nếu chưa chốt BC thì lấy `KQ_SX_TAM` nếu có, đã chốt thì lấy `KETQUASX`), so sánh với `PLAN_QTY` và tính % tiến độ.
+    * Duy trì đầy đủ các tham số tra cứu của API `generalQuery("checkQLSXPLANSTATUS")`: `ALLTIME`, `FROM_DATE`, `TO_DATE`, `G_NAME`, `G_CODE`, `PLAN_ID`, `PROD_REQUEST_NO`, `FACTORY`, `PLAN_EQ`.
+  - **Hỗ trợ 2 Chế độ xem linh hoạt (Dual View Switcher)**:
+    * `Chế độ 1 - Luồng Thẻ Tiến Độ (Timeline / Pipeline Flow Cards)`: Thay thế toàn bộ các thẻ flag inline style cũ bằng Thẻ Chỉ Thị Công Nghiệp phẳng, hiện đại, hiển thị Stepper 7 công đoạn trực quan kèm thanh tiến độ sản lượng bo góc mượt mà.
+    * `Chế độ 2 - Bảng Lưới Dữ Liệu AGTable (AG Grid High-Density)`: Bảng lưới chuyên nghiệp, hỗ trợ sắp xếp, lọc đa chiều, các cột trạng thái hiển thị dạng Pill Badge nhỏ gọn.
+  - **Dashboard 6 Micro-Cards KPI Thống Kê Realtime**:
+    * `Tổng Chỉ Thị`: Tổng số lệnh kế hoạch.
+    * `Chờ Xuất Dao`: Số chỉ thị chưa xuất dao (`XUATDAO === null`).
+    * `Chờ Xuất Liệu`: Số chỉ thị chưa cấp liệu chính (`XUATLIEU === null`).
+    * `Đang Setting`: Số chỉ thị đang cân chỉnh máy.
+    * `Đang Chạy Mass`: Số chỉ thị đang chạy hàng loạt.
+    * `Đã Chốt Báo Cáo`: Số chỉ thị hoàn thành kèm % hoàn thành kế hoạch chung.
+  - **Tính năng cao cấp bổ sung**:
+    * Thanh tìm kiếm tức thời (Quick Search) lọc nhanh theo mã hàng, số chỉ thị, mã máy, nhà máy trên dữ liệu đang tải.
+    * Cơ chế Tự Động Làm Mới (Auto Refresh): Cho phép bật chu kỳ tự động cập nhật sau mỗi 30s hoặc 60s.
+    * Xuất báo cáo Excel toàn bộ hoặc dữ liệu đang lọc với format chuẩn chỉ.
+  - **Kiến trúc Module hóa Clean Code (< 300 dòng/file)**:
+    * Đã tạo bản sao lưu an toàn nguyên bản: `PLAN_STATUS.backup.tsx` và `PLAN_STATUS_COMPONENTS.backup.tsx`.
+    * Phân rã thành công thành 7 module độc lập trong thư mục `PrecisionPlanStatus/`:
+      1. `PrecisionPlanStatus.scss`: Bộ stylesheet SCSS Google Stitch Enterprise tối ưu Multi-Tab.
+      2. `PrecisionPlanStatusColumns.tsx`: Cấu hình cột bảng AG Grid Table với status pill badges.
+      3. `PrecisionPlanStatusKpi.tsx`: Dashboard 6 Micro-cards KPI thống kê realtime.
+      4. `PrecisionPlanStatusCardItem.tsx`: Component Thẻ luồng tiến độ chỉ thị hiện đại.
+      5. `PrecisionPlanStatusHeader.tsx`: Header bar công nghiệp với status chips, view switcher, auto-refresh và xuất Excel.
+      6. `PrecisionPlanStatusToolbar.tsx`: Bộ lọc compact 2 hàng, inputs, selects, quick search.
+      7. `usePlanStatusData.ts`: Custom hook pure TypeScript gom state, API queries, auto-refresh, quick search và xuất Excel.
+      8. `PLAN_STATUS.tsx`: Controller chính tinh gọn xuống còn 130 dòng kết nối subcomponents.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 7/7 file đạt 0 Errors / 0 Warnings (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra `PLAN_STATUS.tsx` (17.2KB) và `PrecisionPlanStatus.scss` (21.3KB) trên Vite Dev Server (port 3001) đều phản hồi HTTP 200 OK.
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Dữ Liệu Sản Xuất (`DATASX.tsx`) Chuẩn Google Stitch High-Density Enterprise:
   - **Bảo toàn 100% logic nghiệp vụ & bảng summary**:
     * Duy trì 100% 13 cột chính của bảng summary (`WH_MET`, `WH_EA`, `IP1_MET`, `IP1_EA`, `CD1`, `CD2`, `CD3`, `CD4`, `SX_RESULT`, `INS_INPUT`, `INS_OUTPUT`, `LOSS %`, `LOSS2 %`) và hơn 30 cột chi tiết khi bật checkbox `Full Summary` (`ST1-4`, `NG1-4`, `IP2-4`, `INS_TT_QTY`, `MARKING`, `INS_OK`, `INS_M_NG`, `INS_P_NG`, `INSP_LOSS`, `THEM_TUI`).

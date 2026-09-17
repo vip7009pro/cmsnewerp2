@@ -1,6 +1,25 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
-## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Tab Dữ Liệu Sản Xuất `DATASX.tsx` Chuẩn Google Stitch High-Density Enterprise)
+## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Màn Hình Trạng Thái Chỉ Thị Sản Xuất `PLAN_STATUS.tsx` Chuẩn Google Stitch High-Density Enterprise)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Theo Dõi Trạng Thái Chỉ Thị Sản Xuất (`src/pages/qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS.tsx`)** là công cụ giám sát tiến độ thực hiện chỉ thị sản xuất thời gian thực, quản lý 7 mốc quy trình sản xuất then chốt: Xuất dao (`XUATDAO`), BĐ Setting (`SETTING_START_TIME`), KT Setting / Chạy Mass (`MASS_START_TIME`), ĐK xuất liệu (`DKXL`), Xuất liệu chính (`XUATLIEU`), In tem (`IN_TEM`), Chốt báo cáo (`CHOTBC`) và tiến độ sản lượng (`kq_tem / PLAN_QTY`).
+  * Mã nguồn cũ sử dụng các thẻ "flag" rời rạc với inline style màu sắc chói lọi (`yellow`, `red`, `#6efad7`, `#5230fc`, `#fabd6e`), đổ bóng nặng nề, tràn vỡ layout; form lọc có màu gradient lỗi thời, thiếu chế độ xem dạng Bảng Lưới (Data Grid), thiếu Dashboard KPI tổng quan, thiếu tìm kiếm nhanh và cơ chế tự động cập nhật realtime.
+  * Yêu cầu: Làm lại toàn diện theo phong cách **Google Stitch High-Density Enterprise**, hỗ trợ 2 chế độ xem linh hoạt (Dạng Thẻ Luồng Tiến Độ Stepper và Dạng Bảng Lưới AG Grid), bổ sung 6 Micro-cards KPI, tìm kiếm nhanh và auto-refresh.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `PLAN_STATUS.backup.tsx` và `PLAN_STATUS_COMPONENTS.backup.tsx`.
+  * Phân rã thành công thành 7 module độc lập trong thư mục `src/pages/qlsx/QLSXPLAN/PLAN_STATUS/PrecisionPlanStatus/`:
+    1. `PrecisionPlanStatus.scss`: Bộ stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full Width & Full Height, styles cho cards, stepper, table và KPI.
+    2. `PrecisionPlanStatusColumns.tsx`: Cấu hình cột bảng AG Grid Table với status pill badges và format số đẹp mắt.
+    3. `PrecisionPlanStatusKpi.tsx`: Dashboard 6 Micro-cards KPI thống kê realtime: Tổng Chỉ Thị, Chờ Xuất Dao, Chờ Xuất Liệu, Đang Setting, Đang Chạy Mass, Đã Chốt Báo Cáo.
+    4. `PrecisionPlanStatusCardItem.tsx`: Component Thẻ luồng tiến độ chỉ thị hiện đại, thay thế hoàn toàn thẻ flag cũ bằng Stepper 7 công đoạn trực quan và thanh tiến độ bo tròn.
+    5. `PrecisionPlanStatusHeader.tsx`: Header bar công nghiệp với status chips, view switcher (Luồng Thẻ / Bảng Grid), toggle auto-refresh và xuất Excel.
+    6. `PrecisionPlanStatusToolbar.tsx`: Bộ lọc compact 2 hàng, inputs, selects, checkbox All Time và ô quick search tìm kiếm tức thì.
+    7. `usePlanStatusData.ts`: Custom hook pure TypeScript quản lý state, gọi API `generalQuery("checkQLSXPLANSTATUS")`, timer auto-refresh, quick filter và xuất Excel.
+    8. `PLAN_STATUS.tsx`: Controller chính tinh gọn xuống còn **130 dòng** kết nối subcomponents.
+- **3. Xác Thực Toàn Diện**:
+  * Quét TypeScript AST toàn bộ 7/7 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra `PLAN_STATUS.tsx` (17.2KB) và `PrecisionPlanStatus.scss` (21.3KB) trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK** (không có lỗi 404).
+
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Tab Dữ liệu sản xuất (`src/pages/qlsx/QLSXPLAN/DATASX/DATASX.tsx`) là màn hình trọng yếu phục vụ việc tra cứu và phân tích số liệu sản xuất theo Chỉ Thị hoặc theo YCSX, tính toán hao hụt qua từng công đoạn (CĐ1, CĐ2, CĐ3, CĐ4) và bộ phận kiểm tra (Inspection).
   * Mã nguồn cũ là một file nguyên khối khổng lồ lên tới **3.859 dòng (138 KB)**, giao diện form lọc và các bảng summary mang phong cách cũ (màu gradient xanh lơ/xanh lá, viền ô và font chữ thô sơ).
