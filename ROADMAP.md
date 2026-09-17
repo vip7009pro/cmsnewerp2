@@ -1,5 +1,36 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Bảng Tỷ Lệ Đạt Kế Hoạch Sản Xuất (`ACHIVEMENTTB.tsx`) Chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% logic nghiệp vụ & các cột dữ liệu**:
+    * Duy trì 100% tên cột `headerName` và độ rộng `width` của 13 cột bảng AG-Grid (`EQ_NAME`, `YCSX_NO`, `CODE KD`, `STEP`, `PLAN_DAY`, `PLAN_NIGHT`, `PLAN_TOTAL`, `RESULT_DAY`, `RESULT_NIGHT`, `RESULT_TOTAL`, `DAY_RATE`, `NIGHT_RATE`, `TOTAL_RATE`).
+    * Duy trì kiểm tra tính đầy đủ của thông số định mức (`EQ1`, `Setting1`, `UPH1`, `Step1`...) để tô màu cảnh báo xanh/đỏ cho `G_NAME_KD`.
+    * Duy trì API call `f_loadTiLeDat(plan_date, machine, factory)` và `f_getMachineListData()`.
+  - **Bổ sung Dashboard 6 Micro-Cards KPI Thống Kê Realtime Hữu Ích**:
+    * `Tiến Độ Toàn Ngày`: Tỷ lệ đạt % toàn ngày, sản lượng thực tế / kế hoạch, progress bar và chênh lệch sản lượng (+ vượt / - hụt).
+    * `Ca Ngày (Day Shift)`: Tỷ lệ đạt ca ngày, sản lượng thực tế / kế hoạch ca ngày và progress bar.
+    * `Ca Đêm (Night Shift)`: Tỷ lệ đạt ca đêm, sản lượng thực tế / kế hoạch ca đêm và progress bar.
+    * `Quy Mô Sản Xuất`: Tổng số lệnh kế hoạch trong ngày và tổng số máy dập tham gia vận hành.
+    * `Khai Báo Định Mức`: Thống kê số lệnh đã đủ thông số định mức (xanh) vs số lệnh thiếu thông số (đỏ).
+    * `Tỷ Lệ Lệnh Đạt`: Tỷ lệ và số lượng lệnh hoàn thành 100% kế hoạch vs số lệnh chưa hoàn thành.
+  - **Nâng cấp Bảng Lưới AG Grid High-Density & Xuất Excel**:
+    * Ẩn hoàn toàn toolbar xanh lá mặc định của AGTable.
+    * Thanh công cụ phía trên bảng (`gridToolbar`) tích hợp ô tìm kiếm nhanh (Quick Search), nút xuất Excel `EX1` (dữ liệu đang lọc) và `EX2` (toàn bộ dữ liệu).
+    * Ghim dòng tổng `TOTAL` nổi bật với font JetBrains Mono in đậm.
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `ACHIVEMENTTB.backup.tsx` (406 dòng).
+    * Tách thành 6 module chuyên biệt tại `src/pages/qlsx/QLSXPLAN/ACHIVEMENTTB/PrecisionAchivementTb/`:
+      1. `PrecisionAchivementTb.scss` (450 dòng): SCSS Stitch Enterprise & Multi-Tab Full Stretch.
+      2. `PrecisionAchivementTbColumns.tsx` (240 dòng): Cấu hình 13 cột bảng AG-Grid chuẩn 100% headerName & width.
+      3. `PrecisionAchivementTbKpi.tsx` (230 dòng): 6 Micro-cards KPI realtime thông tin hữu ích.
+      4. `PrecisionAchivementTbHeader.tsx` (50 dòng): Header bar công nghiệp kèm telemetry realtime.
+      5. `PrecisionAchivementTbToolbar.tsx` (110 dòng): Toolbar compact kèm nút chọn nhanh ngày (Hôm nay, Hôm qua, Hôm kia).
+      6. `PrecisionAchivementTbGrid.tsx` (80 dòng): Khung AG-Grid tích hợp quick search và nút xuất Excel EX1, EX2.
+      7. `useAchivementTbData.ts` (105 dòng): Custom hook pure TypeScript gom state, API và xuất Excel.
+    * Controller chính `ACHIVEMENTTB.tsx` tinh gọn xuống còn **65 dòng**.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 7/7 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra toàn bộ 8/8 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Báo Cáo Hiệu Suất Sản Xuất (`PLANRESULT.tsx`) Chuẩn Google Stitch High-Density Enterprise & Executive Dashboard:
   - **Bảo toàn 100% nghiệp vụ và thuật toán tính toán**:
     * Duy trì 100% công thức tính toán: Tỷ lệ đạt kế hoạch (`ACHIVEMENT_RATE`), Tổng hao hụt (`TOTAL_LOSS`), Tỷ lệ vận hành (`OPERATION RATE`), Hiệu suất sản xuất (`PROD EFFICIENCY`), Hiệu suất thiết bị (`EQ EFFICIENCY`), Thời gian khả dụng (`AVLB TIME`).

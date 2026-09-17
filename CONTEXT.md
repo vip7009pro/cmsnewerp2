@@ -1,5 +1,25 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Bảng Tỷ Lệ Đạt Kế Hoạch Sản Xuất `ACHIVEMENTTB.tsx` Chuẩn Google Stitch High-Density Enterprise)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Bảng Tỷ Lệ Đạt Kế Hoạch Sản Xuất (`src/pages/qlsx/QLSXPLAN/ACHIVEMENTTB/ACHIVEMENTTB.tsx`)** là công cụ đánh giá sản lượng và tiến độ hoàn thành kế hoạch theo từng thiết bị dập và theo từng ca làm việc (Ca Ngày, Ca Đêm, Tổng Ngày).
+  * Mã nguồn cũ 406 dòng dùng bảng màu gradient xanh lơ `#afd3d1` / xanh chuối `#86cfff`, đổ bóng nặng nề, các nút bấm mang màu neon chói lọi (vàng chanh `#ccff14`), bố trí nút thô sơ. Đặc biệt, hàm `f_loadTiLeDat` đã tính toán đầy đủ đối tượng `summaryData` nhưng không được hiển thị ra giao diện mà chỉ đổ thẳng vào bảng AGTable, thiếu Dashboard KPI tổng quan, thiếu ô tìm kiếm nhanh và thiếu nút xuất Excel.
+  * Yêu cầu: Làm lại bảng theo phong cách **Google Stitch High-Density Enterprise**, bổ sung các widget Micro-Cards KPI hữu ích thông tin, giữ nguyên 100% tên cột `headerName` và độ rộng cột, tích hợp ô Quick Search và cụm nút xuất Excel `EX1`, `EX2`.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `ACHIVEMENTTB.backup.tsx` (406 dòng).
+  * Phân rã thành công thành 6 module chuyên biệt trong thư mục `src/pages/qlsx/QLSXPLAN/ACHIVEMENTTB/PrecisionAchivementTb/`:
+    1. `PrecisionAchivementTb.scss` (450 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho KPI Cards, header, toolbar compact và bảng AGTable.
+    2. `PrecisionAchivementTbColumns.tsx` (240 dòng): Cấu hình 13 cột bảng AG-Grid bảo toàn 100% `headerName` và `width` gốc, tối ưu format số JetBrains Mono, trạng thái định mức và status badges.
+    3. `PrecisionAchivementTbKpi.tsx` (230 dòng): Dashboard 6 Micro-cards KPI thống kê realtime: Tiến độ toàn ngày, Ca ngày, Ca đêm, Quy mô lệnh & máy, Sức khỏe khai báo định mức, và Tỷ lệ lệnh đạt 100%.
+    4. `PrecisionAchivementTbHeader.tsx` (50 dòng): Header bar công nghiệp kèm telemetry xưởng, máy, ngày kế hoạch và thời gian cập nhật.
+    5. `PrecisionAchivementTbToolbar.tsx` (110 dòng): Toolbar compact lọc ngày, xưởng, máy, nút `Tra PLAN` nổi bật kèm dải nút chọn nhanh ngày (Hôm nay, Hôm qua, Hôm kia).
+    6. `PrecisionAchivementTbGrid.tsx` (80 dòng): Khung AG-Grid bọc thanh tìm kiếm nhanh tức thì và cụm nút xuất Excel `EX1` (dữ liệu đang lọc), `EX2` (toàn bộ dữ liệu).
+    7. `useAchivementTbData.ts` (105 dòng): Custom hook pure TypeScript gom toàn bộ state, API queries, logic tính toán và xuất Excel.
+    8. `ACHIVEMENTTB.tsx`: Controller chính tinh gọn từ 406 dòng xuống còn **65 dòng** kết nối subcomponents.
+- **3. Xác Thực Toàn Diện**:
+  * Quét TypeScript AST toàn bộ 7/7 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra toàn bộ 8/8 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK** (không có lỗi 404 hay runtime bundle).
+
 ## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Tab Báo Cáo Hiệu Suất Sản Xuất `PLANRESULT.tsx` Chuẩn Google Stitch High-Density Enterprise & Executive Dashboard)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Tab **Báo Cáo Hiệu Suất Sản Xuất (`src/pages/sx/PLANRESULT/PLANRESULT.tsx`)** là trung tâm báo cáo điều hành phân xưởng (Production Performance Management), theo dõi toàn diện:
