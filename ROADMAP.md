@@ -1,5 +1,50 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Lịch Sử Tem Lót Sản Xuất (`LICHSUTEMLOTSX.tsx`) Chuẩn Google Stitch High-Density Enterprise & Bảo Toàn Tuyệt Đối Chức Năng Preview/In Tem Lót:
+  - **Bảo toàn 100% logic nghiệp vụ & các cột dữ liệu**:
+    * Duy trì 100% tên cột `headerName` và độ rộng `width` của 17 cột: `INS_DATE` (100), `G_CODE` (60), `G_NAME` (120), `DESCR` (120), `M_LOT_NO` (60), `LOTNCC` (100), `YCSX` (60), `YCSX_QTY` (60), `PROCESS_LOT_NO` (100), `M_NAME` (100), `WIDTH_CD` (60), `EMPL_NAME` (100), `PLAN_ID` (100), `TEMP_QTY` (70), `PROCESS_NUMBER` (100), `LOT_STATUS` (100), `REMARK` (100).
+    * Duy trì toàn bộ logic API `f_LichSuTemLot(filterData)` và `f_cancelProductionLot`.
+    * Duy trì kiểm tra quyền hủy Lot (`getUserData()?.EMPL_NO === 'NHU1903'`) và điều kiện `LOT_STATUS === null`.
+  - **Bảo toàn nguyên vẹn 100% chức năng Preview và In Tem Lót**:
+    * Tải thiết kế tem mẫu Amazon Design `f_handleGETBOMAMAZON("6E00002A")` khi khởi tạo, tích hợp mẫu fallback chuẩn xác.
+    * Ánh xạ thông số đầy đủ khi click/double click dòng: `G_NAME`, `LOTSX_BARCODE`, `LOTSX_TEXT`, `LOT_QTY`, `LOT_NVL`, `SETTING`, `NM_CD_CT`, `PLAN_QTY`, `NVL`, `NHANVIEN`, `LOTSX_BARCODE2`.
+    * Render tem nhãn qua `{renderElement(componentList)}` bọc trong `ref={labelprintref}`.
+    * Nâng cấp Modal xem trước tem lót chuẩn Stitch Enterprise với Backdrop blur, giấy in thực tế 125mm x 65mm có bóng đổ chân thực, nút In Tem Lót qua `useReactToPrint` và nút Đóng.
+  - **Bổ sung Dashboard 6 Micro-Cards KPI Thống Kê Realtime Hữu Ích**:
+    * `Tổng Tem Đã In`: Số lượt tạo và in tem lót.
+    * `Tổng Sản Lượng (EA)`: Sản lượng tem in kèm mức trung bình EA/lot.
+    * `Tổng Chiều Dài (m)`: Mét chạy dập thực tế và trung bình m/lot.
+    * `Cơ Cấu Nhà Máy`: Phân bổ số tem và tỷ trọng giữa Nhà máy 1 (NM1) vs Nhà máy 2 (NM2).
+    * `Trạng Thái Chuyển CĐ`: Số Lot chờ chuyển công đoạn vs Số Lot đã chuyển.
+    * `Cân Chỉnh & NG CĐ`: Tổng mét cân chỉnh setting (`SETTING_MET`) và mét lỗi NG công đoạn (`PR_NG`).
+  - **Hệ Thống Biểu Đồ Recharts Executive Dashboard Chuyên Sâu**:
+    * Biểu đồ xu hướng số lượng tem và sản lượng EA theo chu kỳ ngày.
+    * Biểu đồ top thiết bị / máy dập in tem nhiều nhất.
+    * Tích hợp nút Thu gọn / Mở rộng để linh hoạt tối ưu diện tích cho bảng dữ liệu.
+  - **Nâng Cấp Bảng Lưới AG Grid High-Density & Xuất Excel**:
+    * Ẩn hoàn toàn toolbar xanh lá mặc định của AGTable.
+    * Segmented View Switcher 3 chế độ xem: `Toàn Bộ (All)`, `Bảng Lưới (Grid)`, `Biểu Đồ (Charts)`.
+    * Ô tìm kiếm nhanh (Quick Search) lọc tức thì theo bất kỳ trường nào.
+    * Cụm nút xuất Excel `EX1` (dữ liệu đang lọc) và `EX2` (toàn bộ dữ liệu) sử dụng `SaveExcel` chuẩn toàn hệ thống.
+    * Hàng tổng cộng ghim chân trang (Pinned Bottom Row) tính tổng YCSX_QTY, TEMP_QTY và TEMP_MET.
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `LICHSUTEMLOTSX.backup.tsx` (470 dòng).
+    * Phân rã thành 8 module chuyên biệt tại `src/pages/sx/LICHSUTEMLOTSX/PrecisionLichSuTemLotSx/`:
+      1. `PrecisionLichSuTemLotSx.scss` (845 dòng): SCSS Stitch Enterprise & Multi-Tab Full Stretch.
+      2. `PrecisionLichSuTemLotSxColumns.tsx` (285 dòng): Cấu hình 17 cột AG-Grid chuẩn 100% headerName & width.
+      3. `PrecisionLichSuTemLotSxKpi.tsx` (180 dòng): 6 Micro-cards KPI realtime thông tin hữu ích.
+      4. `PrecisionLichSuTemLotSxCharts.tsx` (189 dòng): Biểu đồ xu hướng Recharts Executive Dashboard.
+      5. `PrecisionLichSuTemLotSxHeader.tsx` (96 dòng): Header bar công nghiệp kèm telemetry & view switcher.
+      6. `PrecisionLichSuTemLotSxToolbar.tsx` (185 dòng): Toolbar compact kèm quick select ngày và tìm kiếm Enter.
+      7. `PrecisionLichSuTemLotSxGrid.tsx` (168 dòng): Khung AG-Grid tích hợp quick search, preview, hủy lot và nút xuất Excel EX1, EX2.
+      8. `PrecisionLichSuTemLotSxModal.tsx` (112 dòng): Modal xem trước và in tem lót chuyên nghiệp.
+      9. `temLotConstants.ts` (131 dòng): Mẫu Amazon Label component fallback.
+      10. `useLichSuTemLotSxData.ts` (281 dòng): Custom hook pure TypeScript gom state, API, preview/print và xuất Excel.
+    * Controller chính `LICHSUTEMLOTSX.tsx` tinh gọn xuống còn **104 dòng**.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 10/10 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra toàn bộ 11/11 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Tình Hình Chốt Báo Cáo Sản Xuất (`TINH_HINH_CHOT.tsx`) Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard:
   - **Bảo toàn 100% logic nghiệp vụ & các cột dữ liệu**:
     * Duy trì 100% tên cột `headerName` và độ rộng `width` của 6 cột ban đầu: `SX_DATE` (110), `TOTAL` (130), `DA_CHOT` (140), `CHUA_CHOT` (150), `DA_NHAP_HIEUSUAT` (150), `CHUA_NHAP_HIEUSUAT` (160).

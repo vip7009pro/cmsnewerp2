@@ -1,5 +1,34 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-17 (SX: Bugfix Runtime Error Quick Search LICHSUTEMLOTSX)
+- **Lỗi**: `TypeError: item.FACTORY.toLowerCase is not a function` tại `useLichSuTemLotSxData.ts:210` khi sử dụng Quick Search lọc nhanh trong bảng Lịch Sử Tem Lót Sản Xuất.
+- **Nguyên nhân gốc rễ**: Một số field trong dữ liệu trả về từ API (ví dụ `FACTORY`, `EQUIPMENT_CD`, `PLAN_ID`) có thể là kiểu `number` hoặc kiểu khác, không phải `string`. Toán tử `&&` chỉ chặn `null`/`undefined`/`""` (falsy values), nhưng khi field là số (truthy), `.toLowerCase()` bị gọi trên kiểu `number` gây crash.
+- **Cách sửa**: Thay thế toàn bộ pattern `(item.X && item.X.toLowerCase().includes(kw))` bằng hàm helper `safeIncludes(val)` sử dụng `String(val).toLowerCase().includes(kw)` để an toàn convert mọi kiểu dữ liệu sang string trước khi so sánh.
+- **File đã sửa**: [`useLichSuTemLotSxData.ts`](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/LICHSUTEMLOTSX/PrecisionLichSuTemLotSx/useLichSuTemLotSxData.ts) dòng 194-217.
+
+## Update - 2026-09-17 (SX: Refactor Toàn Diện Tab Lịch Sử Tem Lót Sản Xuất `LICHSUTEMLOTSX.tsx` Chuẩn Google Stitch High-Density Enterprise & Bảo Toàn Tuyệt Đối Chức Năng Preview/In Tem Lót)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Lịch Sử Tem Lót Sản Xuất (`src/pages/sx/LICHSUTEMLOTSX/LICHSUTEMLOTSX.tsx`)** là công cụ tra cứu lịch sử in tem lót công đoạn dập, giám sát sản lượng tem, mét chạy, kiểm soát số lot NVL và thực hiện in lại tem lót hoặc hủy lot lỗi.
+  * Mã nguồn cũ 470 dòng dùng bảng màu gradient xanh ngọc/xanh lá `#c3e7e4` lỗi thời, form lọc chiếm diện tích, thiếu Dashboard KPI tổng quan, thiếu biểu đồ xu hướng theo ngày và máy móc, thiếu ô tìm kiếm nhanh, thiếu nút xuất Excel. Đặc biệt chức năng xem trước tem lót cũ chỉ là một thẻ div trôi nổi `position: absolute, top: 50%, left: 45%` cộc lốc, dễ bị che khuất và khó thao tác.
+  * Yêu cầu: Làm lại theo chuẩn **Google Stitch High-Density Enterprise**, bổ sung Dashboard 6 Micro-Cards KPI realtime, hệ thống biểu đồ xu hướng Recharts Executive Dashboard, giữ nguyên 100% tên cột `headerName` và độ rộng cột, tích hợp ô Quick Search và cụm nút xuất Excel `EX1`, `EX2`. **Đặc biệt bảo toàn nguyên vẹn 100% chức năng preview và in tem lót** với giao diện Modal xem trước chuyên nghiệp.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `LICHSUTEMLOTSX.backup.tsx` (470 dòng).
+  * Phân rã thành công thành 8 module chuyên biệt trong thư mục `src/pages/sx/LICHSUTEMLOTSX/PrecisionLichSuTemLotSx/`:
+    1. `PrecisionLichSuTemLotSx.scss` (845 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho KPI Cards, header, Segmented switcher, Recharts cards, bảng AGTable và Modal Xem Trước/In Tem Lót.
+    2. `PrecisionLichSuTemLotSxColumns.tsx` (285 dòng): Cấu hình 17 cột AG-Grid bảo toàn 100% `headerName` và `width` gốc (`INS_DATE`, `G_CODE`, `G_NAME`, `DESCR`, `M_LOT_NO`, `LOTNCC`, `YCSX`, `YCSX_QTY`, `PROCESS_LOT_NO`, `M_NAME`, `WIDTH_CD`, `EMPL_NAME`, `PLAN_ID`, `TEMP_QTY`, `PROCESS_NUMBER`, `LOT_STATUS`, `REMARK`) kèm định dạng số JetBrains Mono và status badges.
+    3. `PrecisionLichSuTemLotSxKpi.tsx` (180 dòng): Dashboard 6 Micro-cards KPI thống kê realtime: Tổng tem đã in, Tổng sản lượng EA, Tổng chiều dài mét chạy, Cơ cấu nhà máy NM1 vs NM2, Trạng thái chuyển công đoạn, Hao phí cân chỉnh Setting & NG CĐ.
+    4. `PrecisionLichSuTemLotSxCharts.tsx` (189 dòng): Hệ thống biểu đồ Recharts Executive Dashboard hiển thị 2 biểu đồ trực quan (Xu hướng in tem & sản lượng EA theo ngày, Top thiết bị máy dập in nhiều nhất), có nút thu gọn/mở rộng.
+    5. `PrecisionLichSuTemLotSxHeader.tsx` (96 dòng): Header bar công nghiệp kèm badge phân hệ, breadcrumb, telemetry số dòng và sản lượng, Segmented View Switcher 3 chế độ (`ALL`, `GRID`, `CHARTS`) và nút làm mới.
+    6. `PrecisionLichSuTemLotSxToolbar.tsx` (185 dòng): Toolbar compact gồm bộ chọn ngày Từ ngày - Đến ngày, dải nút chọn nhanh (Hôm nay, 3 ngày, 7 ngày, 30 ngày), các inputs tìm kiếm với sự kiện Enter và nút `Load Data`.
+    7. `PrecisionLichSuTemLotSxGrid.tsx` (168 dòng): Bọc AGTable tích hợp ô Quick Search tức thì, nút Xem Tem Lót (Preview), nút Hủy LOT (Cancel LOT kiểm tra quyền), cụm nút xuất Excel `EX1`, `EX2` và hàng tổng cộng ghim chân trang (Pinned Bottom Row).
+    8. `PrecisionLichSuTemLotSxModal.tsx` (112 dòng): Modal xem trước và in tem lót đẳng cấp Enterprise với Backdrop blur, giấy in thực tế 125mm x 65mm đổ bóng chân thực, gọi `{renderElement(componentList)}` bọc trong `ref={labelprintref}`, nút In Tem Lót và nút Đóng.
+    9. `temLotConstants.ts` (131 dòng): Hằng số danh mục đối tượng thiết kế tem mẫu Amazon Design dự phòng fallback.
+    10. `useLichSuTemLotSxData.ts` (281 dòng): Custom hook pure TypeScript gom toàn bộ state, API queries, logic mapping thuộc tính dòng vào `componentList`, in tem qua `useReactToPrint`, hủy lot qua `f_cancelProductionLot` và xuất Excel (qua `SaveExcel`).
+    11. `LICHSUTEMLOTSX.tsx`: Controller chính tinh gọn từ 470 dòng xuống còn **104 dòng** kết nối subcomponents.
+- **3. Xác Thực Toàn Diện**:
+  * Quét TypeScript AST toàn bộ 10/10 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra toàn bộ 11/11 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK** (không có lỗi 404 hay runtime bundle).
+
 ## Update - 2026-09-17 (SX: Refactor Toàn Diện Tab Tình Hình Chốt Báo Cáo Sản Xuất `TINH_HINH_CHOT.tsx` Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình **Tình Hình Chốt Báo Cáo Sản Xuất (`src/pages/sx/TINH_HINH_CHOT/TINH_HINH_CHOT.tsx`)** là công cụ giám sát tiến độ chốt báo cáo sản xuất và nhập hiệu suất cho Nhà Máy 1 (NM1) và Nhà Máy 2 (NM2).
