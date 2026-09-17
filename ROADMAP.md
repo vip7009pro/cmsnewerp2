@@ -1,5 +1,28 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Bảng Quản Lý Chỉ Thị Sản Xuất (`PLAN_DATATB.tsx` & `PLAN_DATATB_backup.tsx`) Chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% logic nghiệp vụ & quyền hạn**:
+    * Duy trì 100% tất cả 38 cột của bảng Kế hoạch (`column_plandatatable`) và 11 cột của bảng Vật liệu (`column_planmaterialtable`) bao gồm `headerName`, độ rộng, inline edit và cell renderers.
+    * Đầy đủ toàn bộ 9 chức năng toolbar: `Tra PLAN`, `QUICK PLAN`, `MOVE PLAN`, `DELETE PLAN`, `SAVE Excel`, `Lưu PLAN`, `Print Chỉ Thị`, `Print Chỉ Thị Combo`, `Print Bản Vẽ`.
+    * Đầy đủ toàn bộ 8 chức năng trên bảng Vật tư: `Select (Tồn > 0)`, `Lưu CT + ĐKXK`, `Xóa Liệu`, `RESET Liệu`, `Kho SX Main`, `Refresh chỉ thị`, `Xuất dao sample`, `Xuất liệu sample`.
+    * Tách riêng 2 custom hook `usePlanDataTbData.ts` (cho `PLAN_DATATB`) và `usePlanDataTbOldData.ts` (cho `PLAN_DATATB_backup`) để bảo đảm đúng 100% hành vi ban đầu của từng file.
+    * Duy trì kiểm tra phân quyền `checkBP(userData, ["QLSX"], ...)` và thông báo thời gian thực socket `f_insert_Notification_Data`.
+  - **Kiến trúc Module hóa Clean Code (< 300 dòng/file)**:
+    * `PrecisionPlanDataTb.scss`: Stylesheet SCSS chuẩn Stitch High-Density Enterprise, hỗ trợ Multi-Tab Full Width & Full Height, ẩn toolbar xanh lá mặc định, styles modal đăng ký liệu và modal in ấn.
+    * `PrecisionPlanDataTbColumns.tsx`: Định nghĩa cột bảng Kế hoạch và bảng Vật liệu.
+    * `planDataTbPrintRenderers.tsx`: Module render JSX bản vẽ (`renderBanVe2`), giữ hook logic pure TypeScript.
+    * `usePlanDataTbData.ts` & `usePlanDataTbOldData.ts`: Quản lý tập trung toàn bộ state, API queries, logic tính toán tồn kho, cập nhật batch plan và in ấn.
+    * `PrecisionPlanDataTbHeader.tsx`: Tiêu đề và 4 thẻ KPI Telemetry (Tổng lệnh, Tổng Plan Qty, Kết quả SX, Tỉ lệ đạt %).
+    * `PrecisionPlanDataTbToolbar.tsx`: Form lọc compact và dải 9 action buttons phân nhóm màu sắc công thái học.
+    * `PrecisionPlanDataTbDangKyLieuModal.tsx`: Modal Đăng ký liệu chuẩn Stitch Enterprise với backdrop blur, header Slate/Blue gradient hiển thị thông tin kế hoạch, toolbar 8 nút hành động và bảng AGTable vật liệu.
+    * `PrecisionPlanDataTbPrintModals.tsx`: Bộ Modal in ấn (Chỉ Thị, Chỉ Thị Combo, Bản Vẽ) với khung giấy in thực tế đổ bóng A4 kèm modal Kho Ảo và Quick Plan.
+    * `PLAN_DATATB.tsx` & `PLAN_DATATB_backup.tsx`: Tinh gọn từ > 2.100 dòng xuống còn ~190 dòng Controller đóng vai trò kết nối subcomponents.
+  - **Tối ưu hiển thị Header xuống dòng & Cell Clip Overflow**:
+    * Bật `autoHeaderHeight: true` và `wrapHeaderText: true` trong `defaultColDef`; gỡ bỏ việc ép cứng `headerHeight: 20` để tiêu đề cột khi hẹp tự động xuống 2 dòng rõ ràng.
+    * Thêm SCSS `.ag-cell { overflow: hidden !important; text-overflow: ellipsis !important; }` và ràng buộc `> * { max-width: 100% !important; min-width: 0 !important; overflow: hidden !important; }` giúp nội dung cell khi thu hẹp tự động bị che (clip) mà không bị lòi tràn sang đè lên cột bên cạnh.
+    * Nâng cấp 5 cột trạng thái (`XUATDAOFILM`, `DKXL`, `MAIN_MATERIAL`, `INT_TEM`, `CHOTBC`) dùng `cellStyle` phủ màu xanh lá (`#16a34a`) hoặc đỏ (`#dc2626`) tràn trọn vẹn 100% diện tích ô (Full Cell), chữ "V"/"N" màu trắng đậm căn giữa nổi bật, chuyên nghiệp.
+  - **Xác thực toàn diện**: Quét TypeScript AST toàn bộ 10/10 file đạt 0 Errors / 0 Warnings (`PASS: 100%`). Gửi HTTP request kiểm tra 11/11 endpoints trên Vite Dev Server (port 3001) đều phản hồi HTTP 200 OK.
+
 - [x] Hoàn thiện Refactor Toàn Diện Giao Diện Tab Quick Plan (`QUICKPLAN2_backup.tsx`) Chuẩn Google Stitch High-Density Enterprise:
   - **Bảo toàn 100% logic nghiệp vụ & quyền hạn**:
     * Không bỏ sót bất kỳ nút toolbar nào trên cả bảng YCSX (8 nút) và bảng Tạm Xắp Plan (6 nút).

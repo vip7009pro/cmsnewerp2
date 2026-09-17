@@ -1,0 +1,792 @@
+// =============================================================================
+// PRECISION PLAN DATA TB: STITCH HIGH-DENSITY ENTERPRISE STYLESHEET
+// =============================================================================
+
+.precision-plandatatb {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  background: #f8fafc;
+  gap: 8px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  // QUAN TRỌNG: Full-width và Full-height trong chế độ Multi-tab
+  .component_element & {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    flex: 1;
+    min-height: 0;
+  }
+
+  // Ẩn toolbar xanh lá mặc định của AGTable
+  .agtable {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .toolbar {
+      display: none !important;
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // 1. HEADER & KPI CARDS
+  // ---------------------------------------------------------------------------
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-shrink: 0;
+    padding: 6px 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .title-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
+      }
+
+      .title-text {
+        font-size: 14px;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+      }
+
+      .subtitle-text {
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 500;
+      }
+    }
+
+    .kpi-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .kpi-card {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 10px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        min-width: 100px;
+
+        &__label {
+          font-size: 9.5px;
+          font-weight: 700;
+          color: #64748b;
+          text-transform: uppercase;
+        }
+
+        &__value {
+          font-family: "JetBrains Mono", monospace;
+          font-size: 12.5px;
+          font-weight: 800;
+          color: #0f172a;
+
+          &.text-blue { color: #2563eb; }
+          &.text-green { color: #16a34a; }
+          &.text-purple { color: #9333ea; }
+          &.text-orange { color: #ea580c; }
+        }
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // 2. FILTER TOOLBAR & ACTION BUTTONS
+  // ---------------------------------------------------------------------------
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+    flex-shrink: 0;
+
+    .filter-fields {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+
+      .filter-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        label {
+          font-size: 11px;
+          font-weight: 700;
+          color: #475569;
+          white-space: nowrap;
+        }
+
+        input[type="date"], select {
+          height: 25px;
+          font-size: 11.5px;
+          border: 1px solid #cbd5e1;
+          border-radius: 4px;
+          padding: 0 6px;
+          background: #ffffff;
+          color: #1e293b;
+          font-weight: 600;
+          outline: none;
+          transition: border-color 0.15s;
+
+          &:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 1px #2563eb;
+          }
+        }
+
+        select {
+          min-width: 75px;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .action-buttons {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+
+      .tb-btn {
+        height: 25px;
+        padding: 0 9px;
+        font-size: 11px;
+        font-weight: 700;
+        border-radius: 4px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.15s ease;
+        white-space: nowrap;
+
+        &--primary {
+          background: #2563eb;
+          color: #ffffff;
+          border-color: #1d4ed8;
+          &:hover { background: #1d4ed8; }
+        }
+
+        &--indigo {
+          background: #4f46e5;
+          color: #ffffff;
+          border-color: #4338ca;
+          &:hover { background: #4338ca; }
+        }
+
+        &--amber {
+          background: #d97706;
+          color: #ffffff;
+          border-color: #b45309;
+          &:hover { background: #b45309; }
+        }
+
+        &--danger {
+          background: #ef4444;
+          color: #ffffff;
+          border-color: #dc2626;
+          &:hover { background: #dc2626; }
+        }
+
+        &--success {
+          background: #16a34a;
+          color: #ffffff;
+          border-color: #15803d;
+          &:hover { background: #15803d; }
+        }
+
+        &--cyan {
+          background: #0891b2;
+          color: #ffffff;
+          border-color: #0e7490;
+          &:hover { background: #0e7490; }
+        }
+
+        &--orange {
+          background: #ea580c;
+          color: #ffffff;
+          border-color: #c2410c;
+          &:hover { background: #c2410c; }
+        }
+
+        &--ghost {
+          background: #ffffff;
+          color: #334155;
+          border-color: #cbd5e1;
+          &:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+          }
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // 3. MAIN DATA GRID
+  // ---------------------------------------------------------------------------
+  &__grid-container {
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+
+    .ag-theme-quartz {
+      height: 100%;
+      width: 100%;
+
+      .ag-header {
+        background-color: #f8fafc;
+        border-bottom: 1px solid #cbd5e1;
+      }
+
+      .ag-header-cell {
+        padding-left: 2px !important;
+        padding-right: 2px !important;
+      }
+
+      .ag-header-cell-label {
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #334155;
+        white-space: normal !important;
+        text-align: center;
+        justify-content: center;
+        line-height: 1.15;
+      }
+
+      .ag-header-cell-text {
+        white-space: normal !important;
+        line-height: 1.15 !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+        text-align: center;
+      }
+
+      .ag-cell {
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        padding-left: 4px;
+        padding-right: 4px;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+
+        // Bắt buộc tất cả phần tử con trong cell phải clip và không tràn sang cell bên cạnh
+        > * {
+          max-width: 100% !important;
+          min-width: 0 !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          white-space: nowrap !important;
+          box-sizing: border-box !important;
+        }
+      }
+
+      .ag-row-hover {
+        background-color: #f1f5f9 !important;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// 4. MODAL ĐĂNG KÝ LIỆU (HIGH-DENSITY ENTERPRISE DIALOG)
+// =============================================================================
+.precision-lieu-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+
+  .precision-lieu-modal-window {
+    background: #ffffff;
+    width: 95vw;
+    max-width: 1350px;
+    height: 88vh;
+    max-height: 88vh;
+    border-radius: 8px;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &__header {
+      padding: 8px 16px;
+      background: linear-gradient(90deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+
+      .plan-info-badges {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+
+        .badge-plan-id {
+          font-family: "JetBrains Mono", monospace;
+          font-size: 13px;
+          font-weight: 900;
+          background: #ffffff;
+          color: #1e40af;
+          padding: 2px 8px;
+          border-radius: 4px;
+        }
+
+        .badge-gname {
+          font-size: 13px;
+          font-weight: 700;
+          color: #fef08a;
+        }
+
+        .badge-pill {
+          font-size: 11px;
+          font-weight: 600;
+          background: rgba(255, 255, 255, 0.2);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          padding: 1px 6px;
+          border-radius: 4px;
+        }
+      }
+
+      .btn-close-lieu-modal {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: #ef4444;
+          border-color: #dc2626;
+          transform: rotate(90deg);
+        }
+      }
+    }
+
+    &__toolbar {
+      padding: 6px 14px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+
+      .tb-lieu-btn {
+        height: 24px;
+        padding: 0 8px;
+        font-size: 10.5px;
+        font-weight: 700;
+        border-radius: 4px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #334155;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.15s ease;
+        white-space: nowrap;
+
+        &:hover {
+          background: #f1f5f9;
+          border-color: #94a3b8;
+        }
+
+        &--check {
+          background: #f0fdf4;
+          border-color: #86efac;
+          color: #166534;
+          &:hover { background: #dcfce7; }
+        }
+
+        &--save {
+          background: #eff6ff;
+          border-color: #93c5fd;
+          color: #1e40af;
+          &:hover { background: #dbeafe; }
+        }
+
+        &--danger {
+          background: #fef2f2;
+          border-color: #fca5a5;
+          color: #991b1b;
+          &:hover { background: #fee2e2; }
+        }
+
+        &--amber {
+          background: #fffbeb;
+          border-color: #fde68a;
+          color: #92400e;
+          &:hover { background: #fef3c7; }
+        }
+
+        &--purple {
+          background: #faf5ff;
+          border-color: #d8b4fe;
+          color: #6b21a8;
+          &:hover { background: #f3e8ff; }
+        }
+      }
+    }
+
+    &__grid {
+      flex: 1 1 auto;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      padding: 4px;
+
+      .agtable {
+        height: 100%;
+        width: 100%;
+        .toolbar { display: none !important; }
+      }
+    }
+  }
+}
+
+// =============================================================================
+// 5. PRINT MODALS (CHỈ THỊ, CHỈ THỊ COMBO, BẢN VẼ, KHO ẢO)
+// =============================================================================
+.precision-print-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+
+  .precision-print-modal-window {
+    background: #ffffff;
+    width: 95vw;
+    max-width: 1200px;
+    height: 94vh;
+    max-height: 94vh;
+    border-radius: 8px;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.4);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &--full {
+      width: 98vw;
+      max-width: 1550px;
+      height: 96vh;
+      max-height: 96vh;
+    }
+
+    &__header {
+      padding: 10px 18px;
+      background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      border-bottom: 1px solid #334155;
+
+      .modal-title-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .modal-icon-badge {
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+          color: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 17px;
+          flex-shrink: 0;
+        }
+
+        .modal-heading {
+          font-size: 14px;
+          font-weight: 800;
+          color: #f8fafc;
+          margin: 0;
+          line-height: 1.2;
+        }
+
+        .modal-subtitle {
+          font-size: 11px;
+          color: #94a3b8;
+          display: block;
+          margin-top: 1px;
+        }
+      }
+
+      .btn-close-print-modal {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+          background: #ef4444;
+          border-color: #dc2626;
+          color: #ffffff;
+          transform: rotate(90deg) scale(1.08);
+          box-shadow: 0 2px 8px rgba(239, 68, 68, 0.45);
+        }
+      }
+    }
+
+    &__toolbar {
+      padding: 7px 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border-bottom: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0;
+
+      .toolbar-left, .toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .max-lieu-control {
+        display: flex;
+        align-items: center;
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 2px 6px;
+        gap: 6px;
+
+        span {
+          font-size: 11px;
+          font-weight: 700;
+          color: #475569;
+        }
+
+        input {
+          width: 44px;
+          height: 22px;
+          border: 1px solid #cbd5e1;
+          border-radius: 4px;
+          text-align: center;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 11px;
+          font-weight: 700;
+          outline: none;
+        }
+
+        .btn-set-lieu {
+          height: 22px;
+          padding: 0 8px;
+          font-size: 10.5px;
+          font-weight: 700;
+          background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+          color: #ffffff;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          &:hover { opacity: 0.9; }
+        }
+      }
+
+      .btn-reload-preview {
+        height: 28px;
+        padding: 0 12px;
+        font-size: 11.5px;
+        font-weight: 700;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #334155;
+        border-radius: 6px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.15s ease;
+
+        svg {
+          color: #d97706;
+          transition: transform 0.3s ease;
+        }
+
+        &:hover {
+          background: #f8fafc;
+          border-color: #94a3b8;
+          svg { transform: rotate(180deg); }
+        }
+      }
+
+      .btn-print-action {
+        height: 30px;
+        padding: 0 18px;
+        font-size: 12px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+        border: 1px solid #047857;
+        color: #ffffff;
+        border-radius: 6px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 3px 8px rgba(5, 150, 105, 0.35);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+          transform: translateY(-1.5px) scale(1.02);
+          box-shadow: 0 5px 14px rgba(5, 150, 105, 0.45);
+        }
+      }
+    }
+
+    &__body {
+      flex: 1 1 auto;
+      height: 100%;
+      min-height: 0;
+      overflow-y: auto;
+      background: #e2e8f0;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+
+      .print-paper-sheet {
+        background: #ffffff;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        padding: 16px;
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 1100px;
+        min-height: 100%;
+      }
+    }
+  }
+}
+
+// Quick Plan Modal Full
+.precision-quickplan-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10080;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+
+  .quickplan-modal-header {
+    height: 36px;
+    background: #0f172a;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    flex-shrink: 0;
+
+    .modal-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .btn-close {
+      background: #ef4444;
+      border: none;
+      color: #ffffff;
+      padding: 2px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 4px;
+      cursor: pointer;
+      &:hover { background: #dc2626; }
+    }
+  }
+
+  .quickplan-modal-body {
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+}
