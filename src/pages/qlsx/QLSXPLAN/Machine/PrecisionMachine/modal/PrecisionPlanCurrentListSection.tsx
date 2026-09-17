@@ -63,6 +63,16 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
       [onMovePlan, onDeletePlan, onStartPlan, onFinishPlan]
     );
 
+    // Handler click ô kế hoạch tối ưu - chống kích hoạt kép và chỉ chạy khi chọn dòng mới
+    const handleCellClick = React.useCallback(
+      (params: any) => {
+        if (params?.data && params.data.PLAN_ID !== selectedPlan?.PLAN_ID) {
+          onSelectPlan(params.data);
+        }
+      },
+      [onSelectPlan, selectedPlan?.PLAN_ID]
+    );
+
     return (
       <div className="machine-plan-container">
         {/* THANH TOOLBAR ĐẦY ĐỦ NGUYÊN BẢN (CHUẨN STITCH HIGH-DENSITY - 1 DÒNG DUY NHẤT) */}
@@ -155,21 +165,12 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
           </div>
         </div>
 
-        {/* Bảng Kế Hoạch Đang Có Trên Máy */}
+        {/* Bảng Kế Hoạch Đang Có Trên Máy (Chỉ dùng onCellClick ổn định) */}
         <div className="plans-table-box">
           <AGTable
             columns={columns}
             data={plans}
-            onRowClick={(params: any) => {
-              if (params?.data) {
-                onSelectPlan(params.data);
-              }
-            }}
-            onCellClick={(params: any) => {
-              if (params?.data) {
-                onSelectPlan(params.data);
-              }
-            }}
+            onCellClick={handleCellClick}
           />
         </div>
 

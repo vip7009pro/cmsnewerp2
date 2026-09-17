@@ -248,23 +248,82 @@ export const useMachinePlanModal = ({
     loadMachines();
   }, []);
 
-  // Nạp lịch sử định mức khi G_CODE thay đổi
-  useEffect(() => {
-    if (selectedPlan?.G_CODE && selectedPlan.G_CODE !== "7C123") {
-      f_getRecentDMData(selectedPlan.G_CODE).then((res) => {
-        setRecentDMData(res || []);
-      });
-    }
-  }, [selectedPlan?.G_CODE]);
+  // Refs ổn định để tránh re-renders và phá vỡ memo
+  const selectedPlanRef = useRef<QLSXPLANDATA>(selectedPlan);
+  selectedPlanRef.current = selectedPlan;
+  const currentMachinePlansRef = useRef<QLSXPLANDATA[]>(currentMachinePlans);
+  currentMachinePlansRef.current = currentMachinePlans;
 
-  // Nạp bảng chỉ thị khi selectedPlan thay đổi
+  // Click vào 1 dòng trên bảng Kế hoạch -> Nhảy ngay lập tức 4 cột định mức CD1-CD4 và nạp chỉ thị đồng bộ (KHÔNG BỊ NHÁY)
+  const handleSelectPlan = useCallback(
+    async (rowData: QLSXPLANDATA) => {
+      if (!rowData || rowData.PLAN_ID === "XXX") return;
+      // Tránh fetch lại nếu click lại đúng dòng đang chọn
+      if (rowData.PLAN_ID === selectedPlanRef.current?.PLAN_ID) return;
+
+      setSelectedPlan(rowData);
+
+      // Tạo đối tượng định mức mới trực tiếp từ rowData để đảm bảo chính xác 100%
+      const nextDM: DataDinhMucState = {
+        FACTORY: rowData.FACTORY ?? selectedFactory ?? "NA",
+        EQ1: rowData.EQ1 ?? "NA",
+        EQ2: rowData.EQ2 ?? "NA",
+        EQ3: rowData.EQ3 ?? "NA",
+        EQ4: rowData.EQ4 ?? "NA",
+        Setting1: rowData.Setting1 ?? 0,
+        Setting2: rowData.Setting2 ?? 0,
+        Setting3: rowData.Setting3 ?? 0,
+        Setting4: rowData.Setting4 ?? 0,
+        UPH1: rowData.UPH1 ?? 0,
+        UPH2: rowData.UPH2 ?? 0,
+        UPH3: rowData.UPH3 ?? 0,
+        UPH4: rowData.UPH4 ?? 0,
+        Step1: rowData.Step1 ?? 0,
+        Step2: rowData.Step2 ?? 0,
+        Step3: rowData.Step3 ?? 0,
+        Step4: rowData.Step4 ?? 0,
+        LOSS_SX1: rowData.LOSS_SX1 ?? 0,
+        LOSS_SX2: rowData.LOSS_SX2 ?? 0,
+        LOSS_SX3: rowData.LOSS_SX3 ?? 0,
+        LOSS_SX4: rowData.LOSS_SX4 ?? 0,
+        LOSS_SETTING1: rowData.LOSS_SETTING1 ?? 0,
+        LOSS_SETTING2: rowData.LOSS_SETTING2 ?? 0,
+        LOSS_SETTING3: rowData.LOSS_SETTING3 ?? 0,
+        LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
+        LOSS_KT: rowData.LOSS_KT ?? 0,
+        NOTE: rowData.NOTE ?? "",
+      };
+      setDataDinhMuc(nextDM);
+
+      // Fetch song song recent định mức và bảng chỉ thị vật tư đúng theo dòng vừa chọn
+      try {
+        const [recentRes, chiThiRes] = await Promise.all([
+          rowData.G_CODE && rowData.G_CODE !== "7C123"
+            ? f_getRecentDMData(rowData.G_CODE)
+            : Promise.resolve([]),
+          f_handleGetChiThiTable(rowData, nextDM as any, ycsxFilter.tempDM),
+        ]);
+        setRecentDMData(recentRes || []);
+        setChiThiDataTable(chiThiRes || []);
+      } catch (err) {
+        console.error("Lỗi fetch chi thi / recent DM:", err);
+      }
+    },
+    [selectedFactory, ycsxFilter.tempDM]
+  );
+
+  // Tự động chọn kế hoạch đầu tiên khi mở modal lần đầu nếu chưa chọn kế hoạch nào
+  const initialPlanLoadedRef = useRef<boolean>(false);
   useEffect(() => {
-    if (selectedPlan && selectedPlan.PLAN_ID !== "XXX") {
-      f_handleGetChiThiTable(selectedPlan, datadinhmuc as any, ycsxFilter.tempDM).then((res) => {
-        setChiThiDataTable(res || []);
-      });
+    if (
+      !initialPlanLoadedRef.current &&
+      currentMachinePlans.length > 0 &&
+      selectedPlan.PLAN_ID === "XXX"
+    ) {
+      initialPlanLoadedRef.current = true;
+      handleSelectPlan(currentMachinePlans[0]);
     }
-  }, [selectedPlan, datadinhmuc, ycsxFilter.tempDM]);
+  }, [currentMachinePlans, handleSelectPlan, selectedPlan.PLAN_ID]);
 
   // Tra cứu YCSX (Chuẩn hóa 100% tên tham số khớp backend)
   const handletraYCSX = useCallback(async () => {
@@ -305,51 +364,6 @@ export const useMachinePlanModal = ({
       Swal.fire("Lỗi", "Không thể tải dữ liệu YCSX", "error");
     }
   }, [ycsxFilter]);
-
-  // Click vào 1 dòng trên bảng Kế hoạch -> Nhảy ngay lập tức 4 cột định mức CD1-CD4 và nạp chỉ thị
-  const handleSelectPlan = useCallback(
-    async (rowData: QLSXPLANDATA) => {
-      setSelectedPlan(rowData);
-      setDataDinhMuc({
-        FACTORY: rowData.FACTORY ?? selectedFactory ?? "NA",
-        EQ1: rowData.EQ1 ?? "NA",
-        EQ2: rowData.EQ2 ?? "NA",
-        EQ3: rowData.EQ3 ?? "NA",
-        EQ4: rowData.EQ4 ?? "NA",
-        Setting1: rowData.Setting1 ?? 0,
-        Setting2: rowData.Setting2 ?? 0,
-        Setting3: rowData.Setting3 ?? 0,
-        Setting4: rowData.Setting4 ?? 0,
-        UPH1: rowData.UPH1 ?? 0,
-        UPH2: rowData.UPH2 ?? 0,
-        UPH3: rowData.UPH3 ?? 0,
-        UPH4: rowData.UPH4 ?? 0,
-        Step1: rowData.Step1 ?? 0,
-        Step2: rowData.Step2 ?? 0,
-        Step3: rowData.Step3 ?? 0,
-        Step4: rowData.Step4 ?? 0,
-        LOSS_SX1: rowData.LOSS_SX1 ?? 0,
-        LOSS_SX2: rowData.LOSS_SX2 ?? 0,
-        LOSS_SX3: rowData.LOSS_SX3 ?? 0,
-        LOSS_SX4: rowData.LOSS_SX4 ?? 0,
-        LOSS_SETTING1: rowData.LOSS_SETTING1 ?? 0,
-        LOSS_SETTING2: rowData.LOSS_SETTING2 ?? 0,
-        LOSS_SETTING3: rowData.LOSS_SETTING3 ?? 0,
-        LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
-        LOSS_KT: rowData.LOSS_KT ?? 0,
-        NOTE: rowData.NOTE ?? "",
-      });
-
-      if (rowData.G_CODE) {
-        const recent = await f_getRecentDMData(rowData.G_CODE);
-        setRecentDMData(recent || []);
-      }
-
-      const chithi = await f_handleGetChiThiTable(rowData, datadinhmuc as any, ycsxFilter.tempDM);
-      setChiThiDataTable(chithi || []);
-    },
-    [datadinhmuc, selectedFactory, ycsxFilter.tempDM]
-  );
 
   // Thêm plan từ dòng YCSX
   const handleAddPlanFromYCSX = useCallback(
@@ -415,7 +429,7 @@ export const useMachinePlanModal = ({
     });
   }, [datadinhmuc, onRefreshData, selectedPlan, userData, ycsxFilter.tempDM]);
 
-  // Xóa plan
+  // Xóa plan (dùng ref để giữ reference ổn định không làm re-render columns)
   const handleDeletePlan = useCallback(
     async (plan: QLSXPLANDATA) => {
       checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
@@ -432,27 +446,29 @@ export const useMachinePlanModal = ({
           if (result.isConfirmed) {
             await f_deleteQLSXPlan([plan]);
             await onRefreshData();
-            if (selectedPlan.PLAN_ID === plan.PLAN_ID) {
+            if (selectedPlanRef.current?.PLAN_ID === plan.PLAN_ID) {
               setSelectedPlan(defaultPlan);
+              setChiThiDataTable([]);
             }
             Swal.fire("Đã xóa", "Kế hoạch đã được xóa", "success");
           }
         });
       });
     },
-    [onRefreshData, selectedPlan.PLAN_ID, userData]
+    [onRefreshData, userData]
   );
 
-  // Di chuyển thứ tự plan (Lên / Xuống)
+  // Di chuyển thứ tự plan (Lên / Xuống) - dùng currentMachinePlansRef để giữ reference ổn định
   const handleMovePlan = useCallback(
     async (direction: "UP" | "DOWN", plan: QLSXPLANDATA) => {
-      const idx = currentMachinePlans.findIndex((p) => p.PLAN_ID === plan.PLAN_ID);
+      const plans = currentMachinePlansRef.current;
+      const idx = plans.findIndex((p) => p.PLAN_ID === plan.PLAN_ID);
       if (idx < 0) return;
       if (direction === "UP" && idx === 0) return;
-      if (direction === "DOWN" && idx === currentMachinePlans.length - 1) return;
+      if (direction === "DOWN" && idx === plans.length - 1) return;
 
       const targetIdx = direction === "UP" ? idx - 1 : idx + 1;
-      const newPlans = [...currentMachinePlans];
+      const newPlans = [...plans];
       const temp = newPlans[idx];
       newPlans[idx] = newPlans[targetIdx];
       newPlans[targetIdx] = temp;
@@ -464,7 +480,7 @@ export const useMachinePlanModal = ({
         console.error("Lỗi cập nhật thứ tự plan:", err);
       }
     },
-    [currentMachinePlans, onRefreshData]
+    [onRefreshData]
   );
 
   // Bắt đầu / Kết thúc Plan

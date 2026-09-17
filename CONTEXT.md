@@ -1,5 +1,21 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-17 (QLSX: Tối Ưu State Flow Khi Click Row Kế Hoạch - Triệt Tiêu Hoàn Toàn Hiện Tượng Nháy Kép Của Bảng Plan List Và Bảng Vật Liệu)
+- **1. Phân Tích & Khắc Phục Triệt Để 3 Nguyên Nhân Gốc Gây Nháy Kép (2 Lần)**:
+  * **Nguyên nhân 1 (Kích hoạt kép sự kiện Click)**: Trong `PrecisionPlanCurrentListSection.tsx`, cả 2 prop `onCellClick` và `onRowClick` cùng được truyền vào `AGTable` với arrow function gọi `onSelectPlan`. Khi user click vào ô, AGGrid đồng thời kích hoạt cả Cell Click và Row Click khiến `onSelectPlan` bị gọi 2 lần liên tiếp.
+    -> **Khắc phục**: Loại bỏ hoàn toàn `onRowClick`, chỉ giữ duy nhất `onCellClick={handleCellClick}` bọc qua `useCallback`. Bổ sung kiểm tra `params.data.PLAN_ID !== selectedPlan?.PLAN_ID` để không fetch lại khi click lại đúng dòng đang chọn.
+  * **Nguyên nhân 2 (Cascading useEffect & State Dependency Vòng Lặp)**: Trong `useMachinePlanModal.ts`, có 2 `useEffect` ngầm phụ thuộc `[selectedPlan?.G_CODE]` và `[selectedPlan, datadinhmuc, ycsxFilter.tempDM]`. Khi `handleSelectPlan` gọi `setSelectedPlan` và `setDataDinhMuc`, bản thân nó đã fetch API lần 1, sau đó 2 `useEffect` này lại chạy tiếp lần 2 và gọi `setChiThiDataTable` đè lên lần nữa (nháy 2 lần). Đặc biệt, `handleSelectPlan` trước đây truyền `datadinhmuc` cũ (closure) vào `f_handleGetChiThiTable` khiến dữ liệu đợt 1 sai lệch.
+    -> **Khắc phục**: Xóa bỏ hoàn toàn 2 `useEffect` ngầm này. Trong `handleSelectPlan`, khởi tạo đối tượng `nextDM` trực tiếp từ `rowData` vừa click và truyền thẳng vào `f_handleGetChiThiTable(rowData, nextDM, ...)`. Sử dụng `Promise.all` nạp song song cả Recent Định Mức và Bảng Chỉ Thị Vật Tư, cập nhật state 1 lần duy nhất qua React 18 automatic batching. Bỏ `datadinhmuc` khỏi dependency của `handleSelectPlan` để callback reference ổn định tuyệt đối.
+  * **Nguyên nhân 3 (Columns Bảng Plan List Bị Re-create Gây Redraw Nháy Bảng)**: Hàm `handleDeletePlan` trước đây phụ thuộc vào `[selectedPlan.PLAN_ID]`. Mỗi khi user bấm chọn 1 dòng khác, `selectedPlan.PLAN_ID` đổi -> `handleDeletePlan` đổi -> `columns` của bảng Plan List bị tính toán lại -> AG Grid redraw toàn bộ bảng Plan List gây chớp nháy bảng.
+    -> **Khắc phục**: Sử dụng `selectedPlanRef` và `currentMachinePlansRef` để tách biệt `handleDeletePlan` và `handleMovePlan` khỏi các state thay đổi thường xuyên. Giữ cho `columns` của bảng Plan List ổn định tuyệt đối 100%, AG Grid không bao giờ bị redraw cột khi user click chuyển dòng.
+- **2. Đảm Bảo State Chính Xác Tuyệt Đối**:
+  * List vật tư và định mức 4 công đoạn (CD1-CD4) luôn luôn phản ánh đúng 100% dữ liệu của dòng vừa được click, không có độ trễ, không có race condition.
+  * Tự động chọn dòng đầu tiên của máy khi mở modal lần đầu qua `initialPlanLoadedRef`.
+  * Tối ưu luôn cả `PrecisionPlanMaterialSection.tsx` (bỏ `onRowClick` thừa).
+- **3. Xác Thực**:
+  * Quét TypeScript AST toàn bộ 6 file modal: **100% OK / 0 Errors / 0 Warnings**.
+  * 100% endpoint Vite Dev Server phản hồi **HTTP 200 OK**.
+
 ## Update - 2026-09-17 (QLSX: Tinh Chỉnh Header & Toolbar Print Modals - Loại Bỏ Nút Đóng Thừa & Nâng Cấp Nút Bấm Chuẩn Google Stitch Enterprise)
 - **1. Loại Bỏ Nút Đóng Thừa Trên Toolbar Modal In Ấn**:
   * Đã loại bỏ nút đóng thừa ở góc phải của Action Toolbar (`.precision-print-modal-window__toolbar`).

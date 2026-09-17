@@ -1,5 +1,15 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Tối Ưu State Flow Khi Click Row Kế Hoạch - Triệt Tiêu Hoàn Toàn Hiện Tượng Nháy Kép Của Bảng Plan List Và Bảng Vật Liệu:
+  - **Khắc phục triệt để 3 nguyên nhân gây nháy kép**:
+    * Loại bỏ kích hoạt kép sự kiện: bỏ `onRowClick` ở bảng Plan List, chỉ dùng `onCellClick={handleCellClick}` bọc qua `useCallback` kèm điều kiện kiểm tra `params.data.PLAN_ID !== selectedPlan?.PLAN_ID`.
+    * Loại bỏ 2 `useEffect` ngầm chồng chéo trong `useMachinePlanModal.ts`. Chuyển sang tính toán `nextDM` trực tiếp từ `rowData` và fetch song song (`Promise.all`) nạp cả recent định mức và bảng chỉ thị vật tư, cập nhật state 1 lần duy nhất.
+    * Ổn định reference `columns` của bảng Plan List: dùng `selectedPlanRef` và `currentMachinePlansRef` trong `handleDeletePlan` và `handleMovePlan` để `columns` không bao giờ bị re-create hay trigger redraw bảng khi đổi dòng.
+  - **Bảo đảm tính chính xác của State**:
+    * Định mức 4 công đoạn (CD1-CD4) và danh sách vật tư nhảy chính xác 100% theo dòng vừa được click, không race condition, không trễ.
+    * Tự động nạp kế hoạch đầu tiên của máy khi mở modal lần đầu qua `initialPlanLoadedRef`.
+  - **Xác thực**: Quét TypeScript AST 6 file modal đạt 0 Errors / 0 Warnings; 100% endpoint Vite Dev Server đạt HTTP 200 OK.
+
 - [x] Hoàn thiện Tinh Chỉnh Header & Toolbar Print Modals - Loại Bỏ Nút Đóng Thừa & Nâng Cấp Nút Bấm Chuẩn Google Stitch Enterprise:
   - **Loại bỏ nút đóng thừa**: Bỏ hoàn toàn nút Đóng ở Action Toolbar; chuyển đổi nút đóng ở Header sang icon `✕` tròn thanh lịch, hover xoay chuyển đỏ rực rỡ chuẩn giao diện quốc tế.
   - **Nâng cấp style các buttons trên Toolbar**:

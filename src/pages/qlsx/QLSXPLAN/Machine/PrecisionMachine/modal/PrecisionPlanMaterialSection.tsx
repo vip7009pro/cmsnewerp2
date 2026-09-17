@@ -160,11 +160,6 @@ export const PrecisionPlanMaterialSection: React.FC<MaterialSectionProps> = Reac
             ref={gridMaterialRef}
             columns={columns}
             data={chithidatatable}
-            onRowClick={(params: any) => {
-              if (params?.data) {
-                setSelectedMaterialRow(params.data);
-              }
-            }}
             onCellClick={(params: any) => {
               if (params?.data) {
                 setSelectedMaterialRow(params.data);
