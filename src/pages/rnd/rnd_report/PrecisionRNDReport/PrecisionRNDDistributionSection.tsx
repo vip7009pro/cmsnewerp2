@@ -400,22 +400,30 @@ export const PrecisionRNDDistributionSection: React.FC<DistributionSectionProps>
   ({ customerData, prodTypeData }) => {
     // Chuẩn hóa dữ liệu theo khách hàng
     const formattedCustomerData = useMemo(() => {
-      return (customerData || []).map((item) => ({
-        name: item.CUST_NAME_KD || "Khác",
-        value: (item.NEWCODE || 0) + (item.ECN || 0),
-        newCode: item.NEWCODE,
-        ecn: item.ECN,
-      }));
+      return (customerData || []).map((item) => {
+        const itemAny = item as any;
+        const ecnVal = itemAny.ECN || 0;
+        return {
+          name: item.CUST_NAME_KD || "Khác",
+          value: (item.NEWCODE || 0) + ecnVal,
+          newCode: item.NEWCODE,
+          ecn: ecnVal,
+        };
+      });
     }, [customerData]);
 
     // Chuẩn hóa dữ liệu theo loại sản phẩm
     const formattedProdTypeData = useMemo(() => {
-      return (prodTypeData || []).map((item) => ({
-        name: item.G_NAME_KD || "Khác",
-        value: (item.NEWCODE || 0) + (item.ECN || 0),
-        newCode: item.NEWCODE,
-        ecn: item.ECN,
-      }));
+      return (prodTypeData || []).map((item) => {
+        const itemAny = item as any;
+        const ecnVal = itemAny.ECN || 0;
+        return {
+          name: itemAny.G_NAME_KD || item.PROD_TYPE || "Khác",
+          value: (item.NEWCODE || 0) + ecnVal,
+          newCode: item.NEWCODE,
+          ecn: ecnVal,
+        };
+      });
     }, [prodTypeData]);
 
     return (

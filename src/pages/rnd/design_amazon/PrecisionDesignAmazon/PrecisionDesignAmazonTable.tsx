@@ -272,7 +272,7 @@ export const PrecisionDesignAmazonTable: React.FC<PrecisionDesignAmazonTableProp
           }}
           onCellEditingStopped={onAgCellEditingStopped}
           onCellClick={onAgCellClick}
-          onSelectionChange={() => {}}
+          onSelectionChange={() => { }}
           onRowDragEnd={onAgRowDragEnd}
         />
       </div>

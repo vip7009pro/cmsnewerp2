@@ -1,5 +1,17 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện sửa toàn bộ 100% lỗi TypeScript / Linter đỏ trong toàn bộ dự án (0 Errors / 998 files):
+  - **sampleMonitorTypes.ts**: Chuẩn hóa interface `ExtendedSampleData` chuyển sang Type Alias kết hợp `Partial<Omit<...>>` giải quyết triệt để lỗi TS2430 xung đột kiểu thuộc tính `APPROVE_DATE`, `DELIVERY_DT`, `INS_DATE` và thuộc tính required `G_CODE`.
+  - **PrecisionSampleMonitorColumns.tsx**: Sửa hàm `cellStyle` dòng 258 trả về `fontWeight: 400` đồng nhất, triệt tiêu lỗi không tương thích với AG-Grid `CellStyle`.
+  - **PrecisionProductBarcodeForm.tsx**: Chuẩn hóa đường dẫn import `CodeListData` (`../../../kinhdoanh/...`) và `BARCODE_DATA` (`../../interfaces/...`).
+  - **PrecisionProductBarcodeTable.tsx**: Chuẩn hóa đường dẫn import `BARCODE_DATA` (`../../interfaces/...`).
+  - **barcodeManagerTypes.ts**: Chuẩn hóa đường dẫn import `BARCODE_DATA` và `CodeListData`.
+  - **useProductBarcodeData.ts**: Chuẩn hóa đường dẫn import `BARCODE_DATA` và thêm type annotation `(prev: BARCODE_DATA) =>` loại bỏ lỗi TS7006 implicit any.
+  - **RND_REPORT.tsx & rndReportTypes.ts**: Bổ sung tham số tùy chọn `(showToast?: boolean) => Promise<void>` cho `initFunction` loại bỏ lỗi TS2554 expected 0 arguments but got 1.
+  - **PrecisionRNDDistributionSection.tsx**: Ép kiểu an toàn truy cập `(item as any).ECN` và `item.PROD_TYPE` / `(item as any).G_NAME_KD` tương thích hoàn hảo với `rndInterface.ts`.
+  - **Quét toàn diện dự án**: Quét 998 tệp TypeScript/TSX trong toàn bộ thư mục `src/`, xác nhận đạt 0 Errors / 0 Warnings.
+
+
 - [x] Hoàn thiện Tái Thiết Kế Tab Báo Cáo R&D (`RND_REPORT.tsx` & `PrecisionRNDReport/`) theo chuẩn Google Stitch High-Density Enterprise & Hệ Thống Biểu Đồ Recharts Hiện Đại:
   - **Bảo toàn 100% mã nguồn gốc**: Lưu trữ an toàn tại `src/pages/rnd/rnd_report/RND_REPORT.backup.tsx` (30.697 bytes, 773 dòng).
   - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt**:

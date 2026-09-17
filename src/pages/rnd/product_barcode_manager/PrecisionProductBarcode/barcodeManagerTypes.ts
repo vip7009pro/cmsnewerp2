@@ -1,5 +1,5 @@
-import { BARCODE_DATA } from "../interfaces/rndInterface";
-import { CodeListData } from "../../kinhdoanh/interfaces/kdInterface";
+import { BARCODE_DATA } from "../../interfaces/rndInterface";
+import { CodeListData } from "../../../kinhdoanh/interfaces/kdInterface";
 
 export interface BarcodeKpiData {
   total: number;

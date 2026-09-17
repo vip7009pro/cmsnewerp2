@@ -1,8 +1,8 @@
 import React from "react";
 import { AiOutlineBarcode, AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineReload } from "react-icons/ai";
 import { BsEye, BsQrCodeScan } from "react-icons/bs";
-import { CodeListData } from "../../kinhdoanh/interfaces/kdInterface";
-import { BARCODE_DATA } from "../interfaces/rndInterface";
+import { CodeListData } from "../../../kinhdoanh/interfaces/kdInterface";
+import { BARCODE_DATA } from "../../interfaces/rndInterface";
 import BARCODE from "../../design_amazon/design_components/BARCODE";
 import DATAMATRIX from "../../design_amazon/design_components/DATAMATRIX";
 import QRCODE from "../../design_amazon/design_components/QRCODE";

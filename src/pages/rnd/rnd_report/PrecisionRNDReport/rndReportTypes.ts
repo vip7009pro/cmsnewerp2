@@ -4,8 +4,8 @@ import {
   RND_NEWCODE_BY_CUSTOMER,
   RND_NEWCODE_BY_PRODTYPE,
   RND_NEWCODE_TREND_DATA,
-} from "../interfaces/rndInterface";
-import { YCTK_TREND_DATA } from "../../kinhdoanh/interfaces/kdInterface";
+} from "../../interfaces/rndInterface";
+import { YCTK_TREND_DATA } from "../../../kinhdoanh/interfaces/kdInterface";
 
 export type RNDReportTab = "all" | "trending" | "distribution" | "filmsaving" | "daofilmerr";
 
@@ -68,6 +68,6 @@ export interface UseRNDReportDataReturn {
   daofilmerr: DAOFILM_ERR_DATA[];
 
   // Hàm khởi tạo và tải dữ liệu
-  initFunction: () => Promise<void>;
+  initFunction: (showToast?: boolean) => Promise<void>;
   company: string;
 }

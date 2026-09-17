@@ -1,4 +1,4 @@
-import { BOM_AMAZON as BOM_AMAZON_DATA, CODE_INFO, CODEPHOI, LIST_BOM_AMAZON } from "../interfaces/rndInterface";
+import { BOM_AMAZON as BOM_AMAZON_DATA, CODE_INFO, CODEPHOI, LIST_BOM_AMAZON } from "../../interfaces/rndInterface";
 
 export type SidebarTabMode = "EXISTING" | "SEARCH_ALL";
 

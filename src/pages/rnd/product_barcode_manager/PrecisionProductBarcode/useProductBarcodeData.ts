@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/services/excelService";
 import { CodeListData } from "../../../kinhdoanh/interfaces/kdInterface";
-import { BARCODE_DATA } from "../interfaces/rndInterface";
+import { BARCODE_DATA } from "../../interfaces/rndInterface";
 import {
   BarcodeKpiData,
   BarcodeTypeFilter,
@@ -110,7 +110,7 @@ export const useProductBarcodeData = (): UseProductBarcodeDataReturn => {
 
   // UPDATE FORM FIELD
   const setBarCodeInfo = useCallback((keyname: string, value: any) => {
-    setSelectedRows((prev) => ({
+    setSelectedRows((prev: BARCODE_DATA) => ({
       ...prev,
       [keyname]: value,
     }));

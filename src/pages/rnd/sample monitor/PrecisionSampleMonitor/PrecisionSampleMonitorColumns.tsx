@@ -178,11 +178,10 @@ export const getSampleMonitorColumns = ({
             const checked = params.data?.FILE_MAKET === "Y";
             return (
               <label
-                className={`precision-sample-monitor__statusPill ${
-                  checked
+                className={`precision-sample-monitor__statusPill ${checked
                     ? "precision-sample-monitor__statusPill--completed"
                     : "precision-sample-monitor__statusPill--pending"
-                }`}
+                  }`}
               >
                 <input
                   type="checkbox"
@@ -206,11 +205,10 @@ export const getSampleMonitorColumns = ({
             const checked = params.data?.FILM_FILE === "Y";
             return (
               <label
-                className={`precision-sample-monitor__statusPill ${
-                  checked
+                className={`precision-sample-monitor__statusPill ${checked
                     ? "precision-sample-monitor__statusPill--completed"
                     : "precision-sample-monitor__statusPill--pending"
-                }`}
+                  }`}
               >
                 <input
                   type="checkbox"
@@ -234,11 +232,10 @@ export const getSampleMonitorColumns = ({
             const checked = params.data?.KNIFE_STATUS === "Y";
             return (
               <label
-                className={`precision-sample-monitor__statusPill ${
-                  checked
+                className={`precision-sample-monitor__statusPill ${checked
                     ? "precision-sample-monitor__statusPill--completed"
                     : "precision-sample-monitor__statusPill--pending"
-                }`}
+                  }`}
               >
                 <input
                   type="checkbox"
@@ -262,7 +259,7 @@ export const getSampleMonitorColumns = ({
             if (params.data?.KNIFE_CODE) {
               return { backgroundColor: "#ecfdf5", color: "#047857", fontWeight: 700 };
             }
-            return { backgroundColor: "#fffbeb", color: "#b45309" };
+            return { backgroundColor: "#fffbeb", color: "#b45309", fontWeight: 400 };
           },
         },
         {
@@ -277,11 +274,10 @@ export const getSampleMonitorColumns = ({
             const checked = params.data?.FILM === "Y";
             return (
               <label
-                className={`precision-sample-monitor__statusPill ${
-                  checked
+                className={`precision-sample-monitor__statusPill ${checked
                     ? "precision-sample-monitor__statusPill--completed"
                     : "precision-sample-monitor__statusPill--pending"
-                }`}
+                  }`}
               >
                 <input
                   type="checkbox"
@@ -313,11 +309,10 @@ export const getSampleMonitorColumns = ({
             const checked = params.data?.MATERIAL_STATUS === "Y";
             return (
               <label
-                className={`precision-sample-monitor__statusPill ${
-                  checked
+                className={`precision-sample-monitor__statusPill ${checked
                     ? "precision-sample-monitor__statusPill--completed"
                     : "precision-sample-monitor__statusPill--pending"
-                }`}
+                  }`}
               >
                 <input
                   type="checkbox"
@@ -349,11 +344,10 @@ export const getSampleMonitorColumns = ({
             const checked = params.data?.PRINT_STATUS === "Y";
             return (
               <label
-                className={`precision-sample-monitor__statusPill ${
-                  checked
+                className={`precision-sample-monitor__statusPill ${checked
                     ? "precision-sample-monitor__statusPill--completed"
                     : "precision-sample-monitor__statusPill--pending"
-                }`}
+                  }`}
               >
                 <input
                   type="checkbox"
@@ -377,11 +371,10 @@ export const getSampleMonitorColumns = ({
             const checked = params.data?.DIECUT_STATUS === "Y";
             return (
               <label
-                className={`precision-sample-monitor__statusPill ${
-                  checked
+                className={`precision-sample-monitor__statusPill ${checked
                     ? "precision-sample-monitor__statusPill--completed"
                     : "precision-sample-monitor__statusPill--pending"
-                }`}
+                  }`}
               >
                 <input
                   type="checkbox"
@@ -449,11 +442,10 @@ export const getSampleMonitorColumns = ({
             const isCompleted = params.value === "COMPLETED";
             return (
               <span
-                className={`precision-sample-monitor__totalBadge ${
-                  isCompleted
+                className={`precision-sample-monitor__totalBadge ${isCompleted
                     ? "precision-sample-monitor__totalBadge--completed"
                     : "precision-sample-monitor__totalBadge--pending"
-                }`}
+                  }`}
               >
                 {isCompleted ? "COMPLETED" : "NOT COMPLETED"}
               </span>
@@ -552,11 +544,10 @@ export const getSampleMonitorColumns = ({
             const isOpen = params.data?.USE_YN === "Y";
             return (
               <span
-                className={`precision-sample-monitor__lockChip ${
-                  isOpen
+                className={`precision-sample-monitor__lockChip ${isOpen
                     ? "precision-sample-monitor__lockChip--open"
                     : "precision-sample-monitor__lockChip--locked"
-                }`}
+                  }`}
               >
                 {isOpen ? "MỞ" : "KHÓA"}
               </span>

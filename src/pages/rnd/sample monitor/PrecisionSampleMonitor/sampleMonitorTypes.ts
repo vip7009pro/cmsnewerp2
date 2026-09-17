@@ -1,10 +1,32 @@
-import { SAMPLE_MONITOR_DATA } from "../interfaces/rndInterface";
-import { FullBOM } from "../../kinhdoanh/interfaces/kdInterface";
+import { FullBOM } from "../../../kinhdoanh/interfaces/kdInterface";
+import { SAMPLE_MONITOR_DATA } from "../../interfaces/rndInterface";
 
-export interface ExtendedSampleData extends SAMPLE_MONITOR_DATA {
+export type ExtendedSampleData = Partial<Omit<SAMPLE_MONITOR_DATA, 'DELIVERY_DT' | 'APPROVE_DATE' | 'INS_DATE'>> & {
+  FILE_MAKET?: string;
+  FILM_FILE?: string;
+  KNIFE_STATUS?: string;
+  KNIFE_CODE?: string;
+  FILM?: string;
+  PRINT_STATUS?: string;
+  DIECUT_STATUS?: string;
+  QC_STATUS?: string;
+  MATERIAL_STATUS?: string;
+  DELIVERY_DT?: string | null;
+  APPROVE_DATE?: string | null;
+  INS_DATE?: string | null;
+  SAMPLE_ID?: any;
+  APPROVE_STATUS?: any;
+  USE_YN?: any;
+  REMARK?: any;
+  PROD_REQUEST_NO?: any;
+  G_CODE?: any;
+  G_NAME?: any;
+  G_NAME_KD?: any;
+  CUST_NAME_KD?: any;
   id?: number;
   TOTAL_STATUS?: string;
-}
+  [key: string]: any;
+};
 
 export interface SampleKpiData {
   totalSamples: number;

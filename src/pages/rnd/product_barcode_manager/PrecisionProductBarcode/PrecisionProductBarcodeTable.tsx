@@ -1,6 +1,6 @@
 import React from "react";
 import AGTable from "../../../../components/DataTable/AGTable";
-import { BARCODE_DATA } from "../interfaces/rndInterface";
+import { BARCODE_DATA } from "../../interfaces/rndInterface";
 
 interface TableProps {
   columns: any[];
