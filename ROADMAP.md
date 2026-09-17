@@ -1,5 +1,29 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Báo Cáo Hiệu Suất Sản Xuất (`PLANRESULT.tsx`) Chuẩn Google Stitch High-Density Enterprise & Executive Dashboard:
+  - **Bảo toàn 100% nghiệp vụ và thuật toán tính toán**:
+    * Duy trì 100% công thức tính toán: Tỷ lệ đạt kế hoạch (`ACHIVEMENT_RATE`), Tổng hao hụt (`TOTAL_LOSS`), Tỷ lệ vận hành (`OPERATION RATE`), Hiệu suất sản xuất (`PROD EFFICIENCY`), Hiệu suất thiết bị (`EQ EFFICIENCY`), Thời gian khả dụng (`AVLB TIME`).
+    * Bảo toàn 4 biểu đồ phân tích xu hướng: Tiến độ sản xuất ngày (`DAILY_SX_DATA`), Xu hướng hao hụt ngày (`SX_LOSS_TREND_DATA`), Xu hướng sản xuất tuần (`WEEKLY_SX_DATA`), Xu hướng sản xuất tháng (`MONTHLY_SX_DATA`).
+    * Duy trì 2 bảng dữ liệu chi tiết và nâng cấp từ `<table>` thô sơ lên bảng lưới `AGTable` High-Density: Bảng Tiến Độ Sản Xuất & Hao Hụt (14 cột) và Bảng Chi Tiết Thời Gian Vận Hành Máy (10 cột).
+    * Hỗ trợ tìm kiếm nhanh tức thời (Quick Search) và xuất Excel cho cả 2 bảng dữ liệu và cả 4 biểu đồ.
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn nguyên bản 100%: `PLANRESULT.backup.tsx` (1.881 dòng, 72 KB).
+    * Phân rã thành công thành 9 module chuyên biệt trong thư mục `src/pages/sx/PLANRESULT/PrecisionPlanResult/`:
+      1. `PrecisionPlanResult.scss` (703 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, Executive Cards, KPI Micro-Pills và AG Grid.
+      2. `PrecisionPlanResultColumns.tsx` (339 dòng): Định nghĩa cột AG Grid kèm định dạng số JetBrains Mono và màu sắc trực quan cho cả 2 bảng.
+      3. `planResultChartRenderers.tsx` (349 dòng): 4 biểu đồ DevExtreme Chart được module hóa, responsive.
+      4. `PrecisionPlanResultKpiSection.tsx` (258 dòng): 3 phân vùng KPI hiện đại (Tiến độ máy, Hao hụt vật tư & kiểm tra, Hiệu suất thời gian & OEE).
+      5. `PrecisionPlanResultChartsSection.tsx` (190 dòng): Bọc 4 biểu đồ trong thẻ Executive Cards kèm nút xuất Excel riêng biệt.
+      6. `PrecisionPlanResultAchivementTable.tsx` (78 dòng): Bảng AGTable tiến độ & hao hụt máy (14 cột) kèm search & Excel.
+      7. `PrecisionPlanResultTimeTable.tsx` (78 dòng): Bảng AGTable thời gian & hiệu suất máy (10 cột) kèm search & Excel.
+      8. `PrecisionPlanResultHeader.tsx` (48 dòng): Header bar công nghiệp, telemetry xưởng, số máy và thời gian cập nhật.
+      9. `PrecisionPlanResultToolbar.tsx` (140 dòng): Toolbar 2 tầng: Bộ lọc ngày/xưởng/máy, Quick select 30 ngày/hôm nay/hôm qua, và Segmented Tab Switcher 5 chế độ xem (`ALL`, `KPI`, `CHARTS`, `ACHIVEMENT`, `TIME`).
+      10. `usePlanResultData.ts` (290 dòng): Custom hook pure TypeScript gom toàn bộ state, API queries, tính thời gian và xuất Excel.
+      11. `PLANRESULT.tsx`: Controller chính tinh gọn từ 1.881 dòng xuống còn **110 dòng** kết nối subcomponents.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 10/10 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra toàn bộ 11/11 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK** (không có lỗi 404 hay runtime bundle).
+
 - [x] Hoàn thiện Refactor Toàn Diện Màn Hình Kho SX Main (Kho Ảo) (`KHOAO.tsx`) Chuẩn Google Stitch High-Density Enterprise:
   - **Bảo toàn 100% logic nghiệp vụ & quyền hạn**:
     * Duy trì toàn bộ các thao tác cốt lõi: Tra cứu Tồn Kho Main (`f_load_tonkhoao`), Lịch sử Nhập (`f_load_nhapkhoao`), Lịch sử Xuất (`f_load_xuatkhoao`).

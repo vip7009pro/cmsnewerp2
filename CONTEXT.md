@@ -1,5 +1,33 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Tab Báo Cáo Hiệu Suất Sản Xuất `PLANRESULT.tsx` Chuẩn Google Stitch High-Density Enterprise & Executive Dashboard)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Tab **Báo Cáo Hiệu Suất Sản Xuất (`src/pages/sx/PLANRESULT/PLANRESULT.tsx`)** là trung tâm báo cáo điều hành phân xưởng (Production Performance Management), theo dõi toàn diện:
+    - Tỷ Lệ Đạt Kế Hoạch Theo Từng Máy & Toàn Xưởng (`Achivement Rate %`).
+    - Hao Hụt Sản Xuất (`Production Loss %`) qua các công đoạn từ Xuất Liệu Kho NVL (`WH_OUTPUT`), Sản Xuất (`SX_RESULT_TOTAL`), Chuyển Kiểm Tra (`RESULT_TO_INSPECTION`), Kiểm Tra Đầu Vào/Ra (`INS_INPUT`/`INS_OUTPUT`), Phân loại OK/NG.
+    - Hiệu Suất Thời Gian Máy (`Machine Time Efficiency & OEE`): Thời gian khả dụng (`AVLB TIME`), Thời gian chạy dập thực tế (`RUN TIME`), Thời gian cân chỉnh (`SETTING TIME`), Thời gian dừng/lãng phí (`LOSS TIME`).
+    - 4 Biểu đồ xu hướng sản xuất & hao hụt: Xu hướng ngày (Daily), Xu hướng hao hụt (Loss Trending), Xu hướng tuần (Weekly), Xu hướng tháng (Monthly).
+    - 2 Bảng dữ liệu chi tiết: Bảng Số Liệu Tiến Độ Sản Xuất Từng Máy (14 cột) & Bảng Thời Gian Hoạt Động Của Thiết Bị (10 cột).
+  * Mã nguồn cũ 1.881 dòng (72 KB) với inline styles chằng chịt, bảng màu gradient xanh lơ `#afd3d1` / xanh chuối `#88d3f6`, đổ bóng nặng nề, các khối `CIRCLE_COMPONENT` thô sơ tràn vỡ layout, 2 bảng dữ liệu cũ dùng thẻ HTML `<table>` thô sơ không có tìm kiếm, không có sắp xếp, không có xuất Excel.
+  * Yêu cầu: Làm lại toàn diện theo phong cách **Google Stitch High-Density Enterprise**, chuyển đổi biểu đồ sang phong cách Executive Dashboard có nút xuất Excel riêng, nâng cấp 2 bảng sang bảng lưới AG Grid (`AGTable`), thiết kế bộ lọc compact 2 hàng kèm Segmented Tab Switcher (5 chế độ xem).
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `PLANRESULT.backup.tsx` (1.881 dòng, 72 KB).
+  * Phân rã thành công thành 9 module chuyên biệt trong thư mục `src/pages/sx/PLANRESULT/PrecisionPlanResult/`:
+    1. `PrecisionPlanResult.scss` (703 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, Executive Cards, KPI Micro-Pills và AG Grid.
+    2. `PrecisionPlanResultColumns.tsx` (339 dòng): Cấu hình cột AG Grid kèm định dạng số JetBrains Mono và màu sắc trực quan cho cả 2 bảng.
+    3. `planResultChartRenderers.tsx` (349 dòng): 4 biểu đồ DevExtreme Chart được module hóa, responsive.
+    4. `PrecisionPlanResultKpiSection.tsx` (258 dòng): 3 phân vùng KPI hiện đại (Tiến độ máy, Hao hụt vật tư & kiểm tra, Hiệu suất thời gian & OEE).
+    5. `PrecisionPlanResultChartsSection.tsx` (190 dòng): Bọc 4 biểu đồ trong thẻ Executive Cards kèm nút xuất Excel riêng biệt.
+    6. `PrecisionPlanResultAchivementTable.tsx` (78 dòng): Bảng AGTable tiến độ & hao hụt máy (14 cột) kèm search & Excel.
+    7. `PrecisionPlanResultTimeTable.tsx` (78 dòng): Bảng AGTable thời gian & hiệu suất máy (10 cột) kèm search & Excel.
+    8. `PrecisionPlanResultHeader.tsx` (48 dòng): Header bar công nghiệp, telemetry xưởng, số máy và thời gian cập nhật.
+    9. `PrecisionPlanResultToolbar.tsx` (140 dòng): Toolbar 2 tầng: Bộ lọc ngày/xưởng/máy, Quick select 30 ngày/hôm nay/hôm qua, và Segmented Tab Switcher 5 chế độ xem (`ALL`, `KPI`, `CHARTS`, `ACHIVEMENT`, `TIME`).
+    10. `usePlanResultData.ts` (290 dòng): Custom hook pure TypeScript gom toàn bộ state, API queries, tính thời gian và xuất Excel.
+    11. `PLANRESULT.tsx`: Controller chính tinh gọn từ 1.881 dòng xuống còn **110 dòng** kết nối subcomponents.
+- **3. Xác Thực Toàn Diện**:
+  * Quét TypeScript AST toàn bộ 10/10 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra toàn bộ 11/11 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK** (không có lỗi 404 hay runtime bundle).
+
 ## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Màn Hình Kho SX Main (Kho Ảo) `KHOAO.tsx` Chuẩn Google Stitch High-Density Enterprise)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình **Kho SX Main (`src/pages/qlsx/QLSXPLAN/KHOAO/KHOAO.tsx`)** là công cụ quản lý vật liệu dở dang trên sàn máy dập và thực hiện nghiệp vụ **Xuất Next** sang chỉ thị tiếp theo.
