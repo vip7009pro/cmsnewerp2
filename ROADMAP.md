@@ -1,5 +1,47 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Báo Cáo Full Roll (`BAOCAOFULLROLL.tsx`) Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard:
+  - **Bảo toàn 100% logic nghiệp vụ & các cột dữ liệu**:
+    * Duy trì 100% tên cột `headerName` và độ rộng `width` của 64 cột bảng AG-Grid (`PLAN_DATE`, `PHAN_LOAI`, `PROCESS_NUMBER`, `STEP`, `G_NAME_KD`, `PROD_MAIN_MATERIAL`, `WIDTH_CD`, `PROD_REQUEST_NO`, `PLAN_ID`, `M_LOT_NO`, 18 cột Mét, 18 cột EA, 18 cột M2, `PD`, `CAVITY`).
+    * Duy trì toàn bộ tham số gọi API `loadFullRollData` và `f_getMachineListData()`.
+    * Tối ưu hiển thị format số font JetBrains Mono sắc nét với 3 mã màu nhận diện (Xanh dương cho Mét, Xanh lá cho Con EA, Đỏ cho Diện tích M2).
+    * Bảo toàn export `f_handleLoadFullRollData` để tương thích ngược hoàn toàn.
+  - **Bổ sung Dashboard 6 Micro-Cards KPI Thống Kê Realtime Hữu Ích**:
+    * `Tổng Cấp Liệu`: Tổng mét nhập máy (`INPUT_QTY` m), mét xuất kho và diện tích m2.
+    * `Đã Dập Thực Tế`: Mét liệu đã sử dụng (`USED_QTY` m), tỷ lệ Yield Rate % và mét tồn dở dang trên máy.
+    * `Thành Phẩm Đạt`: Tổng mét đạt (`RESULT_MET` m), số lượng con (`RESULT_EA` EA) và diện tích m2.
+    * `Cân Chỉnh (Setting)`: Chiều dài cân chỉnh setting (`SETTING_MET` m), tỷ lệ hao hụt Setting Loss % và quy đổi EA.
+    * `Hỏng Công Đoạn (PR_NG)`: Chiều dài lỗi hỏng dập (`PR_NG` m), tỷ lệ lỗi NG Loss % và quy đổi EA.
+    * `Kiểm Tra Đạt (Inspect OK)`: Chiều dài kiểm đạt (`INSPECT_OK_MET` m), tỷ lệ đạt kiểm tra % và tổng mét kiểm tra.
+  - **Hệ Thống 4 Biểu Đồ Recharts Executive Dashboard Bố Trí Theo Phong Cách KinhDoanhReport**:
+    * Biểu đồ 1: Xu Hướng Cấp Liệu & Dập Thực Tế Theo Ngày (`ComposedChart`: Bar Input, Bar Used, Line Result OK).
+    * Biểu đồ 2: Cơ Cấu Hao Hụt & Thành Phẩm Theo Ngày (`Stacked BarChart`: Setting Loss, NG Loss, Result OK).
+    * Biểu đồ 3: Top 10 Mã Hàng Tiêu Thụ Liệu Lớn Nhất (`BarChart` theo Mét liệu đã dùng).
+    * Biểu đồ 4: Phân Bổ Tỷ Trọng Hiệu Suất Sử Dụng Liệu Toàn Diện (`Pie/DonutChart`: OK vs Setting vs NG vs Remain).
+    * Đóng gói trong các thẻ `executive-card` sang trọng, bố trí dạng `.two-col-grid`, có **nút xuất Excel dữ liệu chi tiết cho từng biểu đồ**.
+  - **Bảng Tổng Kết Chỉ Số Sản Xuất Toàn Diện (Full Metric Summary Grid)**:
+    * Bảng ma trận 3 hệ đơn vị (Mét / Con EA / Mét vuông M2) theo dõi 14 công đoạn: IQC, Xuất kho, Input máy, Đã dùng, Tồn máy, Cân chỉnh, Hỏng CĐ, Thành phẩm, Tồn BTP, Tồn kho SX, Trả về kho, Kiểm vào, Kiểm OK, Kiểm ra.
+  - **Nâng Cấp Bảng Lưới AG Grid High-Density & Tiện Ích Dữ Liệu**:
+    * Thanh lọc nhanh phía trên bảng (`gridToolbar`) tích hợp ô tìm kiếm nhanh tức thì (`Quick Search`), cụm nút xuất Excel `EX1` (dữ liệu đang lọc), `EX2` (toàn bộ dữ liệu) và bộ đếm số dòng hiển thị.
+    * Segmented Tab Switcher 3 chế độ xem nhanh: `Toàn Bộ (All)`, `Biểu Đồ (Charts)`, `Bảng Dữ Liệu (Grid)`.
+    * Ẩn hoàn toàn toolbar xanh lá mặc định của AGTable.
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `BAOCAOFULLROLL.backup.tsx` (407 dòng).
+    * Phân rã thành 8 module chuyên biệt tại `src/pages/sx/BAOCAOTHEOROLL/PrecisionBaoCaoFullRoll/`:
+      1. `PrecisionBaoCaoFullRoll.scss` (450 dòng): Stylesheet SCSS Google Stitch Enterprise.
+      2. `PrecisionBaoCaoFullRollColumns.tsx` (106 dòng): Cấu hình 64 cột AG-Grid.
+      3. `PrecisionBaoCaoFullRollKpi.tsx` (146 dòng): 6 Micro-cards KPI realtime.
+      4. `PrecisionBaoCaoFullRollCharts.tsx` (262 dòng): 4 biểu đồ Recharts executive-card two-col-grid.
+      5. `PrecisionBaoCaoFullRollSummary.tsx` (133 dòng): Bảng 3 hệ đơn vị metric summary cards.
+      6. `PrecisionBaoCaoFullRollHeader.tsx` (49 dòng): Header bar công nghiệp kèm telemetry & reload.
+      7. `PrecisionBaoCaoFullRollToolbar.tsx` (265 dòng): Toolbar compact & segment tab switcher.
+      8. `PrecisionBaoCaoFullRollGrid.tsx` (87 dòng): Khung AGTable kèm quick search, EX1, EX2.
+      9. `useBaoCaoFullRollData.ts` (350 dòng): Custom hook pure TypeScript gom state, API, aggregate charts và xuất Excel.
+    * Controller chính `BAOCAOFULLROLL.tsx` tinh gọn từ 407 dòng xuống còn **133 dòng**.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 9/9 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra toàn bộ 10/10 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Báo Cáo Theo Roll (`BAOCAOTHEOROLL.tsx`) Chuẩn Google Stitch High-Density Enterprise & Executive Dashboard:
   - **Bảo toàn 100% logic nghiệp vụ & các cột dữ liệu**:
     * Duy trì 100% tên cột `headerName` và độ rộng `width` của 40+ cột AG-Grid.

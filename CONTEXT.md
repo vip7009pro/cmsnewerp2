@@ -1,6 +1,27 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
-## Update - 2026-09-17 (SX: Bugfix Runtime Error TypeError undefined length PrecisionBaoCaoRollGrid)
+## Update - 2026-09-17 (SX: Refactor Toàn Diện Tab Báo Cáo Full Roll `BAOCAOFULLROLL.tsx` Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Báo Cáo Full Roll (`src/pages/sx/BAOCAOTHEOROLL/BAOCAOFULLROLL.tsx`)** là công cụ tra cứu số liệu dập chi tiết theo cuộn liệu (Full Roll Production Analytics), theo dõi toàn diện 3 hệ đơn vị (Mét, Con EA, Mét vuông M2) qua các công đoạn từ IQC, Xuất kho, Cấp liệu máy, Dập thực tế, Cân chỉnh Setting, Hỏng công đoạn PR_NG, Thành phẩm Result, Tồn BTP, Tồn kho SX, Trả về kho và Kiểm tra ngoại quan.
+  * Mã nguồn cũ 407 dòng mang phong cách gradient cũ, form lọc chiếm diện tích, thiếu Dashboard KPI tổng quan, thiếu hệ thống biểu đồ xu hướng theo ngày và phân bổ hao hụt, thiếu ô tìm kiếm nhanh và thiếu cụm nút xuất Excel EX1/EX2.
+  * Yêu cầu: Làm lại theo chuẩn **Google Stitch High-Density Enterprise**, thiết kế hệ thống biểu đồ Executive Dashboard Recharts tương tự `KinhDoanhReport.tsx`, bổ sung Dashboard 6 Micro-Cards KPI realtime, Bảng tổng kết chỉ số 3 hệ đơn vị (Full Metric Summary Grid), giữ nguyên 100% 64 cột dữ liệu, tên cột `headerName` và độ rộng cột, tích hợp ô Quick Search và cụm nút xuất Excel `EX1`, `EX2`.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `BAOCAOFULLROLL.backup.tsx` (407 dòng).
+  * Phân rã thành công thành 8 module chuyên biệt trong thư mục `src/pages/sx/BAOCAOTHEOROLL/PrecisionBaoCaoFullRoll/`:
+    1. `PrecisionBaoCaoFullRoll.scss` (450 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho KPI Cards, header, segmented switcher, executive-cards, two-col-grid, bảng summary metric và AGTable.
+    2. `PrecisionBaoCaoFullRollColumns.tsx` (106 dòng): Cấu hình 64 cột AG-Grid bảo toàn 100% `headerName` và `width` gốc, tối ưu format số JetBrains Mono với 3 mã màu nhận diện (Xanh dương cho Mét, Xanh lá cho EA, Đỏ cho M2).
+    3. `PrecisionBaoCaoFullRollKpi.tsx` (146 dòng): Dashboard 6 Micro-cards KPI thống kê realtime: Tổng Cấp Liệu (Input m), Đã Dập Thực Tế (Used m & Yield Rate), Thành Phẩm Đạt (Result m, EA, M2), Cân Chỉnh (Setting Loss m & %), Hỏng Công Đoạn (PR_NG Loss m & %), Kiểm Tra Đạt (Inspect OK m & %).
+    4. `PrecisionBaoCaoFullRollCharts.tsx` (262 dòng): Hệ thống 4 biểu đồ Recharts phong cách `KinhDoanhReport.tsx` (Xu hướng cấp liệu & dập theo ngày, Cơ cấu hao hụt setting/NG/OK theo ngày, Top 10 mã hàng tiêu thụ liệu nhiều nhất, Phân bổ tỷ trọng hiệu suất sử dụng liệu) đóng gói trong các thẻ `executive-card` bố trí dạng `.two-col-grid`, có nút xuất Excel cho từng biểu đồ.
+    5. `PrecisionBaoCaoFullRollSummary.tsx` (133 dòng): Bảng tổng kết chỉ số sản xuất toàn diện 3 hệ đơn vị (Mét / EA / M2) dạng High-Density Metric Grid thay thế hiển thị thô sơ.
+    6. `PrecisionBaoCaoFullRollHeader.tsx` (49 dòng): Header bar công nghiệp kèm badge phân hệ `SX PRECISION`, breadcrumb, telemetry số dòng và nút reload dữ liệu.
+    7. `PrecisionBaoCaoFullRollToolbar.tsx` (265 dòng): Toolbar compact 2 hàng gồm bộ chọn ngày Từ ngày - Đến ngày, Factory, Machine, inputs tìm kiếm chi tiết, All Time và Segmented Switcher (`Toàn Bộ`, `Biểu Đồ`, `Bảng Dữ Liệu`).
+    8. `PrecisionBaoCaoFullRollGrid.tsx` (87 dòng): Khung AGTable bọc thanh tìm kiếm nhanh tức thì và cụm nút xuất Excel `EX1` (dữ liệu đang lọc), `EX2` (toàn bộ dữ liệu).
+    9. `useBaoCaoFullRollData.ts` (350 dòng): Custom hook pure TypeScript gom toàn bộ state, API queries `f_handleLoadFullRollData`, logic tổng hợp KPI, aggregate 4 loại biểu đồ, quick search và xuất Excel.
+    10. `BAOCAOFULLROLL.tsx`: Controller chính tinh gọn từ 407 dòng xuống còn **133 dòng** kết nối subcomponents và bảo toàn re-export `f_handleLoadFullRollData`.
+- **3. Xác Thực Toàn Diện**:
+  * Quét TypeScript AST toàn bộ 9/9 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra toàn bộ 10/10 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK** (không có lỗi 404 hay runtime bundle).
+
 - **Lỗi**: `PrecisionBaoCaoRollGrid.tsx:49 Uncaught TypeError: Cannot read properties of undefined (reading 'length')`.
 - **Nguyên nhân**: Sự không đồng nhất giữa tên props truyền từ controller `BAOCAOTHEOROLL.tsx` (`plandatatable`, `quickFilterText`, `onFilterChange`) và interface của `PrecisionBaoCaoRollGrid.tsx` (`filteredData`, `searchKeyword`, `onSearchChange`), khiến `filteredData` nhận giá trị `undefined` khi truy cập `.length`.
 - **Cách sửa**: 
