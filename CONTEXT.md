@@ -1,5 +1,24 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Màn Hình Lịch Sử Input Liệu Sản Xuất `LICHSUINPUTLIEU.tsx` Chuẩn Google Stitch High-Density Enterprise)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình Lịch Sử Input Liệu Sản Xuất (`src/pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU.tsx`) là tính năng tra cứu lịch sử nạp cuộn vật tư, theo dõi số lượng input, đã dùng và tồn dư theo từng lệnh sản xuất, máy móc, mã liệu và số lot.
+  * Mã nguồn cũ sử dụng sidebar bên trái rộng 230px dạng dọc với màu nền và input lỗi thời (`linear-gradient(0deg, #afd3d1, #86cfff)`, input màu xanh lá cây `#9dee95`), font chữ rất nhỏ (0.6rem), chiếm mất nhiều diện tích ngang của bảng dữ liệu 15 cột; thiếu các widget tổng hợp chỉ số quản trị quan trọng; bảng AGTable còn giữ thanh toolbar xanh lá mặc định, thiếu ô tìm kiếm nhanh và nút xuất Excel tiện lợi.
+  * Yêu cầu: Làm lại giao diện theo phong cách **Google Stitch High-Density Enterprise**, bổ sung các widget hữu ích, loại bỏ sidebar dọc thay bằng top toolbar, giữ nguyên 100% logic tra cứu và các cột của bảng.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản: `LICHSUINPUTLIEU.backup.tsx` (149 dòng).
+  * Tách biệt các chức năng vào thư mục chuyên dụng `PrecisionLichSuInputLieu/`:
+    1. `PrecisionLichSuInputLieu.scss`: Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full Stretch, ẩn toolbar xanh lá mặc định của AGTable, style 5 KPI cards, header và Top Filter Toolbar compact.
+    2. `PrecisionLichSuInputLieuColumns.tsx`: Định nghĩa 15 cột bảng AGTable (`PROD_REQUEST_NO`, `PLAN_ID`, `G_CODE`, `G_NAME_KD`, `M_CODE`, `M_NAME`, `WIDTH_CD`, `M_LOT_NO`, `LOTNCC`, `INPUT_QTY`, `USED_QTY`, `REMAIN_QTY`, `EMPL_NO`, `EQUIPMENT_CD`, `INS_DATE`), giữ nguyên 100% headerName, độ rộng cột, tối ưu format số JetBrains Mono và căn lề.
+    3. `PrecisionLichSuInputLieuKpi.tsx`: 5 Micro-cards KPI thống kê realtime: Tổng lượt input, Tổng lượng cấp, Tổng đã dùng & %, Tồn dư dở dang & %, Đa dạng vật tư/thiết bị.
+    4. `PrecisionLichSuInputLieuHeader.tsx`: Header bar công nghiệp với badge QLSX PRECISION, breadcrumb phân cấp, telemetry realtime và nút làm mới.
+    5. `PrecisionLichSuInputLieuToolbar.tsx`: Thanh điều khiển lọc phía trên: Hàng 1 (Ngày, All Time, YCSX, PLAN ID, Action Buttons), Hàng 2 (Code ERP, Code KD, Tên Liệu, Mã Liệu) có thể thu gọn/mở rộng linh hoạt.
+    6. `useLichSuInputLieuData.ts`: Custom hook pure TypeScript (tránh lỗi 404 dynamic import) quản lý state, gọi API `f_lichsuinputlieu`, reset bộ lọc, tìm kiếm nhanh và xuất Excel.
+    7. `LICHSUINPUTLIEU.tsx`: Controller chính tinh gọn (< 135 dòng) kết nối dữ liệu và các subcomponents.
+- **3. Xác Thực Toàn Diện**:
+  * Quét TypeScript AST toàn bộ 6/6 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra 7/7 module trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK** (không có lỗi 404).
+
 ## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Tab Kế Hoạch Dài Hạn `LONGTERM_PLAN.tsx` Chuẩn Google Stitch High-Density Enterprise & Executive Dashboard Recharts)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Tab Kế Hoạch Dài Hạn (`src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/LONGTERM_PLAN.tsx`) là màn hình điều phối kế hoạch sản xuất 16 ngày liên tiếp và theo dõi năng lực (Lead Time, Năng lực thiết bị, Năng lực nhân lực) của 4 công đoạn máy (`FR`, `SR`, `DC`, `ED`).

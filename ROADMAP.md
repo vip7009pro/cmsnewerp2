@@ -1,5 +1,32 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Màn Hình Lịch Sử Input Liệu Sản Xuất (`LICHSUINPUTLIEU.tsx`) Chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% logic nghiệp vụ & dữ liệu**:
+    * Duy trì 100% 15 cột của bảng Lịch sử cấp liệu (`PROD_REQUEST_NO`, `PLAN_ID`, `G_CODE`, `G_NAME_KD`, `M_CODE`, `M_NAME`, `WIDTH_CD`, `M_LOT_NO`, `LOTNCC`, `INPUT_QTY`, `USED_QTY`, `REMAIN_QTY`, `EMPL_NO`, `EQUIPMENT_CD`, `INS_DATE`) với tên và độ rộng cột ban đầu.
+    * Duy trì đầy đủ các tham số tra cứu của API `f_lichsuinputlieu`: `ALLTIME`, `FROM_DATE`, `TO_DATE`, `PROD_REQUEST_NO`, `PLAN_ID`, `M_NAME`, `M_CODE`, `G_NAME`, `G_CODE`.
+    * Tối ưu format số JetBrains Mono, căn lề phải/giữa và màu sắc phân cấp.
+  - **Loại bỏ Sidebar Dọc 230px Cũ & Thay Bằng Top Filter Bar Hiện Đại**:
+    * Thanh điều khiển lọc ngang 1-2 hàng compact phía trên (Ngày, All Time, YCSX, PLAN ID, Code ERP, Code KD, Tên Liệu, Mã Liệu).
+    * Hỗ trợ nút mở rộng / thu gọn bộ lọc nâng cao giúp tối đa hóa diện tích hiển thị bảng.
+    * Hỗ trợ nhấn phím Enter để tra cứu nhanh tại mọi ô input.
+  - **Bổ sung 5 Widget Micro-Cards (KPI Widgets) Realtime Hữu Ích**:
+    * `Tổng Lượt Input`: Số lượt cấp liệu vào máy.
+    * `Tổng Lượng Input`: Tổng số lượng vật liệu cấp vào sản xuất (m / EA).
+    * `Tổng Đã Dùng`: Tổng số lượng vật liệu đã chạy thực tế kèm Tỉ lệ sử dụng `%` (Yield Rate).
+    * `Tồn Dư Dở Dang`: Tổng lượng vật liệu thừa/dở dang còn lại trên máy kèm Tỉ lệ tồn `%`.
+    * `Vật Tư & Thiết Bị`: Thống kê số lượng mã liệu `M_CODE` độc nhất và số máy móc `EQUIPMENT_CD`.
+  - **Kiến trúc Module hóa Clean Code (< 300 dòng/file)**:
+    * `PrecisionLichSuInputLieu.scss`: Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full Stretch, ẩn toolbar xanh lá mặc định của AGTable, style 5 KPI cards, header và Top Filter Toolbar compact.
+    * `PrecisionLichSuInputLieuColumns.tsx`: Định nghĩa 15 cột bảng AGTable.
+    * `PrecisionLichSuInputLieuKpi.tsx`: 5 Micro-cards KPI thống kê realtime.
+    * `PrecisionLichSuInputLieuHeader.tsx`: Header bar công nghiệp với badge QLSX PRECISION, breadcrumb phân cấp, telemetry realtime và nút làm mới.
+    * `PrecisionLichSuInputLieuToolbar.tsx`: Thanh điều khiển lọc phía trên linh hoạt.
+    * `useLichSuInputLieuData.ts`: Custom hook pure TypeScript quản lý state, gọi API `f_lichsuinputlieu`, reset bộ lọc, tìm kiếm nhanh và xuất Excel.
+    * `LICHSUINPUTLIEU.tsx`: Controller chính tinh gọn (< 135 dòng) kết nối dữ liệu và các subcomponents.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 6/6 file đạt 0 Errors / 0 Warnings (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra 7/7 module trên Vite Dev Server (port 3001) đều phản hồi HTTP 200 OK.
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Kế Hoạch Dài Hạn (`LONGTERM_PLAN.tsx`) Chuẩn Google Stitch High-Density Enterprise & Executive Dashboard Recharts:
   - **Bảo toàn 100% logic nghiệp vụ & quyền hạn**:
     * Duy trì 100% 25 cột của bảng kế hoạch dài hạn (`G_CODE`, `G_NAME`, `CD`, `EQ_NAME`, `YCSX_QTY`, `KETQUASX`, `TON_YCSX`, `UPH`, `PLAN_DATE` và 16 cột ngày `D1`-`D16` tính theo `fromdate`).
