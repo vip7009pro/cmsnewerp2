@@ -1,5 +1,25 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-17 (SX: Refactor Toàn Diện Tab Tra Cứu BTP `BTP_AUTO.tsx` Chuẩn Google Stitch High-Density Enterprise)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Tra Cứu BTP (`src/pages/sx/BTP_AUTO/BTP_AUTO.tsx`)** là công cụ quản lý bán thành phẩm dập trên sàn sản xuất, hỗ trợ 2 chế độ xem: Chi tiết từng lot (`f_load_BTP_Auto`) và Tổng hợp theo mã hàng / xưởng (`f_load_BTP_Summary_Auto`), cùng chức năng mở modal Quản lý giao nhận dao film (`QLGIAONHANDAOFILM`).
+  * Mã nguồn cũ 402 dòng dùng bảng màu gradient xanh ngọc/xanh chuối `#afd3d1` / `#6efad7` lỗi thời, thanh điều khiển `tracuuYCSX` chắp vá, 2 bộ cột dead code (`columns_btp`, `columns_btp2`), thiếu Dashboard KPI, thiếu ô tìm kiếm nhanh và thiếu nút xuất Excel.
+  * Yêu cầu: Làm lại theo chuẩn **Google Stitch High-Density Enterprise**, bổ sung các widget Micro-Cards KPI hữu ích thông tin, giữ nguyên 100% tên cột `headerName` và độ rộng cột, tích hợp ô Quick Search và cụm nút xuất Excel `EX1`, `EX2`.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `BTP_AUTO.backup.tsx` (402 dòng).
+  * Phân rã thành công thành 6 module chuyên biệt trong thư mục `src/pages/sx/BTP_AUTO/PrecisionBtpAuto/`:
+    1. `PrecisionBtpAuto.scss` (480 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho KPI Cards, header, segmented tabs và bảng AGTable.
+    2. `PrecisionBtpAutoColumns.tsx` (180 dòng): Cấu hình 2 bộ cột AG-Grid bảo toàn 100% `headerName` và `width` gốc: Detail (24 cột) và Summary (5 cột), định dạng số JetBrains Mono.
+    3. `PrecisionBtpAutoKpi.tsx` (170 dòng): Dashboard 5 Micro-cards KPI thống kê realtime: Tổng BTP (m/EA), Xưởng A (SL & %), Xưởng B (SL & %), Quy Mô Lot & Mã Hàng, Phân Bổ Nhà Máy (NM1 / NM2).
+    4. `PrecisionBtpAutoHeader.tsx` (50 dòng): Header bar công nghiệp kèm badge phân xưởng, tiêu đề, breadcrumb và telemetry số dòng, thời gian cập nhật.
+    5. `PrecisionBtpAutoGrid.tsx` (110 dòng): Bọc AGTable tích hợp Segmented Tab Switcher (Chi Tiết / Tổng Hợp), ô Quick Search tìm kiếm tức thì, cụm nút xuất Excel `EX1`, `EX2` và nút mở Quản Lý Giao Nhận.
+    6. `useBtpAutoData.ts` (180 dòng): Custom hook pure TypeScript gom toàn bộ state, API queries, logic tính KPI, quick search và xuất Excel (qua `SaveExcel`).
+    7. `BTP_AUTO.tsx`: Controller chính tinh gọn từ 402 dòng xuống còn **68 dòng** kết nối subcomponents.
+- **3. Xác Thực Toàn Diện**:
+  * Quét TypeScript AST toàn bộ 6/6 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra toàn bộ 7/7 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK** (không có lỗi 404 hay runtime bundle).
+
+
 ## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Bảng Tỷ Lệ Đạt Kế Hoạch Sản Xuất `ACHIVEMENTTB.tsx` Chuẩn Google Stitch High-Density Enterprise)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình **Bảng Tỷ Lệ Đạt Kế Hoạch Sản Xuất (`src/pages/qlsx/QLSXPLAN/ACHIVEMENTTB/ACHIVEMENTTB.tsx`)** là công cụ đánh giá sản lượng và tiến độ hoàn thành kế hoạch theo từng thiết bị dập và theo từng ca làm việc (Ca Ngày, Ca Đêm, Tổng Ngày).

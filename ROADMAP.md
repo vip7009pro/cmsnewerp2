@@ -1,5 +1,36 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Tra Cứu BTP (`BTP_AUTO.tsx`) Chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% logic nghiệp vụ & các cột dữ liệu**:
+    * Duy trì 100% tên cột `headerName` và độ rộng `width` của 2 bộ cột: Detail (24 cột: `G_CODE`, `G_NAME_KD`, `PROD_LAST_PRICE`, `SX_DATE`, `LOT_SX`, `IN_KHO_SX`, `M_CODE`, `PLAN_ID`, `IN_KHO_ID`, `TOTAL_IN_QTY`, `TOTAL_OUT_QTY`, `TON_BTP`, `XUONGA`, `XUONGB`, `FACTORY`, `STEP`, `PLAN_FACTORY`, `PL_DATETIME`, `CHOTBC_DATETIME`, `PHANLOAI`, `DAUPHAY`, `NVL_NAME`, `CD1`, `CD2`) và Summary (5 cột: `G_CODE`, `G_NAME_KD`, `TON_BTP`, `XUONGA`, `XUONGB`).
+    * Duy trì các cell renderers gốc: checkbox chọn dòng để cập nhật M100 (`f_updateBTP_M100`), tô màu xưởng A/B, kiểm tra trạng thái khớp `PLAN_FACTORY === FACTORY`.
+    * Loại bỏ 2 bộ cột dead code không dùng (`columns_btp`, `columns_btp2`).
+    * Duy trì tích hợp modal Quản lý giao nhận dao film (`QLGIAONHANDAOFILM`).
+  - **Bổ sung Dashboard 5 Micro-Cards KPI Thống Kê Realtime Hữu Ích**:
+    * `Tổng BTP`: Tổng số lượng bán thành phẩm tồn trên sàn (m / EA) kèm telemetry chế độ hiển thị.
+    * `Xưởng A`: Sản lượng BTP tại Xưởng A kèm tỷ trọng % phân bổ so với tổng BTP và mini progress bar.
+    * `Xưởng B`: Sản lượng BTP tại Xưởng B kèm tỷ trọng % phân bổ so với tổng BTP và mini progress bar.
+    * `Quy Mô BTP`: Thống kê số lượng cuộn/lot BTP và số lượng mã hàng (G_CODE) khác nhau đang lưu hành.
+    * `Phân Bổ Nhà Máy`: Cơ cấu sản lượng giữa Nhà máy 1 (NM1) và Nhà máy 2 (NM2) kèm thanh phân bổ 2 màu.
+  - **Nâng cấp Bảng Lưới AG Grid High-Density & Xuất Excel**:
+    * Thanh điều khiển tích hợp Segmented Tab Switcher (Chi Tiết / Tổng Hợp) chuyển đổi dữ liệu nhanh chóng.
+    * Ô tìm kiếm nhanh (Quick Search) lọc tức thì theo mã hàng, tên hàng, lot sx, máy, mã nvl...
+    * Cụm nút xuất Excel `EX1` (dữ liệu đang lọc qua search) và `EX2` (toàn bộ dữ liệu) sử dụng `SaveExcel` chuẩn toàn hệ thống.
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `BTP_AUTO.backup.tsx` (402 dòng).
+    * Phân rã thành công thành 6 module chuyên biệt tại `src/pages/sx/BTP_AUTO/PrecisionBtpAuto/`:
+      1. `PrecisionBtpAuto.scss` (480 dòng): SCSS Stitch Enterprise & Multi-Tab Full Stretch.
+      2. `PrecisionBtpAutoColumns.tsx` (180 dòng): Cấu hình 2 bộ cột Detail (24 cột) và Summary (5 cột).
+      3. `PrecisionBtpAutoKpi.tsx` (170 dòng): Dashboard 5 Micro-cards KPI realtime.
+      4. `PrecisionBtpAutoHeader.tsx` (50 dòng): Header bar công nghiệp kèm telemetry.
+      5. `PrecisionBtpAutoGrid.tsx` (110 dòng): Bọc AGTable tích hợp segmented switch, quick search và Excel.
+      6. `useBtpAutoData.ts` (180 dòng): Custom hook pure TypeScript gom state, API, KPI và Excel.
+    * Controller chính `BTP_AUTO.tsx` tinh gọn xuống còn **68 dòng**.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 6/6 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra toàn bộ 7/7 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+
+
 - [x] Hoàn thiện Refactor Toàn Diện Bảng Tỷ Lệ Đạt Kế Hoạch Sản Xuất (`ACHIVEMENTTB.tsx`) Chuẩn Google Stitch High-Density Enterprise:
   - **Bảo toàn 100% logic nghiệp vụ & các cột dữ liệu**:
     * Duy trì 100% tên cột `headerName` và độ rộng `width` của 13 cột bảng AG-Grid (`EQ_NAME`, `YCSX_NO`, `CODE KD`, `STEP`, `PLAN_DAY`, `PLAN_NIGHT`, `PLAN_TOTAL`, `RESULT_DAY`, `RESULT_NIGHT`, `RESULT_TOTAL`, `DAY_RATE`, `NIGHT_RATE`, `TOTAL_RATE`).
