@@ -1,176 +1,108 @@
-import { IconButton, TextField } from "@mui/material";
-import moment from "moment";
-import React, { useEffect, useState, useTransition } from "react";
-import { AiFillFileExcel, AiOutlineDownload, AiOutlineLoading } from "react-icons/ai";
-import { generalQuery } from "../../../api/Api";
-import "./TINH_HINH_CHOT.scss";
-import { TINH_HINH_CHOT_BC } from "../../qlsx/QLSXPLAN/interfaces/khsxInterface";
-import AGTable from "../../../components/DataTable/AGTable";
+import React, { useMemo } from "react";
+import "./PrecisionTinhHinhChot/PrecisionTinhHinhChot.scss";
+import { useTinhHinhChotData } from "./PrecisionTinhHinhChot/useTinhHinhChotData";
+import { getTinhHinhChotColumns } from "./PrecisionTinhHinhChot/PrecisionTinhHinhChotColumns";
+import PrecisionTinhHinhChotHeader from "./PrecisionTinhHinhChot/PrecisionTinhHinhChotHeader";
+import PrecisionTinhHinhChotKpi from "./PrecisionTinhHinhChot/PrecisionTinhHinhChotKpi";
+import PrecisionTinhHinhChotCharts from "./PrecisionTinhHinhChot/PrecisionTinhHinhChotCharts";
+import PrecisionTinhHinhChotGrid from "./PrecisionTinhHinhChot/PrecisionTinhHinhChotGrid";
 
-const TINH_HINH_CHOT = () => {
-  const [isPending, startTransition] = useTransition();
-  const [tinh_hinh_chot_NM1, setTinh_Hinh_Chot_NM1] = useState<
-    Array<TINH_HINH_CHOT_BC>
-  >([]);
-  const [tinh_hinh_chot_NM2, setTinh_Hinh_Chot_NM2] = useState<
-    Array<TINH_HINH_CHOT_BC>
-  >([]);
-  const [loadingCount, setLoadingCount] = useState(0);
-  const isLoading = loadingCount > 0;
-  const nm1Ref = React.useRef<any>(null);
-  const nm2Ref = React.useRef<any>(null);
+const TINH_HINH_CHOT: React.FC = () => {
+  const {
+    rawDataNM1,
+    rawDataNM2,
+    filteredDataNM1,
+    filteredDataNM2,
+    kpiStats,
+    chartData,
+    isLoading,
+    lastUpdated,
+    searchNM1,
+    setSearchNM1,
+    searchNM2,
+    setSearchNM2,
+    viewMode,
+    setViewMode,
+    showCharts,
+    setShowCharts,
+    chartFactoryFilter,
+    setChartFactoryFilter,
+    loadTinhHinhBaoCao,
+    loadAll,
+    handleExportExcel,
+  } = useTinhHinhChotData();
 
-  const column_chotbc = [
-    {
-      field: "SX_DATE",
-      headerName: "SX_DATE",
-      width: 110,
-      editable: false,
-    },
-    {
-      field: "TOTAL",
-      headerName: "Tổng SL Chỉ Thị",
-      width: 130,
-      editable: false,
-      cellStyle: { color: "blue", fontWeight: "bold" },
-    },
-    {
-      field: "DA_CHOT",
-      headerName: "Đã Chốt Báo Cáo",
-      width: 140,
-      editable: false,
-      cellStyle: { color: "green", fontWeight: "bold" },
-    },
-    {
-      field: "CHUA_CHOT",
-      headerName: "Chưa Chốt Báo Cáo",
-      width: 150,
-      editable: false,
-      cellStyle: { color: "red", fontWeight: "bold" },
-    },
-    {
-      field: "DA_NHAP_HIEUSUAT",
-      headerName: "Đã Nhập Hiệu Suất",
-      width: 150,
-      editable: false,
-      cellStyle: { color: "green", fontWeight: "bold" },
-    },
-    {
-      field: "CHUA_NHAP_HIEUSUAT",
-      headerName: "Chưa Nhập Hiệu Suất",
-      width: 160,
-      editable: false,
-      cellStyle: { color: "red", fontWeight: "bold" },
-    },
-  ];
-
-  const loadTinhHinhBaoCao = (factory: string) => {
-    setLoadingCount((c) => c + 1);
-    generalQuery("tinhhinhchotbaocaosx", {
-      FACTORY: factory,
-    })
-      .then((response) => {
-        //console.log(response.data.tk_status);
-        if (response.data.tk_status !== "NG") {
-          if (factory === "NM1") {
-            let loadeddata = response.data.data.map(
-              (element: TINH_HINH_CHOT_BC, index: number) => {
-                return {
-                  ...element,
-                  SX_DATE: moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
-                  id: index,
-                };
-              },
-            );
-            startTransition(() => {
-              setTinh_Hinh_Chot_NM1(loadeddata);
-            });
-          } else {
-            let loadeddata = response.data.data.map(
-              (element: TINH_HINH_CHOT_BC, index: number) => {
-                return {
-                  ...element,
-                  SX_DATE: moment.utc(element.SX_DATE).format("YYYY-MM-DD"),
-                  id: index,
-                };
-              },
-            );
-            startTransition(() => {
-              setTinh_Hinh_Chot_NM2(loadeddata);
-            });
-          }
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setLoadingCount((c) => Math.max(0, c - 1));
-      });
-  };
-
-  useEffect(() => {
-    loadTinhHinhBaoCao("NM1");
-    loadTinhHinhBaoCao("NM2");
-  }, []);
+  // Columns cấu hình chuẩn bảo toàn 100% headerName và width gốc
+  const columns = useMemo(() => getTinhHinhChotColumns(), []);
 
   return (
-    (
-      <div className="tinhhinhchotbaocao">
-        <div className="nhamay1">
-          <AGTable
-            ref={nm1Ref}
-            rowHeight={30}
-            showFilter={true}
-            toolbar={
-              <div className="thc_toolbar">
-                <span className="thc_title">Tình hình chốt BC NM1</span>                
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    loadTinhHinhBaoCao("NM1");
-                  }}
-                  disabled={isLoading}
-                >
-                  <AiOutlineDownload color="#0a7d2c" size={15} />
-                  Reload
-                </IconButton>
-              </div>
-            }
-            columns={column_chotbc}
-            data={tinh_hinh_chot_NM1}
-            onSelectionChange={() => { }}
-          />
+    <div className="precision-thc">
+      {/* 1. Header Bar Công Nghiệp & View Switcher */}
+      <PrecisionTinhHinhChotHeader
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        showCharts={showCharts}
+        onToggleCharts={() => setShowCharts((prev) => !prev)}
+        isLoading={isLoading}
+        lastUpdated={lastUpdated}
+        onRefreshAll={loadAll}
+      />
+
+      {/* 2. Micro-Cards KPI Thống Kê Realtime */}
+      <PrecisionTinhHinhChotKpi stats={kpiStats} />
+
+      {/* 3. Khối Biểu Đồ Recharts Executive (Hiển thị khi bật showCharts hoặc ở mode CHARTS) */}
+      {(showCharts || viewMode === "CHARTS") && (
+        <PrecisionTinhHinhChotCharts
+          data={chartData}
+          factoryFilter={chartFactoryFilter}
+          onFactoryFilterChange={setChartFactoryFilter}
+          onClose={viewMode !== "CHARTS" ? () => setShowCharts(false) : undefined}
+        />
+      )}
+
+      {/* 4. Phân Vùng Bảng Lưới Dữ Liệu High-Density */}
+      {viewMode !== "CHARTS" && (
+        <div
+          className={`precision-thc-body ${
+            viewMode === "SPLIT" ? "precision-thc-body--split" : "precision-thc-body--single"
+          }`}
+        >
+          {/* Bảng Nhà Máy 1 (Hiện ở chế độ SPLIT hoặc NM1) */}
+          {(viewMode === "SPLIT" || viewMode === "NM1") && (
+            <PrecisionTinhHinhChotGrid
+              factory="NM1"
+              title="Nhà Máy 1"
+              data={filteredDataNM1}
+              allData={rawDataNM1}
+              columns={columns}
+              searchValue={searchNM1}
+              onSearchChange={setSearchNM1}
+              onRefresh={() => loadTinhHinhBaoCao("NM1")}
+              onExportExcel={handleExportExcel}
+              isLoading={isLoading}
+            />
+          )}
+
+          {/* Bảng Nhà Máy 2 (Hiện ở chế độ SPLIT hoặc NM2) */}
+          {(viewMode === "SPLIT" || viewMode === "NM2") && (
+            <PrecisionTinhHinhChotGrid
+              factory="NM2"
+              title="Nhà Máy 2"
+              data={filteredDataNM2}
+              allData={rawDataNM2}
+              columns={columns}
+              searchValue={searchNM2}
+              onSearchChange={setSearchNM2}
+              onRefresh={() => loadTinhHinhBaoCao("NM2")}
+              onExportExcel={handleExportExcel}
+              isLoading={isLoading}
+            />
+          )}
         </div>
-        <div className="nhamay2">
-          <AGTable
-            ref={nm2Ref}
-            rowHeight={30}
-            showFilter={true}
-            toolbar={
-              <div className="thc_toolbar">
-                <span className="thc_title">Tình hình chốt BC NM2</span>                
-                <IconButton
-                  className="buttonIcon"
-                  onClick={() => {
-                    loadTinhHinhBaoCao("NM2");
-                  }}
-                  disabled={isLoading}
-                >
-                  <AiOutlineDownload color="#0a7d2c" size={15} />
-                  Reload
-                </IconButton>
-              </div>
-            }
-            columns={column_chotbc}
-            data={tinh_hinh_chot_NM2}
-            onSelectionChange={() => { }}
-          />
-        </div>
-      </div>
-    )
+      )}
+    </div>
   );
 };
 
-export default TINH_HINH_CHOT;
+export default React.memo(TINH_HINH_CHOT);

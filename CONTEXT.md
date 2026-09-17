@@ -1,5 +1,25 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-17 (SX: Refactor Toàn Diện Tab Tình Hình Chốt Báo Cáo Sản Xuất `TINH_HINH_CHOT.tsx` Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Tình Hình Chốt Báo Cáo Sản Xuất (`src/pages/sx/TINH_HINH_CHOT/TINH_HINH_CHOT.tsx`)** là công cụ giám sát tiến độ chốt báo cáo sản xuất và nhập hiệu suất cho Nhà Máy 1 (NM1) và Nhà Máy 2 (NM2).
+  * Mã nguồn cũ 177 dòng dùng bảng màu gradient xanh ngọc/xanh lá `#9dee95` / `#c0eeea` lỗi thời, 2 bảng AGTable đặt chắp vá, thiếu Dashboard KPI tổng quan, thiếu biểu đồ xu hướng theo ngày, thiếu ô tìm kiếm nhanh và thiếu nút xuất Excel.
+  * Yêu cầu: Làm lại theo chuẩn **Google Stitch High-Density Enterprise**, bổ sung các widget Micro-Cards KPI hữu ích thông tin, tích hợp hệ thống biểu đồ xu hướng Recharts Executive Dashboard, giữ nguyên 100% tên cột `headerName` và độ rộng cột, tích hợp ô Quick Search và cụm nút xuất Excel `EX1`, `EX2`.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `TINH_HINH_CHOT.backup.tsx` (177 dòng).
+  * Phân rã thành công thành 6 module chuyên biệt trong thư mục `src/pages/sx/TINH_HINH_CHOT/PrecisionTinhHinhChot/`:
+    1. `PrecisionTinhHinhChot.scss` (620 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho KPI Cards, header, Segmented tabs, Recharts cards và bảng AGTable.
+    2. `PrecisionTinhHinhChotColumns.tsx` (155 dòng): Cấu hình 8 cột AG-Grid bảo toàn 100% `headerName` và `width` gốc (SX_DATE, TOTAL, DA_CHOT, CHUA_CHOT, DA_NHAP_HIEUSUAT, CHUA_NHAP_HIEUSUAT) và bổ sung 2 cột tỷ lệ trực quan (% Chốt, % Nhập HS).
+    3. `PrecisionTinhHinhChotKpi.tsx` (180 dòng): Dashboard 6 Micro-cards KPI thống kê realtime: Tổng chỉ thị theo dõi (toàn NM & phân bổ NM1 vs NM2), Tỷ lệ chốt báo cáo (%), Tỷ lệ nhập hiệu suất (%), Tồn đọng chưa chốt (cảnh báo đỏ), Tồn đọng chưa nhập HS (cảnh báo cam), So sánh hiệu năng NM1 vs NM2.
+    4. `PrecisionTinhHinhChotCharts.tsx` (215 dòng): Hệ thống biểu đồ Recharts Executive Dashboard hiển thị 2 biểu đồ xu hướng theo ngày (Khối lượng chỉ thị & chốt báo cáo, Tỷ lệ hoàn thành % kèm benchmark 100%), hỗ trợ bộ lọc nhà máy (All, NM1, NM2) và nút thu gọn/mở rộng.
+    5. `PrecisionTinhHinhChotHeader.tsx` (110 dòng): Header bar công nghiệp kèm badge hệ thống, telemetry realtime, Segmented View Switcher 4 chế độ (`SPLIT`, `NM1`, `NM2`, `CHARTS`) và nút làm mới toàn bộ.
+    6. `PrecisionTinhHinhChotGrid.tsx` (145 dòng): Bọc AGTable cho từng nhà máy, tích hợp ô Quick Search tức thì, cụm nút xuất Excel `EX1`, `EX2`, nút Reload riêng và hàng tổng cộng ghim chân trang (Pinned Bottom Row).
+    7. `useTinhHinhChotData.ts` (210 dòng): Custom hook pure TypeScript gom toàn bộ state, API queries, logic tính toán KPI, search filter và xuất Excel (qua `SaveExcel`).
+    8. `TINH_HINH_CHOT.tsx`: Controller chính tinh gọn từ 177 dòng xuống còn **105 dòng** kết nối subcomponents.
+- **3. Xác Thực Toàn Diện**:
+  * Quét TypeScript AST toàn bộ 7/7 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra toàn bộ 8/8 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK** (không có lỗi 404 hay runtime bundle).
+
 ## Update - 2026-09-17 (SX: Refactor Toàn Diện Tab Tra Cứu BTP `BTP_AUTO.tsx` Chuẩn Google Stitch High-Density Enterprise)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình **Tra Cứu BTP (`src/pages/sx/BTP_AUTO/BTP_AUTO.tsx`)** là công cụ quản lý bán thành phẩm dập trên sàn sản xuất, hỗ trợ 2 chế độ xem: Chi tiết từng lot (`f_load_BTP_Auto`) và Tổng hợp theo mã hàng / xưởng (`f_load_BTP_Summary_Auto`), cùng chức năng mở modal Quản lý giao nhận dao film (`QLGIAONHANDAOFILM`).

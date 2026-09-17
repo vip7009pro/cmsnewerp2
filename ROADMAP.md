@@ -1,5 +1,42 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Tình Hình Chốt Báo Cáo Sản Xuất (`TINH_HINH_CHOT.tsx`) Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard:
+  - **Bảo toàn 100% logic nghiệp vụ & các cột dữ liệu**:
+    * Duy trì 100% tên cột `headerName` và độ rộng `width` của 6 cột ban đầu: `SX_DATE` (110), `TOTAL` (130), `DA_CHOT` (140), `CHUA_CHOT` (150), `DA_NHAP_HIEUSUAT` (150), `CHUA_NHAP_HIEUSUAT` (160).
+    * Bổ sung 2 cột tính toán tiện ích quản trị: `Tỷ Lệ Chốt (%)` và `Tỷ Lệ Nhập HS (%)` kèm thanh mini-progress trực quan.
+    * Duy trì lệnh API `generalQuery("tinhhinhchotbaocaosx", { FACTORY: "NM1" })` và `{ FACTORY: "NM2" }`.
+  - **Bổ sung Dashboard 6 Micro-Cards KPI Thống Kê Realtime Hữu Ích**:
+    * `Tổng Chỉ Thị`: Tổng lệnh sản xuất theo dõi, kèm tỷ trọng phân bổ NM1 vs NM2.
+    * `Tỷ Lệ Chốt Báo Cáo`: % hoàn thành chốt toàn hệ thống, số lượng Đã Chốt vs Chưa Chốt kèm progress bar ngọc lục bảo.
+    * `Tỷ Lệ Nhập Hiệu Suất`: % đã nhập hiệu suất, số lượng Đã Nhập vs Chưa Nhập kèm progress bar cyan.
+    * `Chưa Chốt Báo Cáo (Pending)`: Cảnh báo số lệnh chưa chốt nổi bật đỏ nếu còn lệnh tồn.
+    * `Chưa Nhập Hiệu Suất (Pending)`: Cảnh báo số lệnh chưa nhập hiệu suất nổi bật cam.
+    * `Hiệu Năng NM1 vs NM2`: So sánh tỷ lệ chốt và sản lượng giữa 2 nhà máy.
+  - **Hệ Thống Biểu Đồ Recharts Executive Dashboard Chuyên Sâu**:
+    * Biểu đồ xu hướng khối lượng chỉ thị & chốt báo cáo theo ngày (ComposedChart: Bar tổng, Area đã chốt, Line chưa chốt).
+    * Biểu đồ xu hướng tỷ lệ hoàn thành chốt và nhập hiệu suất theo ngày với đường chuẩn benchmark 100%.
+    * Bộ lọc nhanh nhà máy trên biểu đồ (Hợp Nhất All, NM1, NM2) và nút thu gọn/mở rộng.
+  - **Nâng Cấp Bảng Lưới AG Grid High-Density & Xuất Excel**:
+    * Ẩn hoàn toàn toolbar xanh lá mặc định của AGTable.
+    * Segmented View Switcher 4 chế độ xem: `Song Song (Split)`, `Nhà Máy 1`, `Nhà Máy 2`, `Biểu Đồ Xu Hướng`.
+    * Ô tìm kiếm nhanh (Quick Search) lọc tức thì theo ngày hoặc số lượng.
+    * Cụm nút xuất Excel `EX1` (dữ liệu đang lọc) và `EX2` (toàn bộ dữ liệu) sử dụng `SaveExcel` chuẩn toàn hệ thống.
+    * Nút Reload độc lập cho từng nhà máy và hàng tổng cộng ghim chân trang (Pinned Bottom Row).
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `TINH_HINH_CHOT.backup.tsx` (177 dòng).
+    * Phân rã thành 6 module chuyên biệt tại `src/pages/sx/TINH_HINH_CHOT/PrecisionTinhHinhChot/`:
+      1. `PrecisionTinhHinhChot.scss` (620 dòng): SCSS Stitch Enterprise & Multi-Tab Full Stretch.
+      2. `PrecisionTinhHinhChotColumns.tsx` (155 dòng): Cấu hình 8 cột AG-Grid chuẩn 100% headerName & width.
+      3. `PrecisionTinhHinhChotKpi.tsx` (180 dòng): 6 Micro-cards KPI realtime thông tin hữu ích.
+      4. `PrecisionTinhHinhChotCharts.tsx` (215 dòng): Biểu đồ xu hướng Recharts Executive Dashboard.
+      5. `PrecisionTinhHinhChotHeader.tsx` (110 dòng): Header bar công nghiệp kèm telemetry & view switcher.
+      6. `PrecisionTinhHinhChotGrid.tsx` (145 dòng): Khung AG-Grid tích hợp quick search, nút xuất Excel EX1, EX2 và summary.
+      7. `useTinhHinhChotData.ts` (210 dòng): Custom hook pure TypeScript gom state, API và xuất Excel.
+    * Controller chính `TINH_HINH_CHOT.tsx` tinh gọn xuống còn **105 dòng**.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 7/7 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra toàn bộ 8/8 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Tra Cứu BTP (`BTP_AUTO.tsx`) Chuẩn Google Stitch High-Density Enterprise:
   - **Bảo toàn 100% logic nghiệp vụ & các cột dữ liệu**:
     * Duy trì 100% tên cột `headerName` và độ rộng `width` của 2 bộ cột: Detail (24 cột: `G_CODE`, `G_NAME_KD`, `PROD_LAST_PRICE`, `SX_DATE`, `LOT_SX`, `IN_KHO_SX`, `M_CODE`, `PLAN_ID`, `IN_KHO_ID`, `TOTAL_IN_QTY`, `TOTAL_OUT_QTY`, `TON_BTP`, `XUONGA`, `XUONGB`, `FACTORY`, `STEP`, `PLAN_FACTORY`, `PL_DATETIME`, `CHOTBC_DATETIME`, `PHANLOAI`, `DAUPHAY`, `NVL_NAME`, `CD1`, `CD2`) và Summary (5 cột: `G_CODE`, `G_NAME_KD`, `TON_BTP`, `XUONGA`, `XUONGB`).
