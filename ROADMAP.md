@@ -1,5 +1,29 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Kế Hoạch Dài Hạn (`LONGTERM_PLAN.tsx`) Chuẩn Google Stitch High-Density Enterprise & Executive Dashboard Recharts:
+  - **Bảo toàn 100% logic nghiệp vụ & quyền hạn**:
+    * Duy trì 100% 25 cột của bảng kế hoạch dài hạn (`G_CODE`, `G_NAME`, `CD`, `EQ_NAME`, `YCSX_QTY`, `KETQUASX`, `TON_YCSX`, `UPH`, `PLAN_DATE` và 16 cột ngày `D1`-`D16` tính theo `fromdate`).
+    * Duy trì đầy đủ các thao tác: `Tra PLAN`, `MOVE PLAN` (chuyển ngày), `DELETE PLAN` (xóa kế hoạch) và `SAVE Excel`.
+    * Duy trì inline edit trên các cột ngày `D1` - `D16`: tự động gọi `f_insertLongTermPlan`, tính toán lại năng lực Capa và nạp lại bảng kế hoạch thời gian thực.
+    * Bảo toàn kiểm tra phân quyền `checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], ...)` và xác nhận SweetAlert2.
+  - **Hệ thống Biểu đồ Năng lực Recharts phong cách Executive Dashboard (tương tự `KinhDoanhReport.tsx`)**:
+    * Đặt 4 biểu đồ năng lực sản xuất (`FR`, `SR`, `DC`, `ED`) trong các thẻ `.executive-card` sang trọng, bo góc 6px, header gradient xám nhẹ, icon đại diện từng công đoạn.
+    * Tích hợp nút xuất Excel dữ liệu chi tiết cho từng biểu đồ riêng rẽ.
+    * Cung cấp Segmented Tab Switcher để xem tất cả (4 máy) hoặc xem phóng to 1 máy cụ thể (`FR`, `SR`, `DC`, `ED`).
+    * Tích hợp nút Thu gọn / Mở rộng (Collapse/Expand) biểu đồ để tối đa hóa không gian hiển thị cho bảng AGTable khi cần nhập liệu chuyên sâu.
+  - **Kiến trúc Module hóa Clean Code (< 300 dòng/file)**:
+    * `PrecisionLongTermPlan.scss`: Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full Width & Full Height, ẩn toolbar xanh lá mặc định của AGTable, style `.executive-card`, header và toolbar compact.
+    * `PrecisionLongTermPlanColumns.tsx`: Định nghĩa 25 cột bảng AGTable, tự động tính toán tiêu đề `DD/MM (Thứ)` động, cho phép inline edit và format số JetBrains Mono.
+    * `PrecisionLongTermCapaChart.tsx`: Biểu đồ Recharts `ComposedChart` chuẩn phong cách `KinhDoanhReport.tsx`.
+    * `PrecisionLongTermCapaSection.tsx`: Khối điều hành 4 biểu đồ năng lực (`FR`, `SR`, `DC`, `ED`) trong các thẻ `.executive-card`.
+    * `useLongTermPlanData.ts`: Custom hook pure TypeScript quản lý toàn bộ state, API queries, logic inline edit, chuyển ngày, xóa plan và kiểm tra quyền `checkBP`.
+    * `PrecisionLongTermPlanHeader.tsx`: Header công nghiệp với badge QLSX PRECISION, breadcrumb phân cấp, telemetry realtime và 3 thẻ thống kê nhanh.
+    * `PrecisionLongTermPlanToolbar.tsx`: Thanh điều khiển 1 hàng ngang tối ưu không gian kèm 4 nút hành động công thái học.
+    * `LONGTERM_PLAN.tsx`: Controller chính tinh gọn (< 150 dòng) kết nối dữ liệu và subcomponents.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 7/7 file đạt 0 Errors / 0 Warnings (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra 8/8 module trên Vite Dev Server (port 3001) đều phản hồi HTTP 200 OK.
+
 - [x] Hoàn thiện Refactor Toàn Diện Bảng Quản Lý Chỉ Thị Sản Xuất (`PLAN_DATATB.tsx` & `PLAN_DATATB_backup.tsx`) Chuẩn Google Stitch High-Density Enterprise:
   - **Bảo toàn 100% logic nghiệp vụ & quyền hạn**:
     * Duy trì 100% tất cả 38 cột của bảng Kế hoạch (`column_plandatatable`) và 11 cột của bảng Vật liệu (`column_planmaterialtable`) bao gồm `headerName`, độ rộng, inline edit và cell renderers.

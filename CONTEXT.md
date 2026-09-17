@@ -1,5 +1,25 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Tab Kế Hoạch Dài Hạn `LONGTERM_PLAN.tsx` Chuẩn Google Stitch High-Density Enterprise & Executive Dashboard Recharts)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Tab Kế Hoạch Dài Hạn (`src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/LONGTERM_PLAN.tsx`) là màn hình điều phối kế hoạch sản xuất 16 ngày liên tiếp và theo dõi năng lực (Lead Time, Năng lực thiết bị, Năng lực nhân lực) của 4 công đoạn máy (`FR`, `SR`, `DC`, `ED`).
+  * Mã nguồn cũ 593 dòng còn thô sơ, form lọc chiếm diện tích, bảng AGTable chưa có thanh lọc nhanh compact, 4 biểu đồ năng lực sản xuất được đặt trong 1 hàng ngang chật hẹp, màu sắc đơn điệu, không có card điều hành và không có chức năng xuất Excel dữ liệu biểu đồ.
+  * Yêu cầu: Làm lại giao diện tab này theo phong cách **Google Stitch High-Density Enterprise**, chuyển đổi hệ thống 4 biểu đồ năng lực sản xuất sang phong cách **Executive Dashboard Recharts** tương tự `KinhDoanhReport.tsx`, bảo toàn 100% logic quan trọng vốn có.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản: `LONGTERM_PLAN.backup.tsx` (593 dòng).
+  * Tách biệt các chức năng vào thư mục chuyên dụng `PrecisionLongTermPlan/`:
+    1. `PrecisionLongTermPlan.scss`: Bộ stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full Width & Full Height, ẩn toolbar xanh lá mặc định của AGTable, style `.executive-card`, header và toolbar compact.
+    2. `PrecisionLongTermPlanColumns.tsx`: Định nghĩa 25 cột bảng AGTable (`G_CODE`, `G_NAME`, `CD`, `EQ_NAME`, `YCSX_QTY`, `KETQUASX`, `TON_YCSX`, `UPH`, `PLAN_DATE` và 16 cột ngày `D1`-`D16` tính theo `fromdate`), giữ nguyên 100% headerName, độ rộng cột, tính toán tiêu đề `DD/MM (Thứ)` động, cho phép inline edit và format số JetBrains Mono.
+    3. `PrecisionLongTermCapaChart.tsx`: Biểu đồ Recharts `ComposedChart` chuẩn phong cách `KinhDoanhReport.tsx`: Cột LeadTime bo góc `radius={[3, 3, 0, 0]}`, 4 đường Line (EQ Capa 24h, EQ Capa 12h, Workforce 24h, Workforce 12h) và Custom Tooltip kính mờ glassmorphism.
+    4. `PrecisionLongTermCapaSection.tsx`: Khối điều hành 4 biểu đồ năng lực (`FR`, `SR`, `DC`, `ED`) trong các thẻ `.executive-card`, hỗ trợ Segmented tab switcher xem 1 máy hoặc 4 máy và nút thu gọn/mở rộng.
+    5. `useLongTermPlanData.ts`: Custom hook pure TypeScript (tránh lỗi 404 dynamic import) quản lý toàn bộ state, API queries, logic inline edit, chuyển ngày, xóa plan và kiểm tra quyền `checkBP`.
+    6. `PrecisionLongTermPlanHeader.tsx`: Header công nghiệp với badge QLSX PRECISION, breadcrumb phân cấp, telemetry realtime và 3 thẻ thống kê nhanh (Ngày, Tổng lệnh, Thiết bị).
+    7. `PrecisionLongTermPlanToolbar.tsx`: Thanh điều khiển 1 hàng ngang tối ưu không gian: bộ lọc PLAN DATE, FACTORY, MACHINE, MOVE TO DATE và 4 nút hành động công thái học (`Tra PLAN`, `MOVE PLAN`, `DELETE PLAN`, `SAVE Excel`).
+    8. `LONGTERM_PLAN.tsx`: Controller chính tinh gọn (< 150 dòng) kết nối dữ liệu và subcomponents.
+- **3. Xác Thực Toàn Diện**:
+  * Quét TypeScript AST toàn bộ 7/7 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra 8/8 module trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK** (không có lỗi 404).
+
 ## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Bảng Quản Lý Chỉ Thị Sản Xuất `PLAN_DATATB.tsx` & `PLAN_DATATB_backup.tsx` Chuẩn Google Stitch High-Density Enterprise)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Component Bảng Quản Lý Chỉ Thị Sản Xuất (`PLAN_DATATB.tsx` và `PLAN_DATATB_backup.tsx` - component `PLAN_DATATB_OLD` trong `QLSXPLAN.tsx`) là màn hình tra cứu, điều phối và in ấn chỉ thị sản xuất dạng bảng quan trọng của hệ thống ERP.
