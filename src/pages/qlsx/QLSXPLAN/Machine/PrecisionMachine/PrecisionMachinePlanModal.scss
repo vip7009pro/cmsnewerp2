@@ -1,0 +1,1114 @@
+// =============================================================================
+// PRECISION MACHINE PLAN MODAL: STITCH HIGH-DENSITY INDUSTRIAL CONTROL PANEL
+// =============================================================================
+
+.precision-plan-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  background: #ffffff;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  &__window {
+    background: #ffffff;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: #1e293b;
+  }
+
+  // ---------------------------------------------------------------------------
+  // 1. MODAL HEADER
+  // ---------------------------------------------------------------------------
+  &__header {
+    padding: 8px 16px;
+    background: linear-gradient(90deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.15);
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .machine-badge {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 15px;
+        font-weight: 900;
+        background: #ffffff;
+        color: #1e40af;
+        padding: 2px 10px;
+        border-radius: 6px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        letter-spacing: 0.05em;
+      }
+
+      .modal-title {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+
+      .factory-tag {
+        font-size: 11px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-family: "JetBrains Mono", monospace;
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .btn-toggle-ycsx {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #ffffff;
+        font-size: 11.5px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.25);
+        }
+      }
+
+      .btn-close-modal {
+        background: #ef4444;
+        border: 1px solid #dc2626;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 800;
+        padding: 4px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: #dc2626;
+          box-shadow: 0 2px 5px rgba(220, 38, 38, 0.3);
+        }
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // 2. MODAL BODY (SPLIT VIEW)
+  // ---------------------------------------------------------------------------
+  &__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: calc(100vh - 42px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 6px 10px;
+    background: #f8fafc;
+  }
+
+  // Main 2-Column Split (Tỉ lệ 1/3 bên YCSX và 2/3 bên Plan List)
+  &__splitContent {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+
+    &.with-ycsx {
+      grid-template-columns: minmax(440px, 34%) minmax(0, 1fr);
+      @media (min-width: 1440px) {
+        grid-template-columns: minmax(500px, 34%) minmax(0, 1fr);
+      }
+      @media (min-width: 1920px) {
+        grid-template-columns: minmax(580px, 33.33%) minmax(0, 1fr);
+      }
+    }
+  }
+
+  &__rightPane {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  // Section Panel Box
+  .panel-box {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &__header {
+      padding: 4px 8px;
+      background: #f1f5f9;
+      border-bottom: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: #334155;
+
+      .title-left {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+    }
+
+    &__content {
+      padding: 6px;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // 3. VÙNG 1: TRA CỨU YCSX (LEFT PANE 3 CỘT COMPACT)
+  // ---------------------------------------------------------------------------
+  .ycsx-form-3col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    font-size: 10.5px;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    padding: 5px;
+    border-radius: 6px;
+    flex-shrink: 0;
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+
+      label {
+        font-size: 9.5px;
+        font-weight: 700;
+        color: #475569;
+        line-height: 1.1;
+      }
+
+      input[type="text"],
+      input[type="date"],
+      select {
+        height: 22px;
+        border: 1px solid #cbd5e1;
+        border-radius: 3px;
+        padding: 0 4px;
+        font-size: 10.5px;
+        background: #ffffff;
+        color: #0f172a;
+        outline: none;
+        box-sizing: border-box;
+        font-family: inherit;
+
+        &:focus {
+          border-color: #2563eb;
+          box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+        }
+      }
+
+      &--action {
+        justify-content: flex-end;
+      }
+    }
+
+    .btn-search-compact {
+      height: 22px;
+      background: #059669;
+      color: #ffffff;
+      border: 1px solid #047857;
+      border-radius: 3px;
+      padding: 0 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      transition: background 0.15s ease;
+      &:hover {
+        background: #047857;
+      }
+    }
+  }
+
+  .ycsx-checkboxes-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 6px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    flex-shrink: 0;
+
+    .chk-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+
+      input {
+        cursor: pointer;
+        accent-color: #2563eb;
+        margin: 0;
+      }
+    }
+  }
+
+  // =========================================================================
+  // STITCH TOOLBAR SYSTEM: Đồng bộ style cho 3 thanh toolbar
+  // (YCSX, Plan List, Material) chuẩn Google Stitch High-Density Enterprise
+  // =========================================================================
+  .ycsx-table-toolbar,
+  .plan-list-toolbar,
+  .material-actions-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 6px;
+    gap: 4px;
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    flex-shrink: 0;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+
+    .toolbar-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      flex-wrap: nowrap !important;
+      white-space: nowrap !important;
+      flex-shrink: 0;
+    }
+
+    .toolbar-info-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: nowrap !important;
+      white-space: nowrap !important;
+      flex-shrink: 0;
+    }
+
+    // Stitch Button Base
+    button {
+      height: 22px;
+      padding: 0 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.12s ease;
+      border: 1px solid transparent;
+      white-space: nowrap !important;
+      flex-shrink: 0;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+
+      &:hover {
+        box-shadow: 0 2px 4px rgba(15, 23, 42, 0.1);
+        transform: translateY(-0.5px);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 0 0 rgba(15, 23, 42, 0);
+      }
+
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+    }
+
+    .stb-primary {
+      background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+      color: #ffffff;
+      border-color: #1d4ed8;
+      &:hover { background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%); }
+    }
+
+    .stb-success {
+      background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      border-color: #047857;
+      &:hover { background: linear-gradient(180deg, #059669 0%, #047857 100%); }
+    }
+
+    .stb-ghost-rose {
+      background: #ffffff; color: #be123c; border-color: #fda4af;
+      &:hover { background: #fff1f2; border-color: #fb7185; }
+    }
+    .stb-ghost-blue {
+      background: #ffffff; color: #1e40af; border-color: #93c5fd;
+      &:hover { background: #eff6ff; border-color: #60a5fa; }
+    }
+    .stb-ghost-emerald {
+      background: #ffffff; color: #047857; border-color: #6ee7b7;
+      &:hover { background: #ecfdf5; border-color: #34d399; }
+    }
+    .stb-ghost-amber {
+      background: #ffffff; color: #92400e; border-color: #fcd34d;
+      &:hover { background: #fffbeb; border-color: #fbbf24; }
+    }
+    .stb-ghost-purple {
+      background: #ffffff; color: #6b21a8; border-color: #c4b5fd;
+      &:hover { background: #faf5ff; border-color: #a78bfa; }
+    }
+    .stb-ghost-fuchsia {
+      background: #ffffff; color: #86198f; border-color: #e879f9;
+      &:hover { background: #fdf4ff; border-color: #d946ef; }
+    }
+    .stb-ghost-slate {
+      background: #ffffff; color: #334155; border-color: #cbd5e1;
+      &:hover { background: #f1f5f9; border-color: #94a3b8; }
+    }
+
+    .stb-sep {
+      width: 1px; height: 16px; background: #cbd5e1; margin: 0 2px; flex-shrink: 0;
+    }
+
+    .stb-badge {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+      white-space: nowrap; flex-shrink: 0;
+      &--emerald { color: #065f46; background: #ecfdf5; border: 1px solid #a7f3d0; }
+      &--blue { color: #1e40af; background: #eff6ff; border: 1px solid #bfdbfe; }
+      &--slate { color: #475569; background: #f1f5f9; border: 1px solid #e2e8f0; }
+    }
+
+    .stb-move-group {
+      display: flex; align-items: center; gap: 0;
+      background: #ffffff; border: 1px solid #cbd5e1; border-radius: 4px; overflow: hidden;
+      button {
+        height: 20px; padding: 0 5px; border: none; border-radius: 0;
+        background: transparent; color: #334155; font-size: 9.5px; font-weight: 600; box-shadow: none;
+        &:hover { background: #f1f5f9; }
+        &:disabled { opacity: 0.35; }
+        & + button { border-left: 1px solid #e2e8f0; }
+      }
+    }
+  }
+
+  .ycsx-table-container {
+    flex: 1 1 auto;
+    min-height: 220px;
+    height: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  // ---------------------------------------------------------------------------
+  // 4. VÙNG 2: DANH SÁCH KẾ HOẠCH TRÊN MÁY (CENTER-RIGHT)
+  // ---------------------------------------------------------------------------
+  .machine-plan-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 0 0 auto;
+    min-height: 0;
+
+    .plans-table-box {
+      height: 235px;
+      min-height: 235px;
+      flex: 0 0 235px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .slc-chip-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+      .slc-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 2px 8px;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 4px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #166534;
+        .val { color: #15803d; }
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // 5. VÙNG 3: ĐỊNH MỨC 4 CÔNG ĐOẠN - 4 HÀNG NGANG FULL WIDTH (GIỐNG BẢN GỐC)
+  // ---------------------------------------------------------------------------
+  .dinhmuc-rows-section {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 100%;
+    flex-shrink: 0;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 4px 6px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+
+  .dm-row {
+    display: grid;
+    grid-template-columns: 36px 1.2fr 1fr 1fr 0.9fr 1.3fr 1.3fr;
+    align-items: center;
+    gap: 6px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 2px 6px;
+    min-height: 25px;
+
+    &__label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 900;
+      color: #1d4ed8;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 3px;
+      text-align: center;
+      padding: 1px 0;
+      letter-spacing: -0.02em;
+    }
+
+    &__field {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+
+      label {
+        font-size: 9.5px;
+        font-weight: 700;
+        color: #475569;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      input, select {
+        height: 20px;
+        flex: 1;
+        min-width: 0;
+        border: 1px solid #cbd5e1;
+        border-radius: 3px;
+        padding: 0 4px;
+        font-size: 10px;
+        font-weight: 600;
+        font-family: "JetBrains Mono", monospace;
+        background: #ffffff;
+        color: #0f172a;
+        outline: none;
+        box-sizing: border-box;
+
+        &:focus {
+          border-color: #2563eb;
+          box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+        }
+      }
+
+      .ref-val {
+        color: #e11d48;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 8.5px;
+        font-weight: 700;
+      }
+    }
+  }
+
+  .factory-note-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 2px 6px;
+    min-height: 25px;
+
+    .fn-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .fn-label {
+      font-weight: 800;
+      color: #334155;
+      white-space: nowrap;
+      font-size: 10px;
+    }
+    select {
+      height: 20px;
+      width: 90px;
+      border: 1px solid #cbd5e1;
+      border-radius: 3px;
+      padding: 0 4px;
+      font-size: 10px;
+      font-weight: 700;
+      background: #ffffff;
+      color: #0f172a;
+      outline: none;
+      &:focus { border-color: #2563eb; }
+    }
+    input[type="text"] {
+      height: 20px;
+      flex: 1;
+      min-width: 0;
+      border: 1px solid #cbd5e1;
+      border-radius: 3px;
+      padding: 0 6px;
+      font-size: 10px;
+      background: #ffffff;
+      color: #0f172a;
+      outline: none;
+      &:focus { border-color: #2563eb; }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // 6. VÙNG 4: PLAN CARD + BẢNG CHỈ THỊ VẬT TƯ (NGANG, DƯỚI CÙNG - CHIẾM HẾT HEIGHT CÒN LẠI)
+  // ---------------------------------------------------------------------------
+  .bottom-plan-material-row {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  // Plan Selected Editor Card (Compact bên trái)
+  .selected-plan-card {
+    width: 250px;
+    min-width: 250px;
+    max-width: 260px;
+    height: 100%;
+    flex-shrink: 0;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &__header {
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      border-bottom: 1px solid #cbd5e1;
+      text-align: center;
+      flex-shrink: 0;
+
+      .plan-code-title {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13.5px;
+        font-weight: 900;
+        color: #7e22ce;
+        letter-spacing: 0.03em;
+        line-height: 1.2;
+      }
+      .plan-name-title {
+        font-size: 10.5px;
+        font-weight: 800;
+        color: #1d4ed8;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        line-height: 1.2;
+      }
+      .plan-pd-cavity {
+        font-size: 10px;
+        font-weight: 800;
+        color: #15803d;
+        line-height: 1.2;
+      }
+      .plan-loss-kt {
+        font-size: 9.5px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.2;
+      }
+      .plan-qty-headline {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        font-weight: 900;
+        color: #581c87;
+        line-height: 1.3;
+      }
+    }
+
+    &__form {
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 4px;
+      flex: 1 1 auto;
+      overflow-y: auto;
+
+      .form-row {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        label {
+          font-size: 9.5px;
+          font-weight: 700;
+          color: #475569;
+          width: 80px;
+          flex-shrink: 0;
+        }
+        input[type="text"],
+        input[type="number"] {
+          height: 22px;
+          flex: 1;
+          min-width: 0;
+          border: 1px solid #cbd5e1;
+          border-radius: 3px;
+          padding: 0 5px;
+          font-size: 10.5px;
+          font-weight: 700;
+          font-family: "JetBrains Mono", monospace;
+          background: #f8fafc;
+          outline: none;
+          &:focus {
+            background: #ffffff;
+            border-color: #2563eb;
+          }
+        }
+        &--checkbox {
+          input[type="checkbox"] {
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+            accent-color: #2563eb;
+          }
+        }
+      }
+
+      .btn-save-plan {
+        margin-top: 4px;
+        height: 26px;
+        width: 100%;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 800;
+        background: #1d4ed8;
+        color: #ffffff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        border: none;
+        box-shadow: 0 1px 3px rgba(29, 78, 216, 0.3);
+        transition: all 0.15s ease;
+        flex-shrink: 0;
+        &:hover {
+          background: #1e40af;
+        }
+      }
+    }
+  }
+
+  // Material Section
+  .material-section-box {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+
+    .material-actions-toolbar {
+      flex-shrink: 0;
+    }
+
+    .material-table-container {
+      flex: 1 1 auto;
+      height: 100%;
+      min-height: 0;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+  }
+}
+
+// =============================================================================
+// 7. PRINT MODALS & DIALOG PREVIEWS (GOOGLE STITCH HIGH-DENSITY ENTERPRISE)
+// =============================================================================
+.precision-print-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+
+  .precision-print-modal-window {
+    background: #ffffff;
+    width: 95vw;
+    max-width: 1200px;
+    height: 94vh;
+    max-height: 94vh;
+    border-radius: 8px;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &--full {
+      width: 98vw;
+      max-width: 1550px;
+      height: 96vh;
+      max-height: 96vh;
+    }
+
+    // Modal Header
+    &__header {
+      padding: 10px 18px;
+      background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+
+      .modal-title-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .modal-icon-badge {
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+          color: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 17px;
+          flex-shrink: 0;
+          box-shadow: 0 2px 5px rgba(37, 99, 235, 0.35);
+        }
+
+        .modal-heading {
+          font-size: 14px;
+          font-weight: 800;
+          letter-spacing: -0.01em;
+          margin: 0;
+          line-height: 1.2;
+          color: #f8fafc;
+        }
+
+        .modal-subtitle {
+          font-size: 11px;
+          color: #94a3b8;
+          font-weight: normal;
+          display: block;
+          line-height: 1.2;
+          margin-top: 1px;
+        }
+
+        .modal-subtag {
+          font-family: "JetBrains Mono", monospace;
+          font-size: 11px;
+          font-weight: 700;
+          color: #93c5fd;
+          background: rgba(37, 99, 235, 0.25);
+          border: 1px solid rgba(147, 197, 253, 0.3);
+          padding: 2px 10px;
+          border-radius: 4px;
+          white-space: nowrap;
+        }
+      }
+
+      // Nút Đóng Gọn Gàng Phong Cách Dialog Cao Cấp
+      .btn-close-print-modal {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        padding: 0;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+          background: #ef4444;
+          border-color: #dc2626;
+          color: #ffffff;
+          transform: rotate(90deg) scale(1.08);
+          box-shadow: 0 2px 8px rgba(239, 68, 68, 0.45);
+        }
+
+        &:active {
+          transform: rotate(90deg) scale(0.96);
+        }
+      }
+    }
+
+    // Modal Toolbar
+    &__toolbar {
+      padding: 7px 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border-bottom: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+
+      .toolbar-left, .toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      // Nút Nạp Lại Bản In
+      .btn-reload-preview {
+        height: 28px;
+        padding: 0 12px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #334155;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: all 0.18s ease;
+
+        .reload-icon {
+          color: #d97706;
+          transition: transform 0.35s ease;
+        }
+
+        &:hover {
+          background: #eff6ff;
+          border-color: #3b82f6;
+          color: #1d4ed8;
+          box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
+          transform: translateY(-1px);
+
+          .reload-icon {
+            color: #2563eb;
+            transform: rotate(180deg);
+          }
+        }
+
+        &:active {
+          transform: translateY(0);
+          box-shadow: none;
+        }
+      }
+
+      // Khối Điều Khiển Số Dòng In / Trang (max-lieu-control)
+      .max-lieu-control {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        padding: 2px 3px 2px 8px;
+        border-radius: 6px;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+
+        .max-lieu-label {
+          font-size: 10.5px;
+          font-weight: 700;
+          color: #475569;
+          white-space: nowrap;
+        }
+
+        input {
+          width: 44px;
+          height: 22px;
+          border: 1px solid #94a3b8;
+          border-radius: 4px;
+          padding: 0 4px;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 11px;
+          font-weight: 800;
+          text-align: center;
+          background: #ffffff;
+          color: #0f172a;
+          outline: none;
+          transition: border-color 0.15s ease;
+
+          &:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+          }
+        }
+
+        .btn-save-maxlieu {
+          height: 22px;
+          padding: 0 8px;
+          border-radius: 4px;
+          border: 1px solid #1d4ed8;
+          background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+          color: #ffffff;
+          font-size: 10px;
+          font-weight: 700;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          transition: all 0.15s ease;
+          box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+
+          &:hover {
+            background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+            transform: translateY(-0.5px);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+      }
+
+      // Nút IN BẢN NÀY (PRINT) Nổi Bật Sắc Nét
+      .btn-print-action {
+        height: 30px;
+        padding: 0 18px;
+        border-radius: 6px;
+        font-size: 11.5px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        color: #ffffff;
+        border: 1px solid #047857;
+        background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+        box-shadow: 0 3px 8px rgba(5, 150, 105, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+          background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%);
+          box-shadow: 0 5px 14px rgba(5, 150, 105, 0.45);
+          transform: translateY(-1.5px) scale(1.02);
+        }
+
+        &:active {
+          transform: translateY(0) scale(1);
+          box-shadow: 0 1px 3px rgba(5, 150, 105, 0.3);
+        }
+      }
+    }
+
+    // Modal Canvas Viewport (Paper Stage)
+    &__canvas {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      background: #e2e8f0;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .print-paper-sheet {
+        background: #ffffff;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        padding: 16px;
+        min-width: fit-content;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+    }
+  }
+}

@@ -1,5 +1,113 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Tinh Chỉnh Header & Toolbar Print Modals - Loại Bỏ Nút Đóng Thừa & Nâng Cấp Nút Bấm Chuẩn Google Stitch Enterprise:
+  - **Loại bỏ nút đóng thừa**: Bỏ hoàn toàn nút Đóng ở Action Toolbar; chuyển đổi nút đóng ở Header sang icon `✕` tròn thanh lịch, hover xoay chuyển đỏ rực rỡ chuẩn giao diện quốc tế.
+  - **Nâng cấp style các buttons trên Toolbar**:
+    * Nút IN BẢN NÀY (PRINT): Cao 30px, gradient ngọc lục bảo 3 chiều (`#10b981 → #059669 → #047857`), đổ bóng 3D, hover nhấc nổi scale 1.02 cực kỳ cao cấp.
+    * Nút Nạp Lại Bản In: Nút ghost viền sáng bóng bẩy, icon xoay 180 độ khi hover mượt mà.
+    * Cụm `max-lieu-control`: Segmented Control gọn gàng, input căn giữa JetBrains Mono, nút `Lưu Dòng` gradient xanh dương công nghệ cao.
+  - **Xác thực**: Quét TypeScript AST 6 file modal đạt 0 Errors / 0 Warnings; 100% endpoint Vite Dev Server đạt HTTP 200 OK.
+
+- [x] Hoàn thiện Tối Ưu Chiều Cao Modal Kế Hoạch - Bung Dài Chiếm Hết Đáy & Tái Thiết Kế Toàn Diện Hệ Thống Print Modal In Ấn Chuẩn Stitch Enterprise:
+  - **Tối ưu phân bổ chiều cao modal (Triệt tiêu khoảng trống trắng thừa)**:
+    * Bảng Kế hoạch máy (`plan list`): Tăng chiều cao lên 235px (`height: 235px; min-height: 235px; flex: 0 0 235px;`), hiển thị 6-7 lệnh dập mượt mà.
+    * Phần Định mức CĐ1-CĐ4: Giữ nguyên chiều cao chuẩn công thái học với `flex-shrink: 0;`.
+    * Toàn bộ chiều cao còn lại ở phía dưới dành cho Card Kế Hoạch & Bảng Vật Tư chiếm hết (`flex: 1 1 auto; height: 100%; min-height: 0; overflow: hidden;`), bảng vật liệu kéo dài áp sát đáy modal.
+    * Gỡ bỏ class `overflow-y-auto` ở rightPane trong TSX để flex layout kiểm soát tuyệt đối 100% không gian làm việc.
+  - **Tái thiết kế hệ thống Print Modal in ấn chuẩn Google Stitch High-Density Enterprise**:
+    * Thiết kế mới component `PrintModalWrapper` độc lập với Backdrop Blur sẫm màu cao cấp (`rgba(15, 23, 42, 0.75)` + `blur(4px)`).
+    * Header Slate Gradient (`#1e293b → #0f172a`), icon máy in, badge nhận diện JetBrains Mono, nút đóng bo góc hiện đại.
+    * Toolbar thao tác chuyên dụng: Ô chỉnh số dòng in / trang (`maxLieu`) có nút lưu nhanh, nút Nạp lại bản in (`stb-ghost-amber`), nút IN BẢN NÀY (PRINT) (`stb-success`) màu xanh lục nổi bật.
+    * Khung hiển thị giấy in thực tế (`print-paper-sheet`) nền trắng nổi trên sàn xám công nghiệp (`#e2e8f0`) với bóng đổ chân thực.
+    * Áp dụng thống nhất cho cả 6 popup: In YCSX, In Bản Vẽ, Kho SX Main (Kho Ảo), In Chỉ Thị 1, In Chỉ Thị 2, In YCKT.
+  - **Xác thực**: Quét TypeScript AST 6 file modal đạt 0 Errors / 0 Warnings; 100% endpoint Vite Dev Server đạt HTTP 200 OK.
+
+- [x] Hoàn thiện Toolbar 3 Bảng Dàn 1 Dòng Duy Nhất, Định Mức 4 Hàng Full-Width Thẳng Hàng Excel & Chuyển Card Kế Hoạch Xuống Cùng Bảng Vật Liệu Chuẩn Bản Gốc:
+  - **Toolbar 3 Bảng Dàn 1 Dòng Duy Nhất**:
+    * Bảng YCSX: Gom 5 nút (`SET CLOSED`, `SET PENDING`, `Print YCSX`, `Print Bản Vẽ`, `Add to PLAN`) vào `.toolbar-btn-group` với `flex-nowrap`, `white-space: nowrap !important;`.
+    * Bảng Kế Hoạch Máy: Loại bỏ `flex-wrap`, gom 10 nút và cụm telemetry thời gian máy / mã plan vào 2 nhóm co giãn trên đúng 1 dòng.
+    * Bảng Vật Liệu: Loại bỏ `flex-wrap`, dàn 9 nút hành động vật tư và badge thông tin trên 1 dòng duy nhất.
+    * Nút bấm chuẩn hóa compact 22px, bo góc 4px, font 10px theo chuẩn Google Stitch High-Density Enterprise.
+  - **Form Định Mức 4 Hàng Full-Width**:
+    * Định mức CD1-CD4 gồm đúng 4 hàng ngang tương ứng 4 công đoạn, chứa đủ 6 trường: `EQ{i}`, `Setting{i}(min)`, `UPH{i}(EA/h)`, `Step{i}`, `LOSS_SX{i}(%)` (kèm tham chiếu đỏ), `LOSS_ST{i}(m)` (kèm tham chiếu đỏ).
+    * Áp dụng CSS Grid `grid-template-columns: 36px 1.2fr 1fr 1fr 0.9fr 1.3fr 1.3fr; gap: 6px;` giúp 4 hàng thẳng hàng tuyệt đối như Excel. Bảng bung rộng Full Width 100% không gian làm việc.
+    * Tích hợp hàng `FACTORY:` và `NOTE (QLSX):` compact ngay bên dưới.
+  - **Card Kế Hoạch Chuyển Xuống Cùng Bảng Vật Liệu (Layout Chuẩn Bản Gốc)**:
+    * Chuyển khối thông tin kế hoạch (`PLAN_ID`, `G_NAME_KD`, `PD`, `CAVITY`, `LOSS KT`, `PLAN_QTY`, `PROC_NUMBER`, `STEP`, `PLAN_EQ`, `NEXT_PLAN`, `IS_SETTING`, `SAVE PLAN`) xuống phân vùng đáy `bottom-plan-material-row` nằm cạnh bảng chỉ thị vật tư (`listlieuchithi` chuẩn bản gốc).
+  - **Xác thực**: AST TypeScript toàn bộ 5 file modal đạt 100% OK / 0 Errors; 100% endpoint Vite Dev Server đạt HTTP 200 OK.
+
+
+- [x] Hoàn thiện Tối Ưu Tỉ Lệ 1/3-2/3 Plan Window, Compact Form YCSX 3 Cột, Khôi Phục Toàn Diện Toolbar YCSX & Bảng Đăng Ký Liệu:
+  - **Header & Filter YCSX Compact 3 Cột**: Header co gọn trọn vẹn trên đúng 1 dòng; Form chuyển sang 3 cột (`ycsx-form-3col`), chiều cao input 22px, giảm hơn 50% diện tích chiều dọc.
+  - **Toolbar Bảng YCSX**: Khôi phục 5 nút nguyên bản: `SET CLOSED`, `SET PENDING`, `Print YCSX`, `Print Bản Vẽ`, `Add to PLAN` kèm tích hợp chọn dòng.
+  - **Tỉ lệ Layout 1/3 và 2/3**: Cột YCSX chiếm 33.33% - 34% (tối thiểu 440px-580px), cột Plan List + Định Mức + Vật Tư chiếm 66% - 67%.
+  - **Toolbar Plan List**: Style lại theo chuẩn Google Stitch High-Density (25px đồng nhất, phân nhóm rõ ràng).
+  - **Bảng Đăng Ký Liệu**: Khôi phục đầy đủ 9 nút nguyên bản: `Select (Tồn > 0)`, `Lưu Vật Liệu`, `Lưu CT + ĐKXK`, `Xóa Liệu`, `RESET Liệu`, `Kho SX Main`, `Refresh chỉ thị`, `Xuất dao sample`, `Xuất liệu sample`.
+  - **Xác thực**: Quét TypeScript toàn bộ module đạt 0 Errors / 0 Warnings. 100% endpoint Vite Dev Server đạt HTTP 200 OK.
+
+- [x] Hoàn thiện Modal Kế Hoạch Full Màn Hình, Tái Cấu Trúc Khối Định Mức Chuẩn Ảnh 2 & Phục Hồi Đầy Đủ Toolbar Bảng Plan List:
+  - **Modal Full Screen**: Cửa sổ `planwindow` mở rộng toàn màn hình 100vw x 100vh, bỏ viền đệm, tối ưu không gian hiển thị sản xuất.
+  - **Khối Định Mức & Form Kế Hoạch**:
+    * Style lại `FACTORY` & `NOTE (QLSX)` thanh lịch, gọn gàng tích hợp dưới ma trận 4 công đoạn bên trái.
+    * Bóp gọn khối chi tiết kế hoạch bên phải (`selected-plan-card`, width: 260px) nhường không gian cho bảng YCSX và ma trận bên trái.
+    * Hiển thị đầy đủ thông tin chuẩn 100% Ảnh 2: Banner `PLAN_ID`/`G_CODE` tím đậm, tên hàng `G_NAME_KD` xanh dương, `PD: ... --- CAVITY: ...`, `LOSS KT 10 LOT`, `PLAN_QTY`, form nhập liệu cột dọc (`PLAN QTY`, `PROC_NUMBER`, `STEP`, `PLAN_EQ`, `NEXT_PLAN`, `IS_SETTING` checkbox) và nút `SAVE PLAN`.
+  - **Toolbar Bảng Plan List**:
+    * Đối chiếu khớp 100% Ảnh 3 và mã nguồn gốc với 10 nút/thông tin: `Show/Hide YCSX`, `Print Chỉ Thị`, `Print YCKT`, `Lưu PLAN`, `Xóa PLAN`, `Refresh PLAN`, `Lưu Data Định Mức`, `ĐM MĐ`, cụm nút `Lên`/`Xuống`, `Total time: {ACC_TIME} min`.
+  - **Xác thực**: Quét TypeScript toàn bộ module đạt 0 Errors / 0 Warnings. 100% endpoint Vite Dev Server đạt HTTP 200 OK.
+
+- [x] Hoàn thiện Toàn Diện Tính Năng Tiến Độ Thẻ Máy, Search Bar Toolbar & Cửa Sổ Modal Kế Hoạch Máy (`MACHINE_backup.tsx` & `PrecisionMachine/`) Chuẩn Google Stitch High-Density Enterprise:
+  - **PrecisionMachineCard.tsx**:
+    * Tính toán tiến độ % dập thông minh đa nguồn từ `ACHIVEMENT_RATE`, `(KETQUASX || KQ_SX_TAM) / PLAN_QTY * 100`, hoặc theo công đoạn máy `(CD1..CD4) / PLAN_QTY * 100`.
+    * Mở khóa cuộn dọc toàn bộ lệnh dập xếp hàng (`max-height: 110px; overflow-y: auto`), không còn bị cắt chỉ 2-3 lệnh.
+  - **PrecisionMachineToolbar.tsx & MACHINE_backup.tsx**:
+    * Thêm ô tìm kiếm Search Box sau các checkbox chọn Line máy.
+    * Lọc tức thời sàn máy theo từ khóa `G_NAME`, `G_NAME_KD`, `G_CODE`, `PLAN_ID`, `PROD_REQUEST_NO`.
+  - **Cửa sổ Modal Kế Hoạch Máy (`planwindow`)**:
+    * Sửa lỗi tra cứu YCSX không ra dòng nào bằng cách khớp 100% tên tham số gọi `f_handletraYCSXQLSX`.
+    * Khôi phục 100% cột nguyên bản cho cả 3 bảng: YCSX (34 cột), Lệnh trên máy (26 cột có editable), Chỉ thị vật tư (11 cột có editable & checkbox).
+    * Click vào bất kỳ dòng plan nào thì 4 cột định mức CD1-CD4 nhảy tức thì, đồng thời nạp lịch sử định mức 10 lot và bảng chỉ thị vật liệu.
+    * Vùng định mức có banner gradient theo `LOSS_KT`, hiển thị `PD`, `CAVITY`, `LOSS KT 10 LOT`, `PLAN_QTY`, form sửa plan và nút `SAVE PLAN`.
+    * Vùng vật tư có đầy đủ các nút: `Lưu Vật Liệu`, `Lưu CT + ĐKXK`, `Reset Liệu`, `Xóa Liệu`, `Xuất Dao Sample`, `Xuất Liệu Sample`.
+  - **Xác thực**: Quét TypeScript toàn bộ 1015 file đạt 0 Errors. Toàn bộ 10 endpoint phản hồi HTTP 200 OK trên Vite Dev Server (port 3001).
+
+- [x] Hoàn thiện Tối Ưu Giao Diện Sàn Máy `MACHINE_backup.tsx` - Loại Bỏ Header/Footer Thừa, Rút Gọn Cảnh Báo Chờ Liệu & Mở Khóa Cuộn Dọc Sàn Máy Toàn Diện:
+  - **Loại bỏ Header & Footer thừa**: Đã loại bỏ `PrecisionMachineHeader` và `PrecisionMachineStatusBar` khỏi `MACHINE_backup.tsx`, trả lại không gian tối đa cho dữ liệu sản xuất.
+  - **Rút gọn danh sách máy chờ cấp liệu**: Hiển thị 3 máy đầu kèm hậu tố `và X máy khác` (ví dụ: `⚠️ 47 Máy Chờ Liệu (DC02, DC03, DC06 và 44 máy khác)`), có tooltip đầy đủ khi hover.
+  - **Sửa triệt để lỗi giao diện bị ri rít / co bẹp các line máy bên dưới**:
+    * Thêm `flex-shrink: 0;` cho `.precision-machine__lineSection` và `shrink-0` cho cụm KPI.
+    * Thêm `min-height: 180px; box-sizing: border-box;` cho `.precision-machine__card`.
+    * Cấu hình thanh cuộn dọc tùy biến (`overflow-y: auto; overflow-x: hidden; scrollbar-width: thin`) trên `.precision-machine__floorplan`.
+    * Đồng bộ chiều cao full-height cho container `.qlsxplan` và `.precision-machine` (`height: 100%; flex: 1 1 auto; min-height: 0;`).
+  - **Xác thực**: Quét 1015 file TypeScript sạch bóng lỗi (0 Errors). Vite Dev Server phản hồi HTTP 200 OK.
+
+- [x] Hoàn thiện Tái Thiết Kế Tab Quản Lý Kế Hoạch Máy (`PLAN VISUAL` - `MACHINE_backup.tsx` / `MACHINE_OLD` & `PrecisionMachine/`) Chuẩn Google Stitch High-Density Enterprise, Nâng Cấp Toàn Diện Modal Kế Hoạch Máy, và Bảo Toàn Nguyên Bản `MACHINE.tsx`:
+  - **Phân định rõ ràng kiến trúc điều hướng trong `QLSXPLAN.tsx`**:
+    * `MACHINE.tsx` (4.217 dòng): Bảo toàn 100% nguyên trạng phục vụ riêng cho `company === "CMS" && user === "NHU1903z"`.
+    * `MACHINE_backup.tsx` (Component `MACHINE_OLD`, 149 dòng): Tái thiết kế toàn diện theo Google Stitch High-Density Enterprise phục vụ tất cả người dùng thông thường còn lại.
+    * Lưu trữ an toàn bản gốc cũ của `MACHINE_backup.tsx` tại `src/pages/qlsx/QLSXPLAN/Machine/MACHINE_original_backup.tsx` (4.338 dòng, 158KB).
+  - **Tối ưu kiến trúc Clean Code & Phân rã module chuyên biệt cho `MACHINE_backup.tsx` (`MACHINE_OLD`)**:
+    * Master Controller `MACHINE_backup.tsx` tinh gọn từ 4.338 dòng xuống còn **149 dòng** (giảm gần 97%), kết nối dữ liệu qua custom hooks `useMachineData` và `useMachinePlanModal`, điều phối layout dashboard và modal kế hoạch.
+    * Hệ thống module con tại `src/pages/qlsx/QLSXPLAN/Machine/PrecisionMachine/`:
+      1. `PrecisionMachine.scss`: Hệ thống tokens SCSS công nghiệp chuẩn Stitch, full-width & full-height Multi-Tab, banner gradient từng line dập, card máy responsive.
+      2. `PrecisionMachineHeader.tsx`: Brand C.M.S VINA v2700, telemetry pulse dot online `NET_SERVER: Online (12ms)`, user badge.
+      3. `PrecisionMachineToolbar.tsx`: Segment switcher `NM1` / `NM2`, chọn `Plan Date`, nút `Refresh PLAN`, `Auto Dispatch`, bộ lọc checkbox Line máy (`ALL`, `ED`, `FR`, `DC`, `SR`).
+      4. `PrecisionMachineKpi.tsx`: 3 Thẻ Micro-cards KPI realtime: Máy hoạt động, Tiến độ sản lượng ngày, Ca làm việc & Máy chờ liệu, nút xuất Excel.
+      5. `PrecisionMachineCard.tsx`: Thẻ máy đơn lẻ tinh xảo, header trạng thái (`RUNNING`, `LIVE`, `STOP`, `SETTING`), danh sách jobs, progress bar, cảnh báo máy chờ liệu màu amber (`DC07`) kèm nút hối kho, footer tốc độ và số lệnh chờ. Double-click mở modal kế hoạch máy.
+      6. `PrecisionMachineLineGroup.tsx`: Section bọc từng Line (`FR-NM1`, `DC-NM1`, `ED-NM1`, `SR-NM1`) với banner gradient nhận diện, OEE và Target PCS.
+      7. `PrecisionMachineStatusBar.tsx`: Footer bar phản ánh telemetry sàn sản xuất và socket realtime.
+  - **Nâng cấp toàn diện Modal Kế Hoạch Máy (`planwindow`)**:
+    * `PrecisionMachinePlanModal.scss`: SCSS chuyên biệt cho Modal Control Panel công nghiệp.
+    * `PrecisionMachinePlanModal.tsx`: Container modal dialog phân chia 4 phân vùng trực quan, công thái học.
+    * `PrecisionPlanYCSXSection.tsx`: Form tra cứu YCSX đa tiêu chí compact + Bảng AGTable danh sách YCSX nạp vào máy.
+    * `PrecisionPlanCurrentListSection.tsx`: Bảng kế hoạch trên máy, hỗ trợ di chuyển thứ tự, bắt đầu, kết thúc, xóa và hàng chip `SLC1-4`.
+    * `PrecisionPlanDinhMucSection.tsx`: Form thông số 4 công đoạn (EQ1-4, Setting1-4, UPH1-4, Step1-4, Loss SX1-4, Loss Setting1-4) kèm số liệu tham chiếu `recentDMData` + Form chi tiết Plan và nút `LƯU PLAN`.
+    * `PrecisionPlanMaterialSection.tsx`: Bảng chỉ thị vật liệu và cụm nút Lưu, Đăng ký xuất liệu, Xóa dòng, Xuất dao/liệu sample.
+    * `PrecisionPlanPrintModals.tsx`: Hệ thống dialog in ấn (In YCSX, In bản vẽ, In chỉ thị 1 & 2 với `maxLieu`, Kho ảo, YCKT).
+    * `PrecisionPlanColumns.tsx`: Cấu hình 100% cột và renderers cho 3 bảng AGTable.
+  - **Bảo lưu trọn vẹn 100% nghiệp vụ**: Bảo lưu toàn bộ API queries, socket realtime, quyền hạn `checkBP`, in ấn và đồng bộ Redux store.
+  - **Xác thực toàn diện**: Quét 1015 file TypeScript toàn codebase đạt 0 Errors / 0 Warnings. 100% các file `MACHINE.tsx`, `MACHINE_backup.tsx`, `QLSXPLAN.tsx` đạt HTTP 200 OK trên Vite Dev Server (port 3001).
+
+
 - [x] Hoàn thiện sửa toàn bộ 100% lỗi TypeScript / Linter đỏ trong toàn bộ dự án (0 Errors / 998 files):
   - **sampleMonitorTypes.ts**: Chuẩn hóa interface `ExtendedSampleData` chuyển sang Type Alias kết hợp `Partial<Omit<...>>` giải quyết triệt để lỗi TS2430 xung đột kiểu thuộc tính `APPROVE_DATE`, `DELIVERY_DT`, `INS_DATE` và thuộc tính required `G_CODE`.
   - **PrecisionSampleMonitorColumns.tsx**: Sửa hàm `cellStyle` dòng 258 trả về `fontWeight: 400` đồng nhất, triệt tiêu lỗi không tương thích với AG-Grid `CellStyle`.
