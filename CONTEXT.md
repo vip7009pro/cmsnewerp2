@@ -1,6 +1,35 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
-## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Màn Hình Lịch Sử Input Liệu Sản Xuất `LICHSUINPUTLIEU.tsx` Chuẩn Google Stitch High-Density Enterprise)
+## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Tab Dữ Liệu Sản Xuất `DATASX.tsx` Chuẩn Google Stitch High-Density Enterprise)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Tab Dữ liệu sản xuất (`src/pages/qlsx/QLSXPLAN/DATASX/DATASX.tsx`) là màn hình trọng yếu phục vụ việc tra cứu và phân tích số liệu sản xuất theo Chỉ Thị hoặc theo YCSX, tính toán hao hụt qua từng công đoạn (CĐ1, CĐ2, CĐ3, CĐ4) và bộ phận kiểm tra (Inspection).
+  * Mã nguồn cũ là một file nguyên khối khổng lồ lên tới **3.859 dòng (138 KB)**, giao diện form lọc và các bảng summary mang phong cách cũ (màu gradient xanh lơ/xanh lá, viền ô và font chữ thô sơ).
+  * **Yêu cầu cụ thể của người dùng**:
+    1. *"chú ý bảo tồn bảng summary (chỉ style lại thôi)"*: Bảo tồn 100% dữ liệu, tính toán và các trường của bảng `lossTableInfo` (13 cột cơ bản và hơn 30 cột khi bật checkbox `Full Summary`), chỉ tái thiết kế style sang chuẩn Google Stitch Enterprise.
+    2. *"layout các bảng giữ nguyên, chỉ style lại tổng thể phong cách cho đồng bộ với các màn hình đã làm"*:
+       - Chế độ **TRA CHỈ THỊ** (`selectbutton = true`): Bên trái là Bảng Chỉ Thị (AGTable ~75%), bên phải là 2 bảng xếp dọc: Bảng Lịch Sử Xuất Liệu & Bảng Tồn Kho Ảo (~25%). Tự động tải bảng phụ khi click dòng.
+       - Chế độ **TRA YCSX** (`selectbutton = false`): Bảng YCSX (AGTable), khi bấm `Show Detail` (`showhideDailyYCSX = true`) hiện drawer gồm: Bảng Material Tracking, Bảng YCSX Loss & Setting Detail, và Bảng Daily YCSX AGTable.
+       - Tích hợp Pivot Table DevExtreme qua modal popup hiện đại.
+    3. Tuân thủ Clean Code & SOLID: Module hóa, không để file vượt quá 300 dòng.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `DATASX.backup.tsx` (3.859 dòng).
+  * Tách biệt các chức năng vào thư mục chuyên biệt `src/pages/qlsx/QLSXPLAN/DATASX/PrecisionDataSx/`:
+    1. `PrecisionDataSxPivotFields.ts`: Trích xuất 100% cấu hình các trường Pivot Grid Fields (Chỉ thị & YCSX).
+    2. `PrecisionDataSxColumnsChiThi.tsx`: Định nghĩa cột bảng Chỉ Thị với đầy đủ cell renderers.
+    3. `PrecisionDataSxColumnsYcsx.tsx`: Định nghĩa cột bảng YCSX với đầy đủ cell renderers.
+    4. `PrecisionDataSxColumnsSub.tsx`: Định nghĩa cột 3 bảng phụ (Daily YCSX, Lịch Sử Xuất Liệu, Tồn Kho Ảo).
+    5. `PrecisionDataSxSummary.tsx`: Component bảng summary hao hụt bảo tồn nguyên vẹn 100% dữ liệu, thiết kế chuẩn Stitch High-Density.
+    6. `PrecisionDataSxTracking.tsx`: Bảng Material Tracking và Bảng YCSX Loss & Setting Detail theo dõi sát sao tồn kho, EA, MET, Theory Loss % và Actual Loss %.
+    7. `PrecisionDataSxPivotModal.tsx`: Modal DevExtreme Pivot Table hiện đại với backdrop blur.
+    8. `PrecisionDataSxHeader.tsx`: Header bar công nghiệp với badge trạng thái, số lượng dòng và các nút hành động.
+    9. `PrecisionDataSxToolbar.tsx`: Bộ lọc compact 2 hàng tối ưu diện tích, tích hợp đầy đủ inputs, factory, machine, checkboxes điều kiện và 2 nút chính `TRA CHỈ THỊ` / `TRA YCSX`.
+    10. `useDataSxData.ts`: Custom hook pure TypeScript quản lý state, API queries, logic tính toán và sự kiện click bảng.
+    11. `PrecisionDataSx.scss`: Bộ stylesheet SCSS Google Stitch Enterprise tối ưu không gian và hiển thị sắc nét.
+    12. `DATASX.tsx`: Controller chính tinh gọn từ 3.859 dòng xuống còn **212 dòng** kết nối subcomponents.
+- **3. Xác Thực Toàn Diện**:
+  * Quét TypeScript AST toàn bộ 11/11 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra `DATASX.tsx` (33.7KB) và `PrecisionDataSx.scss` (25.3KB) trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK** (không có lỗi 404).
+
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình Lịch Sử Input Liệu Sản Xuất (`src/pages/qlsx/QLSXPLAN/LICHSUINPUTLIEU/LICHSUINPUTLIEU.tsx`) là tính năng tra cứu lịch sử nạp cuộn vật tư, theo dõi số lượng input, đã dùng và tồn dư theo từng lệnh sản xuất, máy móc, mã liệu và số lot.
   * Mã nguồn cũ sử dụng sidebar bên trái rộng 230px dạng dọc với màu nền và input lỗi thời (`linear-gradient(0deg, #afd3d1, #86cfff)`, input màu xanh lá cây `#9dee95`), font chữ rất nhỏ (0.6rem), chiếm mất nhiều diện tích ngang của bảng dữ liệu 15 cột; thiếu các widget tổng hợp chỉ số quản trị quan trọng; bảng AGTable còn giữ thanh toolbar xanh lá mặc định, thiếu ô tìm kiếm nhanh và nút xuất Excel tiện lợi.

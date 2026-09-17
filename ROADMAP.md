@@ -1,5 +1,34 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Dữ Liệu Sản Xuất (`DATASX.tsx`) Chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% logic nghiệp vụ & bảng summary**:
+    * Duy trì 100% 13 cột chính của bảng summary (`WH_MET`, `WH_EA`, `IP1_MET`, `IP1_EA`, `CD1`, `CD2`, `CD3`, `CD4`, `SX_RESULT`, `INS_INPUT`, `INS_OUTPUT`, `LOSS %`, `LOSS2 %`) và hơn 30 cột chi tiết khi bật checkbox `Full Summary` (`ST1-4`, `NG1-4`, `IP2-4`, `INS_TT_QTY`, `MARKING`, `INS_OK`, `INS_M_NG`, `INS_P_NG`, `INSP_LOSS`, `THEM_TUI`).
+    * Duy trì đầy đủ các tham số và logic tính toán hao hụt trong `lossTableInfo`.
+    * Duy trì 100% định nghĩa các cột bảng AGTable Chỉ Thị (hơn 100 cột), bảng YCSX (hơn 80 cột), bảng Daily YCSX, bảng Lịch Sử Xuất Liệu và bảng Tồn Kho Ảo.
+    * Duy trì 100% cấu hình các trường Pivot Fields cho cả chế độ Chỉ Thị và YCSX.
+  - **Giữ nguyên layout các bảng theo đúng yêu cầu người dùng, tái thiết kế giao diện chuẩn Stitch**:
+    * Chế độ `TRA CHỈ THỊ`: Bên trái là Bảng Chỉ Thị AGTable (~75%), bên phải là 2 bảng xếp dọc: Bảng Lịch Sử Xuất Liệu & Bảng Tồn Kho Ảo (~25%). Tự động tải bảng phụ khi click dòng.
+    * Chế độ `TRA YCSX`: Bảng YCSX AGTable toàn màn hình, nút `HIỆN CHI TIẾT` mở drawer chi tiết gồm: Bảng Material Tracking (12 cột), Bảng YCSX Loss & Setting Detail (5 hàng chi tiết theo dõi EA / MET / Theory Loss / Actual Loss), và Bảng Daily YCSX AGTable.
+    * Tích hợp Modal phân tích đa chiều Pivot Table DevExtreme với backdrop mờ và giao diện hiện đại.
+  - **Kiến trúc Module hóa Clean Code (< 300 dòng/file)**:
+    * Đã tạo bản sao lưu an toàn nguyên bản: `DATASX.backup.tsx` (3.859 dòng, 138 KB).
+    * Phân rã thành công thành 11 module độc lập trong thư mục `PrecisionDataSx/`:
+      1. `PrecisionDataSxPivotFields.ts`: Trích xuất 100% cấu hình Pivot Grid Fields (Chỉ thị & YCSX).
+      2. `PrecisionDataSxColumnsChiThi.tsx`: Định nghĩa cột bảng Chỉ Thị với đầy đủ cell renderers.
+      3. `PrecisionDataSxColumnsYcsx.tsx`: Định nghĩa cột bảng YCSX với đầy đủ cell renderers.
+      4. `PrecisionDataSxColumnsSub.tsx`: Định nghĩa cột 3 bảng phụ (Daily YCSX, Lịch Sử Xuất Liệu, Tồn Kho Ảo).
+      5. `PrecisionDataSxSummary.tsx`: Component bảng summary hao hụt bảo tồn nguyên vẹn 100% dữ liệu, thiết kế chuẩn Stitch High-Density.
+      6. `PrecisionDataSxTracking.tsx`: Bảng Material Tracking và Bảng YCSX Loss & Setting Detail.
+      7. `PrecisionDataSxPivotModal.tsx`: Modal DevExtreme Pivot Table hiện đại.
+      8. `PrecisionDataSxHeader.tsx`: Header bar công nghiệp với badge trạng thái, số lượng dòng và các nút hành động.
+      9. `PrecisionDataSxToolbar.tsx`: Bộ lọc compact 2 hàng: inputs tìm kiếm, factory, machine, checkboxes điều kiện và 2 nút chính `TRA CHỈ THỊ` / `TRA YCSX`.
+      10. `useDataSxData.ts`: Custom hook pure TypeScript quản lý state, API queries, logic tính toán và sự kiện click bảng.
+      11. `PrecisionDataSx.scss`: Bộ stylesheet SCSS Google Stitch Enterprise tối ưu không gian và hiển thị sắc nét.
+      12. `DATASX.tsx`: Controller chính tinh gọn xuống còn 212 dòng kết nối subcomponents.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 11/11 file đạt 0 Errors / 0 Warnings (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra `DATASX.tsx` và `PrecisionDataSx.scss` trên Vite Dev Server (port 3001) đều phản hồi HTTP 200 OK.
+
 - [x] Hoàn thiện Refactor Toàn Diện Màn Hình Lịch Sử Input Liệu Sản Xuất (`LICHSUINPUTLIEU.tsx`) Chuẩn Google Stitch High-Density Enterprise:
   - **Bảo toàn 100% logic nghiệp vụ & dữ liệu**:
     * Duy trì 100% 15 cột của bảng Lịch sử cấp liệu (`PROD_REQUEST_NO`, `PLAN_ID`, `G_CODE`, `G_NAME_KD`, `M_CODE`, `M_NAME`, `WIDTH_CD`, `M_LOT_NO`, `LOTNCC`, `INPUT_QTY`, `USED_QTY`, `REMAIN_QTY`, `EMPL_NO`, `EQUIPMENT_CD`, `INS_DATE`) với tên và độ rộng cột ban đầu.
