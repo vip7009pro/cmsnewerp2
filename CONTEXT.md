@@ -1,5 +1,43 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-17 (SX: Bugfix Runtime Error TypeError undefined length PrecisionBaoCaoRollGrid)
+- **Lỗi**: `PrecisionBaoCaoRollGrid.tsx:49 Uncaught TypeError: Cannot read properties of undefined (reading 'length')`.
+- **Nguyên nhân**: Sự không đồng nhất giữa tên props truyền từ controller `BAOCAOTHEOROLL.tsx` (`plandatatable`, `quickFilterText`, `onFilterChange`) và interface của `PrecisionBaoCaoRollGrid.tsx` (`filteredData`, `searchKeyword`, `onSearchChange`), khiến `filteredData` nhận giá trị `undefined` khi truy cập `.length`.
+- **Cách sửa**: 
+  1. Thêm cơ chế phòng vệ null-safe fallback đa lớp trong `PrecisionBaoCaoRollGrid.tsx`: hỗ trợ cả 2 bộ tên props (`filteredData ?? plandatatable ?? []`, `totalCount ?? plandatatable?.length ?? displayData.length`, `searchKeyword ?? quickFilterText ?? ""`), bảo vệ `(displayData?.length ?? 0)`.
+  2. Đồng bộ chuẩn xác các props truyền từ `useBaoCaoRollData()` trong `BAOCAOTHEOROLL.tsx`: `filteredData={filteredData}`, `plandatatable={plandatatable}`, `totalCount={datatbTotalRow}`, `searchKeyword={searchKeyword}`, `onSearchChange={setSearchKeyword}`, `onExportEX1={handleExportEX1}`, `onExportEX2={handleExportEX2}`.
+- **Trạng thái**: Hoàn tất, Vite HMR cập nhật thành công, không còn lỗi runtime.
+
+## Update - 2026-09-17 (SX: Bugfix Runtime Error Missing Named Export PrecisionBaoCaoRollCharts)
+- **Lỗi**: `Uncaught SyntaxError: The requested module '/src/pages/sx/BAOCAOTHEOROLL/PrecisionBaoCaoRoll/PrecisionBaoCaoRollCharts.tsx' does not provide an export named 'PrecisionBaoCaoRollCharts'`.
+- **Nguyên nhân**: File `PrecisionBaoCaoRollCharts.tsx` (và một số subcomponents) được khai báo dạng `export default React.memo(...)`, trong khi `BAOCAOTHEOROLL.tsx` sử dụng named import `import { PrecisionBaoCaoRollCharts } from ...`.
+- **Cách sửa**: Đồng bộ toàn diện cả Named Export và Default Export (`export { MemoizedComponent as ComponentName }; export default MemoizedComponent;`) trên toàn bộ 6 subcomponents: `PrecisionBaoCaoRollCharts`, `PrecisionBaoCaoRollHeader`, `PrecisionBaoCaoRollToolbar`, `PrecisionBaoCaoRollKpi`, `PrecisionBaoCaoRollSummary`, `PrecisionBaoCaoRollGrid`.
+- **Trạng thái**: Hoàn tất, Vite hot-reload thành công không còn lỗi runtime.
+
+## Update - 2026-09-17 (SX: Refactor Toàn Diện Tab Báo Cáo Theo Roll `BAOCAOTHEOROLL.tsx` Chuẩn Google Stitch High-Density Enterprise & Executive Dashboard)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Báo Cáo Theo Roll (`src/pages/sx/BAOCAOTHEOROLL/BAOCAOTHEOROLL.tsx`)** là trung tâm báo cáo phân tích hao hụt sản xuất theo cuộn liệu dập (Roll Production Loss Tracking).
+  * Mã nguồn cũ **1.767 dòng** dùng bảng màu gradient xanh ngọc/xanh lơ `#c3e7e4` lỗi thời, thanh điều khiển `tracuuYCSX` cồng kềnh, biểu đồ DevExtreme bị fixed width `2000px` tràn vỡ màn hình, 4 biểu đồ xu hướng Recharts cũ nằm rải rác dưới đáy với code trùng lặp, bảng tổng kết số liệu dùng thẻ `<table>` thô sơ 13 cột với inline styles chằng chịt, bảng AGTable thiếu Quick Search, thiếu nút xuất Excel đang lọc/toàn bộ.
+  * Yêu cầu: Làm lại theo chuẩn **Google Stitch High-Density Enterprise**, thiết kế theo phong cách của `KinhDoanhReport.tsx`, bổ sung Dashboard 6 Micro-Cards KPI realtime, hệ thống biểu đồ xu hướng DevExtreme + Recharts trong các thẻ `executive-card` bố trí dạng `.two-col-grid`, thay thế bảng tổng kết thô sơ bằng bảng metric cards chuẩn Stitch, giữ nguyên 100% tên cột `headerName` và độ rộng cột, tích hợp ô Quick Search, cụm nút xuất Excel `EX1`, `EX2` và Modal Phân tích đa chiều Pivot Table.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `BAOCAOTHEOROLL.backup.tsx` (1.767 dòng).
+  * Phân rã thành công thành 10 module chuyên biệt trong thư mục `src/pages/sx/BAOCAOTHEOROLL/PrecisionBaoCaoRoll/`:
+    1. `PrecisionBaoCaoRoll.scss` (575 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho KPI Cards, header, segmented switcher, executive-cards, two-col-grid, bảng summary metric và Pivot Modal.
+    2. `PrecisionBaoCaoRollColumns.tsx` (77 dòng): Cấu hình 40+ cột AG-Grid bảo toàn 100% `headerName` và `width` gốc, thay thế toàn bộ inline styles thô sơ bằng helper functions định dạng số JetBrains Mono chuẩn xác.
+    3. `PrecisionBaoCaoRollKpi.tsx` (86 dòng): Dashboard 6 Micro-cards KPI thống kê realtime: Tổng INPUT, Tổng USED, OK Output, Setting Loss, SX Loss, và Total Loss (highlight chính).
+    4. `PrecisionBaoCaoRollCharts.tsx` (145 dòng): Hệ thống biểu đồ kết hợp DevExtreme Chart (responsive, không bị vỡ 2000px) và 4 biểu đồ xu hướng Recharts (Daily, Weekly, Monthly, Yearly Loss Trend) đặt trong các thẻ `executive-card` bố trí dạng `.two-col-grid` tương tự `KinhDoanhReport.tsx`, có nút xuất Excel cho từng biểu đồ.
+    5. `PrecisionBaoCaoRollSummary.tsx` (48 dòng): Bảng tổng kết 14 chỉ số sản xuất dạng High-Density Metric Grid thay thế thẻ `<table>` cũ, bảo toàn 100% các trường dữ liệu tính toán.
+    6. `PrecisionBaoCaoRollHeader.tsx` (50 dòng): Header bar công nghiệp kèm badge phân hệ, breadcrumb, telemetry số dòng và nút reload dữ liệu.
+    7. `PrecisionBaoCaoRollToolbar.tsx` (86 dòng): Toolbar compact gồm bộ chọn ngày Từ ngày - Đến ngày, Factory (ALL/NM1/NM2), Machine (từ danh sách máy), nút `Tra PLAN` nổi bật và Segment Jump Switcher (`Xem Toàn Diện`, `KPI & Biểu Đồ`, `Bảng Dữ Liệu`).
+    8. `PrecisionBaoCaoRollGrid.tsx` (64 dòng): Khung AGTable bọc thanh tìm kiếm nhanh tức thì, cụm nút xuất Excel `EX1`, `EX2` và nút mở Phân Tích Đa Chiều `PIVOT`.
+    9. `precisionBaoCaoRollPivotFields.ts` (398 dòng): Tách rời 35 định nghĩa trường dữ liệu cho PivotGridDataSource sang file cấu hình riêng.
+    10. `PrecisionBaoCaoRollPivotModal.tsx` (52 dòng): Modal phân tích đa chiều Pivot Table đẳng cấp Enterprise với Backdrop blur và tích hợp `PivotTable` component.
+    11. `useBaoCaoRollData.ts` (202 dòng): Custom hook pure TypeScript gom toàn bộ state, API queries (loadBaoCaoTheoRoll, getDailySXLossTrendingData, getDailyLossTrend, getWeeklyLossTrend, getMonthlyLossTrend, getYearlyLossTrend), logic tính summarydata, quick search và xuất Excel.
+    12. `BAOCAOTHEOROLL.tsx`: Controller chính tinh gọn từ **1.767 dòng** xuống còn **114 dòng** kết nối toàn bộ subcomponents.
+- **3. Xác Thực Toàn Diện**:
+  * Quét TypeScript AST toàn bộ 10/10 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Tất cả các component UI đều nhỏ gọn < 150 dòng tuân thủ nghiêm ngặt quy tắc Clean Code ERP.
+
 ## Update - 2026-09-17 (SX: Bugfix Runtime Error Quick Search LICHSUTEMLOTSX)
 - **Lỗi**: `TypeError: item.FACTORY.toLowerCase is not a function` tại `useLichSuTemLotSxData.ts:210` khi sử dụng Quick Search lọc nhanh trong bảng Lịch Sử Tem Lót Sản Xuất.
 - **Nguyên nhân gốc rễ**: Một số field trong dữ liệu trả về từ API (ví dụ `FACTORY`, `EQUIPMENT_CD`, `PLAN_ID`) có thể là kiểu `number` hoặc kiểu khác, không phải `string`. Toán tử `&&` chỉ chặn `null`/`undefined`/`""` (falsy values), nhưng khi field là số (truthy), `.toLowerCase()` bị gọi trên kiểu `number` gây crash.

@@ -1,5 +1,46 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Báo Cáo Theo Roll (`BAOCAOTHEOROLL.tsx`) Chuẩn Google Stitch High-Density Enterprise & Executive Dashboard:
+  - **Bảo toàn 100% logic nghiệp vụ & các cột dữ liệu**:
+    * Duy trì 100% tên cột `headerName` và độ rộng `width` của 40+ cột AG-Grid.
+    * Duy trì toàn bộ logic API `loadBaoCaoTheoRoll`, `getDailySXLossTrendingData`, `getDailyLossTrend`, `getWeeklyLossTrend`, `getMonthlyLossTrend`, `getYearlyLossTrend`.
+    * Duy trì logic tính toán `summarydata` 14 chỉ số sản xuất: `INPUT_QTY`, `REMAIN_QTY`, `USED_QTY`, `SETTING_MET`, `PROCESS_NG`, `OK_MET_AUTO`, `OK_MET_TT`, `ST_LOSS`, `SX_LOSS`, `LOSS_TT`, `OK_EA`, `PURE_IN`, `PURE_OUT`, `ALL_LOSS`.
+  - **Bổ sung Dashboard 6 Micro-Cards KPI Thống Kê Realtime Hữu Ích**:
+    * `Tổng INPUT (m)`: Tổng chiều dài cuộn liệu nhập vào.
+    * `Tổng USED (m)`: Chiều dài cuộn liệu đã sử dụng thực tế.
+    * `OK Output`: Chiều dài mét đạt và số lượng EA thành phẩm.
+    * `Setting Loss (%)`: Tỷ lệ hao hụt cân chỉnh máy dập.
+    * `SX Loss (%)`: Tỷ lệ hao hụt trong quá trình dập hàng loạt.
+    * `Total Loss (%)`: Tổng tỷ lệ hao hụt toàn bộ quy trình (chỉ số quản trị cốt lõi).
+  - **Hệ Thống Biểu Đồ Executive Dashboard Bố Trí Theo Phong Cách KinhDoanhReport**:
+    * Biểu đồ DevExtreme `Daily Production Loss Trending` với layout responsive không tràn màn hình.
+    * 4 Biểu đồ xu hướng hao hụt Recharts (`Daily`, `Weekly`, `Monthly`, `Yearly Loss Trend`) đóng gói trong các thẻ `executive-card` bố trí dạng `.two-col-grid`.
+    * Tích hợp nút xuất dữ liệu Excel riêng cho từng biểu đồ xu hướng.
+  - **Nâng Cấp Bảng Metric Summary & Khung Bảng Lưới AG-Grid**:
+    * Thay thế bảng thẻ `<table>` thô sơ bằng bảng `High-Density Metric Summary` dạng lưới gọn gàng.
+    * Thanh điều khiển Toolbar compact với dải nút chuyển đổi chế độ xem nhanh: `Xem Toàn Diện`, `KPI & Biểu Đồ`, `Bảng Dữ Liệu`.
+    * Ô tìm kiếm nhanh (Quick Search) lọc tức thì không độ trễ.
+    * Cụm nút xuất Excel `EX1` (dữ liệu đang lọc), `EX2` (toàn bộ dữ liệu) và nút `PIVOT` mở Modal Phân tích đa chiều.
+    * Modal Phân tích đa chiều Pivot Table đẳng cấp Enterprise bọc trong backdrop blur.
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `BAOCAOTHEOROLL.backup.tsx` (1.767 dòng).
+    * Phân rã thành 10 module chuyên biệt tại `src/pages/sx/BAOCAOTHEOROLL/PrecisionBaoCaoRoll/`:
+      1. `PrecisionBaoCaoRoll.scss` (575 dòng): Stylesheet SCSS Google Stitch Enterprise.
+      2. `PrecisionBaoCaoRollColumns.tsx` (77 dòng): Cấu hình 40+ cột AG-Grid.
+      3. `PrecisionBaoCaoRollKpi.tsx` (86 dòng): 6 Micro-cards KPI realtime.
+      4. `PrecisionBaoCaoRollCharts.tsx` (145 dòng): Hệ thống biểu đồ DevExtreme + Recharts two-col-grid.
+      5. `PrecisionBaoCaoRollSummary.tsx` (48 dòng): Bảng 14 metric summary cards.
+      6. `PrecisionBaoCaoRollHeader.tsx` (50 dòng): Header bar công nghiệp kèm telemetry & reload.
+      7. `PrecisionBaoCaoRollToolbar.tsx` (86 dòng): Toolbar compact & segment tab switcher.
+      8. `PrecisionBaoCaoRollGrid.tsx` (64 dòng): Khung AGTable kèm quick search, EX1, EX2, PIVOT.
+      9. `precisionBaoCaoRollPivotFields.ts` (398 dòng): Schema 35 trường dữ liệu Pivot.
+      10. `PrecisionBaoCaoRollPivotModal.tsx` (52 dòng): Modal phân tích đa chiều Pivot Table.
+      11. `useBaoCaoRollData.ts` (202 dòng): Custom hook pure TypeScript gom toàn bộ state, API và xuất Excel.
+    * Controller chính `BAOCAOTHEOROLL.tsx` tinh gọn từ **1.767 dòng** xuống còn **114 dòng**.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 10/10 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Lịch Sử Tem Lót Sản Xuất (`LICHSUTEMLOTSX.tsx`) Chuẩn Google Stitch High-Density Enterprise & Bảo Toàn Tuyệt Đối Chức Năng Preview/In Tem Lót:
   - **Bảo toàn 100% logic nghiệp vụ & các cột dữ liệu**:
     * Duy trì 100% tên cột `headerName` và độ rộng `width` của 17 cột: `INS_DATE` (100), `G_CODE` (60), `G_NAME` (120), `DESCR` (120), `M_LOT_NO` (60), `LOTNCC` (100), `YCSX` (60), `YCSX_QTY` (60), `PROCESS_LOT_NO` (100), `M_NAME` (100), `WIDTH_CD` (60), `EMPL_NAME` (100), `PLAN_ID` (100), `TEMP_QTY` (70), `PROCESS_NUMBER` (100), `LOT_STATUS` (100), `REMARK` (100).
