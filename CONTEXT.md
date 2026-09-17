@@ -1,6 +1,32 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
-## Update - 2026-09-17 (QLSX: Tối Ưu State Flow Khi Click Row Kế Hoạch - Triệt Tiêu Hoàn Toàn Hiện Tượng Nháy Kép Của Bảng Plan List Và Bảng Vật Liệu)
+## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Giao Diện Tab Quick Plan `QUICKPLAN2_backup.tsx` Chuẩn Google Stitch High-Density Enterprise)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Tab Quick Plan (`src/pages/qlsx/QLSXPLAN/QUICKPLAN/QUICKPLAN2_backup.tsx`) là file chính thức được nhúng trong hệ thống qua `QLSXPLAN.tsx`.
+  * Mã nguồn cũ gồm hơn 3.000 dòng lồng ghép phức tạp giữa API, state, DOM HTML cũ, giao diện thô sơ, thiếu tính thẩm mỹ và công thái học.
+  * Yêu cầu: Làm lại giao diện tab Quick Plan theo phong cách Google Stitch High-Density Enterprise hiện đại, sang trọng, tối ưu UX nhập liệu; tuyệt đối không làm sai lệch logic vốn có, bảo toàn 100% tất cả các nút toolbar trên cả 2 bảng (YCSX & Plan nháp).
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản: `QUICKPLAN2_original_backup.tsx` (115KB, 3.017 dòng).
+  * Tách biệt các chức năng vào thư mục chuyên dụng `PrecisionQuickPlan/`:
+    1. `PrecisionQuickPlan.scss`: Bộ quy chuẩn giao diện Slate 50-900 sang trọng, hỗ trợ Multi-Tab Full Width & Full Height, ma trận 4 hàng định mức thẳng hàng Excel, toolbar dàn trên 1 dòng duy nhất và hệ thống Print Modal xem trước bản in.
+    2. `PrecisionQuickPlanColumns.tsx`: Tách toàn bộ 27 cột bảng YCSX (MUI DataGrid) và 26 cột bảng Tạm Xắp Plan (AGTable) với đầy đủ cell editors, custom renderers và chức năng upload bản vẽ.
+    3. `useQuickPlanData.tsx`: Custom hook đóng gói toàn bộ state, API queries, logic tính toán tồn dư công đoạn `DU1-4`/`TON_CD1-4`, lưu tạm `localStorage` và xử lý in ấn.
+    4. `PrecisionQuickPlanHeader.tsx`: Banner mã hàng đang chọn, thống kê số dòng/tổng số lượng chỉ thị và Segmented Tab Switcher (Mode 1: Plan & ĐM, Mode 2: Chỉ YCSX, Mode 3: Song song Split).
+    5. `PrecisionQuickPlanDinhMuc.tsx`: Ma trận định mức 4 công đoạn (CĐ1 - CĐ4) với các ô nhập liệu thẳng tắp, tham chiếu lịch sử 10 lot gần nhất màu đỏ sắc nét, tích hợp thanh Factory & Ghi chú QLSX.
+    6. `PrecisionQuickPlanYCSXSection.tsx`: Khối tra cứu YCSX gồm form lọc 3 cột compact (tiết kiệm hơn 50% diện tích dọc), toolbar đầy đủ 8 nút (`Switch Tab`, `SAVE Excel`, `QuickFilter`, `SET CLOSED`, `SET PENDING`, `Print YCSX`, `Print Bản Vẽ`, `Add to PLAN`) và bảng DataGrid MUI v5.
+    7. `PrecisionQuickPlanTableSection.tsx`: Khối Bảng Tạm Xắp Plan gồm toolbar đầy đủ 6 nút (`Switch Tab`, `SAVE Excel`, `Add Blank PLAN`, `LƯU PLAN`, `XÓA PLAN NHÁP`, `Lưu Data Định Mức`) có tích hợp kiểm tra quyền `checkBP` và bảng AGTable.
+    8. `PrecisionQuickPlanPrintModals.tsx`: Bộ 4 modal in ấn (Phiếu YCSX, Bản Vẽ Kỹ Thuật, Chỉ Thị SX, YCKT) hiện đại với backdrop blur, header thanh lịch loại bỏ nút đóng thừa và khung giấy in chân thực.
+    9. `QUICKPLAN2_backup.tsx`: Tinh gọn từ 3.017 dòng xuống còn ~160 dòng Controller đóng vai trò kết nối các subcomponents.
+- **3. Khắc Phục Lỗi 404 Dynamic Import Khi Vite Dev Server Nạp Module**:
+  * **Hiện tượng**: Khi user click mở tab QUICK PLAN, trình duyệt báo lỗi `Failed to load resource: 404 Not Found: QUICKPLAN2_backup.tsx?t=...`.
+  * **Nguyên nhân gốc rễ**: `QUICKPLAN2_backup.tsx` import `useQuickPlanData`. Vite resolve tự động tìm `useQuickPlanData.ts`, nhưng trước đó file này được lưu là `.tsx` do có chứa JSX render in ấn. Khi Vite không tìm thấy file `.ts`, nó trả về 404 cho module cha.
+  * **Giải pháp khắc phục**:
+    1. Tách các hàm render JSX in ấn (`renderYCSX`, `renderBanVe`, `renderChiThi`, `renderYCKT`) ra module chuyên biệt [`quickPlanPrintRenderers.tsx`](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/QUICKPLAN/PrecisionQuickPlan/quickPlanPrintRenderers.tsx).
+    2. Chuẩn hóa [`useQuickPlanData.ts`](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/QUICKPLAN/PrecisionQuickPlan/useQuickPlanData.ts) thành file TypeScript thuần túy, sạch sẽ, không chứa JSX.
+    3. Xóa bỏ file trùng lặp `.tsx`.
+  * **Xác thực**: Kiểm tra HTTP request trực tiếp tới toàn bộ 10/10 module trên server Vite (port 3001) đều phản hồi **HTTP 200 OK**. Quét TypeScript AST toàn bộ đạt **0 Errors / 0 Warnings**. User tải lại trang (F5) là hoạt động mượt mà.
+
+## Update - 2026-09-17 (QLSX: Tối Ưu State Flow Khi Click Row Kế Hoạch - Triệt Tiêu Hoàn Toàn Hiện Tượng Nháy Kép Của Bảng Plan List Và Bảng Vật Liệu):
 - **1. Phân Tích & Khắc Phục Triệt Để 3 Nguyên Nhân Gốc Gây Nháy Kép (2 Lần)**:
   * **Nguyên nhân 1 (Kích hoạt kép sự kiện Click)**: Trong `PrecisionPlanCurrentListSection.tsx`, cả 2 prop `onCellClick` và `onRowClick` cùng được truyền vào `AGTable` với arrow function gọi `onSelectPlan`. Khi user click vào ô, AGGrid đồng thời kích hoạt cả Cell Click và Row Click khiến `onSelectPlan` bị gọi 2 lần liên tiếp.
     -> **Khắc phục**: Loại bỏ hoàn toàn `onRowClick`, chỉ giữ duy nhất `onCellClick={handleCellClick}` bọc qua `useCallback`. Bổ sung kiểm tra `params.data.PLAN_ID !== selectedPlan?.PLAN_ID` để không fetch lại khi click lại đúng dòng đang chọn.

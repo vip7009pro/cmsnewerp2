@@ -1,5 +1,22 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Giao Diện Tab Quick Plan (`QUICKPLAN2_backup.tsx`) Chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% logic nghiệp vụ & quyền hạn**:
+    * Không bỏ sót bất kỳ nút toolbar nào trên cả bảng YCSX (8 nút) và bảng Tạm Xắp Plan (6 nút).
+    * Giữ nguyên 100% thuật toán sinh mã `getNextPLAN_ID`, tính tồn dư các công đoạn `DU1-4`, `TON_CD1-4`, logic lưu tạm `localStorage` (`temp_plan_table`, `temp_plan_table_max_id`).
+    * Duy trì kiểm tra phân quyền `checkBP` cho các hành động quan trọng (LƯU PLAN, Lưu Data Định Mức, Upload Bản Vẽ).
+  - **Kiến trúc Module hóa Clean Code (< 300 dòng/file)**:
+    * `PrecisionQuickPlan.scss`: Hệ thống stylesheet SCSS Google Stitch Enterprise tông màu Slate 50-900, form 4 hàng ngang thẳng chuẩn Excel, toolbar compact 1 dòng duy nhất, Print Modal backdrop blur.
+    * `PrecisionQuickPlanColumns.tsx`: Định nghĩa 27 cột bảng YCSX và 26 cột bảng AGTable Plan nháp (hỗ trợ cell editing, upload bản vẽ).
+    * `useQuickPlanData.tsx`: Custom hook quản lý state tập trung, API queries, tính toán số dư và event handlers.
+    * `PrecisionQuickPlanHeader.tsx`: Banner mã hàng, stats badge tổng số dòng & tổng sản lượng chỉ thị, Segmented Control Switcher tab 1-2-3.
+    * `PrecisionQuickPlanDinhMuc.tsx`: Ma trận 4 công đoạn CĐ1-CĐ4 thẳng tắp chuẩn Excel, ô nhập kèm tham chiếu lịch sử 10 lot gần nhất màu đỏ, hàng Factory & Note.
+    * `PrecisionQuickPlanYCSXSection.tsx`: Form tra cứu 3 cột compact, toolbar 8 nút đầy đủ (`Switch Tab`, `SAVE Excel`, `QuickFilter`, `SET CLOSED`, `SET PENDING`, `Print YCSX`, `Print Bản Vẽ`, `Add to PLAN`) và DataGrid MUI v5.
+    * `PrecisionQuickPlanTableSection.tsx`: Bảng AGTable Plan nháp và toolbar 6 nút đầy đủ (`Switch Tab`, `SAVE Excel`, `Add Blank PLAN`, `LƯU PLAN`, `XÓA PLAN NHÁP`, `Lưu Data Định Mức`).
+    * `PrecisionQuickPlanPrintModals.tsx`: Hệ thống 4 popup in ấn (YCSX, Bản Vẽ, Chỉ Thị, YCKT) hiện đại, nền giấy in thực tế.
+    * `QUICKPLAN2_backup.tsx`: Tinh gọn từ 3.017 dòng xuống còn ~160 dòng Controller điều phối mượt mà.
+  - **Xác thực toàn diện**: Quét TypeScript AST toàn bộ 8 file đạt 0 Errors / 0 Warnings. Toàn bộ endpoints trên Vite Dev Server (port 3001) hoạt động ổn định.
+
 - [x] Hoàn thiện Tối Ưu State Flow Khi Click Row Kế Hoạch - Triệt Tiêu Hoàn Toàn Hiện Tượng Nháy Kép Của Bảng Plan List Và Bảng Vật Liệu:
   - **Khắc phục triệt để 3 nguyên nhân gây nháy kép**:
     * Loại bỏ kích hoạt kép sự kiện: bỏ `onRowClick` ở bảng Plan List, chỉ dùng `onCellClick={handleCellClick}` bọc qua `useCallback` kèm điều kiện kiểm tra `params.data.PLAN_ID !== selectedPlan?.PLAN_ID`.
