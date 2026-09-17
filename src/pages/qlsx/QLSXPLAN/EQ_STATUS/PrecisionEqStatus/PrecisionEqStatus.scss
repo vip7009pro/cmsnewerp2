@@ -1,0 +1,895 @@
+/* ==========================================================================
+   PRECISION EQ STATUS - FACTORY ANDON TV DISPLAY STYLESHEET
+   Thiết kế chuyên biệt cho TV chiếu trong phân xưởng sản xuất (FHD / 4K)
+   ========================================================================== */
+
+.precision-eq-status {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: calc(100vh - 85px);
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  transition: all 0.3s ease;
+
+  .component_element & {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* CHẾ ĐỘ FULLSCREEN (CHIẾU TV TOÀN MÀN HÌNH) */
+  &.fullscreen-mode {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    z-index: 99999 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* ==========================================================================
+     THEMES: DARK ANDON (MẶC ĐỊNH CHO TV) & LIGHT ENTERPRISE
+     ========================================================================== */
+  &.theme-dark {
+    background-color: #0b1120;
+    color: #f8fafc;
+
+    .precision-eq-header {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+      color: #f8fafc;
+
+      .brand-title {
+        color: #ffffff;
+      }
+
+      .andon-clock {
+        background: #1e293b;
+        border-color: #334155;
+
+        .clock-time {
+          color: #38bdf8;
+        }
+
+        .clock-date {
+          color: #94a3b8;
+        }
+      }
+
+      .andon-kpi-badge {
+        background: #1e293b;
+        border-color: #334155;
+
+        .badge-title {
+          color: #94a3b8;
+        }
+      }
+    }
+
+    .precision-eq-toolbar {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+
+      .control-input,
+      .control-select {
+        background-color: #1e293b;
+        border-color: #334155;
+        color: #f8fafc;
+
+        &:focus {
+          border-color: #38bdf8;
+        }
+      }
+
+      .control-label {
+        color: #94a3b8;
+      }
+    }
+
+    .machine-grid-container {
+      background-color: #0b1120;
+    }
+
+    .andon-machine-card {
+      background: #131d33;
+      border-color: #1e293b;
+
+      .card-header-banner {
+        background: #1e293b;
+      }
+
+      .card-employee-box {
+        background: #18233c;
+        border-color: #243452;
+
+        .empl-id {
+          color: #94a3b8;
+        }
+      }
+
+      .plan-info-pill {
+        background: #1e293b;
+        color: #e2e8f0;
+      }
+
+      .target-result-grid {
+        background: #0f172a;
+        border-color: #1e293b;
+
+        .col-target {
+          border-color: #1e293b;
+        }
+
+        .row-label {
+          color: #94a3b8;
+        }
+
+        .row-val {
+          color: #e2e8f0;
+        }
+      }
+
+      .qty-stat-box {
+        background: #18233c;
+        border-color: #243452;
+
+        .stat-label {
+          color: #94a3b8;
+        }
+      }
+    }
+  }
+
+  &.theme-light {
+    background-color: #f1f5f9;
+    color: #1e293b;
+
+    .precision-eq-header {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      color: #1e293b;
+
+      .brand-title {
+        color: #0f172a;
+      }
+
+      .andon-clock {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+
+        .clock-time {
+          color: #0284c7;
+        }
+
+        .clock-date {
+          color: #64748b;
+        }
+      }
+
+      .andon-kpi-badge {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+
+        .badge-title {
+          color: #64748b;
+        }
+      }
+    }
+
+    .precision-eq-toolbar {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+
+      .control-input,
+      .control-select {
+        background-color: #f8fafc;
+        border-color: #cbd5e1;
+        color: #1e293b;
+
+        &:focus {
+          border-color: #0284c7;
+        }
+      }
+
+      .control-label {
+        color: #64748b;
+      }
+    }
+
+    .machine-grid-container {
+      background-color: #f8fafc;
+    }
+
+    .andon-machine-card {
+      background: #ffffff;
+      border-color: #e2e8f0;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+      .card-header-banner {
+        background: #f8fafc;
+      }
+
+      .card-employee-box {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+
+        .empl-id {
+          color: #64748b;
+        }
+      }
+
+      .plan-info-pill {
+        background: #f1f5f9;
+        color: #334155;
+      }
+
+      .target-result-grid {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+
+        .col-target {
+          border-color: #e2e8f0;
+        }
+
+        .row-label {
+          color: #64748b;
+        }
+
+        .row-val {
+          color: #1e293b;
+        }
+      }
+
+      .qty-stat-box {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+
+        .stat-label {
+          color: #64748b;
+        }
+      }
+    }
+  }
+
+  /* ==========================================================================
+     1. ANDON HEADER (ĐỒNG HỒ SỐ & TELEMETRY TOÀN XƯỞNG)
+     ========================================================================== */
+  .precision-eq-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 14px;
+    flex-shrink: 0;
+    position: relative;
+    gap: 12px;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .brand-icon-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        color: #ffffff;
+        font-size: 20px;
+        box-shadow: 0 4px 6px rgba(2, 132, 199, 0.3);
+      }
+
+      .brand-info {
+        display: flex;
+        flex-direction: column;
+
+        .brand-title {
+          font-size: 15px;
+          font-weight: 800;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          line-height: 1.2;
+        }
+
+        .brand-subtitle {
+          font-size: 10.5px;
+          color: #64748b;
+          font-weight: 600;
+          letter-spacing: 0.02em;
+        }
+      }
+    }
+
+    .header-center {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      /* Đồng hồ số thời gian thực Andon */
+      .andon-clock {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 12px;
+        border: 1px solid;
+        border-radius: 6px;
+
+        .clock-time {
+          font-size: 18px;
+          font-weight: 800;
+          font-family: "Courier New", Courier, monospace, "JetBrains Mono";
+          letter-spacing: 0.05em;
+          line-height: 1;
+        }
+
+        .clock-date {
+          font-size: 11px;
+          font-weight: 600;
+          text-transform: uppercase;
+          line-height: 1;
+        }
+      }
+
+      /* Các thẻ KPI Andon toàn xưởng */
+      .andon-kpi-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        .andon-kpi-badge {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 4px 10px;
+          border: 1px solid;
+          border-radius: 6px;
+
+          .badge-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+          }
+
+          .badge-num {
+            font-size: 14px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+          }
+
+          &.kpi-running {
+            border-color: rgba(16, 185, 129, 0.4);
+            .badge-num {
+              color: #10b981;
+            }
+          }
+
+          &.kpi-setting {
+            border-color: rgba(245, 158, 11, 0.4);
+            .badge-num {
+              color: #f59e0b;
+            }
+          }
+
+          &.kpi-stop {
+            border-color: rgba(239, 68, 68, 0.4);
+            .badge-num {
+              color: #ef4444;
+            }
+          }
+        }
+      }
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .page-indicator-chip {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background: #0284c7;
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 700;
+        border-radius: 6px;
+        letter-spacing: 0.02em;
+      }
+
+      .btn-header-action {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        height: 28px;
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 4px;
+        border: 1px solid #334155;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+
+    /* Thanh tiến độ đếm ngược chuyển trang visual */
+    .countdown-bar-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 0, 0, 0.2);
+
+      .countdown-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #38bdf8 0%, #10b981 100%);
+        transition: width 0.1s linear;
+      }
+    }
+  }
+
+  /* ==========================================================================
+     2. TOOLBAR (BỘ ĐIỀU KHIỂN & LỌC MÁY)
+     ========================================================================== */
+  .precision-eq-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 14px;
+    flex-shrink: 0;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+
+      .control-group {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        .control-label {
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.02em;
+        }
+
+        .control-select,
+        .control-input {
+          height: 26px;
+          font-size: 11px;
+          font-weight: 600;
+          border-radius: 4px;
+          padding: 2px 6px;
+          outline: none;
+          box-sizing: border-box;
+          border: 1px solid;
+        }
+
+        .select-factory {
+          width: 80px;
+        }
+
+        .select-machine {
+          width: 100px;
+        }
+
+        .input-num {
+          width: 55px;
+          text-align: center;
+        }
+
+        .input-time {
+          width: 55px;
+          text-align: center;
+        }
+
+        .input-search {
+          width: 160px;
+        }
+      }
+
+      .checkbox-toggle-label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        user-select: none;
+
+        input[type="checkbox"] {
+          width: 14px;
+          height: 14px;
+          cursor: pointer;
+          accent-color: #0284c7;
+        }
+      }
+    }
+
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .btn-tool {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        height: 26px;
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+    }
+  }
+
+  /* ==========================================================================
+     3. MACHINE GRID CONTAINER (KHỐI CHỨA CÁC THẺ MÁY CHIẾU TV)
+     ========================================================================== */
+  .machine-grid-container {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 8px;
+    box-sizing: border-box;
+
+    .machine-grid {
+      display: grid;
+      gap: 8px;
+      width: 100%;
+      height: 100%;
+
+      /* Cấu hình lưới tự thích ứng theo số máy (6, 8, 12, 16) */
+      &.grid-count-6 {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+      }
+
+      &.grid-count-8 {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+      }
+
+      &.grid-count-12 {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+      }
+
+      &.grid-count-16 {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+      }
+
+      /* Fallback tự co giãn nếu màn hình nhỏ */
+      @media (max-width: 1200px) {
+        grid-template-columns: repeat(3, 1fr) !important;
+      }
+
+      @media (max-width: 900px) {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+
+      @media (max-width: 600px) {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    .empty-machine-message {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #94a3b8;
+      font-size: 14px;
+      font-weight: 600;
+      gap: 8px;
+    }
+  }
+
+  /* ==========================================================================
+     4. ANDON MACHINE CARD (THẺ MÁY CÔNG NGHỆ CAO CHUẨN TV PHÂN XƯỞNG)
+     ========================================================================== */
+  .andon-machine-card {
+    border: 2px solid;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+
+    /* 4.1. CÁC TRẠNG THÁI ANDON (RUNNING, SETTING, STOP) */
+    &.status-running {
+      border-color: #10b981;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+
+      .card-header-banner {
+        background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, transparent 100%);
+      }
+
+      .status-pill-badge {
+        background: #059669;
+        color: #ffffff;
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+      }
+
+      .downtime-pill {
+        color: #10b981;
+      }
+    }
+
+    &.status-setting {
+      border-color: #f59e0b;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+
+      .card-header-banner {
+        background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, transparent 100%);
+      }
+
+      .status-pill-badge {
+        background: #d97706;
+        color: #ffffff;
+        box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+      }
+
+      .downtime-pill {
+        color: #f59e0b;
+      }
+    }
+
+    &.status-stop {
+      border-color: #ef4444;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.25);
+
+      .card-header-banner {
+        background: linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, transparent 100%);
+      }
+
+      .status-pill-badge {
+        background: #dc2626;
+        color: #ffffff;
+        box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+      }
+
+      .downtime-pill {
+        color: #ef4444;
+        font-weight: 800;
+      }
+    }
+
+    /* 4.2. HEADER BANNER CỦA THẺ MÁY */
+    .card-header-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+      .machine-title-left {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        .machine-name-text {
+          font-size: 16px;
+          font-weight: 900;
+          letter-spacing: 0.02em;
+          line-height: 1;
+        }
+
+        .status-pill-badge {
+          font-size: 9px;
+          font-weight: 800;
+          padding: 2px 6px;
+          border-radius: 4px;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+        }
+      }
+
+      .machine-timer-right {
+        .downtime-pill {
+          font-size: 10.5px;
+          font-weight: 700;
+          font-variant-numeric: tabular-nums;
+        }
+      }
+    }
+
+    /* 4.3. NỘI DUNG CHÍNH (BODY) */
+    .card-body-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 6px 8px;
+      gap: 6px;
+
+      /* Dòng 1: Nhân sự & Kế hoạch sản phẩm */
+      .worker-plan-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .card-employee-box {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 2px;
+          border: 1px solid;
+          border-radius: 4px;
+          width: 50px;
+          flex-shrink: 0;
+
+          .empl-photo {
+            width: 46px;
+            height: 52px;
+            object-fit: cover;
+            border-radius: 2px;
+          }
+
+          .empl-id {
+            font-size: 8.5px;
+            font-weight: 700;
+            margin-top: 2px;
+            text-align: center;
+          }
+        }
+
+        .plan-details-box {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+          min-width: 0;
+
+          .plan-info-pill {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9.5px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+
+            .plan-label {
+              color: #38bdf8;
+            }
+          }
+
+          .product-name-text {
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #f1f5f9;
+          }
+
+          .step-tag {
+            font-size: 9.5px;
+            font-weight: 700;
+            color: #f59e0b;
+          }
+        }
+      }
+
+      /* Dòng 2: Bảng Target vs Result */
+      .target-result-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border: 1px solid;
+        border-radius: 4px;
+        font-size: 9px;
+        overflow: hidden;
+
+        .col-target,
+        .col-result {
+          display: flex;
+          flex-direction: column;
+          padding: 3px 5px;
+          gap: 2px;
+        }
+
+        .col-target {
+          border-right: 1px solid;
+        }
+
+        .grid-header-cell {
+          font-weight: 800;
+          text-transform: uppercase;
+          color: #38bdf8;
+          margin-bottom: 1px;
+        }
+
+        .grid-data-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .row-label {
+            font-weight: 600;
+          }
+
+          .row-val {
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+          }
+        }
+      }
+
+      /* Dòng 3: Khối số liệu lớn (Plan, Result, Achiev Rate) */
+      .qty-stat-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+
+        .qty-stat-box {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 3px 2px;
+          border: 1px solid;
+          border-radius: 4px;
+
+          .stat-label {
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+          }
+
+          .stat-value {
+            font-size: 13px;
+            font-weight: 900;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.1;
+
+            &.val-plan {
+              color: #38bdf8;
+            }
+
+            &.val-result {
+              color: #f43f5e;
+            }
+
+            &.val-rate {
+              color: #10b981;
+            }
+          }
+        }
+      }
+    }
+  }
+}

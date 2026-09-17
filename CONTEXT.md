@@ -1,6 +1,36 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
-## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Màn Hình Trạng Thái Chỉ Thị Sản Xuất `PLAN_STATUS.tsx` Chuẩn Google Stitch High-Density Enterprise)
+## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Màn Hình Kho SX Main (Kho Ảo) `KHOAO.tsx` Chuẩn Google Stitch High-Density Enterprise)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Kho SX Main (`src/pages/qlsx/QLSXPLAN/KHOAO/KHOAO.tsx`)** là công cụ quản lý vật liệu dở dang trên sàn máy dập và thực hiện nghiệp vụ **Xuất Next** sang chỉ thị tiếp theo.
+  * Mã nguồn cũ 665 dòng dùng bảng màu gradient xanh lơ `#afd3d1` / xanh chuối `#86cfff`, đổ bóng đen nặng nề, các nút bấm mang màu neon chói lọi (vàng chanh `#ccff14`, đỏ tươi `#f70000`, tím `#bab0d1`), bố trí nút lộn xộn, thiếu phân nhóm chức năng, thiếu Dashboard KPI và thiếu ô tìm kiếm nhanh.
+  * Yêu cầu: Làm lại toàn diện theo phong cách **Google Stitch High-Density Enterprise**, bố trí button công thái học (Segmented Tab Control 3 chế độ, Cụm Xuất Next, Cụm Quản trị rác, Tiện ích tìm kiếm & Excel), bổ sung 5 Micro-cards KPI realtime và tối ưu UX.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `KHOAO.backup.tsx` (665 dòng).
+  * Phân rã thành công thành 7 module độc lập trong thư mục `src/pages/qlsx/QLSXPLAN/KHOAO/PrecisionKhoAo/`:
+    1. `PrecisionKhoAo.scss` (627 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab & Modal Full-Height, bảng màu Slate 50-900 sang trọng.
+    2. `PrecisionKhoAoColumns.tsx` (281 dòng): Cấu hình 100% cột cho cả 3 bảng (Tồn Kho Main, Lịch Sử Nhập, Lịch Sử Xuất) với status pill badges và format số JetBrains Mono.
+    3. `PrecisionKhoAoKpi.tsx` (205 dòng): Dashboard 5 Micro-cards KPI realtime: Tổng cuộn tồn, Tổng lượng tồn (m/EA), Cuộn quá hạn (> 1 ngày cảnh báo đỏ), Chủng loại vật liệu, Tỷ lệ chuẩn FSC.
+    4. `PrecisionKhoAoHeader.tsx` (49 dòng): Header bar công nghiệp với breadcrumb, telemetry trực tuyến và badge chỉ thị đích `NEXT_PLAN`.
+    5. `PrecisionKhoAoToolbar.tsx` (167 dòng): Toolbar 2 tầng công thái học: Segmented Control 3 tab, bộ lọc ngày/xưởng, cụm Xuất Next nổi bật và cụm Admin xóa rác.
+    6. `useKhoAoData.ts` (224 dòng): Custom hook pure TypeScript quản lý state, API queries, quick search và xuất Excel.
+    7. `khoAoActionHandlers.ts` (263 dòng): Module xử lý nghiệp vụ Xuất Next, Xóa rác, Ẩn rác với đầy đủ các điều kiện kiểm tra an toàn.
+    8. `KHOAO.tsx`: Controller chính tinh gọn từ 665 dòng xuống còn **121 dòng** kết nối subcomponents.
+- **3. Xác Thực Toàn Diện**:
+  * Quét TypeScript AST toàn bộ 7/7 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra toàn bộ 8/8 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK** (không có lỗi 404 hay runtime bundle).
+
+## Update - 2026-09-17 (QLSX: Refactor Toàn Diện Màn Hình Trạng Thái Thiết Bị `EQ_STATUS.tsx` Chuẩn Google Stitch Andon TV Dashboard)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Trạng Thái Thiết Bị (`EQ_STATUS.tsx`)** là trung tâm giám sát Andon TV chiếu trực tiếp lên các TV lớn treo tại phân xưởng sản xuất (NM1, NM2).
+  * Mã nguồn cũ sử dụng nền trắng đơn sơ, ảnh gif cũ, thiếu đồng hồ số, thiếu thanh đếm ngược chuyển trang và thiếu KPI toàn xưởng.
+  * Đã nâng cấp toàn diện theo chuẩn Google Stitch Andon TV: Đồng hồ số realtime, KPI toàn xưởng, Countdown progress bar, Thẻ máy Andon công nghệ cao và thanh điều khiển tự ẩn khi Fullscreen.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code**:
+  * Đã tạo bản sao lưu an toàn `EQ_STATUS.backup.tsx`.
+  * Phân rã thành công thành các module chuyên biệt trong `PrecisionEqStatus/`: `PrecisionEqStatus.scss`, `PrecisionEqStatusHeader.tsx`, `PrecisionEqStatusToolbar.tsx`, `PrecisionEqStatusMachineCard.tsx`, `useEqStatusData.ts`, và controller chính `EQ_STATUS.tsx` tinh gọn.
+- **3. Xác Thực Kỹ Thuật**:
+  * Toàn bộ các file đạt 0 Errors TypeScript và phản hồi HTTP 200 OK trên Vite Dev Server.
+
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình **Theo Dõi Trạng Thái Chỉ Thị Sản Xuất (`src/pages/qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS.tsx`)** là công cụ giám sát tiến độ thực hiện chỉ thị sản xuất thời gian thực, quản lý 7 mốc quy trình sản xuất then chốt: Xuất dao (`XUATDAO`), BĐ Setting (`SETTING_START_TIME`), KT Setting / Chạy Mass (`MASS_START_TIME`), ĐK xuất liệu (`DKXL`), Xuất liệu chính (`XUATLIEU`), In tem (`IN_TEM`), Chốt báo cáo (`CHOTBC`) và tiến độ sản lượng (`kq_tem / PLAN_QTY`).
   * Mã nguồn cũ sử dụng các thẻ "flag" rời rạc với inline style màu sắc chói lọi (`yellow`, `red`, `#6efad7`, `#5230fc`, `#fabd6e`), đổ bóng nặng nề, tràn vỡ layout; form lọc có màu gradient lỗi thời, thiếu chế độ xem dạng Bảng Lưới (Data Grid), thiếu Dashboard KPI tổng quan, thiếu tìm kiếm nhanh và cơ chế tự động cập nhật realtime.

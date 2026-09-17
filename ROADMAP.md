@@ -1,5 +1,29 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Màn Hình Kho SX Main (Kho Ảo) (`KHOAO.tsx`) Chuẩn Google Stitch High-Density Enterprise:
+  - **Bảo toàn 100% logic nghiệp vụ & quyền hạn**:
+    * Duy trì toàn bộ các thao tác cốt lõi: Tra cứu Tồn Kho Main (`f_load_tonkhoao`), Lịch sử Nhập (`f_load_nhapkhoao`), Lịch sử Xuất (`f_load_xuatkhoao`).
+    * Duy trì quy trình kiểm tra 10 điều kiện khắt khe khi Xuất Next (`f_xuatkhoao`, `f_set_YN_KHO_AO_INPUT`): kiểm tra mã chỉ thị, trạng thái vật tư FSC, chỉ thị đích chưa đóng/chưa dùng, tính toán quá hạn ngày `diff > 1`, kiểm tra cùng nhà máy, phân quyền `checkBP(userData, ["QLSX"], ...)`.
+    * Duy trì xác nhận mật mã quản trị `quantrisanxuat2023` và kiểm tra quyền tài khoản (`DTL1906`, `THU1402`, `NHU1903`) cho các thao tác `Xóa Rác` (`f_delete_IN_KHO_AO`, `f_delete_OUT_KHO_AO`) và `Ẩn Rác` (`f_anrackhoao`).
+  - **Đột phá về bố trí Button & Trải nghiệm người dùng (UX)**:
+    * `Segmented Control 3 Chế Độ`: Chuyển đổi mượt mà giữa `Tồn Kho Main`, `Lịch Sử Nhập (IN)` và `Lịch Sử Xuất (OUT)`.
+    * `Cụm Thao Tác Xuất Next Nổi Bật`: Ô nhập `NEXT PLAN` tự động in hoa, nút `XUẤT NEXT` dùng gradient Emerald 3 chiều sắc sảo, tiện lợi.
+    * `Cụm Quản Trị Rác Sàn An Toàn`: Nút `Xóa Rác` & `Ẩn Rác` bố trí ở góc an toàn với biểu tượng ổ khóa, ngăn ngừa bấm nhầm.
+    * `Tiện Ích Tìm Kiếm Tức Thì & Excel`: Ô Quick Search trực tiếp trên dữ liệu đang tải, nút `EX1 (Đang lọc)` và `EX2 (Tất cả)` xuất file Excel nhanh chóng.
+  - **Dashboard 5 Micro-Cards KPI Realtime**:
+    * Thống kê tự động: Tổng cuộn tồn, Tổng lượng tồn (m/EA), Cuộn quá hạn (> 1 ngày cảnh báo đỏ), Chủng loại vật liệu, Tỷ lệ chuẩn FSC.
+  - **Kiến trúc Module hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `KHOAO.backup.tsx` (665 dòng).
+    * Phân rã thành 7 module độc lập trong `src/pages/qlsx/QLSXPLAN/KHOAO/PrecisionKhoAo/`: `PrecisionKhoAo.scss` (627 dòng), `PrecisionKhoAoColumns.tsx` (281 dòng), `PrecisionKhoAoKpi.tsx` (205 dòng), `PrecisionKhoAoHeader.tsx` (49 dòng), `PrecisionKhoAoToolbar.tsx` (167 dòng), `useKhoAoData.ts` (224 dòng), `khoAoActionHandlers.ts` (263 dòng).
+    * `KHOAO.tsx`: Controller chính tinh gọn xuống còn **121 dòng**.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 7/7 file đạt 0 Errors / 0 Warnings (`PASS: 100% OK`).
+    * Toàn bộ 8/8 endpoint trên Vite Dev Server (port 3001) đều phản hồi HTTP 200 OK.
+
+- [x] Hoàn thiện Refactor Toàn Diện Màn Hình Giám Sát Thiết Bị TV Phân Xưởng (`EQ_STATUS.tsx`) Chuẩn Google Stitch Andon TV Dashboard:
+  - Nâng cấp toàn diện cho Andon TV phân xưởng: Đồng hồ số realtime, KPI toàn xưởng, Countdown progress bar, Thẻ máy Andon công nghệ cao và thanh điều khiển tự ẩn khi Fullscreen.
+  - Phân rã thành các module chuyên biệt trong `PrecisionEqStatus/`, 100% đạt chuẩn TypeScript 0 Errors và Vite Dev Server HTTP 200 OK.
+
 - [x] Hoàn thiện Refactor Toàn Diện Màn Hình Trạng Thái Chỉ Thị Sản Xuất (`PLAN_STATUS.tsx`) Chuẩn Google Stitch High-Density Enterprise:
   - **Bảo toàn 100% logic nghiệp vụ & 7 mốc quy trình sản xuất**:
     * Duy trì toàn bộ các mốc trạng thái then chốt: Xuất dao (`XUATDAO`), BĐ Setting (`SETTING_START_TIME`), KT Setting / Chạy Mass (`MASS_START_TIME`), ĐK xuất liệu (`DKXL`), Xuất liệu chính (`XUATLIEU`), In tem (`IN_TEM`), Chốt báo cáo (`CHOTBC`).
