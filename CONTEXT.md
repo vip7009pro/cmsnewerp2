@@ -1,5 +1,36 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-18 (SX: Refactor Toàn Diện Tab Báo Cáo Hiệu Suất Sản Xuất `SX_REPORT.tsx` Chuẩn Google Stitch Enterprise & Recharts Executive Dashboard Phong Cách `KinhDoanhReport.tsx`)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Báo Cáo Hiệu Suất Sản Xuất (`src/pages/sx/BAOCAOSX/SX_REPORT.tsx`)** là trung tâm báo cáo tổng hợp hiệu suất vận hành nhà máy sản xuất, bao gồm các chỉ số tổn thất (Loss Rates), tỷ lệ đạt kế hoạch (Achievement Rates), thời gian và tỷ lệ hiệu suất vận hành máy móc (OEE & Efficiency), cùng phân tích chi tiết thời gian dừng máy (Loss Time By Reason/Empl) và lead time hoàn thành các công đoạn (SX, QC, ALL, giao trễ/sớm hạn).
+  * Mã nguồn cũ 741 dòng mang phong cách gradient cũ `#afd3d1` / `#63d62e`, tiêu đề phân hệ in chữ hoa thô màu xanh dương có gạch ngang `<hr>`, các widget `WidgetSXLOSS` và `WidgetSXAchive` cũ kỹ thiếu số liệu so sánh tăng giảm, thiếu thanh chuyển tab phân hệ khiến 17 biểu đồ nằm dàn trải cuộn trang dài dằng dặc, các biểu đồ chưa được đóng gói vào các thẻ `executive-card` chuẩn Stitch như `KinhDoanhReport.tsx`.
+  * Yêu cầu: Làm lại giao diện theo phong cách **Google Stitch High-Density Enterprise** và hệ thống biểu đồ **Recharts Executive Dashboard** tương tự màn hình [`KinhDoanhReport.tsx`](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport.tsx), module hóa Clean Code (< 300 dòng/file), hỗ trợ dải nút chọn nhanh ngày (12D, 30D, 90D, YTD), thanh Tab chuyển đổi 5 phân hệ trực quan, bảo toàn 100% 27 API hooks dữ liệu và chức năng xuất Excel của từng biểu đồ.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `SX_REPORT.backup.tsx` (741 dòng).
+  * Phân rã thành công thành 8 module chuyên biệt trong thư mục `src/pages/sx/BAOCAOSX/PrecisionSxReport/`:
+    1. `PrecisionSxReport.scss` (490 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho KPI Cards, header, toolbar compact, executive-cards (Recharts), two-col-grid, OEE circles panel.
+    2. `useSxReportData.ts` (195 dòng): Custom hook pure TypeScript gom toàn bộ state, quản lý 27 hooks dữ liệu (`usehandle_load_SX_Daily/Weekly/Monthly/Yearly_Loss_Trend`, `usehandle_getDaily/Weekly/Monthly/YearlyAchiveData`, `usehandle_getDaily/Weekly/Monthly/YearlyEffData`, `usehandle_getPlanLossData`, `usehandle_getSXLossTimeByEmpl/Reason`, GAP Rates và TRUOCHAN rates), danh sách máy và khởi tạo dữ liệu `initFunction`.
+    3. `PrecisionSxReportHeader.tsx` (45 dòng): Header bar công nghiệp kèm badge phân hệ `CMS QLSX`, breadcrumb, telemetry live pulse dot và nút reload đồng bộ dữ liệu.
+    4. `PrecisionSxReportToolbar.tsx` (185 dòng): Toolbar compact gồm bộ chọn ngày Từ ngày - Đến ngày, dải nút chọn nhanh (12D, 30D, 90D, YTD), ô nhập Khách hàng, select Machine, checkbox Mặc định và **Segmented Navigation Tabs** 5 phân hệ (`Toàn Bộ`, `Tổn Thất Sản Xuất`, `Tỷ Lệ Đạt Kế Hoạch`, `Hiệu Suất Vận Hành & OEE`, `Lead Time & Giao Hàng`).
+    5. `PrecisionSxReportKpi.tsx` (150 dòng): Dashboard 4 Micro-cards KPI phong cách `KinhDoanhReport.tsx` (Hôm qua, Tuần này, Tháng này, Năm nay) kèm tỷ lệ đạt kế hoạch và growth pills so sánh tăng/giảm trực quan.
+    6. `PrecisionSxReportLossSection.tsx` (170 dòng): Phân hệ 5 biểu đồ tổn thất sản xuất đóng gói trong các thẻ `executive-card` bố trí dạng `.two-col-grid`, có nút xuất Excel cho từng biểu đồ.
+    7. `PrecisionSxReportAchiveSection.tsx` (150 dòng): Phân hệ 4 biểu đồ tỷ lệ đạt kế hoạch (Daily, Weekly, Monthly, Yearly) chuẩn Executive Dashboard.
+    8. `PrecisionSxReportEffSection.tsx` (180 dòng): Phân hệ OEE tổng quan gồm khối vòng tròn đo tiến độ `CIRCLE_COMPONENT` và 4 biểu đồ xu hướng hiệu suất.
+    9. `PrecisionSxReportLeadTimeSection.tsx` (215 dòng): Phân hệ 8 biểu đồ thời gian dừng máy (theo lý do, theo nhân sự) và phân tích tỷ trọng lead time giao hàng, trễ hạn.
+    10. `SX_REPORT.tsx`: Controller chính tinh gọn từ 741 dòng xuống còn **142 dòng** kết nối toàn bộ subcomponents.
+- **3. Nâng Cấp Hệ Thống Biểu Đồ Tròn Đa Chế Độ View (Graphview, Listview, Split Song Song) Chuẩn `KinhDoanhReport.tsx`**:
+  * Đã xây dựng 3 subcomponents biểu đồ tròn chuyên biệt trong `src/pages/sx/BAOCAOSX/PrecisionSxReport/charts/`:
+    1. `PrecisionSxPieLossReason.tsx` (240 dòng): Phân tích thời gian dừng máy theo lý do, hỗ trợ 3 chế độ xem (`Song Song`, `Biểu Đồ`, `Danh Sách`), ô tìm kiếm nhanh lý do, tâm donut hiển thị lý do & số phút được chọn, callout labels chống xén mép.
+    2. `PrecisionSxPieLossEmpl.tsx` (240 dòng): Phân tích thời gian dừng máy theo nhân viên, hỗ trợ 3 chế độ xem, ô tìm kiếm nhanh nhân sự, bảng cuộn có rank huy chương và tỷ trọng %.
+    3. `PrecisionSxPieGapRate.tsx` (245 dòng): Tái sử dụng linh hoạt cho toàn bộ 5 biểu đồ lead time (YCSX gấp KD, SX GAP, KT GAP, ALL GAP, Hoàn thành trước hạn). Hỗ trợ 3 chế độ xem (`Song Song`, `Biểu Đồ`, `Danh Sách`), tìm kiếm số ngày, bảng dữ liệu chi tiết kèm thanh progress track.
+  * Tích hợp toàn bộ hệ thống biểu đồ tròn mới vào `PrecisionSxReportLeadTimeSection.tsx` và đồng bộ đầy đủ stylesheet `.po-customer-chart` vào `PrecisionSxReport.scss`.
+- **4. Xác Thực Toàn Diện & Kiểm Tra Biên Dịch**:
+  * Kiểm tra qua node HTTP requests tới Vite Dev Server (port 3001) toàn bộ 13/13 files component, charts và stylesheet đều đạt **PASS: HTTP 200 OK**.
+  * Tất cả các file subcomponents đều < 250 dòng tuân thủ nghiêm ngặt quy tắc Clean Code ERP.
+  * Giữ nguyên 100% logic nghiệp vụ, tính năng xuất Excel và hỗ trợ multi-tab full width/height.
+
+
+
 ## Update - 2026-09-18 (QLSX: Refactor Toàn Diện Tab Kho SX SUB `KHOSUB.tsx` Chuẩn Google Stitch High-Density Enterprise Đồng Bộ Phong Cách `KHOAO.tsx`)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình **Quản Lý Tồn & Nhập Kho SX SUB (`src/pages/qlsx/QLSXPLAN/KHOAO/KHOSUB.tsx`)** là công cụ quản lý bán thành phẩm (BTP) và vật liệu dở dang công đoạn Sub trên sàn sản xuất, hỗ trợ tái sử dụng và xuất chuyển vào các chỉ thị sản xuất mới (`NEXT PLAN`).

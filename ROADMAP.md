@@ -1,5 +1,43 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Báo Cáo Hiệu Suất Sản Xuất (`SX_REPORT.tsx`) Chuẩn Google Stitch Enterprise & Recharts Executive Dashboard Phong Cách `KinhDoanhReport.tsx`:
+  - **Bảo toàn 100% logic nghiệp vụ, 27 API hooks & Tính năng xuất Excel**:
+    * Duy trì đầy đủ các hooks nạp dữ liệu: `usehandle_load_SX_Daily/Weekly/Monthly/Yearly_Loss_Trend`, `usehandle_getDaily/Weekly/Monthly/YearlyAchiveData`, `usehandle_getDaily/Weekly/Monthly/YearlyEffData`, `usehandle_getPlanLossData`, `usehandle_getSXLossTimeByEmpl/Reason`, GAP Rates và TRUOCHAN rates.
+    * Duy trì logic tải danh sách máy `f_getMachineListData` và lọc theo máy sản xuất.
+    * Bảo toàn 100% các nút xuất Excel cho từng biểu đồ tương ứng.
+  - **Đồng bộ phong cách Recharts Executive Dashboard của KinhDoanhReport.tsx**:
+    * Thanh Header công nghiệp `CMS QLSX • Production Performance Executive Dashboard` với Telemetry live pulse dot và nút Reload.
+    * Toolbar compact gồm bộ lọc Từ ngày - Đến ngày, dải nút chọn nhanh (12D, 30D, 90D, YTD), ô nhập Khách hàng, select Machine, checkbox Mặc định và **Segmented Navigation Tabs** 5 phân hệ (`Toàn Bộ`, `Tổn Thất Sản Xuất`, `Tỷ Lệ Đạt Kế Hoạch`, `Hiệu Suất Vận Hành & OEE`, `Lead Time & Giao Hàng`).
+    * Dashboard 4 Micro-cards KPI realtime (Hôm qua, Tuần này, Tháng này, Năm nay) kèm tỷ lệ đạt và growth pills so sánh tăng/giảm trực quan.
+    * Toàn bộ 17 biểu đồ và đồ thị được đóng gói vào các thẻ `.executive-card` bố trí dạng lưới `.two-col-grid`, có tiêu đề phụ, icon màu và nút xuất Excel chuyên biệt.
+    * Phân hệ Hiệu Suất OEE tích hợp các khối vòng tròn đo tiến độ `CIRCLE_COMPONENT` trong thẻ Glass Card sang trọng.
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `SX_REPORT.backup.tsx` (741 dòng).
+    * Phân rã thành các module chuyên biệt tại `src/pages/sx/BAOCAOSX/PrecisionSxReport/`:
+      1. `PrecisionSxReport.scss`: Stylesheet SCSS Google Stitch Enterprise & Multi-Tab.
+      2. `useSxReportData.ts`: Custom hook pure TypeScript gom state, 27 hooks dữ liệu và hàm `initFunction`.
+      3. `PrecisionSxReportHeader.tsx`: Header bar công nghiệp kèm telemetry & reload.
+      4. `PrecisionSxReportToolbar.tsx`: Toolbar compact & segmented navigation tabs.
+      5. `PrecisionSxReportKpi.tsx`: 4 Micro-cards KPI realtime phong cách KinhDoanhReport.
+      6. `PrecisionSxReportLossSection.tsx`: Phân hệ 5 biểu đồ tổn thất sản xuất.
+      7. `PrecisionSxReportAchiveSection.tsx`: Phân hệ 4 biểu đồ tỷ lệ đạt kế hoạch.
+      8. `PrecisionSxReportEffSection.tsx`: Phân hệ OEE tổng quan và 4 biểu đồ hiệu suất.
+      9. `PrecisionSxReportLeadTimeSection.tsx`: Phân hệ 8 biểu đồ thời gian dừng máy và lead time giao hàng.
+      10. `charts/PrecisionSxPieLossReason.tsx`: Biểu đồ tròn dừng máy theo lý do 3 chế độ xem (`Song Song`, `Biểu Đồ`, `Danh Sách`).
+      11. `charts/PrecisionSxPieLossEmpl.tsx`: Biểu đồ tròn dừng máy theo nhân viên 3 chế độ xem.
+      12. `charts/PrecisionSxPieGapRate.tsx`: Biểu đồ tròn GAP Rates & Hoàn thành trước hạn 3 chế độ xem.
+    * Controller chính `SX_REPORT.tsx` tinh gọn từ 741 dòng xuống còn **142 dòng**.
+  - **Hệ thống Biểu Đồ Tròn Đa Chế Độ View (Graphview, Listview, Split Song Song) Chuẩn `KinhDoanhReport.tsx`**:
+    * Nâng cấp toàn diện các biểu đồ tròn (Loss Time By Reason, Loss Time By Employee, YCSX GAP Rate KD, SX GAP Rate, KT GAP Rate, ALL GAP Rate, Hoàn thành trước hạn).
+    * Tích hợp thanh điều khiển với 3 nút chuyển chế độ linh hoạt: `Song Song` (Split Donut + Bảng), `Biểu Đồ` (Graphview), `Danh Sách` (Listview).
+    * Ô Quick Search tìm kiếm nhanh tức thì theo tên lý do / nhân sự / số ngày.
+    * Tâm donut tương tác hiển thị thông tin chi tiết và tỷ trọng % của mục được hover.
+    * Bảng danh sách cuộn mượt mà có rank huy chương (vàng, bạc, đồng), màu chỉ thị đồng bộ và thanh tiến độ progress track.
+  - **Xác thực toàn diện**:
+    * Kiểm tra qua node HTTP requests tới Vite Dev Server (port 3001) toàn bộ 13/13 files component, charts và stylesheet đều đạt **PASS: HTTP 200 OK**.
+    * Không có lỗi lint hoặc runtime, hỗ trợ co giãn responsive mượt mà trên desktop và di động.
+
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Kho SX SUB (`KHOSUB.tsx`) Chuẩn Google Stitch High-Density Enterprise Đồng Bộ Phong Cách `KHOAO.tsx`:
   - **Bảo toàn 100% logic xuất kho `handle_xuatKhoSub` & 2 API nạp dữ liệu**:
     * Duy trì toàn bộ các API: `f_load_tonkhosub` và `f_load_nhapkhosub`.
