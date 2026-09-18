@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Sector } from "recharts";
 import { FiPieChart, FiList, FiColumns, FiSearch } from "react-icons/fi";
-import { SX_LOSSTIME_REASON_DATA } from "../../../qlsx/QLSXPLAN/interfaces/khsxInterface";
+import { SX_LOSSTIME_REASON_DATA } from "../../../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 
 const ENTERPRISE_PALETTE = [
   "#dc2626", "#ea580c", "#d97706", "#2563eb", "#059669", "#7c3aed",

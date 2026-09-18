@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from "react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Sector } from "recharts";
 import { FiPieChart, FiList, FiColumns, FiSearch } from "react-icons/fi";
-import { CNT_GAP_DATA } from "../../../qc/interfaces/qcInterface";
+import { CNT_GAP_DATA } from "../../../../qc/interfaces/qcInterface";
+
 
 const ENTERPRISE_PALETTE = [
   "#2563eb", "#059669", "#d97706", "#7c3aed", "#e11d48", "#0891b2",
