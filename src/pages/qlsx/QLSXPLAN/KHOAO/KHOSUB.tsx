@@ -1,484 +1,128 @@
-import moment from "moment";
-import { useEffect, useRef, useState } from "react";
-import Swal from "sweetalert2";
-import "./KHOAO.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
-import { UserData } from "../../../../api/GlobalInterface";
+import React from "react";
 import AGTable from "../../../../components/DataTable/AGTable";
-import { datediff } from "../../../kinhdoanh/utils/kdUtils";
-import { LICHSUNHAPKHOAO, TONLIEUXUONG } from "../interfaces/khsxInterface";
-import { f_checkMlotTonKhoSub, f_checkNextPlanFSC, f_checkNhapKhoTPDuHayChua, f_checktontaiMlotPlanIdSuDung, f_isM_CODE_CHITHI, f_isNextPlanClosed, f_load_nhapkhosub, f_load_tonkhosub, f_set_YN_KHO_SUB_INPUT } from "../utils/khsxUtils";
-import { checkBP } from "../../../../api/services/permissionService";
-const KHOSUB = ({ NEXT_PLAN }: { NEXT_PLAN?: string }) => {
-  const [nextPermission, setNextPermission] = useState(true);
-  const [readyRender, setReadyRender] = useState(false);
-  const userData: UserData | undefined = useSelector(
-    (state: RootState) => state.totalSlice.userData,
-  );
-  const [isLoading, setisLoading] = useState(false);
-  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [factory, setFactory] = useState("ALL");
-  const [datatable, setDataTable] = useState<any[]>([]);
-  const [current_Column, setCurrent_Column] = useState<any[]>([]);
-  const tonkhoaodatafilter = useRef<Array<TONLIEUXUONG>>([]);
-  const [nextPlan, setNextPlan] = useState(
-    NEXT_PLAN === undefined ? "" : NEXT_PLAN,
-  );
-  const [tableTitle, setTableTitle] = useState("");
-  const column_nhapkhoaotable = [
-    {
-      field: "IN_KHO_ID", headerName: "IN_KHO_ID", width: 100, headerCheckboxSelection: true,
-      checkboxSelection: true,
-    },
-    { field: "FACTORY", headerName: "FACTORY", width: 100 },
-    { field: "PHANLOAI", headerName: "PHANLOAI", width: 80 },
-    { field: "M_CODE", headerName: "M_CODE", width: 80 },
-    { field: "M_NAME", headerName: "M_NAME", width: 150 },
-    { field: "WIDTH_CD", headerName: "WIDTH_CD", width: 80 },
-    { field: "M_LOT_NO", headerName: "M_LOT_NO", width: 120 },
-    { field: "PLAN_ID_INPUT", headerName: "PLAN_ID_INPUT", width: 120 },
-    { field: "ROLL_QTY", headerName: "ROLL_QTY", width: 80 },
-    { field: "IN_QTY", headerName: "IN_QTY", width: 80 },
-    { field: "TOTAL_IN_QTY", headerName: "TOTAL_IN_QTY", width: 120 },
-    { field: "PLAN_ID_SUDUNG", headerName: "PLAN_ID_SUDUNG", width: 120 },
-    { field: "USE_YN", headerName: "USE_YN", width: 90 },
-    { field: "REMARK", headerName: "REMARK", width: 90 },
-    { field: "INS_DATE", headerName: "INS_DATE", width: 150 },
-    { field: "KHO_CFM_DATE", headerName: "KHO_CFM_DATE", width: 100 },
-    { field: "RETURN_STATUS", headerName: "RETURN_STATUS", width: 100 },
-  ];
-  const column_tonkhoaotable = [
-    {
-      field: "IN_KHO_ID", headerName: "IN_KHO_ID", width: 100, headerCheckboxSelection: true,
-      checkboxSelection: true,
-    },
-    { field: "FACTORY", headerName: "NM", width: 60, editable: false },
-    {
-      field: "PLAN_ID_INPUT",
-      headerName: "PLAN_ID",
-      width: 80,
-      editable: false,
-    },
-    { field: "PHANLOAI", headerName: "PL", width: 40, editable: false },
-    { field: "M_CODE", headerName: "M_CODE", width: 80, editable: false },
-    {
-      field: "M_NAME",
-      headerName: "M_NAME",
-      width: 120,
-      editable: false,
-      cellRenderer: (params: any) => {
-        if (params.data.LIEUQL_SX === 1) {
-          return (
-            <span style={{ color: "red", fontWeight: "bold" }}>
-              {params.data.M_NAME}
-            </span>
-          );
-        } else {
-          return <span style={{ color: "black" }}>{params.data.M_NAME}</span>;
-        }
-      },
-    },
-    { field: "WIDTH_CD", headerName: "SIZE", width: 50, editable: false },
-    {
-      field: "M_LOT_NO", headerName: "M_LOT_NO", width: 90, editable: false, cellRenderer: (params: any) => {
-        const date1 = moment.utc().format('YYYY-MM-DD');
-        const date2 = params.data.INS_DATE;
-        var diff: number = datediff(date1, date2);
-        let ins_weekday = moment.utc(date2).weekday();
-        if (ins_weekday >= 5) diff = diff - 2;
-        if (diff > 1) {
-          return (
-            <span style={{ color: "red", fontWeight: "bold" }}>
-              {params.data.M_LOT_NO}
-            </span>
-          );
-        } else {
-          return <span style={{ color: "green" }}>{params.data.M_LOT_NO}</span>;
-        }
-      },
-    },
-    {
-      field: "ROLL_QTY",
-      headerName: "ROLL_QTY",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        if (params.data.PHANLOAI !== "F") {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.data.ROLL_QTY?.toLocaleString("en", "US")}
-            </span>
-          );
-        } else {
-          return (
-            <span style={{ color: "red", fontWeight: "bold" }}>
-              {params.data.ROLL_QTY?.toLocaleString("en", "US")}
-            </span>
-          );
-        }
-      },
-    },
-    {
-      field: "IN_QTY",
-      headerName: "IN_QTY",
-      width: 70,
-      editable: false,
-      cellRenderer: (params: any) => {
-        if (params.data.PHANLOAI !== "F") {
-          return (
-            <span style={{ color: "blue" }}>
-              {params.data.IN_QTY?.toLocaleString("en", "US")}
-            </span>
-          );
-        } else {
-          return (
-            <span style={{ color: "red", fontWeight: "bold" }}>
-              {params.data.IN_QTY?.toLocaleString("en", "US")}
-            </span>
-          );
-        }
-      },
-    },
-    {
-      field: "TOTAL_IN_QTY",
-      headerName: "TOTAL_IN_QTY",
-      width: 120,
-      editable: false,
-      cellRenderer: (params: any) => {
-        if (params.data.PHANLOAI !== "F") {
-          return (
-            <span style={{ color: "green", fontWeight: "bold" }}>
-              {params.data.TOTAL_IN_QTY?.toLocaleString("en", "US")}
-            </span>
-          );
-        } else {
-          return (
-            <span style={{ color: "red", fontWeight: "bold" }}>
-              {params.data.TOTAL_IN_QTY?.toLocaleString("en", "US")}
-            </span>
-          );
-        }
-      },
-    },
-    {
-      field: "FSC",
-      headerName: "FSC",
-      width: 120,
-      editable: false,
-      cellRenderer: (params: any) => {
-        if (params.data.PHANLOAI === "Y") {
-          return (
-            <span style={{ color: "green", fontWeight: "bold" }}>YES</span>
-          );
-        } else {
-          return <span style={{ color: "red", fontWeight: "bold" }}>NO</span>;
-        }
-      },
-    },
-    { field: "PLAN_EQ", headerName: "MACHINE", width: 70, editable: false },
-    { field: "INS_DATE", headerName: "INS_DATE", width: 100, editable: false },
-  ];
-  const load_nhapkhoao = async () => {
-    let lsnhapkhoao: LICHSUNHAPKHOAO[] = await f_load_nhapkhosub({
-      FROM_DATE: fromdate,
-      TO_DATE: todate,
-      FACTORY: factory,
-    });
-    setDataTable(lsnhapkhoao);
-    setCurrent_Column(column_nhapkhoaotable);
-    setReadyRender(true);
-    setisLoading(false);
-    setTableTitle("LỊCH SỬ NHẬP Kho SX SUB");
-    if (lsnhapkhoao.length > 0) {
-      Swal.fire(
-        "Thông báo",
-        "Đã load: " + lsnhapkhoao.length + " dòng",
-        "success",
-      );
-    }
-    else {
-      Swal.fire("Thông báo", "Không có dòng nào", "error");
-    }
-  };
-  const handle_loadKhoAo = async (shownotification: boolean) => {
-    let tonkhoao: TONLIEUXUONG[] = await f_load_tonkhosub({
-      FACTORY: factory,
-    });
-    setDataTable(tonkhoao);
-    setCurrent_Column(column_tonkhoaotable);
-    setReadyRender(true);
-    setisLoading(false);
-    setTableTitle("TỒN Kho SX SUB");
-    if (tonkhoao.length > 0) {
-      if (shownotification)
-        Swal.fire(
-          "Thông báo",
-          "Đã load: " + tonkhoao.length + " dòng",
-          "success",
-        );
-    }
-    else {
-      Swal.fire("Thông báo", "Không có dòng nào", "error");
-    }
-  };
-  const handle_xuatKhoSub = async () => {
-    //console.log(nextPlan);
-    if (nextPlan !== "" && nextPlan !== undefined) {
-      if (tonkhoaodatafilter.current.length > 0) {
-        let err_code: string = "0";
-        for (let i = 0; i < tonkhoaodatafilter.current.length; i++) {
-          let checkYCSX_USE_YN: string = await f_checkNhapKhoTPDuHayChua(nextPlan);
-          let checktontaikhoao: boolean = await f_checktontaiMlotPlanIdSuDung(nextPlan, tonkhoaodatafilter.current[i].M_LOT_NO);
-          let checklieuchithi: boolean = await f_isM_CODE_CHITHI(nextPlan, tonkhoaodatafilter.current[i].M_CODE);
-          let isTonKhoAoMLOTNO: boolean = await f_checkMlotTonKhoSub(tonkhoaodatafilter.current[i].M_LOT_NO)
-          let checkNextPlanClosed = await f_isNextPlanClosed(nextPlan);
-          let checkFSC: string = (await f_checkNextPlanFSC(nextPlan)).FSC;
-          var date1 = moment.utc().format('YYYY-MM-DD');
-          var date2 = tonkhoaodatafilter.current[i].INS_DATE;
-          var diff: number = datediff(date1, date2);
-          let ins_weekday = moment.utc(date2).weekday();
-          if (ins_weekday >= 5) diff = diff - 2;
-          let isExpired: boolean = diff > 1;
-          let checkFSC_CODE: string = (await f_checkNextPlanFSC(nextPlan)).FSC_CODE;
-          if (
-            checklieuchithi === true &&
-            nextPlan !== tonkhoaodatafilter.current[i].PLAN_ID_INPUT &&
-            checkFSC === tonkhoaodatafilter.current[i].FSC &&
-            checktontaikhoao &&
-            checkYCSX_USE_YN === 'Y' &&
-            !checkNextPlanClosed &&
-            isTonKhoAoMLOTNO &&
-            !isExpired
-          ) {
+import { AiOutlineSearch, AiOutlineFileExcel } from "react-icons/ai";
+import { PrecisionKhoSubHeader } from "./PrecisionKhoSub/PrecisionKhoSubHeader";
+import { PrecisionKhoSubToolbar } from "./PrecisionKhoSub/PrecisionKhoSubToolbar";
+import { PrecisionKhoSubKpi } from "./PrecisionKhoSub/PrecisionKhoSubKpi";
+import { useKhoSubData } from "./PrecisionKhoSub/useKhoSubData";
+import "./PrecisionKhoSub/PrecisionKhoSub.scss";
 
-            if (!(await f_set_YN_KHO_SUB_INPUT({
-              FACTORY: tonkhoaodatafilter.current[i].FACTORY,
-              PHANLOAI: tonkhoaodatafilter.current[i].PHANLOAI,
-              PLAN_ID_INPUT: tonkhoaodatafilter.current[i].PLAN_ID_INPUT,
-              PLAN_ID_SUDUNG: nextPlan,
-              M_CODE: tonkhoaodatafilter.current[i].M_CODE,
-              M_LOT_NO: tonkhoaodatafilter.current[i].M_LOT_NO,
-              TOTAL_IN_QTY: tonkhoaodatafilter.current[i].TOTAL_IN_QTY,
-              USE_YN: "X",
-              IN_KHO_ID: tonkhoaodatafilter.current[i].IN_KHO_ID,
-            }))) {
-              err_code += "| Có lỗi trong quá trình set YN IN KHO SUB";
-            }
+interface KHOSUBProps {
+  NEXT_PLAN?: string;
+}
 
-          } else {
-            if (!checklieuchithi) {
-              err_code += `| Liệu:  ${tonkhoaodatafilter.current[i].M_NAME} chưa được đăng ký xuất liệu`;
-            }
-            else if (nextPlan === tonkhoaodatafilter.current[i].PLAN_ID_INPUT) {
-              err_code += `| Liệu:  ${tonkhoaodatafilter.current[i].M_NAME} không thể xuất lại vào chỉ thị đã từng dùng nó`;
-            }
-            else if (checkFSC !== tonkhoaodatafilter.current[i].FSC) {
-              err_code += `| Liệu:  ${tonkhoaodatafilter.current[i].M_NAME} không cùng trạng thái liệu FSC với code được chỉ thị vào`;
-            }
-            else if (!checktontaikhoao) {
-              err_code += `| Liệu:  ${tonkhoaodatafilter.current[i].M_NAME} liệu này đã được xuát vào chỉ thị  ${nextPlan} rồi, không xuất lại được nữa`;
-            }
-            else if (checkYCSX_USE_YN !== 'Y') {
-              err_code += `| YCSX đã nhập kho đủ, không thể input liệu để chạy nữa, chạy nữa là dư !`;
-            }
-            else if (checkNextPlanClosed === true) {
-              err_code += `| Chỉ thị next đã chốt báo cáo, không thể input liệu!`;
-            }
-            else if (!isTonKhoAoMLOTNO) {
-              err_code += `| Cuộn liệu đã được sử dụng!`;
-            }
-            else if (isExpired) {
-              err_code += `| Cuộn liệu tồn quá lâu, hãy trả Kho NVL rồi sử dụng!`;
-            }
-          }
-        }
-        if (err_code !== "0") {
-          Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
-          handle_loadKhoAo(false);
-        } else {
-          handle_loadKhoAo(true);
-          tonkhoaodatafilter.current = []
-        }
-      } else {
-        Swal.fire("Thông báo", "Chọn ít nhất 1 liệu để xuất kho", "error");
-      }
-    } else {
-      Swal.fire("Thông báo", "Chưa nhập next PLAN", "error");
-    }
-  };
-  useEffect(() => {
-    if (NEXT_PLAN === undefined) setNextPlan("");
-    setisLoading(true);
-    setReadyRender(false);
-    setCurrent_Column(column_tonkhoaotable);
-    handle_loadKhoAo(true);
-    //setColumnDefinition(column_inspect_output);
-  }, []);
+const KHOSUB: React.FC<KHOSUBProps> = ({ NEXT_PLAN }) => {
+  const {
+    activeTab,
+    fromdate,
+    setFromDate,
+    todate,
+    setToDate,
+    factory,
+    setFactory,
+    nextPlan,
+    setNextPlan,
+    searchKeyword,
+    setSearchKeyword,
+    isLoading,
+    datatable,
+    filteredData,
+    columns,
+    tonkhoaodatafilter,
+    handleTabChange,
+    handleRefresh,
+    handle_xuatKhoSub,
+    exportExcel,
+  } = useKhoSubData(NEXT_PLAN);
+
   return (
-    <div className="khoao">
-      <div className="tracuuDataInspection">
-        <div className="tracuuDataInspectionform">
-          <div className="forminput">
-            <div className="forminputcolumn">
-              <label>
-                <b>FROM DATE</b>
-                <input
-                  type="date"
-                  value={fromdate.slice(0, 10)}
-                  onChange={(e) => setFromDate(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>TO DATE</b>
-                <input
-                  type="date"
-                  value={todate.slice(0, 10)}
-                  onChange={(e) => setToDate(e.target.value)}
-                ></input>
-              </label>
+    <div className="precision-khosub">
+      {/* Header công nghiệp với Breadcrumb & Telemetry */}
+      <PrecisionKhoSubHeader
+        activeTab={activeTab}
+        nextPlan={nextPlan}
+        totalRecords={filteredData.length}
+      />
+
+      {/* Toolbar 2 tầng: Switcher Tabs, Bộ lọc & Action Groups */}
+      <PrecisionKhoSubToolbar
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        fromdate={fromdate}
+        setFromDate={setFromDate}
+        todate={todate}
+        setToDate={setToDate}
+        factory={factory}
+        setFactory={setFactory}
+        nextPlan={nextPlan}
+        setNextPlan={setNextPlan}
+        onXuatNext={handle_xuatKhoSub}
+        onRefresh={handleRefresh}
+        isLoading={isLoading}
+      />
+
+      {/* Micro-cards KPI Dashboard */}
+      <PrecisionKhoSubKpi activeTab={activeTab} data={filteredData} />
+
+      {/* Data Grid Container */}
+      <div className="precision-khosub__gridContainer">
+        <div className="precision-khosub__gridToolbar">
+          <div className="gridToolbar-left">
+            <div className="search-box">
+              <AiOutlineSearch className="search-icon" />
+              <input
+                type="text"
+                placeholder="Lọc nhanh mã liệu, tên liệu, số lot, plan..."
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+              />
             </div>
-            <div className="forminputcolumn">
-              <label>
-                <b>FACTORY:</b>
-                <select
-                  name="phanloai"
-                  value={factory}
-                  onChange={(e) => {
-                    setFactory(e.target.value);
-                  }}
-                >
-                  <option value="ALL">ALL</option>
-                  <option value="NM1">NM1</option>
-                  <option value="NM2">NM2</option>
-                </select>
-              </label>
-              <label>
-                <b>NEXT PLAN</b>
-                <input
-                  type="text"
-                  value={nextPlan}
-                  onChange={(e) => setNextPlan(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className="forminputcolumn">
+
+            <div className="grid-actions">
               <button
-                className="tranhatky"
-                onClick={() => {
-                  setisLoading(true);
-                  setReadyRender(false);
-                  setCurrent_Column(column_tonkhoaotable);
-                  setNextPermission(true);
-                  handle_loadKhoAo(true);
-                }}
+                type="button"
+                className="grid-btn grid-btn--excel"
+                onClick={() => exportExcel("EX1")}
+                title="Xuất dữ liệu đang lọc ra file Excel"
               >
-                TỒN KHO SUB
+                <AiOutlineFileExcel />
+                <span>EX1</span>
+                <span className="badge">Đang lọc</span>
               </button>
+
               <button
-                className="tranhatky"
-                onClick={() => {
-                  setisLoading(true);
-                  setReadyRender(false);
-                  setCurrent_Column(column_nhapkhoaotable);
-                  setNextPermission(false);
-                  load_nhapkhoao();
-                }}
+                type="button"
+                className="grid-btn grid-btn--excel"
+                onClick={() => exportExcel("EX2")}
+                title="Xuất toàn bộ dữ liệu ra file Excel"
               >
-                LS IN
+                <AiOutlineFileExcel />
+                <span>EX2</span>
+                <span className="badge">Tất cả</span>
               </button>
             </div>
-            <div className="forminputcolumn">
-              <button
-                className="xuatnext"
-                onClick={() => {
-                  if (nextPermission) {
-                    /*  checkBP(
-                      userData?.EMPL_NO,
-                      userData?.MAINDEPTNAME,
-                      ["QLSX"],
-                      handle_xuatKhoSub
-                    ); */
-                    checkBP(
-                      userData,
-                      ["QLSX"],
-                      ["ALL"],
-                      ["ALL"],
-                      handle_xuatKhoSub,
-                    );
-                  } else {
-                    Swal.fire(
-                      "Thông báo",
-                      "Đang không ở tab tồn Kho SX SUB",
-                      "error",
-                    );
-                  }
-                  //handle_xuatKhoSub();
-                }}
-              >
-                XUẤT NEXT
-              </button>
-              {/* <button
-                className="tranhatky"
-                onClick={() => {
-                  setisLoading(true);
-                  setReadyRender(false);
-                  setCurrent_Column(column_xuatkhoaotable);
-                  setNextPermission(false);
-                  load_xuatkhoao();
-                }}
-              >
-                LS OUT
-              </button> */}
-            </div>
-            {/* <div className="forminputcolumn">
-              <button
-                className="xoakhoao"
-                onClick={() => {
-                  handle_nhappassword_xoarac();
-                  //handle_xuatKhoSub();
-                }}
-              >
-                Xóa rác
-              </button>
-              <button
-                className="xoakhoao"
-                onClick={() => {
-                  handle_nhappassword_anrac();
-                }}
-              >
-                Ẩn rác
-              </button>
-            </div> */}
           </div>
-          <div className="formbutton"></div>
+
+          <div className="gridToolbar-right">
+            <span>
+              Đang hiển thị: <strong>{filteredData.length} / {datatable.length}</strong> cuộn
+            </span>
+          </div>
         </div>
-        <div className="tracuuYCSXTable">
+
+        <div className="precision-khosub__gridBody">
           <AGTable
-            toolbar={
-              <div>
-                <span className="div" style={{ fontSize: "1rem", fontWeight: "bold" }}>
-                  {tableTitle}
-                </span>
-                <span className="div" style={{ fontSize: "1rem", fontWeight: "bold" }}>
-                  _|_Liệu xuất next sẽ vào chỉ thị: {nextPlan}
-                </span>
-              </div>
-            }
             showFilter={true}
-            columns={current_Column}
-            data={datatable}
-            onCellEditingStopped={(params: any) => {
-            }} onRowClick={(params: any) => {
-              //console.log(e.data)
-            }} onSelectionChange={(params: any) => {
-              console.log(params)
-              tonkhoaodatafilter.current = params!.api.getSelectedRows();
-            }} />
+            columns={columns}
+            data={filteredData}
+            onSelectionChange={(params: any) => {
+              tonkhoaodatafilter.current = params?.api?.getSelectedRows() || [];
+            }}
+          />
         </div>
       </div>
     </div>
   );
 };
+
 export default KHOSUB;

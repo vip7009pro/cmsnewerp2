@@ -1,5 +1,32 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-18 (QLSX: Refactor Toàn Diện Tab Kho SX SUB `KHOSUB.tsx` Chuẩn Google Stitch High-Density Enterprise Đồng Bộ Phong Cách `KHOAO.tsx`)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Quản Lý Tồn & Nhập Kho SX SUB (`src/pages/qlsx/QLSXPLAN/KHOAO/KHOSUB.tsx`)** là công cụ quản lý bán thành phẩm (BTP) và vật liệu dở dang công đoạn Sub trên sàn sản xuất, hỗ trợ tái sử dụng và xuất chuyển vào các chỉ thị sản xuất mới (`NEXT PLAN`).
+  * Mã nguồn cũ 485 dòng sử dụng giao diện form cũ `KHOAO.scss`, bảng AGTable dùng toolbar xanh lá mặc định, thiếu Header bar công nghiệp telemetry, thiếu Dashboard KPI Micro-cards, thiếu ô Quick Search tìm kiếm nhanh và thiếu cụm nút xuất Excel `EX1`/`EX2`.
+  * Yêu cầu: Làm lại giao diện theo phong cách **Google Stitch High-Density Enterprise** đồng bộ 100% với màn hình [`KHOAO.tsx`](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/KHOAO/KHOAO.tsx), module hóa Clean Code (< 300 dòng/file), bảo toàn 100% logic xuất kho `handle_xuatKhoSub` cùng các hàm kiểm tra điều kiện xuất nghiêm ngặt và phân quyền `checkBP`.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `KHOSUB.backup.tsx` (485 dòng).
+  * Phân rã thành công thành 6 module chuyên biệt trong thư mục `src/pages/qlsx/QLSXPLAN/KHOAO/PrecisionKhoSub/`:
+    1. `PrecisionKhoSub.scss` (450 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho KPI Cards, header, toolbar compact 2 tầng, và bảng AGTable.
+    2. `PrecisionKhoSubColumns.tsx` (185 dòng): Cấu hình 2 bộ cột AG-Grid bảo toàn 100% `headerName` và `width` gốc (Tồn Kho Sub 14 cột, Lịch Sử Nhập Sub 17 cột), status badges tỉ lệ % và format số JetBrains Mono.
+    3. `khoSubActionHandlers.ts` (115 dòng): Pure TypeScript function xử lý xuất kho Sub `handleXuatKhoSubAction` với phân quyền `checkBP` và duyệt kiểm tra điều kiện xuất nghiêm ngặt (`f_checkNhapKhoTPDuHayChua`, `f_checktontaiMlotPlanIdSuDung`, `f_isM_CODE_CHITHI`, `f_checkMlotTonKhoSub`, `f_isNextPlanClosed`, `f_checkNextPlanFSC`, `f_set_YN_KHO_SUB_INPUT`).
+    4. `useKhoSubData.ts` (195 dòng): Custom hook pure TypeScript gom toàn bộ state, API queries 2 chế độ (`f_load_tonkhosub`, `f_load_nhapkhosub`), quick search và xuất Excel `SaveExcel`.
+    5. `PrecisionKhoSubHeader.tsx` (55 dòng): Header bar công nghiệp kèm badge phân hệ `CMS QLSX • KHO SX SUB`, breadcrumb, telemetry số dòng và badge chỉ thị đích `NEXT PLAN`.
+    6. `PrecisionKhoSubToolbar.tsx` (175 dòng): Toolbar compact 2 tầng gồm Segmented Switcher (`TỒN KHO SUB`, `LỊCH SỬ NHẬP`), bộ chọn ngày Từ ngày - Đến ngày, select Factory ALL/NM1/NM2, ô nhập `NEXT PLAN`, nút `XUẤT NEXT` và nút `Tải Lại`.
+    7. `PrecisionKhoSubKpi.tsx` (180 dòng): Micro-cards KPI realtime (Tổng Cuộn Tồn, Tổng Lượng Tồn mét/EA, Cuộn Quá Hạn >1 Ngày, Chủng Loại Liệu Khác Nhau, Tỷ Lệ Liệu FSC).
+    8. `KHOSUB.tsx`: Controller chính tinh gọn từ 485 dòng xuống còn **125 dòng** kết nối subcomponents.
+- **3. Xác Thực Toàn Diện & Kiểm Tra Biên Dịch**:
+  * Quét TypeScript AST toàn bộ 7/7 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra toàn bộ 7/7 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+  * Ẩn hoàn toàn toolbar xanh lá mặc định của AGTable, tích hợp ô tìm kiếm nhanh tức thì và cụm nút xuất Excel `EX1`/`EX2`.
+  * **Khắc Phục Lỗi AGTable Bị Height = 0 / Không Dính Tới Cuối Trang**:
+    - *Nguyên nhân*: Trong `PrecisionKhoSub.scss`, lớp `&__gridContainer` để `min-height: 0` thiếu chiều cao chiếm dụng `height: 100%`, và đặc biệt `&__gridBody` thiếu chuỗi flex chain `.agtable` -> `.ag-theme-quartz, .ag-theme-alpine` -> `.ag-root-wrapper { height: 100% !important; min-height: 180px; }`. Khi nằm trong flex container cha, các phần tử con AG-Grid bị co bẹp thành `height = 0px` khiến người dùng không thấy bảng dù dữ liệu đã nạp xong.
+    - *Giải pháp*: Cập nhật `PrecisionKhoSub.scss` chuẩn hóa chuỗi CSS Flex chain đồng bộ y hệt như `PrecisionKhoAo.scss`: thiết lập `min-height: 200px; height: 100%; width: 100%;` cho `&__gridContainer` và `display: flex; flex-direction: column; flex: 1 1 auto; min-height: 180px; height: 100%; width: 100%;` cho `&__gridBody` cùng các lớp `.agtable`, `.ag-theme-quartz`, `.ag-root-wrapper`. Bảng AGTable giờ đây tự động co giãn 100% chiều cao và dính sát đáy trang trơn tru.
+  * **Khắc Phục Lỗi Cả 3 Tab Trong `KHOSX.tsx` Không Full Height Xuống Đáy Màn Hình**:
+    - *Nguyên nhân*: Trong `KHOSX.scss`, `.khosx` thiếu chiều cao chiếm dụng `height: calc(100vh - 85px);` và các quy tắc `height: 100% !important; flex: 1 1 auto; min-height: 0;` cho `.tabs-container`, `.tab-content`, `.tab-pane`, và container `.trainspection`. Đồng thời các class con `.precision-khoao`, `.precision-khosub`, `.precision-kholieu`, `.kholieu` không được ép buộc `height: 100% !important; min-height: 0 !important;` khiến cả 3 tab chỉ có chiều cao tự nhiên lơ lửng ở giữa màn hình.
+    - *Giải pháp*: Cập nhật `KHOSX.scss` đồng bộ đầy đủ quy tắc Multi-Tab container và Flex Chain kế thừa từ các màn chuẩn như `OQC.scss` và `KIEMTRA.scss`, đảm bảo cả 3 tab KHO MAIN, KHO SUB và KHO VL đều kéo dài full height 100% dính sát đáy màn hình.
+
 ## Update - 2026-09-18 (PQC: Refactor Toàn Diện Tab Line QC `LINEQC.tsx` Chuẩn Google Stitch Enterprise & Tối Ưu Hóa Mobile-First Hiện Trường)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình **Kiểm Tra Ngoại Quan / Checksheet Line QC (`src/pages/qc/pqc/LINEQC.tsx`)** là công cụ kiểm soát chất lượng trên dây chuyền sản xuất dành cho nhân viên PQC/KCS và công nhân vận hành ngoài hiện trường sàn máy.

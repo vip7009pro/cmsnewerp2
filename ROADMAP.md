@@ -1,5 +1,32 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Kho SX SUB (`KHOSUB.tsx`) Chuẩn Google Stitch High-Density Enterprise Đồng Bộ Phong Cách `KHOAO.tsx`:
+  - **Bảo toàn 100% logic xuất kho `handle_xuatKhoSub` & 2 API nạp dữ liệu**:
+    * Duy trì toàn bộ các API: `f_load_tonkhosub` và `f_load_nhapkhosub`.
+    * Duy trì đầy đủ các điều kiện kiểm tra khi xuất kho Sub: `f_checkNhapKhoTPDuHayChua`, `f_checktontaiMlotPlanIdSuDung`, `f_isM_CODE_CHITHI`, `f_checkMlotTonKhoSub`, `f_isNextPlanClosed`, `f_checkNextPlanFSC`, `f_set_YN_KHO_SUB_INPUT` và phân quyền phòng ban `checkBP` với vai trò QLSX.
+  - **Đồng bộ 100% phong cách thiết kế Google Stitch High-Density của KHOAO.tsx**:
+    * Thanh Header công nghiệp `03. QLSX • KHO SX SUB (BTP / DỞ DANG)` với Telemetry chip số dòng và Badge chỉ thị đích `NEXT PLAN`.
+    * Toolbar compact 2 tầng với Segmented Switcher (`TỒN KHO SUB`, `LỊCH SỬ NHẬP`), bộ lọc ngày, chọn Factory `ALL/NM1/NM2`, ô nhập chỉ thị `NEXT PLAN`, nút `XUẤT NEXT` và nút `Tải Lại`.
+    * Dashboard Micro-cards KPI thống kê realtime: Tổng Cuộn Tồn, Tổng Lượng Tồn mét/EA, Cuộn Quá Hạn >1 Ngày, Chủng Loại Mã Liệu, Cuộn Liệu FSC.
+    * AG-Grid container chuyên nghiệp bọc thanh lọc nhanh: Ô tìm kiếm nhanh tức thì (`Quick Search`), cụm nút xuất Excel `EX1` (dữ liệu đang lọc), `EX2` (toàn bộ dữ liệu) và bộ đếm số cuộn hiển thị.
+    * Ẩn hoàn toàn toolbar xanh lá mặc định của AGTable.
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `KHOSUB.backup.tsx` (485 dòng).
+    * Phân rã thành 6 module chuyên biệt tại `src/pages/qlsx/QLSXPLAN/KHOAO/PrecisionKhoSub/`:
+      1. `PrecisionKhoSub.scss` (450 dòng): Stylesheet SCSS Google Stitch Enterprise & Multi-Tab.
+      2. `PrecisionKhoSubColumns.tsx` (185 dòng): Cấu hình 2 bộ cột AG-Grid bảo toàn 100% `headerName` và độ rộng gốc.
+      3. `khoSubActionHandlers.ts` (115 dòng): Pure TypeScript function xử lý xuất kho Sub có phân quyền `checkBP`.
+      4. `useKhoSubData.ts` (195 dòng): Custom hook pure TypeScript gom state, API và xuất Excel.
+      5. `PrecisionKhoSubHeader.tsx` (55 dòng): Header bar công nghiệp kèm telemetry & reload.
+      6. `PrecisionKhoSubToolbar.tsx` (175 dòng): Toolbar compact 2 tầng & segmented tab switcher.
+      7. `PrecisionKhoSubKpi.tsx` (180 dòng): Micro-cards KPI realtime.
+    * Controller chính `KHOSUB.tsx` tinh gọn từ 485 dòng xuống còn **125 dòng**.
+  - **Xác thực toàn diện & Khắc phục lỗi hiển thị AGTable**:
+    * Quét TypeScript AST toàn bộ 7/7 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra toàn bộ 7/7 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+    * **Khắc phục lỗi AGTable height = 0**: Chuẩn hóa cấu trúc Flex Chain trong `PrecisionKhoSub.scss` (`&__gridContainer` có `min-height: 200px; height: 100%;` và `&__gridBody` áp dụng đầy đủ quy tắc `display: flex; flex-direction: column; flex: 1 1 auto; height: 100% !important; min-height: 180px;` lên `.agtable`, `.ag-theme-quartz`, `.ag-root-wrapper`), bảng tự động co giãn hết chiều cao và dính sát đáy trang.
+    * **Khắc phục lỗi cả 3 tab trong `KHOSX.tsx` không full height**: Cập nhật `KHOSX.scss` đồng bộ đầy đủ quy tắc Multi-Tab container (`height: calc(100vh - 85px);`, `.tabs-container`, `.tab-content`, `.tab-pane`, `.trainspection` đều có `height: 100% !important; flex: 1 1 auto; min-height: 0;`), đảm bảo cả 3 tab KHO MAIN (`KHOAO`), KHO SUB (`KHOSUB`) và KHO VL (`KHOLIEU`) đều kéo dài full height 100% dính sát đáy màn hình.
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Line QC (`LINEQC.tsx`) Chuẩn Google Stitch Enterprise & Tối Ưu Hóa Mobile-First Hiện Trường:
   - **Bảo toàn 100% logic nghiệp vụ, 8 API queries & Upload ảnh checksheet**:
     * Duy trì toàn bộ logic kiểm tra mã chỉ thị `checkPLAN_ID`, thông tin sản phẩm (`G_CODE`, `G_NAME`, `PROD_REQUEST_NO`, `PROD_REQUEST_DATE`).
