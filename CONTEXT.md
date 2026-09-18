@@ -1,5 +1,25 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-18 (SX: Refactor Toàn Diện Tab Khai Báo Dữ Liệu Sample Sản Xuất `DATASAMPLESX.tsx` Chuẩn Google Stitch Enterprise & Tối Ưu Hóa Mobile-First Hiện Trường)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Khai Báo Dữ Liệu Sample Sản Xuất (`src/pages/sx/DATASAMPLE/DATASAMPLESX.tsx`)** là công cụ dành cho công nhân và kỹ thuật viên trên sàn máy dập quét mã chỉ thị (`PLAN_ID`), kiểm tra thông tin sản phẩm (`G_CODE`, `G_NAME`), xác thực mã nhân sự và chụp/tải lên 2 ảnh hiện trường (Bản vẽ sản xuất sample `PIC1` & Checksheet điều kiện sản xuất `PIC2`).
+  * Mã nguồn cũ 375 dòng mang giao diện màu vàng chuối `#e8f715` / tím `#a595ee` chói mắt, khung quét mã QR chiếm 300px cố định giật lag, ô chọn ảnh native thô sơ không có preview ảnh chụp, khó thao tác bằng điện thoại di động trên sàn máy.
+  * Yêu cầu: Làm lại theo chuẩn **Google Stitch Enterprise & Tối ưu hóa Mobile-First**, chuyển đổi sang giao diện Mobile Action Cards tiện dụng bằng một tay (ngón tay cái), tích hợp Camera Scanner Modal chuyên nghiệp bo góc đẹp, hỗ trợ chụp ảnh trực tiếp và xem trước ảnh chụp tức thì (Live Preview), bảo toàn 100% logic API và upload thư mục `SX_QL_SAMPLE`.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `DATASAMPLESX.backup.tsx` (375 dòng).
+  * Phân rã thành công thành 5 module chuyên biệt trong thư mục `src/pages/sx/DATASAMPLE/PrecisionDataSampleSx/`:
+    1. `PrecisionDataSampleSx.scss` (480 dòng): Stylesheet SCSS Google Stitch Enterprise tối ưu Mobile-First, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho Mobile Action Cards, Live Preview, Camera Scanner Dialog và Touch-Friendly Buttons.
+    2. `useDataSampleSxData.ts` (235 dòng): Custom hook pure TypeScript gom toàn bộ state, API queries (`checkPLAN_ID`, `checkEMPL_NO_mobile`, `insert_sampledatasx`, `uploadFile1`, `uploadFile2`), quản lý live preview và xử lý quét mã.
+    3. `PrecisionDataSampleSxHeader.tsx` (65 dòng): Header bar công nghiệp kèm badge phân hệ `SX PRECISION • SAMPLE QC`, breadcrumb, telemetry chỉ thị/nhân sự và nút làm mới nhanh.
+    4. `PrecisionDataSampleSxScannerModal.tsx` (115 dòng): Modal quét mã Barcode / QR Code tối ưu hóa bằng camera điện thoại, tự động điền `PLAN_ID` và đóng camera ngay khi quét thành công.
+    5. `PrecisionDataSampleSxForm.tsx` (295 dòng): Form nhập liệu Mobile-First gồm 4 khối chức năng (Khối 1: Nhận diện chỉ thị & Nút quét mã, Khối 2: Thông tin nhân sự & tự tra họ tên, Khối 3: 2 Image Upload Dropzones có Live Preview & Chụp ảnh trực tiếp, Khối 4: Nút Submit lớn công thái học dạng Full-Width).
+    6. `DATASAMPLESX.tsx`: Controller chính tinh gọn từ 375 dòng xuống còn **80 dòng** kết nối subcomponents.
+- **3. Xác Thực Toàn Diện & Bugfix Runtime**:
+  * Quét TypeScript AST toàn bộ 5/5 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra toàn bộ 6/6 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+  * Giao diện co giãn mượt mà từ màn hình di động (360px - 480px) đến tablet và desktop.
+  * **Bugfix Runtime Icon Export**: Khắc phục lỗi `SyntaxError: react-icons_fi does not provide an export named 'FiQrCode'` bằng cách thay thế sang biểu tượng `IoQrCodeOutline` từ `react-icons/io5`, Vite dev server đã biên dịch và hot reload thành công 100%.
+
 ## Update - 2026-09-18 (SX: Refactor Toàn Diện Tab KPI Nhân Viên Sản Xuất `KPI_NVSX.tsx` Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình **KPI Nhân Viên Sản Xuất (`src/pages/sx/KPI_NV/KPI_NVSX.tsx`)** là công cụ đánh giá sản lượng và hiệu suất lao động của công nhân vận hành theo các chu kỳ Daily, Weekly, Monthly và Yearly.

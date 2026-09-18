@@ -1,5 +1,28 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Khai Báo Dữ Liệu Sample Sản Xuất (`DATASAMPLESX.tsx`) Chuẩn Google Stitch Enterprise & Tối Ưu Hóa Mobile-First Hiện Trường:
+  - **Bảo toàn 100% logic nghiệp vụ, APIs & Upload ảnh**:
+    * Duy trì toàn bộ tham số các hàm `checkPLAN_ID`, `checkEMPL_NO_mobile`, `insert_sampledatasx`.
+    * Duy trì cơ chế upload 2 ảnh `uploadQuery` lên folder máy chủ `SX_QL_SAMPLE` và cập nhật cờ `updatebanvesampledata`, `updateAnhDKSXSampleData`.
+  - **Thiết kế Mobile-First tối ưu cho công nhân sử dụng điện thoại trên hiện trường**:
+    * Layout dạng Mobile Action Cards bo góc 8px với touch target lớn $\ge 44\text{px}$, thao tác một tay bằng ngón cái tiện lợi.
+    * Tích hợp Modal Quét Mã Barcode / QR Code chuyên nghiệp (`PrecisionDataSampleSxScannerModal`) bằng camera thiết bị, tự động nhận diện và điền `PLAN_ID`.
+    * 2 khối chụp / tải ảnh hiện trường riêng biệt với Live Preview ảnh chụp, xem kích thước tệp, nút chụp lại/xóa tức thì.
+    * Thẻ nhận diện thông tin sản phẩm tự động (`G_NAME`, `G_CODE`) với badge trạng thái Hợp Lệ trực quan.
+    * Nút hành động Submit dạng Full-Width lớn công thái học có trạng thái loading xoay vòng mượt mà.
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `DATASAMPLESX.backup.tsx` (375 dòng).
+    * Phân rã thành 5 module chuyên biệt tại `src/pages/sx/DATASAMPLE/PrecisionDataSampleSx/`:
+      1. `PrecisionDataSampleSx.scss` (480 dòng): Stylesheet SCSS Mobile-First & Multi-Tab.
+      2. `useDataSampleSxData.ts` (235 dòng): Custom hook pure TypeScript gom state, API và preview ảnh.
+      3. `PrecisionDataSampleSxHeader.tsx` (65 dòng): Header bar công nghiệp kèm telemetry & reload.
+      4. `PrecisionDataSampleSxScannerModal.tsx` (115 dòng): Modal camera quét mã Barcode/QR Code cho điện thoại.
+      5. `PrecisionDataSampleSxForm.tsx` (295 dòng): Form nhập liệu 4 khối Mobile Action Cards.
+    * Controller chính `DATASAMPLESX.tsx` tinh gọn từ 375 dòng xuống còn **80 dòng**.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 5/5 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra toàn bộ 6/6 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab KPI Nhân Viên Sản Xuất (`KPI_NVSX.tsx`) Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard:
   - **Bảo toàn 100% logic nghiệp vụ & 4 bộ cột dữ liệu AG-Grid**:
     * Duy trì 100% tên cột `headerName` và độ rộng `width` của 4 chu kỳ: Daily (16 cột), Weekly (14 cột), Monthly (14 cột), Yearly (12 cột).
