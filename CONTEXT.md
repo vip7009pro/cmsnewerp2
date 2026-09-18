@@ -1,5 +1,27 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-18 (QLSX: Refactor Toàn Diện Tab Năng Lực Sản Xuất `CAPASX.tsx` Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard Phong Cách `KinhDoanhReport.tsx`)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Quản Lý Năng Lực Sản Xuất (`src/pages/qlsx/QLSXPLAN/CAPA/CAPASX.tsx`)** là trung tâm theo dõi, quản trị năng lực máy dập (Capacity) và tương quan nhân lực vận hành (Workforce) so với lượng đơn sản xuất chờ dập (`YCSX_BALANCE`) và kế hoạch giao hàng (`DELIVERY_PLAN_CAPA`).
+  * Mã nguồn cũ **1.853 dòng** với biểu đồ DevExtreme cũ, giao diện gradient `#afd3d1`/`#4ef197`, bảng `<table>` HTML thủ công không responsive, thiếu Dashboard KPI tổng quan, thiếu Header bar công nghiệp telemetry, thiếu Segmented Navigation Tabs và thiếu nút xuất Excel từng biểu đồ.
+  * Yêu cầu: Làm lại giao diện chuyên nghiệp theo chuẩn **Google Stitch High-Density Enterprise** với biểu đồ **Recharts Executive Dashboard** đồng bộ phong cách `KinhDoanhReport.tsx`, module hóa Clean Code (< 300 dòng/file), bảo toàn 100% logic API & tính toán năng lực.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `CAPASX.backup.tsx` (1.853 dòng).
+  * Phân rã thành công thành 8 module chuyên biệt trong thư mục `src/pages/qlsx/QLSXPLAN/CAPA/PrecisionCapaSx/`:
+    1. `PrecisionCapaSx.scss` (~480 dòng): SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho Header, Toolbar Segmented Tabs, 6 Micro-cards KPI, executive-card, two-col-grid, bảng ma trận năng lực compact, machine-tag badges.
+    2. `useCapaSxData.ts` (~230 dòng): Custom hook pure TypeScript gom toàn bộ state, 7 API queries (`checkEQ_STATUS`, `diemdanhallbp` MAINDEPTCODE:5, `machinecounting`, `ycsxbalancecapa`, `capabydeliveryplan`, `f_getProductionPlanLeadTimeCapaData`, `f_handle_loadEQ_STATUS`), bảo toàn 100% công thức tính `STD_CAPA`/`STD_CAPA_8`/`REL_CAPA` và `dailytime`/`dailytime2`.
+    3. `PrecisionCapaSxHeader.tsx` (~50 dòng): Header bar công nghiệp kèm badge `CMS QLSX`, breadcrumb, telemetry live pulse dot hiển thị số máy & nhân lực realtime, nút Tải Lại.
+    4. `PrecisionCapaSxToolbar.tsx` (~135 dòng): Toolbar compact gồm bộ chọn ngày Kế Hoạch, dải nút chọn nhanh (Hôm Nay / Ngày Mai / +3D / +7D), select Nhà Máy (NM1/NM2) và **Segmented Navigation Tabs** 4 phân hệ (`Toàn Bộ`, `Nhân Lực & Thiết Bị`, `Cân Đối Năng Lực & Lead Time`, `Kế Hoạch Năng Lực 4 Dòng Máy`).
+    5. `PrecisionCapaSxKpi.tsx` (~150 dòng): Dashboard **6 Micro-cards KPI** phong cách `KinhDoanhReport.tsx`: Nhân Lực Cần Full Capa, Điểm Danh Có Mặt + tỷ lệ %, Máy Đang Chạy + tỷ lệ vận hành %, Tổng Năng Lực Máy/Ngày (giờ), Tồn Yêu Cầu Chờ Dập (giờ), Lead Time Trung Bình (ngày).
+    6. `PrecisionCapaSxWorkforceCharts.tsx` (~175 dòng): 2 biểu đồ Recharts trong thẻ `executive-card` và `two-col-grid`: (a) Grouped BarChart so sánh nhân lực Cần/Đăng Ký/Có Mặt theo cụm FR/SR/DC/ED; (b) Stacked BarChart trạng thái máy Running/Setting/Idle theo dòng máy.
+    7. `PrecisionCapaSxLeadTimeCharts.tsx` (~220 dòng): Phân hệ 2 widget: (a) Horizontal BarChart so sánh Retain vs Realtime Lead Time (ngày) cho 4 cụm máy với LabelList hiển thị giá trị bên phải; (b) Bảng Ma Trận Năng Lực Chi Tiết 10 cột High-Density với color coding (đỏ cảnh báo/xanh an toàn) và xuất Excel.
+    8. `PrecisionCapaSxPlanCharts.tsx` (~155 dòng): Phân hệ 4 biểu đồ `ProductionPlanCapaChart` (Recharts ComposedChart) kế hoạch capa tháng cho FR/SR/DC/ED, bố trí dạng `two-col-grid` hoặc đơn lẻ qua sub-tabs chọn nhanh máy, có nút xuất Excel từng máy.
+    9. `CAPASX.tsx`: Controller chính tinh gọn từ **1.853 dòng xuống còn 123 dòng**.
+- **3. Xác Thực Toàn Diện & Kiểm Tra Biên Dịch**:
+  * Gửi HTTP requests kiểm tra toàn bộ 9/9 file trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+  * Tất cả các file subcomponents đều < 250 dòng tuân thủ nghiêm ngặt quy tắc Clean Code ERP.
+  * Giữ nguyên 100% logic nghiệp vụ: 7 API queries, công thức `STD_CAPA`/`STD_CAPA_8`/`REL_CAPA`, phân biệt nhân lực SX_FR1/SX_SR1/SX_DC1/SX_ED1/SX_FR3/SX_ED3, lọc EQ theo prefix 2 ký tự và FACTORY.
+
 ## Update - 2026-09-18 (SX: Refactor Toàn Diện Tab Báo Cáo Hiệu Suất Sản Xuất `SX_REPORT.tsx` Chuẩn Google Stitch Enterprise & Recharts Executive Dashboard Phong Cách `KinhDoanhReport.tsx`)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình **Báo Cáo Hiệu Suất Sản Xuất (`src/pages/sx/BAOCAOSX/SX_REPORT.tsx`)** là trung tâm báo cáo tổng hợp hiệu suất vận hành nhà máy sản xuất, bao gồm các chỉ số tổn thất (Loss Rates), tỷ lệ đạt kế hoạch (Achievement Rates), thời gian và tỷ lệ hiệu suất vận hành máy móc (OEE & Efficiency), cùng phân tích chi tiết thời gian dừng máy (Loss Time By Reason/Empl) và lead time hoàn thành các công đoạn (SX, QC, ALL, giao trễ/sớm hạn).
