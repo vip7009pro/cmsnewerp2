@@ -1,5 +1,26 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-18 (QLSX: Tối Ưu Thẻ Máy `PrecisionMachineCard.tsx` - Bỏ Tiến Độ, Mỗi Lệnh 1 Dòng Đầy Đủ G_NAME_KD, PLAN_ID, PLAN_QTY, STEP)
+- **1. Yêu Cầu & Hoàn Cảnh**:
+  * Người dùng yêu cầu: "trên các máy không cần hiển thị tiến độ, gây nhiễu thông tin, chỉ cần mỗi lệnh 1 dòng, thể hiện đủ thông tin G_NAME_KD, PLAN_ID, PLAN_QTY, STEP để user nắm được, chi tiết sẽ vào trong máy xem sau".
+- **2. Thực Hiện & Điều Chỉnh Code**:
+  * File [`PrecisionMachineCard.tsx`](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/Machine/PrecisionMachine/dashboard/PrecisionMachineCard.tsx):
+    - Bỏ toàn bộ progress bar, phần trăm tiến độ và số lượng đã dập (`activeJobAchieved`, `activeJobRate`, `job-progress-wrapper`, `job-progress-meta`).
+    - Đồng nhất tất cả các lệnh trong máy (`machinePlans`) hiển thị chung một cấu trúc: mỗi lệnh 1 dòng duy nhất (`.job-single-line`).
+    - Trên 1 dòng hiển thị rõ ràng và đầy đủ:
+      1. STT (`idx + 1.`)
+      2. Tên sản phẩm khách hàng `G_NAME_KD` (fallback `G_NAME`), có ellipsis và title tooltip
+      3. Mã chỉ thị `PLAN_ID` (JetBrains Mono)
+      4. Badge công đoạn `STEP` (`B1`, `B2`, ...)
+      5. Số lượng kế hoạch `PLAN_QTY` (định dạng số phân cách hàng nghìn)
+    - Thêm title tooltip chi tiết cho từng dòng lệnh để rê chuột xem nhanh toàn bộ thông số.
+  * File [`PrecisionMachine.scss`](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/Machine/PrecisionMachine/PrecisionMachine.scss):
+    - Tối ưu padding và font-size của `.job-row` (padding `3px 6px`, font `10px`).
+    - Định dạng `.job-single-line` dùng flexbox một hàng ngang, căn chỉnh thẳng thớm, không bị tràn dòng hay vỡ giao diện.
+    - Loại bỏ các khối CSS cũ của progress bar (`.job-progress-wrapper`, `.job-progress-bar`, `.job-progress-meta`).
+- **3. Kết Quả Kiểm Tra**:
+  * Vite Dev Server phản hồi **HTTP 200 OK** cho cả component và SCSS. Thẻ máy gọn gàng, hiển thị được nhiều lệnh dập hơn mà không bị rối mắt.
+
 ## Update - 2026-09-18 (BẢNG TIN: Refactor Toàn Diện Tab Quản Lý Bài Viết & Đăng Tin `PostManager.tsx` Chuẩn Google Stitch Enterprise & Recharts Executive Dashboard Phong Cách `KinhDoanhReport.tsx`)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình **Quản Lý Bài Viết Bảng Tin Nội Bộ (`src/pages/information_board/PostManager.tsx`)** là công cụ quản trị, biên tập nội dung, chỉnh sửa trạng thái ghim/tiêu đề/nội dung, xóa bài viết và mở modal đăng tin nội bộ.

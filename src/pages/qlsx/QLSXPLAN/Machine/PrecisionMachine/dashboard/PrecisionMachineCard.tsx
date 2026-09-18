@@ -38,8 +38,6 @@ export const PrecisionMachineCard: React.FC<MachineCardProps> = React.memo(
 
     // Tốc độ giả lập hoặc thực tế
     const speedText = machine.EQ_NAME?.startsWith("DC") ? "140 RPM" : "135 spm";
-    const activeJob = machinePlans[0];
-    const queuedJobs = machinePlans.slice(1);
 
     const handleHoiKho = (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -51,30 +49,6 @@ export const PrecisionMachineCard: React.FC<MachineCardProps> = React.memo(
         showConfirmButton: false,
       });
     };
-
-    // Tính toán sản lượng và tiến độ dập thực tế
-    const activeJobAchieved = activeJob
-      ? activeJob.KETQUASX ||
-        activeJob.KQ_SX_TAM ||
-        (activeJob.STEP === 1
-          ? activeJob.CD1
-          : activeJob.STEP === 2
-          ? activeJob.CD2
-          : activeJob.STEP === 3
-          ? activeJob.CD3
-          : activeJob.STEP === 4
-          ? activeJob.CD4
-          : 0) ||
-        0
-      : 0;
-
-    const activeJobRate = activeJob
-      ? activeJob.ACHIVEMENT_RATE !== undefined && activeJob.ACHIVEMENT_RATE > 0
-        ? Math.min(100, Math.round(activeJob.ACHIVEMENT_RATE))
-        : activeJob.PLAN_QTY && activeJob.PLAN_QTY > 0
-        ? Math.min(100, Math.round((activeJobAchieved / activeJob.PLAN_QTY) * 100))
-        : 0
-      : 0;
 
     return (
       <div
@@ -109,61 +83,35 @@ export const PrecisionMachineCard: React.FC<MachineCardProps> = React.memo(
               </div>
             ) : null}
 
-            {/* Job Đang Chạy (Active Job) */}
-            {activeJob ? (
-              <div className="job-row job-row--active">
-                <div className="job-header">
-                  <span className="job-num-code">1. {activeJob.G_NAME_KD || activeJob.G_NAME}</span>
-                  <span className="job-model">{activeJob.PLAN_ID}</span>
-                </div>
-                <div className="job-qty-step">
-                  <span className="step-badge">B{activeJob.STEP || 0}</span>
-                  <span className="qty-text">
-                    {(activeJob.PLAN_QTY || 0).toLocaleString("en-US")}{" "}
-                    <span className="unit">PCS</span>
-                  </span>
-                </div>
-
-                {/* Progress Bar */}
-                <div className="job-progress-wrapper">
+            {/* Danh sách các Jobs: Mỗi lệnh hiển thị trên 1 dòng duy nhất gọn gàng, rõ ràng */}
+            {machinePlans.length > 0 ? (
+              machinePlans.map((job, idx) => {
+                const isActive = idx === 0;
+                return (
                   <div
-                    className="job-progress-bar"
-                    style={{
-                      width: `${activeJobRate}%`,
-                    }}
-                  ></div>
-                </div>
-
-                <div className="job-progress-meta">
-                  <span>Tiến độ: {activeJobRate}%</span>
-                  <span>
-                    {activeJobAchieved.toLocaleString("en-US")} /{" "}
-                    {(activeJob.PLAN_QTY || 0).toLocaleString("en-US")} PCS
-                  </span>
-                </div>
-              </div>
+                    key={job.PLAN_ID || idx}
+                    className={`job-row ${isActive ? "job-row--active" : ""}`}
+                    title={`Lệnh ${idx + 1}: ${job.PLAN_ID} - ${job.G_NAME_KD || job.G_NAME || ""} - Bước ${job.STEP || 0} - SL: ${(job.PLAN_QTY || 0).toLocaleString("en-US")} PCS`}
+                  >
+                    <div className="job-single-line">
+                      <span className="job-idx">{idx + 1}.</span>
+                      <span className="job-name" title={job.G_NAME_KD || job.G_NAME}>
+                        {job.G_NAME_KD || job.G_NAME}
+                      </span>
+                      <span className="job-plan-id">{job.PLAN_ID}</span>
+                      <span className="step-badge">B{job.STEP ?? 0}</span>
+                      <span className="qty-text">
+                        {(job.PLAN_QTY || 0).toLocaleString("en-US")}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })
             ) : (
               <div className="p-3 text-center text-slate-400 font-mono text-[11px]">
                 Chưa có lệnh dập nào
               </div>
             )}
-
-            {/* Toàn bộ các Jobs Đang Chờ (Queued Jobs) - Cuộn được */}
-            {queuedJobs.map((job, idx) => (
-              <div key={idx} className="job-row">
-                <div className="job-header">
-                  <span className="job-num-code">{idx + 2}. {job.G_NAME_KD || job.G_NAME}</span>
-                  <span className="job-model">{job.PLAN_ID}</span>
-                </div>
-                <div className="job-qty-step">
-                  <span className="step-badge">B{job.STEP || 0}</span>
-                  <span className="qty-text">
-                    {(job.PLAN_QTY || 0).toLocaleString("en-US")}{" "}
-                    <span className="unit">PCS</span>
-                  </span>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
 
