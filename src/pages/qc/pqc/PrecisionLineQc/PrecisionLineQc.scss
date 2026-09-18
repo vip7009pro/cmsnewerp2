@@ -1,0 +1,686 @@
+// PrecisionLineQc.scss - Google Stitch Enterprise Mobile-First Stylesheet cho LINE QC
+.precision-lineqc {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: #f8fafc;
+  overflow: hidden;
+  position: relative;
+
+  // Multi-Tab Full-Width & Full-Height
+  .component_element & {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    flex: 1;
+    min-height: 0;
+  }
+
+  // 1. Scrollable Container chính - Đảm bảo cuộn mượt mà trên mọi thiết bị
+  &__scrollContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 6px 8px 16px 8px;
+    box-sizing: border-box;
+  }
+
+  // 2. Form Wrapper
+  &__formWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 580px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  // 3. Mobile Action Cards - Compact Enterprise
+  .mobile-action-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+
+    &--compact {
+      .mobile-action-card__body {
+        padding: 8px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+    }
+  }
+
+  // Hàng thanh điều khiển Top Bar (Chọn NM + Trạng thái + Làm mới)
+  .plan-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #f1f5f9;
+
+    .factory-toggle-compact {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+
+      .compact-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #475569;
+      }
+
+      .factory-pill {
+        height: 24px;
+        padding: 0 8px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #64748b;
+        cursor: pointer;
+
+        &.active {
+          background: #0284c7;
+          border-color: #0284c7;
+          color: #ffffff;
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .btn-compact-reset {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 24px;
+      padding: 0 7px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+      transition: background 0.15s;
+
+      &:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+    }
+  }
+
+  // Mini Badges
+  .status-pill-mini {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+
+    &--ok {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+
+    &--ng {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    &--warn {
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+  }
+
+  // Ô nhập chỉ thị và nút Quét
+  .plan-input-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .plan-text-input {
+      flex: 1;
+      height: 38px;
+      padding: 0 10px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #0f172a;
+      background: #ffffff;
+      outline: none;
+      transition: all 0.15s ease;
+
+      &:focus {
+        border-color: #0284c7;
+        box-shadow: 0 0 0 2.5px rgba(2, 132, 199, 0.15);
+      }
+    }
+
+    .btn-scan-qr {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 38px;
+      padding: 0 12px;
+      background: #0284c7;
+      border: none;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+  }
+
+  // Banner thông tin sản phẩm gọn 2 cột
+  .product-info-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px 8px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 6px;
+
+    .product-name-badge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+
+      .g-name {
+        font-size: 12.5px;
+        font-weight: 800;
+        color: #15803d;
+      }
+
+      .g-code {
+        font-size: 11px;
+        color: #166534;
+        background: #dcfce7;
+        padding: 1px 5px;
+        border-radius: 3px;
+      }
+    }
+
+    .product-chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 8px;
+
+      .chip-item {
+        font-size: 10.5px;
+        color: #334155;
+
+        &--ok {
+          color: #15803d;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  .product-info-banner--pending {
+    padding: 6px 8px;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 6px;
+    font-size: 11.5px;
+    color: #0284c7;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+  }
+
+  .setting-alert-compact {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 8px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 5px;
+    color: #b45309;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  // Khối vật liệu compact
+  .material-compact-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #f1f5f9;
+
+    .material-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .section-mini-title {
+        font-size: 11px;
+        font-weight: 700;
+        color: #475569;
+      }
+    }
+
+    .material-mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 8px;
+
+      .mini-item {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+        font-size: 11px;
+
+        .mini-label {
+          color: #64748b;
+          font-size: 10.5px;
+          display: inline-flex;
+          align-items: center;
+          gap: 2px;
+          white-space: nowrap;
+        }
+
+        .mini-val {
+          color: #0f172a;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        &--full {
+          grid-column: 1 / -1;
+        }
+      }
+    }
+  }
+
+  // Nhóm nhân sự Line QC và Ghi chú chia 2 hàng rõ ràng, không bị che khuất
+  .qc-empl-compact-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+
+    .empl-input-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+
+      .compact-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #475569;
+        white-space: nowrap;
+      }
+
+      .empl-compact-input {
+        width: 85px;
+        height: 28px;
+        padding: 0 8px;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        font-size: 11.5px;
+        font-weight: 700;
+        outline: none;
+        flex-shrink: 0;
+
+        &:focus {
+          border-color: #0284c7;
+          box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+        }
+      }
+
+      .empl-name-pill {
+        display: inline-flex;
+        align-items: center;
+        height: 28px;
+        padding: 0 8px;
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        border-radius: 4px;
+        flex: 1;
+        min-width: 0;
+
+        .empl-name-text {
+          font-size: 11.5px;
+          font-weight: 700;
+          color: #047857;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
+    .remark-input-row {
+      width: 100%;
+
+      .remark-compact-input {
+        width: 100%;
+        height: 28px;
+        padding: 0 8px;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        font-size: 11px;
+        outline: none;
+        box-sizing: border-box;
+
+        &:focus {
+          border-color: #0284c7;
+          box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+        }
+
+        &::placeholder {
+          color: #94a3b8;
+        }
+      }
+    }
+  }
+
+  // Khối Chụp / Tải ảnh và Nút gửi dữ liệu
+  .upload-card-body {
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .upload-box-compact {
+    border: 1.5px dashed #cbd5e1;
+    border-radius: 6px;
+    background: #f8fafc;
+    transition: all 0.15s ease;
+
+    &.has-file {
+      border-style: solid;
+      border-color: #bae6fd;
+      background: #f0f9ff;
+    }
+
+    .upload-dropzone-compact {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+
+      .dropzone-icon-compact {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        background: #e0f2fe;
+        color: #0284c7;
+        border-radius: 6px;
+        flex-shrink: 0;
+      }
+
+      .dropzone-text-group {
+        display: flex;
+        flex-direction: column;
+
+        .dropzone-text-main {
+          font-size: 12px;
+          font-weight: 700;
+          color: #0284c7;
+        }
+
+        .dropzone-text-sub {
+          font-size: 10px;
+          color: #64748b;
+        }
+      }
+
+      &:hover {
+        background: #f1f5f9;
+      }
+    }
+
+    .upload-preview-compact {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px;
+
+      .preview-img-compact {
+        width: 48px;
+        height: 48px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #bae6fd;
+      }
+
+      .preview-info-compact {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden;
+
+        .file-name-compact {
+          font-size: 11px;
+          font-weight: 600;
+          color: #0f172a;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .file-size-compact {
+          font-size: 10px;
+          color: #64748b;
+        }
+      }
+
+      .preview-actions-compact {
+        display: flex;
+        gap: 6px;
+
+        .btn-rechoose-compact,
+        .btn-remove-compact {
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
+          height: 26px;
+          padding: 0 8px;
+          border-radius: 4px;
+          font-size: 10.5px;
+          font-weight: 600;
+          cursor: pointer;
+        }
+
+        .btn-rechoose-compact {
+          background: #ffffff;
+          border: 1px solid #cbd5e1;
+          color: #334155;
+        }
+
+        .btn-remove-compact {
+          background: #fee2e2;
+          border: 1px solid #fecaca;
+          color: #ef4444;
+        }
+      }
+    }
+
+    .hidden-file-input {
+      display: none;
+    }
+  }
+
+  // Nút Submit Compact Full-Width
+  .btn-submit-compact {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 42px;
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+    transition: all 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.99);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+      background: #94a3b8;
+    }
+  }
+
+  // 4. Fullscreen Backdrop Loading Indicator
+  &__backdrop-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    animation: fadeInLoader 0.2s ease-out;
+
+    .backdrop-loader-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 28px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+      max-width: 380px;
+      width: 90%;
+      text-align: center;
+      gap: 16px;
+    }
+
+    .spinner-ring {
+      width: 44px;
+      height: 44px;
+      border: 4px solid #e2e8f0;
+      border-top: 4px solid #0284c7;
+      border-radius: 50%;
+      animation: spinRing 0.8s linear infinite;
+    }
+
+    .loader-text-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      .loader-title {
+        font-size: 14.5px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+
+      .loader-subtitle {
+        font-size: 12.5px;
+        color: #334155;
+      }
+
+      .loader-detail {
+        font-size: 11px;
+        color: #64748b;
+        margin-top: 4px;
+        line-height: 1.4;
+      }
+    }
+  }
+
+  // Inline spinner cho banner pending
+  .loading-spinner-inline {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(2, 132, 199, 0.3);
+    border-top: 2px solid #0284c7;
+    border-radius: 50%;
+    animation: spinRing 0.8s linear infinite;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+}
+
+@keyframes spinRing {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeInLoader {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

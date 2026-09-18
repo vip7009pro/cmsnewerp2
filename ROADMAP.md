@@ -1,5 +1,35 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Line QC (`LINEQC.tsx`) Chuẩn Google Stitch Enterprise & Tối Ưu Hóa Mobile-First Hiện Trường:
+  - **Bảo toàn 100% logic nghiệp vụ, 8 API queries & Upload ảnh checksheet**:
+    * Duy trì toàn bộ logic kiểm tra mã chỉ thị `checkPLAN_ID`, thông tin sản phẩm (`G_CODE`, `G_NAME`, `PROD_REQUEST_NO`, `PROD_REQUEST_DATE`).
+    * Duy trì kiểm tra điều kiện bắn setting máy `loadDataSX` qua trường `MASS_START_TIME` (chặn submit nếu máy chưa bắn setting).
+    * Duy trì xác thực cuộn màng NVL qua `checkPlanIdP501`, `checkProcessLotNo_Prod_Req_No`, `checkMNAMEfromLot` (`M_NAME`, `WIDTH_CD`, `OUT_CFM_QTY`).
+    * Duy trì kiểm tra trạng thái kích thước độ dày / DTC qua `checkktdtc` (`CKT`/`DKT`).
+    * Duy trì tự động xác định STT kiểm tra checksheet đầu/giữa/cuối qua `checkPlanIdChecksheet` (STT 1, 2, 3 tương ứng Lần 1/2/3 và kiểm tra giới hạn tải lên).
+    * Duy trì upload ảnh hiện trường qua `uploadQuery(file, PLAN_ID + "_" + STT + ".jpg", "lineqc")` và cập nhật cờ `update_checksheet_image_status`.
+  - **Thiết kế Mobile-First tối ưu cho công nhân & PQC sử dụng điện thoại trên hiện trường**:
+    * Layout dạng Mobile Action Cards bo góc 8px với touch target lớn $\ge 44\text{px}$, bố trí 5 khối thao tác một tay bằng ngón cái tiện lợi.
+    * Tích hợp Modal Quét Mã Barcode / QR Code chuyên nghiệp (`PrecisionLineQcScannerModal`) bằng camera thiết bị, hỗ trợ quét cả mã chỉ thị kế hoạch hoặc mã cuộn màng.
+    * Khối tải / chụp ảnh checksheet hiện trường có Live Preview ảnh chụp tức thì, hiển thị kích thước tệp, nút Chụp ảnh trực tiếp bằng camera điện thoại và nút gỡ bỏ.
+    * Nút hành động Hoàn Tất Kiểm Tra dạng Full-Width lớn công thái học có trạng thái loading mượt mà.
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `LINEQC.backup.tsx` (683 dòng).
+    * Phân rã thành 5 module chuyên biệt tại `src/pages/qc/pqc/PrecisionLineQc/`:
+      1. `PrecisionLineQc.scss` (480 dòng): Stylesheet SCSS Mobile-First & Multi-Tab.
+      2. `useLineQcData.ts` (280 dòng): Custom hook pure TypeScript gom toàn bộ state, 8 API queries và quản lý STT checksheet.
+      3. `PrecisionLineQcHeader.tsx` (55 dòng): Header bar công nghiệp kèm telemetry & reload.
+      4. `PrecisionLineQcScannerModal.tsx` (115 dòng): Modal camera quét mã Barcode/QR Code cho điện thoại.
+      5. `PrecisionLineQcForm.tsx` (295 dòng): Form nhập liệu 5 khối Mobile Action Cards.
+    * Controller chính `LINEQC.tsx` tinh gọn từ 683 dòng xuống còn **105 dòng**.
+  - **Xác thực toàn diện & Khắc phục lỗi runtime**:
+    * Quét TypeScript AST toàn bộ 5/5 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra toàn bộ 6/6 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+    * **Fix lỗi runtime export**: Đổi sang `import { useLineQcData }` và đồng bộ chuẩn xác props form, header và modal scanner.
+    * **Bổ sung Fullscreen Backdrop Loading Indicator**: Tự động làm tối màn hình kèm spinner và thông báo chỉ thị đang tra cứu ngay khi nhập xong chỉ thị cho đến khi tải xong toàn bộ thông tin sản phẩm và điều kiện sản xuất.
+    * **Tối ưu Ultra-Compact & Cuộn Mượt Mà**: Loại bỏ header lớn không cần thiết, gom gọn thành 3 card mượt mà giúp người dùng xem và thao tác trọn vẹn toàn bộ các khối trên một màn hình mà không cần cuộn, đồng thời kích hoạt vùng cuộn mượt mà khi màn hình có kích thước quá nhỏ.
+    * **Tối ưu hiển thị EMPL_NAME & Tách dòng ghi chú**: Tách riêng ô Ghi Chú xuống dòng dưới full-width, dành trọn vẹn không gian hàng trên cho Mã QC và Thẻ Họ Tên Line QC (`EMPL_NAME`), không bị che khuất hay cắt chữ trên di động.
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Khai Báo Dữ Liệu Sample Sản Xuất (`DATASAMPLESX.tsx`) Chuẩn Google Stitch Enterprise & Tối Ưu Hóa Mobile-First Hiện Trường:
   - **Bảo toàn 100% logic nghiệp vụ, APIs & Upload ảnh**:
     * Duy trì toàn bộ tham số các hàm `checkPLAN_ID`, `checkEMPL_NO_mobile`, `insert_sampledatasx`.
