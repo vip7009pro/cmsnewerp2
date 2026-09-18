@@ -1,5 +1,28 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-18 (SX: Refactor Toàn Diện Tab Quản Lý & Lịch Sử Dao Film `DAOFILMDATA.tsx` Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Quản Lý & Lịch Sử Dao Film (`src/pages/sx/LICHSUDAOFILM/DAOFILMDATA.tsx`)** là công cụ quản lý thiết bị khuôn dập (Dao) và bản phim (Film) phục vụ sản xuất. Màn hình bao gồm 3 chế độ tra cứu trọng yếu: Lịch Sử Giao Nhận (`tradaofilm`), Quản Lý Dao Film (`loadquanlydaofilm`), và Lịch Sử Xuất Dao Film (`lichsuxuatdaofilm`).
+  * Mã nguồn cũ 505 dòng mang phong cách gradient cũ `#afd3d1` / `#86cfff` với form sidebar chiếm diện tích ngang, thiếu Dashboard KPI tổng quan, thiếu hệ thống biểu đồ trực quan xu hướng và phân tích tuổi thọ dao film, bảng AGTable còn dùng toolbar xanh lá mặc định, thiếu ô Quick Search và thiếu cụm nút xuất Excel EX1/EX2. Đặc biệt modal thêm giao nhận `QLGN` chỉ là một div trôi nổi sơ sài.
+  * Yêu cầu: Làm lại theo chuẩn **Google Stitch High-Density Enterprise**, thiết kế hệ thống biểu đồ Executive Dashboard Recharts tương tự `KinhDoanhReport.tsx`, bổ sung Dashboard 6 Micro-Cards KPI realtime, bảo toàn 100% cột dữ liệu, tên cột `headerName` và độ rộng cột của cả 3 bảng AG-Grid, tích hợp ô Quick Search và cụm nút xuất Excel `EX1`, `EX2`, nâng cấp Modal `QLGN` thành Enterprise Modal Dialog với Backdrop blur.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `DAOFILMDATA.backup.tsx` (505 dòng).
+  * Phân rã thành công thành 10 module chuyên biệt trong thư mục `src/pages/sx/LICHSUDAOFILM/PrecisionDaoFilmData/`:
+    1. `PrecisionDaoFilmData.scss` (550 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho KPI Cards, header, segmented switcher, executive-cards, two-col-grid, bảng AGTable và Enterprise Modal.
+    2. `PrecisionDaoFilmDataColumns.tsx` (226 dòng): Cấu hình 3 bộ cột AG-Grid bảo toàn 100% `headerName` và `width` gốc (24 cột Lịch sử Giao nhận, 28 cột Quản lý Dao film, 24 cột Lịch sử Xuất dao film), tối ưu format số JetBrains Mono và status badges bo góc hiện đại.
+    3. `daoFilmDataHelpers.ts` (207 dòng): Module pure TypeScript chứa các hàm tính toán KPI, phân bổ chủng loại, top 10 lượt dập dao, xu hướng theo ngày, phân bổ nhà máy và hàm lọc tìm kiếm nhanh `filterDaoFilmData`.
+    4. `useDaoFilmData.ts` (251 dòng): Custom hook pure TypeScript gom toàn bộ state, 3 API queries (`fetchGiaoNhan`, `fetchQuanLy`, `fetchLichSuXuat`), quick search và xuất Excel.
+    5. `PrecisionDaoFilmDataKpi.tsx` (132 dòng): Dashboard 6 Micro-cards KPI thống kê realtime: Tổng Bản Ghi Tra Cứu, Phân Loại Dao / Film, Tỷ Lệ Đạt (Khuôn OK), Vượt Định Mức Dập (Cảnh báo mài/bảo dưỡng), Tổng Lượt Dập (Press Count), và Cơ Cấu Nhà Máy NM1 vs NM2.
+    6. `PrecisionDaoFilmDataCharts.tsx` (293 dòng): Hệ thống 4 biểu đồ Recharts phong cách `KinhDoanhReport.tsx` (Phân Bổ Chủng Loại Dao & Bản Phim, Top 10 Dao Dập Nhiều Nhất & Định Mức, Xu Hướng Giao Nhận & Xuất Dao Theo Ngày, Cơ Cấu Nhà Máy & Trạng Thái Sức Khỏe Khuôn) đóng gói trong các thẻ `executive-card` bố trí dạng `.two-col-grid`, có nút xuất Excel cho từng biểu đồ.
+    7. `PrecisionDaoFilmDataHeader.tsx` (68 dòng): Header bar công nghiệp kèm badge phân hệ `SX PRECISION`, breadcrumb, telemetry số dòng và nút reload dữ liệu.
+    8. `PrecisionDaoFilmDataToolbar.tsx` (277 dòng): Toolbar compact gồm bộ chọn ngày Từ ngày - Đến ngày, dải nút chọn nhanh (1D, 3D, 7D, 30D), checkbox All Time, inputs tìm kiếm chi tiết, 3 nút chế độ tra cứu nổi bật và Segmented Switcher (`Toàn Bộ`, `Biểu Đồ`, `Bảng Dữ Liệu`).
+    9. `PrecisionDaoFilmDataGrid.tsx` (140 dòng): Khung AGTable bọc thanh tìm kiếm nhanh tức thì, cụm nút xuất Excel `EX1`, `EX2`, nút `Thêm Giao Nhận`, `Gán Code`, `Xuất Dao Film`.
+    10. `PrecisionDaoFilmDataModal.tsx` (46 dòng): Modal xem/thêm giao nhận dao film `QLGN` chuẩn Enterprise với Backdrop Blur cao cấp.
+    11. `DAOFILMDATA.tsx`: Controller chính tinh gọn từ 505 dòng xuống còn **168 dòng** kết nối subcomponents.
+- **3. Xác Thực Toàn Diện**:
+  * Quét TypeScript AST toàn bộ 10/10 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Tất cả các component UI đều nhỏ gọn < 300 dòng tuân thủ nghiêm ngặt quy tắc Clean Code ERP.
+
 ## Update - 2026-09-17 (SX: Refactor Toàn Diện Tab Báo Cáo Full Roll `BAOCAOFULLROLL.tsx` Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình **Báo Cáo Full Roll (`src/pages/sx/BAOCAOTHEOROLL/BAOCAOFULLROLL.tsx`)** là công cụ tra cứu số liệu dập chi tiết theo cuộn liệu (Full Roll Production Analytics), theo dõi toàn diện 3 hệ đơn vị (Mét, Con EA, Mét vuông M2) qua các công đoạn từ IQC, Xuất kho, Cấp liệu máy, Dập thực tế, Cân chỉnh Setting, Hỏng công đoạn PR_NG, Thành phẩm Result, Tồn BTP, Tồn kho SX, Trả về kho và Kiểm tra ngoại quan.

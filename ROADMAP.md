@@ -1,5 +1,49 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Quản Lý & Lịch Sử Dao Film (`DAOFILMDATA.tsx`) Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard:
+  - **Bảo toàn 100% logic nghiệp vụ & các cột dữ liệu**:
+    * Duy trì 100% tên cột `headerName` và độ rộng `width` của cả 3 bảng AG-Grid:
+      1) Bảng Lịch Sử Giao Nhận (`column_daofilm_data`, 24 cột): `KNIFE_FILM_ID` (50), `FACTORY_NAME` (50), `NGAYBANGIAO` (100), `G_CODE` (80), `G_NAME` (250), `LOAIBANGIAO_PDP` (80), `LOAIPHATHANH` (110), `SOLUONG` (60), `SOLUONGOHP` (80), `LYDOBANGIAO` (80), `PQC_EMPL_NO` (80), `RND_EMPL_NO` (80), `SX_EMPL_NO` (80), `MA_DAO` (100), `CFM_GIAONHAN` (100), `CFM_INS_EMPL` (100), `CFM_DATE` (100), `KNIFE_TYPE` (100), `KNIFE_FILM_STATUS` (100), `G_WIDTH` (100), `G_LENGTH` (100), `VENDOR` (100), `TOTAL_PRESS` (100), `REMARK` (150).
+      2) Bảng Quản Lý Dao Film (`column_quanlydaofilm_data`, 28 cột): `KNIFE_FILM_ID` (60), `G_CODE` (60), `G_NAME` (80), `G_NAME_KD` (80), `KNIFE_TYPE` (50), `KNIFE_FILM_STEP` (50), `KNIFE_FILM_QTY` (50), `FULL_KNIFE_CODE` (80), `KT_KNIFE_CODE` (80), `KNIFE_BOX_NUMBER` (80), `CAVITY_NGANG` (80), `CAVITY_DOC` (80), `PD` (50), `BOGOC` (50), `SONG_GIUA` (50), `KNIFE_STATUS` (50), `STANDARD_PRESS_QTY` (80), `TOTAL_PRESS` (80), `FACTORY_NAME` (80), `INS_EMPL` (80), `PROD_TYPE` (80), `REV_NO` (80), `VENDOR` (80), `INS_DATE` (80), `UPD_EMPL` (80), `UPD_DATE` (80), `REMARK` (80), `KNIFE_FILM_NO` (80), `KNIFE_FILM_SEQ` (80), `KCTD` (80).
+      3) Bảng Lịch Sử Xuất Dao Film (`column_lichsuxuatdaofilm`, 24 cột): `INS_DATE` (100), `PLAN_DATE` (80), `CA_LAM_VIEC` (40), `MA_DAO` (50), `MA_DAO_KT` (80), `PLAN_ID` (50), `G_NAME` (100), `G_NAME_KD` (70), `KNIFE_FILM_NO` (100), `QTY_KNIFE_FILM` (50), `CAVITY` (100), `PD` (100), `EQ_THUC_TE` (40), `PRESS_QTY` (70), `EMPL_NO` (70), `LOAIBANGIAO_PDP` (60), `F_WIDTH` (70), `F_LENGTH` (70), `F_NEW` (70), `INS_EMPL` (70), `SX_EMPL_NO` (70), `SX_DATE` (60), `ERR_CODE` (60), `ERR_NAME` (60).
+    * Duy trì toàn bộ tham số 3 API queries: `tradaofilm`, `loadquanlydaofilm`, `lichsuxuatdaofilm`.
+    * Tối ưu hiển thị format số font JetBrains Mono sắc nét và status badges bo góc hiện đại.
+  - **Bổ sung Dashboard 6 Micro-Cards KPI Thống Kê Realtime Hữu Ích**:
+    * `Tổng Bản Ghi Tra Cứu`: Tổng số bản ghi đang hiển thị trên lưới.
+    * `Phân Loại Dao / Film`: Cơ cấu số lượng Dao, Film, Tài liệu.
+    * `Tỷ Lệ Đạt (Khuôn OK)`: Tỷ lệ % khuôn đạt yêu cầu và số lượng OK / NG.
+    * `Vượt Định Mức Dập`: Cảnh báo số bộ dao vượt định mức `TOTAL_PRESS > STANDARD_PRESS_QTY` cần mài/bảo dưỡng.
+    * `Tổng Lượt Dập (Press)`: Lũy kế số dập thực tế của danh sách khuôn.
+    * `Cơ Cấu Nhà Máy`: Phân bổ số lượng khuôn theo NM1 vs NM2.
+  - **Hệ Thống 4 Biểu Đồ Recharts Executive Dashboard Bố Trí Theo Phong Cách KinhDoanhReport**:
+    * Biểu đồ 1: Phân Bổ Chủng Loại Dao & Bản Phim (`PieChart` / `DonutChart` theo CTF, CTP, PINACLE, PVC, Dao, Film...).
+    * Biểu đồ 2: Top 10 Dao Dập Nhiều Nhất & Định Mức (`BarChart` so sánh Total Press vs Standard Press).
+    * Biểu đồ 3: Xu Hướng Giao Nhận & Xuất Dao Theo Ngày (`ComposedChart` Bar số lượt & Line lượt dập theo ngày).
+    * Biểu đồ 4: Cơ Cấu Nhà Máy & Trạng Thái Sức Khỏe Khuôn (`Stacked BarChart` NM1 vs NM2 theo OK / NG).
+    * Đóng gói trong các thẻ `executive-card` sang trọng, bố trí dạng `.two-col-grid`, có **nút xuất Excel dữ liệu chi tiết cho từng biểu đồ**.
+  - **Nâng Cấp Bảng Lưới AG Grid High-Density & Tiện Ích Dữ Liệu**:
+    * Thanh lọc nhanh phía trên bảng (`gridToolbar`) tích hợp ô tìm kiếm nhanh tức thì (`Quick Search`), cụm nút xuất Excel `EX1` (dữ liệu đang lọc), `EX2` (toàn bộ dữ liệu) và bộ đếm số dòng hiển thị.
+    * Cụm nút nghiệp vụ chuyên dụng: `Thêm Giao Nhận` (mở Modal QLGN), `Gán Code`, `Xuất Dao Film`.
+    * Nâng cấp Modal xem/thêm giao nhận `QLGN` đẳng cấp Enterprise với Backdrop Blur và tiêu đề chuyên nghiệp.
+    * Segmented Tab Switcher 3 chế độ xem nhanh: `Toàn Bộ (All)`, `Biểu Đồ (Charts)`, `Bảng Dữ Liệu (Grid)`.
+    * Ẩn hoàn toàn toolbar xanh lá mặc định của AGTable.
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `DAOFILMDATA.backup.tsx` (505 dòng).
+    * Phân rã thành 9 module chuyên biệt tại `src/pages/sx/LICHSUDAOFILM/PrecisionDaoFilmData/`:
+      1. `PrecisionDaoFilmData.scss` (550 dòng): Stylesheet SCSS Google Stitch Enterprise & Multi-Tab.
+      2. `PrecisionDaoFilmDataColumns.tsx` (226 dòng): Cấu hình 3 bộ cột AG-Grid.
+      3. `daoFilmDataHelpers.ts` (207 dòng): Pure TypeScript functions tính KPI, tổng hợp dữ liệu 4 biểu đồ & quick search.
+      4. `useDaoFilmData.ts` (251 dòng): Custom hook pure TypeScript gom state, 3 API queries và xuất Excel.
+      5. `PrecisionDaoFilmDataKpi.tsx` (132 dòng): 6 Micro-cards KPI realtime.
+      6. `PrecisionDaoFilmDataCharts.tsx` (293 dòng): 4 biểu đồ Recharts executive-card two-col-grid có nút Excel.
+      7. `PrecisionDaoFilmDataHeader.tsx` (68 dòng): Header bar công nghiệp kèm telemetry & reload.
+      8. `PrecisionDaoFilmDataToolbar.tsx` (277 dòng): Toolbar compact 2 hàng & 3 nút chế độ tra cứu.
+      9. `PrecisionDaoFilmDataGrid.tsx` (140 dòng): Khung AGTable kèm quick search, EX1, EX2, nút hành động.
+      10. `PrecisionDaoFilmDataModal.tsx` (46 dòng): Enterprise modal dialog bọc `QLGN`.
+    * Controller chính `DAOFILMDATA.tsx` tinh gọn từ 505 dòng xuống còn **168 dòng**.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 10/10 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Báo Cáo Full Roll (`BAOCAOFULLROLL.tsx`) Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard:
   - **Bảo toàn 100% logic nghiệp vụ & các cột dữ liệu**:
     * Duy trì 100% tên cột `headerName` và độ rộng `width` của 64 cột bảng AG-Grid (`PLAN_DATE`, `PHAN_LOAI`, `PROCESS_NUMBER`, `STEP`, `G_NAME_KD`, `PROD_MAIN_MATERIAL`, `WIDTH_CD`, `PROD_REQUEST_NO`, `PLAN_ID`, `M_LOT_NO`, 18 cột Mét, 18 cột EA, 18 cột M2, `PD`, `CAVITY`).

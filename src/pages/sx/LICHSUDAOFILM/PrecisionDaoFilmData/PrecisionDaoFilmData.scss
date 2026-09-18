@@ -1,0 +1,811 @@
+// Precision Industrial ERP - Tooling & Stencil Film Data Stylesheet
+// Google Stitch High-Density Enterprise Design Tokens
+
+.precision-daofilmdata {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: calc(100vh - 82px);
+  background-color: #f8fafc;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #0f172a;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  .component_element & {
+    width: 100% !important;
+    height: 100% !important;
+    flex: 1 1 auto;
+    align-self: stretch;
+  }
+
+  * { box-sizing: border-box; }
+
+  // ─── HEADER BAR ────────────────────────────
+  .precision-df-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-shrink: 0;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+
+    &__left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    &__badge-brand {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    &__breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #64748b;
+      .active { color: #0f172a; font-weight: 700; font-size: 12px; }
+    }
+
+    &__telemetry {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background-color: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 10.5px;
+      font-weight: 600;
+      .pulse-dot {
+        width: 6px; height: 6px; border-radius: 50%;
+        background-color: #10b981;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        animation: dfPulse 2s infinite;
+      }
+    }
+
+    &__mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+
+      &--gn { background-color: #fdf2f8; color: #db2777; border: 1px solid #fbcfe8; }
+      &--ql { background-color: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+      &--xuat { background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+    }
+
+    &__right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    &__btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 26px;
+      padding: 0 9px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      &:hover { background-color: #f8fafc; color: #1e293b; border-color: #94a3b8; }
+    }
+  }
+
+  @keyframes dfPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  // ─── FILTER TOOLBAR ────────────────────────
+  .precision-df-toolbar {
+    background: linear-gradient(90deg, #ffffff, #f8fafc);
+    border-bottom: 1px solid #e2e8f0;
+    padding: 6px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+
+    &__row1 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    &__filters {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    &__date-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 1px 6px;
+      height: 26px;
+
+      label {
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #475569;
+      }
+      input[type="date"] {
+        border: none;
+        outline: none;
+        font-size: 11px;
+        font-family: inherit;
+        color: #0f172a;
+        background: transparent;
+        cursor: pointer;
+        padding: 0;
+      }
+      .date-sep {
+        font-size: 10px;
+        color: #94a3b8;
+        font-weight: 600;
+      }
+    }
+
+    &__quick-dates {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+
+      button {
+        height: 24px;
+        padding: 0 6px;
+        font-size: 10px;
+        font-weight: 600;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        background-color: #ffffff;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        &:hover {
+          background-color: #f1f5f9;
+          border-color: #94a3b8;
+          color: #0f172a;
+        }
+      }
+    }
+
+    &__checkbox-alltime {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 24px;
+      padding: 0 6px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      background-color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+
+      input { cursor: pointer; }
+    }
+
+    &__input-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 0 6px;
+      height: 26px;
+
+      span.label {
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #475569;
+        white-space: nowrap;
+      }
+
+      input[type="text"] {
+        border: none;
+        outline: none;
+        font-size: 11px;
+        font-family: inherit;
+        color: #0f172a;
+        background: transparent;
+        width: 85px;
+        &::placeholder { color: #94a3b8; }
+      }
+
+      select {
+        border: none;
+        outline: none;
+        font-size: 11px;
+        font-family: inherit;
+        color: #0f172a;
+        background: transparent;
+        cursor: pointer;
+      }
+    }
+
+    &__row2 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    &__modes {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    &__btn-mode {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 28px;
+      padding: 0 12px;
+      font-size: 11.5px;
+      font-weight: 700;
+      border-radius: 5px;
+      cursor: pointer;
+      border: 1px solid #cbd5e1;
+      background-color: #ffffff;
+      color: #475569;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+      transition: all 0.15s ease;
+
+      .badge-count {
+        font-size: 10px;
+        font-weight: 800;
+        padding: 1px 5px;
+        border-radius: 9999px;
+        background-color: #f1f5f9;
+        color: #475569;
+      }
+
+      &:hover {
+        background-color: #f8fafc;
+        border-color: #94a3b8;
+        color: #0f172a;
+      }
+
+      &--active-gn {
+        background: linear-gradient(135deg, #ec4899, #db2777);
+        color: #ffffff;
+        border-color: #db2777;
+        box-shadow: 0 2px 4px rgba(219, 39, 119, 0.25);
+        .badge-count { background-color: rgba(255, 255, 255, 0.25); color: #ffffff; }
+        &:hover { background: linear-gradient(135deg, #db2777, #be185d); color: #ffffff; }
+      }
+
+      &--active-ql {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #ffffff;
+        border-color: #059669;
+        box-shadow: 0 2px 4px rgba(5, 150, 105, 0.25);
+        .badge-count { background-color: rgba(255, 255, 255, 0.25); color: #ffffff; }
+        &:hover { background: linear-gradient(135deg, #059669, #047857); color: #ffffff; }
+      }
+
+      &--active-xuat {
+        background: linear-gradient(135deg, #0284c7, #2563eb);
+        color: #ffffff;
+        border-color: #2563eb;
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
+        .badge-count { background-color: rgba(255, 255, 255, 0.25); color: #ffffff; }
+        &:hover { background: linear-gradient(135deg, #0369a1, #1d4ed8); color: #ffffff; }
+      }
+    }
+
+    // Segmented tab switch (ALL / CHARTS / GRID)
+    .segmented-switch {
+      display: inline-flex;
+      background-color: #f1f5f9;
+      padding: 2px;
+      border-radius: 5px;
+      border: 1px solid #e2e8f0;
+
+      &__btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 24px;
+        padding: 0 9px;
+        font-size: 10.5px;
+        font-weight: 600;
+        color: #64748b;
+        background: transparent;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+
+        &--active {
+          background-color: #ffffff;
+          color: #0284c7;
+          font-weight: 700;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+        }
+        &:hover:not(.segmented-switch__btn--active) {
+          color: #0f172a;
+        }
+      }
+    }
+  }
+
+  // ─── SCROLLABLE DASHBOARD BODY ──────────────
+  .precision-df-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 12px;
+    gap: 10px;
+
+    &::-webkit-scrollbar { width: 6px; height: 6px; }
+    &::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+  }
+
+  // ─── KPI CARDS ─────────────────────────────
+  .precision-df-kpi {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    width: 100%;
+
+    @media (max-width: 1400px) { grid-template-columns: repeat(3, 1fr); }
+    @media (max-width: 768px) { grid-template-columns: repeat(2, 1fr); }
+
+    .kpi-card {
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 8px 10px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+      border-left: 3px solid #cbd5e1;
+
+      &:hover {
+        box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.06);
+        transform: translateY(-1px);
+      }
+
+      &--blue { border-left-color: #0284c7; .kpi-icon-wrap { background-color: #f0f9ff; color: #0284c7; } }
+      &--emerald { border-left-color: #10b981; .kpi-icon-wrap { background-color: #ecfdf5; color: #059669; } }
+      &--teal { border-left-color: #0d9488; .kpi-icon-wrap { background-color: #f0fdfa; color: #0d9488; } }
+      &--amber { border-left-color: #f59e0b; .kpi-icon-wrap { background-color: #fef3c7; color: #d97706; } }
+      &--rose { border-left-color: #f43f5e; .kpi-icon-wrap { background-color: #fff1f2; color: #e11d48; } }
+      &--violet { border-left-color: #7c3aed; .kpi-icon-wrap { background-color: #f5f3ff; color: #7c3aed; } }
+
+      .kpi-info { display: flex; flex-direction: column; gap: 2px; }
+      .kpi-label {
+        font-size: 10px; font-weight: 800; text-transform: uppercase;
+        letter-spacing: 0.04em; color: #64748b;
+      }
+      .kpi-amount {
+        font-size: 17px; font-weight: 800;
+        font-family: 'JetBrains Mono', monospace;
+        color: #0f172a; line-height: 1.2;
+      }
+      .kpi-meta {
+        font-size: 9.5px; color: #64748b;
+        display: flex; align-items: center; gap: 6px; margin-top: 2px;
+        .qty-val { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #334155; }
+        .rate-val { font-weight: 700; color: #2563eb; }
+        .alert-val { font-weight: 700; color: #e11d48; }
+      }
+      .kpi-icon-wrap {
+        width: 34px; height: 34px; border-radius: 6px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 16px; flex-shrink: 0;
+      }
+    }
+  }
+
+  // ─── EXECUTIVE CARDS (Recharts) ───────────
+  .executive-card {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    &:hover { box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.06); }
+
+    &__header {
+      background: linear-gradient(90deg, #f8fafc, #f1f5f9);
+      border-bottom: 1px solid #e2e8f0;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    &__title-wrap { display: flex; align-items: center; gap: 6px; }
+    &__title { font-size: 11.5px; font-weight: 700; color: #334155; }
+
+    &__btn-excel {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      height: 22px;
+      padding: 0 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #065f46;
+      background-color: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      &:hover { background-color: #d1fae5; border-color: #6ee7b7; }
+    }
+
+    &__body {
+      padding: 10px 8px 4px 8px;
+      flex: 1 1 auto;
+      min-height: 230px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+
+  .two-col-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+    @media (max-width: 1100px) { grid-template-columns: 1fr; }
+  }
+
+  .custom-chart-tooltip {
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(4px);
+    border: 1px solid #334155;
+    border-radius: 5px;
+    padding: 6px 10px;
+    font-size: 11px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+    pointer-events: none;
+
+    &__title {
+      font-weight: 700;
+      color: #93c5fd;
+      margin-bottom: 4px;
+      border-bottom: 1px solid #475569;
+      padding-bottom: 2px;
+    }
+    &__item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 2px 0;
+      strong { font-family: 'JetBrains Mono', monospace; }
+    }
+  }
+
+  // ─── AGTABLE GRID CONTAINER ────────────────
+  .precision-df-grid {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 380px;
+    height: 100%;
+    width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+
+    &__toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 6px 12px;
+      background-color: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      flex-shrink: 0;
+    }
+
+    &__toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    &__search-box {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      width: min(260px, 100%);
+      height: 26px;
+      padding: 0 8px;
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      transition: border-color 0.15s ease;
+
+      &:focus-within { border-color: #0284c7; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
+      input {
+        border: none;
+        outline: none;
+        font-size: 11px;
+        width: 100%;
+        color: #0f172a;
+        background: transparent;
+        &::placeholder { color: #94a3b8; }
+      }
+    }
+
+    &__actions {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    &__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 26px;
+      padding: 0 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #334155;
+      transition: all 0.15s ease;
+
+      .badge {
+        font-size: 9.5px;
+        font-weight: 700;
+        padding: 1px 4px;
+        border-radius: 3px;
+      }
+
+      &--excel {
+        color: #065f46;
+        border-color: #a7f3d0;
+        background-color: #f0fdf4;
+        .badge { background-color: #dcfce7; color: #065f46; }
+        &:hover { background-color: #dcfce7; border-color: #6ee7b7; }
+      }
+
+      &--gn {
+        color: #9d174d;
+        border-color: #fbcfe8;
+        background-color: #fdf2f8;
+        .badge { background-color: #fce7f3; color: #9d174d; }
+        &:hover { background-color: #fce7f3; border-color: #f472b6; }
+      }
+
+      &--code {
+        color: #047857;
+        border-color: #a7f3d0;
+        background-color: #f0fdf4;
+        &:hover { background-color: #dcfce7; }
+      }
+
+      &--xuat {
+        color: #1d4ed8;
+        border-color: #bfdbfe;
+        background-color: #eff6ff;
+        &:hover { background-color: #dbeafe; }
+      }
+    }
+
+    &__toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    &__meta {
+      font-size: 11px;
+      color: #64748b;
+      strong {
+        color: #0f172a;
+        font-family: 'JetBrains Mono', monospace;
+      }
+    }
+
+    &__body {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 250px;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+
+      .agtable {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-height: 250px;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+
+        // Ẩn hoàn toàn toolbar xanh lá mặc định
+        .toolbar {
+          display: none !important;
+        }
+
+        .ag-theme-quartz {
+          display: flex;
+          flex-direction: column;
+          flex: 1 1 auto;
+          min-height: 250px;
+          height: 100%;
+          width: 100%;
+
+          .ag-root-wrapper {
+            height: 100% !important;
+            min-height: 250px;
+            border: none;
+          }
+
+          .ag-header {
+            background: #f1f5f9;
+            border-bottom: 1px solid #cbd5e1;
+            font-size: 11px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+          }
+
+          .ag-row {
+            font-size: 11.5px;
+            border-bottom: 1px solid #f1f5f9;
+            &:hover { background-color: #f8fafc; }
+          }
+        }
+      }
+    }
+  }
+
+  // ─── ENTERPRISE MODAL (QLGN) ───────────────
+  .precision-df-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+
+    .modal-container {
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+      border: 1px solid #cbd5e1;
+      width: 95vw;
+      max-width: 1440px;
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: dfModalFadeIn 0.2s ease-out;
+
+      &__header {
+        background: linear-gradient(90deg, #f8fafc, #f1f5f9);
+        border-bottom: 1px solid #e2e8f0;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+
+        .modal-title-wrap {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          h3 {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f172a;
+          }
+          .tag {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 4px;
+            background-color: #fdf2f8;
+            color: #db2777;
+            border: 1px solid #fbcfe8;
+          }
+        }
+
+        .btn-close {
+          border: none;
+          background: transparent;
+          color: #64748b;
+          font-size: 18px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 28px;
+          height: 28px;
+          border-radius: 4px;
+          transition: all 0.15s ease;
+          &:hover { background-color: #fee2e2; color: #ef4444; }
+        }
+      }
+
+      &__body {
+        flex: 1 1 auto;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background-color: #f8fafc;
+      }
+    }
+  }
+
+  @keyframes dfModalFadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+  }
+}
