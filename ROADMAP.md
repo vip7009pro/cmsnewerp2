@@ -1,5 +1,33 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Trang Đăng Nhập (`Login.tsx`) Chuẩn Google Stitch Enterprise & Frosted Glassmorphism Hiện Đại:
+  - **Bảo tồn trọn vẹn 100% hình nền công ty (`/companybackground.png`)**:
+    * Duy trì nền công ty làm background gốc, bổ sung lớp phủ Vignette Frosted Glass tinh tế (`backdrop-filter: blur(4px)`) tạo chiều sâu thị giác sang trọng và chống mỏi mắt.
+  - **Thiết kế Card Đăng Nhập Ultra-Modern Frosted Glassmorphism**:
+    * Khung thẻ kính mờ `rgba(255, 255, 255, 0.94)`, bo góc 16px, viền kính siêu mỏng, đổ bóng đa tầng `0 20px 45px -10px rgba(0, 0, 0, 0.35)`.
+    * Telemetry bar phía trên cùng với chấm trạng thái xanh lá nhấp nháy (`status-pulse`) hiển thị tên Server/Hệ thống.
+    * Nút chuyển đổi nhanh ngôn ngữ (VI / EN / KR) tức thì, lưu cấu hình vào localStorage & Redux.
+    * Khung logo công ty nổi bật kèm tiêu đề chào mừng đa ngôn ngữ qua hàm `getlang()`.
+  - **Form Trường Nhập Liệu High-Density Chuẩn Stitch**:
+    * Ô Tên đăng nhập tích hợp icon người dùng (`person`), tự động khôi phục username đã ghi nhớ từ `localStorage`.
+    * Ô Mật khẩu tích hợp icon ổ khóa (`lock`) và nút bấm chuyển đổi xem/ẩn mật khẩu (`visibility` / `visibility_off`).
+    * Dropdown chọn Máy chủ (Server) và Chi nhánh (Branch BR1/BR2) bo góc hiện đại có mũi tên chỉ dẫn đồng bộ.
+    * Nút Đăng Nhập lớn màu gradient xanh dương `#0284c7` -> `#0369a1` với hiệu ứng hover nâng card và spinner khi đang xác thực.
+    * Tùy chọn Ghi nhớ đăng nhập (Remember me), liên kết Quên mật khẩu và huy hiệu bảo mật cấp Doanh Nghiệp (End-to-End Encrypted).
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn nguyên bản 100%: `Login.backup.tsx` (274 dòng).
+    * Phân rã thành 4 module chuyên biệt tại `src/pages/login/PrecisionLogin/`:
+      1. `PrecisionLogin.scss` (~320 dòng): Stylesheet SCSS Google Stitch Enterprise & Frosted Glassmorphism.
+      2. `PrecisionLoginHeader.tsx` (~80 dòng): Header bar gồm telemetry, language switcher, logo và chào mừng.
+      3. `PrecisionLoginForm.tsx` (~175 dòng): Form nhập liệu, show/hide pass, dropdowns và nút đăng nhập.
+      4. `PrecisionLoginFooter.tsx` (~65 dòng): Tùy chọn ghi nhớ, quên mật khẩu và telemetry bảo mật.
+    * Controller chính `Login.tsx` tinh gọn từ 274 dòng xuống còn **198 dòng**.
+  - **Bảo toàn 100% logic nghiệp vụ & API**:
+    * Giữ nguyên 100% các dispatch Redux: `changeServer`, `changeSelectedServer`, `changeCtrCd`, `changeGLBLanguage`.
+    * Duy trì kiểm tra ký tự đặc biệt `isValidInput`, phím tắt Enter chuyển input và kích hoạt đăng nhập, kiểm tra tài khoản qua `login(user, pass)`.
+  - **Xác thực toàn diện**:
+    * Kiểm tra qua node HTTP requests tới Vite Dev Server (port 3001) toàn bộ 5/5 files component và stylesheet đều đạt **PASS: HTTP 200 OK**.
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Quản Lý Bài Viết & Đăng Tin Bảng Tin Nội Bộ (`PostManager.tsx`) Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard Phong Cách `KinhDoanhReport.tsx`:
   - **Bảo toàn 100% logic nghiệp vụ & API**:
     * Nạp danh sách bài viết hệ thống `f_fetchPostListAll()`.

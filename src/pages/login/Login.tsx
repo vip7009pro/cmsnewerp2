@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import "./Login.scss";
-import { getlang } from "../../components/String/String";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import "./PrecisionLogin/PrecisionLogin.scss";
 import { getCompany, login } from "../../api/Api";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -12,262 +11,206 @@ import {
 } from "../../redux/slices/globalSlice";
 import { isValidInput } from "../../api/services/utilService";
 import Swal from "sweetalert2";
-const Login = () => {
-  const protocol = window.location.protocol.startsWith("https")
-    ? "https"
-    : "http";
-  const main_port = protocol === "https" ? "5014" : "5013";
-  const sub_port = protocol === "https" ? "3007" : "3007";
-  //console.log('sub_port', sub_port)
-  const ref = useRef<any>(null);
+import { PrecisionLoginHeader } from "./PrecisionLogin/PrecisionLoginHeader";
+import { PrecisionLoginForm } from "./PrecisionLogin/PrecisionLoginForm";
+import { PrecisionLoginFooter } from "./PrecisionLogin/PrecisionLoginFooter";
+
+const Login: React.FC = () => {
+  const dispatch = useDispatch();
+  const passRef = useRef<HTMLInputElement>(null);
 
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [server_string, setServer_String] = useState("");
-  const lang: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.lang
-  );
-  const company: string = useSelector(
-    (state: RootState) => state.totalSlice.company
-  );
-  const companyInfo: any = useSelector(
-    (state: RootState) => state.totalSlice.cpnInfo
-  );
-  const ctr_cd: string = useSelector(
-    (state: RootState) => state.totalSlice.ctr_cd
-  );
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const cpnInfo: any = useSelector(
-    (state: RootState) => state.totalSlice.cpnInfo
-  );
-  const handle_setUser = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUser(e.target.value);
-  };
-  const handle_setUserKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      if (ref !== null) {
-        ref.current.focus();
-      }
-    }
-  };
-  const handle_setPassWordKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (e.key === "Enter") {
-      if (isValidInput(user) && isValidInput(pass)) {
-        login(user, pass);
-      } else {
-        Swal.fire(
-          "Thông báo",
-          "Tên đăng nhập và mật khẩu không được chứa ký tự đặc biệt",
-          "error"
-        );
-      }
-    }
-  };
-  const login_bt = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (isValidInput(user) && isValidInput(pass)) {
-      login(user, pass);
-    } else {
-      Swal.fire(
-        "Thông báo",
-        "Tên đăng nhập và mật khẩu không được chứa ký tự đặc biệt",
-        "error"
-      );
-    }
-  };
-  const server_ip: string | undefined = useSelector(
-    (state: RootState) => state.totalSlice.server_ip
-  );
-  const dispatch = useDispatch();
+  const [rememberMe, setRememberMe] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const lang = useSelector((state: RootState) => state.totalSlice.lang) ?? "vi";
+  const company = useSelector((state: RootState) => state.totalSlice.company) || "CMS";
+  const cpnInfo = useSelector((state: RootState) => state.totalSlice.cpnInfo);
+  const ctr_cd = useSelector((state: RootState) => state.totalSlice.ctr_cd) || "002";
+  const selectedServer = useSelector((state: RootState) => state.totalSlice.selectedServer) || "";
+
+  // Khởi tạo server và ngôn ngữ từ localStorage / Redux
   useEffect(() => {
-    let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
-    if (server_ip_local !== undefined) {
+    const savedUser = localStorage.getItem("saved_username");
+    if (savedUser) {
+      setUser(savedUser);
+    }
+
+    const server_ip_local = localStorage.getItem("server_ip")?.toString();
+    const activeCpn = getCompany();
+    const fallbackApiUrl = cpnInfo?.[activeCpn]?.apiUrl || "http://localhost:3007";
+
+    if (server_ip_local) {
       setServer_String(server_ip_local);
       dispatch(changeServer(server_ip_local));
-      dispatch(
-        changeSelectedServer(
-          cpnInfo[getCompany()].apiUrlArray.find(
-            (item: { apiUrl: string }) => item.apiUrl === server_ip_local
-          )?.server_name
-        )
+      const matchedServer = cpnInfo?.[activeCpn]?.apiUrlArray?.find(
+        (item: { apiUrl: string }) => item.apiUrl === server_ip_local
       );
+      if (matchedServer) {
+        dispatch(changeSelectedServer(matchedServer.server_name));
+      }
     } else {
-      localStorage.setItem(
-        "server_ip",
-        companyInfo[getCompany() as keyof typeof companyInfo].apiUrl
+      localStorage.setItem("server_ip", fallbackApiUrl);
+      setServer_String(fallbackApiUrl);
+      dispatch(changeServer(fallbackApiUrl));
+      const matchedServer = cpnInfo?.[activeCpn]?.apiUrlArray?.find(
+        (item: { apiUrl: string }) => item.apiUrl === fallbackApiUrl
       );
-      setServer_String(
-        companyInfo[getCompany() as keyof typeof companyInfo].apiUrl
-      );
-      dispatch(
-        changeServer(
-          companyInfo[getCompany() as keyof typeof companyInfo].apiUrl
-        )
-      );
-      dispatch(
-        changeSelectedServer(
-          cpnInfo[getCompany()].apiUrlArray.find(
-            (item: { apiUrl: string }) =>
-              item.apiUrl ===
-              companyInfo[getCompany() as keyof typeof companyInfo].apiUrl
-          )?.server_name
-        )
-      );
-      //localStorage.setItem("server_ip", "");
-      //dispatch(changeServer(companyInfo[getCompany() as keyof typeof companyInfo].apiUrl));
+      if (matchedServer) {
+        dispatch(changeSelectedServer(matchedServer.server_name));
+      }
     }
-    let saveLang: any = localStorage.getItem("lang")?.toString();
-    if (saveLang !== undefined) {
-      dispatch(changeGLBLanguage(saveLang.toString()));
+
+    const saveLang = localStorage.getItem("lang")?.toString();
+    if (saveLang) {
+      dispatch(changeGLBLanguage(saveLang));
     } else {
-      dispatch(changeGLBLanguage("en"));
+      dispatch(changeGLBLanguage("vi"));
+    }
+  }, [cpnInfo, dispatch]);
+
+  // Xử lý đổi ngôn ngữ tức thì
+  const handleLanguageChange = useCallback(
+    (newLang: string) => {
+      dispatch(changeGLBLanguage(newLang));
+      localStorage.setItem("lang", newLang);
+    },
+    [dispatch]
+  );
+
+  // Xử lý đổi server
+  const handleServerChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const newApiUrl = e.target.value;
+      localStorage.setItem("server_ip", newApiUrl);
+      setServer_String(newApiUrl);
+      dispatch(changeServer(newApiUrl));
+
+      const activeCpn = getCompany();
+      const matched = cpnInfo?.[activeCpn]?.apiUrlArray?.find(
+        (item: { apiUrl: string }) => item.apiUrl === newApiUrl
+      );
+      if (matched) {
+        dispatch(changeSelectedServer(matched.server_name));
+      }
+    },
+    [cpnInfo, dispatch]
+  );
+
+  // Xử lý đổi chi nhánh
+  const handleBranchChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      dispatch(changeCtrCd(e.target.value));
+    },
+    [dispatch]
+  );
+
+  // Focus chuyển sang input password khi gõ Enter ở ô user
+  const handleUserKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      passRef.current?.focus();
     }
   }, []);
+
+  // Xử lý đăng nhập
+  const executeLogin = useCallback(async () => {
+    if (!user.trim() || !pass.trim()) {
+      Swal.fire("Thông báo", "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu", "warning");
+      return;
+    }
+
+    if (!isValidInput(user) || !isValidInput(pass)) {
+      Swal.fire("Thông báo", "Tên đăng nhập và mật khẩu không được chứa ký tự đặc biệt", "error");
+      return;
+    }
+
+    if (rememberMe) {
+      localStorage.setItem("saved_username", user.trim());
+    } else {
+      localStorage.removeItem("saved_username");
+    }
+
+    try {
+      setIsLoading(true);
+      login(user.trim(), pass);
+    } finally {
+      setTimeout(() => setIsLoading(false), 1500);
+    }
+  }, [user, pass, rememberMe]);
+
+  const handlePassKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        executeLogin();
+      }
+    },
+    [executeLogin]
+  );
+
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      executeLogin();
+    },
+    [executeLogin]
+  );
+
   return (
-    <div className="loginscreen">
+    <div className="precision-login-wrapper">
+      {/* Background Công Ty Được Bảo Tồn Trọn Vẹn 100% */}
       <div
-        className="loginbackground"
+        className="precision-login-wrapper__bg-image"
         style={{
-          position: "absolute",
-          backgroundImage: `url('${
-            company === "CMS"
-              ? `/companybackground.png`
-              : `/companybackground.png`
-          }')`,
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          opacity: 0.5,
-          height: "100vh",
-          width: "100vw",
+          backgroundImage: `url('/companybackground.png')`,
         }}
-      ></div>
-      <div
-        className="login-form"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          backgroundImage: `${
-            company === "CMS"
-              ? theme.CMS.backgroundImage
-              : theme.PVN.backgroundImage
-          }`,
-        }}
-      >
-        <div className="logo">
-          <img
-            alt="cmsvina logo"
-            src="/companylogo.png"
-            width={cpnInfo[getCompany()].loginLogoWidth}
-            height={cpnInfo[getCompany()].loginLogoHeight}
+      />
+
+      {/* Lớp phủ Frosted Glass Vignette làm nổi bật Card và tạo chiều sâu hiện đại */}
+      <div className="precision-login-wrapper__bg-overlay" />
+
+      {/* Khung Thẻ Đăng Nhập Glassmorphism Chuẩn Google Stitch Enterprise */}
+      <div className="precision-login-wrapper__container">
+        <div className="precision-login-wrapper__card">
+          <PrecisionLoginHeader
+            company={company}
+            cpnInfo={cpnInfo}
+            currentLang={lang}
+            onLanguageChange={handleLanguageChange}
+            activeServerName={selectedServer}
           />
-        </div>
-        <span className="formname">
-          {getlang("dangnhap", lang ?? "en")}
-          {/*Sign In*/}
-        </span>
-        <div
-          className="login-input"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <input
-            id="login_input"
-            type="text"
-            placeholder="User name"
-            required
-            onKeyDown={(e) => {
-              handle_setUserKeyDown(e);
-            }}
-            onChange={(e) => {
-              handle_setUser(e);
-            }}
-          ></input>
-          <input
-            id="password_input"
-            type="password"
-            placeholder="Password"
-            ref={ref}
-            required
-            onKeyDown={(e) => {
-              handle_setPassWordKeyDown(e);
-            }}
-            onChange={(e) => setPass(e.target.value)}
-          ></input>
-          <label>
-            Server:
-            <select
-              name="select_server"
-              value={server_string}
-              onChange={(e) => {
-                console.log(e.target.value);
-                localStorage.setItem("server_ip", e.target.value);
-                setServer_String(e.target.value);
-                dispatch(changeServer(e.target.value));
-                dispatch(
-                  changeSelectedServer(
-                    cpnInfo[getCompany()].apiUrlArray.find(
-                      (item: { apiUrl: string }) =>
-                        item.apiUrl === e.target.value
-                    )?.server_name
-                  )
-                );
-                ///console.log(e.target.value);
-              }}
-            >
-              {cpnInfo[getCompany()].apiUrlArray.map((item: any) => (
-                <option key={item.server_name} value={item.apiUrl}>
-                  {item.server_name}
-                </option>
-              ))}
-            </select>
-          </label>
-          {getCompany() === "CMS" && (
-            <label>
-              Branch:
-              <select
-                name="select_ctr_cd"
-                value={ctr_cd}
-                onChange={(e) => {
-                  dispatch(changeCtrCd(e.target.value));
-                }}
-              >
-                <option value="001">BR1</option>
-                <option value="002">BR2</option>
-              </select>
-            </label>
-          )}
-        </div>
-        <div
-          className="submit"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <button className="login_button" onClick={login_bt}>
-            {getlang("dangnhap", lang ?? "en")}
-            {/*Login*/}
-          </button>
-        </div>
-        <div className="bottom-text">
-          <label htmlFor="checkbox" className="btmtext">
-            <input type="checkbox" name="checkboxname" id="checkbox" />          
-            {getlang("nhothongtindangnhap", lang ?? "en")}           
-          </label>
-          <a href="/" className="forgot-link">
-            {getlang("quenmatkhau", lang ?? "en")}           
-          </a>
+
+          <PrecisionLoginForm
+            user={user}
+            pass={pass}
+            serverString={server_string}
+            ctrCd={ctr_cd}
+            company={company}
+            cpnInfo={cpnInfo}
+            currentLang={lang}
+            isLoading={isLoading}
+            passRef={passRef}
+            onUserChange={(e) => setUser(e.target.value)}
+            onPassChange={(e) => setPass(e.target.value)}
+            onUserKeyDown={handleUserKeyDown}
+            onPassKeyDown={handlePassKeyDown}
+            onServerChange={handleServerChange}
+            onBranchChange={handleBranchChange}
+            onSubmit={handleSubmit}
+          />
+
+          <PrecisionLoginFooter
+            currentLang={lang}
+            rememberMe={rememberMe}
+            onRememberMeChange={setRememberMe}
+          />
         </div>
       </div>
     </div>
   );
 };
+
 export default Login;

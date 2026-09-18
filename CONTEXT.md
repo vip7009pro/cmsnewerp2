@@ -1,5 +1,22 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-18 (HỆ THỐNG: Refactor Toàn Diện Trang Đăng Nhập `Login.tsx` Chuẩn Google Stitch Enterprise & Frosted Glassmorphism Hiện Đại)
+- **1. Yêu Cầu & Hoàn Cảnh**:
+  * Người dùng yêu cầu: "làm lại trang login cho thật chuyên nghiệp và hiện đại (chú ý nhớ giữ lại background công ty)".
+  * Trang Login cũ 274 dòng với khung màu hồng nhạt thô `rgb(247, 224, 224)`, kích thước cố định `400px x 400px`, `top: 20vh` dễ lệch layout, nút bấm cyan đơn điệu `#0dbbc1`, thiếu icon trực quan cho từng trường nhập, thiếu tính năng xem/ẩn mật khẩu, thiếu bộ chuyển đổi ngôn ngữ nhanh trên giao diện đăng nhập.
+  * Yêu cầu: Hiện đại hóa toàn diện theo phong cách **Google Stitch Enterprise & Frosted Glassmorphism**, bảo tồn 100% hình nền công ty (`/companybackground.png`), bảo toàn 100% logic Redux/API/Branch/Server/Cookies, tuân thủ Clean Code (< 300 dòng/file).
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `Login.backup.tsx` (274 dòng).
+  * Phân rã thành công thành 4 module chuyên biệt trong thư mục `src/pages/login/PrecisionLogin/`:
+    1. `PrecisionLogin.scss` (~320 dòng): Stylesheet SCSS Google Stitch Enterprise & Frosted Glassmorphism, lớp phủ Dark Frosted Glass Vignette làm nổi bật Card và tạo chiều sâu cho ảnh nền công ty, hiệu ứng đổ bóng đa tầng và blur 20px, responsive mượt mà từ mobile tới desktop.
+    2. `PrecisionLoginHeader.tsx` (~80 dòng): Thanh điều khiển trên cùng gồm telemetry live pulse dot hiển thị Server/Hệ thống, bộ chuyển nhanh ngôn ngữ (VI / EN / KR) tức thì, khung logo công ty sắc nét và tiêu đề chào mừng đa ngôn ngữ.
+    3. `PrecisionLoginForm.tsx` (~175 dòng): Form đăng nhập High-Density với icon người dùng (`person`), ô mật khẩu kèm icon ổ khóa (`lock`) và nút xem/ẩn mật khẩu (`visibility` / `visibility_off`), cụm dropdown chọn Server và Chi nhánh (BR1/BR2), nút Đăng Nhập hiệu ứng gradient kèm spinner khi đang xác thực.
+    4. `PrecisionLoginFooter.tsx` (~65 dòng): Tùy chọn Checkbox Ghi nhớ đăng nhập (lưu `saved_username`), liên kết Quên mật khẩu, huy hiệu bảo mật cấp Doanh Nghiệp (End-to-End Encrypted) và bản quyền CMS ERP.
+    5. `Login.tsx`: Controller chính tinh gọn từ **274 dòng xuống còn 198 dòng**, quản lý state, phím tắt Enter chuyển input và kích hoạt đăng nhập, kiểm tra `isValidInput` và gọi API `login()`.
+- **3. Kết Quả Kiểm Tra**:
+  * Vite Dev Server phản hồi **HTTP 200 OK** cho cả 5/5 file component và stylesheet.
+  * Giữ nguyên 100% logic nghiệp vụ đăng nhập, quản lý token cookies và tích hợp chặt chẽ với Redux store.
+
 ## Update - 2026-09-18 (QLSX: Tối Ưu Thẻ Máy `PrecisionMachineCard.tsx` - Bỏ Tiến Độ, Mỗi Lệnh 1 Dòng Đầy Đủ G_NAME_KD, PLAN_ID, PLAN_QTY, STEP)
 - **1. Yêu Cầu & Hoàn Cảnh**:
   * Người dùng yêu cầu: "trên các máy không cần hiển thị tiến độ, gây nhiễu thông tin, chỉ cần mỗi lệnh 1 dòng, thể hiện đủ thông tin G_NAME_KD, PLAN_ID, PLAN_QTY, STEP để user nắm được, chi tiết sẽ vào trong máy xem sau".
