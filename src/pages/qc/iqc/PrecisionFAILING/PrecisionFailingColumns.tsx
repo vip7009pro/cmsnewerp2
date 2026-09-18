@@ -11,17 +11,17 @@ import {
 } from "./failingCellRenderers";
 
 export const getFailingColumns = () => [
-  { field: "FAIL_ID", headerName: "FAIL_ID", resizable: true, width: 50, checkboxSelection: true, headerCheckboxSelection: true, cellRenderer: (p: any) => renderMono(p.value, "text-slate-800 font-semibold") },
-  { field: "FACTORY", headerName: "FACTORY", resizable: true, width: 50, cellRenderer: (p: any) => renderTruncated(p.value) },
-  { field: "PLAN_ID_SUDUNG", headerName: "PLAN_ID_SUDUNG", resizable: true, width: 90, cellRenderer: (p: any) => renderMono(p.value, "text-blue-700 font-bold") },
+  { field: "FAIL_ID", headerName: "FAIL_ID", resizable: true, width: 80, checkboxSelection: true, headerCheckboxSelection: true, cellRenderer: (p: any) => renderMono(p.value, "text-slate-800 font-semibold") },
+  { field: "FACTORY", headerName: "FACTORY", resizable: true, width: 60, cellRenderer: (p: any) => renderTruncated(p.value) },
+  { field: "PLAN_ID_SUDUNG", headerName: "PLAN_ID_SUDUNG", resizable: true, width: 100, cellRenderer: (p: any) => renderMono(p.value, "text-blue-700 font-bold") },
   { field: "G_CODE", headerName: "G_CODE", resizable: true, width: 50, cellRenderer: (p: any) => renderMono(p.value) },
   { field: "G_NAME", headerName: "G_NAME", resizable: true, width: 100, cellRenderer: (p: any) => renderTruncated(p.value) },
-  { field: "LIEUQL_SX", headerName: "LIEUQL_SX", resizable: true, width: 60, cellRenderer: (p: any) => renderMono(p.value) },
+  { field: "LIEUQL_SX", headerName: "LIEUQL_SX", resizable: true, width: 70, cellRenderer: (p: any) => renderMono(p.value) },
   { field: "MAKER", headerName: "MAKER", resizable: true, width: 60, cellRenderer: (p: any) => renderTruncated(p.value) },
   { field: "M_CODE", headerName: "M_CODE", resizable: true, width: 60, cellRenderer: (p: any) => renderMono(p.value, "text-blue-600 font-semibold") },
-  { field: "M_LOT_NO", headerName: "M_LOT_NO", resizable: true, width: 60, cellRenderer: (p: any) => renderLotHighlight(p.value, p.data?.QC_PASS === "Y") },
-  { field: "VENDOR_LOT", headerName: "VENDOR_LOT", resizable: true, width: 70, cellRenderer: (p: any) => renderVendorLot(p.value, Boolean(p.data?.OUT2_EMPL)) },
-  { field: "PROCESS_LOT_NO", headerName: "LOT_SX", resizable: true, width: 70, cellRenderer: (p: any) => renderMono(p.value, "font-bold text-slate-800") },
+  { field: "M_LOT_NO", headerName: "M_LOT_NO", resizable: true, width: 70, cellRenderer: (p: any) => renderLotHighlight(p.value, p.data?.QC_PASS === "Y") },
+  { field: "VENDOR_LOT", headerName: "VENDOR_LOT", resizable: true, width: 75, cellRenderer: (p: any) => renderVendorLot(p.value, Boolean(p.data?.OUT2_EMPL)) },
+  { field: "PROCESS_LOT_NO", headerName: "LOT_SX", resizable: true, width: 65, cellRenderer: (p: any) => renderMono(p.value, "font-bold text-slate-800") },
   {
     field: "M_NAME",
     headerName: "M_NAME",
@@ -33,9 +33,9 @@ export const getFailingColumns = () => [
       </span>
     ),
   },
-  { field: "WIDTH_CD", headerName: "WIDTH_CD", resizable: true, width: 60, cellRenderer: (p: any) => renderRightNum(p.value) },
+  { field: "WIDTH_CD", headerName: "WIDTH_CD", resizable: true, width: 65, cellRenderer: (p: any) => renderRightNum(p.value) },
   { field: "ROLL_QTY", headerName: "ROLL_QTY", resizable: true, width: 60, cellRenderer: (p: any) => renderRightNum(p.value) },
-  { field: "TOTAL_IN_QTY", headerName: "TOTAL_IN_QTY", resizable: true, width: 80, cellRenderer: (p: any) => renderRightNum(p.data?.TOTAL_IN_QTY, "text-blue-700 font-bold") },
+  { field: "TOTAL_IN_QTY", headerName: "TOTAL_IN_QTY", resizable: true, width: 90, cellRenderer: (p: any) => renderRightNum(p.data?.TOTAL_IN_QTY, "text-blue-700 font-bold") },
   { field: "SX_DEFECT", headerName: "SX_DEFECT", resizable: true, width: 80, cellRenderer: (p: any) => renderTruncated(p.value) },
   { field: "OUT_DATE", headerName: "OUT_DATE", resizable: true, width: 80, cellRenderer: (p: any) => renderMono(p.value) },
   { field: "PHANLOAI", headerName: "PHANLOAI", resizable: true, width: 60, cellRenderer: (p: any) => renderTruncated(p.value) },
