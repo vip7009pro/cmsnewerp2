@@ -1,5 +1,70 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Đăng Tin Bảng Tin Nội Bộ (`AddInfo.tsx`) Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard Phong Cách `KinhDoanhReport.tsx`:
+  - **Bảo toàn 100% logic nghiệp vụ & API**:
+    * Nạp danh sách phòng ban `f_getDepartmentList()`.
+    * Nạp toàn bộ danh sách bài viết `f_fetchPostListAll()`.
+    * Duy trì toàn bộ xử lý lưu bài viết `insert_information` và tải ảnh lên máy chủ `uploadQuery` vào thư mục `informationboard`.
+    * Đảm bảo tương thích ngược hoàn toàn với các router `/register`, `CMS_MENU`, `PVN_MENU` và component cha `PostManager.tsx`.
+  - **Hệ Thống Biểu Đồ & Widget Thông Tin Hữu Ích Theo Phong Cách `KinhDoanhReport.tsx`**:
+    * **6 Micro-Cards KPI Realtime**: Tổng Tin Đã Đăng, Phát Hành Tháng Này, Đa Phương Tiện (Ảnh), Tin Ghim Nổi Bật, Phòng Ban Năng Động Nhất, Tác Giả Đóng Góp Hàng Đầu.
+    * **Hệ thống 4 Biểu Đồ Recharts Executive Dashboard** trong các thẻ `executive-card` bố trí dạng `.two-col-grid`, có **nút xuất Excel (`SaveExcel`) riêng biệt cho từng biểu đồ**:
+      1. Biểu đồ 1: Cơ Cấu Bài Đăng Theo Phòng Ban (`PrecisionAddInfoDeptPie.tsx`) - Donut Chart 3 chế độ xem (`Song Song`, `Biểu Đồ`, `Danh Sách`), ô Quick Search lọc phòng ban, tâm Donut tương tác hiển thị tên phòng ban và số bài khi hover (chuẩn `KDChartCustomerRevenue.tsx`).
+      2. Biểu đồ 2: Xu Hướng Phát Hành Tin Theo Tháng (`ComposedChart`: Bar số bài mới & Line lũy kế).
+      3. Biểu đồ 3: Top Tác Giả Đóng Góp Bài Viết Nhiều Nhất (`BarChart` so sánh bài có ảnh vs thuần text).
+      4. Biểu đồ 4: Phân Bổ Định Dạng Bài Đăng Theo Bộ Phận (`Stacked BarChart`).
+  - **Không Gian Soạn Thảo Publisher Studio & Live Preview Thời Gian Thực**:
+    * Bố cục 2 cột công thái học: Form soạn thảo tích hợp Drag-and-Drop Image Dropzone bên trái đi kèm Thẻ Xem Trước Thời Gian Thực (Live News Preview Card) bên phải mô phỏng chính xác giao diện hiển thị trên Bảng tin lớn.
+  - **Bảng Tin Đã Phát Hành Gần Đây & Quick Reader Modal**:
+    * Lưới bài viết trực quan với ảnh thumbnail, tiêu đề, phòng ban và ngày giờ.
+    * Tích hợp ô Quick Search tìm kiếm tức thì và cụm nút xuất Excel `EX1` (tin đang lọc) và `EX2` (toàn bộ tin).
+    * Modal đọc nhanh bài viết với ảnh kích thước lớn chất lượng cao và toàn văn nội dung trong Backdrop Blur sang trọng.
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `AddInfo.backup.tsx` (204 dòng).
+    * Phân rã thành 10 module chuyên biệt tại `src/pages/information_board/PrecisionAddInfo/`:
+      1. `PrecisionAddInfo.scss` (610 dòng): Stylesheet SCSS Google Stitch Enterprise & Multi-Tab.
+      2. `useAddInfoData.ts` (295 dòng): Custom hook pure TypeScript gom state, API, aggregate Recharts.
+      3. `PrecisionAddInfoHeader.tsx` (70 dòng): Header bar công nghiệp telemetry.
+      4. `PrecisionAddInfoToolbar.tsx` (68 dòng): Toolbar compact & segmented tabs.
+      5. `PrecisionAddInfoKpi.tsx` (145 dòng): 6 Micro-cards KPI realtime.
+      6. `charts/PrecisionAddInfoDeptPie.tsx` (275 dòng): Biểu đồ Donut 3 chế độ xem.
+      7. `PrecisionAddInfoCharts.tsx` (250 dòng): 4 Biểu đồ Recharts executive-card two-col-grid.
+      8. `PrecisionAddInfoStudio.tsx` (285 dòng): Form Soạn thảo + Live Preview Card.
+      9. `PrecisionAddInfoRecentFeed.tsx` (168 dòng): Bảng tin đã đăng kèm Quick Search & Excel.
+      10. `PrecisionAddInfoViewModal.tsx` (120 dòng): Modal đọc nhanh bài viết & xem ảnh lớn.
+    * Controller chính `AddInfo.tsx` tinh gọn từ 204 dòng xuống còn **115 dòng**.
+  - **Xác thực toàn diện**:
+    * Kiểm tra qua node HTTP requests tới Vite Dev Server (port 3001) toàn bộ 10/10 files component, charts và stylesheet đều đạt **PASS: HTTP 200 OK**.
+
+  - Tăng chiều cao `.executive-card__body--chart` từ `330px` lên `440px` (min-height 420px) trong SCSS.
+  - Mở rộng margin PieChart lên `20px` và tinh chỉnh bán kính Donut + tâm donut (`width: 100px`) chuẩn xác, thẩm mỹ cao.
+- [x] Nâng Cấp Hệ Thống Biểu Đồ Tròn `WH_REPORT.tsx` (Kho Liệu & Thành Phẩm) Sang Chuẩn Enterprise Đa Chế Độ Tương Tự `KinhDoanhReport.tsx`:
+  - Khắc phục triệt để lỗi biểu đồ tròn cũ bị co cụm / tràn viền / không hiển thị do cố định width=900, outerRadius=150 trong ResponsiveContainer nhỏ.
+  - Xây dựng component dùng chung `PrecisionWhPieChart.tsx` chuẩn phong cách `KDChartCustomerRevenue.tsx` / `PrecisionSxPieLossEmpl.tsx`.
+  - Hỗ trợ **3 chế độ xem linh hoạt**: **Song Song (Split)** (Donut + Bảng tỷ trọng & progress bar), **Biểu Đồ (Chart)** (Donut toàn khung + Callout labels), **Danh Sách (List)** (Quick filter search).
+  - Tích hợp tâm Donut chỉ số nổi bật (`po-donut-center`), hiệu ứng hover Sector tương tác, và tooltip chi tiết.
+  - Áp dụng vào 5 biểu đồ: Tồn / Nhập / Xuất theo độ thông dụng (m²) và Tồn dài hạn theo tháng (Kho Liệu m² & Kho Thành Phẩm EA).
+  - Cập nhật SCSS `.po-customer-chart` trong cả `PrecisionKhoVL.scss` và `PrecisionKhoTP.scss`.
+- [x] Hoàn thiện Refactor Toàn Diện 2 Tab Con `WH_REPORT.tsx` (Material WH & Product WH) Chuẩn Google Stitch High-Density Enterprise Đồng Bộ Phong Cách `KinhDoanhReport.tsx`:
+  - **Bảo toàn 100% logic nghiệp vụ & API**:
+    * `KHOVL_REPORT`: Giữ nguyên 10 API queries: `f_loadMSTOCK_BY_POPULAR`, `f_loadMSTOCK_BY_POPULAR_DETAIL`, `f_loadM_INPUT_BY_POPULAR`, `f_loadM_INPUT_BY_POPULAR_DETAIL`, `f_loadM_OUTPUT_BY_POPULAR`, `f_loadM_OUTPUT_BY_POPULAR_DETAIL`, `f_load_Stock_By_Month`, `f_load_Stock_By_Month_Detail` (A/B/C).
+    * `KHOTP_REPORT`: Giữ nguyên 4 API queries: `f_load_P_Stock_By_Month`, `f_load_P_Stock_By_Month_Detail` (A/B/C).
+    * Bật lại tab **PRODUCT WH REPORT** đã bị comment out trong `WH_REPORT.tsx`.
+  - **Đồng bộ phong cách Google Stitch High-Density Enterprise của KinhDoanhReport.tsx**:
+    * Header bar công nghiệp với badge `CMS ERP • KHO` / `CMS ERP • KHO TP`, breadcrumb, telemetry live pulse dot, nút Làm Mới & Toàn Màn Hình.
+    * Toolbar compact: bộ lọc Từ ngày - Đến ngày, Mốc 1 / Mốc 2 (compact input), checkbox Mặc định, nút Tra Cứu, Segment Navigation Tabs (`Toàn Diện | Theo Độ Thông Dụng | Tồn Dài Hạn`).
+    * **4 KPI Micro-cards** realtime: Tồn Liệu A (thông dụng xanh lá), Tồn B (ít dùng amber), Tồn C (xấu đỏ), Tổng Input (xanh dương) — tính trực tiếp từ dữ liệu API.
+    * Biểu đồ Pie (3 biểu đồ Popular + 1 biểu đồ Month) bọc trong `executive-card` với tiêu đề, icon màu và nút xuất Excel.
+    * 6 AGTable detail (Stock/Input/Output Popular Detail + Month A/B/C) bọc trong container với Quick Search và nút xuất Excel riêng.
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `KHOVL_REPORT.backup.tsx` (459 dòng), `KHOTP_REPORT.backup.tsx` (252 dòng), `WH_REPORT.backup.tsx`.
+    * Phân rã thành **6 module** tại `khovlreport/PrecisionKhoVL/`: SCSS, Header, Toolbar, Kpi, PopularSection, MonthSection.
+    * Phân rã thành **5 module** tại `khotpreport/PrecisionKhoTP/`: SCSS, Header, Toolbar, Kpi, MonthSection.
+    * Controller `KHOVL_REPORT.tsx` từ 459 dòng → **152 dòng**; `KHOTP_REPORT.tsx` từ 252 dòng → **103 dòng**.
+  - **Xác thực toàn diện**:
+    * HTTP check 12/12 files đều đạt **PASS: HTTP 200 OK** trên Vite Dev Server (port 3001).
+
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Báo Cáo Hiệu Suất Sản Xuất (`SX_REPORT.tsx`) Chuẩn Google Stitch Enterprise & Recharts Executive Dashboard Phong Cách `KinhDoanhReport.tsx`:
   - **Bảo toàn 100% logic nghiệp vụ, 27 API hooks & Tính năng xuất Excel**:
     * Duy trì đầy đủ các hooks nạp dữ liệu: `usehandle_load_SX_Daily/Weekly/Monthly/Yearly_Loss_Trend`, `usehandle_getDaily/Weekly/Monthly/YearlyAchiveData`, `usehandle_getDaily/Weekly/Monthly/YearlyEffData`, `usehandle_getPlanLossData`, `usehandle_getSXLossTimeByEmpl/Reason`, GAP Rates và TRUOCHAN rates.
