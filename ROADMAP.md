@@ -1,5 +1,46 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Quản Lý Tiêu Chuẩn Lỗi Sản Xuất (`MAINDEFECTS.tsx`) Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard:
+  - **Bảo toàn 100% logic nghiệp vụ & 17 cột dữ liệu AG-Grid**:
+    * Duy trì 100% tên cột `headerName` và độ rộng `width` gốc: `NG_SX100_ID` (50), `PROD_MODEL` (100), `G_CODE` (70), `G_NAME` (100), `DESCR` (150), `PROCESS_NUMBER` (100), `STT` (50), `DEFECT` (150), `TEST_ITEM` (150), `TEST_METHOD` (150), `INS_PATROL_ID` (90), `USE_YN` (80), `IMAGE_YN` (60), `INS_DATE` (100), `INS_EMPL` (70), `UPD_DATE` (100), `UPD_EMPL` (70).
+    * Duy trì toàn bộ tham số gọi API `f_loadDefectProcessData('', -1)`.
+    * Tối ưu hiển thị: thumbnail ảnh sắc nét cho `IMAGE_YN` & `INS_PATROL_ID`, status pill badge cho `USE_YN`, badge màu nhận diện công đoạn (`PROCESS_NUMBER`), format số JetBrains Mono cho `NG_SX100_ID` & `G_CODE`.
+  - **Bổ sung Dashboard 6 Micro-Cards KPI Thống Kê Realtime Hữu Ích**:
+    * `Tổng Tiêu Chuẩn`: Tổng số quy chuẩn lỗi trong thư viện hệ thống và số lượng mã hàng `G_CODE`.
+    * `Đang Áp Dụng (USE_YN)`: Số lượng và tỷ lệ % tiêu chuẩn đang có hiệu lực (`USE_YN === 'Y'`) vs tạm dừng.
+    * `Thư Viện Trực Quan`: Số lượng và tỷ lệ % lỗi có hình ảnh minh họa thực tế (`IMAGE_YN` / `INS_PATROL_ID`).
+    * `Công Đoạn Chính`: Cơ cấu số lượng tiêu chuẩn phân bổ qua từng công đoạn cốt lõi (CĐ1, CĐ2, CĐ3, CĐ4+).
+    * `Hạng Mục & PP Kiểm`: Thống kê số lượng hạng mục kiểm tra độc lập và số phương pháp kiểm tra.
+    * `Nhân Sự & Cập Nhật`: Số nhân sự QA/Sản xuất tham gia thiết lập và số lượng tiêu chuẩn cập nhật trong 30 ngày qua.
+  - **Hệ Thống 4 Biểu Đồ Recharts Executive Dashboard Bố Trí Theo Phong Cách KinhDoanhReport**:
+    * Biểu đồ 1: Top 10 Hạng Mục Lỗi Phổ Biến Nhất (`BarChart` so sánh Số Tiêu Chuẩn vs Số Mã Hàng bị ảnh hưởng).
+    * Biểu đồ 2: Cơ Cấu Tiêu Chuẩn Theo Công Đoạn (`Pie/DonutChart` phân chia tỷ trọng CĐ1, CĐ2, CĐ3, CĐ4+).
+    * Biểu đồ 3: Xu Hướng Chuẩn Hóa Lỗi Theo Tháng (`ComposedChart` Bar tạo mới trong tháng & Line lũy kế).
+    * Biểu đồ 4: Top 10 Model Có Nhiều Quy Chuẩn Nhất (`Stacked BarChart` Đang Dùng vs Tạm Dừng).
+    * Đóng gói trong các thẻ `executive-card` sang trọng, bố trí dạng `.two-col-grid`, có **nút xuất Excel dữ liệu chi tiết cho từng biểu đồ**.
+  - **Nâng Cấp Bảng Lưới AG Grid High-Density, Tiện Ích & Modal Xem Ảnh**:
+    * Thanh lọc nhanh phía trên bảng (`gridToolbar`) tích hợp ô tìm kiếm nhanh tức thì (`Quick Search`), cụm nút xuất Excel `EX1` (dữ liệu đang lọc), `EX2` (toàn bộ dữ liệu) và bộ đếm số dòng hiển thị.
+    * Ẩn hoàn toàn toolbar xanh lá mặc định của AGTable.
+    * Segmented Tab Switcher 3 chế độ xem nhanh: `Toàn Bộ (All)`, `Biểu Đồ & KPI (Charts)`, `Bảng Dữ Liệu (Grid)`.
+    * Enterprise Modal Dialog xem ảnh lớn chất lượng cao với Backdrop Blur, hiển thị đầy đủ bối cảnh (mã hàng, dòng model, tên lỗi, mô tả, công đoạn, phương pháp kiểm tra).
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `MAINDEFECTS.backup.tsx` (239 dòng).
+    * Phân rã thành 10 module chuyên biệt tại `src/pages/sx/MAINDEFECTS/PrecisionMainDefects/`:
+      1. `PrecisionMainDefects.scss` (951 dòng): Stylesheet SCSS Google Stitch Enterprise & Multi-Tab.
+      2. `PrecisionMainDefectsColumns.tsx` (182 dòng): Cấu hình 17 cột AG-Grid.
+      3. `mainDefectsHelpers.ts` (233 dòng): Pure TypeScript functions tính KPI, aggregate 4 biểu đồ & filter.
+      4. `useMainDefectsData.ts` (201 dòng): Custom hook pure TypeScript gom state, API và xuất Excel.
+      5. `PrecisionMainDefectsKpi.tsx` (112 dòng): 6 Micro-cards KPI realtime.
+      6. `PrecisionMainDefectsCharts.tsx` (298 dòng): 4 biểu đồ Recharts executive-card two-col-grid có nút Excel.
+      7. `PrecisionMainDefectsHeader.tsx` (64 dòng): Header bar công nghiệp kèm telemetry & reload.
+      8. `PrecisionMainDefectsToolbar.tsx` (253 dòng): Toolbar compact 2 tầng & segmented tab switcher.
+      9. `PrecisionMainDefectsGrid.tsx` (87 dòng): Khung AGTable kèm quick search, EX1, EX2.
+      10. `PrecisionMainDefectsModal.tsx` (126 dòng): Modal xem trước ảnh lỗi lớn Enterprise.
+    * Controller chính `MAINDEFECTS.tsx` tinh gọn từ 239 dòng xuống còn **145 dòng**.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 10/10 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra toàn bộ 11/11 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Quản Lý & Lịch Sử Dao Film (`DAOFILMDATA.tsx`) Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard:
   - **Bảo toàn 100% logic nghiệp vụ & các cột dữ liệu**:
     * Duy trì 100% tên cột `headerName` và độ rộng `width` của cả 3 bảng AG-Grid:

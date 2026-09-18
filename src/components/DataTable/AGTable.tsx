@@ -37,7 +37,8 @@ interface AGInterface {
   onCellEditingStarted?: (e: any) => void,
   onCellEditingStopped?: (e: any) => void,
   onRowDragEnd?: (e: any) => void,
-  getRowStyle?: (e: any) => any
+  getRowStyle?: (e: any) => any,
+  getRowId?: (params: any) => string
 }
 
 const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
@@ -231,7 +232,14 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
           columnHoverHighlight={true}
           rowStyle={rowStyle}
           getRowStyle={ag_data.getRowStyle ?? getRowStyle}
-          getRowId={(params: any) => params.data.id?.toString() ?? params.data.id}
+          getRowId={ag_data.getRowId ?? ((params: any) => {
+            if (params.data?.id !== undefined && params.data?.id !== null) return String(params.data.id);
+            if (params.data?.NG_SX100_ID !== undefined && params.data?.NG_SX100_ID !== null) return String(params.data.NG_SX100_ID);
+            if (params.data?.PLAN_ID !== undefined && params.data?.PLAN_ID !== null) return String(params.data.PLAN_ID);
+            if (params.data?.PROD_REQUEST_NO !== undefined && params.data?.PROD_REQUEST_NO !== null) return String(params.data.PROD_REQUEST_NO);
+            if (params.node?.rowIndex !== undefined && params.node?.rowIndex !== null) return `row_${params.node.rowIndex}`;
+            return undefined;
+          })}
           rowSelection={"multiple"}
           rowMultiSelectWithClick={false}
           suppressRowClickSelection={ag_data.suppressRowClickSelection ?? true}

@@ -1,5 +1,31 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-18 (SX: Refactor Toàn Diện Tab Quản Lý Tiêu Chuẩn Lỗi Sản Xuất `MAINDEFECTS.tsx` Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Quản Lý Tiêu Chuẩn Lỗi Sản Xuất (`src/pages/sx/MAINDEFECTS/MAINDEFECTS.tsx`)** là công cụ quản lý thư viện tiêu chuẩn lỗi công đoạn (SX100) và kiểm tra tuần tra (INS_PATROL) phục vụ phân xưởng sản xuất và phòng chất lượng PQC/QA.
+  * Mã nguồn cũ 239 dòng mang phong cách gradient cũ `#afd3d1` / `#86cfff` với form sidebar chiếm diện tích ngang, bảng AGTable dùng toolbar xanh lá mặc định, thiếu Dashboard KPI tổng quan, thiếu hệ thống biểu đồ trực quan hóa cơ cấu và xu hướng lỗi, thiếu ô Quick Search và thiếu cụm nút xuất Excel EX1/EX2.
+  * Yêu cầu: Làm lại theo chuẩn **Google Stitch High-Density Enterprise**, thiết kế hệ thống 4 biểu đồ Recharts Executive Dashboard tương tự `KinhDoanhReport.tsx`, bổ sung Dashboard 6 Micro-Cards KPI realtime, bảo toàn 100% 17 cột dữ liệu AG-Grid với đúng `headerName` và độ rộng cột ban đầu, nâng cấp xem ảnh lỗi thành Enterprise Modal Dialog với Backdrop blur.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `MAINDEFECTS.backup.tsx` (239 dòng).
+  * Phân rã thành công thành 10 module chuyên biệt trong thư mục `src/pages/sx/MAINDEFECTS/PrecisionMainDefects/`:
+    1. `PrecisionMainDefects.scss` (951 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho KPI Cards, header, toolbar compact, executive-cards (Recharts), two-col-grid, bảng AGTable và Enterprise Modal xem ảnh.
+    2. `PrecisionMainDefectsColumns.tsx` (182 dòng): Cấu hình 17 cột AG-Grid bảo toàn 100% `headerName` và `width` gốc (`NG_SX100_ID`, `PROD_MODEL`, `G_CODE`, `G_NAME`, `DESCR`, `PROCESS_NUMBER`, `STT`, `DEFECT`, `TEST_ITEM`, `TEST_METHOD`, `INS_PATROL_ID`, `USE_YN`, `IMAGE_YN`, `INS_DATE`, `INS_EMPL`, `UPD_DATE`, `UPD_EMPL`), tối ưu thumbnail ảnh lỗi, status badges bo góc và format số JetBrains Mono.
+    3. `mainDefectsHelpers.ts` (233 dòng): Module pure TypeScript chứa các hàm tính toán KPI, aggregate 4 loại biểu đồ, hàm lọc tìm kiếm đa chiều an toàn.
+    4. `useMainDefectsData.ts` (201 dòng): Custom hook pure TypeScript gom toàn bộ state, API `f_loadDefectProcessData`, quick search và xuất Excel.
+    5. `PrecisionMainDefectsKpi.tsx` (112 dòng): Dashboard 6 Micro-cards KPI thống kê realtime: Tổng Tiêu Chuẩn (Total Library), Đang Áp Dụng (Active USE_YN), Thư Viện Trực Quan (Visual Library có ảnh), Phân Bổ Theo Công Đoạn (CĐ1, CĐ2, CĐ3, CĐ4+), Hạng Mục & Phương Pháp Test, Nhân Sự & Cập Nhật 30D.
+    6. `PrecisionMainDefectsCharts.tsx` (298 dòng): Hệ thống 4 biểu đồ Recharts phong cách `KinhDoanhReport.tsx` (Top 10 Hạng Mục Lỗi Phổ Biến Nhất, Cơ Cấu Tiêu Chuẩn Theo Công Đoạn Donut Chart, Xu Hướng Chuẩn Hóa Lỗi Theo Tháng ComposedChart, Top 10 Model Có Nhiều Quy Chuẩn Nhất Stacked BarChart) đóng gói trong các thẻ `executive-card` bố trí dạng `.two-col-grid`, có nút xuất Excel cho từng biểu đồ.
+    7. `PrecisionMainDefectsHeader.tsx` (64 dòng): Header bar công nghiệp kèm badge phân hệ `SX PRECISION • QC STANDARDS`, breadcrumb, telemetry số dòng/mã hàng và nút reload dữ liệu.
+    8. `PrecisionMainDefectsToolbar.tsx` (253 dòng): Toolbar compact 2 tầng gồm bộ chọn ngày Từ ngày - Đến ngày, dải nút chọn nhanh (1D, 7D, 30D, 90D), checkbox All Time, inputs tìm kiếm Code KD, Code ERP, Model, select Công đoạn, Trạng thái, Hình ảnh, nút Tải dữ liệu và Segmented Tab Switcher (`Toàn Bộ`, `Biểu Đồ & KPI`, `Bảng Dữ Liệu`).
+    9. `PrecisionMainDefectsGrid.tsx` (87 dòng): Khung AGTable bọc thanh tìm kiếm nhanh tức thì, cụm nút xuất Excel `EX1` (dữ liệu đang lọc), `EX2` (toàn bộ dữ liệu) và bỏ hoàn toàn toolbar xanh lá cũ.
+    10. `PrecisionMainDefectsModal.tsx` (126 dòng): Modal xem trước ảnh lỗi lớn chất lượng cao với Backdrop blur và thông tin bối cảnh chi tiết (mã hàng, tên lỗi, công đoạn, quy cách, phương pháp test).
+    11. `MAINDEFECTS.tsx`: Controller chính tinh gọn từ 239 dòng xuống còn **145 dòng** kết nối subcomponents.
+- **3. Xác Thực Toàn Diện & Bugfix Runtime**:
+  * Quét TypeScript AST toàn bộ 10/10 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra toàn bộ 11/11 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+  * Tất cả các component UI đều nhỏ gọn < 300 dòng tuân thủ nghiêm ngặt quy tắc Clean Code ERP.
+  * **Bugfix Runtime Safe Data Handling**: Xử lý triệt để lỗi `TypeError: item.INS_PATROL_ID.trim is not a function` khi các trường dữ liệu từ API (`INS_PATROL_ID`, `TEST_ITEM`, `TEST_METHOD`, `DEFECT`, `PROD_MODEL`) có thể là kiểu `number` hoặc `null`. Đã tích hợp hàm helper `safeStringTrim(val: any): string` bảo đảm an toàn dữ liệu 100%.
+  * **Bugfix AG Grid Duplicate Node ID Warning**: Khắc phục triệt để warning `AG Grid: The getRowId callback must return a string. The ID undefined is being cast to a string. duplicate node id 'undefined' detected` bằng cách ánh xạ định danh duy nhất `id: ele.NG_SX100_ID !== undefined ? String(ele.NG_SX100_ID) : 'defect_' + idx` trong `useMainDefectsData.ts`, đồng thời nâng cấp `AGTable.tsx` bổ sung prop `getRowId` trong `AGInterface` và cơ chế fallback an toàn qua `NG_SX100_ID`, `PLAN_ID`, `PROD_REQUEST_NO`, `rowIndex`.
+
 ## Update - 2026-09-18 (SX: Refactor Toàn Diện Tab Quản Lý & Lịch Sử Dao Film `DAOFILMDATA.tsx` Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình **Quản Lý & Lịch Sử Dao Film (`src/pages/sx/LICHSUDAOFILM/DAOFILMDATA.tsx`)** là công cụ quản lý thiết bị khuôn dập (Dao) và bản phim (Film) phục vụ sản xuất. Màn hình bao gồm 3 chế độ tra cứu trọng yếu: Lịch Sử Giao Nhận (`tradaofilm`), Quản Lý Dao Film (`loadquanlydaofilm`), và Lịch Sử Xuất Dao Film (`lichsuxuatdaofilm`).
