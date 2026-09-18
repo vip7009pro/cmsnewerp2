@@ -1,257 +1,126 @@
-import moment from "moment";
-import React, { useContext, useEffect, useMemo, useRef, useState, useTransition } from "react";
-import Swal from "sweetalert2";
-import "./PostManager.scss";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import AGTable from "../../components/DataTable/AGTable";
-import AddInfo from "./AddInfo";
-import { getUserData } from "../../api/Api";
-import { POST_DATA } from "./interfaces/infoInterface";
-import { f_deletePostData, f_fetchPostListAll, f_updatePostData } from "./utils/infoUtils";
-const PostManager = () => {
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
-  const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
-  const [codeKD, setCodeKD] = useState("");
-  const [codeCMS, setCodeCMS] = useState("");
-  const [prodrequestno, setProdRequestNo] = useState("");
-  const [plan_id, setPlanID] = useState("");
-  const [alltime, setAllTime] = useState(false);
-  const [m_name, setM_Name] = useState("");
-  const [m_code, setM_Code] = useState("");
-  const [showhideAddInfo, setShowHideAddInfo] = useState(false)
-  const column_posts = [
-    { field: "POST_ID", headerName: "POST_ID", width: 80, headerCheckboxSelection: true, checkboxSelection: true, editable: false },
-    { field: "DEPT_CODE", headerName: "DEPT_CODE", width: 60, editable: false },
-    { field: "MAINDEPT", headerName: "MAINDEPT", width: 80, editable: false },
-    { field: "SUBDEPT", headerName: "SUBDEPT", width: 80, editable: false },
-    { field: "FILE_NAME", headerName: "FILE_NAME", width: 100, editable: false },
-    { field: "TITLE", headerName: "TITLE", flex: 2, editable: true },
-    { field: "CONTENT", headerName: "CONTENT", flex: 3, editable: true },
-    { field: "IS_PINNED", headerName: "IS_PINNED", width: 60, editable: true },
-    { field: "INS_DATE", headerName: "INS_DATE", width: 60, editable: false },
-    { field: "INS_EMPL", headerName: "INS_EMPL", width: 60, editable: false },
-    { field: "UPD_DATE", headerName: "UPD_DATE", width: 60, editable: false },
-    { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 60, editable: false },
-  ]
-  const [postList, setPostList] = useState<POST_DATA[]>([]);
-  const selectedPostList = useRef<POST_DATA[]>([]);
-  const fetchPostList = async () => {    
-    let kq: POST_DATA[] = [];
-    kq = await f_fetchPostListAll();
-    if (kq.length > 0) {
-      Swal.fire('Thông báo', 'Đã load ' + kq.length + ' dòng', 'success');
-    }
-    else {
-      Swal.fire('Thông báo', 'Không có dữ liệu', 'error');
-    }
-    setPostList(kq);
-  };
-  const updatePost = async () => {
-    if (selectedPostList.current.length === 0) {
-      Swal.fire('Thông báo', 'Chọn ít nhất một dòng', 'warning');
-      return;
-    }
-    console.log(selectedPostList.current)
-    console.log(getUserData()?.EMPL_NO)
-    for (let i = 0; i < selectedPostList.current.length; i++) {
-      if (getUserData()?.EMPL_NO === selectedPostList.current[i].INS_EMPL)
-      {        
-        await f_updatePostData(selectedPostList.current[i])
-      }
-      else
-      {
-        Swal.fire('Thông báo', 'Bạn không có quyền update post', 'error')
-      }
-    }
-    fetchPostList();
-    Swal.fire('Thông báo', "Đã update hoàn thành", 'success')
-  }
-  const deletePost = async () => {
-    if (selectedPostList.current.length === 0) {
-      Swal.fire('Thông báo', 'Chọn ít nhất một dòng', 'warning');
-      return;
-    }
-    for (let i = 0; i < selectedPostList.current.length; i++) {
-      if (getUserData()?.EMPL_NO === selectedPostList.current[i].INS_EMPL)
-        await f_deletePostData(selectedPostList.current[i])
-    }
-    Swal.fire('Thông báo', "Đã xóa post hoàn thành", 'success')
-    fetchPostList();
-  }
-  const postDataTableAG = useMemo(() => {
-    return (
-      <AGTable
-        toolbar={
-          <div
-            style={{
-              fontWeight: "bold",
-              fontSize: "1rem",
-              paddingLeft: 20,
-              color: "black",
+import React, { useState } from "react";
+import "./PrecisionPostManager/PrecisionPostManager.scss";
+import { usePostManagerData } from "./PrecisionPostManager/usePostManagerData";
+import PrecisionPostManagerHeader from "./PrecisionPostManager/PrecisionPostManagerHeader";
+import PrecisionPostManagerToolbar from "./PrecisionPostManager/PrecisionPostManagerToolbar";
+import PrecisionPostManagerKpi from "./PrecisionPostManager/PrecisionPostManagerKpi";
+import PrecisionPostManagerCharts from "./PrecisionPostManager/PrecisionPostManagerCharts";
+import PrecisionPostManagerGrid from "./PrecisionPostManager/PrecisionPostManagerGrid";
+import PrecisionPostManagerAddModal from "./PrecisionPostManager/PrecisionPostManagerAddModal";
+import PrecisionPostManagerViewModal from "./PrecisionPostManager/PrecisionPostManagerViewModal";
+
+const PostManager: React.FC = () => {
+  const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
+
+  const {
+    fromdate,
+    setFromDate,
+    todate,
+    setToDate,
+    alltime,
+    setAllTime,
+    activeTab,
+    setActiveTab,
+    showAddModal,
+    setShowAddModal,
+    viewingPost,
+    setViewingPost,
+    searchKeyword,
+    setSearchKeyword,
+    postList,
+    selectedPostList,
+    filteredPosts,
+    fetchPostList,
+    updatePost,
+    deletePost,
+    kpiData,
+    deptChartData,
+    trendChartData,
+    topAuthorsData,
+    deptMediaData,
+    handleExportEX1,
+    handleExportEX2,
+  } = usePostManagerData();
+
+  const showGrid = activeTab === "all" || activeTab === "table";
+  const showCharts = activeTab === "all" || activeTab === "analytics";
+
+  return (
+    <div className={`precision-postmanager ${isFullScreen ? "is-fullscreen" : ""}`}>
+      {/* 1. Header Bar Công Nghiệp Telemetry */}
+      <PrecisionPostManagerHeader
+        totalPosts={postList.length}
+        filteredCount={filteredPosts.length}
+        onRefresh={fetchPostList}
+        isFullScreen={isFullScreen}
+        onToggleFullScreen={() => setIsFullScreen((prev) => !prev)}
+      />
+
+      {/* 2. Action Toolbar: Lọc ngày & Segment Navigation Tabs */}
+      <PrecisionPostManagerToolbar
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        fromDate={fromdate}
+        onFromDateChange={setFromDate}
+        toDate={todate}
+        onToDateChange={setToDate}
+        allTime={alltime}
+        onAllTimeChange={setAllTime}
+        onOpenAddModal={() => setShowAddModal(true)}
+        totalPosts={postList.length}
+      />
+
+      {/* 3. Dashboard Scrollable Body */}
+      <div className="precision-postmanager__body">
+        {/* KPI Micro-cards Grid Realtime */}
+        <PrecisionPostManagerKpi data={kpiData} />
+
+        {/* Phân hệ 4 Biểu Đồ Recharts Executive Dashboard Chuẩn KDReport */}
+        {showCharts && (
+          <PrecisionPostManagerCharts
+            deptChartData={deptChartData}
+            trendChartData={trendChartData}
+            topAuthorsData={topAuthorsData}
+            deptMediaData={deptMediaData}
+          />
+        )}
+
+        {/* Phân hệ Bảng Danh Sách AGTable Quản Lý & Biên Tập Bài Viết */}
+        {showGrid && (
+          <PrecisionPostManagerGrid
+            data={filteredPosts}
+            totalDataCount={postList.length}
+            searchKeyword={searchKeyword}
+            onSearchChange={setSearchKeyword}
+            onSelectionChange={(selected) => {
+              selectedPostList.current = selected;
             }}
-          >
-            Post List
-          </div>}
-        columns={column_posts}
-        suppressRowClickSelection={false}
-        data={postList}
-        onCellEditingStopped={(e: any) => {
-          //console.log(e.data)
-        }} onRowClick={(e: any) => {
-          //console.log(e.data)
-        }} onSelectionChange={(e: any) => {
-          //console.log(e!.api.getSelectedRows())
-          selectedPostList.current = e!.api.getSelectedRows();
+            onOpenAddModal={() => setShowAddModal(true)}
+            onUpdatePosts={updatePost}
+            onDeletePosts={deletePost}
+            onViewPost={(post) => setViewingPost(post)}
+            onExportEX1={handleExportEX1}
+            onExportEX2={handleExportEX2}
+          />
+        )}
+      </div>
+
+      {/* 4. Modal Đăng Tin Mới (Add Information Modal) */}
+      <PrecisionPostManagerAddModal
+        isOpen={showAddModal}
+        onClose={() => {
+          setShowAddModal(false);
+          fetchPostList();
         }}
       />
-    )
-  }, [postList, column_posts])
-  useEffect(() => {
-    fetchPostList();
-  }, []);
-  return (
-    <div className='postmanager'>
-      <div className='tracuuDataInspection'>
-        <div className='tracuuDataInspectionform' style={{ backgroundImage: theme.CMS.backgroundImage }}>
-          <div className='forminput'>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Từ ngày:</b>
-                <input
-                  type='date'
-                  value={fromdate.slice(0, 10)}
-                  onChange={(e: any) => setFromDate(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Tới ngày:</b>{" "}
-                <input
-                  type='date'
-                  value={todate.slice(0, 10)}
-                  onChange={(e: any) => setToDate(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Code KD:</b>{" "}
-                <input
-                  type='text'
-                  placeholder='GH63-xxxxxx'
-                  value={codeKD}
-                  onChange={(e: any) => setCodeKD(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Code ERP:</b>{" "}
-                <input
-                  type='text'
-                  placeholder='7C123xxx'
-                  value={codeCMS}
-                  onChange={(e: any) => setCodeCMS(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Tên Liệu:</b>{" "}
-                <input
-                  type='text'
-                  placeholder='SJ-203020HC'
-                  value={m_name}
-                  onChange={(e: any) => setM_Name(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Mã Liệu CMS:</b>{" "}
-                <input
-                  type='text'
-                  placeholder='A123456'
-                  value={m_code}
-                  onChange={(e: any) => setM_Code(e.target.value)}
-                ></input>
-              </label>
-            </div>
-            <div className='forminputcolumn'>
-              <label>
-                <b>Số YCSX:</b>{" "}
-                <input
-                  type='text'
-                  placeholder='1F80008'
-                  value={prodrequestno}
-                  onChange={(e: any) => setProdRequestNo(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>Số chỉ thị:</b>{" "}
-                <input
-                  type='text'
-                  placeholder='A123456'
-                  value={plan_id}
-                  onChange={(e: any) => setPlanID(e.target.value)}
-                ></input>
-              </label>
-              <label>
-                <b>All Time:</b>
-                <input
-                  type='checkbox'
-                  name='alltimecheckbox'
-                  defaultChecked={alltime}
-                  onChange={() => setAllTime(!alltime)}
-                ></input>
-              </label>
-            </div>
-          </div>
-          <div className='formbutton'>
-            <button
-              className='tranhatky'
-              onClick={() => {
-                fetchPostList();
-              }}
-            >
-              Load
-            </button>
-            <button
-              className='tranhapxuatkiembutton'
-              onClick={() => {
-                setShowHideAddInfo(prev => !prev)
-                if(showhideAddInfo)
-                {
-                  fetchPostList();
-                }
-              }}
-            >
-              Add
-            </button>
-            <button
-              className='tranhapkiembutton'
-              onClick={() => {
-                updatePost();
-              }}
-            >
-              Update
-            </button>
-            <button
-              className='traxuatkiembutton'
-              onClick={() => {
-                deletePost();
-              }}
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-        <div className='tracuuYCSXTable'>
-          {postDataTableAG}
-        </div>
-        {showhideAddInfo && <div className="addinfodiv">
-          <AddInfo />
-        </div>
-        }
-      </div>
+
+      {/* 5. Modal Xem Nhanh Bài Viết & Ảnh Lớn */}
+      <PrecisionPostManagerViewModal
+        post={viewingPost}
+        onClose={() => setViewingPost(null)}
+      />
     </div>
   );
 };
+
 export default PostManager;

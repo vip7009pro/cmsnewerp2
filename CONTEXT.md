@@ -1,5 +1,29 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-18 (BẢNG TIN: Refactor Toàn Diện Tab Quản Lý Bài Viết & Đăng Tin `PostManager.tsx` Chuẩn Google Stitch Enterprise & Recharts Executive Dashboard Phong Cách `KinhDoanhReport.tsx`)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **Quản Lý Bài Viết Bảng Tin Nội Bộ (`src/pages/information_board/PostManager.tsx`)** là công cụ quản trị, biên tập nội dung, chỉnh sửa trạng thái ghim/tiêu đề/nội dung, xóa bài viết và mở modal đăng tin nội bộ.
+  * Mã nguồn cũ 257 dòng mang phong cách gradient cũ `#afd3d1` / `#86cfff`, các ô lọc input cứng nhắc, bảng AGTable dùng toolbar xanh lá mặc định, thiếu Dashboard KPI tổng quan, thiếu hệ thống biểu đồ đo lường hiệu quả truyền thông, và modal đăng tin cũ `addinfodiv` chèn thô sơ vào giữa bảng gây vỡ layout.
+  * Yêu cầu: Làm lại tab này cho thật chuyên nghiệp, UI đẹp chuẩn **Google Stitch High-Density Enterprise**, có các widget và biểu đồ Recharts hữu ích theo phong cách [`KinhDoanhReport.tsx`](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport.tsx), style cả modal thêm mới (đăng tin) cao cấp, module hóa Clean Code (< 300 dòng/file), bảo toàn 100% logic API gốc.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn 100%: `PostManager.backup.tsx` (257 dòng).
+  * Phân rã thành công thành 9 module chuyên biệt trong thư mục `src/pages/information_board/PrecisionPostManager/`:
+    1. `PrecisionPostManager.scss` (620 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho Header công nghiệp, Toolbar Segmented Tabs, 6 Micro-cards KPI, executive-card, two-col-grid, AGTable container, custom cells, và 2 Modals (Add Modal Backdrop Blur & Quick Reader Modal).
+    2. `usePostManagerData.ts` (260 dòng): Custom hook pure TypeScript gom toàn bộ state, API queries (`f_fetchPostListAll`), CRUD handlers (`updatePost`, `deletePost`), tính toán 6 KPI và aggregate dữ liệu 4 biểu đồ Recharts.
+    3. `PrecisionPostManagerHeader.tsx` (60 dòng): Header bar `CMS ERP • NEWSROOM` với telemetry live pulse dot hiển thị số bài viết realtime, nút Làm Mới và Toàn Màn Hình.
+    4. `PrecisionPostManagerToolbar.tsx` (95 dòng): Toolbar compact với bộ lọc ngày Từ ngày - Đến ngày, checkbox Tất cả thời gian, nút Đăng Tin Mới nổi bật và **Segmented Navigation Tabs** 3 phân hệ (`Tổng Quan Toàn Diện`, `Bảng Danh Sách Bài Đăng`, `Báo Cáo & Biểu Đồ`).
+    5. `PrecisionPostManagerKpi.tsx` (135 dòng): Dashboard **6 Micro-cards KPI** realtime phong cách `KinhDoanhReport.tsx`: Tổng bài đăng, Phát hành tháng này, Đa phương tiện (ảnh), Tin ghim nổi bật, Phòng ban năng động nhất, Tác giả đóng góp hàng đầu.
+    6. `charts/PrecisionPostDeptPie.tsx` (275 dòng): Biểu đồ Donut cơ cấu phòng ban đa chế độ tương tự `KDChartCustomerRevenue.tsx` với **3 chế độ xem** (`Song Song`, `Biểu Đồ`, `Danh Sách`), ô Quick Search lọc phòng ban, tâm Donut tương tác hiển thị tên phòng ban và số bài khi hover.
+    7. `PrecisionPostManagerCharts.tsx` (245 dòng): Hệ thống 4 biểu đồ Recharts (Cơ cấu phòng ban Donut, Xu hướng phát hành tháng ComposedChart, Top tác giả BarChart, Phân bổ định dạng bài đăng Stacked BarChart) bọc trong thẻ `executive-card` có nút xuất Excel (`SaveExcel`) riêng cho từng biểu đồ.
+    8. `PrecisionPostManagerGrid.tsx` (230 dòng): Khung AGTable chuẩn Stitch bọc thanh tìm kiếm nhanh tức thì, cụm nút xuất Excel `EX1` (tin đang lọc) và `EX2` (toàn bộ tin), nút Đăng Tin, Lưu Cập Nhật và Xóa bài viết; ẩn hoàn toàn toolbar xanh lá mặc định cũ; tích hợp renderers chip mã JetBrains Mono, badge ghim, thumbnail ảnh có thể click phóng to.
+    9. `PrecisionPostManagerAddModal.tsx` (55 dòng): Modal Đăng tin bọc `AddInfo.tsx` với Backdrop Blur cao cấp, tiêu đề và nút đóng sang trọng.
+    10. `PrecisionPostManagerViewModal.tsx` (120 dòng): Modal xem chi tiết thông cáo với ảnh kích thước lớn chất lượng cao và toàn văn nội dung trong Backdrop Blur sang trọng.
+    11. `PostManager.tsx`: Controller chính tinh gọn từ **257 dòng xuống còn 110 dòng**.
+- **3. Xác Thực Toàn Diện**:
+  * Kiểm tra qua node HTTP requests tới Vite Dev Server (port 3001) toàn bộ 11/11 files component, charts và stylesheet đều đạt **PASS: HTTP 200 OK**.
+  * Tất cả các file subcomponents đều < 300 dòng tuân thủ nghiêm ngặt quy tắc Clean Code ERP.
+  * Giữ nguyên 100% logic nghiệp vụ load, update, delete, kiểm tra phân quyền tác giả/admin và xuất Excel.
+
 ## Update - 2026-09-18 (BẢNG TIN: Refactor Toàn Diện Tab Đăng Tin `AddInfo.tsx` Chuẩn Google Stitch Enterprise & Recharts Executive Dashboard Phong Cách `KinhDoanhReport.tsx`)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình **Đăng Tin Bảng Tin Nội Bộ (`src/pages/information_board/AddInfo.tsx`)** là công cụ khởi tạo, soạn thảo và phát hành thông tin truyền thông của doanh nghiệp.

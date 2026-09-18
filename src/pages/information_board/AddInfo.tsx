@@ -90,7 +90,7 @@ const AddInfo: React.FC = () => {
             onFileChange={handleFileChange}
             onSubmit={handlePublishPost}
             isSubmitting={isSubmitting}
-            authorName={userData?.EMPL_NAME || userData?.EMPL_NO || "Admin"}
+            authorName={userData?.EMPL_NO || "Admin"}
           />
         )}
 

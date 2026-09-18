@@ -1,5 +1,40 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab Quản Lý Bài Viết & Đăng Tin Bảng Tin Nội Bộ (`PostManager.tsx`) Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard Phong Cách `KinhDoanhReport.tsx`:
+  - **Bảo toàn 100% logic nghiệp vụ & API**:
+    * Nạp danh sách bài viết hệ thống `f_fetchPostListAll()`.
+    * Cập nhật thông tin và trạng thái bài viết `f_updatePostData(POST_DATA)` trực tiếp từ bảng AG-Grid với kiểm tra quyền tác giả (`INS_EMPL`) hoặc quyền Quản trị.
+    * Xóa bài viết `f_deletePostData(POST_DATA)` với hộp thoại xác nhận SweetAlert2 và kiểm tra phân quyền chặt chẽ.
+    * Tích hợp Modal Soạn Thảo & Đăng Tin Mới (`PrecisionPostManagerAddModal.tsx`) nhúng trọn vẹn màn hình `AddInfo.tsx` phong cách Studio Live Preview trong khung Dialog cao cấp Backdrop Blur.
+    * Modal Xem Nhanh Bài Viết (`PrecisionPostManagerViewModal.tsx`) hỗ trợ xem banner ảnh lớn sắc nét và toàn bộ nội dung thông cáo.
+  - **Bảng Dữ Liệu AGTable Chuẩn Stitch High-Density Enterprise**:
+    * Bảo toàn 100% các cột gốc (`POST_ID`, `DEPT_CODE`, `MAINDEPT`, `SUBDEPT`, `FILE_NAME`, `TITLE`, `CONTENT`, `IS_PINNED`, `INS_DATE`, `INS_EMPL`, `UPD_DATE`, `UPD_EMPL`) cùng thuộc tính `editable` trên `TITLE`, `CONTENT` và `IS_PINNED`.
+    * Ẩn hoàn toàn toolbar xanh lá mặc định, tích hợp thanh tìm kiếm nhanh (Quick Search), cụm nút xuất Excel `EX1` (tin đang lọc) và `EX2` (toàn bộ tin), nút Đăng Tin, Lưu Cập Nhật và Xóa bài viết.
+    * Tích hợp Cell Renderers sang trọng: Chip mã `JetBrains Mono`, Tag khối phòng ban, Thumbnail ảnh bài viết có thể click xem lớn, Badge Ghim bài viết nổi bật.
+  - **Hệ Thống Biểu Đồ & Widget Thông Tin Hữu Ích Theo Phong Cách `KinhDoanhReport.tsx`**:
+    * **6 Micro-Cards KPI Realtime**: Tổng Tin Đã Đăng, Phát Hành Tháng Này, Đa Phương Tiện (Ảnh), Tin Ghim Nổi Bật, Phòng Ban Năng Động Nhất, Tác Giả Đóng Góp Hàng Đầu.
+    * **Hệ thống 4 Biểu Đồ Recharts Executive Dashboard** trong các thẻ `executive-card` bố trí dạng `.two-col-grid`, có **nút xuất Excel (`SaveExcel`) riêng biệt cho từng biểu đồ**:
+      1. Biểu đồ 1: Cơ Cấu Bài Đăng Theo Phòng Ban (`PrecisionPostDeptPie.tsx`) - Donut Chart 3 chế độ xem (`Song Song`, `Biểu Đồ`, `Danh Sách`), ô Quick Search lọc phòng ban, tâm Donut tương tác hiển thị tên phòng ban và số bài khi hover (chuẩn `KDChartCustomerRevenue.tsx`).
+      2. Biểu đồ 2: Xu Hướng Phát Hành Tin Theo Tháng (`ComposedChart`: Bar số bài mới & Line lũy kế).
+      3. Biểu đồ 3: Top Tác Giả Đóng Góp Bài Viết Nhiều Nhất (`BarChart` ngang).
+      4. Biểu đồ 4: Phân Bổ Định Dạng Bài Đăng Theo Bộ Phận (`Stacked BarChart`).
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn 100%: `PostManager.backup.tsx` (257 dòng).
+    * Phân rã thành công thành 9 module chuyên biệt tại `src/pages/information_board/PrecisionPostManager/`:
+      1. `PrecisionPostManager.scss` (620 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho KPI Cards, header, toolbar compact, executive-cards, bảng AGTable, và 2 Modals.
+      2. `usePostManagerData.ts` (260 dòng): Custom hook gom toàn bộ state, API queries, logic CRUD, và aggregate dữ liệu 4 biểu đồ Recharts.
+      3. `PrecisionPostManagerHeader.tsx` (60 dòng): Header bar công nghiệp kèm telemetry realtime số bài viết.
+      4. `PrecisionPostManagerToolbar.tsx` (95 dòng): Toolbar compact với bộ lọc ngày, checkbox Tất cả thời gian, nút Đăng Tin và Segmented Navigation Tabs 3 phân hệ.
+      5. `PrecisionPostManagerKpi.tsx` (135 dòng): Dashboard 6 Micro-cards KPI realtime phong cách `KinhDoanhReport.tsx`.
+      6. `charts/PrecisionPostDeptPie.tsx` (275 dòng): Biểu đồ Donut 3 chế độ xem tương tác.
+      7. `PrecisionPostManagerCharts.tsx` (245 dòng): Hệ thống 4 biểu đồ Recharts executive-card có nút xuất Excel riêng.
+      8. `PrecisionPostManagerGrid.tsx` (230 dòng): Bảng AGTable bọc thanh Quick Search, cụm nút EX1/EX2/Đăng Tin/Cập Nhật/Xóa.
+      9. `PrecisionPostManagerAddModal.tsx` (55 dòng): Modal Đăng tin bọc `AddInfo.tsx` với Backdrop Blur cao cấp.
+      10. `PrecisionPostManagerViewModal.tsx` (120 dòng): Modal xem chi tiết thông cáo và ảnh lớn.
+    * Controller chính `PostManager.tsx` tinh gọn từ 257 dòng xuống còn **110 dòng**.
+  - **Xác thực toàn diện**:
+    * Kiểm tra qua node HTTP requests tới Vite Dev Server (port 3001) toàn bộ 11/11 files component, charts và stylesheet đều đạt **PASS: HTTP 200 OK**.
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Đăng Tin Bảng Tin Nội Bộ (`AddInfo.tsx`) Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard Phong Cách `KinhDoanhReport.tsx`:
   - **Bảo toàn 100% logic nghiệp vụ & API**:
     * Nạp danh sách phòng ban `f_getDepartmentList()`.

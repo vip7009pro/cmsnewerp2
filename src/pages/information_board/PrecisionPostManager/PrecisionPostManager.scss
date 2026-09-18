@@ -1,0 +1,1041 @@
+// PrecisionPostManager.scss - Google Stitch Enterprise High-Density Stylesheet cho PostManager & Modal Đăng Tin
+.precision-postmanager {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: #f8fafc;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #0f172a;
+
+  // Hỗ trợ Multi-Tab Full Width & Full Height
+  .component_element & {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  // 1. Header Bar Công Nghiệp Telemetry
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    background: #0f172a;
+    color: #f8fafc;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  &__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #64748b;
+
+    .divider {
+      color: #cbd5e1;
+    }
+
+    .active {
+      font-weight: 600;
+      color: #0284c7;
+    }
+  }
+
+  &__headerActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__telemetry {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #334155;
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+      animation: pulse 2s infinite;
+    }
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 28px;
+    padding: 0 10px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+      color: #0f172a;
+    }
+
+    &--primary {
+      background: #0284c7;
+      border-color: #0284c7;
+      color: #ffffff;
+
+      &:hover {
+        background: #0369a1;
+        border-color: #0369a1;
+      }
+    }
+
+    &--success {
+      background: #10b981;
+      border-color: #10b981;
+      color: #ffffff;
+
+      &:hover {
+        background: #059669;
+        border-color: #059669;
+      }
+    }
+
+    &--danger {
+      background: #ef4444;
+      border-color: #ef4444;
+      color: #ffffff;
+
+      &:hover {
+        background: #dc2626;
+        border-color: #dc2626;
+      }
+    }
+  }
+
+  // 2. Toolbar Compact & Segmented Navigation Tabs
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 16px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+  }
+
+  &__segmentTabs {
+    display: inline-flex;
+    align-items: center;
+    background: #f1f5f9;
+    padding: 3px;
+    border-radius: 8px;
+    gap: 3px;
+  }
+
+  &__tabBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      color: #0f172a;
+    }
+
+    &.isActive {
+      background: #ffffff;
+      color: #0284c7;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    }
+
+    .count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 10px;
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    &.isActive .count-badge {
+      background: #e0f2fe;
+      color: #0284c7;
+    }
+  }
+
+  &__filterGroup {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+
+    .filter-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 28px;
+      padding: 0 8px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 11.5px;
+      color: #334155;
+
+      input[type="date"] {
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 11.5px;
+        color: #0f172a;
+      }
+
+      input[type="checkbox"] {
+        cursor: pointer;
+      }
+    }
+  }
+
+  // 3. Scrollable Body
+  &__body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  // 4. KPI Micro-cards Grid (6 thẻ)
+  &__kpiGrid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    width: 100%;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .kpi-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+    }
+
+    &--blue::before { background: #0284c7; }
+    &--green::before { background: #10b981; }
+    &--purple::before { background: #8b5cf6; }
+    &--amber::before { background: #f59e0b; }
+    &--indigo::before { background: #6366f1; }
+    &--rose::before { background: #f43f5e; }
+
+    &__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    &__title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    &__iconWrap {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &--blue .kpi-card__iconWrap { background: #e0f2fe; color: #0284c7; }
+    &--green .kpi-card__iconWrap { background: #ecfdf5; color: #10b981; }
+    &--purple .kpi-card__iconWrap { background: #f3e8ff; color: #8b5cf6; }
+    &--amber .kpi-card__iconWrap { background: #fef3c7; color: #f59e0b; }
+    &--indigo .kpi-card__iconWrap { background: #e0e7ff; color: #6366f1; }
+    &--rose .kpi-card__iconWrap { background: #ffe4e6; color: #f43f5e; }
+
+    &__value {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+    }
+
+    &__meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10.5px;
+      color: #64748b;
+    }
+
+    &__pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: #f1f5f9;
+      color: #475569;
+    }
+  }
+
+  // 5. Khung chứa bảng AGTable Chuẩn Stitch
+  &__gridContainer {
+    flex: 1 1 auto;
+    min-height: 360px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+
+  &__gridToolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+  }
+
+  &__gridToolbarLeft {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  &__searchBox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: min(280px, 100%);
+    height: 28px;
+    padding: 0 8px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+
+    input {
+      border: none;
+      outline: none;
+      font-size: 11.5px;
+      width: 100%;
+    }
+  }
+
+  &__gridActions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__gridBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    transition: all 0.15s ease;
+
+    .badge {
+      font-size: 9.5px;
+      padding: 1px 4px;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    &--excel {
+      color: #065f46;
+      border-color: #a7f3d0;
+      background: #f0fdf4;
+      &:hover { background: #dcfce7; }
+    }
+
+    &--add {
+      color: #ffffff;
+      border-color: #0284c7;
+      background: #0284c7;
+      &:hover { background: #0369a1; }
+    }
+
+    &--update {
+      color: #ffffff;
+      border-color: #10b981;
+      background: #10b981;
+      &:hover { background: #059669; }
+    }
+
+    &--delete {
+      color: #ffffff;
+      border-color: #ef4444;
+      background: #ef4444;
+      &:hover { background: #dc2626; }
+    }
+  }
+
+  &__gridBody {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 250px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+
+    .agtable {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 250px;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+
+      .toolbar {
+        display: none !important;
+      }
+
+      .ag-theme-quartz {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-height: 250px;
+        height: 100%;
+        width: 100%;
+
+        .ag-root-wrapper {
+          height: 100% !important;
+          min-height: 250px;
+          border: none;
+        }
+
+        .ag-header {
+          background: #f1f5f9;
+          border-bottom: 1px solid #cbd5e1;
+          font-size: 11px;
+          font-weight: 700;
+          color: #475569;
+          text-transform: uppercase;
+        }
+
+        .ag-row {
+          font-size: 11.5px;
+          border-bottom: 1px solid #f1f5f9;
+        }
+      }
+    }
+  }
+
+  // 6. Section Biểu Đồ & Thẻ Executive Card
+  &__chartsSection {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .two-col-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .executive-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    &__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      flex-shrink: 0;
+    }
+
+    &__title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    &__title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: 0.1px;
+    }
+
+    &__btn-excel {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 24px;
+      padding: 0 8px;
+      background: #f0fdf4;
+      border: 1px solid #a7f3d0;
+      border-radius: 5px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #065f46;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:hover {
+        background: #dcfce7;
+      }
+    }
+
+    &__body {
+      padding: 12px 14px;
+      min-height: 340px;
+      height: 340px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    &__body--chart-lg {
+      min-height: 420px;
+      height: 420px;
+    }
+  }
+
+  // 7. Biểu Đồ Tròn Đa Chế Độ (.po-customer-chart)
+  .po-customer-chart {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+
+    &__controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    &__segmented {
+      display: inline-flex;
+      align-items: center;
+      background: #f1f5f9;
+      padding: 2px;
+      border-radius: 6px;
+      gap: 2px;
+
+      button {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border: none;
+        background: transparent;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+
+        &.active {
+          background: #ffffff;
+          color: #0284c7;
+          font-weight: 700;
+          box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+        }
+      }
+    }
+
+    &__search {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 24px;
+      padding: 0 6px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      width: 140px;
+
+      input {
+        border: none;
+        outline: none;
+        font-size: 11px;
+        width: 100%;
+      }
+    }
+
+    &__content {
+      display: flex;
+      flex: 1 1 auto;
+      min-height: 0;
+      position: relative;
+      gap: 8px;
+
+      &--split {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+      &--chart {
+        display: flex;
+      }
+      &--list {
+        display: flex;
+      }
+    }
+
+    &__left {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    &__center-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      text-align: center;
+      width: 90px;
+
+      .val {
+        font-size: 14px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.1;
+      }
+      .lbl {
+        font-size: 9.5px;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-top: 2px;
+        max-width: 85px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .pct {
+        font-size: 9.5px;
+        font-weight: 700;
+        color: #0284c7;
+      }
+    }
+
+    &__right {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-right: 4px;
+      font-size: 11px;
+
+      .row-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 4px 6px;
+        border-radius: 5px;
+        background: #f8fafc;
+        border: 1px solid #f1f5f9;
+        cursor: pointer;
+
+        &:hover {
+          background: #f1f5f9;
+        }
+
+        .name-box {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          overflow: hidden;
+
+          .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+          }
+
+          .name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 110px;
+            font-weight: 600;
+            color: #334155;
+          }
+        }
+
+        .val-box {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          .num {
+            font-weight: 700;
+            color: #0f172a;
+          }
+          .share {
+            font-size: 10px;
+            color: #64748b;
+            min-width: 32px;
+            text-align: right;
+          }
+        }
+      }
+    }
+  }
+
+  // 8. Custom Cells Cho AGTable
+  .cell-post-id {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    color: #0284c7;
+    background: #e0f2fe;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    display: inline-block;
+  }
+
+  .cell-dept-badge {
+    font-weight: 700;
+    color: #475569;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10.5px;
+    display: inline-block;
+    text-transform: uppercase;
+  }
+
+  .cell-title {
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .pin-badge {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: #d97706;
+      background: #fef3c7;
+      padding: 1px 5px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+  }
+
+  .cell-thumb-preview {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    img {
+      width: 26px;
+      height: 26px;
+      border-radius: 4px;
+      object-fit: cover;
+      border: 1px solid #e2e8f0;
+      cursor: pointer;
+    }
+
+    .no-img {
+      color: #94a3b8;
+      font-size: 10.5px;
+      font-style: italic;
+    }
+  }
+}
+
+// 9. Modal Thêm Mới / Đăng Tin (Add Information Modal)
+.postmanager-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(5px);
+  padding: 16px;
+  box-sizing: border-box;
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+  }
+
+  &__window {
+    position: relative;
+    z-index: 1;
+    background: #ffffff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 1100px;
+    max-height: 92vh;
+    box-shadow: 0 20px 35px -5px rgba(15, 23, 42, 0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+  }
+
+  &__titleWrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .icon-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+    }
+
+    .title-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      h3 {
+        font-size: 14px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+      }
+      span {
+        font-size: 11px;
+        color: #64748b;
+      }
+    }
+  }
+
+  &__closeBtn {
+    background: #f1f5f9;
+    border: none;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: #fee2e2;
+      color: #ef4444;
+    }
+  }
+
+  &__content {
+    padding: 16px 20px;
+    overflow-y: auto;
+    flex: 1 1 auto;
+  }
+}
+
+// 10. Modal Đọc Bài Viết & Xem Ảnh Lớn
+.postmanager-view-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  padding: 16px;
+
+  &__card {
+    background: #ffffff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 15px 30px rgba(15, 23, 42, 0.2);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e2e8f0;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  &__closeBtn {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    color: #64748b;
+    cursor: pointer;
+    &:hover { color: #0f172a; }
+  }
+
+  &__body {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    img {
+      width: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
