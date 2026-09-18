@@ -1,5 +1,29 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-18 (SX: Refactor Toàn Diện Tab KPI Nhân Viên Sản Xuất `KPI_NVSX.tsx` Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard)
+- **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
+  * Màn hình **KPI Nhân Viên Sản Xuất (`src/pages/sx/KPI_NV/KPI_NVSX.tsx`)** là công cụ đánh giá sản lượng và hiệu suất lao động của công nhân vận hành theo các chu kỳ Daily, Weekly, Monthly và Yearly.
+  * Mã nguồn cũ 693 dòng dùng bảng màu gradient xanh lơ `#afd3d1` / xanh ngọc `#86cfff` lỗi thời, thanh sidebar chiếm diện tích, bảng AGTable thiếu Dashboard KPI tổng quan, thiếu toàn bộ biểu đồ trực quan hóa, thiếu thanh tìm kiếm nhanh (Quick Search) và thiếu cụm nút xuất Excel EX1/EX2.
+  * Yêu cầu: Làm lại theo chuẩn **Google Stitch High-Density Enterprise**, thiết kế hệ thống 4 biểu đồ Recharts Executive Dashboard tương tự `KinhDoanhReport.tsx`, bổ sung Dashboard 6 Micro-Cards KPI realtime, bảo toàn 100% 4 bộ cột AG-Grid với đúng `headerName` và độ rộng cột ban đầu, tích hợp thanh Quick Search và cụm nút xuất Excel EX1/EX2.
+- **2. Kiến Trúc Phân Rã Module Hóa Clean Code (< 300 dòng/file)**:
+  * Đã tạo bản sao lưu an toàn nguyên bản 100%: `KPI_NVSX.backup.tsx` (693 dòng).
+  * Phân rã thành công thành 8 module chuyên biệt trong thư mục `src/pages/sx/KPI_NV/PrecisionKpiNvSx/`:
+    1. `PrecisionKpiNvSx.scss` (610 dòng): Stylesheet SCSS Google Stitch Enterprise, hỗ trợ Multi-Tab Full-Width & Full-Height, styles cho KPI Cards, header, toolbar compact, executive-cards (Recharts), two-col-grid, và bảng AGTable.
+    2. `PrecisionKpiNvSxColumns.tsx` (255 dòng): Cấu hình 4 bộ cột AG-Grid bảo toàn 100% `headerName` và `width` gốc (Daily 16 cột, Weekly 14 cột, Monthly 14 cột, Yearly 12 cột), status badges tỉ lệ % và format số JetBrains Mono.
+    3. `kpiNvSxHelpers.ts` (230 dòng): Pure TypeScript functions tính KPI realtime, aggregate 4 loại biểu đồ, hàm lọc quick search an toàn dữ liệu.
+    4. `useKpiNvSxData.ts` (175 dòng): Custom hook pure TypeScript gom toàn bộ state, API queries 4 chu kỳ (`f_load_SX_NV_KPI_DATA_Daily/Weekly/Monthly/Yearly`), quick search và xuất Excel.
+    5. `PrecisionKpiNvSxKpi.tsx` (160 dòng): Dashboard 6 Micro-cards KPI thống kê realtime: Tổng Sản Lượng Mét (Output Mét), Tổng Sản Lượng Con (Output EA), Tỷ Lệ Đạt Mét Bình Quân (Avg Rate M %), Tỷ Lệ Đạt Con Bình Quân (Avg Rate EA %), Quy Mô Nhân Lực Đánh Giá (Workforce Scale), và Nhân Sự Dẫn Đầu Sản Lượng (Best Performer).
+    6. `PrecisionKpiNvSxCharts.tsx` (260 dòng): Hệ thống 4 biểu đồ Recharts phong cách `KinhDoanhReport.tsx` (Xu Hướng Sản Lượng Mét & Tỷ Lệ Đạt ComposedChart, Top 10 Nhân Viên Sản Lượng Mét Cao Nhất BarChart, Cơ Cấu Phân Bổ Tỷ Lệ Đạt KPI Donut Chart, So Sánh Sản Lượng Con EA Grouped BarChart) đóng gói trong các thẻ `executive-card` bố trí dạng `.two-col-grid`, có nút xuất Excel cho từng biểu đồ.
+    7. `PrecisionKpiNvSxHeader.tsx` (65 dòng): Header bar công nghiệp kèm badge phân hệ `SX PRECISION • KPI NV`, breadcrumb, telemetry số dòng/nhân sự và nút reload dữ liệu.
+    8. `PrecisionKpiNvSxToolbar.tsx` (185 dòng): Toolbar compact 2 tầng gồm bộ chọn ngày Từ ngày - Đến ngày, dải nút chọn nhanh (1D, 7D, 30D, 90D), checkbox All Time, select chu kỳ Daily/Weekly/Monthly/Yearly, nút Tải dữ liệu và Segmented Tab Switcher (`Toàn Bộ`, `Biểu Đồ & KPI`, `Bảng Dữ Liệu`).
+    9. `PrecisionKpiNvSxGrid.tsx` (80 dòng): Khung AGTable bọc thanh tìm kiếm nhanh tức thì, cụm nút xuất Excel `EX1` (dữ liệu đang lọc), `EX2` (toàn bộ dữ liệu) và bỏ hoàn toàn toolbar xanh lá cũ.
+    10. `KPI_NVSX.tsx`: Controller chính tinh gọn từ 693 dòng xuống còn **100 dòng** kết nối subcomponents.
+- **3. Xác Thực Toàn Diện & Bugfix Runtime**:
+  * Quét TypeScript AST toàn bộ 9/9 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+  * Gửi HTTP requests kiểm tra toàn bộ 10/10 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+  * Tất cả các component UI đều nhỏ gọn < 300 dòng tuân thủ nghiêm ngặt quy tắc Clean Code ERP.
+  * **Bugfix Runtime ReferenceError**: Khắc phục lỗi `ReferenceError: topEmplMetData is not defined` tại `KPI_NVSX.tsx:86` do sai lệch tên biến khi truyền props (`topEmplMetData` vs `topEmplMetChartData`). Đã đồng bộ chuẩn xác `topEmplMetChartData` và `topEmplQtyChartData`, Vite HMR hot reload ngay lập tức không còn lỗi.
+
 ## Update - 2026-09-18 (SX: Refactor Toàn Diện Tab Quản Lý Tiêu Chuẩn Lỗi Sản Xuất `MAINDEFECTS.tsx` Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard)
 - **1. Hoàn Cảnh & Yêu Cầu Nhiệm Vụ**:
   * Màn hình **Quản Lý Tiêu Chuẩn Lỗi Sản Xuất (`src/pages/sx/MAINDEFECTS/MAINDEFECTS.tsx`)** là công cụ quản lý thư viện tiêu chuẩn lỗi công đoạn (SX100) và kiểm tra tuần tra (INS_PATROL) phục vụ phân xưởng sản xuất và phòng chất lượng PQC/QA.

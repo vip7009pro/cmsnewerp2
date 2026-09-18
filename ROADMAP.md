@@ -1,5 +1,45 @@
 # Roadmap - cmsnewerp2
 
+- [x] Hoàn thiện Refactor Toàn Diện Tab KPI Nhân Viên Sản Xuất (`KPI_NVSX.tsx`) Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard:
+  - **Bảo toàn 100% logic nghiệp vụ & 4 bộ cột dữ liệu AG-Grid**:
+    * Duy trì 100% tên cột `headerName` và độ rộng `width` của 4 chu kỳ: Daily (16 cột), Weekly (14 cột), Monthly (14 cột), Yearly (12 cột).
+    * Duy trì toàn bộ 4 hàm API queries: `f_load_SX_NV_KPI_DATA_Daily`, `f_load_SX_NV_KPI_DATA_Weekly`, `f_load_SX_NV_KPI_DATA_Monthly`, `f_load_SX_NV_KPI_DATA_Yearly`.
+    * Tối ưu hiển thị: format số JetBrains Mono, màu sắc trực quan (Xanh dương cho Mét, Xanh lá cho Thực tế/Đạt, Đỏ cho Kế hoạch QTY) và status badges trực quan cho tỷ lệ % hoàn thành.
+  - **Bổ sung Dashboard 6 Micro-Cards KPI Thống Kê Realtime Hữu Ích**:
+    * `Tổng Sản Lượng Mét (Output Mét)`: Tổng mét thực tế (`OUTPUT_M_TT` m) vs mét lý thuyết (`OUTPUT_M_LT` m) và kế hoạch (`PLAN_MET` m).
+    * `Tổng Sản Lượng Con (Output EA)`: Tổng con thực tế (`OUTPUT_EA_TT` EA) vs kế hoạch (`PLAN_QTY` EA).
+    * `Tỷ Lệ Đạt Mét BQ`: Tỷ lệ % hoàn thành mét bình quân toàn đội ngũ kèm progress bar vi mô.
+    * `Tỷ Lệ Đạt Con BQ`: Tỷ lệ % hoàn thành con bình quân toàn đội ngũ.
+    * `Quy Mô Nhân Lực Đánh Giá`: Số lượng nhân sự vận hành được ghi nhận và tổng lượt bản ghi.
+    * `Nhân Sự Dẫn Đầu Hiệu Suất`: Top 1 nhân viên dẫn đầu về sản lượng mét và tỷ lệ hoàn thành.
+  - **Hệ Thống 4 Biểu Đồ Recharts Executive Dashboard Bố Trí Theo Phong Cách KinhDoanhReport**:
+    * Biểu đồ 1: Xu Hướng Sản Lượng Mét & Tỷ Lệ Hoàn Thành (`ComposedChart` Bar mét thực tế, Line kế hoạch & Line tỷ lệ đạt %).
+    * Biểu đồ 2: Top 10 Nhân Viên Sản Lượng Mét Cao Nhất (`BarChart` so sánh Thực Tế vs Kế Hoạch).
+    * Biểu đồ 3: Cơ Cấu Phân Bổ Tỷ Lệ Đạt KPI Nhân Viên (`Donut / PieChart` phân chia nhóm Xuất sắc, Khá, Trung bình, Cần cải thiện).
+    * Biểu đồ 4: So Sánh Sản Lượng Con (EA) Top Nhân Viên (`Grouped BarChart` Thực tế vs Kế hoạch EA).
+    * Đóng gói trong các thẻ `executive-card` sang trọng, bố trí dạng `.two-col-grid`, có **nút xuất Excel dữ liệu chi tiết cho từng biểu đồ**.
+  - **Nâng Cấp Bảng Lưới AG Grid High-Density, Tiện Ích & Điều Khiển**:
+    * Thanh lọc nhanh phía trên bảng (`gridToolbar`) tích hợp ô tìm kiếm nhanh tức thì (`Quick Search`), cụm nút xuất Excel `EX1` (dữ liệu đang lọc), `EX2` (toàn bộ dữ liệu) và bộ đếm số dòng hiển thị.
+    * Ẩn hoàn toàn toolbar xanh lá mặc định của AGTable.
+    * Toolbar compact 2 hàng gồm bộ chọn ngày Từ ngày - Đến ngày, dải nút chọn nhanh (1D, 7D, 30D, 90D), checkbox All Time, select chu kỳ Daily/Weekly/Monthly/Yearly.
+    * Segmented Tab Switcher 3 chế độ xem nhanh: `Toàn Bộ (All)`, `Biểu Đồ & KPI (Charts)`, `Bảng Dữ Liệu (Grid)`.
+  - **Kiến trúc Module Hóa Clean Code (< 300 dòng/file)**:
+    * Tạo bản sao lưu an toàn: `KPI_NVSX.backup.tsx` (693 dòng).
+    * Phân rã thành 8 module chuyên biệt tại `src/pages/sx/KPI_NV/PrecisionKpiNvSx/`:
+      1. `PrecisionKpiNvSx.scss` (610 dòng): Stylesheet SCSS Google Stitch Enterprise & Multi-Tab.
+      2. `PrecisionKpiNvSxColumns.tsx` (255 dòng): Cấu hình 4 bộ cột AG-Grid.
+      3. `kpiNvSxHelpers.ts` (230 dòng): Pure TypeScript functions tính KPI, aggregate 4 biểu đồ & filter.
+      4. `useKpiNvSxData.ts` (175 dòng): Custom hook pure TypeScript gom state, API và xuất Excel.
+      5. `PrecisionKpiNvSxKpi.tsx` (160 dòng): 6 Micro-cards KPI realtime.
+      6. `PrecisionKpiNvSxCharts.tsx` (260 dòng): 4 biểu đồ Recharts executive-card two-col-grid có nút Excel.
+      7. `PrecisionKpiNvSxHeader.tsx` (65 dòng): Header bar công nghiệp kèm telemetry & reload.
+      8. `PrecisionKpiNvSxToolbar.tsx` (185 dòng): Toolbar compact 2 tầng & segmented tab switcher.
+      9. `PrecisionKpiNvSxGrid.tsx` (80 dòng): Khung AGTable kèm quick search, EX1, EX2.
+    * Controller chính `KPI_NVSX.tsx` tinh gọn từ 693 dòng xuống còn **100 dòng**.
+  - **Xác thực toàn diện**:
+    * Quét TypeScript AST toàn bộ 9/9 file đạt **0 Errors / 0 Warnings** (`PASS: 100% OK`).
+    * Gửi HTTP requests kiểm tra toàn bộ 10/10 endpoint trên Vite Dev Server (port 3001) đều phản hồi **HTTP 200 OK**.
+
 - [x] Hoàn thiện Refactor Toàn Diện Tab Quản Lý Tiêu Chuẩn Lỗi Sản Xuất (`MAINDEFECTS.tsx`) Chuẩn Google Stitch High-Density Enterprise & Recharts Executive Dashboard:
   - **Bảo toàn 100% logic nghiệp vụ & 17 cột dữ liệu AG-Grid**:
     * Duy trì 100% tên cột `headerName` và độ rộng `width` gốc: `NG_SX100_ID` (50), `PROD_MODEL` (100), `G_CODE` (70), `G_NAME` (100), `DESCR` (150), `PROCESS_NUMBER` (100), `STT` (50), `DEFECT` (150), `TEST_ITEM` (150), `TEST_METHOD` (150), `INS_PATROL_ID` (90), `USE_YN` (80), `IMAGE_YN` (60), `INS_DATE` (100), `INS_EMPL` (70), `UPD_DATE` (100), `UPD_EMPL` (70).
