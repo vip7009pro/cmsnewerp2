@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import moment from "moment";
-import { FiClock, FiMaximize2, FiCpu } from "react-icons/fi";
+import { FiClock, FiCpu } from "react-icons/fi";
 
 export interface PatrolCardData {
   CATEGORY: "PQC3" | "DTC" | "INS";
@@ -34,26 +34,22 @@ export const PrecisionPatrolCard: React.FC<PrecisionPatrolCardProps> = ({
   }, [data.TIME]);
 
   // Tính tỷ lệ NG rate (%)
-  const { ngPercent, rateClass, barClass } = useMemo(() => {
+  const { ngPercent, rateClass } = useMemo(() => {
     const qty = data.INSPECT_QTY || 1;
     const ng = data.INSPECT_NG || 0;
     const percent = Math.min(100, Math.max(0, (ng / qty) * 100));
 
     let rClass = "rate-green";
-    let bClass = "bar-green";
 
     if (percent > 5) {
       rClass = "rate-red";
-      bClass = "bar-red";
     } else if (percent > 2) {
       rClass = "rate-amber";
-      bClass = "bar-amber";
     }
 
     return {
       ngPercent: percent.toFixed(1),
       rateClass: rClass,
-      barClass: bClass,
     };
   }, [data.INSPECT_QTY, data.INSPECT_NG]);
 
@@ -114,20 +110,10 @@ export const PrecisionPatrolCard: React.FC<PrecisionPatrolCardProps> = ({
           </div>
         )}
 
-        <button
-          type="button"
-          className="zoom-overlay-btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpenModal(data);
-          }}
-          title="Phóng to ảnh"
-        >
-          <FiMaximize2 size={10} /> Phóng to
-        </button>
+        {/* Zoom button removed */}
       </div>
 
-      {/* 3. Card Body: Title, Customer, Defect, NG Rate Progress */}
+      {/* 3. Card Body: Title, Customer, NG Rate, Defect */}
       <div className="precision-patrol-card__body">
         <div className="card-row-title">
           <span className="card-code" title={data.G_NAME_KD}>
@@ -140,26 +126,13 @@ export const PrecisionPatrolCard: React.FC<PrecisionPatrolCardProps> = ({
           )}
         </div>
 
+        <div className={`card-rate-value ${rateClass}`}>
+          {data.INSPECT_NG}/{data.INSPECT_QTY} ({ngPercent}%)
+        </div>
+
         <div className="card-defect" title={data.DEFECT}>
           {data.DEFECT || "Chưa có mô tả hiện tượng lỗi"}
-        </div>
-
-        {/* NG Rate Progress Bar */}
-        <div className="card-rate-section">
-          <div className="rate-header">
-            <span className="rate-label">Tỷ lệ lỗi (NG Rate)</span>
-            <span className={`rate-value ${rateClass}`}>
-              {data.INSPECT_NG}/{data.INSPECT_QTY} ({ngPercent}%)
-            </span>
-          </div>
-
-          <div className="progress-track">
-            <div
-              className={`progress-bar ${barClass}`}
-              style={{ width: `${Math.min(100, Math.max(2, Number(ngPercent)))}%` }}
-            />
-          </div>
-        </div>
+      </div>
       </div>
     </div>
   );

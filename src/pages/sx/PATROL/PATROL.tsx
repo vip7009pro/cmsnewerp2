@@ -2,7 +2,6 @@ import React, { useMemo, useCallback } from "react";
 import "./PrecisionPATROL/PrecisionPATROL.scss";
 import { usePatrolData } from "./PrecisionPATROL/usePatrolData";
 import PrecisionPatrolHeader from "./PrecisionPATROL/PrecisionPatrolHeader";
-import PrecisionPatrolKpi from "./PrecisionPATROL/PrecisionPatrolKpi";
 import PrecisionPatrolToolbar from "./PrecisionPATROL/PrecisionPatrolToolbar";
 import PrecisionPatrolLane from "./PrecisionPATROL/PrecisionPatrolLane";
 import PrecisionPatrolCard, { PatrolCardData } from "./PrecisionPATROL/PrecisionPatrolCard";
@@ -112,10 +111,7 @@ const PATROL: React.FC = () => {
         onToggleLive={patrol.handleToggleLive}
       />
 
-      {/* 2. Micro-cards KPI realtime */}
-      <PrecisionPatrolKpi kpis={patrol.kpis} />
-
-      {/* 3. Action Toolbar & View Controller */}
+      {/* 2. Action Toolbar & View Controller */}
       <PrecisionPatrolToolbar
         layoutView={patrol.layoutView}
         onLayoutChange={patrol.setLayoutView}

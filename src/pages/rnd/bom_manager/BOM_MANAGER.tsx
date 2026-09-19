@@ -153,6 +153,7 @@ const BOM_MANAGER: React.FC = () => {
     bomsxSelectedRows,
     bomgiaSelectedRows,
     selectedMaterial,
+    selectedMasterMaterial,
     currentProcessList,
     setCurrentProcessList,
     tempSelectedMachine,
@@ -298,6 +299,7 @@ const BOM_MANAGER: React.FC = () => {
             showHideTemLot={showHideTemLot}
             onToggleTemLot={() => setShowHideTemLot((prev) => !prev)}
             onPrintTemLot={handlePrint}
+            showProcessGrid={getUserData()?.EMPL_NO === "NHU1903"}
           />
 
           <PrecisionBOMDualTables

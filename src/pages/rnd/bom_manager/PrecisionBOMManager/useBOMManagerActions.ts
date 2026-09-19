@@ -1,9 +1,10 @@
 import React from "react";
 import moment from "moment";
 import Swal from "sweetalert2";
-import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../../api/Api";
+import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from "../../../../api/Api";
 import { checkBP } from "../../../../api/services/permissionService";
-import { zeroPad } from "../../../../api/services/utilService";
+import { f_insert_Notification_Data } from "../../../../api/services/notificationService";
+import { checkHSD2, zeroPad } from "../../../../api/services/utilService";
 import { DEFAULT_DM } from "../../../kinhdoanh/interfaces/kdInterface";
 import { BOM_GIA, BOM_SX, CODE_FULL_INFO } from "../../interfaces/rndInterface";
 import { MaterialListData } from "../../../qc/interfaces/qcInterface";
@@ -29,6 +30,7 @@ interface UseBOMManagerActionsProps {
   bomsxSelectedRows: React.MutableRefObject<any[]>;
   bomgiaSelectedRows: React.MutableRefObject<any[]>;
   selectedMaterial: MaterialListData | null;
+  selectedMasterMaterial: any;
   currentProcessList: PROD_PROCESS_DATA[];
   setCurrentProcessList: React.Dispatch<React.SetStateAction<PROD_PROCESS_DATA[]>>;
   tempSelectedMachine: string;
@@ -50,6 +52,7 @@ export const useBOMManagerActions = ({
   bomsxSelectedRows,
   bomgiaSelectedRows,
   selectedMaterial,
+  selectedMasterMaterial,
   currentProcessList,
   setCurrentProcessList,
   tempSelectedMachine,
@@ -58,6 +61,82 @@ export const useBOMManagerActions = ({
   loadProcessList,
 }: UseBOMManagerActionsProps) => {
   const userData = getUserData();
+
+  const checkG_NAME_KD_Exist = async (g_name_kd: string) => {
+    try {
+      const response = await generalQuery("checkGNAMEKDExist", { G_NAME_KD: g_name_kd });
+      return response.data?.tk_status !== "NG";
+    } catch {
+      return false;
+    }
+  };
+
+  const checkHSD = (): boolean => {
+    if (codefullinfo.PD_HSD === "Y") return true;
+
+    const hsdVL = Number(selectedMasterMaterial?.EXP_DATE ?? 0);
+    const hsdSP = Number(codefullinfo.EXP_DATE ?? 0);
+    const valid = (hsdVL === hsdSP && hsdVL !== 0) || (codefullinfo.QL_HSD === "N");
+    if (!valid) {
+      Swal.fire(
+        "Thông báo",
+        `Hạn sử dụng sản phẩm không khớp vs HSD NVL, hãy check lại với mua hàng: HSD VL ${hsdVL}, HSD SP ${hsdSP}`,
+        "error"
+      );
+    }
+    return valid;
+  };
+
+  const handleCheckCodeInfo2 = async () => {
+    if (getCompany() !== "CMS" && userData?.MAINDEPTNAME === "KD") return true;
+
+    const abc: any = codefullinfo;
+    for (const [k, v] of Object.entries(abc)) {
+      if (
+        (v === null || v === "") &&
+        ![
+          "REMK",
+          "CUST_NAME",
+          "FACTORY",
+          "Setting1",
+          "Setting2",
+          "Setting3",
+          "Setting4",
+          "UPH1",
+          "UPH2",
+          "UPH3",
+          "UPH4",
+          "Step1",
+          "Step2",
+          "Step3",
+          "Step4",
+          "LOSS_SX1",
+          "LOSS_SX2",
+          "LOSS_SX3",
+          "LOSS_SX4",
+          "LOSS_SETTING1",
+          "LOSS_SETTING2",
+          "LOSS_SETTING3",
+          "LOSS_SETTING4",
+          "NOTE",
+          "PD_HSD",
+          "UPDATE_REASON",
+          "UPD_DATE",
+          "UPD_EMPL",
+          "PDBV",
+        ].includes(k)
+      ) {
+        Swal.fire("Thông báo", `Không được để trống: ${k}`, "error");
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const handleCheckCodeInfo = async () => {
+    const valid = await handleCheckCodeInfo2();
+    return valid && checkHSD();
+  };
 
   // Kiểm tra tính hợp lệ của mã
   const checkCodeValid = (code: CODE_FULL_INFO) => {
@@ -76,6 +155,61 @@ export const useBOMManagerActions = ({
     return true;
   };
 
+  const handleinsertCodeTBG = async (NEWG_CODE: string) => {
+    try {
+      const response = await generalQuery("insertM100BangTinhGia", {
+        G_CODE: NEWG_CODE,
+        DEFAULT_DM: defaultDM,
+        CODE_FULL_INFO: codefullinfo,
+      });
+      if (response.data.tk_status === "NG") {
+        Swal.fire("Thông báo", `Lỗi: ${response.data.message}`, "error");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleupdateCodeTBG = async () => {
+    try {
+      const response = await generalQuery("updateM100BangTinhGia", codefullinfo);
+      if (response.data.tk_status !== "NG") {
+        Swal.fire("Thông báo", `Update thành công: ${codefullinfo.G_CODE}`, "success");
+      } else {
+        Swal.fire("Thông báo", `Lỗi: ${response.data.message}`, "error");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const confirmUpdateM100TBG = () => {
+    Swal.fire({
+      title: "Bạn có muốn update luôn thông tin sản phẩm trong báo giá ?",
+      text: "Update thông tin báo giá",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn Update!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Tiến hành Update Thông tin", "Đang Update Thông tin", "success");
+        generalQuery("checkTBGExist", { G_CODE: codefullinfo.G_CODE })
+          .then((response) => {
+            if (response.data.tk_status !== "NG") {
+              handleupdateCodeTBG();
+            } else {
+              handleinsertCodeTBG(codefullinfo.G_CODE);
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    });
+  };
+
   // Thêm mã mới
   const handleAddNewCode = async () => {
     if (!checkCodeValid(codefullinfo)) {
@@ -84,50 +218,57 @@ export const useBOMManagerActions = ({
     }
 
     try {
-      let CODE_27 = "C";
-      if (
-        codefullinfo.PROD_TYPE.trim() === "TSP" ||
-        codefullinfo.PROD_TYPE.trim() === "OLED" ||
-        codefullinfo.PROD_TYPE.trim() === "UV"
-      ) {
-        CODE_27 = "C";
-      } else if (codefullinfo.PROD_TYPE.trim() === "TAPE") {
-        CODE_27 = "T";
-      } else if (codefullinfo.PROD_TYPE.trim() === "LABEL") {
-        CODE_27 = "L";
-      } else if (codefullinfo.PROD_TYPE.trim() === "RIBBON") {
-        CODE_27 = "R";
-      } else if (codefullinfo.PROD_TYPE.trim() === "SPT") {
-        CODE_27 = "S";
-      }
+      const isCMS = getCompany() === "CMS";
+      const checkg_name_kd = await checkG_NAME_KD_Exist(
+        codefullinfo.G_NAME_KD === undefined ? "zzzzzzzzz" : codefullinfo.G_NAME_KD
+      );
 
-      const maxRes = await generalQuery("checkmaxG_CODE", {
-        PROD_PROJECT: codefullinfo.PROD_PROJECT,
-        PROD_MODEL: codefullinfo.PROD_MODEL,
-        CODE_12: codefullinfo.CODE_12,
-      });
+      if ((isCMS && (await handleCheckCodeInfo())) || (!isCMS && checkg_name_kd === false)) {
+        let CODE_27 = "C";
+        const prodType = (codefullinfo.PROD_TYPE || "").trim();
+        if (prodType === "TSP" || prodType === "OLED" || prodType === "UV") {
+          CODE_27 = "C";
+        } else if (prodType === "LABEL") {
+          CODE_27 = "L";
+        } else if (prodType === "TAPE") {
+          CODE_27 = "T";
+        } else if (prodType === "RIBBON") {
+          CODE_27 = "R";
+        } else if (prodType === "SPT") {
+          CODE_27 = "S";
+        }
 
-      if (maxRes.data.tk_status !== "NG") {
-        const max_seq: number = maxRes.data.data[0].MAX_SEQ;
-        const current_seq: number = max_seq + 1;
-        const max_g_code = `${codefullinfo.CODE_12}${CODE_27}${zeroPad(current_seq, 5)}A`;
-
-        const insertRes = await generalQuery("insertCodeInfo", {
-          ...codefullinfo,
-          G_CODE: max_g_code,
-          CODE_27,
-          SEQ_NO: current_seq,
-          REV_NO: "A",
-          DEFAULT_DM: defaultDM,
+        const maxRes = await generalQuery("checkmaxG_CODE", {
+          PROD_PROJECT: codefullinfo.PROD_PROJECT,
+          PROD_MODEL: codefullinfo.PROD_MODEL,
+          CODE_12: codefullinfo.CODE_12,
         });
 
-        if (insertRes.data.tk_status === "OK") {
-          Swal.fire("Thành công", `Đã thêm mã mới: ${max_g_code}`, "success");
-          handleCODEINFO();
-          handleSelectCode(max_g_code);
-        } else {
-          Swal.fire("Thất bại", insertRes.data.message || "Lỗi khi thêm mã", "error");
+        if (maxRes.data.tk_status !== "NG") {
+          const max_seq: number = Number(maxRes.data.data[0].MAX_SEQ ?? 0);
+          const current_seq: number = max_seq + 1;
+          const max_g_code = `${codefullinfo.CODE_12}${CODE_27}${zeroPad(current_seq, 5)}A`;
+
+          const insertRes = await generalQuery("insertCodeInfo", {
+            ...codefullinfo,
+            G_CODE: max_g_code,
+            CODE_27,
+            SEQ_NO: current_seq,
+            REV_NO: "A",
+            DEFAULT_DM: defaultDM,
+          });
+
+          if (insertRes.data.tk_status === "OK") {
+            Swal.fire("Thành công", `Đã thêm mã mới: ${max_g_code}`, "success");
+            handleCODEINFO();
+            handleSelectCode(max_g_code);
+            await handleinsertCodeTBG(max_g_code);
+          } else {
+            Swal.fire("Thất bại", insertRes.data.message || "Lỗi khi thêm mã", "error");
+          }
         }
+      } else if (!isCMS) {
+        Swal.fire("Cảnh báo", `Code ${codefullinfo.G_NAME_KD ?? "zzzzzzzzz"} đã tồn tại`, "error");
       }
     } catch (err) {
       console.error(err);
@@ -157,22 +298,52 @@ export const useBOMManagerActions = ({
       return;
     }
     try {
-      const currentRev =
-        codefullinfo.G_CODE && codefullinfo.G_CODE.length >= 8
-          ? codefullinfo.G_CODE.substring(7, 8)
-          : "A";
-      const nextRev = String.fromCharCode(currentRev.charCodeAt(0) + 1);
-      const res = await generalQuery("insertCodeInfo", {
-        ...codefullinfo,
-        REV_NO: nextRev,
-        DEFAULT_DM: defaultDM,
-      });
+      const isCMS = getCompany() === "CMS";
+      if ((isCMS && (await handleCheckCodeInfo())) || !isCMS) {
+        let CODE_27 = "C";
+        const prodType = (codefullinfo.PROD_TYPE || "").trim();
+        if (prodType === "TSP" || prodType === "OLED" || prodType === "UV") {
+          CODE_27 = "C";
+        } else if (prodType === "LABEL") {
+          CODE_27 = "L";
+        } else if (prodType === "TAPE") {
+          CODE_27 = "T";
+        } else if (prodType === "RIBBON") {
+          CODE_27 = "R";
+        } else if (prodType === "SPT") {
+          CODE_27 = "S";
+        }
 
-      if (res.data.tk_status === "OK") {
-        Swal.fire("Thành công", `Đã thêm phiên bản mới: Rev.${nextRev}`, "success");
-        handleCODEINFO();
-      } else {
-        Swal.fire("Thất bại", res.data.message || "Lỗi tạo phiên bản mới", "error");
+        let newGCODE = "";
+        let nextseqno = "";
+        let CURRENT_REV_NO = "";
+        let NEXT_REV_NO = "";
+
+        if (codefullinfo.CODE_12 === "9") {
+          nextseqno = zeroPad(Number(codefullinfo.G_CODE.substring(2, 8)) + 1, 6);
+          newGCODE = codefullinfo.CODE_12 + CODE_27 + nextseqno;
+        } else {
+          nextseqno = codefullinfo.G_CODE.substring(2, 7);
+          CURRENT_REV_NO = codefullinfo.G_CODE.substring(7, 8);
+          NEXT_REV_NO = String.fromCharCode(CURRENT_REV_NO.charCodeAt(0) + 1);
+          newGCODE = codefullinfo.CODE_12 + CODE_27 + nextseqno + NEXT_REV_NO;
+        }
+
+        const res = await generalQuery("insertCodeInfo", {
+          ...codefullinfo,
+          G_CODE: newGCODE,
+          CODE_27,
+          REV_NO: NEXT_REV_NO || "A",
+          DEFAULT_DM: defaultDM,
+        });
+
+        if (res.data.tk_status === "OK") {
+          Swal.fire("Thành công", `Đã thêm phiên bản mới: Rev.${NEXT_REV_NO || "A"}`, "success");
+          handleCODEINFO();
+          await handleinsertCodeTBG(newGCODE);
+        } else {
+          Swal.fire("Thất bại", res.data.message || "Lỗi tạo phiên bản mới", "error");
+        }
       }
     } catch (err) {
       console.error(err);
@@ -201,17 +372,101 @@ export const useBOMManagerActions = ({
       Swal.fire("Cảnh báo", "Chưa chọn mã để cập nhật", "warning");
       return;
     }
-    try {
-      const res = await generalQuery("updateCodeInfo", codefullinfo);
-      if (res.data.tk_status === "OK") {
-        Swal.fire("Thành công", "Đã cập nhật thông tin mã!", "success");
-        handleCODEINFO();
-      } else {
-        Swal.fire("Thất bại", res.data.message || "Lỗi cập nhật mã", "error");
+
+    let tempUpdateReason = codefullinfo?.UPDATE_REASON ?? "-";
+    let currentReason = "-";
+
+    if ((codefullinfo.PDBV ?? "N") === "Y") {
+      const { value: pass1 } = await Swal.fire({
+        title: "Xác nhận",
+        input: "text",
+        inputLabel: "Lý do update thông tin code",
+        inputValue: "",
+        inputPlaceholder: "Bạn update cái gì ?",
+        showCancelButton: true,
+      });
+      currentReason = pass1 ?? "";
+      tempUpdateReason =
+        pass1 !== undefined && pass1 !== ""
+          ? moment().format("YYYY-MM-DD HH:mm:ss") + "_" + getUserData()?.EMPL_NO + ":" + pass1
+          : "";
+    }
+
+    if (currentReason !== "") {
+      if (checkMAINVLMatching()) {
+        if ((getCompany() === "CMS") && (await handleCheckCodeInfo2()) || getCompany() !== "CMS") {
+          let tempInfo = codefullinfo;
+          if (!(await checkHSD2(Number(selectedMasterMaterial?.EXP_DATE ?? 0), Number(codefullinfo.EXP_DATE ?? 0), codefullinfo.PD_HSD ?? "N", codefullinfo.QL_HSD ?? "Y")) && getCompany() === "CMS") {
+            tempInfo = {
+              ...codefullinfo,
+              PD_HSD: "P",
+              UPD_COUNT: (codefullinfo?.UPD_COUNT ?? 0) + 1,
+              UPDATE_REASON: tempUpdateReason,
+            } as CODE_FULL_INFO;
+          } else {
+            tempInfo = {
+              ...codefullinfo,
+              PD_HSD: "N",
+              UPD_COUNT: (codefullinfo?.UPD_COUNT ?? 0) + 1,
+              UPDATE_REASON: tempUpdateReason,
+            } as CODE_FULL_INFO;
+          }
+
+          try {
+            const res = await generalQuery("updateM100", tempInfo);
+            if (res.data.tk_status !== "NG") {
+              const newNotification = {
+                CTR_CD: "002",
+                NOTI_ID: -1,
+                NOTI_TYPE: "info",
+                TITLE: "Update thông tin sản phẩm",
+                CONTENT: `${getUserData()?.EMPL_NO} (${getUserData()?.MIDLAST_NAME} ${getUserData()?.FIRST_NAME}), nhân viên ${getUserData()?.WORK_POSITION_NAME} đã update thông tin sản phẩm: ${codefullinfo.G_CODE}`,
+                SUBDEPTNAME: "KD,RND",
+                MAINDEPTNAME: "KD,RND",
+                INS_EMPL: "NHU1903",
+                INS_DATE: "2024-12-30",
+                UPD_EMPL: "NHU1903",
+                UPD_DATE: "2024-12-30",
+              };
+              if (await f_insert_Notification_Data(newNotification)) {
+                getSocket().emit("notification_panel", newNotification);
+              }
+              Swal.fire("Thông báo", `Update thành công: ${codefullinfo.G_CODE}`, "success");
+            } else {
+              Swal.fire("Thông báo", `Lỗi: ${res.data.message}`, "error");
+            }
+          } catch (error) {
+            console.error(error);
+            Swal.fire("Lỗi", "Không thể cập nhật thông tin mã", "error");
+          }
+
+          Swal.fire({
+            title: "Bạn có muốn update luôn thông tin sản phẩm trong báo giá ?",
+            text: "Update thông tin báo giá",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Vẫn Update!",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              generalQuery("checkTBGExist", { G_CODE: codefullinfo.G_CODE })
+                .then((response) => {
+                  if (response.data.tk_status !== "NG") {
+                    handleupdateCodeTBG();
+                  } else {
+                    handleinsertCodeTBG(codefullinfo.G_CODE);
+                  }
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
+            }
+          });
+        }
       }
-    } catch (err) {
-      console.error(err);
-      Swal.fire("Lỗi", "Không thể cập nhật thông tin mã", "error");
+    } else {
+      Swal.fire("Thông báo", "Phải nhập lý do update", "error");
     }
   };
 
@@ -225,6 +480,322 @@ export const useBOMManagerActions = ({
     }).then((res) => {
       if (res.isConfirmed) {
         checkBP(userData, ["RND", "QLSX", "KD"], ["ALL"], ["ALL"], handleUpdateCode);
+      }
+    });
+  };
+
+  const checkMAINVLMatching = (): boolean => {
+    let checkM = false;
+    if (bomsxtable.length > 0) {
+      const mainM = bomsxtable.find((ele) => ele.LIEUQL_SX === 1)?.M_NAME ?? "NG";
+      if (mainM === "NG") {
+        checkM = false;
+        Swal.fire("Thông báo", "Bom VL chưa set liệu chính", "error");
+      } else if (selectedMasterMaterial?.M_NAME) {
+        if (mainM === selectedMasterMaterial.M_NAME) {
+          checkM = true;
+        } else {
+          checkM = false;
+          Swal.fire("Thông báo", "Liệu chính được chọn không khớp liệu chính trong BOM VL", "error");
+        }
+      } else {
+        checkM = true;
+      }
+    } else {
+      checkM = true;
+    }
+    return checkM;
+  };
+
+  const handleInsertBOMSX = async () => {
+    try {
+      const currentBOMGIARes = await generalQuery("getbomgia", { G_CODE: codefullinfo.G_CODE });
+      const currentBOMGIA: BOM_GIA[] =
+        currentBOMGIARes.data?.tk_status !== "NG" && Array.isArray(currentBOMGIARes.data?.data)
+          ? currentBOMGIARes.data.data.map((element: BOM_GIA, index: number) => ({
+              ...element,
+              INS_DATE: element.INS_DATE ? moment.utc(element.INS_DATE).format("YYYY-MM-DD HH:mm:ss") : "",
+              UPD_DATE: element.UPD_DATE ? moment.utc(element.UPD_DATE).format("YYYY-MM-DD HH:mm:ss") : "",
+              id: String(index),
+            }))
+          : [];
+
+      const mainM_BOMSX = bomsxtable.find((ele) => ele.LIEUQL_SX === 1)?.M_NAME ?? "NG";
+      const mainM_BOMGIA = currentBOMGIA.find((ele) => ele.MAIN_M === 1)?.M_NAME ?? "NG";
+
+      if (currentBOMGIA.length === 0) {
+        Swal.fire("Thông báo", "Code chưa có BOM giá, phải thêm BOM giá trước", "warning");
+        return;
+      }
+
+      if (!checkMAINVLMatching() || mainM_BOMGIA !== mainM_BOMSX) {
+        Swal.fire(
+          "Thông báo",
+          "Liệu chính trong BOM SX phải giống với liệu chính trong BOM giá",
+          "warning"
+        );
+        return;
+      }
+
+      if (bomsxtable.length === 0) {
+        Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
+        return;
+      }
+
+      let err_code = "0";
+      let total_lieuql_sx = 0;
+      let check_lieuql_sx_sot = 0;
+      let check_num_lieuql_sx = 1;
+      let check_lieu_qlsx_khac1 = 0;
+      let m_list = "";
+
+      for (let i = 0; i < bomsxtable.length; i++) {
+        total_lieuql_sx += Number(bomsxtable[i].LIEUQL_SX ?? 0);
+        if ((bomsxtable[i].LIEUQL_SX ?? 0) > 1) check_lieu_qlsx_khac1 += 1;
+      }
+
+      for (let i = 0; i < bomsxtable.length; i++) {
+        if (bomsxtable[i].LIEUQL_SX === 1) {
+          for (let j = 0; j < bomsxtable.length; j++) {
+            if (bomsxtable[j].M_NAME === bomsxtable[i].M_NAME && (bomsxtable[j].LIEUQL_SX ?? 0) === 0) {
+              check_lieuql_sx_sot += 1;
+            }
+          }
+        }
+      }
+
+      for (let i = 0; i < bomsxtable.length; i++) {
+        if (bomsxtable[i].LIEUQL_SX === 1) {
+          for (let j = 0; j < bomsxtable.length; j++) {
+            if ((bomsxtable[j].LIEUQL_SX ?? 0) === 1 && bomsxtable[i].M_NAME !== bomsxtable[j].M_NAME) {
+              check_num_lieuql_sx = 2;
+            }
+          }
+        }
+      }
+
+      for (let i = 0; i < bomsxtable.length - 1; i++) {
+        m_list += `'${bomsxtable[i].M_CODE}',`;
+      }
+      m_list += `'${bomsxtable[bomsxtable.length - 1].M_CODE}'`;
+
+      if (
+        total_lieuql_sx <= 0 ||
+        check_lieuql_sx_sot !== 0 ||
+        check_num_lieuql_sx !== 1 ||
+        check_lieu_qlsx_khac1 !== 0
+      ) {
+        err_code += " | Check lại liệu quản lý (liệu chính)";
+      }
+
+      if (err_code === "0") {
+        await generalQuery("deleteM140_2", {
+          G_CODE: codefullinfo.G_CODE,
+          M_LIST: m_list,
+        });
+
+        let max_g_seq = "001";
+        const seqRes = await generalQuery("checkGSEQ_M140", { G_CODE: codefullinfo.G_CODE });
+        if (seqRes.data?.tk_status !== "NG" && seqRes.data?.data?.[0]?.MAX_G_SEQ) {
+          max_g_seq = seqRes.data.data[0].MAX_G_SEQ;
+        }
+
+        for (let i = 0; i < bomsxtable.length; i++) {
+          const row = bomsxtable[i];
+          const checkMCodeRes = await generalQuery("check_m_code_m140", {
+            G_CODE: codefullinfo.G_CODE,
+            M_CODE: row.M_CODE,
+          });
+          const exists = checkMCodeRes.data?.tk_status !== "NG";
+
+          if (exists) {
+            await generalQuery("update_M140", {
+              G_CODE: codefullinfo.G_CODE,
+              M_CODE: row.M_CODE,
+              M_QTY: row.M_QTY,
+              MAIN_M: row.MAIN_M ?? "0",
+              LIEUQL_SX: row.LIEUQL_SX ?? 0,
+            });
+          } else {
+            await generalQuery("insertM140", {
+              G_CODE: codefullinfo.G_CODE,
+              G_SEQ: zeroPad(parseInt(max_g_seq, 10) + i + 1, 3),
+              M_CODE: row.M_CODE,
+              M_QTY: row.M_QTY,
+              MAIN_M: row.MAIN_M ?? "0",
+              LIEUQL_SX: row.LIEUQL_SX ?? 0,
+            });
+          }
+        }
+        Swal.fire("Thành công", "Đã lưu BOM Sản Xuất thành công!", "success");
+      } else {
+        Swal.fire("Thông báo", String(err_code), "error");
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Lỗi", "Không thể lưu BOM Sản Xuất", "error");
+    }
+  };
+
+  const handleInsertBOMSX_WITH_GIA = async () => {
+    if (bomsxtable.length > 0) {
+      Swal.fire(
+        "Thông báo",
+        "Code đã có BOM SX, chỉ lưu lại BOM giá mà không lưu thêm BOM SX nữa",
+        "warning"
+      );
+      return;
+    }
+
+    if (bomgiatable.length === 0) {
+      Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
+      return;
+    }
+
+    await generalQuery("deleteM140", { G_CODE: codefullinfo.G_CODE });
+
+    for (let i = 0; i < bomgiatable.length; i++) {
+      await generalQuery("insertM140", {
+        G_CODE: codefullinfo.G_CODE,
+        G_SEQ: zeroPad(i + 1, 3),
+        M_CODE: bomgiatable[i].M_CODE,
+        M_QTY: bomgiatable[i].M_QTY,
+        MAIN_M: bomgiatable[i].MAIN_M,
+        LIEUQL_SX: bomgiatable[i].MAIN_M ?? 0,
+      });
+    }
+  };
+
+  const handleInsertBOMGIA = async () => {
+    if (bomgiatable.length === 0) {
+      Swal.fire("Thông báo", "Thêm ít nhất 1 liệu để lưu BOM", "warning");
+      return;
+    }
+
+    let err_code = "0";
+    let checkMAIN_M = 0;
+    let isCodeMassProd = false;
+    let isNewCode = true;
+    let total_lieuql_sx = 0;
+    let check_lieuql_sx_sot = 0;
+    let check_num_lieuql_sx = 1;
+    let check_lieu_qlsx_khac1 = 0;
+    let checkusageMain = 0;
+    let m_list = "";
+
+    for (let i = 0; i < bomgiatable.length - 1; i++) {
+      m_list += `'${bomgiatable[i].M_CODE}',`;
+    }
+    m_list += `'${bomgiatable[bomgiatable.length - 1].M_CODE}'`;
+
+    for (let i = 0; i < bomgiatable.length; i++) {
+      checkusageMain += bomgiatable[i].USAGE?.toUpperCase() === "MAIN" ? 1 : 0;
+    }
+
+    for (let i = 0; i < bomgiatable.length; i++) {
+      total_lieuql_sx += Number(bomgiatable[i].MAIN_M ?? 0);
+      if ((bomgiatable[i].MAIN_M ?? 0) > 1) check_lieu_qlsx_khac1 += 1;
+    }
+
+    for (let i = 0; i < bomgiatable.length; i++) {
+      if (bomgiatable[i].MAIN_M === 1) {
+        for (let j = 0; j < bomgiatable.length; j++) {
+          if (bomgiatable[j].M_NAME === bomgiatable[i].M_NAME && (bomgiatable[j].MAIN_M ?? 0) === 0) {
+            check_lieuql_sx_sot += 1;
+          }
+        }
+      }
+    }
+
+    for (let i = 0; i < bomgiatable.length; i++) {
+      if ((bomgiatable[i].MAIN_M ?? 0) === 1) {
+        for (let j = 0; j < bomgiatable.length; j++) {
+          if ((bomgiatable[j].MAIN_M ?? 0) === 1 && bomgiatable[i].M_NAME !== bomgiatable[j].M_NAME) {
+            check_num_lieuql_sx = 2;
+          }
+        }
+      }
+    }
+
+    const massCheckRes = await generalQuery("checkMassG_CODE", { G_CODE: codefullinfo.G_CODE });
+    if (massCheckRes.data?.tk_status !== "NG") {
+      isCodeMassProd = true;
+      isNewCode = Number(massCheckRes.data.data[0].PROD_REQUEST_DATE ?? 0) <= 20250112 || userData?.EMPL_NO === "NHU1903";
+    }
+
+    for (let i = 0; i < bomgiatable.length; i++) {
+      checkMAIN_M += Number(bomgiatable[i].MAIN_M ?? 0);
+      if (
+        bomgiatable[i].CUST_CD === "" ||
+        bomgiatable[i].USAGE === "" ||
+        bomgiatable[i].MAT_MASTER_WIDTH === 0 ||
+        bomgiatable[i].MAT_ROLL_LENGTH === 0
+      ) {
+        err_code = "Không được để ô nào NG màu đỏ";
+      }
+    }
+
+    if (total_lieuql_sx <= 0 || check_lieuql_sx_sot !== 0 || check_num_lieuql_sx !== 1 || check_lieu_qlsx_khac1 !== 0) {
+      err_code += " | Check lại liệu quản lý (liệu chính)";
+    }
+
+    if (checkusageMain === 0) {
+      err_code += "_Cột USAGE chưa chỉ định liệu MAIN, hãy viết MAIN vào ô tương ứng";
+    }
+
+    if (getCompany() === "CMS" && !isNewCode) {
+      err_code += "_ Code đã YCSX mass sau 24/08/2024, không thể sửa BOM";
+    }
+
+    if (checkMAIN_M === 0) {
+      err_code += "_ Phải chỉ định liệu quản lý";
+    }
+
+    if (err_code === "0") {
+      await generalQuery("deleteBOM2", { G_CODE: codefullinfo.G_CODE });
+
+      for (let i = 0; i < bomgiatable.length; i++) {
+        await generalQuery("insertBOM2", {
+          G_CODE: codefullinfo.G_CODE,
+          G_SEQ: zeroPad(i + 1, 3),
+          M_CODE: bomgiatable[i].M_CODE,
+          M_NAME: bomgiatable[i].M_NAME,
+          CUST_CD: bomgiatable[i].CUST_CD,
+          USAGE: bomgiatable[i].USAGE,
+          MAIN_M: bomgiatable[i].MAIN_M,
+          M_CMS_PRICE: bomgiatable[i].M_CMS_PRICE,
+          M_SS_PRICE: bomgiatable[i].M_SS_PRICE,
+          M_SLITTING_PRICE: bomgiatable[i].M_SLITTING_PRICE,
+          MAT_MASTER_WIDTH: bomgiatable[i].MAT_MASTER_WIDTH,
+          MAT_CUTWIDTH: bomgiatable[i].MAT_CUTWIDTH,
+          MAT_ROLL_LENGTH: bomgiatable[i].MAT_ROLL_LENGTH,
+          MAT_THICKNESS: bomgiatable[i].MAT_THICKNESS,
+          M_QTY: bomgiatable[i].M_QTY,
+          PROCESS_ORDER: bomgiatable[i].PROCESS_ORDER,
+          REMARK: bomgiatable[i].REMARK,
+        });
+      }
+
+      await handleInsertBOMSX_WITH_GIA();
+      confirmUpdateBOMTBG();
+      Swal.fire("Thành công", "Đã lưu BOM Giá Thành thành công!", "success");
+    } else {
+      Swal.fire("Thông báo", err_code, "error");
+    }
+  };
+
+  const confirmUpdateBOMTBG = () => {
+    Swal.fire({
+      title: "Bạn có muốn update bom sản phẩm trong tính báo giá ?",
+      text: "Update thông tin báo giá",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Vẫn Update!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Tiến hành Update Thông tin", "Đang Update bom tính báo giá", "success");
       }
     });
   };
@@ -243,22 +814,7 @@ export const useBOMManagerActions = ({
       cancelButtonText: "Hủy",
     }).then((res) => {
       if (res.isConfirmed) {
-        checkBP(userData, ["RND", "QLSX", "KD"], ["ALL"], ["ALL"], async () => {
-          try {
-            await generalQuery("deleteM140", { G_CODE: codefullinfo.G_CODE });
-            for (let i = 0; i < bomsxtable.length; i++) {
-              await generalQuery("insertBOMSX", {
-                ...bomsxtable[i],
-                G_CODE: codefullinfo.G_CODE,
-                G_SEQ: zeroPad(i + 1, 3),
-              });
-            }
-            Swal.fire("Thành công", "Đã lưu BOM Sản Xuất thành công!", "success");
-          } catch (err) {
-            console.error(err);
-            Swal.fire("Lỗi", "Không thể lưu BOM Sản Xuất", "error");
-          }
-        });
+        checkBP(userData, ["RND", "QLSX", "KD"], ["ALL"], ["ALL"], handleInsertBOMSX);
       }
     });
   };
@@ -266,7 +822,7 @@ export const useBOMManagerActions = ({
   // Lưu BOM Giá Thành
   const confirmSaveBOMGIA = () => {
     if (bomgiatable.length === 0) {
-      Swal.fire("Cảnh báo", "BOM Giá phải có ít nhất 1 vật liệu", "warning");
+      Swal.fire("Cảnh báo", "BOM Giá phải có ít least 1 vật liệu", "warning");
       return;
     }
     Swal.fire({
@@ -277,22 +833,7 @@ export const useBOMManagerActions = ({
       cancelButtonText: "Hủy",
     }).then((res) => {
       if (res.isConfirmed) {
-        checkBP(userData, ["RND", "QLSX", "KD"], ["ALL"], ["ALL"], async () => {
-          try {
-            await generalQuery("deleteM140Gia", { G_CODE: codefullinfo.G_CODE });
-            for (let i = 0; i < bomgiatable.length; i++) {
-              await generalQuery("insertBOMGIA", {
-                ...bomgiatable[i],
-                G_CODE: codefullinfo.G_CODE,
-                G_SEQ: zeroPad(i + 1, 3),
-              });
-            }
-            Swal.fire("Thành công", "Đã lưu BOM Giá Thành thành công!", "success");
-          } catch (err) {
-            console.error(err);
-            Swal.fire("Lỗi", "Không thể lưu BOM Giá Thành", "error");
-          }
-        });
+        checkBP(userData, ["RND", "QLSX", "KD"], ["ALL"], ["ALL"], handleInsertBOMGIA);
       }
     });
   };

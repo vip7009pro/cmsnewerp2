@@ -15,6 +15,74 @@
   box-sizing: border-box;
   overflow-y: auto;
 
+  // MUI poppers render under body, so these rules intentionally stay global.
+  .product-autocomplete-popper,
+  .material-autocomplete-popper {
+    width: 360px !important;
+    max-width: min(360px, calc(100vw - 24px));
+    z-index: 130000 !important;
+  }
+
+  .product-autocomplete-paper,
+  .material-autocomplete-paper {
+    margin-top: 3px;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16);
+    overflow: hidden;
+  }
+
+  .product-autocomplete-list,
+  .material-autocomplete-list {
+    padding: 3px 0;
+    max-height: 280px;
+
+    .MuiAutocomplete-option {
+      min-height: 28px;
+      padding: 4px 10px;
+      font-size: 11px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .product-autocomplete,
+  .material-autocomplete {
+    min-width: 0;
+
+    .MuiAutocomplete-inputRoot {
+      min-height: 24px;
+      padding: 1px 26px 1px 6px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      background: #ffffff;
+    }
+
+    .MuiAutocomplete-input {
+      min-width: 0 !important;
+      padding: 2px 0 !important;
+      font-size: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .MuiAutocomplete-endAdornment {
+      right: 3px;
+    }
+  }
+
+  .material-autocomplete {
+    width: 360px;
+    max-width: 100%;
+
+    .MuiAutocomplete-inputRoot {
+      min-height: 28px;
+    }
+  }
+
   // Global reset for inner elements
   * {
     box-sizing: border-box;
@@ -289,9 +357,9 @@
 
   // ================= LEFT SIDEBAR (280px) =================
   &__sidebar {
-    width: 290px;
-    min-width: 290px;
-    max-width: 290px;
+    width: 350px;
+    min-width: 350px;
+    max-width: 350px;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -407,15 +475,17 @@
         gap: 4px;
 
         .btn-action {
-          height: 28px;
+          height: 24px;
+          min-width: 0;
+          padding: 0 4px;
           border: none;
           border-radius: 4px;
-          font-size: 11px;
+          font-size: 9px;
           font-weight: 700;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          gap: 3px;
+          gap: 2px;
           cursor: pointer;
           transition: transform 0.05s ease, background 0.15s ease;
           user-select: none;
@@ -463,11 +533,11 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        font-size: 10px;
+        font-size: 9px;
         background: #f8fafc;
         border: 1px solid #e2e8f0;
         border-radius: 4px;
-        padding: 3px 6px;
+        padding: 2px 5px;
 
         .tool-link {
           color: #2563eb;
@@ -476,6 +546,8 @@
           background: none;
           border: none;
           padding: 0;
+          font-size: 9px;
+          line-height: 18px;
           display: inline-flex;
           align-items: center;
           gap: 2px;
@@ -500,12 +572,13 @@
         .export-group {
           display: flex;
           align-items: center;
-          gap: 4px;
+          gap: 3px;
           font-weight: 800;
 
           .chip-export {
             cursor: pointer;
-            padding: 1px 4px;
+            padding: 1px 3px;
+            font-size: 9px;
             border-radius: 3px;
 
             &--green {
@@ -540,10 +613,25 @@
 
     // Product Visualizer & Drawing Box
     .visualizer-card {
-      padding: 6px;
+      min-height: 185px;
+      padding: 8px;
       background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
+      overflow: hidden;
+
+      > * {
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      canvas,
+      svg,
+      img {
+        display: block;
+        max-width: 100% !important;
+        height: auto;
+      }
 
       .drawing-link-bar {
         display: flex;
@@ -714,7 +802,8 @@
               font-size: 10px;
               color: #0f172a;
               background: #ffffff;
-              max-width: 110px;
+              width: 118px;
+              max-width: 118px;
               text-align: right;
 
               &:focus {
@@ -756,11 +845,36 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 5px;
             font-size: 10px;
 
             input[type="file"] {
-              max-width: 90px;
+              width: 150px;
+              max-width: 100%;
+              min-width: 0;
+              padding: 2px;
+              border: 1px solid #cbd5e1;
+              border-radius: 4px;
+              background: #f8fafc;
+              color: #475569;
               font-size: 9px;
+              cursor: pointer;
+
+              &::file-selector-button {
+                margin-right: 5px;
+                padding: 3px 7px;
+                border: 0;
+                border-radius: 3px;
+                background: #2563eb;
+                color: #ffffff;
+                font-size: 9px;
+                font-weight: 700;
+                cursor: pointer;
+              }
+
+              &:hover::file-selector-button {
+                background: #1d4ed8;
+              }
             }
 
             .btn-mini-upload {
@@ -925,6 +1039,10 @@
         align-items: center;
         gap: 8px;
         flex-wrap: wrap;
+
+        .material-autocomplete {
+          flex: 0 1 360px;
+        }
 
         .mat-selector-label {
           font-size: 11px;
@@ -1427,6 +1545,39 @@
         }
       }
     }
+  }
+}
+
+// Autocomplete poppers are portaled to body by MUI.
+body .product-autocomplete-popper,
+body .material-autocomplete-popper {
+  width: 360px !important;
+  max-width: calc(100vw - 24px);
+  z-index: 130000 !important;
+}
+
+body .product-autocomplete-paper,
+body .material-autocomplete-paper {
+  margin-top: 3px;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16);
+  overflow: hidden;
+}
+
+body .product-autocomplete-list,
+body .material-autocomplete-list {
+  padding: 3px 0;
+  max-height: 280px;
+
+  .MuiAutocomplete-option {
+    min-height: 28px;
+    padding: 4px 10px;
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

@@ -44,6 +44,7 @@ interface PrecisionBOMSpecGridProps {
   showHideTemLot: boolean;
   onToggleTemLot: () => void;
   onPrintTemLot: () => void;
+  showProcessGrid: boolean;
 }
 
 const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
@@ -69,6 +70,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
   showHideTemLot,
   onToggleTemLot,
   onPrintTemLot,
+  showProcessGrid,
 }) => {
   return (
     <div className="precision-bom__spec-container">
@@ -105,6 +107,12 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                   size="small"
                   options={customerList}
                   filterOptions={filterOptions1}
+                  className="product-autocomplete product-autocomplete--customer"
+                  componentsProps={{
+                    popper: { className: "product-autocomplete-popper" },
+                    paper: { className: "product-autocomplete-paper" },
+                  }}
+                  ListboxProps={{ className: "product-autocomplete-list" }}
                   getOptionLabel={(opt: any) => `${opt.CUST_NAME_KD || ""}${opt.CUST_CD || ""}`}
                   isOptionEqualToValue={(opt: any, val: any) => opt.CUST_CD === val?.CUST_CD}
                   value={customerList.find((c) => c.CUST_CD === codeFullInfo?.CUST_CD) || null}
@@ -194,6 +202,12 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                   size="small"
                   options={masterMaterialList}
                   filterOptions={filterOptions1}
+                  className="product-autocomplete product-autocomplete--master-material"
+                  componentsProps={{
+                    popper: { className: "product-autocomplete-popper" },
+                    paper: { className: "product-autocomplete-paper" },
+                  }}
+                  ListboxProps={{ className: "product-autocomplete-list" }}
                   getOptionLabel={(opt: any) => `${opt.M_NAME || ""}`}
                   isOptionEqualToValue={(opt: any, val: any) => opt.M_NAME === val.M_NAME}
                   value={
@@ -219,6 +233,16 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                       {`${option.M_NAME} | HSD: ${option.EXP_DATE ?? 0}T`}
                     </li>
                   )}
+                />
+              </div>
+              <div className="spec-row">
+                <span className="field-label">Code RnD:</span>
+                <input
+                  className="field-input"
+                  disabled={enableform}
+                  type="text"
+                  value={codeFullInfo?.G_NAME ?? ""}
+                  onChange={(e) => handleSetCodeInfo("G_NAME", e.target.value)}
                 />
               </div>
               <div className="spec-row">
@@ -313,7 +337,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
               </div>
               <div className="spec-row">
                 <span className="field-label">Liner T/P:</span>
-                <div style={{ display: "flex", gap: "2px", maxWidth: "115px" }}>
+                <div style={{ display: "flex", gap: "5px", maxWidth: "115px" }}>
                   <input
                     className="field-input"
                     style={{ width: "55px" }}
@@ -375,6 +399,16 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                   type="number"
                   value={codeFullInfo?.KNIFE_LIFECYCLE ?? 70000}
                   onChange={(e) => handleSetCodeInfo("KNIFE_LIFECYCLE", Number(e.target.value))}
+                />
+              </div>
+              <div className="spec-row">
+                <span className="field-label">Đơn giá dao:</span>
+                <input
+                  className="field-input"
+                  disabled={enableform}
+                  type="number"
+                  value={codeFullInfo?.KNIFE_PRICE ?? 0}
+                  onChange={(e) => handleSetCodeInfo("KNIFE_PRICE", Number(e.target.value))}
                 />
               </div>
               <div className="spec-row">
@@ -550,7 +584,11 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                     style={{ width: "60px" }}
                     disabled={enableform}
                     value={codeFullInfo?.FSC ?? "N"}
-                    onChange={(e) => handleSetCodeInfo("FSC", e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      handleSetCodeInfo("FSC", value);
+                      if (value === "N") handleSetCodeInfo("FSC_CODE", "01");
+                    }}
                   >
                     <option value="Y">FSC</option>
                     <option value="N">K-FSC</option>
@@ -577,6 +615,21 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                   value={codeFullInfo?.REMK ?? ""}
                   onChange={(e) => handleSetCodeInfo("REMK", e.target.value)}
                 />
+              </div>
+              <div className="spec-row">
+                <span className="field-label">Loại FSC:</span>
+                <select
+                  className="field-input"
+                  disabled={enableform || codeFullInfo?.FSC === "N"}
+                  value={codeFullInfo?.FSC_CODE ?? "01"}
+                  onChange={(e) => handleSetCodeInfo("FSC_CODE", e.target.value)}
+                >
+                  {fscList.map((item) => (
+                    <option key={item.FSC_CODE} value={item.FSC_CODE}>
+                      {item.FSC_NAME}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="spec-row">
                 <span className="field-label">QL_HSD / HSD:</span>
@@ -639,16 +692,33 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 <div className="upload-btn-bar">
                   <span className="field-label">Up CAD:</span>
                   <input
+                    className="upload-file-input upload-file-input--cad"
                     type="file"
                     accept=".pdf"
                     disabled={enableform}
                     onChange={onUploadCAD}
                   />
                 </div>
+                <div className="spec-row">
+                  <span className="field-label">Tài liệu:</span>
+                  <span style={{ display: "flex", gap: 5, fontSize: 10 }}>
+                    {codeFullInfo?.G_CODE && (
+                      <a href={`/banve/${codeFullInfo.G_CODE}.pdf?v=${Date.now()}`} target="_blank" rel="noopener noreferrer">
+                        CAD
+                      </a>
+                    )}
+                    {company === "CMS" && codeFullInfo?.G_CODE && (
+                      <a href={`/appsheet/Appsheet_${codeFullInfo.G_CODE}.docx?v=${Date.now()}`} target="_blank" rel="noopener noreferrer">
+                        Appsheet
+                      </a>
+                    )}
+                  </span>
+                </div>
                 {company === "CMS" && (
                   <div className="upload-btn-bar">
                     <span className="field-label">Appsheet:</span>
                     <input
+                      className="upload-file-input upload-file-input--appsheet"
                       type="file"
                       accept=".docx"
                       disabled={enableform}
@@ -685,17 +755,19 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
         </div>
 
         {/* Bảng nhỏ AG Table: Máy & Công Đoạn (CD/EQ) */}
-        <PrecisionBOMProcessGrid
-          currentProcessList={currentProcessList}
-          machineList={machineList}
-          tempSelectedMachine={tempSelectedMachine}
-          setTempSelectedMachine={setTempSelectedMachine}
-          tempSelectedProcess={tempSelectedProcess}
-          onAddProcess={onAddProcess}
-          onDeleteProcess={onDeleteProcess}
-          onSaveProcess={onSaveProcess}
-          enableform={enableform}
-        />
+        {showProcessGrid && (
+          <PrecisionBOMProcessGrid
+            currentProcessList={currentProcessList}
+            machineList={machineList}
+            tempSelectedMachine={tempSelectedMachine}
+            setTempSelectedMachine={setTempSelectedMachine}
+            tempSelectedProcess={tempSelectedProcess}
+            onAddProcess={onAddProcess}
+            onDeleteProcess={onDeleteProcess}
+            onSaveProcess={onSaveProcess}
+            enableform={enableform}
+          />
+        )}
       </div>
     </div>
   );

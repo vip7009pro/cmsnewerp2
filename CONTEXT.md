@@ -1,5 +1,41 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (BOM MANAGER: Thu gọn sidebar và chống cache bản vẽ CAD)
+- Giảm chiều cao, font và padding của các nút `ADD`, `ADD VER`, `UP LOẠT`, `UPDATE`, `CLEAR FORM` và nhóm quick tools trong sidebar.
+- Tăng sidebar BOM lên `350px` để hiển thị danh sách mã rộng hơn.
+- Link `CAD Drawing` dùng query `?v=${Date.now()}` để trình duyệt luôn tải bản vẽ mới nhất.
+- Diagnostics hai file liên quan sạch và `npm run build` hoàn tất thành công.
+
+## Update - 2026-09-19 (BOM MANAGER: Tối ưu giao diện form, dropdown và visualizer)
+- Thêm `/public/` vào `.gitignore` để bỏ qua thư mục public của web.
+- Tối ưu Autocomplete khách hàng, VL chính và chọn VL trước khi thêm dòng: input compact, popup rộng 360px, item một dòng, ellipsis và giới hạn chiều cao danh sách.
+- Tăng nhẹ width sidebar/danh sách mã BOM, tăng vùng visualizer và khóa overflow để hình vẽ không chờm sang khu vực thông tin sản phẩm/BOM.
+- Style lại input upload CAD/Appsheet bằng nút chọn file compact; giữ nguyên callback upload hiện tại.
+- Khối Công Đoạn & Máy chỉ render khi `EMPL_NO === "NHU1903"`; logic xử lý process không thay đổi.
+- Đã kiểm tra diagnostics các file BOM liên quan và chạy `npm run build` thành công.
+
+## Update - 2026-09-19 (BOM MANAGER: Đồng bộ form sản phẩm và cột BOM theo backup)
+- Bổ sung vào `PrecisionBOMSpecGrid`: trường `G_NAME`, `KNIFE_PRICE`, `FSC_CODE`, link CAD/Appsheet; giữ hành vi reset `FSC_CODE` về `01` khi FSC = `N`.
+- Đồng bộ `bomManagerColumns.tsx` với backup: BOM SX đủ 9 cột và width gốc; BOM giá đủ các cột `MAT_MASTER_WIDTH`, `MAT_CUTWIDTH`, `MAT_ROLL_LENGTH`, `M_QTY` cùng width gốc.
+- Đã kiểm tra diagnostics cho hai file UI không có lỗi và chạy lại `npm run build` thành công; vẫn có warning phụ từ `pdfjs-dist` về `eval`.
+
+## Update - 2026-09-19 (PATROL: Tối ưu thông tin card và vùng hiển thị ảnh)
+- EQ/Factory trong `PrecisionPatrolCard` được giới hạn một dòng, tự ellipsis khi nội dung dài.
+- NG rate chỉ hiển thị dạng `10/10 (100.0%)` ngay dưới dòng tên/khách hàng; đã bỏ nhãn và thanh progress để giảm chiều cao phần thông tin.
+- Vùng ảnh được tăng lên `220px`; avatar nhân viên neo sát góc trái trên của ảnh.
+- Đã chạy `npm run build` thành công; còn cảnh báo dependency `pdfjs-dist` sử dụng `eval`.
+
+## Update - 2026-09-19 (PATROL: Hiển thị đầy đủ ảnh sự cố trong card)
+- Đổi ảnh sự cố trong `PrecisionPatrolCard` từ `object-fit: cover` sang `object-fit: contain` để không bị cắt phần trên/dưới.
+- Giữ chiều cao khung ảnh ổn định và dùng nền sáng cho phần khoảng trống khi tỷ lệ ảnh khác tỷ lệ card.
+- Đã chạy `npm run build` thành công; còn cảnh báo dependency `pdfjs-dist` sử dụng `eval`.
+
+## Update - 2026-09-19 (PATROL: Ẩn lane rỗng, bỏ KPI và giữ theme sáng khi trình chiếu TV)
+- Chế độ Hàng ngang chỉ render các lane PQC3, DTC, INS có dữ liệu; lane rỗng được ẩn hoàn toàn, không còn header/body trống.
+- Đã bỏ 4 widget KPI realtime khỏi bố cục PATROL để tăng diện tích hiển thị trên TV.
+- Chế độ Trình chiếu TV vẫn dùng theme sáng, không chuyển sang nền tối khi bật fullscreen.
+- Đã chạy `npm run build` thành công; còn cảnh báo dependency `pdfjs-dist` sử dụng `eval`.
+
 ## Update - 2026-09-19 (AccountInfo: Khôi phục scroll nội dung hồ sơ)
 - `PrecisionAccountInfo` được chuyển thành scroll container có chiều cao giới hạn theo tab (`height: 100%`, `min-height: 0`, `overflow-y: auto`).
 - `precision-hub__content` được phép cao theo toàn bộ nội dung để dossier, timeline và admin tools không bị cắt.

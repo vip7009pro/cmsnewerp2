@@ -1,5 +1,17 @@
 # Roadmap - cmsnewerp2
 
+- [x] BOM MANAGER: Thu gọn nút sidebar, tăng width sidebar và thêm cache-busting cho link CAD Drawing; diagnostics/build thành công.
+
+- [x] BOM MANAGER: Tối ưu form sản phẩm, Autocomplete, upload CAD/Appsheet, width danh sách mã, visualizer overflow và ẩn khối CD/EQ với nhân viên không phải NHU1903; build thành công.
+
+- [x] BOM MANAGER: Bổ sung đầy đủ trường thông tin sản phẩm và đồng bộ cột/column width của BOM SX, BOM giá theo `BOM_MANAGER.backup.tsx`; diagnostics sạch và production build thành công.
+
+- [x] PATROL: Tối ưu card sự cố: EQ/Factory một dòng, NG rate compact dưới tên khách hàng, tăng vùng ảnh và neo avatar góc trái trên.
+
+- [x] PATROL: Sửa card ảnh sự cố dùng `object-fit: contain`, hiển thị đầy đủ ảnh không bị cắt trên/dưới.
+
+- [x] PATROL: Ẩn lane Hàng ngang không có dữ liệu, bỏ 4 widget KPI và giữ theme sáng khi bật Trình chiếu TV.
+
 - [x] Khôi phục scroll cho AccountInfo khi nội dung hồ sơ vượt quá chiều cao viewport.
 
 - [x] Ổn định chiều cao AGTable trên LAN/WAN bằng layout height chain và chống cache entrypoint Apache/XAMPP.

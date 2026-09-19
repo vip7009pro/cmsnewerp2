@@ -16,6 +16,10 @@ export const PrecisionPatrolLane: React.FC<PrecisionPatrolLaneProps> = ({
   items,
   onOpenModal,
 }) => {
+  if (items.length === 0) {
+    return null;
+  }
+
   const badgeClass =
     category === "PQC3" ? "pqc" : category === "DTC" ? "dtc" : "ins";
 
@@ -34,21 +38,15 @@ export const PrecisionPatrolLane: React.FC<PrecisionPatrolLaneProps> = ({
       </div>
 
       <div className="patrol-lane__body">
-        {items.length === 0 ? (
-          <div className="empty-state">
-            Không có sự cố phát sinh nào trong khoảng thời gian này
-          </div>
-        ) : (
-          <div className="cards-track">
-            {items.map((item, index) => (
-              <PrecisionPatrolCard
-                key={`${category}_${index}`}
-                data={item}
-                onOpenModal={onOpenModal}
-              />
-            ))}
-          </div>
-        )}
+        <div className="cards-track">
+          {items.map((item, index) => (
+            <PrecisionPatrolCard
+              key={`${category}_${index}`}
+              data={item}
+              onOpenModal={onOpenModal}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

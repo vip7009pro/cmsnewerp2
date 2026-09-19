@@ -4,7 +4,7 @@ export const getColumnBOMSX = (enableEdit: boolean) => [
   {
     field: "M_CODE",
     headerName: "M_CODE",
-    width: 85,
+    width: 80,
     headerCheckboxSelection: true,
     checkboxSelection: true,
     editable: enableEdit,
@@ -17,7 +17,7 @@ export const getColumnBOMSX = (enableEdit: boolean) => [
   {
     field: "M_NAME",
     headerName: "M_NAME",
-    width: 140,
+    width: 110,
     editable: enableEdit,
     cellRenderer: (params: any) => (
       <span style={{ fontWeight: 600, color: "#0f172a" }}>{params.data?.M_NAME}</span>
@@ -25,7 +25,7 @@ export const getColumnBOMSX = (enableEdit: boolean) => [
   },
   {
     field: "WIDTH_CD",
-    headerName: "SIZE (mm)",
+    headerName: "SIZE",
     width: 80,
     editable: enableEdit,
     cellRenderer: (params: any) => (
@@ -37,7 +37,7 @@ export const getColumnBOMSX = (enableEdit: boolean) => [
   {
     field: "M_QTY",
     headerName: "M_QTY",
-    width: 70,
+    width: 80,
     editable: enableEdit,
     cellRenderer: (params: any) => (
       <span style={{ fontWeight: 700, textAlign: "center", display: "block" }}>
@@ -47,7 +47,7 @@ export const getColumnBOMSX = (enableEdit: boolean) => [
   },
   {
     field: "LIEUQL_SX",
-    headerName: "LIỆU_QL",
+    headerName: "LIEUQL_SX",
     width: 80,
     editable: enableEdit,
     cellRenderer: (params: any) => {
@@ -70,16 +70,16 @@ export const getColumnBOMSX = (enableEdit: boolean) => [
     },
   },
   { field: "INS_EMPL", headerName: "INS_EMPL", width: 80, editable: enableEdit },
-  { field: "INS_DATE", headerName: "INS_DATE", width: 130, editable: enableEdit },
+  { field: "INS_DATE", headerName: "INS_DATE", width: 150, editable: enableEdit },
   { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 80, editable: enableEdit },
-  { field: "UPD_DATE", headerName: "UPD_DATE", width: 130, editable: enableEdit },
+  { field: "UPD_DATE", headerName: "UPD_DATE", width: 150, editable: enableEdit },
 ];
 
 export const getColumnBOMGIA = (enableEdit: boolean) => [
   {
     field: "M_CODE",
     headerName: "M_CODE",
-    width: 85,
+    width: 80,
     headerCheckboxSelection: true,
     checkboxSelection: true,
     editable: enableEdit,
@@ -101,7 +101,7 @@ export const getColumnBOMGIA = (enableEdit: boolean) => [
   {
     field: "M_NAME",
     headerName: "M_NAME",
-    width: 140,
+    width: 150,
     editable: enableEdit,
     cellRenderer: (params: any) => (
       <span style={{ fontWeight: 600, color: "#0f172a" }}>{params.data?.M_NAME}</span>
@@ -110,7 +110,7 @@ export const getColumnBOMGIA = (enableEdit: boolean) => [
   {
     field: "CUST_CD",
     headerName: "Vendor",
-    width: 75,
+    width: 80,
     editable: enableEdit,
     cellRenderer: (params: any) => {
       if (!params.data?.CUST_CD) {
@@ -122,7 +122,7 @@ export const getColumnBOMGIA = (enableEdit: boolean) => [
   {
     field: "USAGE",
     headerName: "USAGE",
-    width: 75,
+    width: 80,
     editable: enableEdit,
     cellRenderer: (params: any) => {
       if (!params.data?.USAGE) {
@@ -133,8 +133,8 @@ export const getColumnBOMGIA = (enableEdit: boolean) => [
   },
   {
     field: "MAIN_M",
-    headerName: "MAIN",
-    width: 65,
+    headerName: "MAIN_M",
+    width: 80,
     editable: enableEdit,
     cellRenderer: (params: any) => {
       const isMain = params.data?.MAIN_M === 1 || params.data?.MAIN_M === "1";
@@ -154,9 +154,20 @@ export const getColumnBOMGIA = (enableEdit: boolean) => [
     },
   },
   {
+    field: "MAT_MASTER_WIDTH",
+    headerName: "Khổ liệu",
+    width: 80,
+    editable: enableEdit,
+    cellRenderer: (params: any) => (
+      <span style={{ fontFamily: "JetBrains Mono, monospace", textAlign: "right", display: "block" }}>
+        {params.data?.MAT_MASTER_WIDTH === 0 ? "NG" : params.data?.MAT_MASTER_WIDTH}
+      </span>
+    ),
+  },
+  {
     field: "MAT_CUTWIDTH",
     headerName: "Khổ SD",
-    width: 75,
+    width: 80,
     editable: enableEdit,
     cellRenderer: (params: any) => (
       <span style={{ fontFamily: "JetBrains Mono, monospace", textAlign: "right", display: "block" }}>
@@ -165,18 +176,19 @@ export const getColumnBOMGIA = (enableEdit: boolean) => [
     ),
   },
   {
-    field: "M_CMS_PRICE",
-    headerName: "Đơn Giá ($)",
-    width: 85,
+    field: "MAT_ROLL_LENGTH",
+    headerName: "Dài liệu",
+    width: 110,
     editable: enableEdit,
     cellRenderer: (params: any) => (
-      <span style={{ fontFamily: "JetBrains Mono, monospace", fontWeight: 700, color: "#059669", textAlign: "right", display: "block" }}>
-        ${params.data?.M_CMS_PRICE?.toFixed(4) || "0.0000"}
+      <span style={{ fontFamily: "JetBrains Mono, monospace", textAlign: "right", display: "block" }}>
+        {params.data?.MAT_ROLL_LENGTH === 0 ? "NG" : params.data?.MAT_ROLL_LENGTH}
       </span>
     ),
   },
-  { field: "REMARK", headerName: "REMARK", width: 90, editable: enableEdit },
-  { field: "PROCESS_ORDER", headerName: "Thứ tự", width: 65, editable: enableEdit },
+  { field: "M_QTY", headerName: "M_QTY", width: 80, editable: enableEdit },
+  { field: "REMARK", headerName: "REMARK", width: 80, editable: enableEdit },
+  { field: "PROCESS_ORDER", headerName: "Thứ tự", width: 80, editable: enableEdit },
 ];
 
 export const getColumnCodeInfo = (enableEdit: boolean) => [

@@ -70,6 +70,12 @@ const PrecisionBOMDualTables: React.FC<PrecisionBOMDualTablesProps> = ({
           <Autocomplete
             size="small"
             options={materialList}
+            className="material-autocomplete"
+            componentsProps={{
+              popper: { className: "material-autocomplete-popper" },
+              paper: { className: "material-autocomplete-paper" },
+            }}
+            ListboxProps={{ className: "material-autocomplete-list" }}
             filterOptions={filterOptions1}
             getOptionLabel={(option: any) =>
               `${option.M_NAME || ""}|${option.WIDTH_CD || 0}|${option.M_CODE || ""}`
@@ -81,10 +87,10 @@ const PrecisionBOMDualTables: React.FC<PrecisionBOMDualTablesProps> = ({
               <TextField
                 {...params}
                 size="small"
-                placeholder="Gõ tìm tên, mã, khổ vật liệu..."
+                placeholder="Tìm tên, mã, khổ vật liệu..."
                 sx={{
-                  width: 320,
-                  "& .MuiInputBase-root": { height: 24, fontSize: 11, background: "#ffffff" },
+                  width: 360,
+                  "& .MuiInputBase-root": { height: 26, fontSize: 11, background: "#ffffff" },
                 }}
               />
             )}

@@ -23,112 +23,65 @@
     max-width: 100% !important;
     height: 100% !important;
     max-height: 100% !important;
-    flex: 1 1 auto;
+      height: 220px;
     min-height: 0;
   }
 
-  // --------------------------------------------------------------------------
-  // TV COMMAND CENTER FULLSCREEN MODE (Tối ưu cho TV xưởng & phòng họp)
-  // --------------------------------------------------------------------------
-  &.fullscreen {
-    position: fixed;
+        top: 0;
+        left: 0;
+        width: 34px;
+        height: 34px;
+        border-radius: 0 0 6px 0;
     top: 0;
-    left: 0;
+        border-right: 2px solid #ffffff;
+        border-bottom: 2px solid #ffffff;
     right: 0;
     bottom: 0;
     z-index: 99999;
-    background: #090d16;
-    color: #f8fafc;
-    width: 100vw;
+    background: #f1f5f9;
+    color: #1e293b;
+      padding: 5px 10px 6px;
     height: 100vh;
     padding: 10px 14px;
-    gap: 8px;
+      gap: 2px;
 
     .precision-patrol-header {
-      background: #0f172a;
-      border-color: #1e293b;
+      background: #ffffff;
+      border-color: #e2e8f0;
 
       &__left {
-        .breadcrumb-title {
-          color: #f8fafc;
-        }
-      }
-
-      &__right {
-        .btn-live,
-        .btn-action,
-        .btn-fullscreen {
-          background: #1e293b;
-          border-color: #334155;
-          color: #f8fafc;
-
-          &:hover {
-            background: #334155;
-          }
-        }
-
-        .date-input {
-          background: #1e293b;
-          border-color: #334155;
-          color: #f8fafc;
-        }
-      }
-    }
-
-    .precision-patrol-kpi {
-      &__card {
-        background: #0f172a;
-        border-color: #1e293b;
-
-        .kpi-value {
-          color: #f8fafc;
-        }
-      }
-    }
-
-    .precision-patrol-toolbar {
-      background: #0f172a;
-      border-color: #1e293b;
-
-      .segment-tab {
-        color: #94a3b8;
-        &.active {
-          background: #1e293b;
-          color: #38bdf8;
-        }
-      }
-    }
-
-    .patrol-lane {
-      background: #0f172a;
-      border-color: #1e293b;
-
-      &__header {
-        background: #131d33;
-        border-bottom-color: #1e293b;
+      .card-rate-value {
+        font-size: 10px;
+        font-weight: 800;
+        font-family: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        background: #f8fafc;
+        &.rate-green { color: #16a34a; }
+        &.rate-amber { color: #d97706; }
+        &.rate-red { color: #dc2626; }
+        border-bottom-color: #e2e8f0;
         .lane-title {
-          color: #38bdf8;
+          color: #0f172a;
         }
       }
     }
 
     .precision-patrol-card {
-      background: #131d33;
-      border-color: #1e293b;
+      background: #ffffff;
+      border-color: #e2e8f0;
 
       &:hover {
-        border-color: #38bdf8;
+        border-color: #93c5fd;
       }
 
       &__body {
         .card-code {
-          color: #f8fafc;
+          color: #0f172a;
         }
         .card-defect {
-          color: #fb7185;
+          color: #e11d48;
         }
         .rate-label {
-          color: #94a3b8;
+          color: #64748b;
         }
       }
     }
@@ -652,6 +605,11 @@
       border-bottom: 1px solid #f1f5f9;
       font-size: 10px;
 
+      > div:first-child {
+        min-width: 0;
+        flex: 1 1 auto;
+      }
+
       .tag-category {
         font-weight: 800;
         padding: 1px 5px;
@@ -665,6 +623,13 @@
       }
 
       .tag-eq {
+        display: inline-flex;
+        align-items: center;
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         font-family: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         font-weight: 700;
         color: #0284c7;
@@ -681,6 +646,7 @@
         font-weight: 700;
         color: #64748b;
         font-family: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        flex-shrink: 0;
 
         &.urgent {
           color: #e11d48;
@@ -699,14 +665,14 @@
       position: relative;
       width: 100%;
       height: 180px;
-      background: #0f172a;
+      background: #f8fafc;
       overflow: hidden;
       cursor: pointer;
 
       img.defect-img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
         transition: transform 0.25s ease;
 
         &:hover {

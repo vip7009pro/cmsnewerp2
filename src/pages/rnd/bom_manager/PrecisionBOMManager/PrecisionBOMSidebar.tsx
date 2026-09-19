@@ -250,7 +250,7 @@ const PrecisionBOMSidebar: React.FC<PrecisionBOMSidebarProps> = ({
               className="cad-link"
               target="_blank"
               rel="noopener noreferrer"
-              href={`/banve/${codeFullInfo.G_CODE}.pdf`}
+              href={`/banve/${codeFullInfo.G_CODE}.pdf?v=${Date.now()}`}
             >
               <FaFilePdf size={12} />
               <span>{codeFullInfo.G_CODE}.pdf</span>
