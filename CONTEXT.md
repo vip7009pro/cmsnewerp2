@@ -1,5 +1,12 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (BOM MANAGER: Cố định chiều cao sidebar và phóng to code banner)
+- Card danh sách code và card Code Visualizer trong sidebar dùng `flex: 1 1 0` để chia đều 50/50 phần chiều cao còn lại, không còn phụ thuộc nội dung visualizer.
+- Giới hạn visualizer bằng overflow và chiều cao nội bộ ổn định để hình không làm tràn sang khu vực khác.
+- `G_CODE` và `G_NAME` trong code banner được căn giữa, tăng kích thước hiển thị để dễ nhận biết.
+- Khôi phục `setIsCodeDetailLoading(true)` ở đầu thao tác chọn mã để loading overlay vẫn hoạt động đúng.
+- Diagnostics sạch và `npm run build` hoàn tất thành công.
+
 ## Update - 2026-09-19 (BOM MANAGER: Loading/blur khi tải danh sách và chi tiết mã)
 - Thêm loading indicator và blur cho card danh sách code khi chạy `codeinforRnD`.
 - Khi click row code, phủ nền tối + blur lên toàn bộ vùng thông tin sản phẩm và BOM cho đến khi hoàn tất các request thông tin mã, BOM SX, BOM giá và process.

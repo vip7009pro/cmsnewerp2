@@ -75,9 +75,14 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
   return (
     <div className="precision-bom__spec-container">
       {/* Current Code Banner & Update Telemetry */}
-      <div className="code-banner">
+      <div
+        className={`code-banner ${String(codeFullInfo?.USE_YN ?? "N").toUpperCase() === "Y"
+          ? "code-banner--active"
+          : "code-banner--inactive"
+          }`}
+      >
         <div className="left-identity">
-          <span className="badge-active-code">MÃ HIỆN HÀNH</span>
+          {/* <span className="badge-active-code">MÃ HIỆN HÀNH</span> */}
           <span className="code-primary">{codeFullInfo?.G_CODE || "CHƯA CHỌN MÃ"}</span>
           <span className="code-name">: {codeFullInfo?.G_NAME || codeFullInfo?.G_NAME_KD || "---"}</span>
         </div>

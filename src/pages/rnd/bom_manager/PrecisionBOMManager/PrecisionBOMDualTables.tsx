@@ -198,12 +198,12 @@ const PrecisionBOMDualTables: React.FC<PrecisionBOMDualTablesProps> = ({
           <div className="panel-table-wrap">{bomsxTableJSX}</div>
 
           {/* Panel Footer */}
-          <div className="panel-footer">
+         {/*  <div className="panel-footer">
             <span style={{ color: "#065f46" }}>
               ● Cấu trúc định mức kỹ thuật sản xuất
             </span>
             <span>Đã kiểm tra: 100% OK</span>
-          </div>
+          </div> */}
         </div>
 
         {/* ================= BẢNG PHẢI: BOM GIÁ THÀNH (COSTING) ================= */}
@@ -289,12 +289,12 @@ const PrecisionBOMDualTables: React.FC<PrecisionBOMDualTablesProps> = ({
           <div className="panel-table-wrap">{bomgiaTableJSX}</div>
 
           {/* Panel Footer */}
-          <div className="panel-footer">
+         {/*  <div className="panel-footer">
             <span style={{ color: "#3730a3" }}>
               ● Định mức chi phí và giá vốn NVL
             </span>
             <span>Biên an toàn: 18.5%</span>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

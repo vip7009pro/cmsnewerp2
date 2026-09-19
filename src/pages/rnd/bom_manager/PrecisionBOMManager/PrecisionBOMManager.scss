@@ -391,6 +391,8 @@
     width: 350px;
     min-width: 350px;
     max-width: 350px;
+    min-height: 0;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -627,8 +629,8 @@
 
     // High-Density Master Code List
     .code-list-card {
-      flex: 1;
-      min-height: 260px;
+      flex: 1 1 0;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -651,12 +653,26 @@
 
     // Product Visualizer & Drawing Box
     .visualizer-card {
-      min-height: 185px;
+      flex: 1 1 0;
+      min-height: 0;
       padding: 8px;
       background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .codevisualizecomponent {
+        flex: 1 1 auto;
+        width: 100% !important;
+        max-width: 100%;
+        height: calc(100% - 28px) !important;
+        min-height: 0;
+        max-height: calc(100% - 28px);
+        overflow: hidden;
+      }
 
       > * {
         max-width: 100%;
@@ -738,15 +754,29 @@
       padding: 8px 12px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
+      flex-direction: column;
       flex-wrap: wrap;
       gap: 6px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
+      &--active {
+        background: linear-gradient(90deg, #047857 0%, #059669 50%, #065f46 100%);
+        box-shadow: 0 2px 8px rgba(5, 150, 105, 0.28);
+      }
+
+      &--inactive {
+        background: linear-gradient(90deg, #b91c1c 0%, #dc2626 50%, #991b1b 100%);
+        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.28);
+      }
+
       .left-identity {
+        width: 100%;
+        justify-content: center;
         display: flex;
         align-items: center;
         gap: 8px;
+        flex-wrap: wrap;
 
         .badge-active-code {
           background: #2563eb;
@@ -761,19 +791,25 @@
 
         .code-primary {
           font-family: "Plus Jakarta Sans", sans-serif;
-          font-size: 16px;
+          font-size: 28px;
           font-weight: 800;
           color: #fbbf24;
+          line-height: 1.05;
         }
 
         .code-name {
-          font-size: 13px;
+          font-size: 30px;
           font-weight: 600;
           color: #ffffff;
+          line-height: 1.15;
+          text-align: center;
+          overflow-wrap: anywhere;
         }
       }
 
       .right-meta {
+        justify-content: center;
+        width: 100%;
         display: flex;
         align-items: center;
         gap: 8px;

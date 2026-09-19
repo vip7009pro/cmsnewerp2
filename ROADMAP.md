@@ -1,5 +1,7 @@
 # Roadmap - cmsnewerp2
 
+- [x] BOM MANAGER: Cố định list code/Code Visualizer chia 50/50, chống visualizer làm nhảy chiều cao, phóng to căn giữa G_CODE/G_NAME và giữ loading detail đúng trạng thái; build thành công.
+
 - [x] BOM MANAGER: Thêm loading indicator/blur tối cho list code và vùng thông tin sản phẩm/BOM khi tải sau click row, có request-id chống race condition; build thành công.
 
 - [x] BOM MANAGER: Khắc phục hiện tượng nháy bảng list code khi click row bằng cách ổn định callback identity, không delay state và không đổi logic tải dữ liệu; build thành công.
