@@ -1,5 +1,10 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (BOM MANAGER: Đổi màu code-banner theo trạng thái USE_YN)
+- `code-banner` dùng class động theo `USE_YN`: `Y` hiển thị gradient xanh active/mở, giá trị khác `Y` hiển thị gradient đỏ deactive/khóa.
+- Giữ nguyên nội dung, căn giữa và logic dữ liệu của banner.
+- Diagnostics sạch và `npm run build` hoàn tất thành công.
+
 ## Update - 2026-09-19 (BOM MANAGER: Cố định chiều cao sidebar và phóng to code banner)
 - Card danh sách code và card Code Visualizer trong sidebar dùng `flex: 1 1 0` để chia đều 50/50 phần chiều cao còn lại, không còn phụ thuộc nội dung visualizer.
 - Giới hạn visualizer bằng overflow và chiều cao nội bộ ổn định để hình không làm tràn sang khu vực khác.
