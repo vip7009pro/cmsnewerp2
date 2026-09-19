@@ -1,5 +1,21 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (INVOICE: Khôi phục hoàn chỉnh nesting SCSS)
+- Sửa tiếp lỗi `[sass] unmatched "}"` tại dòng 362 trong `PrecisionInvoiceManager.scss`.
+- Nguyên nhân là hai đoạn chèn chiều cao AG Grid bị đặt sai vị trí: một đoạn giữa nhóm KPI và một đoạn lồng dang dở trong `bulk-preview-title`.
+- Đã khôi phục cấu trúc `bulk-preview-title` và `bulk-preview-table` cân bằng; diagnostics sạch và production build thành công.
+
+## Update - 2026-09-19 (INVOICE: Sửa lỗi Sass preview bulk import)
+- Sửa lỗi runtime `[sass] expected "}"` trong `PrecisionInvoiceManager.scss` do block chiều cao AG Grid bị chèn nhầm vào selector `&__bulk-preview-title`.
+- Khôi phục nesting đúng: title chỉ chứa style chữ; `height/min-height` và selector AG Grid nằm trong `&__bulk-preview-table`.
+- `npm run build` chạy thành công sau khi sửa.
+
+## Update - 2026-09-19 (KD BULK IMPORT: Preview grid và template Excel)
+- Ổn định chiều cao bảng xem trước import hàng loạt ở PO, Invoice, Plan, FCST, YCSX và Amazon bằng wrapper/grid có `height` và `min-height` 360px, tránh trường hợp có rows nhưng AG Grid co về 0.
+- Bổ sung nút tải template cho PO, Invoice, FCST, YCSX và Amazon; Plan giữ template hiện có.
+- Template dùng đúng các header theo payload insert tương ứng: `insert_po`, `f_insertInvoice`, `insert_plan`, `insert_fcst`, `f_insertYCSX` và dữ liệu Amazon `DATA`.
+- Diagnostics các modal sạch và production build thành công; còn cảnh báo có sẵn từ `pdfjs-dist` về `eval`.
+
 ## Update - 2026-09-19 (PLAN DATATB: Đồng bộ parity và loading/progress)
 - Audit với bản gốc xác định sai lệch chính: `Lưu PLAN` refactor bypass `checkBP`; đã khôi phục handler có quyền QLSX.
 - Khi tải lại plan, reset `readyRender` để không giữ trạng thái render cũ trong lúc request mới chạy.

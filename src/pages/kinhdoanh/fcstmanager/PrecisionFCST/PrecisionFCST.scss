@@ -1031,12 +1031,24 @@ $pf-radius: 4px;
 
   &__excelGrid {
     flex: 1;
-    min-height: 200px;
-    max-height: 350px;
+    height: 360px;
+    min-height: 360px;
+    max-height: 360px;
     overflow: hidden;
 
-    .toolbar {
-      display: none !important;
+    .agtable {
+      height: 100% !important;
+      min-height: 360px !important;
+
+      .toolbar {
+        display: none !important;
+      }
+
+      .ag-theme-quartz,
+      .ag-root-wrapper {
+        height: 100% !important;
+        min-height: 360px !important;
+      }
     }
   }
 

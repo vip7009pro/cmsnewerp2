@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import * as XLSX from "xlsx";
 import { FiX, FiUploadCloud, FiCheckCircle, FiTrash2, FiInfo, FiLayers, FiFileText } from "react-icons/fi";
 import { AiFillAmazonCircle } from "react-icons/ai";
 import AGTable from "../../../../components/DataTable/AGTable";
@@ -48,6 +49,13 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
   if (!open) return null;
 
   const amzColumns = getAmazonUploadColumns();
+
+  const handleDownloadTemplate = () => {
+    const worksheet = XLSX.utils.json_to_sheet([{ DATA: "BARCODE_SAMPLE" }]);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "AmazonTemplate");
+    XLSX.writeFile(workbook, "Amazon_Import_Template.xlsx");
+  };
 
   return (
     <div className="precision-ycsx-modal-backdrop" onClick={onClose}>
@@ -237,6 +245,26 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
                 }}
               >
                 <FiCheckCircle size={14} style={{ color: "#10b981" }} /> 1. Kiểm tra trùng
+              </button>
+
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={handleDownloadTemplate}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "6px 12px",
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  borderRadius: 4,
+                  border: "1px solid #a7f3d0",
+                  background: "#ffffff",
+                  color: "#047857",
+                }}
+              >
+                <FiFileText size={14} /> Tải template
               </button>
 
               <button

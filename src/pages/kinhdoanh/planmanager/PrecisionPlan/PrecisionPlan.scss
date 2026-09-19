@@ -1346,13 +1346,20 @@ $pp-radius: 4px;
 
   &__previewBody {
     flex: 1;
-    min-height: 180px;
+    height: 360px;
+    min-height: 360px;
     overflow: hidden;
     background: #ffffff;
 
     .agtable {
       height: 100%;
-      min-height: 180px;
+      min-height: 360px;
+
+      .ag-theme-quartz,
+      .ag-root-wrapper {
+        height: 100% !important;
+        min-height: 360px !important;
+      }
 
       .toolbar {
         display: none !important;
@@ -1364,7 +1371,7 @@ $pp-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 180px;
+    height: 360px;
     color: #94a3b8;
     font-size: 12px;
     font-style: italic;

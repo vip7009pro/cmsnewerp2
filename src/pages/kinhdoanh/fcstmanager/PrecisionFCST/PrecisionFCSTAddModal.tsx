@@ -221,6 +221,22 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
     }
   };
 
+  const handleDownloadTemplate = () => {
+    const template = [{
+      EMPL_NO: "EMPL_NO",
+      CUST_CD: "0025",
+      G_CODE: "7A09927A",
+      PROD_PRICE: 0,
+      YEAR: new Date().getFullYear(),
+      WEEKNO: "W01",
+      ...Object.fromEntries(WEEK_FIELDS.map((field) => [field, 0])),
+    }];
+    const worksheet = XLSX.utils.json_to_sheet(template);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "FCSTTemplate");
+    XLSX.writeFile(workbook, "FCST_Import_Template.xlsx");
+  };
+
   /* ── Excel Mode: Check FCST ── */
   const handle_checkFcstHangLoat = async () => {
     setisLoading(true);
@@ -587,6 +603,13 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
                   onChange={readUploadFile}
                   style={{ marginTop: 8 }}
                 />
+                <button
+                  type="button"
+                  className="precision-fcst__actionBtn precision-fcst__actionBtn--secondary"
+                  onClick={handleDownloadTemplate}
+                >
+                  <FiDownload /> Tải template
+                </button>
               </div>
 
               {uploadExcelJson.length > 0 && (

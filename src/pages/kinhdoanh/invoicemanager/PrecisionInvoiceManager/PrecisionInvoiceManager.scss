@@ -331,36 +331,7 @@ $stitch-font-mono: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
 
   &__kpi-card-title {
     font-size: 9px;
-    font-weight: 700;
-    text-transform: uppercase;
     display: block;
-  }
-
-  &__kpi-card-value {
-    font-size: 13px;
-    font-weight: 900;
-    font-family: $stitch-font-mono;
-    display: block;
-    margin-top: 2px;
-
-    span {
-      font-size: 9px;
-      font-weight: 400;
-    }
-  }
-
-  &__kpi-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    color: $stitch-text-secondary;
-    padding: 0 4px;
-
-    span:last-child {
-      font-weight: 700;
-      font-family: $stitch-font-mono;
-      color: $stitch-text;
-    }
   }
 
   /* ── Right Content Area ── */
@@ -914,11 +885,23 @@ $stitch-font-mono: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
 
   &__bulk-preview-table {
     flex: 1;
+    height: 360px;
+    min-height: 360px;
     overflow: hidden;
-    min-height: 0;
 
-    .agtable .toolbar {
-      display: none !important;
+    .agtable {
+      height: 100% !important;
+      min-height: 360px !important;
+
+      .toolbar {
+        display: none !important;
+      }
+
+      .ag-theme-quartz,
+      .ag-root-wrapper {
+        height: 100% !important;
+        min-height: 360px !important;
+      }
     }
   }
 }

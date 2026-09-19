@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Autocomplete, TextField, createFilterOptions } from "@mui/material";
+import * as XLSX from "xlsx";
 import AGTable from "../../../../../components/DataTable/AGTable";
 import { CodeListData, CustomerListData } from "../../../interfaces/kdInterface";
 import {
@@ -126,6 +127,25 @@ const PrecisionPoAddModal: React.FC<PrecisionPoAddModalProps> = ({
   const estTotalVndFormatted = useMemo(() => {
     return Math.round(estTotalUsd * 25400).toLocaleString("vi-VN");
   }, [estTotalUsd]);
+
+  const handleDownloadTemplate = () => {
+    const template = [{
+      G_CODE: "7A09927A",
+      CUST_CD: "0025",
+      PO_NO: "PO_SAMPLE_001",
+      EMPL_NO: "EMPL_NO",
+      PO_QTY: 1000,
+      PO_DATE: "2026-09-19",
+      RD_DATE: "2026-09-26",
+      PROD_PRICE: 0,
+      BEP: 0,
+      REMARK: "PO mẫu",
+    }];
+    const worksheet = XLSX.utils.json_to_sheet(template);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "POTemplate");
+    XLSX.writeFile(workbook, "PO_Import_Template.xlsx");
+  };
 
   // Danh sách có fallback thông minh đảm bảo luôn có dữ liệu hiển thị ngay lập tức
   const effectiveCustomers = useMemo(() => {
@@ -461,6 +481,10 @@ const PrecisionPoAddModal: React.FC<PrecisionPoAddModalProps> = ({
                       onChange={onLoadExcelFile}
                     />
                   </label>
+                  <button type="button" className="btn-template" onClick={handleDownloadTemplate}>
+                    <MdOutlineUploadFile size={16} />
+                    <span>Tải template</span>
+                  </button>
                   <span className="file-name-text">
                     {uploadExcelJson.length > 0
                       ? `Đã nạp ${uploadExcelJson.length} dòng dữ liệu từ file`

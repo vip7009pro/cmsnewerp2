@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState, memo } from "react";
+import * as XLSX from "xlsx";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -30,6 +31,23 @@ const PrecisionInvoiceBulkImport: React.FC<Props> = ({ onClose }) => {
 
   const loadFile = (e: any) => {
     f_readUploadFile(e, setUploadExcelJson, setColumnsExcel);
+  };
+
+  const handleDownloadTemplate = () => {
+    const template = [{
+      DELIVERY_QTY: 1000,
+      DELIVERY_DATE: "2026-09-19",
+      REMARK: "Invoice mẫu",
+      G_CODE: "7A09927A",
+      CUST_CD: "0025",
+      PO_NO: "PO_SAMPLE_001",
+      EMPL_NO: "EMPL_NO",
+      INVOICE_NO: "INV_SAMPLE_001",
+    }];
+    const worksheet = XLSX.utils.json_to_sheet(template);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "InvoiceTemplate");
+    XLSX.writeFile(workbook, "Invoice_Import_Template.xlsx");
   };
 
   const handle_checkInvoiceHangLoat = async () => {
@@ -280,6 +298,13 @@ const PrecisionInvoiceBulkImport: React.FC<Props> = ({ onClose }) => {
           <label htmlFor="bulkFileInput" className="stitch-inv__file-label">
             Chọn File Excel
           </label>
+          <button
+            type="button"
+            className="stitch-inv__btn stitch-inv__btn--outline"
+            onClick={handleDownloadTemplate}
+          >
+            <FiUploadCloud size={12} /> Tải template
+          </button>
           {uploadExcelJson.length > 0 && (
             <span className="stitch-inv__file-info">
               Đã tải lên {uploadExcelJson.length} dòng

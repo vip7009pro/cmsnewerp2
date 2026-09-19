@@ -1,5 +1,11 @@
 # Roadmap - cmsnewerp2
 
+- [x] INVOICE: Khôi phục hoàn chỉnh nesting SCSS sau lỗi `unmatched "}"` tại preview bulk import; diagnostics/build thành công.
+
+- [x] INVOICE: Sửa lỗi Sass nesting làm Vite báo `expected "}"` ở preview bulk import; build thành công.
+
+- [x] KD BULK IMPORT: Bổ sung template Excel theo payload insert và cố định chiều cao bảng preview cho PO, Invoice, Plan, FCST, YCSX và Amazon; diagnostics/build thành công.
+
 - [x] PLAN DATATB: Khôi phục checkBP cho Lưu PLAN, reset readyRender khi tải lại và thêm loading/progress tường minh cho tải plan, lưu PLAN, đăng ký vật liệu; build thành công.
 
 - [x] QLSX MACHINE: Thêm loading/progress tường minh cho Add to Plan và double-click YCSX, khóa thao tác và chống tạo plan trùng; build thành công.

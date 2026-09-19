@@ -1,4 +1,5 @@
 import React, { memo, useState } from "react";
+import * as XLSX from "xlsx";
 import {
   FiX,
   FiEdit,
@@ -117,6 +118,28 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
 }) => {
   const [activeMode, setActiveMode] = useState<"manual" | "excel">("manual");
   const excelColumns = getExcelUploadColumns(isCMS);
+
+  const handleDownloadTemplate = () => {
+    const template = [{
+      PROD_REQUEST_DATE: "20260919",
+      CODE_50: "01",
+      CODE_55: "01",
+      G_CODE: "7A09927A",
+      RIV_NO: "A",
+      PROD_REQUEST_QTY: 1000,
+      CUST_CD: "0025",
+      EMPL_NO: "EMPL_NO",
+      REMK: "YCSX mẫu",
+      DELIVERY_DT: "20260926",
+      PO_NO: "PO_SAMPLE_001",
+      PHANLOAI: "TT",
+      FL_YN: "N",
+    }];
+    const worksheet = XLSX.utils.json_to_sheet(template);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "YCSXTemplate");
+    XLSX.writeFile(workbook, "YCSX_Import_Template.xlsx");
+  };
 
   if (!open) return null;
 
@@ -683,6 +706,25 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                     style={{ display: "none" }}
                     onChange={onUploadFile}
                   />
+                  <button
+                    type="button"
+                    onClick={handleDownloadTemplate}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                      padding: "6px 12px",
+                      background: "#ffffff",
+                      color: "#047857",
+                      border: "1px solid #a7f3d0",
+                      borderRadius: 4,
+                      fontSize: 11.5,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <FiDownload size={14} /> Tải template
+                  </button>
                   <span style={{ fontSize: "11.5px", color: "#475569" }}>
                     Tổng số dòng trong lưới:{" "}
                     <strong style={{ color: uploadExcelJson.length > 0 ? "#2563eb" : "inherit" }}>
