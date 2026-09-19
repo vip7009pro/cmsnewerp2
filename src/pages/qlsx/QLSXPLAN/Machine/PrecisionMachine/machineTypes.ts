@@ -120,6 +120,9 @@ export interface UseMachinePlanModalReturn {
   ycsxDataTable: YCSXTableData[];
   handletraYCSX: () => Promise<void>;
   handleAddPlanFromYCSX: (ycsxRow: YCSXTableData) => Promise<void>;
+  isAddPlanLoading: boolean;
+  addPlanProgress: number;
+  addPlanLoadingLabel: string;
   // Thao tác Kế hoạch
   handleSaveSinglePlan: () => Promise<void>;
   handleDeletePlan: (plan: QLSXPLANDATA) => Promise<void>;
@@ -134,6 +137,7 @@ export interface UseMachinePlanModalReturn {
   handleDangKyXuatLieu: () => Promise<void>;
   handleDeleteChiThiLine: (rows: QLSXCHITHIDATA[]) => Promise<void>;
   handleSelectedMaterialRowsChange: (rows: QLSXCHITHIDATA[]) => void;
+  isMaterialActionLoading: boolean;
   handleXuatDaoSample: () => Promise<void>;
   handleXuatLieuSample: () => Promise<void>;
   // In ấn & Dialogs
@@ -175,4 +179,8 @@ export interface UseMachinePlanModalReturn {
   handleRefreshChiThi: () => Promise<void>;
   // Loading state chi tiết plan
   isDetailLoading: boolean;
+  detailProgress: number;
+  detailLoadingLabel: string;
+  materialActionProgress: number;
+  materialActionLabel: string;
 }

@@ -236,6 +236,16 @@ export const useMachinePlanModal = ({
 
   // Loading state cho chi tiết plan (định mức + chỉ thị) - tránh nháy giao diện
   const [isDetailLoading, setIsDetailLoading] = useState<boolean>(false);
+  const [detailProgress, setDetailProgress] = useState(0);
+  const [detailLoadingLabel, setDetailLoadingLabel] = useState("Đang chuẩn bị dữ liệu...");
+  const [isMaterialActionLoading, setIsMaterialActionLoading] = useState(false);
+  const [materialActionProgress, setMaterialActionProgress] = useState(0);
+  const [materialActionLabel, setMaterialActionLabel] = useState("Đang xử lý vật liệu...");
+  const [isAddPlanLoading, setIsAddPlanLoading] = useState(false);
+  const [addPlanProgress, setAddPlanProgress] = useState(0);
+  const [addPlanLoadingLabel, setAddPlanLoadingLabel] = useState("Đang chuẩn bị thêm kế hoạch...");
+  const addPlanInFlightRef = useRef(false);
+  const detailRequestRef = useRef(0);
 
   // In qua ReactToPrint
   const handlePrint = useReactToPrint({
@@ -252,12 +262,12 @@ export const useMachinePlanModal = ({
   }, [plandatatable, selectedMachine, selectedFactory]);
 
   // Local state copy để IS_SETTING checkbox có thể update ngay lập tức mà không cần re-fetch
-  const [localPlans, setLocalPlans] = useState<QLSXPLANDATA[] | null>(null);
+  const [localPlans, setLocalPlans] = useState<QLSXPLANDATA[]>([]);
   useEffect(() => {
     setLocalPlans(currentMachinePlansFromProps);
   }, [currentMachinePlansFromProps]);
 
-  const currentMachinePlans = localPlans ?? currentMachinePlansFromProps;
+  const currentMachinePlans = localPlans.length > 0 ? localPlans : currentMachinePlansFromProps;
 
   // Nạp danh sách máy cho dropdown EQ1-4
   useEffect(() => {
@@ -282,8 +292,7 @@ export const useMachinePlanModal = ({
   const handleSelectPlan = useCallback(
     async (rowData: QLSXPLANDATA) => {
       if (!rowData || rowData.PLAN_ID === "XXX") return;
-      // Tránh fetch lại nếu click lại đúng dòng đang chọn
-      if (rowData.PLAN_ID === selectedPlanRef.current?.PLAN_ID) return;
+      const requestId = ++detailRequestRef.current;
 
       setSelectedPlan(rowData);
 
@@ -321,7 +330,27 @@ export const useMachinePlanModal = ({
 
       // Fetch song song recent định mức và bảng chỉ thị vật tư đúng theo dòng vừa chọn
       setIsDetailLoading(true);
+      setDetailProgress(10);
+      setDetailLoadingLabel("Đang tải định mức và danh sách vật liệu...");
       try {
+        const recentPromise = rowData.G_CODE && rowData.G_CODE !== "7C123"
+          ? f_getRecentDMData(rowData.G_CODE)
+          : Promise.resolve([]);
+        const chiThiPromise = f_handleGetChiThiTable(rowData, nextDM as any, ycsxFilter.tempDM);
+        const recentRes = await recentPromise;
+        if (requestId === detailRequestRef.current) {
+          setDetailProgress(50);
+          setDetailLoadingLabel("Đã tải định mức, đang tải danh sách vật liệu...");
+          setRecentDMData(recentRes || []);
+        }
+        const chiThiRes = await chiThiPromise;
+        if (requestId === detailRequestRef.current) {
+          setDetailProgress(90);
+          setDetailLoadingLabel("Đang hoàn thiện dữ liệu vật liệu...");
+          setChiThiDataTable(chiThiRes || []);
+        }
+        /* Promise order is intentional: percentages represent completed steps. */
+        /*
         const [recentRes, chiThiRes] = await Promise.all([
           rowData.G_CODE && rowData.G_CODE !== "7C123"
             ? f_getRecentDMData(rowData.G_CODE)
@@ -330,10 +359,14 @@ export const useMachinePlanModal = ({
         ]);
         setRecentDMData(recentRes || []);
         setChiThiDataTable(chiThiRes || []);
+        */
       } catch (err) {
         console.error("Lỗi fetch chi thi / recent DM:", err);
       } finally {
-        setIsDetailLoading(false);
+        if (requestId === detailRequestRef.current) {
+          setDetailProgress(100);
+          setIsDetailLoading(false);
+        }
       }
     },
     [selectedFactory, ycsxFilter.tempDM]
@@ -382,8 +415,15 @@ export const useMachinePlanModal = ({
   // Thêm plan từ dòng YCSX
   const handleAddPlanFromYCSX = useCallback(
     async (ycsxRow: YCSXTableData) => {
+      if (addPlanInFlightRef.current) return;
+      addPlanInFlightRef.current = true;
+      setIsAddPlanLoading(true);
+      setAddPlanProgress(10);
+      setAddPlanLoadingLabel("Đang kiểm tra quyền thêm kế hoạch...");
       checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
         try {
+          setAddPlanProgress(35);
+          setAddPlanLoadingLabel("Đang tạo kế hoạch trên máy...");
           await f_addQLSXPLAN(
             [ycsxRow],
             selectedPlanDate,
@@ -391,11 +431,17 @@ export const useMachinePlanModal = ({
             selectedFactory || "NM1",
             datadinhmuc as any
           );
+          setAddPlanProgress(70);
+          setAddPlanLoadingLabel("Đang cập nhật danh sách kế hoạch...");
           await onRefreshData();
+          setAddPlanProgress(100);
           Swal.fire("Thành công", `Đã thêm kế hoạch cho ${selectedMachine}`, "success");
         } catch (err) {
           console.error("Lỗi add plan:", err);
           Swal.fire("Lỗi", "Không thể thêm kế hoạch", "error");
+        } finally {
+          addPlanInFlightRef.current = false;
+          setIsAddPlanLoading(false);
         }
       });
     },
@@ -537,17 +583,27 @@ export const useMachinePlanModal = ({
 
   const handleSaveChiThiMaterial = useCallback(async () => {
     checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
+      setIsMaterialActionLoading(true);
+      setMaterialActionProgress(10);
+      setMaterialActionLabel("Đang kiểm tra dữ liệu vật liệu...");
       try {
         const errorCode = await saveMaterialRows(getMaterialRowsToSave());
         if (errorCode === "0") {
+          setMaterialActionProgress(55);
+          setMaterialActionLabel("Đã lưu vật liệu, đang tải lại chỉ thị...");
           await reloadMaterialRows();
+          setMaterialActionProgress(80);
+          setMaterialActionLabel("Đang cập nhật danh sách kế hoạch...");
           await onRefreshData();
+          setMaterialActionProgress(100);
           Swal.fire("Thành công", "Đã lưu bảng chỉ thị vật liệu", "success");
         } else {
           Swal.fire("Thông báo", errorCode, "error");
         }
       } catch (err) {
         Swal.fire("Lỗi", "Không thể lưu chỉ thị", "error");
+      } finally {
+        setIsMaterialActionLoading(false);
       }
     });
   }, [getMaterialRowsToSave, onRefreshData, reloadMaterialRows, saveMaterialRows, userData]);
@@ -565,6 +621,9 @@ export const useMachinePlanModal = ({
     if (!confirmResult.isConfirmed) return;
 
     checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
+      setIsMaterialActionLoading(true);
+      setMaterialActionProgress(10);
+      setMaterialActionLabel("Đang lưu chỉ thị vật liệu...");
       try {
         const rows = getMaterialRowsToSave();
         const saveError = await saveMaterialRows(rows);
@@ -572,6 +631,8 @@ export const useMachinePlanModal = ({
           Swal.fire("Thông báo", saveError, "error");
           return;
         }
+        setMaterialActionProgress(45);
+        setMaterialActionLabel("Đang đăng ký xuất kho vật liệu...");
         const registerError = await f_handleDangKyXuatLieu(selectedPlan, selectedFactory, rows);
         if (registerError !== "0") {
           Swal.fire("Thông báo", registerError, "error");
@@ -594,12 +655,18 @@ export const useMachinePlanModal = ({
         if (await f_insert_Notification_Data(notification)) {
           getSocket().emit("notification_panel", notification);
         }
+        setMaterialActionProgress(75);
+        setMaterialActionLabel("Đang tải lại chỉ thị và kế hoạch...");
         selectedMaterialRowsRef.current = [];
         await reloadMaterialRows();
+        setMaterialActionProgress(90);
         await onRefreshData();
+        setMaterialActionProgress(100);
         Swal.fire("Thành công", "Đã đăng ký xuất liệu thành công", "success");
       } catch (err) {
         Swal.fire("Lỗi", "Không thể đăng ký xuất liệu", "error");
+      } finally {
+        setIsMaterialActionLoading(false);
       }
     });
   }, [getMaterialRowsToSave, onRefreshData, reloadMaterialRows, saveMaterialRows, selectedFactory, selectedPlan, userData]);
@@ -647,6 +714,9 @@ export const useMachinePlanModal = ({
     if (!confirmResult.isConfirmed) return;
 
     checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
+      setIsMaterialActionLoading(true);
+      setMaterialActionProgress(10);
+      setMaterialActionLabel("Đang dựng lại vật liệu theo BOM sản xuất...");
       try {
         const res = await f_handleResetChiThiTable(
           selectedPlan,
@@ -655,9 +725,12 @@ export const useMachinePlanModal = ({
         );
         setChiThiDataTable(res || []);
         selectedMaterialRowsRef.current = [];
+        setMaterialActionProgress(100);
         Swal.fire("Thành công", "Đã reset vật liệu thành công", "success");
       } catch (err) {
         Swal.fire("Lỗi", "Không thể reset vật liệu", "error");
+      } finally {
+        setIsMaterialActionLoading(false);
       }
     });
   }, [datadinhmuc, selectedPlan, userData, ycsxFilter.tempDM]);
@@ -1025,5 +1098,13 @@ export const useMachinePlanModal = ({
     handlePrintBanVeList,
     handleRefreshChiThi,
     isDetailLoading,
+    detailProgress,
+    detailLoadingLabel,
+    isMaterialActionLoading,
+    materialActionProgress,
+    materialActionLabel,
+    isAddPlanLoading,
+    addPlanProgress,
+    addPlanLoadingLabel,
   };
 };

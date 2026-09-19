@@ -1,5 +1,13 @@
 # Roadmap - cmsnewerp2
 
+- [x] QLSX MACHINE: Thêm loading/progress tường minh cho Add to Plan và double-click YCSX, khóa thao tác và chống tạo plan trùng; build thành công.
+
+- [x] QLSX MACHINE: Bỏ guard cùng PLAN_ID ở bảng plan để click lần 2 luôn reload detail vật liệu/định mức; build thành công.
+
+- [x] QLSX MACHINE: Bổ sung phần trăm, progress bar và nhãn bước thực tế cho loading detail plan và thao tác vật liệu; build thành công.
+
+- [x] QLSX MACHINE: Thêm loading/blur cho lưu và đăng ký vật liệu, cho phép click lại plan row để reload định mức + vật liệu, chống race loading; build thành công.
+
 - [x] QLSX MACHINE: Khôi phục parity original cho lưu/đăng ký/reset/xóa vật liệu, lưu định mức, notification, quyền ĐM MĐ và reload dữ liệu; diagnostics/build thành công.
 
 - [x] BOM MANAGER: Đổi nền code-banner xanh/đỏ theo trạng thái USE_YN active/deactive; diagnostics và build thành công.

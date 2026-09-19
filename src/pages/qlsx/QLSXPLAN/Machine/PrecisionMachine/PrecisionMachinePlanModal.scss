@@ -186,12 +186,43 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
     background: rgba(15, 23, 42, 0.18);
     color: #1e3a8a;
     font-size: 12px;
     font-weight: 700;
     pointer-events: all;
+
+    .precision-plan-modal__loadingCopy {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 250px;
+      text-align: center;
+
+      strong {
+        font-size: 20px;
+        line-height: 1;
+        color: #1d4ed8;
+      }
+    }
+
+    .precision-plan-modal__progressTrack,
+    .material-progress-track {
+      width: 100%;
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #dbeafe;
+    }
+
+    .precision-plan-modal__progressValue,
+    .material-progress-value {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #2563eb, #06b6d4);
+      transition: width 0.2s ease;
+    }
   }
 
   &__loadingSpinner {
@@ -494,6 +525,70 @@
     border: 1px solid #e2e8f0;
     border-radius: 6px;
     overflow: hidden;
+  }
+
+  .ycsx-section-box {
+    position: relative;
+
+    &.is-add-plan-loading > :not(.ycsx-add-plan-loading) {
+      filter: blur(3px);
+      opacity: 0.45;
+      pointer-events: none;
+      user-select: none;
+    }
+  }
+
+  .ycsx-add-plan-loading {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.62);
+    color: #ffffff;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    font-size: 12px;
+    font-weight: 700;
+    pointer-events: all;
+
+    .ycsx-add-plan-spinner {
+      width: 19px;
+      height: 19px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: precision-plan-spin 0.75s linear infinite;
+    }
+
+    .ycsx-add-plan-loading-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 260px;
+      text-align: center;
+
+      strong {
+        font-size: 21px;
+        line-height: 1;
+      }
+    }
+
+    .ycsx-add-plan-progress-track {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.28);
+    }
+
+    .ycsx-add-plan-progress-value {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #34d399, #facc15);
+      transition: width 0.2s ease;
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -823,6 +918,7 @@
 
   // Material Section
   .material-section-box {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -830,6 +926,61 @@
     min-width: 0;
     height: 100%;
     overflow: hidden;
+
+    &.is-action-loading > :not(.material-action-loading) {
+      filter: blur(3px);
+      opacity: 0.48;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .material-action-loading {
+      position: absolute;
+      inset: 0;
+      z-index: 15;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.58);
+      color: #ffffff;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      font-size: 12px;
+      font-weight: 700;
+      pointer-events: all;
+
+      .material-action-loading-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 250px;
+        text-align: center;
+
+        strong {
+          font-size: 20px;
+          line-height: 1;
+          color: #ffffff;
+        }
+
+        .material-progress-track {
+          background: rgba(255, 255, 255, 0.3);
+        }
+
+        .material-progress-value {
+          background: linear-gradient(90deg, #34d399, #facc15);
+        }
+      }
+    }
+
+    .material-loading-spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: precision-plan-spin 0.75s linear infinite;
+    }
 
     .material-actions-toolbar {
       flex-shrink: 0;

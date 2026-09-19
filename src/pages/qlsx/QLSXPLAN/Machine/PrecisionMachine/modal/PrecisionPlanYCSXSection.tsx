@@ -15,6 +15,9 @@ interface YCSXSectionProps {
   ycsxDataTable: YCSXTableData[];
   onSearchYCSX: () => void;
   onAddPlanFromYCSX: (row: YCSXTableData) => void;
+  isAddPlanLoading: boolean;
+  addPlanProgress: number;
+  addPlanLoadingLabel: string;
   onSetPendingYCSX?: (rows: YCSXTableData[], pending_value: number) => void;
   onPrintYCSX?: (rows: YCSXTableData[]) => void;
   onPrintBanVe?: (rows: YCSXTableData[]) => void;
@@ -27,6 +30,9 @@ export const PrecisionPlanYCSXSection: React.FC<YCSXSectionProps> = React.memo(
     ycsxDataTable,
     onSearchYCSX,
     onAddPlanFromYCSX,
+    isAddPlanLoading,
+    addPlanProgress,
+    addPlanLoadingLabel,
     onSetPendingYCSX,
     onPrintYCSX,
     onPrintBanVe,
@@ -39,7 +45,19 @@ export const PrecisionPlanYCSXSection: React.FC<YCSXSectionProps> = React.memo(
     };
 
     return (
-      <div className="panel-box" style={{ height: "100%" }}>
+      <div className={`panel-box ycsx-section-box${isAddPlanLoading ? " is-add-plan-loading" : ""}`} style={{ height: "100%" }}>
+        {isAddPlanLoading && (
+          <div className="ycsx-add-plan-loading" role="status" aria-live="polite">
+            <span className="ycsx-add-plan-spinner" />
+            <div className="ycsx-add-plan-loading-copy">
+              <strong>{addPlanProgress}%</strong>
+              <span>{addPlanLoadingLabel}</span>
+              <div className="ycsx-add-plan-progress-track">
+                <div className="ycsx-add-plan-progress-value" style={{ width: `${addPlanProgress}%` }} />
+              </div>
+            </div>
+          </div>
+        )}
         {/* HEADER 1 DÒNG DUY NHẤT COMPACT */}
         <div className="panel-box__header flex items-center justify-between gap-1 py-1 px-2 border-b border-slate-200 bg-slate-50 text-[11px] font-bold whitespace-nowrap overflow-hidden">
           <div className="flex items-center gap-1.5 overflow-hidden text-ellipsis">
@@ -248,6 +266,7 @@ export const PrecisionPlanYCSXSection: React.FC<YCSXSectionProps> = React.memo(
               <button
                 type="button"
                 className="stb-success"
+                disabled={isAddPlanLoading}
                 onClick={() => {
                   if (selectedYCSXRows.length > 0) {
                     onAddPlanFromYCSX(selectedYCSXRows[0]);
@@ -258,7 +277,7 @@ export const PrecisionPlanYCSXSection: React.FC<YCSXSectionProps> = React.memo(
                 title="Thêm YCSX đã chọn vào máy"
               >
                 <AiFillFolderAdd size={11} />
-                <span>Add to PLAN</span>
+                <span>{isAddPlanLoading ? `${addPlanProgress}% Đang thêm...` : "Add to PLAN"}</span>
               </button>
             </div>
           </div>

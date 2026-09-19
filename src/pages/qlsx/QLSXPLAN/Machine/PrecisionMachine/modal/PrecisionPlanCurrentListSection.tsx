@@ -74,14 +74,12 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
       [plandatatable, setPlanDataTable, onMovePlan, onDeletePlan, onStartPlan, onFinishPlan]
     );
 
-    // Handler click ô kế hoạch tối ưu - chống kích hoạt kép và chỉ chạy khi chọn dòng mới
+    // Mỗi click đều reload detail, kể cả khi người dùng click lại cùng plan.
     const handleCellClick = React.useCallback(
       (params: any) => {
-        if (params?.data && params.data.PLAN_ID !== selectedPlan?.PLAN_ID) {
-          onSelectPlan(params.data);
-        }
+        if (params?.data) onSelectPlan(params.data);
       },
-      [onSelectPlan, selectedPlan?.PLAN_ID]
+      [onSelectPlan]
     );
 
     // Lấy các row đã check để in multi chỉ thị

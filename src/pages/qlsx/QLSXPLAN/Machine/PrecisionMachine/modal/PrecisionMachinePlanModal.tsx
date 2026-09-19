@@ -34,6 +34,9 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
       ycsxDataTable,
       handletraYCSX,
       handleAddPlanFromYCSX,
+      isAddPlanLoading,
+      addPlanProgress,
+      addPlanLoadingLabel,
       handleSaveSinglePlan,
       handleDeletePlan,
       handleMovePlan,
@@ -45,6 +48,7 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
       handleDangKyXuatLieu,
       handleDeleteChiThiLine,
       handleSelectedMaterialRowsChange,
+      isMaterialActionLoading,
       handleXuatDaoSample,
       handleXuatLieuSample,
       showChiThi,
@@ -82,6 +86,10 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
       handlePrintBanVeList,
       handleRefreshChiThi,
       isDetailLoading,
+      detailProgress,
+      detailLoadingLabel,
+      materialActionProgress,
+      materialActionLabel,
     } = modalController;
 
     return (
@@ -133,6 +141,9 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
                   ycsxDataTable={ycsxDataTable}
                   onSearchYCSX={handletraYCSX}
                   onAddPlanFromYCSX={handleAddPlanFromYCSX}
+                  isAddPlanLoading={isAddPlanLoading}
+                  addPlanProgress={addPlanProgress}
+                  addPlanLoadingLabel={addPlanLoadingLabel}
                   onSetPendingYCSX={handleSetPendingYCSX}
                   onPrintYCSX={handlePrintYCSXList}
                   onPrintBanVe={handlePrintBanVeList}
@@ -168,7 +179,13 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
                   {isDetailLoading && (
                     <div className="precision-plan-modal__detailLoading" role="status" aria-live="polite">
                       <span className="precision-plan-modal__loadingSpinner" />
-                      <span>Đang tải dữ liệu chi tiết...</span>
+                      <div className="precision-plan-modal__loadingCopy">
+                        <strong>{detailProgress}%</strong>
+                        <span>{detailLoadingLabel}</span>
+                        <div className="precision-plan-modal__progressTrack">
+                          <div className="precision-plan-modal__progressValue" style={{ width: `${detailProgress}%` }} />
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -192,6 +209,9 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
                       onResetChiThi={handleResetChiThi}
                       onDeleteSelectedLine={handleDeleteChiThiLine}
                       onSelectedRowsChange={handleSelectedMaterialRowsChange}
+                      isActionLoading={isMaterialActionLoading}
+                      actionProgress={materialActionProgress}
+                      actionLoadingLabel={materialActionLabel}
                       onXuatDaoSample={handleXuatDaoSample}
                       onXuatLieuSample={handleXuatLieuSample}
                       onOpenKhoAo={() => setShowKhoAo(true)}

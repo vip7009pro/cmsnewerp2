@@ -1,5 +1,28 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (QLSX MACHINE: Loading/progress khi Add to Plan)
+- Thêm overlay blur tối, spinner, phần trăm và progress bar cho luồng `Add to PLAN` và double-click dòng YCSX.
+- Progress phản ánh các bước thực tế: kiểm tra quyền, gọi tạo plan và refresh danh sách kế hoạch.
+- Thêm guard in-flight để tránh click nút/double-click liên tiếp tạo plan trùng.
+- Diagnostics các file mới sạch và `npm run build` hoàn tất thành công.
+
+## Update - 2026-09-19 (QLSX MACHINE: Bỏ guard click lại cùng plan row)
+- Nguyên nhân còn sót nằm ở `PrecisionPlanCurrentListSection`: `handleCellClick` chỉ gọi `onSelectPlan` khi `PLAN_ID` khác plan hiện tại.
+- Đã bỏ điều kiện này; mọi lần click vào plan row, kể cả cùng row, đều reload định mức và danh sách vật liệu.
+- Đã chạy `npm run build` hoàn tất thành công.
+
+## Update - 2026-09-19 (QLSX MACHINE: Hiển thị phần trăm tiến độ loading)
+- Loading detail plan hiển thị phần trăm và nhãn theo các bước tải recent định mức/danh sách vật liệu.
+- Loading thao tác vật liệu hiển thị phần trăm và nhãn thực tế cho các bước lưu, đăng ký xuất kho, reload chỉ thị và reload plan.
+- Progress không dùng timer giả; chỉ tăng khi bước API tương ứng hoàn tất.
+- Đã chạy `npm run build` hoàn tất thành công.
+
+## Update - 2026-09-19 (QLSX MACHINE: Loading thao tác vật liệu và reload plan detail)
+- Thêm overlay blur tối + spinner cho khối vật liệu trong lúc lưu vật liệu, đăng ký xuất liệu và reset liệu; khóa thao tác để tránh submit chồng.
+- Bỏ guard bỏ qua click lại cùng `PLAN_ID`; mỗi lần click plan row đều tải lại định mức/recent DM và danh sách vật liệu.
+- Thêm request-id để response cũ không tắt loading của lần click mới hơn.
+- Diagnostics sạch và `npm run build` hoàn tất thành công.
+
 ## Update - 2026-09-19 (QLSX MACHINE: Khôi phục parity luồng vật liệu và định mức)
 - Khôi phục chọn dòng vật liệu theo công ty: CMS dùng các dòng được chọn, công ty khác dùng toàn bảng.
 - Luồng `Lưu CT + ĐKXK` nay lưu chỉ thị trước, kiểm tra mã lỗi đăng ký, gửi notification và reload lại chỉ thị/plan.

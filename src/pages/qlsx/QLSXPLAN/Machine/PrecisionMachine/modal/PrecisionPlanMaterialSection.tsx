@@ -21,6 +21,9 @@ interface MaterialSectionProps {
   onResetChiThi: () => void;
   onDeleteSelectedLine?: (rows: QLSXCHITHIDATA[]) => void;
   onSelectedRowsChange?: (rows: QLSXCHITHIDATA[]) => void;
+  isActionLoading?: boolean;
+  actionProgress?: number;
+  actionLoadingLabel?: string;
   onXuatDaoSample: () => void;
   onXuatLieuSample: () => void;
   onOpenKhoAo?: () => void;
@@ -35,6 +38,9 @@ export const PrecisionPlanMaterialSection: React.FC<MaterialSectionProps> = Reac
     onResetChiThi,
     onDeleteSelectedLine,
     onSelectedRowsChange,
+    isActionLoading = false,
+    actionProgress = 0,
+    actionLoadingLabel = "Đang xử lý vật liệu...",
     onXuatDaoSample,
     onXuatLieuSample,
     onOpenKhoAo,
@@ -76,7 +82,19 @@ export const PrecisionPlanMaterialSection: React.FC<MaterialSectionProps> = Reac
     };
 
     return (
-      <div className="material-section-box">
+      <div className={`material-section-box${isActionLoading ? " is-action-loading" : ""}`}>
+        {isActionLoading && (
+          <div className="material-action-loading" role="status" aria-live="polite">
+            <span className="material-loading-spinner" />
+            <div className="material-action-loading-copy">
+              <strong>{actionProgress}%</strong>
+              <span>{actionLoadingLabel}</span>
+              <div className="material-progress-track">
+                <div className="material-progress-value" style={{ width: `${actionProgress}%` }} />
+              </div>
+            </div>
+          </div>
+        )}
         {/* THANH CÔNG CỤ NÚT HÀNH ĐỘNG VẬT LIỆU (STITCH HIGH-DENSITY - 1 DÒNG DUY NHẤT) */}
         <div className="material-actions-toolbar">
           <div className="toolbar-btn-group">
