@@ -9,6 +9,7 @@ import { PrecisionPlanDataTbDangKyLieuModal } from "./PrecisionPlanDataTb/Precis
 import { PrecisionPlanDataTbPrintModals } from "./PrecisionPlanDataTb/PrecisionPlanDataTbPrintModals";
 
 const PLAN_DATATB_OLD = () => {
+  const [selectedRowCount, setSelectedRowCount] = React.useState(0);
   const {
     userData,
     myComponentRef,
@@ -153,10 +154,17 @@ const PLAN_DATATB_OLD = () => {
             debounceVerticalScrollbar={false}
             enableCellTextSelection={true}
             floatingFiltersHeight={23}
-            onSelectionChanged={onSelectionChanged}
+            onSelectionChanged={(params: any) => {
+              onSelectionChanged();
+              setSelectedRowCount(params?.api?.getSelectedRows?.().length ?? 0);
+            }}
             onRowClicked={(params: any) => handleSelectRowPlan(params.data)}
             onRowDoubleClicked={(params: any) => handleOpenDangKyLieu(params.data)}
           />
+        </div>
+        <div className="precision-plandatatb__grid-footer" role="status" aria-live="polite">
+          <span>Tổng dòng: <strong>{plandatatable.length}</strong></span>
+          <span>Đã chọn: <strong>{selectedRowCount}</strong></span>
         </div>
       </div>
 

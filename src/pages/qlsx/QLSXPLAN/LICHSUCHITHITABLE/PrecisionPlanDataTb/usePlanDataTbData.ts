@@ -133,6 +133,7 @@ export const usePlanDataTbData = () => {
   const gridMaterialRef = useRef<AgGridReact<QLSXCHITHIDATA>>(null);
   const ycsxprintref = useRef<any>(null);
   const clickedRow = useRef<any>(null);
+  const planLoadRef = useRef<{ planId: string; promise: Promise<void> } | null>(null);
   const qlsxplandatafilter = useRef<QLSXPLANDATA[]>([]);
   const qlsxchithidatafilter = useRef<QLSXCHITHIDATA[]>([]);
 
@@ -536,27 +537,43 @@ export const usePlanDataTbData = () => {
   };
 
   const handleSelectRowPlan = async (plan: QLSXPLANDATA) => {
+    if (planLoadRef.current?.planId === plan.PLAN_ID) {
+      return planLoadRef.current.promise;
+    }
+
     clickedRow.current = plan;
     setSelectedPlan(plan);
-    let thisProcessList: PROD_PROCESS_DATA[] = await f_loadProdProcessData(plan.G_CODE);
-    let selectedProcessData = thisProcessList.find(
-      (element: PROD_PROCESS_DATA) =>
-        element.G_CODE === plan.G_CODE && element.PROCESS_NUMBER === plan.PROCESS_NUMBER
-    );
-    if (selectedProcessData) {
-      setChiThiDataTable(await f_handleGetChiThiTable_New(plan, selectedProcessData));
-    } else {
-      Swal.fire("Thông báo", "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");
+    setChiThiDataTable([]);
+    const loadPromise = (async () => {
+      const thisProcessList: PROD_PROCESS_DATA[] = await f_loadProdProcessData(plan.G_CODE);
+      const selectedProcessData = thisProcessList.find(
+        (element: PROD_PROCESS_DATA) =>
+          element.G_CODE === plan.G_CODE && element.PROCESS_NUMBER === plan.PROCESS_NUMBER
+      );
+      if (selectedProcessData) {
+        setChiThiDataTable(await f_handleGetChiThiTable_New(plan, selectedProcessData));
+      } else {
+        Swal.fire("Thông báo", "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");
+      }
+      clearSelectedMaterialRows();
+    })();
+
+    planLoadRef.current = { planId: plan.PLAN_ID, promise: loadPromise };
+    try {
+      await loadPromise;
+    } finally {
+      if (planLoadRef.current?.promise === loadPromise) {
+        planLoadRef.current = null;
+      }
     }
-    clearSelectedMaterialRows();
   };
 
   const handleOpenDangKyLieu = async (plan?: QLSXPLANDATA) => {
     const targetPlan = plan || selectedPlan;
-    if (targetPlan && targetPlan.PLAN_ID !== "XXX") {
-      await handleSelectRowPlan(targetPlan);
-    }
     setShowHideM(true);
+    if (targetPlan && targetPlan.PLAN_ID !== "XXX") {
+      void handleSelectRowPlan(targetPlan);
+    }
   };
 
   const handlePrintChiThi = async () => {

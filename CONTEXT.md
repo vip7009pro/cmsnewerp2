@@ -1,5 +1,16 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (PLAN DATATB OLD: Đồng bộ tối ưu modal và footer)
+- Áp dụng cùng tối ưu cho `PLAN_DATATB_backup.tsx` và `usePlanDataTbOldData`: modal mở tức thì, tải vật liệu nền, dedupe request double-click và xóa dữ liệu cũ khi đổi plan.
+- Thêm footer tổng dòng và selected row cho bảng OLD, dùng chung style với bảng PLAN DATATB hiện tại.
+- Đã kiểm tra diagnostics và `npm run build` hoàn tất thành công.
+
+## Update - 2026-09-19 (PLAN DATATB: Mở modal đăng ký liệu tức thì và thêm footer AG Grid)
+- `handleOpenDangKyLieu` mở modal ngay trước khi tải dữ liệu vật liệu; request chạy nền để không chặn thao tác double-click.
+- Dedupe việc tải plan khi double-click vì AG Grid phát sinh cả `onRowClicked` và `onRowDoubleClicked`; dữ liệu vật liệu cũ cũng được xóa ngay khi đổi plan.
+- Thêm footer dưới bảng hiển thị tổng số dòng và số dòng đang chọn.
+- Đã kiểm tra diagnostics và `npm run build` hoàn tất thành công.
+
 ## Update - 2026-09-19 (QLSX MACHINE: Chỉ tải chi tiết sau khi click plan)
 - Đã xóa effect tự động chọn và tải plan đầu tiên khi mở plan modal.
 - Khi modal mới mở, selected plan, định mức và vật liệu giữ trạng thái mặc định/rỗng; chỉ handler click row mới gọi tải dữ liệu chi tiết.

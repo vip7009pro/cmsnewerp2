@@ -1,5 +1,9 @@
 # Roadmap - cmsnewerp2
 
+- [x] Đồng bộ tối ưu tốc độ modal và footer tổng/selected row cho PLAN DATATB OLD.
+
+- [x] Tối ưu PLAN DATATB: mở modal đăng ký liệu tức thì, dedupe tải dữ liệu double-click và thêm footer tổng/selected row.
+
 - [x] QLSX plan modal không tự tải plan đầu tiên; chỉ tải định mức/vật liệu sau khi người dùng click plan row.
 
 - [x] Khi đóng QLSX plan modal, reset selected plan, định mức, bảng vật liệu và dữ liệu chi tiết.

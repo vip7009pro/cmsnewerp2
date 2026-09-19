@@ -45,6 +45,7 @@ export const usePlanDataTbOldData = () => {
   const gridMaterialRef = useRef<AgGridReact<QLSXCHITHIDATA>>(null);
   const ycsxprintref = useRef<any>(null);
   const clickedRow = useRef<any>(null);
+  const planLoadRef = useRef<{ planId: string; promise: Promise<void> } | null>(null);
   const qlsxplandatafilter = useRef<QLSXPLANDATA[]>([]);
   const qlsxchithidatafilter = useRef<QLSXCHITHIDATA[]>([]);
 
@@ -395,18 +396,34 @@ export const usePlanDataTbOldData = () => {
   };
 
   const handleSelectRowPlan = async (plan: QLSXPLANDATA) => {
+    if (planLoadRef.current?.planId === plan.PLAN_ID) {
+      return planLoadRef.current.promise;
+    }
+
     clickedRow.current = plan;
     setSelectedPlan(plan);
-    setChiThiDataTable(await f_handleGetChiThiTable(plan));
-    clearSelectedMaterialRows();
+    setChiThiDataTable([]);
+    const loadPromise = (async () => {
+      setChiThiDataTable(await f_handleGetChiThiTable(plan));
+      clearSelectedMaterialRows();
+    })();
+
+    planLoadRef.current = { planId: plan.PLAN_ID, promise: loadPromise };
+    try {
+      await loadPromise;
+    } finally {
+      if (planLoadRef.current?.promise === loadPromise) {
+        planLoadRef.current = null;
+      }
+    }
   };
 
   const handleOpenDangKyLieu = async (plan?: QLSXPLANDATA) => {
     const targetPlan = plan || selectedPlan;
-    if (targetPlan && targetPlan.PLAN_ID !== "XXX") {
-      await handleSelectRowPlan(targetPlan);
-    }
     setShowHideM(true);
+    if (targetPlan && targetPlan.PLAN_ID !== "XXX") {
+      void handleSelectRowPlan(targetPlan);
+    }
   };
 
   const handlePrintChiThi = async () => {
