@@ -60,6 +60,9 @@ export const usePlanDataTbOldData = () => {
   const [showChiThi2, setShowChiThi2] = useState(false);
   const [showBV, setShowBV] = useState(false);
   const [isLoading, setisLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [actionProgress, setActionProgress] = useState(0);
+  const [actionLoadingLabel, setActionLoadingLabel] = useState("Đang xử lý...");
   const [readyRender, setReadyRender] = useState(false);
 
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -119,6 +122,7 @@ export const usePlanDataTbOldData = () => {
 
   const loadQLSXPlan = async (plan_date: string) => {
     setisLoading(true);
+    setReadyRender(false);
     let loadeddata: QLSXPLANDATA[] = await f_loadQLSXPLANDATA(plan_date, machine, factory);
     let temp_plan_data: QLSXPLANDATA = {
       ...defaultPlanData,
@@ -255,15 +259,34 @@ export const usePlanDataTbOldData = () => {
       confirmButtonText: "OK",
       showConfirmButton: false,
     });
-    let err_code: string = await f_updateBatchPlan(qlsxplandatafilter.current);
-    await f_updateLossKT_ZTB_DM_HISTORY();
-    if (err_code !== "0") {
-      Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
-    } else {
-      Swal.fire("Thông báo", "Lưu PLAN thành công", "success");
-      loadQLSXPlan(fromdate);
+    setActionLoading(true);
+    setActionProgress(15);
+    setActionLoadingLabel("Đang lưu thay đổi PLAN...");
+      try {
+        let err_code: string = await f_updateBatchPlan(qlsxplandatafilter.current);
+        setActionProgress(65);
+        setActionLoadingLabel("Đang cập nhật lịch sử định mức...");
+        await f_updateLossKT_ZTB_DM_HISTORY();
+        if (err_code !== "0") {
+          Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
+        } else {
+          setActionProgress(85);
+          setActionLoadingLabel("Đang tải lại danh sách PLAN...");
+          await loadQLSXPlan(fromdate);
+          setActionProgress(100);
+          Swal.fire("Thông báo", "Lưu PLAN thành công", "success");
+        }
+      } catch (error) {
+        console.error("Lỗi lưu PLAN:", error);
+        Swal.fire("Lỗi", "Không thể lưu PLAN", "error");
+      } finally {
+        setActionLoading(false);
     }
   };
+
+  const handleConfirmUpdatePlan = useCallback(() => {
+    checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handle_UpdatePlan);
+  }, [userData, handle_UpdatePlan]);
 
   const handle_DeleteLineCHITHI = async () => {
     let kq = await f_deleteChiThiMaterialLine(qlsxchithidatafilter.current, chithidatatable);
@@ -318,7 +341,7 @@ export const usePlanDataTbOldData = () => {
     } else if (err_code !== "0") {
       Swal.fire("Thông báo", "Có lỗi !" + err_code, "error");
     } else {
-      Swal.fire("Thông báo", "Lưu Chỉ thị thành công", "success");
+      /* Swal.fire("Thông báo", "Lưu Chỉ thị thành công", "success"); */
     }
   };
 
@@ -348,28 +371,43 @@ export const usePlanDataTbOldData = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         if (selectedPlan && selectedPlan.PLAN_ID !== "XXX") {
-          Swal.fire({
+          /* Swal.fire({
             title: "Đang lưu chỉ thị",
             text: "Đang lưu chỉ thị, hãy chờ cho tới khi hoàn thành",
             icon: "info",
             showCancelButton: false,
             allowOutsideClick: false,
             showConfirmButton: false,
-          });
-          await hanlde_SaveChiThi();
-          Swal.fire({
-            title: "Đang đăng ký xuất liệu",
-            text: "Đang đăng ký xuất liệu, hãy chờ cho tới khi hoàn thành",
-            icon: "info",
-            showCancelButton: false,
-            allowOutsideClick: false,
-            showConfirmButton: false,
-          });
-          await handleDangKyXuatLieu();
+          }); */
+          setActionLoading(true);
+          setActionProgress(15);
+          setActionLoadingLabel("Đang lưu chỉ thị vật liệu...");
+          try {
+            await hanlde_SaveChiThi();
+            /* Swal.fire({
+              title: "Đang đăng ký xuất liệu",
+              text: "Đang đăng ký xuất liệu, hãy chờ cho tới khi hoàn thành",
+              icon: "info",
+              showCancelButton: false,
+              allowOutsideClick: false,
+              showConfirmButton: false,
+            }); */
+            setActionProgress(55);
+            setActionLoadingLabel("Đang đăng ký xuất kho vật liệu...");
+            await handleDangKyXuatLieu();
 
-          clearSelectedMaterialRows();
-          setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
-          setPlanDataTable(await f_loadQLSXPLANDATA(fromdate, machine, factory));
+            clearSelectedMaterialRows();
+            setActionProgress(80);
+            setActionLoadingLabel("Đang tải lại chỉ thị và PLAN...");
+            setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
+            setPlanDataTable(await f_loadQLSXPLANDATA(fromdate, machine, factory));
+            setActionProgress(100);
+          } catch (error) {
+            console.error("Lỗi đăng ký xuất liệu:", error);
+            Swal.fire("Lỗi", "Không thể đăng ký xuất liệu", "error");
+          } finally {
+            setActionLoading(false);
+          }
         } else {
           Swal.fire("Thông báo", "Chọn ít nhất 1 chỉ thị để đăng ký xuất liệu", "error");
         }
@@ -532,6 +570,9 @@ export const usePlanDataTbOldData = () => {
     showBV,
     setShowBV,
     isLoading,
+    actionLoading,
+    actionProgress,
+    actionLoadingLabel,
     readyRender,
     fromdate,
     setFromDate,
@@ -558,6 +599,7 @@ export const usePlanDataTbOldData = () => {
     handleConfirmMovePlan,
     handleConfirmDeletePlan,
     handle_UpdatePlan,
+    handleConfirmUpdatePlan,
     handleConfirmDeleteLieu,
     handleConfirmRESETLIEU,
     hanlde_SaveChiThi,

@@ -462,23 +462,23 @@ export const usePlanDataTbData = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         if (selectedPlan && selectedPlan.PLAN_ID !== "XXX") {
-          Swal.fire({
+          /* Swal.fire({
             title: "Đang lưu chỉ thị",
             text: "Đang lưu chỉ thị, hãy chờ cho tới khi hoàn thành",
             icon: "info",
             showCancelButton: false,
             allowOutsideClick: false,
             showConfirmButton: false,
-          });
+          }); */
           await hanlde_SaveChiThi();
-          Swal.fire({
+          /* Swal.fire({
             title: "Đang đăng ký xuất liệu",
             text: "Đang đăng ký xuất liệu, hãy chờ cho tới khi hoàn thành",
             icon: "info",
             showCancelButton: false,
             allowOutsideClick: false,
             showConfirmButton: false,
-          });
+          }); */
           await handleDangKyXuatLieu();
 
           let newNotification: NotificationElement = {

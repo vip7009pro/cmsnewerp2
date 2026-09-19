@@ -632,8 +632,19 @@ export const column_planmaterialtable = [
     resizable: true,
     width: 100,
     editable: false,
+    cellDataType: "text",
     headerCheckboxSelection: true,
     checkboxSelection: true,
+    cellRenderer: (params: any) => {
+      const rawId = params.data?.CHITHI_ID;
+      const textId = rawId === null || rawId === undefined ? "" : String(rawId);
+      const temporaryId = textId.match(/^NEW[_-]?(\d+)$/i);
+      const displayId = temporaryId
+        ? `NEW_${Number(temporaryId[1]) + 1}`
+        : textId;
+
+      return <span style={{ fontFamily: "JetBrains Mono, monospace", color: "#2563eb", fontWeight: 700 }}>{displayId}</span>;
+    },
   },
   { field: "PLAN_ID", headerName: "PLAN_ID", resizable: true, width: 80, editable: false },
   { field: "M_CODE", headerName: "M_CODE", resizable: true, width: 80, editable: false },

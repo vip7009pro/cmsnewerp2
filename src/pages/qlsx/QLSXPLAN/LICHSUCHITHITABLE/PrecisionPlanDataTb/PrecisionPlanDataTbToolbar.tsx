@@ -24,6 +24,8 @@ interface PrecisionPlanDataTbToolbarProps {
   machine_list: MACHINE_LIST[];
   plandatatable: QLSXPLANDATA[];
   isLoading: boolean;
+  actionLoading: boolean;
+  actionProgress: number;
   onTraPlan: () => void;
   onToggleQuickPlan: () => void;
   onMovePlan: () => void;
@@ -46,6 +48,8 @@ export const PrecisionPlanDataTbToolbar: React.FC<PrecisionPlanDataTbToolbarProp
   machine_list,
   plandatatable,
   isLoading,
+  actionLoading,
+  actionProgress,
   onTraPlan,
   onToggleQuickPlan,
   onMovePlan,
@@ -153,10 +157,11 @@ export const PrecisionPlanDataTbToolbar: React.FC<PrecisionPlanDataTbToolbarProp
         <button
           className="tb-btn tb-btn--primary"
           onClick={onUpdatePlan}
+          disabled={actionLoading}
           title="Lưu các thông tin chỉnh sửa trên bảng"
         >
           <AiFillSave size={14} />
-          Lưu PLAN
+          {actionLoading ? `${actionProgress}% Đang lưu...` : "Lưu PLAN"}
         </button>
 
         <button

@@ -1,5 +1,12 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (PLAN DATATB: Đồng bộ parity và loading/progress)
+- Audit với bản gốc xác định sai lệch chính: `Lưu PLAN` refactor bypass `checkBP`; đã khôi phục handler có quyền QLSX.
+- Khi tải lại plan, reset `readyRender` để không giữ trạng thái render cũ trong lúc request mới chạy.
+- Thêm progress overlay toàn trang cho tải plan, lưu PLAN và luồng `Lưu CT + ĐKXK`; có phần trăm, nhãn bước, blur và guard lỗi/finally.
+- Progress phản ánh các bước thực tế: lưu plan, cập nhật lịch sử, lưu chỉ thị, đăng ký xuất kho và reload dữ liệu.
+- Diagnostics sạch và `npm run build` hoàn tất thành công.
+
 ## Update - 2026-09-19 (QLSX MACHINE: Loading/progress khi Add to Plan)
 - Thêm overlay blur tối, spinner, phần trăm và progress bar cho luồng `Add to PLAN` và double-click dòng YCSX.
 - Progress phản ánh các bước thực tế: kiểm tra quyền, gọi tạo plan và refresh danh sách kế hoạch.

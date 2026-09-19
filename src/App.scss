@@ -128,6 +128,11 @@ body {
 /* ==========================================================================
    THIRD-PARTY OVERRIDES
    ========================================================================== */
-.swal2-container {
-  z-index: 10000 !important;
+/* SweetAlert2 must stay above every application modal/overlay. */
+body .swal2-container,
+body .swal2-container.swal2-backdrop-show,
+body .swal2-container.swal2-top,
+body .swal2-container.swal2-center,
+body .swal2-container.swal2-toast-shown {
+  z-index: 2147483647 !important;
 }

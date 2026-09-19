@@ -38,6 +38,9 @@ const PLAN_DATATB_OLD = () => {
     showBV,
     setShowBV,
     isLoading,
+    actionLoading,
+    actionProgress,
+    actionLoadingLabel,
     fromdate,
     setFromDate,
     todate,
@@ -61,7 +64,7 @@ const PLAN_DATATB_OLD = () => {
     loadQLSXPlan,
     handleConfirmMovePlan,
     handleConfirmDeletePlan,
-    handle_UpdatePlan,
+    handleConfirmUpdatePlan,
     handleConfirmDeleteLieu,
     handleConfirmRESETLIEU,
     handleConfirmDKXL,
@@ -101,7 +104,19 @@ const PLAN_DATATB_OLD = () => {
   );
 
   return (
-    <div className="precision-plandatatb">
+    <div className={`precision-plandatatb${actionLoading ? " is-action-loading" : ""}`}>
+      {actionLoading && (
+        <div className="precision-plandatatb__action-overlay" role="status" aria-live="polite">
+          <span className="precision-plandatatb__action-spinner" />
+          <div className="precision-plandatatb__action-copy">
+            <strong>{actionProgress}%</strong>
+            <span>{actionLoadingLabel}</span>
+            <div className="precision-plandatatb__progress-track">
+              <div className="precision-plandatatb__progress-value" style={{ width: `${actionProgress}%` }} />
+            </div>
+          </div>
+        </div>
+      )}
       {/* 1. Header & KPI Telemetry */}
       <PrecisionPlanDataTbHeader
         plandatatable={plandatatable}
@@ -122,11 +137,13 @@ const PLAN_DATATB_OLD = () => {
         machine_list={machine_list}
         plandatatable={plandatatable}
         isLoading={isLoading}
+        actionLoading={actionLoading}
+        actionProgress={actionProgress}
         onTraPlan={() => loadQLSXPlan(fromdate)}
         onToggleQuickPlan={() => setShowQuickPlan(!showQuickPlan)}
         onMovePlan={handleConfirmMovePlan}
         onDeletePlan={handleConfirmDeletePlan}
-        onUpdatePlan={handle_UpdatePlan}
+        onUpdatePlan={handleConfirmUpdatePlan}
         onPrintChiThi={handlePrintChiThi}
         onPrintChiThiCombo={handlePrintChiThiCombo}
         onPrintBanVe={handlePrintBanVe}

@@ -1,5 +1,7 @@
 # Roadmap - cmsnewerp2
 
+- [x] PLAN DATATB: Khôi phục checkBP cho Lưu PLAN, reset readyRender khi tải lại và thêm loading/progress tường minh cho tải plan, lưu PLAN, đăng ký vật liệu; build thành công.
+
 - [x] QLSX MACHINE: Thêm loading/progress tường minh cho Add to Plan và double-click YCSX, khóa thao tác và chống tạo plan trùng; build thành công.
 
 - [x] QLSX MACHINE: Bỏ guard cùng PLAN_ID ở bảng plan để click lần 2 luôn reload detail vật liệu/định mức; build thành công.

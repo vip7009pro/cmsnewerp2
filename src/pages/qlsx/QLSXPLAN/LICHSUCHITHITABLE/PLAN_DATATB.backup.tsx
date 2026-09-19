@@ -1128,7 +1128,7 @@ const PLAN_DATATB = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {        
         if (selectedPlan !== undefined) {
-          Swal.fire({
+         /*  Swal.fire({
             title: "Đang lưu chỉ thị",
             text: "Đang lưu chỉ thị, hay chờ cho tới khi hoàn thành",
             icon: "info",
@@ -1136,9 +1136,9 @@ const PLAN_DATATB = () => {
             allowOutsideClick: false,
             confirmButtonText: "OK",
             showConfirmButton: false,
-          });
+          }); */
           await hanlde_SaveChiThi();
-          Swal.fire({
+          /* Swal.fire({
             title: "Đang đăng ký xuất liệu",
             text: "Đang đăng ký xuất liệu, hay chờ cho tới khi hoàn thành",
             icon: "info",
@@ -1146,7 +1146,7 @@ const PLAN_DATATB = () => {
             allowOutsideClick: false,
             confirmButtonText: "OK",
             showConfirmButton: false,
-          });
+          }); */
           await handleDangKyXuatLieu();
           let newNotification: NotificationElement = {
             CTR_CD: '002',
