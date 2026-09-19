@@ -457,9 +457,9 @@ export default function PrecisionHeader({
           </Link>
 
           <div className="precision-header__brandMeta">
-            <span className="precision-header__brandName">
+           {/*  <span className="precision-header__brandName">
               {company === "PVN" ? "PVN ERP" : "CMS VINA"}
-            </span>
+            </span> */}
             <span className="precision-header__versionTag">v{current_ver}</span>
           </div>
 

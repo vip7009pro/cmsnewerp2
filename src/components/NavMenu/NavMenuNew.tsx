@@ -234,7 +234,7 @@ export const NavMenuNew: React.FC<NavMenuNewProps> = ({
               {visibleMenus.length} groups
             </span>
           </div>
-          <span className="navmenu-stitch-drawer__version">v2700 Pro</span>
+          {/* <span className="navmenu-stitch-drawer__version">v2700 Pro</span> */}
         </div>
 
         <div className="navmenu-stitch-drawer__searchBox">
