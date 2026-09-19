@@ -1,5 +1,12 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (Production LAN/WAN: Ổn định chiều cao layout và cache Apache)
+- Nguyên nhân chính: layout Home dùng `height: fit-content` ở ancestor trong khi các page/AGTable dùng `height: 100%`; khi chain chiều cao không xác định, grid có thể co về chiều cao nội dung.
+- Đã chuyển chain `.home` -> `.homeContainer` -> `.outletdiv` -> `.animated_div` -> `.component_element` sang chiều cao hữu hạn theo viewport/flex và bổ sung `min-height: 0`.
+- Thêm `public/.htaccess`: tắt `MultiViews`, không cache `index.html`, bật SPA fallback để WAN/XAMPP không giữ entrypoint hoặc route cũ.
+- LAN và WAN là hai origin khác nhau nên có cache/service worker/proxy cache riêng; sau khi deploy cần purge cache WAN và hard reload một lần.
+- Đã kiểm tra diagnostics, `.htaccess` được copy vào `dist` và `npm run build` hoàn tất thành công.
+
 ## Update - 2026-09-19 (PLAN DATATB OLD: Đồng bộ tối ưu modal và footer)
 - Áp dụng cùng tối ưu cho `PLAN_DATATB_backup.tsx` và `usePlanDataTbOldData`: modal mở tức thì, tải vật liệu nền, dedupe request double-click và xóa dữ liệu cũ khi đổi plan.
 - Thêm footer tổng dòng và selected row cho bảng OLD, dùng chung style với bảng PLAN DATATB hiện tại.

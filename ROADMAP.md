@@ -1,5 +1,7 @@
 # Roadmap - cmsnewerp2
 
+- [x] Ổn định chiều cao AGTable trên LAN/WAN bằng layout height chain và chống cache entrypoint Apache/XAMPP.
+
 - [x] Đồng bộ tối ưu tốc độ modal và footer tổng/selected row cho PLAN DATATB OLD.
 
 - [x] Tối ưu PLAN DATATB: mở modal đăng ký liệu tức thì, dedupe tải dữ liệu double-click và thêm footer tổng/selected row.
