@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SaveExcel } from "../../../../api/services/excelService";
 import "./PrecisionMachine/PrecisionMachine.scss";
 import { useMachineData } from "./PrecisionMachine/useMachineData";
@@ -7,6 +7,30 @@ import { PrecisionMachineToolbar } from "./PrecisionMachine/dashboard/PrecisionM
 import { PrecisionMachineKpi } from "./PrecisionMachine/dashboard/PrecisionMachineKpi";
 import { PrecisionMachineLineGroup } from "./PrecisionMachine/dashboard/PrecisionMachineLineGroup";
 import { PrecisionMachinePlanModal } from "./PrecisionMachine/modal/PrecisionMachinePlanModal";
+
+const MACHINE_SHORTCUTS: Record<string, string> = {
+  F1: "FR01",
+  F2: "FR02",
+  F3: "FR03",
+  F4: "FR04",
+  S1: "SR01",
+  S2: "SR02",
+  S3: "SR03",
+  S4: "SR04",
+  S5: "SR05",
+  S6: "SR06",
+  S7: "SR07",
+  S8: "SR08",
+  D1: "DC01",
+  D2: "DC02",
+  D3: "DC03",
+  D4: "DC04",
+  D5: "DC05",
+};
+
+for (let machineNumber = 1; machineNumber <= 38; machineNumber += 1) {
+  MACHINE_SHORTCUTS[`E${machineNumber}`] = `ED${String(machineNumber).padStart(2, "0")}`;
+}
 
 const MACHINE_OLD: React.FC = () => {
   // 1. Hook Quản Lý Dữ Liệu Sàn Sản Xuất Chính
@@ -38,6 +62,11 @@ const MACHINE_OLD: React.FC = () => {
     plandatatable,
     onRefreshData: refreshAll,
   });
+
+  const closePlanModal = useCallback(() => {
+    modalController.resetPlanModal();
+    setShowPlanWindow(false);
+  }, [modalController.resetPlanModal, setShowPlanWindow]);
 
   // 3. Toggle Filter Line Checkboxes
   const handleToggleEqSeries = useCallback(
@@ -72,6 +101,65 @@ const MACHINE_OLD: React.FC = () => {
 
   // 5. Từ khóa tìm kiếm code, mã hàng, PLAN_ID
   const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const machineShortcutBufferRef = useRef("");
+
+  // Khôi phục các phím tắt của màn hình cũ mà không phụ thuộc focus của container.
+  useEffect(() => {
+    const handleKeyboardShortcut = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        machineShortcutBufferRef.current = "";
+        closePlanModal();
+        return;
+      }
+
+      if (event.key === "F2") {
+        event.preventDefault();
+        machineShortcutBufferRef.current = "F2";
+        void refreshAll();
+        return;
+      }
+
+      if (/^F[134]$/.test(event.key)) {
+        event.preventDefault();
+        machineShortcutBufferRef.current = event.key;
+        return;
+      }
+
+      if (event.key === "[") {
+        event.preventDefault();
+        setFactory("NM1");
+        machineShortcutBufferRef.current = "";
+        return;
+      }
+
+      if (event.key === "]") {
+        event.preventDefault();
+        setFactory("NM2");
+        machineShortcutBufferRef.current = "";
+        return;
+      }
+
+      if (event.key === "Enter") {
+        const shortcut = machineShortcutBufferRef.current.toUpperCase();
+        machineShortcutBufferRef.current = "";
+        if (!showPlanWindow && shortcut) {
+          const machineName = MACHINE_SHORTCUTS[shortcut];
+          if (machineName) {
+            event.preventDefault();
+            openPlanModal(machineName, factory);
+          }
+        }
+        return;
+      }
+
+      if (/^[a-z0-9]$/i.test(event.key)) {
+        machineShortcutBufferRef.current = `${machineShortcutBufferRef.current}${event.key}`.slice(-3);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyboardShortcut);
+    return () => window.removeEventListener("keydown", handleKeyboardShortcut);
+  }, [closePlanModal, factory, openPlanModal, refreshAll, setFactory, showPlanWindow]);
 
   // 6. Danh Sách Các Line Máy Cần Hiển Thị
   const activeSeries = useMemo(() => {
@@ -163,7 +251,7 @@ const MACHINE_OLD: React.FC = () => {
         <PrecisionMachinePlanModal
           selectedMachine={selectedMachine}
           selectedFactory={selectedFactory}
-          onClose={() => setShowPlanWindow(false)}
+          onClose={closePlanModal}
           modalController={modalController}
         />
       )}

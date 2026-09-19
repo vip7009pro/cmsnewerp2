@@ -1,5 +1,9 @@
 # Roadmap - cmsnewerp2
 
+- [x] Khi đóng QLSX plan modal, reset selected plan, định mức, bảng vật liệu và dữ liệu chi tiết.
+
+- [x] Khôi phục phím tắt QLSX MACHINE: Escape đóng modal, F2 refresh, Enter mở nhanh máy, [ / ] chuyển nhà máy.
+
 - [x] LINE QC mobile hỗ trợ cả chọn file checksheet và chụp ảnh trực tiếp bằng camera.
 
 - [x] Loại API key khỏi `.codex/config.toml`, ignore cấu hình local và amend commit QLSX Machine trước khi push GitHub.

@@ -1,5 +1,16 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (QLSX MACHINE: Reset toàn bộ dữ liệu khi đóng plan modal)
+- Thêm `resetPlanModal` trong `useMachinePlanModal` để reset selected plan về mặc định, xóa định mức, bảng vật liệu, recent định mức và trạng thái loading.
+- Nút Đóng và phím `Escape` dùng chung `closePlanModal`, bảo đảm đóng bằng cách nào cũng không giữ dữ liệu của plan trước.
+- Đã kiểm tra diagnostics và `npm run build` hoàn tất thành công.
+
+## Update - 2026-09-19 (QLSX MACHINE: Khôi phục phím tắt mở máy và đóng modal)
+- Khôi phục listener phím tắt cấp cửa sổ trong `MACHINE_backup.tsx` để không phụ thuộc focus của container.
+- `Escape` đóng plan window; `F2` refresh dữ liệu; `Enter` sau mã máy (`F1`, `F2`, `S1`, `D1`, `E01`...) mở nhanh đúng máy.
+- `[` chuyển NM1 và `]` chuyển NM2, tương đương điều hướng tab nhà máy ở màn hình cũ.
+- Đã kiểm tra diagnostics và `npm run build` hoàn tất thành công.
+
 ## Update - 2026-09-19 (LINE QC: Cho phép chọn file hoặc chụp ảnh trên mobile)
 - Tách input upload checksheet thành hai luồng: chọn file từ thiết bị (`image/*`) và chụp trực tiếp bằng camera (`capture="environment"`).
 - Giữ nguyên preview, đổi file, xóa file và luồng submit hiện tại.

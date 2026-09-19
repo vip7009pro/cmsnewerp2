@@ -102,6 +102,7 @@ export interface UseMachinePlanModalReturn {
   // Plan đang chọn
   selectedPlan: QLSXPLANDATA;
   setSelectedPlan: React.Dispatch<React.SetStateAction<QLSXPLANDATA>>;
+  resetPlanModal: () => void;
   handleSelectPlan: (rowData: QLSXPLANDATA) => Promise<void>;
   // Danh sách plan của máy
   currentMachinePlans: QLSXPLANDATA[];

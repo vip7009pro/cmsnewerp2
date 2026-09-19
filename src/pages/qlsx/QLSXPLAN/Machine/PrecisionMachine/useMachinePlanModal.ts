@@ -179,6 +179,14 @@ export const useMachinePlanModal = ({
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
 
+  const resetPlanModal = useCallback(() => {
+    setSelectedPlan({ ...defaultPlan });
+    setDataDinhMuc({ ...defaultDinhMuc });
+    setRecentDMData([]);
+    setChiThiDataTable([]);
+    setIsDetailLoading(false);
+  }, []);
+
   // State YCSX
   const [showYCSX, setShowYCSX] = useState<boolean>(true);
   const [ycsxDataTable, setYCSXDataTable] = useState<YCSXTableData[]>([]);
@@ -835,6 +843,7 @@ export const useMachinePlanModal = ({
   return {
     selectedPlan,
     setSelectedPlan,
+    resetPlanModal,
     handleSelectPlan,
     currentMachinePlans,
     setCurrentMachinePlans: setLocalPlans,
