@@ -118,11 +118,15 @@ const PrecisionOvertimeCell: React.FC<PrecisionOvertimeCellProps> = ({
     );
   }
 
+  const overtimeText = (() => {
+    if (!data.OVERTIME_INFO || data.OVERTIME_INFO === 'null') return '';
+    if (data.OVERTIME_INFO === 'KTC') return 'Không tăng ca';
+    return `+${data.OVERTIME_INFO}`;
+  })();
+
   return (
     <div className="cell-attendance">
-      <span className="badge-ot">
-        {data.OVERTIME_INFO === 'KTC' ? 'Không tăng ca' : `+${data.OVERTIME_INFO}`}
-      </span>
+      <span className="badge-ot">{overtimeText}</span>
       <button
         type="button"
         className="btn-reset"
