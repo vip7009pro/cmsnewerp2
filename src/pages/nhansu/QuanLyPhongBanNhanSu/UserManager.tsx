@@ -88,6 +88,26 @@ const UserManager = () => {
   const [workpositionload, setWorkPositionLoad] = useState<Array<any>>([]);
   const [selectedRows, setSelectedRows] = useState<EmployeeTableData>(initialUserState);
   const [quickFilterText, setQuickFilterText] = useState("");
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
 
   const loadWorkPosition = async () => {
     let kq: any[] = await f_loadWorkPositionList();
@@ -276,10 +296,12 @@ const UserManager = () => {
 
   return (
     <div className="precision-usermanager">
-      <PrecisionUserHeader
-        totalCount={empl_info.length}
-        filteredCount={filteredData.length}
-      />
+      {!isMobile && (
+        <PrecisionUserHeader
+          totalCount={empl_info.length}
+          filteredCount={filteredData.length}
+        />
+      )}
 
       <div className="precision-usermanager__dualGrid">
         {/* LEFT: Data Grid Panel */}
@@ -316,20 +338,21 @@ const UserManager = () => {
           </div>
         </div>
 
-        {/* RIGHT: Profile Detail Panel */}
-        <div className="precision-usermanager__rightPanel">
-          <PrecisionUserProfilePanel
-            selectedUser={selectedRows}
-            onUploadAvatar={uploadFile2}
-            onTrainFace={() =>
-              extractEmbedding("/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg")
-            }
-            onCheckFace={() =>
-              checkEmbedding("/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg")
-            }
-            isLoadingFace={loading}
-          />
-        </div>
+        {!isMobile && (
+          <div className="precision-usermanager__rightPanel">
+            <PrecisionUserProfilePanel
+              selectedUser={selectedRows}
+              onUploadAvatar={uploadFile2}
+              onTrainFace={() =>
+                extractEmbedding("/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg")
+              }
+              onCheckFace={() =>
+                checkEmbedding("/Picture_NS/NS_" + selectedRows.EMPL_NO + ".jpg")
+              }
+              isLoadingFace={loading}
+            />
+          </div>
+        )}
       </div>
 
       {/* Modal Add / Update */}

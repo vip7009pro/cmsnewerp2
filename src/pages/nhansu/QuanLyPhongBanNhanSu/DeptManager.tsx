@@ -61,6 +61,9 @@ const DeptManager = () => {
   const [tableSelection, setTableSelection] = useState(1);
   const [openDialog, setOpenDialog] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
 
   const [maindeptTable, setMainDeptTable] = useState<Array<MainDeptTableData>>([]);
   const [subdeptTable, setSubDeptTable] = useState<Array<SubDeptTableData>>([]);
@@ -209,16 +212,35 @@ const DeptManager = () => {
   };
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
+
+  useEffect(() => {
     init();
   }, []);
 
   return (
     <div className="precision-deptmanager">
-      <PrecisionDeptHeader
-        mainDeptCount={maindeptTable.length}
-        subDeptCount={subdeptTable.length}
-        workPosCount={workpositionload.length}
-      />
+      {!isMobile && (
+        <PrecisionDeptHeader
+          mainDeptCount={maindeptTable.length}
+          subDeptCount={subdeptTable.length}
+          workPosCount={workpositionload.length}
+        />
+      )}
 
       {/* Tri-Panel Grid (3 cấp liên hoàn) */}
       <div className="precision-deptmanager__triGrid">
