@@ -334,19 +334,6 @@ export const useMachinePlanModal = ({
     [selectedFactory, ycsxFilter.tempDM]
   );
 
-  // Tự động chọn kế hoạch đầu tiên khi mở modal lần đầu nếu chưa chọn kế hoạch nào
-  const initialPlanLoadedRef = useRef<boolean>(false);
-  useEffect(() => {
-    if (
-      !initialPlanLoadedRef.current &&
-      currentMachinePlans.length > 0 &&
-      selectedPlan.PLAN_ID === "XXX"
-    ) {
-      initialPlanLoadedRef.current = true;
-      handleSelectPlan(currentMachinePlans[0]);
-    }
-  }, [currentMachinePlans, handleSelectPlan, selectedPlan.PLAN_ID]);
-
   // Tra cứu YCSX (Chuẩn hóa 100% tên tham số khớp backend)
   const handletraYCSX = useCallback(async () => {
     Swal.fire({

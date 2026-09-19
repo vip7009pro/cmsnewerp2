@@ -1,5 +1,7 @@
 # Roadmap - cmsnewerp2
 
+- [x] QLSX plan modal không tự tải plan đầu tiên; chỉ tải định mức/vật liệu sau khi người dùng click plan row.
+
 - [x] Khi đóng QLSX plan modal, reset selected plan, định mức, bảng vật liệu và dữ liệu chi tiết.
 
 - [x] Khôi phục phím tắt QLSX MACHINE: Escape đóng modal, F2 refresh, Enter mở nhanh máy, [ / ] chuyển nhà máy.

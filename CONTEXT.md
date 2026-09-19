@@ -1,5 +1,10 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (QLSX MACHINE: Chỉ tải chi tiết sau khi click plan)
+- Đã xóa effect tự động chọn và tải plan đầu tiên khi mở plan modal.
+- Khi modal mới mở, selected plan, định mức và vật liệu giữ trạng thái mặc định/rỗng; chỉ handler click row mới gọi tải dữ liệu chi tiết.
+- Đã kiểm tra diagnostics, grep không còn auto-load first plan và `npm run build` hoàn tất thành công.
+
 ## Update - 2026-09-19 (QLSX MACHINE: Reset toàn bộ dữ liệu khi đóng plan modal)
 - Thêm `resetPlanModal` trong `useMachinePlanModal` để reset selected plan về mặc định, xóa định mức, bảng vật liệu, recent định mức và trạng thái loading.
 - Nút Đóng và phím `Escape` dùng chung `closePlanModal`, bảo đảm đóng bằng cách nào cũng không giữ dữ liệu của plan trước.
