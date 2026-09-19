@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getCompany } from "../../../../api/Api";
 import { CustomerListData, DEFAULT_DM } from "../../../kinhdoanh/interfaces/kdInterface";
@@ -67,6 +67,8 @@ export const useBOMManagerData = () => {
   const [cndb, setCNDB] = useState(false);
   const [activeOnly, setActiveOnly] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCodeDetailLoading, setIsCodeDetailLoading] = useState(false);
+  const codeDetailRequestRef = useRef(0);
 
   const [codeInfoDataTable, setCodeInfoDataTable] = useState<CODE_INFO[]>([]);
   const [codefullinfo, setCodeFullInfo] = useState<CODE_FULL_INFO>(initialCodeFullInfo);
@@ -118,7 +120,7 @@ export const useBOMManagerData = () => {
     Swal.fire("Thông báo", "Đã làm sạch form nhập liệu", "success");
   };
 
-  const handleGETBOMSX = async (G_CODE: string) => {
+  const handleGETBOMSX = useCallback(async (G_CODE: string) => {
     try {
       const res = await generalQuery("getbomsx", { G_CODE });
       if (res.data.tk_status !== "NG") {
@@ -133,9 +135,9 @@ export const useBOMManagerData = () => {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
-  const handleGETBOMGIA = async (G_CODE: string) => {
+  const handleGETBOMGIA = useCallback(async (G_CODE: string) => {
     try {
       const res = await generalQuery("getbomgia", { G_CODE });
       if (res.data.tk_status !== "NG") {
@@ -150,9 +152,9 @@ export const useBOMManagerData = () => {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
-  const loadProcessList = async (G_CODE: string) => {
+  const loadProcessList = useCallback(async (G_CODE: string) => {
     if (!G_CODE || G_CODE === "-------") {
       setCurrentProcessList([]);
       return;
@@ -164,9 +166,9 @@ export const useBOMManagerData = () => {
       console.error(err);
       setCurrentProcessList([]);
     }
-  };
+  }, []);
 
-  const handlecodefullinfo = async (G_CODE: string) => {
+  const handlecodefullinfo = useCallback(async (G_CODE: string) => {
     try {
       const res = await generalQuery("getcodefullinfo", { G_CODE });
       if (res.data.tk_status !== "NG" && res.data.data.length > 0) {
@@ -180,16 +182,23 @@ export const useBOMManagerData = () => {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
-  const handleSelectCode = (g_code: string) => {
+  const handleSelectCode = useCallback((g_code: string) => {
+    const requestId = ++codeDetailRequestRef.current;
+    setIsCodeDetailLoading(false);
+
+    const detailRequests = [handlecodefullinfo(g_code), loadProcessList(g_code)];
     if (!pinBOM) {
-      handleGETBOMSX(g_code);
-      handleGETBOMGIA(g_code);
+      detailRequests.push(handleGETBOMSX(g_code), handleGETBOMGIA(g_code));
     }
-    handlecodefullinfo(g_code);
-    loadProcessList(g_code);
-  };
+
+    Promise.all(detailRequests).finally(() => {
+      if (requestId === codeDetailRequestRef.current) {
+        setIsCodeDetailLoading(false);
+      }
+    });
+  }, [handleGETBOMGIA, handleGETBOMSX, handlecodefullinfo, loadProcessList, pinBOM]);
 
   const handleCODEINFO = async () => {
     setIsLoading(true);
@@ -263,6 +272,7 @@ export const useBOMManagerData = () => {
     activeOnly,
     setActiveOnly,
     isLoading,
+    isCodeDetailLoading,
     codeInfoDataTable,
     codefullinfo,
     setCodeFullInfo,

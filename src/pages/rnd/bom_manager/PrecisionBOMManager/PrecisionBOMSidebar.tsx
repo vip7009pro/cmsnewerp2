@@ -19,6 +19,7 @@ interface PrecisionBOMSidebarProps {
   setCNDB: (val: boolean) => void;
   activeOnly: boolean;
   setActiveOnly: (val: boolean) => void;
+  isLoading: boolean;
   onSearchCode: () => void;
   onSearchKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onAdd: () => void;
@@ -46,6 +47,7 @@ const PrecisionBOMSidebar: React.FC<PrecisionBOMSidebarProps> = ({
   setCNDB,
   activeOnly,
   setActiveOnly,
+  isLoading,
   onSearchCode,
   onSearchKeyDown,
   onAdd,
@@ -197,7 +199,15 @@ const PrecisionBOMSidebar: React.FC<PrecisionBOMSidebarProps> = ({
 
       {/* Code List High-Density Grid */}
       <div className="sidebar-card code-list-card">
-        <div className="table-container">{codeTableJSX}</div>
+        <div className={`table-container${isLoading ? " is-loading" : ""}`}>
+          {codeTableJSX}
+          {isLoading && (
+            <div className="loading-overlay loading-overlay--code-list" role="status" aria-live="polite">
+              <span className="loading-spinner" />
+              <span>Đang tải danh sách mã...</span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Product Visualizer & Drawing link */}

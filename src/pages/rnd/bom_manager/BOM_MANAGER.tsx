@@ -54,6 +54,8 @@ const BOM_MANAGER: React.FC = () => {
     setCNDB,
     activeOnly,
     setActiveOnly,
+    isLoading,
+    isCodeDetailLoading,
     codeInfoDataTable,
     codefullinfo,
     setCodeFullInfo,
@@ -252,6 +254,7 @@ const BOM_MANAGER: React.FC = () => {
           setCNDB={setCNDB}
           activeOnly={activeOnly}
           setActiveOnly={setActiveOnly}
+          isLoading={isLoading}
           onSearchCode={handleCODEINFO}
           onSearchKeyDown={(e) => {
             if (e.key === "Enter") handleCODEINFO();
@@ -275,7 +278,13 @@ const BOM_MANAGER: React.FC = () => {
         />
 
         {/* Cột phải: Thông số mã hiện hành & 2 Bảng song song 50:50 */}
-        <main className="precision-bom__main">
+        <main className={`precision-bom__main${isCodeDetailLoading ? " is-loading" : ""}`}>
+          {isCodeDetailLoading && (
+            <div className="loading-overlay loading-overlay--detail" role="status" aria-live="polite">
+              <span className="loading-spinner" />
+              <span>Đang tải thông tin mã và BOM...</span>
+            </div>
+          )}
           <PrecisionBOMSpecGrid
             codeFullInfo={codefullinfo}
             handleSetCodeInfo={handleSetCodeInfo}

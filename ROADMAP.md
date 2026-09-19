@@ -1,5 +1,9 @@
 # Roadmap - cmsnewerp2
 
+- [x] BOM MANAGER: Thêm loading indicator/blur tối cho list code và vùng thông tin sản phẩm/BOM khi tải sau click row, có request-id chống race condition; build thành công.
+
+- [x] BOM MANAGER: Khắc phục hiện tượng nháy bảng list code khi click row bằng cách ổn định callback identity, không delay state và không đổi logic tải dữ liệu; build thành công.
+
 - [x] BOM MANAGER: Thu gọn nút sidebar, tăng width sidebar và thêm cache-busting cho link CAD Drawing; diagnostics/build thành công.
 
 - [x] BOM MANAGER: Tối ưu form sản phẩm, Autocomplete, upload CAD/Appsheet, width danh sách mã, visualizer overflow và ẩn khối CD/EQ với nhân viên không phải NHU1903; build thành công.

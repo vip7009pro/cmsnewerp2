@@ -1,5 +1,17 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (BOM MANAGER: Loading/blur khi tải danh sách và chi tiết mã)
+- Thêm loading indicator và blur cho card danh sách code khi chạy `codeinforRnD`.
+- Khi click row code, phủ nền tối + blur lên toàn bộ vùng thông tin sản phẩm và BOM cho đến khi hoàn tất các request thông tin mã, BOM SX, BOM giá và process.
+- Dùng request-id để click liên tiếp không khiến request cũ tắt overlay của request mới; không debounce và không thêm delay state.
+- Diagnostics sạch và `npm run build` hoàn tất thành công.
+
+## Update - 2026-09-19 (BOM MANAGER: Khắc phục nháy bảng danh sách mã khi click row)
+- Nguyên nhân: `handleSelectCode` và các handler tải BOM/thông tin mã được tạo mới sau mỗi render; dependency của `codeTableJSX` khiến AGTable danh sách mã bị tạo lại trong chuỗi nhiều state update.
+- Dùng `useCallback` cho `handleGETBOMSX`, `handleGETBOMGIA`, `loadProcessList`, `handlecodefullinfo` và `handleSelectCode` trong `useBOMManagerData.ts`.
+- Giữ nguyên các request và state update chạy đồng thời, không debounce, không thêm delay, không thay đổi logic chọn mã.
+- Diagnostics sạch và `npm run build` hoàn tất thành công.
+
 ## Update - 2026-09-19 (BOM MANAGER: Thu gọn sidebar và chống cache bản vẽ CAD)
 - Giảm chiều cao, font và padding của các nút `ADD`, `ADD VER`, `UP LOẠT`, `UPDATE`, `CLEAR FORM` và nhóm quick tools trong sidebar.
 - Tăng sidebar BOM lên `350px` để hiển thị danh sách mã rộng hơn.

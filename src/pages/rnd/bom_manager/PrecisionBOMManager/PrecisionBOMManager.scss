@@ -15,6 +15,37 @@
   box-sizing: border-box;
   overflow-y: auto;
 
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #ffffff;
+    background: rgba(15, 23, 42, 0.58);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    font-size: 11px;
+    font-weight: 700;
+    pointer-events: all;
+
+    &--code-list {
+      border-radius: 4px;
+    }
+  }
+
+  .loading-spinner {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    border: 2px solid rgba(255, 255, 255, 0.38);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: precision-bom-spin 0.75s linear infinite;
+  }
+
   // MUI poppers render under body, so these rules intentionally stay global.
   .product-autocomplete-popper,
   .material-autocomplete-popper {
@@ -603,11 +634,18 @@
       overflow: hidden;
 
       .table-container {
+        position: relative;
         flex: 1;
         min-height: 200px;
         overflow-y: auto;
         border: 1px solid #e2e8f0;
         border-radius: 4px;
+
+        &.is-loading > :not(.loading-overlay) {
+          filter: blur(2px);
+          opacity: 0.55;
+          pointer-events: none;
+        }
       }
     }
 
@@ -664,6 +702,33 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    position: relative;
+
+    &.is-loading > :not(.loading-overlay) {
+      filter: blur(4px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      color: #ffffff;
+      background: rgba(15, 23, 42, 0.62);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      pointer-events: all;
+    }
 
     // Current Code Banner
     .code-banner {
@@ -1546,6 +1611,10 @@
       }
     }
   }
+}
+
+@keyframes precision-bom-spin {
+  to { transform: rotate(360deg); }
 }
 
 // Autocomplete poppers are portaled to body by MUI.
