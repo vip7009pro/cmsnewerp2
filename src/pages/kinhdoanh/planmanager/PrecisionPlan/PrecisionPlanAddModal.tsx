@@ -256,7 +256,12 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
         const worksheet = workbook.Sheets[sheetName];
         const json: any = XLSX.utils.sheet_to_json(worksheet);
         const keys = json.length > 0 ? Object.keys(json[0]) : [];
-        const cols = keys.map((k) => ({ field: k, headerName: k, width: 150 }));
+        const cols = keys.map((k) => ({
+          field: k,
+          headerName: k,
+          width: DAY_FIELDS.includes(k) ? 62 : k === "REMARK" ? 150 : 92,
+          minWidth: DAY_FIELDS.includes(k) ? 62 : k === "REMARK" ? 150 : 92,
+        }));
         cols.push({ field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200 });
         setColumnsExcel(cols);
         setUploadExcelJSon(

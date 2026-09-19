@@ -239,36 +239,55 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
 
   /* ── Excel Mode: Check FCST ── */
   const handle_checkFcstHangLoat = async () => {
-    setisLoading(true);
-    let tempjson = [...uploadExcelJson];
-    for (let i = 0; i < tempjson.length; i++) {
-      let err_code = 0;
-      await generalQuery("checkFcstExist", {
-        FCSTYEAR: tempjson[i].YEAR,
-        FCSTWEEKNO: tempjson[i].WEEKNO,
-        G_CODE: tempjson[i].G_CODE,
-        CUST_CD: tempjson[i].CUST_CD,
-      })
-        .then((r) => { if (r.data.tk_status !== "NG") err_code = 1; })
-        .catch(console.log);
-
-      await generalQuery("checkGCodeVer", { G_CODE: tempjson[i].G_CODE })
-        .then((r) => {
-          if (r.data.tk_status !== "NG") {
-            if (r.data.data[0].USE_YN !== "Y") err_code = 3;
-          } else err_code = 4;
-        })
-        .catch(console.log);
-
-      if (err_code === 0) tempjson[i].CHECKSTATUS = "OK";
-      else if (err_code === 1) tempjson[i].CHECKSTATUS = "NG:FCST đã tồn tại";
-      else if (err_code === 3) tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-      else if (err_code === 4) tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
+    if (uploadExcelJson.length === 0) {
+      Swal.fire("Thông báo", "Vui lòng tải file FCST trước khi kiểm tra", "warning");
+      return;
     }
-    setisLoading(false);
-    Swal.fire("Thông báo", "Đã hoàn thành check FCST hàng loạt", "success");
-    setUploadExcelJSon(tempjson);
-    setTrigger(!trigger);
+
+    setisLoading(true);
+    Swal.fire({
+      title: "Đang kiểm tra FCST",
+      text: `Đang kiểm tra ${uploadExcelJson.length} dòng...`,
+      icon: "info",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+    });
+
+    try {
+      const tempjson = [...uploadExcelJson];
+      for (let i = 0; i < tempjson.length; i++) {
+        let err_code = 0;
+        const row = tempjson[i];
+        const fcstResponse = await generalQuery("checkFcstExist", {
+          FCSTYEAR: row.YEAR,
+          FCSTWEEKNO: row.WEEKNO,
+          G_CODE: row.G_CODE,
+          CUST_CD: row.CUST_CD,
+        });
+        if (fcstResponse.data.tk_status !== "NG") err_code = 1;
+
+        const codeResponse = await generalQuery("checkGCodeVer", { G_CODE: row.G_CODE });
+        if (codeResponse.data.tk_status !== "NG") {
+          if (codeResponse.data.data?.[0]?.USE_YN !== "Y") err_code = 3;
+        } else {
+          err_code = 4;
+        }
+
+        if (err_code === 0) row.CHECKSTATUS = "OK";
+        else if (err_code === 1) row.CHECKSTATUS = "NG:FCST đã tồn tại";
+        else if (err_code === 3) row.CHECKSTATUS = "NG: Ver này đã bị khóa";
+        else if (err_code === 4) row.CHECKSTATUS = "NG: Không có Code ERP này";
+      }
+
+      setUploadExcelJSon(tempjson);
+      setTrigger((value) => !value);
+      Swal.fire("Thông báo", "Đã hoàn thành check FCST hàng loạt", "success");
+    } catch (error: any) {
+      console.error("Check FCST failed", error);
+      Swal.fire("Lỗi", error?.message || "Không thể kiểm tra dữ liệu FCST", "error");
+    } finally {
+      setisLoading(false);
+    }
   };
 
   /* ── Excel Mode: Upload FCST ── */
@@ -342,7 +361,6 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
       confirmButtonText: "Vẫn check!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành check", "Đang check FCST hàng loạt", "success");
         handle_checkFcstHangLoat();
       }
     });

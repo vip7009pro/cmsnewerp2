@@ -1348,17 +1348,31 @@ $pp-radius: 4px;
     flex: 1;
     height: 360px;
     min-height: 360px;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     background: #ffffff;
 
     .agtable {
+      flex: 0 0 1450px;
       height: 100%;
       min-height: 360px;
+      width: 1450px;
+      min-width: 1450px;
 
       .ag-theme-quartz,
       .ag-root-wrapper {
         height: 100% !important;
         min-height: 360px !important;
+        width: 100% !important;
+      }
+
+      .ag-body-horizontal-scroll {
+        display: none !important;
+      }
+
+      .ag-center-cols-viewport,
+      .ag-body-viewport {
+        overflow-x: auto !important;
       }
 
       .toolbar {

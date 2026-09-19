@@ -1,5 +1,9 @@
 # Roadmap - cmsnewerp2
 
+- [x] PLAN: Hiển thị scrollbar ngang thật cho preview Excel bằng wrapper cuộn và grid content width ổn định; diagnostics/build thành công.
+
+- [x] FCST/PLAN: Khôi phục tác dụng nút Check FCST và tối ưu preview Plan với cột gọn, scrollbar ngang; diagnostics/build thành công.
+
 - [x] INVOICE: Khôi phục hoàn chỉnh nesting SCSS sau lỗi `unmatched "}"` tại preview bulk import; diagnostics/build thành công.
 
 - [x] INVOICE: Sửa lỗi Sass nesting làm Vite báo `expected "}"` ở preview bulk import; build thành công.

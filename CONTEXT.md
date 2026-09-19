@@ -1,5 +1,15 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (PLAN: Hiển thị scrollbar ngang preview Excel)
+- Preview `XEM TRƯỚC BẢNG DỮ LIỆU ĐƯỢC CHECK` dùng wrapper `overflow-x: auto` và AGTable preview rộng ổn định `1450px`, đảm bảo scrollbar ngang xuất hiện khi tổng width các cột vượt modal.
+- Tắt scrollbar ngang nội bộ bị chồng/ẩn và giữ các cột D1-D15 đã thu hẹp trước đó.
+- Diagnostics sạch và production build thành công.
+
+## Update - 2026-09-19 (FCST/PLAN: Sửa check và preview Excel)
+- Luồng `Check FCST` được bổ sung guard khi chưa có file, trạng thái loading rõ ràng, `try/finally`, cập nhật state bằng bản sao mới và hiển thị lỗi API thay vì nuốt lỗi.
+- Preview Plan giảm width cột: trường D1-D15 dùng cột hẹp, trường mã dùng width vừa, REMARK rộng hơn; bật horizontal overflow/scrollbar cho AG Grid để xem các cột bên phải bằng chuột.
+- Diagnostics các file liên quan sạch và `npm run build` thành công.
+
 ## Update - 2026-09-19 (INVOICE: Khôi phục hoàn chỉnh nesting SCSS)
 - Sửa tiếp lỗi `[sass] unmatched "}"` tại dòng 362 trong `PrecisionInvoiceManager.scss`.
 - Nguyên nhân là hai đoạn chèn chiều cao AG Grid bị đặt sai vị trí: một đoạn giữa nhóm KPI và một đoạn lồng dang dở trong `bulk-preview-title`.
