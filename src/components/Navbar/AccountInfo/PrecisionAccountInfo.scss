@@ -4,7 +4,11 @@
 
 .precision-hub {
   width: 100%;
-  min-height: calc(100vh - 48px);
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
   background-color: #f8fafc;
   padding: 16px 24px 48px;
   box-sizing: border-box;
@@ -13,11 +17,16 @@
 
   // MultiTab viewport auto-stretch
   .component_element & {
-    min-height: calc(100vh - 82px);
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   &__content {
     max-width: 1520px;
+    min-height: max-content;
     margin: 0 auto;
     display: flex;
     flex-direction: column;

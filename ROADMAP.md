@@ -1,5 +1,7 @@
 # Roadmap - cmsnewerp2
 
+- [x] Khôi phục scroll cho AccountInfo khi nội dung hồ sơ vượt quá chiều cao viewport.
+
 - [x] Ổn định chiều cao AGTable trên LAN/WAN bằng layout height chain và chống cache entrypoint Apache/XAMPP.
 
 - [x] Đồng bộ tối ưu tốc độ modal và footer tổng/selected row cho PLAN DATATB OLD.

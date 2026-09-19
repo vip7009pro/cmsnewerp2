@@ -1,5 +1,10 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (AccountInfo: Khôi phục scroll nội dung hồ sơ)
+- `PrecisionAccountInfo` được chuyển thành scroll container có chiều cao giới hạn theo tab (`height: 100%`, `min-height: 0`, `overflow-y: auto`).
+- `precision-hub__content` được phép cao theo toàn bộ nội dung để dossier, timeline và admin tools không bị cắt.
+- Đã kiểm tra diagnostics và `npm run build` hoàn tất thành công.
+
 ## Update - 2026-09-19 (Production LAN/WAN: Ổn định chiều cao layout và cache Apache)
 - Nguyên nhân chính: layout Home dùng `height: fit-content` ở ancestor trong khi các page/AGTable dùng `height: 100%`; khi chain chiều cao không xác định, grid có thể co về chiều cao nội dung.
 - Đã chuyển chain `.home` -> `.homeContainer` -> `.outletdiv` -> `.animated_div` -> `.component_element` sang chiều cao hữu hạn theo viewport/flex và bổ sung `min-height: 0`.

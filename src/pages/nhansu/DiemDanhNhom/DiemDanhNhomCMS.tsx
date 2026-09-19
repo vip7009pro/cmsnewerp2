@@ -393,7 +393,7 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
       {
         field: 'DIEMDANH',
         headerName: 'ĐIỂM DANH CA',
-        width: 185,
+        width: 205,
         cellClass: 'flex-center-vertical',
         cellRenderer: (params: any) => (
           <PrecisionAttendanceCell
