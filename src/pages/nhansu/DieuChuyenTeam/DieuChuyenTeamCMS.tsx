@@ -42,6 +42,26 @@ const DieuChuyenTeamCMS: React.FC<DieuChuyenTeamCMSProps> = ({ option1, option2 
   const [isPivotOpen, setIsPivotOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [lastUpdated, setLastUpdated] = useState<string>(moment().format('HH:mm A'));
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== 'undefined' ? window.innerWidth <= 768 : false
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
 
   // 1. Tải danh sách nhân viên điểm danh & điều chuyển
   const loadDiemDanhNhomTable = useCallback(
@@ -425,19 +445,23 @@ const DieuChuyenTeamCMS: React.FC<DieuChuyenTeamCMSProps> = ({ option1, option2 
 
   return (
     <div className="precision-dieuchuyen">
-      {/* 1. Sub-Header Title Bar */}
-      <PrecisionDieuChuyenHeader
-        onExportExcel={handleExportEX1}
-        onSaveSchedule={() => {
-          Swal.fire({
-            title: 'Lưu phân bổ ca',
-            text: 'Đã lưu cấu hình phân bổ ca và điều chuyển nhân sự thành công!',
-            icon: 'success',
-            timer: 1500,
-            showConfirmButton: false,
-          });
-        }}
-      />
+      {!isMobile && (
+        <>
+          {/* 1. Sub-Header Title Bar */}
+          <PrecisionDieuChuyenHeader
+            onExportExcel={handleExportEX1}
+            onSaveSchedule={() => {
+              Swal.fire({
+                title: 'Lưu phân bổ ca',
+                text: 'Đã lưu cấu hình phân bổ ca và điều chuyển nhân sự thành công!',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false,
+              });
+            }}
+          />
+        </>
+      )}
 
       {/* 2. Toolbar & Bộ lọc ngữ cảnh */}
       <PrecisionDieuChuyenToolbar
@@ -450,8 +474,12 @@ const DieuChuyenTeamCMS: React.FC<DieuChuyenTeamCMSProps> = ({ option1, option2 
         loading={loading}
       />
 
-      {/* 3. Realtime 4 KPI Cards */}
-      <PrecisionDieuChuyenKpi tableData={diemdanhnhomtable} />
+      {!isMobile && (
+        <>
+          {/* 3. Realtime 4 KPI Cards */}
+          <PrecisionDieuChuyenKpi tableData={diemdanhnhomtable} />
+        </>
+      )}
 
       {/* 4. AG-Grid Table Container */}
       <div className="precision-dieuchuyen__gridContainer">

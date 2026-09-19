@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./PrecisionDangKy.scss";
 import PrecisionDangKyHeader from "./PrecisionDangKyHeader";
 import PrecisionDangKyKpi from "./PrecisionDangKyKpi";
@@ -8,6 +8,26 @@ import PrecisionDangKyHistory from "./PrecisionDangKyHistory";
 export const PrecisionDangKy: React.FC = () => {
   const [activeTab, setActiveTab] = useState<PortalTabType>("leave");
   const [reloadTrigger, setReloadTrigger] = useState<number>(0);
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
 
   const handleRegistrationSuccess = () => {
     setReloadTrigger((prev) => prev + 1);
@@ -15,17 +35,21 @@ export const PrecisionDangKy: React.FC = () => {
 
   return (
     <div className="precision-dangky">
-      {/* HEADER BANNER & USER BADGE */}
-      <PrecisionDangKyHeader />
+      {!isMobile && (
+        <>
+          {/* HEADER BANNER & USER BADGE */}
+          <PrecisionDangKyHeader />
 
-      {/* 3 KPI MICRO-CARDS (QUỸ PHÉP, OT, CHẤM CÔNG) */}
-      <PrecisionDangKyKpi
-        annualLeaveRemaining={10}
-        annualLeaveTotal={12}
-        monthlyOtHours={28.0}
-        monthlyOtMax={40.0}
-        pendingAttConfirmCount={1}
-      />
+          {/* 3 KPI MICRO-CARDS (QUỸ PHÉP, OT, CHẤM CÔNG) */}
+          <PrecisionDangKyKpi
+            annualLeaveRemaining={10}
+            annualLeaveTotal={12}
+            monthlyOtHours={28.0}
+            monthlyOtMax={40.0}
+            pendingAttConfirmCount={1}
+          />
+        </>
+      )}
 
       {/* WORKSPACE BỐ CỤC 2 CỘT (FORM PANEL TRÁI + AG-GRID HISTORY PHẢI) */}
       <div className="precision-dangky__workspace">

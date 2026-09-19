@@ -1027,6 +1027,60 @@
       color: #2563eb;
     }
   }
+
+  @media (max-width: 768px) {
+    padding: 6px 8px 8px;
+    gap: 6px;
+    overflow: hidden;
+
+    &__subHeader {
+      padding-bottom: 5px;
+    }
+
+    &__toolbar {
+      padding: 6px 8px;
+      align-items: stretch;
+    }
+
+    &__filterGroup,
+    &__actionGroup {
+      width: 100%;
+    }
+
+    &__kpiGrid {
+      grid-template-columns: 1fr;
+    }
+
+    &__gridBody {
+      min-height: 360px;
+      flex: 1 1 auto;
+
+      .agtable {
+        min-height: 360px;
+      }
+    }
+
+    &__gridToolbar {
+      padding: 6px 8px;
+      align-items: stretch;
+
+      .precision-diemdanh__gridActions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .precision-diemdanh__searchBox {
+        width: 100%;
+        min-width: 0;
+        flex: 1 1 180px;
+      }
+    }
+
+    &__gridContainer {
+      min-height: 380px;
+      flex: 1 1 auto;
+    }
+  }
 }
 
 /* Animations */

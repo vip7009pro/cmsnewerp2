@@ -158,6 +158,26 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
   const [isPivotOpen, setIsPivotOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [lastUpdated, setLastUpdated] = useState<string>(moment().format('HH:mm A'));
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== 'undefined' ? window.innerWidth <= 768 : false
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
 
   const isCMS = getCompany() === 'CMS';
 
@@ -498,8 +518,12 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
 
   return (
     <div className="precision-diemdanh">
-      {/* 1. Subheader Title Bar */}
-      <PrecisionDiemDanhHeader />
+      {!isMobile && (
+        <>
+          {/* 1. Subheader Title Bar */}
+          <PrecisionDiemDanhHeader />
+        </>
+      )}
 
       {/* 2. Toolbar & Action Controls */}
       <PrecisionDiemDanhToolbar
@@ -513,8 +537,12 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
         loading={loading}
       />
 
-      {/* 3. Realtime 3 KPI Cards */}
-      <PrecisionDiemDanhKpi tableData={diemdanhnhomtable} />
+      {!isMobile && (
+        <>
+          {/* 3. Realtime 3 KPI Cards */}
+          <PrecisionDiemDanhKpi tableData={diemdanhnhomtable} />
+        </>
+      )}
 
       {/* 4. AG-Grid High-Density Table */}
       <div className="precision-diemdanh__gridContainer">

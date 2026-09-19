@@ -32,6 +32,26 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [filterReason, setFilterReason] = useState<string>("all");
   const [isPivotOpen, setIsPivotOpen] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== 'undefined' ? window.innerWidth <= 768 : false
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
 
   // Thao tác duyệt, từ chối, reset, xóa
   const handleApprove = useCallback((offId: number, applyDate: string, onOff: number, reasonName: string) => {
@@ -245,16 +265,24 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
 
   return (
     <div className="precision-pheduyet">
-      {/* 1. HEADER BANNER & TELEMETRY */}
-      <PrecisionPheDuyetHeader />
+      {!isMobile && (
+        <>
+          {/* 1. HEADER BANNER & TELEMETRY */}
+          <PrecisionPheDuyetHeader />
+        </>
+      )}
 
-      {/* 2. 4 THẺ KPI REALTIME */}
-      <PrecisionPheDuyetKpi
-        totalCount={stats.total}
-        pendingCount={stats.pending}
-        approvedCount={stats.approved}
-        rejectedCount={stats.rejected}
-      />
+      {!isMobile && (
+        <>
+          {/* 2. 4 THẺ KPI REALTIME */}
+          <PrecisionPheDuyetKpi
+            totalCount={stats.total}
+            pendingCount={stats.pending}
+            approvedCount={stats.approved}
+            rejectedCount={stats.rejected}
+          />
+        </>
+      )}
 
       {/* 3. TOOLBAR LỌC & HÀNH ĐỘNG */}
       <PrecisionPheDuyetToolbar

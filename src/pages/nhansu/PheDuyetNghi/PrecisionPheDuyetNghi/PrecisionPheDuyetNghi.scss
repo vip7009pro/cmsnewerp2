@@ -545,4 +545,65 @@
       }
     }
   }
+
+  @media (max-width: 768px) {
+    padding: 6px 8px;
+    gap: 6px;
+    overflow: hidden;
+
+    &__header {
+      padding: 8px 10px;
+    }
+
+    &__kpis {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    &__toolbar {
+      padding: 6px 8px;
+      align-items: stretch;
+
+      .toolbar-left,
+      .toolbar-right {
+        width: 100%;
+      }
+    }
+
+    &__gridContainer {
+      min-height: 320px;
+      flex: 1 1 auto;
+    }
+
+    &__gridToolbar {
+      padding: 6px 8px;
+
+      .toolbar-left,
+      .toolbar-right {
+        width: 100%;
+      }
+
+      .toolbar-left {
+        flex: 1 1 100%;
+      }
+
+      .toolbar-right {
+        justify-content: flex-end;
+      }
+
+      .search-box {
+        width: 100%;
+        min-width: 0;
+        flex: 1 1 180px;
+      }
+    }
+
+    &__gridBody {
+      min-height: 280px;
+      flex: 1 1 auto;
+
+      .agtable {
+        min-height: 280px;
+      }
+    }
+  }
 }
