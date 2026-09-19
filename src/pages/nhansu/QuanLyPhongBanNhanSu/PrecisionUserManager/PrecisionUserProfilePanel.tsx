@@ -4,6 +4,7 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { BsPersonBadge } from "react-icons/bs";
 import { MdOutlineFingerprint, MdOutlineFace } from "react-icons/md";
 import { FiPhoneCall } from "react-icons/fi";
+import PrecisionUserAvatar from "./PrecisionUserAvatar";
 
 interface PrecisionUserProfilePanelProps {
   selectedUser: EmployeeTableData;
@@ -23,11 +24,6 @@ export const PrecisionUserProfilePanel: React.FC<
   isLoadingFace,
 }) => {
   const [file, setFile] = useState<File | null>(null);
-
-  const hasImage = selectedUser.EMPL_IMAGE === "Y";
-  const avatarUrl = hasImage
-    ? `/Picture_NS/NS_${selectedUser.EMPL_NO}.jpg`
-    : "/noimage.webp";
 
   const isWorking = selectedUser.WORK_STATUS_CODE === 1;
 
@@ -64,12 +60,10 @@ export const PrecisionUserProfilePanel: React.FC<
 
       {/* Photo Frame */}
       <div className="precision-usermanager__photoFrame">
-        <img
-          src={avatarUrl}
+        <PrecisionUserAvatar
+          employeeNo={selectedUser.EMPL_NO}
+          hasImage={selectedUser.EMPL_IMAGE === "Y"}
           alt={selectedUser.FULL_NAME || "Employee Photo"}
-          onError={(e: any) => {
-            e.target.src = "/noimage.webp";
-          }}
         />
         <div className="precision-usermanager__photoOverlay">
           <div className="precision-usermanager__overlayName">

@@ -1,5 +1,7 @@
 # Roadmap - cmsnewerp2
 
+- [x] NHÂN SỰ: Ổn định ảnh avatar trong cột UserManager và hồ sơ nhân viên khi click chọn dòng bằng component render dùng chung có cache trạng thái ảnh; diagnostics/build thành công.
+
 - [x] PLAN: Hiển thị scrollbar ngang thật cho preview Excel bằng wrapper cuộn và grid content width ổn định; diagnostics/build thành công.
 
 - [x] FCST/PLAN: Khôi phục tác dụng nút Check FCST và tối ưu preview Plan với cột gọn, scrollbar ngang; diagnostics/build thành công.

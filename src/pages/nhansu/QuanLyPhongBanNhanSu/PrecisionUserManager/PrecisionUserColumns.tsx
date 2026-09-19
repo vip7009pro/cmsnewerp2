@@ -1,4 +1,5 @@
 import React from "react";
+import PrecisionUserAvatar from "./PrecisionUserAvatar";
 
 export const getColumnsUserManager = () => [
   {
@@ -30,10 +31,6 @@ export const getColumnsUserManager = () => [
     resizable: true,
     editable: false,
     cellRenderer: (params: any) => {
-      const hasImage = params.data?.EMPL_IMAGE === "Y";
-      const src = hasImage
-        ? `/Picture_NS/NS_${params.data?.EMPL_NO}.jpg`
-        : "/noimage.webp";
       return (
         <div
           style={{
@@ -43,8 +40,9 @@ export const getColumnsUserManager = () => [
             height: "100%",
           }}
         >
-          <img
-            src={src}
+          <PrecisionUserAvatar
+            employeeNo={params.data?.EMPL_NO}
+            hasImage={params.data?.EMPL_IMAGE === "Y"}
             alt={params.data?.EMPL_NO || "Avatar"}
             style={{
               width: 28,
@@ -53,9 +51,6 @@ export const getColumnsUserManager = () => [
               objectFit: "cover",
               border: "1px solid #e2e8f0",
               boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-            }}
-            onError={(e: any) => {
-              e.target.src = "/noimage.webp";
             }}
           />
         </div>

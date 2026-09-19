@@ -1,5 +1,11 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (NHÂN SỰ: Ổn định avatar khi chọn nhân viên)
+- Nguyên nhân nháy: cột Ảnh và ảnh hồ sơ đều tự xử lý `onError` bằng cách đổi trực tiếp `src`; khi AG Grid refresh renderer sau thao tác chọn dòng, ảnh có thể khởi động lại từ URL avatar và chớp trước khi fallback/ảnh thật ổn định.
+- Tạo `PrecisionUserAvatar.tsx` dùng chung cho bảng UserManager và profile panel, lưu trạng thái URL avatar đã tải thành công hoặc lỗi trong cache module để không lặp lại trạng thái lỗi khi re-render.
+- Giữ nguyên URL ảnh, kích thước, giao diện và logic upload/face API; chỉ thay đổi cách render ảnh và fallback.
+- Diagnostics ba file TypeScript sạch; production build đã được chạy sau thay đổi.
+
 ## Update - 2026-09-19 (PLAN: Hiển thị scrollbar ngang preview Excel)
 - Preview `XEM TRƯỚC BẢNG DỮ LIỆU ĐƯỢC CHECK` dùng wrapper `overflow-x: auto` và AGTable preview rộng ổn định `1450px`, đảm bảo scrollbar ngang xuất hiện khi tổng width các cột vượt modal.
 - Tắt scrollbar ngang nội bộ bị chồng/ẩn và giữ các cột D1-D15 đã thu hẹp trước đó.
