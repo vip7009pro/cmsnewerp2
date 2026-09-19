@@ -244,7 +244,7 @@ export default function PrecisionAccountInfo() {
     <div className="precision-hub">
       <div className="precision-hub__content">
         {/* 1. System Status Banner */}
-        <PrecisionStatusBanner shiftName={userData?.WORK_SHIF_NAME} />
+        {/* <PrecisionStatusBanner shiftName={userData?.WORK_SHIF_NAME} /> */}
 
         {/* 2. Top Section: Profile Hero (7 Cols) & Live Attendance Clock (5 Cols) */}
         <div className="precision-hub__topGrid">
