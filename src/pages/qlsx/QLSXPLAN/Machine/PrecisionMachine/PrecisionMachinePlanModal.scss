@@ -118,6 +118,63 @@
         }
       }
     }
+
+    .plan-identity {
+      min-width: 220px;
+      max-width: min(42vw, 620px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      text-align: center;
+      overflow: hidden;
+
+      &__line {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 100%;
+        color: #fef08a;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 20px;
+        font-weight: 900;
+        line-height: 1.05;
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        > span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          vertical-align: middle;
+        }
+
+        > span:last-child {
+          color: #ffffff;
+        }
+
+        .plan-identity__separator {
+          flex: 0 0 auto;
+          margin: 0 8px;
+          color: rgba(255, 255, 255, 0.7);
+        }
+      }
+    }
+
+    @media (max-width: 900px) {
+      flex-wrap: wrap;
+
+      .plan-identity {
+        order: 3;
+        flex-basis: 100%;
+        max-width: 100%;
+        padding-top: 2px;
+
+        &__line { font-size: 17px; }
+      }
+    }
   }
 
   // ---------------------------------------------------------------------------

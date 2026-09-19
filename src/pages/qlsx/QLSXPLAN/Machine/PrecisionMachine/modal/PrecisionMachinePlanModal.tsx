@@ -103,6 +103,14 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
               <span className="factory-tag">{selectedFactory}</span>
             </div>
 
+            <div className="plan-identity" title={`${selectedPlan?.PLAN_ID || "---"} | ${selectedPlan?.G_NAME || selectedPlan?.G_NAME_KD || "---"}`}>
+              <strong className="plan-identity__line">
+                <span>{selectedPlan?.PLAN_ID || "CHƯA CHỌN PLAN"}</span>
+                <span className="plan-identity__separator">|</span>
+                <span>{selectedPlan?.G_NAME || selectedPlan?.G_NAME_KD || "Chưa chọn mã"}</span>
+              </strong>
+            </div>
+
             <div className="header-actions">
               <button
                 type="button"
