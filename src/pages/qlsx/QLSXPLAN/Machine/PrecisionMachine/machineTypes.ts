@@ -105,6 +105,7 @@ export interface UseMachinePlanModalReturn {
   handleSelectPlan: (rowData: QLSXPLANDATA) => Promise<void>;
   // Danh sách plan của máy
   currentMachinePlans: QLSXPLANDATA[];
+  setCurrentMachinePlans: React.Dispatch<React.SetStateAction<QLSXPLANDATA[]>>;
   // Định mức
   datadinhmuc: DataDinhMucState;
   setDataDinhMuc: React.Dispatch<React.SetStateAction<DataDinhMucState>>;
@@ -155,8 +156,8 @@ export interface UseMachinePlanModalReturn {
   ycktlistrender: any;
   renderPrintYCSX: () => void;
   renderPrintBanVe: () => void;
-  renderPrintChiThi: () => void;
-  renderPrintChiThi2: () => void;
+  renderPrintChiThi: (plansToRender?: QLSXPLANDATA[]) => void;
+  renderPrintChiThi2: (plansToRender?: QLSXPLANDATA[]) => void;
   renderPrintYCKT: () => void;
   // Toolbar Bảng Plan List
   handleUpdateBatchPlan: () => Promise<void>;
@@ -169,4 +170,6 @@ export interface UseMachinePlanModalReturn {
   handlePrintYCSXList: (rows: YCSXTableData[]) => void;
   handlePrintBanVeList: (rows: YCSXTableData[]) => void;
   handleRefreshChiThi: () => Promise<void>;
+  // Loading state chi tiết plan
+  isDetailLoading: boolean;
 }

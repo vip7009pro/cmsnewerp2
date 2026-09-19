@@ -221,19 +221,30 @@ export const useMachinePlanModal = ({
   const [ycsxlistrender, setYCSXListRender] = useState<any>();
   const [ycktlistrender, setYCKTListRender] = useState<any>();
 
+  // Loading state cho chi tiết plan (định mức + chỉ thị) - tránh nháy giao diện
+  const [isDetailLoading, setIsDetailLoading] = useState<boolean>(false);
+
   // In qua ReactToPrint
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
   });
 
   // Lọc kế hoạch thuộc máy đang chọn
-  const currentMachinePlans = useMemo(() => {
+  const currentMachinePlansFromProps = useMemo(() => {
     return plandatatable.filter(
       (p) =>
         p.PLAN_EQ === selectedMachine &&
         p.PLAN_FACTORY === (selectedFactory || "NM1")
     );
   }, [plandatatable, selectedMachine, selectedFactory]);
+
+  // Local state copy để IS_SETTING checkbox có thể update ngay lập tức mà không cần re-fetch
+  const [localPlans, setLocalPlans] = useState<QLSXPLANDATA[] | null>(null);
+  useEffect(() => {
+    setLocalPlans(currentMachinePlansFromProps);
+  }, [currentMachinePlansFromProps]);
+
+  const currentMachinePlans = localPlans ?? currentMachinePlansFromProps;
 
   // Nạp danh sách máy cho dropdown EQ1-4
   useEffect(() => {
@@ -296,6 +307,7 @@ export const useMachinePlanModal = ({
       setDataDinhMuc(nextDM);
 
       // Fetch song song recent định mức và bảng chỉ thị vật tư đúng theo dòng vừa chọn
+      setIsDetailLoading(true);
       try {
         const [recentRes, chiThiRes] = await Promise.all([
           rowData.G_CODE && rowData.G_CODE !== "7C123"
@@ -307,6 +319,8 @@ export const useMachinePlanModal = ({
         setChiThiDataTable(chiThiRes || []);
       } catch (err) {
         console.error("Lỗi fetch chi thi / recent DM:", err);
+      } finally {
+        setIsDetailLoading(false);
       }
     },
     [selectedFactory, ycsxFilter.tempDM]
@@ -593,13 +607,15 @@ export const useMachinePlanModal = ({
     setSelection((prev: any) => ({ ...prev, tabbanve: true }));
   }, [selectedPlan]);
 
-  const renderPrintChiThi = useCallback(() => {
-    setChiThiListRender(renderChiThi([selectedPlan] as any, myComponentRef));
+  const renderPrintChiThi = useCallback((plansToRender?: QLSXPLANDATA[]) => {
+    const targets = plansToRender && plansToRender.length > 0 ? plansToRender : [selectedPlan];
+    setChiThiListRender(renderChiThi(targets as any, myComponentRef));
     setShowChiThi(true);
   }, [selectedPlan]);
 
-  const renderPrintChiThi2 = useCallback(() => {
-    setChiThiListRender2(renderChiThi2([selectedPlan] as any, myComponentRef));
+  const renderPrintChiThi2 = useCallback((plansToRender?: QLSXPLANDATA[]) => {
+    const targets = plansToRender && plansToRender.length > 0 ? plansToRender : [selectedPlan];
+    setChiThiListRender2(renderChiThi2(targets as any, myComponentRef));
     setShowChiThi2(true);
   }, [selectedPlan]);
 
@@ -821,6 +837,7 @@ export const useMachinePlanModal = ({
     setSelectedPlan,
     handleSelectPlan,
     currentMachinePlans,
+    setCurrentMachinePlans: setLocalPlans,
     datadinhmuc,
     setDataDinhMuc,
     recentDMData,
@@ -878,5 +895,6 @@ export const useMachinePlanModal = ({
     handlePrintYCSXList,
     handlePrintBanVeList,
     handleRefreshChiThi,
+    isDetailLoading,
   };
 };

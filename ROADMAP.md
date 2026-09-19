@@ -1,5 +1,7 @@
 # Roadmap - cmsnewerp2
 
+- [x] Loại API key khỏi `.codex/config.toml`, ignore cấu hình local và amend commit QLSX Machine trước khi push GitHub.
+
 - [x] Hoàn thiện Refactor Toàn Diện Trang Đăng Nhập (`Login.tsx`) Chuẩn Google Stitch Enterprise & Frosted Glassmorphism Hiện Đại:
   - **Bảo tồn trọn vẹn 100% hình nền công ty (`/companybackground.png`)**:
     * Duy trì nền công ty làm background gốc, bổ sung lớp phủ Vignette Frosted Glass tinh tế (`backdrop-filter: blur(4px)`) tạo chiều sâu thị giác sang trọng và chống mỏi mắt.

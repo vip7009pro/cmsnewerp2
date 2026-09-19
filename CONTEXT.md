@@ -1,5 +1,11 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (BẢO MẬT: Loại API key khỏi commit QLSX Machine)
+- Đã làm sạch `.codex/config.toml`: token local được đặt rỗng và file được thêm vào `.gitignore` để không bị commit lại.
+- Đã bỏ `.codex/config.toml` khỏi Git index và amend commit cuối trước khi push.
+- Đã kiểm tra nhánh `stunningn-interface`: chỉ còn ahead 1 commit so với `origin/stunningn-interface`; API key không còn trong commit sẽ push.
+- Cần thu hồi/rotate token cũ tại nhà cung cấp API vì token đã từng xuất hiện trong lịch sử local.
+
 ## Update - 2026-09-18 (HỆ THỐNG: Refactor Toàn Diện Trang Đăng Nhập `Login.tsx` Chuẩn Google Stitch Enterprise & Frosted Glassmorphism Hiện Đại)
 - **1. Yêu Cầu & Hoàn Cảnh**:
   * Người dùng yêu cầu: "làm lại trang login cho thật chuyên nghiệp và hiện đại (chú ý nhớ giữ lại background công ty)".

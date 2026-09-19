@@ -551,6 +551,7 @@ export const getColumnPlanMaterialTable = () => {
       resizable: true,
       width: 85,
       editable: false,
+      cellDataType: 'text',
       headerCheckboxSelection: true,
       checkboxSelection: true,
     },

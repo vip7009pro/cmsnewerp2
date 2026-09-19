@@ -22,6 +22,7 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
       setSelectedPlan,
       handleSelectPlan,
       currentMachinePlans,
+      setCurrentMachinePlans,
       datadinhmuc,
       setDataDinhMuc,
       recentDMData,
@@ -78,6 +79,7 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
       handlePrintYCSXList,
       handlePrintBanVeList,
       handleRefreshChiThi,
+      isDetailLoading,
     } = modalController;
 
     return (
@@ -155,34 +157,43 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
                   onSaveDataDinhMuc={handleSaveDataDinhMuc}
                   onSetDMMD={handleSetDMMD}
                   totalMachineTime={totalMachineTime}
+                  plandatatable={currentMachinePlans}
+                  setPlanDataTable={setCurrentMachinePlans}
                 />
 
-                {/* PHÂN VÙNG 3: ĐỊNH MỨC 4 CÔNG ĐOẠN (FULL WIDTH - 4 HÀNG) */}
-                <PrecisionPlanDinhMucSection
-                  datadinhmuc={datadinhmuc}
-                  setDataDinhMuc={setDataDinhMuc}
-                  recentDMData={recentDMData}
-                  machine_list={machine_list}
-                />
+                <div className={`precision-plan-modal__detailContent${isDetailLoading ? " is-loading" : ""}`}>
+                  {isDetailLoading && (
+                    <div className="precision-plan-modal__detailLoading" role="status" aria-live="polite">
+                      <span className="precision-plan-modal__loadingSpinner" />
+                      <span>Đang tải dữ liệu chi tiết...</span>
+                    </div>
+                  )}
 
-                {/* PHÂN VÙNG 4: PLAN CARD + BẢNG CHỈ THỊ VẬT TƯ (NGANG) */}
-                <div className="bottom-plan-material-row">
-                  <PrecisionPlanCardSection
-                    selectedPlan={selectedPlan}
-                    setSelectedPlan={setSelectedPlan}
-                    onSavePlan={handleSaveSinglePlan}
+                  <PrecisionPlanDinhMucSection
+                    datadinhmuc={datadinhmuc}
+                    setDataDinhMuc={setDataDinhMuc}
+                    recentDMData={recentDMData}
+                    machine_list={machine_list}
                   />
-                  <PrecisionPlanMaterialSection
-                    chithidatatable={chithidatatable}
-                    onSaveMaterial={handleSaveChiThiMaterial}
-                    onDangKyXuatLieu={handleDangKyXuatLieu}
-                    onResetChiThi={handleResetChiThi}
-                    onDeleteSelectedLine={handleDeleteChiThiLine}
-                    onXuatDaoSample={handleXuatDaoSample}
-                    onXuatLieuSample={handleXuatLieuSample}
-                    onOpenKhoAo={() => setShowKhoAo(true)}
-                    onRefreshChiThi={handleRefreshChiThi}
-                  />
+
+                  <div className="bottom-plan-material-row">
+                    <PrecisionPlanCardSection
+                      selectedPlan={selectedPlan}
+                      setSelectedPlan={setSelectedPlan}
+                      onSavePlan={handleSaveSinglePlan}
+                    />
+                    <PrecisionPlanMaterialSection
+                      chithidatatable={chithidatatable}
+                      onSaveMaterial={handleSaveChiThiMaterial}
+                      onDangKyXuatLieu={handleDangKyXuatLieu}
+                      onResetChiThi={handleResetChiThi}
+                      onDeleteSelectedLine={handleDeleteChiThiLine}
+                      onXuatDaoSample={handleXuatDaoSample}
+                      onXuatLieuSample={handleXuatLieuSample}
+                      onOpenKhoAo={() => setShowKhoAo(true)}
+                      onRefreshChiThi={handleRefreshChiThi}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

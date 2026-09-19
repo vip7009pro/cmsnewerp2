@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import {
   AiFillSave,
   AiOutlineArrowDown,
@@ -24,13 +24,16 @@ interface CurrentListSectionProps {
   // Toolbar Buttons nguyên bản
   showYCSX: boolean;
   onToggleYCSX: () => void;
-  onPrintChiThi: () => void;
+  onPrintChiThi: (selectedRows: QLSXPLANDATA[]) => void;
   onPrintYCKT: () => void;
   onSavePlanBatch: () => void;
   onRefreshPlans: () => void;
   onSaveDataDinhMuc: () => void;
   onSetDMMD: () => void;
   totalMachineTime: number;
+  // Dùng để IS_SETTING checkbox hoạt động
+  plandatatable?: QLSXPLANDATA[];
+  setPlanDataTable?: React.Dispatch<React.SetStateAction<QLSXPLANDATA[]>>;
 }
 
 export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> = React.memo(
@@ -51,16 +54,22 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
     onSaveDataDinhMuc,
     onSetDMMD,
     totalMachineTime,
+    plandatatable,
+    setPlanDataTable,
   }) => {
+    const gridPlanRef = useRef<any>(null);
+
     const columns = useMemo(
       () =>
         getColumnPlanDataTable({
+          plandatatable,
+          setPlanDataTable,
           onMovePlan,
           onDeletePlan,
           onStartPlan,
           onFinishPlan,
         }),
-      [onMovePlan, onDeletePlan, onStartPlan, onFinishPlan]
+      [plandatatable, setPlanDataTable, onMovePlan, onDeletePlan, onStartPlan, onFinishPlan]
     );
 
     // Handler click ô kế hoạch tối ưu - chống kích hoạt kép và chỉ chạy khi chọn dòng mới
@@ -73,6 +82,23 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
       [onSelectPlan, selectedPlan?.PLAN_ID]
     );
 
+    // Lấy các row đã check để in multi chỉ thị
+    const handlePrintChiThiSelected = React.useCallback(() => {
+      const api = gridPlanRef.current?.api;
+      if (!api) {
+        // Fallback: in selectedPlan đang chọn
+        onPrintChiThi([selectedPlan]);
+        return;
+      }
+      const selectedRows: QLSXPLANDATA[] = api.getSelectedRows();
+      if (selectedRows && selectedRows.length > 0) {
+        onPrintChiThi(selectedRows);
+      } else {
+        // Nếu chưa check row nào, in row đang chọn
+        onPrintChiThi([selectedPlan]);
+      }
+    }, [onPrintChiThi, selectedPlan]);
+
     return (
       <div className="machine-plan-container">
         {/* THANH TOOLBAR ĐẦY ĐỦ NGUYÊN BẢN (CHUẨN STITCH HIGH-DENSITY - 1 DÒNG DUY NHẤT) */}
@@ -84,7 +110,7 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
               <span>{showYCSX ? "Hide YCSX" : "Show YCSX"}</span>
             </button>
 
-            <button type="button" onClick={onPrintChiThi} className="stb-ghost-blue" title="In Chỉ Thị Sản Xuất">
+            <button type="button" onClick={handlePrintChiThiSelected} className="stb-ghost-blue" title="In Chỉ Thị Sản Xuất (check nhiều row để in hàng loạt)">
               <AiOutlinePrinter size={11} />
               <span>Print Chỉ Thị</span>
             </button>
@@ -168,6 +194,7 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
         {/* Bảng Kế Hoạch Đang Có Trên Máy (Chỉ dùng onCellClick ổn định) */}
         <div className="plans-table-box">
           <AGTable
+            ref={gridPlanRef}
             columns={columns}
             data={plans}
             onCellClick={handleCellClick}

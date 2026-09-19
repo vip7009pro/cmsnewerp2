@@ -164,6 +164,45 @@
     overflow: hidden;
   }
 
+  &__detailContent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+
+    &.is-loading > :not(.precision-plan-modal__detailLoading) {
+      opacity: 0.45;
+      pointer-events: none;
+    }
+  }
+
+  &__detailLoading {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(15, 23, 42, 0.18);
+    color: #1e3a8a;
+    font-size: 12px;
+    font-weight: 700;
+    pointer-events: all;
+  }
+
+  &__loadingSpinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #bfdbfe;
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: precision-plan-spin 0.75s linear infinite;
+  }
+
   // Section Panel Box
   .panel-box {
     background: #ffffff;
@@ -804,6 +843,12 @@
       border-radius: 6px;
       overflow: hidden;
     }
+  }
+}
+
+@keyframes precision-plan-spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
