@@ -132,7 +132,8 @@ export interface UseMachinePlanModalReturn {
   handleSaveChiThiMaterial: () => Promise<void>;
   handleResetChiThi: () => Promise<void>;
   handleDangKyXuatLieu: () => Promise<void>;
-  handleDeleteChiThiLine: (row: QLSXCHITHIDATA) => Promise<void>;
+  handleDeleteChiThiLine: (rows: QLSXCHITHIDATA[]) => Promise<void>;
+  handleSelectedMaterialRowsChange: (rows: QLSXCHITHIDATA[]) => void;
   handleXuatDaoSample: () => Promise<void>;
   handleXuatLieuSample: () => Promise<void>;
   // In ấn & Dialogs
@@ -164,6 +165,7 @@ export interface UseMachinePlanModalReturn {
   handleUpdateBatchPlan: () => Promise<void>;
   handleSaveDataDinhMuc: () => Promise<void>;
   handleSetDMMD: () => void;
+  canSetDMMD: boolean;
   totalMachineTime: number;
   onRefreshData: () => Promise<void>;
   // Toolbar Bảng YCSX & Chỉ thị mở rộng

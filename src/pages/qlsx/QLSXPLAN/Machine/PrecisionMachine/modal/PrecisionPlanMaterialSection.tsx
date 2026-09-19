@@ -19,7 +19,8 @@ interface MaterialSectionProps {
   onSaveMaterial: () => void;
   onDangKyXuatLieu: () => void;
   onResetChiThi: () => void;
-  onDeleteSelectedLine?: (row: QLSXCHITHIDATA) => void;
+  onDeleteSelectedLine?: (rows: QLSXCHITHIDATA[]) => void;
+  onSelectedRowsChange?: (rows: QLSXCHITHIDATA[]) => void;
   onXuatDaoSample: () => void;
   onXuatLieuSample: () => void;
   onOpenKhoAo?: () => void;
@@ -33,6 +34,7 @@ export const PrecisionPlanMaterialSection: React.FC<MaterialSectionProps> = Reac
     onDangKyXuatLieu,
     onResetChiThi,
     onDeleteSelectedLine,
+    onSelectedRowsChange,
     onXuatDaoSample,
     onXuatLieuSample,
     onOpenKhoAo,
@@ -40,7 +42,8 @@ export const PrecisionPlanMaterialSection: React.FC<MaterialSectionProps> = Reac
   }) => {
     const columns = useMemo(() => getColumnPlanMaterialTable(), []);
     const gridMaterialRef = useRef<any>(null);
-    const [selectedMaterialRow, setSelectedMaterialRow] = useState<QLSXCHITHIDATA | null>(null);
+    const [selectedMaterialRows, setSelectedMaterialRows] = useState<QLSXCHITHIDATA[]>([]);
+    const selectedMaterialRow = selectedMaterialRows[0] || null;
 
     // Tự động chọn tất cả dòng vật tư có tồn kho M_STOCK > 0
     const handleSelectMaterialStock = () => {
@@ -68,7 +71,7 @@ export const PrecisionPlanMaterialSection: React.FC<MaterialSectionProps> = Reac
         return;
       }
       if (onDeleteSelectedLine) {
-        onDeleteSelectedLine(selectedMaterialRow);
+        onDeleteSelectedLine(selectedMaterialRows.length > 0 ? selectedMaterialRows : [selectedMaterialRow]);
       }
     };
 
@@ -162,13 +165,16 @@ export const PrecisionPlanMaterialSection: React.FC<MaterialSectionProps> = Reac
             data={chithidatatable}
             onCellClick={(params: any) => {
               if (params?.data) {
-                setSelectedMaterialRow(params.data);
+                const rows = [params.data];
+                setSelectedMaterialRows(rows);
+                onSelectedRowsChange?.(rows);
               }
             }}
             onSelectionChange={(params: any) => {
               const rows = params?.api?.getSelectedRows?.();
               if (rows && rows.length > 0) {
-                setSelectedMaterialRow(rows[0]);
+                setSelectedMaterialRows(rows);
+                onSelectedRowsChange?.(rows);
               }
             }}
           />

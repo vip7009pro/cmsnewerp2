@@ -1,5 +1,7 @@
 # Roadmap - cmsnewerp2
 
+- [x] QLSX MACHINE: Khôi phục parity original cho lưu/đăng ký/reset/xóa vật liệu, lưu định mức, notification, quyền ĐM MĐ và reload dữ liệu; diagnostics/build thành công.
+
 - [x] BOM MANAGER: Đổi nền code-banner xanh/đỏ theo trạng thái USE_YN active/deactive; diagnostics và build thành công.
 
 - [x] BOM MANAGER: Cố định list code/Code Visualizer chia 50/50, chống visualizer làm nhảy chiều cao, phóng to căn giữa G_CODE/G_NAME và giữ loading detail đúng trạng thái; build thành công.

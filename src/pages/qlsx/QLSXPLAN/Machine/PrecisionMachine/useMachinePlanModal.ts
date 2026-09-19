@@ -37,6 +37,7 @@ import {
   renderYCSX,
 } from "../../utils/khsxUtils";
 import { getSettingUPHUnitLoss } from "../../../../../components/JSONData/DinhMuc";
+import { f_insertDMYCSX } from "../../../../kinhdoanh/utils/kdUtils";
 import { DataDinhMucState, UseMachinePlanModalReturn, YCSXFilterState } from "./machineTypes";
 
 export const defaultPlan: QLSXPLANDATA = {
@@ -178,6 +179,10 @@ export const useMachinePlanModal = ({
   const [recentDMData, setRecentDMData] = useState<RecentDM[]>([]);
   const [machine_list, setMachine_List] = useState<MACHINE_LIST[]>([]);
   const [chithidatatable, setChiThiDataTable] = useState<QLSXCHITHIDATA[]>([]);
+  const selectedMaterialRowsRef = useRef<QLSXCHITHIDATA[]>([]);
+  const handleSelectedMaterialRowsChange = useCallback((rows: QLSXCHITHIDATA[]) => {
+    selectedMaterialRowsRef.current = rows;
+  }, []);
 
   const resetPlanModal = useCallback(() => {
     setSelectedPlan({ ...defaultPlan });
@@ -515,37 +520,98 @@ export const useMachinePlanModal = ({
     [onRefreshData]
   );
 
-  // Lưu chỉ thị vật liệu
+  // Lưu chỉ thị vật liệu, giữ nguyên quy tắc chọn dòng của bản gốc.
+  const getMaterialRowsToSave = useCallback(() => {
+    return getCompany() === "CMS" ? selectedMaterialRowsRef.current : chithidatatable;
+  }, [chithidatatable]);
+
+  const saveMaterialRows = useCallback(async (rows: QLSXCHITHIDATA[]) => {
+    if (rows.length === 0) return "Chọn ít nhất một liệu để lưu";
+    return f_saveChiThiMaterialTable(selectedPlan, rows);
+  }, [selectedPlan]);
+
+  const reloadMaterialRows = useCallback(async () => {
+    const rows = await f_handleGetChiThiTable(selectedPlan, datadinhmuc as any, ycsxFilter.tempDM);
+    setChiThiDataTable(rows || []);
+  }, [datadinhmuc, selectedPlan, ycsxFilter.tempDM]);
+
   const handleSaveChiThiMaterial = useCallback(async () => {
     checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
       try {
-        await f_saveChiThiMaterialTable(selectedPlan, chithidatatable);
-        Swal.fire("Thành công", "Đã lưu bảng chỉ thị vật liệu", "success");
+        const errorCode = await saveMaterialRows(getMaterialRowsToSave());
+        if (errorCode === "0") {
+          await reloadMaterialRows();
+          await onRefreshData();
+          Swal.fire("Thành công", "Đã lưu bảng chỉ thị vật liệu", "success");
+        } else {
+          Swal.fire("Thông báo", errorCode, "error");
+        }
       } catch (err) {
         Swal.fire("Lỗi", "Không thể lưu chỉ thị", "error");
       }
     });
-  }, [chithidatatable, selectedPlan, userData]);
+  }, [getMaterialRowsToSave, onRefreshData, reloadMaterialRows, saveMaterialRows, userData]);
 
-  // Đăng ký xuất liệu
+  // Đăng ký xuất liệu: lưu chỉ thị trước, sau đó mới đăng ký O300/O301.
   const handleDangKyXuatLieu = useCallback(async () => {
+    const confirmResult = await Swal.fire({
+      title: "Chắc chắn muốn đăng ký xuất liệu?",
+      text: "Hệ thống sẽ lưu chỉ thị rồi đăng ký xuất liệu.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Vẫn đăng ký",
+      cancelButtonText: "Hủy",
+    });
+    if (!confirmResult.isConfirmed) return;
+
     checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
       try {
-        await f_handleDangKyXuatLieu(selectedPlan, selectedFactory, chithidatatable);
+        const rows = getMaterialRowsToSave();
+        const saveError = await saveMaterialRows(rows);
+        if (saveError !== "0") {
+          Swal.fire("Thông báo", saveError, "error");
+          return;
+        }
+        const registerError = await f_handleDangKyXuatLieu(selectedPlan, selectedFactory, rows);
+        if (registerError !== "0") {
+          Swal.fire("Thông báo", registerError, "error");
+          return;
+        }
+
+        const notification: NotificationElement = {
+          CTR_CD: "002",
+          NOTI_ID: -1,
+          NOTI_TYPE: "info",
+          TITLE: "Đăng ký xuất liệu cho chỉ thị",
+          CONTENT: `${getUserData()?.EMPL_NO} đã đăng ký xuất liệu cho chỉ thị: ${selectedPlan.PLAN_ID}: ${selectedPlan.PROD_REQUEST_NO}: ${selectedPlan.G_NAME}`,
+          SUBDEPTNAME: "KD,RND,SX_VP,QLSX,KHO_VP,MUA_VP",
+          MAINDEPTNAME: "KD,RND,SX,QLSX,KHO,MUA",
+          INS_EMPL: getUserData()?.EMPL_NO || "ADMIN",
+          INS_DATE: moment().format("YYYY-MM-DD"),
+          UPD_EMPL: getUserData()?.EMPL_NO || "ADMIN",
+          UPD_DATE: moment().format("YYYY-MM-DD"),
+        };
+        if (await f_insert_Notification_Data(notification)) {
+          getSocket().emit("notification_panel", notification);
+        }
+        selectedMaterialRowsRef.current = [];
+        await reloadMaterialRows();
+        await onRefreshData();
         Swal.fire("Thành công", "Đã đăng ký xuất liệu thành công", "success");
       } catch (err) {
         Swal.fire("Lỗi", "Không thể đăng ký xuất liệu", "error");
       }
     });
-  }, [chithidatatable, selectedFactory, selectedPlan, userData]);
+  }, [getMaterialRowsToSave, onRefreshData, reloadMaterialRows, saveMaterialRows, selectedFactory, selectedPlan, userData]);
 
   // Xóa dòng chỉ thị
   const handleDeleteChiThiLine = useCallback(
-    async (row: QLSXCHITHIDATA) => {
+    async (rows: QLSXCHITHIDATA[]) => {
       checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
         try {
-          await f_deleteChiThiMaterialLine([row], chithidatatable);
-          setChiThiDataTable((prev) => prev.filter((item) => item !== row));
+          const updatedRows = await f_deleteChiThiMaterialLine(rows, chithidatatable);
+          setChiThiDataTable(updatedRows);
+          selectedMaterialRowsRef.current = [];
           Swal.fire("Đã xóa", "Đã xóa dòng chỉ thị", "success");
         } catch (err) {
           Swal.fire("Lỗi", "Không thể xóa dòng chỉ thị", "error");
@@ -570,6 +636,16 @@ export const useMachinePlanModal = ({
 
   // Reset vật liệu chỉ thị
   const handleResetChiThi = useCallback(async () => {
+    const confirmResult = await Swal.fire({
+      title: "Chắc chắn muốn reset liệu?",
+      text: "Danh sách chỉ thị sẽ được dựng lại theo BOM sản xuất hiện tại.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Vẫn reset",
+      cancelButtonText: "Hủy",
+    });
+    if (!confirmResult.isConfirmed) return;
+
     checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
       try {
         const res = await f_handleResetChiThiTable(
@@ -578,12 +654,13 @@ export const useMachinePlanModal = ({
           ycsxFilter.tempDM
         );
         setChiThiDataTable(res || []);
+        selectedMaterialRowsRef.current = [];
         Swal.fire("Thành công", "Đã reset vật liệu thành công", "success");
       } catch (err) {
         Swal.fire("Lỗi", "Không thể reset vật liệu", "error");
       }
     });
-  }, [datadinhmuc, selectedFactory, selectedPlan, userData, ycsxFilter.tempDM]);
+  }, [datadinhmuc, selectedPlan, userData, ycsxFilter.tempDM]);
 
   // Thiết lập số dòng in
   const handleSetMaxLieu = useCallback(() => {
@@ -735,9 +812,41 @@ export const useMachinePlanModal = ({
       Swal.fire("Thông báo", "Vui lòng chọn một kế hoạch để lưu định mức", "warning");
       return;
     }
+    if (ycsxFilter.tempDM) {
+      Swal.fire("Lỗi", "Đang bật ĐM tạm thời, không lưu được, hãy tắt ĐM tạm thời", "error");
+      return;
+    }
     checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
       try {
-        const err_code = await f_saveQLSX({
+        if (
+          datadinhmuc.FACTORY === "NA" ||
+          datadinhmuc.EQ1 === "NA" ||
+          datadinhmuc.EQ1 === "NO" ||
+          datadinhmuc.EQ2 === "" ||
+          datadinhmuc.Setting1 === 0 ||
+          datadinhmuc.UPH1 === 0 ||
+          datadinhmuc.Step1 === 0 ||
+          datadinhmuc.LOSS_SX1 === 0
+        ) {
+          Swal.fire("Thông báo", "Lưu thất bại, hãy nhập đủ thông tin", "error");
+          return;
+        }
+
+        await f_insertDMYCSX({
+          PROD_REQUEST_NO: selectedPlan.PROD_REQUEST_NO,
+          G_CODE: selectedPlan.G_CODE,
+          LOSS_SX1: datadinhmuc.LOSS_SX1,
+          LOSS_SX2: datadinhmuc.LOSS_SX2,
+          LOSS_SX3: datadinhmuc.LOSS_SX3,
+          LOSS_SX4: datadinhmuc.LOSS_SX4,
+          LOSS_SETTING1: datadinhmuc.LOSS_SETTING1,
+          LOSS_SETTING2: datadinhmuc.LOSS_SETTING2,
+          LOSS_SETTING3: datadinhmuc.LOSS_SETTING3,
+          LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
+          LOSS_KT: datadinhmuc.LOSS_KT,
+        });
+
+        const saved = await f_saveQLSX({
           G_CODE: selectedPlan?.G_CODE,
           FACTORY: datadinhmuc.FACTORY,
           EQ1: datadinhmuc.EQ1,
@@ -766,7 +875,23 @@ export const useMachinePlanModal = ({
           LOSS_SETTING4: datadinhmuc.LOSS_SETTING4,
           LOSS_KT: datadinhmuc.LOSS_KT,
         });
-        if (err_code) {
+        if (saved) {
+          const notification: NotificationElement = {
+            CTR_CD: "002",
+            NOTI_ID: -1,
+            NOTI_TYPE: "info",
+            TITLE: "Update định mức sản xuất",
+            CONTENT: `${getUserData()?.EMPL_NO} đã update định mức sản xuất của code: ${selectedPlan.G_NAME_KD || selectedPlan.G_CODE}`,
+            SUBDEPTNAME: "SX,QLSX",
+            MAINDEPTNAME: "SX,QLSX",
+            INS_EMPL: getUserData()?.EMPL_NO || "ADMIN",
+            INS_DATE: moment().format("YYYY-MM-DD"),
+            UPD_EMPL: getUserData()?.EMPL_NO || "ADMIN",
+            UPD_DATE: moment().format("YYYY-MM-DD"),
+          };
+          if (await f_insert_Notification_Data(notification)) {
+            getSocket().emit("notification_panel", notification);
+          }
           Swal.fire("Thông báo", "Lưu Định mức thành công", "success");
         } else {
           Swal.fire("Thông báo", "Lỗi lưu định mức", "error");
@@ -776,10 +901,14 @@ export const useMachinePlanModal = ({
         Swal.fire("Lỗi", "Không thể lưu định mức", "error");
       }
     });
-  }, [datadinhmuc, selectedPlan?.G_CODE, userData]);
+  }, [datadinhmuc, selectedPlan, userData, ycsxFilter.tempDM]);
 
   // Áp dụng Định Mức Mặc Định (ĐM MĐ)
   const handleSetDMMD = useCallback(() => {
+    if (getCompany() === "CMS" && getUserData()?.EMPL_NO !== "NHU1903") {
+      Swal.fire("Thông báo", "Bạn không có quyền áp dụng định mức mặc định", "error");
+      return;
+    }
     if (selectedPlan.PLAN_ID === "XXX") {
       Swal.fire("Thông báo", "Chọn Plan trước", "error");
       return;
@@ -827,6 +956,8 @@ export const useMachinePlanModal = ({
     Swal.fire("Thông báo", "Đã nạp định mức mặc định theo dòng máy", "success");
   }, [selectedPlan]);
 
+  const canSetDMMD = getCompany() !== "CMS" || getUserData()?.EMPL_NO === "NHU1903";
+
   return {
     selectedPlan,
     setSelectedPlan,
@@ -856,6 +987,7 @@ export const useMachinePlanModal = ({
     handleResetChiThi,
     handleDangKyXuatLieu,
     handleDeleteChiThiLine,
+    handleSelectedMaterialRowsChange,
     handleXuatDaoSample,
     handleXuatLieuSample,
     showChiThi,
@@ -885,6 +1017,7 @@ export const useMachinePlanModal = ({
     handleUpdateBatchPlan,
     handleSaveDataDinhMuc,
     handleSetDMMD,
+    canSetDMMD,
     totalMachineTime,
     onRefreshData,
     handleSetPendingYCSX,

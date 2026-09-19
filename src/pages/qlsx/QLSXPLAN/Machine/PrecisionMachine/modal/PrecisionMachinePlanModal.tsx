@@ -44,6 +44,7 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
       handleResetChiThi,
       handleDangKyXuatLieu,
       handleDeleteChiThiLine,
+      handleSelectedMaterialRowsChange,
       handleXuatDaoSample,
       handleXuatLieuSample,
       showChiThi,
@@ -73,6 +74,7 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
       handleUpdateBatchPlan,
       handleSaveDataDinhMuc,
       handleSetDMMD,
+      canSetDMMD,
       totalMachineTime,
       onRefreshData,
       handleSetPendingYCSX,
@@ -156,6 +158,7 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
                   onRefreshPlans={onRefreshData}
                   onSaveDataDinhMuc={handleSaveDataDinhMuc}
                   onSetDMMD={handleSetDMMD}
+                  canSetDMMD={canSetDMMD}
                   totalMachineTime={totalMachineTime}
                   plandatatable={currentMachinePlans}
                   setPlanDataTable={setCurrentMachinePlans}
@@ -188,6 +191,7 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
                       onDangKyXuatLieu={handleDangKyXuatLieu}
                       onResetChiThi={handleResetChiThi}
                       onDeleteSelectedLine={handleDeleteChiThiLine}
+                      onSelectedRowsChange={handleSelectedMaterialRowsChange}
                       onXuatDaoSample={handleXuatDaoSample}
                       onXuatLieuSample={handleXuatLieuSample}
                       onOpenKhoAo={() => setShowKhoAo(true)}

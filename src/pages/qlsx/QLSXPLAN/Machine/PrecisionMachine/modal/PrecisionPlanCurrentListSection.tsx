@@ -30,6 +30,7 @@ interface CurrentListSectionProps {
   onRefreshPlans: () => void;
   onSaveDataDinhMuc: () => void;
   onSetDMMD: () => void;
+  canSetDMMD: boolean;
   totalMachineTime: number;
   // Dùng để IS_SETTING checkbox hoạt động
   plandatatable?: QLSXPLANDATA[];
@@ -53,6 +54,7 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
     onRefreshPlans,
     onSaveDataDinhMuc,
     onSetDMMD,
+    canSetDMMD,
     totalMachineTime,
     plandatatable,
     setPlanDataTable,
@@ -172,10 +174,12 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
               <span>Lưu Data ĐM</span>
             </button>
 
-            <button type="button" onClick={onSetDMMD} className="stb-ghost-fuchsia" title="Áp dụng định mức mặc định theo dòng máy">
-              <MdResetTv size={11} />
-              <span>ĐM MĐ</span>
-            </button>
+            {canSetDMMD && (
+              <button type="button" onClick={onSetDMMD} className="stb-ghost-fuchsia" title="Áp dụng định mức mặc định theo dòng máy">
+                <MdResetTv size={11} />
+                <span>ĐM MĐ</span>
+              </button>
+            )}
           </div>
 
           {/* Phải: Total time & Badge Plan */}

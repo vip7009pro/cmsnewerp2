@@ -1,5 +1,13 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (QLSX MACHINE: Khôi phục parity luồng vật liệu và định mức)
+- Khôi phục chọn dòng vật liệu theo công ty: CMS dùng các dòng được chọn, công ty khác dùng toàn bảng.
+- Luồng `Lưu CT + ĐKXK` nay lưu chỉ thị trước, kiểm tra mã lỗi đăng ký, gửi notification và reload lại chỉ thị/plan.
+- Khôi phục confirmation cho reset liệu, xóa nhiều dòng vật liệu, refresh plan sau lưu vật liệu và notification/lịch sử `f_insertDMYCSX` khi lưu định mức.
+- Khôi phục validation định mức và chặn lưu khi đang bật ĐM tạm thời; khôi phục quyền `ĐM MĐ` chỉ cho CMS `NHU1903`.
+- Reset liệu không gọi API xóa BOM SX; nếu sau reset BOM hiển thị rỗng cần kiểm tra response runtime của `getbomsx`/backend.
+- Diagnostics sạch và `npm run build` hoàn tất thành công.
+
 ## Update - 2026-09-19 (BOM MANAGER: Đổi màu code-banner theo trạng thái USE_YN)
 - `code-banner` dùng class động theo `USE_YN`: `Y` hiển thị gradient xanh active/mở, giá trị khác `Y` hiển thị gradient đỏ deactive/khóa.
 - Giữ nguyên nội dung, căn giữa và logic dữ liệu của banner.
