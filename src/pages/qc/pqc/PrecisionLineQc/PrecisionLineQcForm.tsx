@@ -81,6 +81,12 @@ const PrecisionLineQcForm: React.FC<PrecisionLineQcFormProps> = ({
   onReset,
 }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const cameraInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleSelectedFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) onFileChange(selectedFile);
+  };
 
   const currentSx = sxData.length > 0 ? sxData[0] : null;
   const isSettingReady = Boolean(currentSx && currentSx.MASS_START_TIME);
@@ -281,8 +287,16 @@ const PrecisionLineQcForm: React.FC<PrecisionLineQcFormProps> = ({
                     className="btn-rechoose-compact"
                     onClick={() => fileInputRef.current?.click()}
                   >
+                    <FiFileText size={12} />
+                    <span>Chọn file</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-rechoose-compact btn-camera-compact"
+                    onClick={() => cameraInputRef.current?.click()}
+                  >
                     <FiCamera size={12} />
-                    <span>Đổi</span>
+                    <span>Chụp lại</span>
                   </button>
                   <button
                     type="button"
@@ -298,16 +312,31 @@ const PrecisionLineQcForm: React.FC<PrecisionLineQcFormProps> = ({
                 </div>
               </div>
             ) : (
-              <div
-                className="upload-dropzone-compact"
-                onClick={() => fileInputRef.current?.click()}
-              >
+              <div className="upload-dropzone-compact">
                 <div className="dropzone-icon-compact">
-                  <FiCamera size={20} />
+                  <FiFileText size={20} />
                 </div>
                 <div className="dropzone-text-group">
-                  <span className="dropzone-text-main">Chạm để chụp / tải ảnh checksheet Line QC</span>
-                  <span className="dropzone-text-sub">Ảnh sẽ tự động đặt tên theo chỉ thị & lần kiểm tra</span>
+                  <span className="dropzone-text-main">Chọn ảnh checksheet Line QC</span>
+                  <span className="dropzone-text-sub">Có thể chọn file từ máy hoặc chụp ảnh trực tiếp</span>
+                </div>
+                <div className="upload-choice-actions">
+                  <button
+                    type="button"
+                    className="btn-upload-choice btn-upload-choice--file"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <FiFileText size={14} />
+                    <span>Chọn file</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-upload-choice btn-upload-choice--camera"
+                    onClick={() => cameraInputRef.current?.click()}
+                  >
+                    <FiCamera size={14} />
+                    <span>Chụp ảnh</span>
+                  </button>
                 </div>
               </div>
             )}
@@ -315,14 +344,17 @@ const PrecisionLineQcForm: React.FC<PrecisionLineQcFormProps> = ({
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/jpeg,image/jpg"
+              accept="image/*"
+              className="hidden-file-input"
+              onChange={handleSelectedFile}
+            />
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
               capture="environment"
               className="hidden-file-input"
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  onFileChange(e.target.files[0]);
-                }
-              }}
+              onChange={handleSelectedFile}
             />
           </div>
 

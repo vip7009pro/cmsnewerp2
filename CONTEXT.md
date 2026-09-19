@@ -1,5 +1,10 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-19 (LINE QC: Cho phép chọn file hoặc chụp ảnh trên mobile)
+- Tách input upload checksheet thành hai luồng: chọn file từ thiết bị (`image/*`) và chụp trực tiếp bằng camera (`capture="environment"`).
+- Giữ nguyên preview, đổi file, xóa file và luồng submit hiện tại.
+- Đã kiểm tra diagnostics không lỗi và `npm run build` hoàn tất thành công.
+
 ## Update - 2026-09-19 (BẢO MẬT: Loại API key khỏi commit QLSX Machine)
 - Đã làm sạch `.codex/config.toml`: token local được đặt rỗng và file được thêm vào `.gitignore` để không bị commit lại.
 - Đã bỏ `.codex/config.toml` khỏi Git index và amend commit cuối trước khi push.

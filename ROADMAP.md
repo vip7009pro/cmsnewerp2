@@ -1,5 +1,7 @@
 # Roadmap - cmsnewerp2
 
+- [x] LINE QC mobile hỗ trợ cả chọn file checksheet và chụp ảnh trực tiếp bằng camera.
+
 - [x] Loại API key khỏi `.codex/config.toml`, ignore cấu hình local và amend commit QLSX Machine trước khi push GitHub.
 
 - [x] Hoàn thiện Refactor Toàn Diện Trang Đăng Nhập (`Login.tsx`) Chuẩn Google Stitch Enterprise & Frosted Glassmorphism Hiện Đại:
