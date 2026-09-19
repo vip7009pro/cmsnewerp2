@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "./PrecisionPlanDataTb/PrecisionPlanDataTb.scss";
 import { usePlanDataTbOldData } from "./PrecisionPlanDataTb/usePlanDataTbOldData";
@@ -102,6 +102,21 @@ const PLAN_DATATB_OLD = () => {
     () => getPlanDataTableColumns((planData) => handleOpenDangKyLieu(planData)),
     [handleOpenDangKyLieu]
   );
+
+  useEffect(() => {
+    if (!showhideM) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setShowHideM(false);
+        clearSelectedMaterialRows();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [clearSelectedMaterialRows, setShowHideM, showhideM]);
 
   return (
     <div className={`precision-plandatatb${actionLoading ? " is-action-loading" : ""}`}>
