@@ -66,16 +66,17 @@ export const PrecisionMachineCard: React.FC<MachineCardProps> = React.memo(
               <span className="mini-dot"></span>
               {statusLabel}
             </span>
-          </div>
-
-          {/* Subcode mã hàng đang chạy */}
+             {/* Subcode mã hàng đang chạy */}
           <div className="card-subcode" title={machine.G_NAME || "Chưa có mã hàng"}>
             {machine.CURR_PLAN_ID ? `${machine.CURR_PLAN_ID}_${machine.G_NAME || ""}` : machine.G_NAME || "CHỜ KẾ HOẠCH"}
           </div>
+          </div>
+
+         
 
           {/* Danh sách Jobs (Có khả năng cuộn khi máy có nhiều lệnh dập) */}
           <div className="card-jobs card-jobs--scrollable">
-            {isWaitingMaterial && machine.EQ_NAME === "DC07" ? (
+            {!isWaitingMaterial && machine.EQ_NAME === "DC07" ? (
               // Cảnh báo máy chờ liệu phong cách Stitch (DC07)
               <div className="waiting-material-box">
                 <div className="warning-title">⚠️ Thiếu Cuộn Film Cắt</div>
@@ -109,7 +110,7 @@ export const PrecisionMachineCard: React.FC<MachineCardProps> = React.memo(
               })
             ) : (
               <div className="p-3 text-center text-slate-400 font-mono text-[11px]">
-                Chưa có lệnh dập nào
+                Chưa có lệnh nào
               </div>
             )}
           </div>
@@ -117,8 +118,8 @@ export const PrecisionMachineCard: React.FC<MachineCardProps> = React.memo(
 
         {/* Footer Card */}
         <div className="card-footer">
-          <span>Tốc độ: {speedText}</span>
-          {isWaitingMaterial && machine.EQ_NAME === "DC07" ? (
+         {/*  <span>Tốc độ: {speedText}</span> */}
+          {!isWaitingMaterial && machine.EQ_NAME === "DC07" ? (
             <div className="flex items-center gap-1.5">
               <span className="downtime-urgent">Downtime: 14m</span>
               <button type="button" className="urgent-btn" onClick={handleHoiKho}>
@@ -126,7 +127,7 @@ export const PrecisionMachineCard: React.FC<MachineCardProps> = React.memo(
               </button>
             </div>
           ) : (
-            <span className="waiting-count">{machinePlans.length} Lệnh dập</span>
+            <span className="waiting-count">{machinePlans.length} Lệnh</span>
           )}
         </div>
       </div>

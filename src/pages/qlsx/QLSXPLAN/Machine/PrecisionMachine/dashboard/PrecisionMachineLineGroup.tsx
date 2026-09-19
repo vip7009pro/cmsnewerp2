@@ -21,21 +21,21 @@ export const PrecisionMachineLineGroup: React.FC<LineGroupProps> = React.memo(
     let gridModifier = "precision-machine__machineGrid--5col";
 
     if (series === "FR") {
-      lineName = "CHUYỀN DẬP ĐỊNH HÌNH & CUỘN (Forming / Rotary Production Line)";
+      lineName = "Máy in Full Rotary (Full Rotary Printing Line)";
       lineDesc = `• ${machines.length} Cụm Máy Hoạt Động 100%`;
       headerModifier = "precision-machine__lineHeader--fr";
       targetQty = 418252;
       avgOee = 93.4;
       gridModifier = "precision-machine__machineGrid--5col";
     } else if (series === "DC") {
-      lineName = "CHUYỀN DẬP TỰ ĐỘNG KHUÔN DAO (Die Cutting Precision Line)";
+      lineName = "Máy Diecut & Dập Khuôn (Diecut / Stamping Line)";
       lineDesc = `• ${machines.length} Máy Dập Khuôn Lớn`;
       headerModifier = "precision-machine__lineHeader--dc";
       targetQty = 1066748;
       avgOee = 91.8;
-      gridModifier = "precision-machine__machineGrid--7col";
+      gridModifier = "precision-machine__machineGrid--5col";
     } else if (series === "ED") {
-      lineName = "CHUYỀN DẬP ĐIỆN TỬ & PHỤ TRỢ (Electronic / Stamping Line)";
+      lineName = "Máy Express Diecut (ED Series)";
       lineDesc = `• ${machines.length} Máy Dập Chính Xác`;
       headerModifier = "precision-machine__lineHeader--ed";
       targetQty = 650000;
