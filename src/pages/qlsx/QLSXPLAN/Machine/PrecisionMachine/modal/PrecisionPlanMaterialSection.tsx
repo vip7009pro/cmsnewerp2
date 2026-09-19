@@ -105,10 +105,10 @@ export const PrecisionPlanMaterialSection: React.FC<MaterialSectionProps> = Reac
             </button>
 
             {/* 2. Lưu Vật Liệu */}
-            <button type="button" className="stb-primary" onClick={onSaveMaterial} title="Lưu chỉ thị cấp phát vật liệu">
+           {/*  <button type="button" className="stb-primary" onClick={onSaveMaterial} title="Lưu chỉ thị cấp phát vật liệu">
               <AiFillSave size={11} />
               <span>Lưu Vật Liệu</span>
-            </button>
+            </button> */}
 
             {/* 3. Lưu CT + ĐKXK */}
             <button type="button" className="stb-success" onClick={onDangKyXuatLieu} title="Gửi yêu cầu đăng ký xuất liệu tới Kho SX">
