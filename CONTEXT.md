@@ -1,5 +1,11 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-20 (PATROL: Khôi phục layout cũ, ảnh full-width và footer 2-row như mẫu)
+- `PrecisionPatrolCard.tsx` giữ nguyên hướng legacy card: ảnh sự cố full-width ở đầu, avatar nhân viên neo góc trái trên ảnh, không thêm header card mới.
+- Footer card được cấu trúc lại thành 2 hàng theo sơ đồ gần với mẫu tham khảo: `ERR/CODE/DEFECT` ở hàng trên và `TIME/EQ/CUST/NG RATE` ở hàng dưới; text ngắn, rõ, dễ đọc khi trình chiếu TV.
+- Fallback ảnh sự cố vẫn dùng nền trắng thay vì đen; chế độ fullscreen TV giữ nền trắng và không chuyển sang black theme.
+- Diagnostics sạch, build production đã chạy thành công sau chỉnh sửa.
+
 ## Update - 2026-09-19 (NHÂN SỰ: Ổn định avatar khi chọn nhân viên)
 - Nguyên nhân nháy: cột Ảnh và ảnh hồ sơ đều tự xử lý `onError` bằng cách đổi trực tiếp `src`; khi AG Grid refresh renderer sau thao tác chọn dòng, ảnh có thể khởi động lại từ URL avatar và chớp trước khi fallback/ảnh thật ổn định.
 - Tạo `PrecisionUserAvatar.tsx` dùng chung cho bảng UserManager và profile panel, lưu trạng thái URL avatar đã tải thành công hoặc lỗi trong cache module để không lặp lại trạng thái lỗi khi re-render.

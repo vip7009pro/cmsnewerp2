@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FiX, FiImage, FiCpu, FiClock, FiUser } from "react-icons/fi";
 import { PatrolModalData } from "./usePatrolData";
 
@@ -11,6 +11,19 @@ export const PrecisionPatrolModal: React.FC<PrecisionPatrolModalProps> = ({
   data,
   onClose,
 }) => {
+  useEffect(() => {
+    if (!data.isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [data.isOpen, onClose]);
+
   if (!data.isOpen) return null;
 
   return (
@@ -41,7 +54,7 @@ export const PrecisionPatrolModal: React.FC<PrecisionPatrolModalProps> = ({
             onError={(e: any) => {
               e.target.onerror = null;
               e.target.src =
-                "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='250' viewBox='0 0 400 250'><rect width='100%' height='100%' fill='%230f172a'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2364748b' font-family='sans-serif' font-size='14'>Chưa có ảnh sự cố hoặc file không tồn tại</text></svg>";
+                "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='250' viewBox='0 0 400 250'><rect width='100%' height='100%' fill='%23ffffff'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2364748b' font-family='sans-serif' font-size='14'>Chưa có ảnh sự cố hoặc file không tồn tại</text></svg>";
             }}
           />
 

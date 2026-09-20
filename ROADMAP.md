@@ -40,6 +40,8 @@
 
 - [x] PATROL: Tối ưu card sự cố: EQ/Factory một dòng, NG rate compact dưới tên khách hàng, tăng vùng ảnh và neo avatar góc trái trên.
 
+- [x] PATROL: Khôi phục layout card cũ, giữ ảnh full-width ở trên, bổ sung footer 2-row rõ ràng theo mẫu tham khảo, fallback ảnh trắng, nền TV trắng và build production thành công sau chỉnh sửa.
+
 - [x] PATROL: Sửa card ảnh sự cố dùng `object-fit: contain`, hiển thị đầy đủ ảnh không bị cắt trên/dưới.
 
 - [x] PATROL: Ẩn lane Hàng ngang không có dữ liệu, bỏ 4 widget KPI và giữ theme sáng khi bật Trình chiếu TV.

@@ -256,16 +256,7 @@ export default function PrecisionAccountInfo() {
           <PrecisionLiveClock mychamcong={mychamcong} />
         </div>
 
-        {/* 3. 6-Card KPI Metrics Grid */}
-        <PrecisionKpiGrid
-          workday={workday}
-          days={days}
-          overtimeday={overtimeday}
-          countxacnhan={countxacnhan}
-          nghiday={nghiday}
-          thuongphat={thuongphat}
-        />
-
+        
         {/* 4. Detailed Employee Dossier Record (Electronic HR Ledger) */}
         <PrecisionDossierRecord userData={userData} />
 
@@ -276,6 +267,17 @@ export default function PrecisionAccountInfo() {
           error={attendanceTimelineError}
           onRefresh={fetchAttendanceTimeline}
         />
+
+        {/* 3. 6-Card KPI Metrics Grid */}
+        <PrecisionKpiGrid
+          workday={workday}
+          days={days}
+          overtimeday={overtimeday}
+          countxacnhan={countxacnhan}
+          nghiday={nghiday}
+          thuongphat={thuongphat}
+        />
+
 
         {/* 6. Admin Tools (NHU1903 Only) */}
         {isAdmin && <PrecisionAdminTools />}

@@ -25,7 +25,6 @@ export const PrecisionPatrolCard: React.FC<PrecisionPatrolCardProps> = ({
   data,
   onOpenModal,
 }) => {
-  // Tính toán thời gian trôi qua
   const diffMinutes = useMemo(() => {
     if (!data.TIME) return 0;
     const now = moment.utc(moment.utc().format("YYYY-MM-DD HH:mm:ss"));
@@ -33,7 +32,6 @@ export const PrecisionPatrolCard: React.FC<PrecisionPatrolCardProps> = ({
     return Math.max(0, now.diff(eventTime, "minutes"));
   }, [data.TIME]);
 
-  // Tính tỷ lệ NG rate (%)
   const { ngPercent, rateClass } = useMemo(() => {
     const qty = data.INSPECT_QTY || 1;
     const ng = data.INSPECT_NG || 0;
@@ -62,40 +60,33 @@ export const PrecisionPatrolCard: React.FC<PrecisionPatrolCardProps> = ({
       ? "dtc"
       : "ins";
 
+  const defectText = data.DEFECT || "Chưa có mô tả hiện tượng lỗi";
+  const defectCode = defectText.includes(":") ? defectText.split(":")[0].trim() : defectText.trim();
+  const defectDescription = defectText.includes(":") ? defectText.split(":").slice(1).join(":").trim() : "";
+  const whitePlaceholderSvg =
+    "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='520' height='260' viewBox='0 0 520 260'><rect width='100%' height='100%' fill='%23ffffff'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2394a3b8' font-family='sans-serif' font-size='13'>Không có ảnh sự cố</text></svg>";
+
   return (
     <div className="precision-patrol-card" onClick={() => onOpenModal(data)}>
-      {/* 1. Top bar: Category, EQ/Factory, Time */}
-      <div className="precision-patrol-card__topbar">
-        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-          <span className={`tag-category ${categoryClass}`}>{data.CATEGORY}</span>
-          <span className="tag-eq">
-            <FiCpu style={{ verticalAlign: "middle", marginRight: "2px" }} />
-            {data.FACTORY ? `${data.FACTORY} • ` : ""}
-            {data.EQ || "LINE"}
-          </span>
-        </div>
-
-        <div className={`tag-time ${isUrgent ? "urgent" : ""}`}>
-          {isUrgent && <span className="pulse-dot" />}
-          <FiClock size={10} />
-          <span>{diffMinutes < 60 ? `${diffMinutes}m ago` : `${Math.floor(diffMinutes / 60)}h ago`}</span>
-        </div>
-      </div>
-
-      {/* 2. Image box with avatar overlay & zoom button */}
       <div className="precision-patrol-card__image-box">
         <img
           className="defect-img"
-          src={data.LINK}
-          alt={data.DEFECT || "Ảnh lỗi"}
+          src={data.LINK || whitePlaceholderSvg}
+          alt={defectText}
           onError={(e: any) => {
             e.target.onerror = null;
-            e.target.src =
-              "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='180' viewBox='0 0 360 180'><rect width='100%' height='100%' fill='%230f172a'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2364748b' font-family='sans-serif' font-size='13'>Không có ảnh sự cố</text></svg>";
+            e.target.src = whitePlaceholderSvg;
           }}
         />
 
-        {/* Avatar nhân viên kiểm tra */}
+        <div className="image-meta">
+          <div className={`tag-time ${isUrgent ? "urgent" : ""}`}>
+            {isUrgent && <span className="pulse-dot" />}
+            <FiClock size={10} />
+            <span>{diffMinutes < 60 ? `${diffMinutes}m` : `${Math.floor(diffMinutes / 60)}h`}</span>
+          </div>
+        </div>
+
         {data.EMPL_NO && (
           <div className="avatar-badge" title={`Người kiểm tra: ${data.EMPL_NO}`}>
             <img
@@ -109,30 +100,44 @@ export const PrecisionPatrolCard: React.FC<PrecisionPatrolCardProps> = ({
             />
           </div>
         )}
-
-        {/* Zoom button removed */}
       </div>
 
-      {/* 3. Card Body: Title, Customer, NG Rate, Defect */}
       <div className="precision-patrol-card__body">
-        <div className="card-row-title">
-          <span className="card-code" title={data.G_NAME_KD}>
-            {data.G_NAME_KD || "---"}
-          </span>
-          {data.CUST_NAME_KD && (
-            <span className="card-customer" title={data.CUST_NAME_KD}>
-              {data.CUST_NAME_KD}
-            </span>
-          )}
-        </div>
+        <div className="card-footer">
+          <div className="card-footer__row">
+            <div className="footer-item footer-item--error">
+              <span className="footer-label">ERR</span>
+              <span className="footer-value">{defectCode || "---"}</span>
+            </div>
+            <div className="footer-item footer-item--code">
+              <span className="footer-label">CODE</span>
+              <span className="footer-value">{data.G_NAME_KD || "---"}</span>
+            </div>
+            <div className="footer-item footer-item--defect">
+              <span className="footer-label">DEFECT</span>
+              <span className="footer-value">{defectDescription || defectText}</span>
+            </div>
+          </div>
 
-        <div className={`card-rate-value ${rateClass}`}>
-          {data.INSPECT_NG}/{data.INSPECT_QTY} ({ngPercent}%)
+          <div className="card-footer__row card-footer__row--secondary">
+            <div className="footer-item footer-item--time">
+              <span className="footer-label">TIME</span>
+              <span className="footer-value">{diffMinutes}min</span>
+            </div>
+            <div className="footer-item footer-item--eq">
+              <span className="footer-label">EQ</span>
+              <span className="footer-value">{data.EQ || "LINE"}</span>
+            </div>
+            <div className="footer-item footer-item--cust">
+              <span className="footer-label">CUST</span>
+              <span className="footer-value">{data.CUST_NAME_KD || data.FACTORY || "---"}</span>
+            </div>
+            <div className="footer-item footer-item--ng">
+              <span className="footer-label">NG RATE</span>
+              <span className="footer-value">{data.INSPECT_NG ?? 0}/{data.INSPECT_QTY ?? 0} ({ngPercent}%)</span>
+            </div>
+          </div>
         </div>
-
-        <div className="card-defect" title={data.DEFECT}>
-          {data.DEFECT || "Chưa có mô tả hiện tượng lỗi"}
-      </div>
       </div>
     </div>
   );

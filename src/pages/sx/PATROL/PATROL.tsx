@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useEffect } from "react";
 import "./PrecisionPATROL/PrecisionPATROL.scss";
 import { usePatrolData } from "./PrecisionPATROL/usePatrolData";
 import PrecisionPatrolHeader from "./PrecisionPATROL/PrecisionPatrolHeader";
@@ -9,6 +9,34 @@ import PrecisionPatrolModal from "./PrecisionPATROL/PrecisionPatrolModal";
 
 const PATROL: React.FC = () => {
   const patrol = usePatrolData();
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      patrol.setIsFullScreen(Boolean(document.fullscreenElement));
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, [patrol]);
+
+  const handleToggleFullScreen = useCallback(async () => {
+    const nextState = !patrol.isFullScreen;
+
+    try {
+      if (nextState) {
+        if (document.fullscreenElement) {
+          await document.exitFullscreen();
+        }
+        await document.documentElement.requestFullscreen?.();
+      } else if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      }
+    } catch (error) {
+      console.warn("Fullscreen toggle failed:", error);
+    }
+
+    patrol.setIsFullScreen(nextState);
+  }, [patrol]);
 
   // Mở modal xem ảnh chi tiết
   const handleOpenModal = useCallback((cardData: PatrolCardData) => {
@@ -103,7 +131,7 @@ const PATROL: React.FC = () => {
         toDate={patrol.toDate}
         setToDate={patrol.setToDate}
         isFullScreen={patrol.isFullScreen}
-        onToggleFullScreen={() => patrol.setIsFullScreen((prev) => !prev)}
+        onToggleFullScreen={handleToggleFullScreen}
         autoRefresh={patrol.autoRefresh}
         onToggleAutoRefresh={() => patrol.setAutoRefresh((prev) => !prev)}
         countdown={patrol.countdown}

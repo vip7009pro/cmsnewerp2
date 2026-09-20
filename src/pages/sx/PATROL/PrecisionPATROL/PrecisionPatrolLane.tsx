@@ -27,7 +27,7 @@ export const PrecisionPatrolLane: React.FC<PrecisionPatrolLaneProps> = ({
     <div className="patrol-lane">
       <div className="patrol-lane__header">
         <div className="header-left">
-          <span className={`lane-badge ${badgeClass}`}>{category}</span>
+         {/*  <span className={`lane-badge ${badgeClass}`}>{category}</span> */}
           <span className="lane-title">{title}</span>
           <span className="lane-desc">• {subtitle}</span>
         </div>
