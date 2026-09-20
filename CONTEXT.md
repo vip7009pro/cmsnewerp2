@@ -1,5 +1,16 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-20 (PLAN: Hiển thị scrollbar ngang trong khung preview Excel)
+- Nguyên nhân scrollbar không nhìn thấy: `previewBody` có `min-height: 360px` trong khi khung `preview` bị giới hạn `max-height: 320px` và `overflow: hidden`, làm phần scrollbar phía dưới bị cắt.
+- Đồng bộ khung preview và AG Grid về chiều cao flex hữu hạn, dùng `overflow-x: scroll` trên wrapper và thêm style track/thumb để thanh cuộn luôn hiển thị.
+- Diagnostics sạch và `npm run build` thành công; vẫn còn warning có sẵn từ `pdfjs-dist` về `eval`.
+
+## Update - 2026-09-20 (PLAN: Sửa Check Plan hàng loạt và scroll ngang preview Excel)
+- `PrecisionPlanAddModal.tsx` bổ sung guard khi chưa có file, trạng thái loading, SweetAlert tiến trình và cập nhật `CHECKSTATUS` thành `OK`/`NG` sau khi kiểm tra.
+- Lỗi request được cô lập theo từng dòng; một dòng lỗi không còn làm toàn bộ bảng giữ `Waiting`, dòng lỗi hiển thị `NG: Không thể kiểm tra dữ liệu`.
+- Preview Excel bỏ rule ẩn thanh cuộn ngang của AG Grid, giữ chiều rộng tối thiểu cho bảng và cho phép kéo ngang để xem toàn bộ cột.
+- Diagnostics sạch và `npm run build` thành công; chỉ còn warning có sẵn từ `pdfjs-dist` về `eval`.
+
 ## Update - 2026-09-20 (PATROL: Khôi phục layout cũ, ảnh full-width và footer 2-row như mẫu)
 - `PrecisionPatrolCard.tsx` giữ nguyên hướng legacy card: ảnh sự cố full-width ở đầu, avatar nhân viên neo góc trái trên ảnh, không thêm header card mới.
 - Footer card được cấu trúc lại thành 2 hàng theo sơ đồ gần với mẫu tham khảo: `ERR/CODE/DEFECT` ở hàng trên và `TIME/EQ/CUST/NG RATE` ở hàng dưới; text ngắn, rõ, dễ đọc khi trình chiếu TV.

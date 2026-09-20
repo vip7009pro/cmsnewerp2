@@ -238,6 +238,7 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
   const [uploadExcelJson, setUploadExcelJSon] = useState<any[]>([]);
   const [columnsExcel, setColumnsExcel] = useState<any[]>([]);
   const [trigger, setTrigger] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState("");
   const [selectedFileSize, setSelectedFileSize] = useState("");
   const excelSelected = useRef<any[]>([]);
@@ -262,7 +263,7 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
           width: DAY_FIELDS.includes(k) ? 62 : k === "REMARK" ? 150 : 92,
           minWidth: DAY_FIELDS.includes(k) ? 62 : k === "REMARK" ? 150 : 92,
         }));
-        cols.push({ field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200 });
+        cols.push({ field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200, minWidth: 200 });
         setColumnsExcel(cols);
         setUploadExcelJSon(
           json.map((el: any, idx: number) => ({
@@ -310,36 +311,63 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
   };
 
   const handle_checkPlanHangLoat = async () => {
-    const tempjson = [...uploadExcelJson];
-    for (let i = 0; i < tempjson.length; i++) {
-      let err_code = 0;
-      await generalQuery("checkPlanExist", {
-        G_CODE: tempjson[i].G_CODE,
-        CUST_CD: tempjson[i].CUST_CD,
-        PLAN_DATE: tempjson[i].PLAN_DATE,
-      })
-        .then((r) => {
-          if (r.data.tk_status !== "NG") err_code = 1;
-        })
-        .catch(console.log);
-      if (moment() < moment(tempjson[i].PLAN_DATE)) err_code = 2;
-      await generalQuery("checkGCodeVer", { G_CODE: tempjson[i].G_CODE })
-        .then((r) => {
-          if (r.data.tk_status !== "NG") {
-            if (r.data.data[0].USE_YN !== "Y") err_code = 3;
-          } else err_code = 4;
-        })
-        .catch(console.log);
-      if (err_code === 0) tempjson[i].CHECKSTATUS = "OK";
-      else if (err_code === 1) tempjson[i].CHECKSTATUS = "NG:Plan đã tồn tại";
-      else if (err_code === 2)
-        tempjson[i].CHECKSTATUS = "NG: Ngày Plan không được sau ngày hôm nay";
-      else if (err_code === 3) tempjson[i].CHECKSTATUS = "NG: Ver này đã bị khóa";
-      else if (err_code === 4) tempjson[i].CHECKSTATUS = "NG: Không có Code ERP này";
+    if (uploadExcelJson.length === 0) {
+      Swal.fire("Thông báo", "Vui lòng tải file Plan trước khi kiểm tra", "warning");
+      return;
     }
-    Swal.fire("Thông báo", "Đã hoàn thành check Plan hàng loạt", "success");
-    setUploadExcelJSon(tempjson);
-    setTrigger(!trigger);
+
+    setIsLoading(true);
+    Swal.fire({
+      title: "Đang kiểm tra Plan",
+      text: `Đang kiểm tra ${uploadExcelJson.length} dòng...`,
+      icon: "info",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+    });
+
+    try {
+      const tempjson = [...uploadExcelJson];
+      for (let i = 0; i < tempjson.length; i++) {
+        let err_code = 0;
+        const row = tempjson[i];
+
+        try {
+          const planResponse = await generalQuery("checkPlanExist", {
+            G_CODE: row.G_CODE,
+            CUST_CD: row.CUST_CD,
+            PLAN_DATE: row.PLAN_DATE,
+          });
+          if (planResponse.data?.tk_status !== "NG") err_code = 1;
+
+          if (moment() < moment(row.PLAN_DATE)) err_code = 2;
+
+          const codeResponse = await generalQuery("checkGCodeVer", { G_CODE: row.G_CODE });
+          if (codeResponse.data?.tk_status !== "NG") {
+            if (codeResponse.data?.data?.[0]?.USE_YN !== "Y") err_code = 3;
+          } else {
+            err_code = 4;
+          }
+
+          if (err_code === 0) row.CHECKSTATUS = "OK";
+          else if (err_code === 1) row.CHECKSTATUS = "NG: Plan đã tồn tại";
+          else if (err_code === 2) row.CHECKSTATUS = "NG: Ngày Plan không được sau ngày hôm nay";
+          else if (err_code === 3) row.CHECKSTATUS = "NG: Ver này đã bị khóa";
+          else if (err_code === 4) row.CHECKSTATUS = "NG: Không có Code ERP này";
+        } catch (error) {
+          console.error(`Check Plan row ${i + 1} failed`, error);
+          row.CHECKSTATUS = "NG: Không thể kiểm tra dữ liệu";
+        }
+      }
+
+      setUploadExcelJSon(tempjson);
+      setTrigger((value) => !value);
+      Swal.fire("Thông báo", "Đã hoàn thành check Plan hàng loạt", "success");
+    } catch (error: any) {
+      console.error("Check Plan failed", error);
+      Swal.fire("Lỗi", error?.message || "Không thể kiểm tra dữ liệu Plan", "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handle_upPlanHangLoat = async () => {
@@ -463,7 +491,7 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
               <FiCalendar size={16} />
             </div>
             <div>
-              <h3 className="pp-modal__title">Thêm Mới Kế Hoạch Sản Xuất (Plan Entry)</h3>
+              <h3 className="pp-modal__title">Thêm Mới Kế Hoạch Giao hàng (Plan Entry)</h3>
               <p className="pp-modal__subtitle">
                 Khởi tạo hoặc tải dữ liệu kế hoạch hàng loạt vào hệ thống
               </p>
@@ -730,6 +758,7 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
                       type="button"
                       className="pp-excel__actionBtn pp-excel__actionBtn--check"
                       onClick={confirmCheck}
+                      disabled={isLoading}
                     >
                       <FiCheckCircle size={13} /> CHECK PLAN
                     </button>
@@ -737,6 +766,7 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
                       type="button"
                       className="pp-excel__actionBtn pp-excel__actionBtn--up"
                       onClick={confirmUp}
+                      disabled={isLoading}
                     >
                       <FiUploadCloud size={13} /> UP PLAN
                     </button>
