@@ -34,6 +34,10 @@ Trạng thái: **HOÀN THÀNH** — `npm run build` EXIT=0, get_errors 0 lỗi, 
 - Fix info banner mobile: `flex-direction: column; align-items: stretch` + `__infoLeft { min-width:0; nowrap; ellipsis }`.
 - **Pitfall**: `min-width: 0` là bắt buộc cho mọi flex item chứa text dài trong khối `display:flex` — nếu không, item sẽ co tới min-content (từng chữ) và text vỡ thành hàng chục dòng.
 
+- **PITFALL quan trọng — nhãn nút là TEXT NODE trần thì CSS không ẩn được**: `<FiDownload /> EX1` (không bọc `<span>`) ⇒ rule `.compact .toolBtn > span { display:none }` không match ⇒ ô 30px bị nhồi cả icon lẫn chữ. **Luôn bọc nhãn trong `<span>`.**
+- **Đổi chiến lược toolbar mobile (đợt 12 vòng 3)**: thay vì ép icon-only 30px, dùng `--keepLabel` + **nhãn NGẮN theo `isMobile`** (`label(short,full)` helper). Đo @393: 16 nút 1 hàng, tổng `scrollWidth 1188` (scroll ngang ~3 màn), mọi nút đủ chỗ chữ không tràn. Desktop giữ nguyên nhãn dài + 4 nút lock icon-only (`iconOnlyCount: 4`).
+- **Pitfall**: `--keepLabel` phải có specificity CAO HƠN rule ẩn nhãn (4 class > 3 class) — chỉ thêm `!important` sẽ làm desktop cũng hiện nhãn sai.
+
 ## Ghi chú kỹ thuật (đợt 11 — YCSXManager mobile)
 - Đo trước khi sửa @393×850: KPI chiếm **287px** (4 hàng × 1 cột); `__filterPanel` 220px tĩnh ⇒ `__content` chỉ còn **173px**; toolbar cao **352px** với nút xếp **10 hàng**; header `scrollWidth` 483 > 393 ⇒ nút `+ THÊM DỮ LIỆU AMZ` bị cắt.
 - **`!important` ở base ⇒ override mobile cũng phải `!important`**: `__filterPanel`, `__content`, `__gridContainer`, `__mainBody`, `__tableContainer` khai báo gần như mọi thuộc tính kèm `!important` ⇒ block mobile phải dùng `!important` mới thắng.
