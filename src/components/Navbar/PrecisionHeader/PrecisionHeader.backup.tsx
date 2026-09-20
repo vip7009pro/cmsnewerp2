@@ -40,7 +40,6 @@ import NotificationPanel from "../../NotificationPanel/NotificationPanel";
 import NavMenuNew from "../../NavMenu/NavMenuNew";
 import { getNavMenu } from "../../NavMenu/getNavMenu";
 import { canUseTabMode, getFirstNavMenuSearchResult, normalizeMenuPath } from "../../NavMenu/navMenuSearch";
-import PrecisionHeaderMobileMenu from "./PrecisionHeaderMobileMenu";
 import "./PrecisionHeader.scss";
 
 type ThemeOption = {
@@ -144,7 +143,6 @@ export default function PrecisionHeader({
   const headerRef = useRef<HTMLElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const searchAnchorRef = useRef<HTMLDivElement | null>(null);
-  const mobileMoreBtnRef = useRef<HTMLButtonElement | null>(null);
 
   const [localSearchText, setLocalSearchText] = useState("");
   const searchText = propSearchText !== undefined ? propSearchText : localSearchText;
@@ -155,13 +153,6 @@ export default function PrecisionHeader({
   const [avatarAnchorEl, setAvatarAnchorEl] = useState<HTMLElement | null>(null);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState<HTMLElement | null>(null);
   const [themeChoice, setThemeChoice] = useState("");
-
-  // --- Viewport mode: dưới 768px dùng layout mobile gọn (conditional rendering) ---
-  const [isMobile, setIsMobile] = useState<boolean>(() =>
-    typeof window !== "undefined" ? window.innerWidth <= 768 : false
-  );
-  const [mobileActionsAnchorEl, setMobileActionsAnchorEl] = useState<HTMLElement | null>(null);
-  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   const [internalMenuOpenSource, setInternalMenuOpenSource] = useState<"navbar" | "menu" | null>(null);
   const [searchMenuBounds, setSearchMenuBounds] = useState({ left: 0, width: 0 });
@@ -179,9 +170,7 @@ export default function PrecisionHeader({
   const isMenuOpen = propSidebarOpen !== undefined ? propSidebarOpen : Boolean(sidebarStatus);
 
   const effectiveAlignedToSearch =
-    isMobile
-      ? false
-      : propMenuAlignedToSearch !== undefined
+    propMenuAlignedToSearch !== undefined
       ? propMenuAlignedToSearch
       : internalMenuOpenSource === "navbar";
 
@@ -214,34 +203,6 @@ export default function PrecisionHeader({
     }
   }, [isMenuOpen]);
 
-  // Theo dõi viewport để quyết định render layout mobile hay desktop
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
-
-    setIsMobile(mediaQuery.matches);
-    mediaQuery.addEventListener("change", handleChange);
-
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
-
-  // Khi quay lại desktop thì dọn sạch các trạng thái chỉ dùng cho mobile
-  useEffect(() => {
-    if (!isMobile) {
-      setMobileSearchOpen(false);
-      setMobileActionsAnchorEl(null);
-    }
-  }, [isMobile]);
-
-  // Mobile: tự focus vào ô tìm kiếm ngay khi mở hàng search mở rộng
-  useEffect(() => {
-    if (isMobile && mobileSearchOpen) {
-      requestAnimationFrame(() => searchInputRef.current?.focus());
-    }
-  }, [isMobile, mobileSearchOpen]);
-
   // Calculate search menu bounds aligned under search box
   const updateSearchMenuBounds = useCallback(() => {
     const searchAnchor = searchAnchorRef.current;
@@ -257,7 +218,7 @@ export default function PrecisionHeader({
   }, []);
 
   useLayoutEffect(() => {
-    if (isMobile || !effectiveAlignedToSearch) {
+    if (!effectiveAlignedToSearch) {
       setSearchMenuBounds({ left: 0, width: 0 });
       return;
     }
@@ -270,7 +231,7 @@ export default function PrecisionHeader({
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [isMobile, effectiveAlignedToSearch, updateSearchMenuBounds, isMenuOpen, searchText]);
+  }, [effectiveAlignedToSearch, updateSearchMenuBounds, isMenuOpen, searchText]);
 
   // Toggle navigation panel
   const handleToggleMenu = useCallback(() => {
@@ -332,11 +293,6 @@ export default function PrecisionHeader({
 
       if (isCtrlK) {
         e.preventDefault();
-        if (isMobile) {
-          setMobileSearchOpen(true);
-          requestAnimationFrame(() => searchInputRef.current?.focus());
-          return;
-        }
         searchInputRef.current?.focus();
         if (!isMenuOpen) {
           dispatch(toggleSidebar("2"));
@@ -349,7 +305,7 @@ export default function PrecisionHeader({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [dispatch, handleToggleMenu, isMenuOpen, isMobile]);
+  }, [dispatch, handleToggleMenu, isMenuOpen]);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -376,7 +332,6 @@ export default function PrecisionHeader({
     dispatch(changeGLBLanguage(selectedLang));
     localStorage.setItem("lang", selectedLang);
     setLanguageAnchorEl(null);
-    setMobileActionsAnchorEl(null);
   };
 
   const handleThemeSelect = (themeVal: string) => {
@@ -392,33 +347,13 @@ export default function PrecisionHeader({
     localStorage.setItem("notification_count", "0");
   };
 
-  // Mobile: mở popup thông báo neo vào nút overflow (phần tử luôn tồn tại trong DOM)
-  const handleMobileNotificationOpen = () => {
-    setMobileActionsAnchorEl(null);
-    if (mobileMoreBtnRef.current) {
-      setNotificationAnchorEl(mobileMoreBtnRef.current);
-    }
-    dispatch(updateNotiCount(0));
-    localStorage.setItem("notification_count", "0");
-  };
-
-  // Mobile: mở menu bảng màu neo vào nút overflow
-  const handleMobileThemeOpen = () => {
-    setMobileActionsAnchorEl(null);
-    if (mobileMoreBtnRef.current) {
-      setThemeAnchorEl(mobileMoreBtnRef.current);
-    }
-  };
-
   const handleLogout = () => {
     setAvatarAnchorEl(null);
-    setMobileActionsAnchorEl(null);
     dispatch(resetTab(0));
     logout();
   };
 
   const handleTabModeChange = () => {
-    setMobileActionsAnchorEl(null);
     if (!tabModeSwap) {
       dispatch(resetTab(0));
       dispatch(
@@ -435,7 +370,6 @@ export default function PrecisionHeader({
 
   const handleOpenAccountInfo = () => {
     setAvatarAnchorEl(null);
-    setMobileActionsAnchorEl(null);
     if (tabModeSwap) {
       const existedIndex = tabs.findIndex((t) => t.ELE_CODE === "NS0");
       if (existedIndex !== -1) {
@@ -456,10 +390,9 @@ export default function PrecisionHeader({
     navigate("/accountinfo");
   };
 
-  const handleOpenSetting = (e?: MouseEvent) => {
-    e?.preventDefault();
+  const handleOpenSetting = (e: MouseEvent) => {
+    e.preventDefault();
     setAvatarAnchorEl(null);
-    setMobileActionsAnchorEl(null);
 
     if (!hasManagementRole(userData)) {
       Swal.fire("Cảnh báo", "Không đủ quyền hạn", "error");
@@ -498,100 +431,8 @@ export default function PrecisionHeader({
 
   const serverDisplay = selectedServer || "3007";
 
-  /*
-   * Khối ô tìm kiếm dùng chung cho cả hai viewport:
-   * - Desktop: nằm trong thanh omnibar giữa header.
-   * - Mobile: nằm trong hàng tìm kiếm mở rộng khi bấm icon kính lúp.
-   * Tại một thời điểm chỉ có một khối được mount.
-   */
-  const searchBoxNode = (
-    <div ref={searchAnchorRef} className="precision-header__searchBox">
-      <span className="material-symbols-outlined precision-header__searchIcon">
-        search
-      </span>
-      <input
-        ref={searchInputRef}
-        type="text"
-        value={searchText}
-        onChange={(e) => {
-          const val = e.target.value;
-          handleSearchTextChange(val);
-          if (isMobile) return;
-          setInternalMenuOpenSource("navbar");
-          if (val.trim() && !isMenuOpen) {
-            if (propOnSearchFocus) {
-              propOnSearchFocus();
-            } else {
-              dispatch(toggleSidebar("2"));
-            }
-          }
-          requestAnimationFrame(() => updateSearchMenuBounds());
-        }}
-        onFocus={() => {
-          if (isMobile) return;
-          setInternalMenuOpenSource("navbar");
-          if (propOnSearchFocus) {
-            propOnSearchFocus();
-          } else if (!isMenuOpen) {
-            dispatch(toggleSidebar("2"));
-          }
-          requestAnimationFrame(() => updateSearchMenuBounds());
-        }}
-        onClick={() => {
-          if (isMobile) return;
-          if (!isMenuOpen) {
-            setInternalMenuOpenSource("navbar");
-            if (propOnSearchFocus) {
-              propOnSearchFocus();
-            } else {
-              dispatch(toggleSidebar("2"));
-            }
-            requestAnimationFrame(() => updateSearchMenuBounds());
-          }
-        }}
-        onBlur={propOnSearchBlur}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            openFirstSearchResult();
-            if (isMobile) {
-              setMobileSearchOpen(false);
-            }
-          } else if (e.key === "Escape") {
-            handleSearchTextChange("");
-            setInternalMenuOpenSource(null);
-            if (isMobile) {
-              setMobileSearchOpen(false);
-              return;
-            }
-            if (isMenuOpen) {
-              dispatch(hideSidebar("2"));
-            }
-          }
-        }}
-        placeholder="Tìm nhanh chức năng, mã hồ sơ, nhân sự, mã kiểm tra..."
-        className="precision-header__searchInput"
-      />
-      {searchText && (
-        <button
-          type="button"
-          className="precision-header__searchClear"
-          onClick={() => handleSearchTextChange("")}
-          title="Xóa tìm kiếm"
-        >
-          <CloseRounded style={{ fontSize: 13 }} />
-        </button>
-      )}
-      <kbd className="precision-header__searchKbd">Ctrl + K</kbd>
-    </div>
-  );
-
   return (
-    <header
-      ref={headerRef}
-      className={`precision-header${isMobile ? " precision-header--mobile" : ""}`}
-      aria-label="CMS Vina ERP High-End Master Bar"
-    >
+    <header ref={headerRef} className="precision-header" aria-label="CMS Vina ERP High-End Master Bar">
       <div className="precision-header__container">
         {/* Left: Brand, Version & Server Telemetry */}
         <div className="precision-header__brand">
@@ -630,45 +471,81 @@ export default function PrecisionHeader({
           </div>
         </div>
 
-        {isMobile ? (
-          <div className="precision-header__mobileActions">
-            <button
-              type="button"
-              className={`precision-header__actionBtn${mobileSearchOpen ? " is-active" : ""}`}
-              onClick={() => setMobileSearchOpen((prev) => !prev)}
-              title={mobileSearchOpen ? "Đóng tìm kiếm" : "Tìm kiếm nhanh"}
-              aria-label="Toggle mobile search"
-            >
-              <span className="material-symbols-outlined" style={{ fontSize: 19 }}>
-                {mobileSearchOpen ? "search_off" : "search"}
-              </span>
-            </button>
-
-            <button
-              ref={mobileMoreBtnRef}
-              type="button"
-              className="precision-header__actionBtn"
-              onClick={(e) => setMobileActionsAnchorEl(e.currentTarget)}
-              title="Menu tài khoản, ngôn ngữ & cài đặt"
-              aria-label="Open mobile actions menu"
-            >
-              <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
-                more_vert
-              </span>
-              {notiCount > 0 && (
-                <span className="precision-header__badge">
-                  {notiCount > 99 ? "99+" : notiCount}
-                </span>
-              )}
-            </button>
+        {/* Center: High-Precision Omnibar Search */}
+        <div className="precision-header__searchWrap">
+          <div ref={searchAnchorRef} className="precision-header__searchBox">
+            <span className="material-symbols-outlined precision-header__searchIcon">
+              search
+            </span>
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchText}
+              onChange={(e) => {
+                const val = e.target.value;
+                handleSearchTextChange(val);
+                setInternalMenuOpenSource("navbar");
+                if (val.trim() && !isMenuOpen) {
+                  if (propOnSearchFocus) {
+                    propOnSearchFocus();
+                  } else {
+                    dispatch(toggleSidebar("2"));
+                  }
+                }
+                requestAnimationFrame(() => updateSearchMenuBounds());
+              }}
+              onFocus={() => {
+                setInternalMenuOpenSource("navbar");
+                if (propOnSearchFocus) {
+                  propOnSearchFocus();
+                } else if (!isMenuOpen) {
+                  dispatch(toggleSidebar("2"));
+                }
+                requestAnimationFrame(() => updateSearchMenuBounds());
+              }}
+              onClick={() => {
+                if (!isMenuOpen) {
+                  setInternalMenuOpenSource("navbar");
+                  if (propOnSearchFocus) {
+                    propOnSearchFocus();
+                  } else {
+                    dispatch(toggleSidebar("2"));
+                  }
+                  requestAnimationFrame(() => updateSearchMenuBounds());
+                }
+              }}
+              onBlur={propOnSearchBlur}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  openFirstSearchResult();
+                } else if (e.key === "Escape") {
+                  handleSearchTextChange("");
+                  setInternalMenuOpenSource(null);
+                  if (isMenuOpen) {
+                    dispatch(hideSidebar("2"));
+                  }
+                }
+              }}
+              placeholder="Tìm nhanh chức năng, mã hồ sơ, nhân sự, mã kiểm tra..."
+              className="precision-header__searchInput"
+            />
+            {searchText && (
+              <button
+                type="button"
+                className="precision-header__searchClear"
+                onClick={() => handleSearchTextChange("")}
+                title="Xóa tìm kiếm"
+              >
+                <CloseRounded style={{ fontSize: 13 }} />
+              </button>
+            )}
+            <kbd className="precision-header__searchKbd">Ctrl + K</kbd>
           </div>
-        ) : (
-          <>
-            {/* Center: High-Precision Omnibar Search */}
-            <div className="precision-header__searchWrap">{searchBoxNode}</div>
+        </div>
 
-            {/* Right: Actions, Lang, Notifications, User Profile */}
-            <div className="precision-header__actions">
+        {/* Right: Actions, Lang, Notifications, User Profile */}
+        <div className="precision-header__actions">
           {/* Theme Palette Switcher */}
           <button
             type="button"
@@ -758,37 +635,8 @@ export default function PrecisionHeader({
               expand_more
             </span>
           </div>
-            </div>
-          </>
-        )}
+        </div>
       </div>
-
-      {/* Mobile: hàng ô tìm kiếm mở rộng (không làm thay đổi chiều cao thanh 48px) */}
-      {isMobile && mobileSearchOpen && (
-        <div className="precision-header__mobileSearch">{searchBoxNode}</div>
-      )}
-
-      {/* Mobile: menu overflow gom ngôn ngữ, thông báo, bảng màu, tài khoản, cài đặt, đăng xuất */}
-      {isMobile && (
-        <PrecisionHeaderMobileMenu
-          anchorEl={mobileActionsAnchorEl}
-          open={Boolean(mobileActionsAnchorEl)}
-          onClose={() => setMobileActionsAnchorEl(null)}
-          userData={userData}
-          userDisplayName={userDisplayName}
-          userInitials={userInitials}
-          lang={lang}
-          notiCount={notiCount}
-          tabModeSwap={tabModeSwap}
-          onSelectLanguage={handleLanguageSelect}
-          onOpenAccountInfo={handleOpenAccountInfo}
-          onOpenSetting={handleOpenSetting}
-          onOpenTheme={handleMobileThemeOpen}
-          onOpenNotifications={handleMobileNotificationOpen}
-          onToggleTabMode={handleTabModeChange}
-          onLogout={handleLogout}
-        />
-      )}
 
       {/* Flyout ERP Department Menu Panel */}
       {isMenuOpen && company !== "PVN" && (
