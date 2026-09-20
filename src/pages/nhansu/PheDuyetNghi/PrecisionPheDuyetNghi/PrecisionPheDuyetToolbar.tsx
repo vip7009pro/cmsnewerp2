@@ -52,17 +52,20 @@ export const PrecisionPheDuyetToolbar: React.FC<PrecisionPheDuyetToolbarProps> =
             checked={onlyPending}
             onChange={(e) => onOnlyPendingChange(e.target.checked)}
           />
-          <span>Chờ duyệt (Pending)</span>
+          <span>
+            Chờ duyệt<span className="pending-suffix"> (Pending)</span>
+          </span>
         </label>
 
         <button
           type="button"
           className="btn-search"
           onClick={onSearch}
+          aria-label="Tìm kiếm"
           title="Tải lại dữ liệu theo bộ lọc"
         >
           <span className="material-symbols-outlined">search</span>
-          <span>Tìm kiếm</span>
+          <span className="btn-search__label">Tìm kiếm</span>
         </button>
       </div>
 

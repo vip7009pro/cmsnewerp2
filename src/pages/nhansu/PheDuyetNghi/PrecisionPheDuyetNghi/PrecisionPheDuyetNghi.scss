@@ -561,11 +561,98 @@
 
     &__toolbar {
       padding: 6px 8px;
-      align-items: stretch;
+      /* Dàn lại thành 2 hàng:
+         Hàng 1: Từ ngày | Đến ngày | Chờ duyệt
+         Hàng 2: Tìm kiếm | EX1 | EX2 | PIVOT                       */
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      column-gap: 6px;
+      row-gap: 0;
 
-      .toolbar-left,
+      /* Giải phóng item của nhóm trái để chúng trở thành flex item của toolbar */
+      .toolbar-left {
+        display: contents;
+      }
+
+      /* ---------- HÀNG 1: 2 ô ngày chia đều + pill Chờ duyệt ---------- */
+      .toolbar-left .date-field {
+        order: 1;
+        flex: 1 1 0;
+        min-width: 0;
+        margin-bottom: 6px;
+
+        label {
+          display: none;
+        }
+
+        input[type='date'] {
+          width: 100%;
+          min-width: 0;
+          height: 30px;
+          padding: 0 4px;
+          font-size: 11px;
+        }
+      }
+
+      .toolbar-left .pending-checkbox-pill {
+        order: 2;
+        flex: 0 0 auto;
+        height: 30px;
+        margin-bottom: 6px;
+        white-space: nowrap;
+
+        .pending-suffix {
+          display: none;
+        }
+      }
+
+      /* Item rỗng chiếm trọn 1 hàng => ép ngắt dòng trước nút Tìm kiếm */
+      .toolbar-left::after {
+        content: '';
+        order: 3;
+        flex: 1 1 100%;
+        height: 0;
+      }
+
+      /* ---------- HÀNG 2: Tìm kiếm + cụm nút xuất ---------- */
+      .toolbar-left .btn-search {
+        order: 4;
+        flex: 0 0 auto;
+        height: 30px;
+        padding: 0 9px;
+      }
+
       .toolbar-right {
-        width: 100%;
+        order: 5;
+        flex: 1 1 auto;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 5px;
+        min-width: 0;
+
+        .grid-btn {
+          flex: 0 0 auto;
+          height: 30px;
+          padding: 0 8px;
+
+          .material-symbols-outlined {
+            font-size: 15px;
+          }
+
+          .badge {
+            display: none;
+          }
+        }
+      }
+
+      /* Máy rất hẹp (≤340px): ẩn chữ nút Tìm kiếm để hàng 2 không bị xuống dòng */
+      @media (max-width: 340px) {
+        .btn-search__label {
+          display: none;
+        }
       }
     }
 
