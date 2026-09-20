@@ -27,6 +27,8 @@ const ADDSPECTDTC = () => {
     inspectiondatatable,
     quickFilterText,
     setQuickFilterText,
+    selectedCount,
+    setSelectedCount,
     selectedRowsData,
     handletraDTCData,
     handleInsertSpec,
@@ -182,7 +184,9 @@ const ADDSPECTDTC = () => {
               columns={columns}
               data={filteredGridData}
               onSelectionChange={(e: any) => {
-                selectedRowsData.current = e?.api ? e.api.getSelectedRows() : [];
+                const rows = e?.api ? e.api.getSelectedRows() : [];
+                selectedRowsData.current = rows;
+                setSelectedCount(rows.length);
               }}
             />
           </div>
@@ -192,7 +196,7 @@ const ADDSPECTDTC = () => {
             <div className="status-left">
               <span>Total: <strong>{filteredGridData.length} rows</strong></span>
               <span>|</span>
-              <span>Đã chọn: <strong style={{ color: "#2563eb" }}>{selectedRowsData.current.length} dòng</strong></span>
+              <span>Đã chọn: <strong style={{ color: "#2563eb" }}>{selectedCount} dòng</strong></span>
               <span>|</span>
               <span className="sync-tag">
                 <span className="dot"></span>

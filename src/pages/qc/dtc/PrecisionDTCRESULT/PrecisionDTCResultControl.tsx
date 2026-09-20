@@ -52,7 +52,9 @@ const PrecisionDTCResultControl: React.FC<PrecisionDTCResultControlProps> = ({
   onSaveResults,
   onSearch,
 }) => {
-  const isXRF = testname === "3" || testcode_tenthat === "XRF";
+  // Parity backup: khối Excel XRF chỉ hiển thị khi hạng mục test đang chọn là XRF (TEST_CODE = 3).
+  // Không dùng `testcode_tenthat === "XRF"` vì state này mặc định "XRF" từ đầu.
+  const isXRF = testname === "3";
 
   return (
     <div className="precision-dtcresult__controlCard">

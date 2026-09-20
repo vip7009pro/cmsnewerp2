@@ -210,6 +210,11 @@ export const useDTCResultData = () => {
       const reader = new FileReader();
       reader.onload = async (event: any) => {
         try {
+          // Parity backup: chỉ cho nạp Excel khi hạng mục đang chọn là XRF
+          if (testcode_tenthat !== "XRF") {
+            Swal.fire("Thông báo", "Chọn test XRF để upload file", "error");
+            return;
+          }
           const data = event.target.result;
           const workbook = XLSX.read(data, { type: "array" });
           const sheetName = workbook.SheetNames[0];
@@ -266,7 +271,7 @@ export const useDTCResultData = () => {
       };
       reader.readAsArrayBuffer(e.target.files[0]);
     },
-    [dtc_id, uphangloat, inspectiondatatable]
+    [dtc_id, uphangloat, inspectiondatatable, testcode_tenthat]
   );
 
   // Cập nhật người thực hiện test
@@ -293,8 +298,23 @@ export const useDTCResultData = () => {
       }
     }
 
-    if (!checkresult && !uphangloat) {
-      Swal.fire("Thiếu số đo", "Vui lòng nhập đầy đủ kết quả đo trước khi lưu", "warning");
+    if (!checkresult) {
+      Swal.fire(
+        "Thiếu số đo",
+        uphangloat
+          ? "File Excel có điểm đo thiếu hoặc không hợp lệ, vui lòng kiểm tra lại trước khi lưu"
+          : "Vui lòng nhập đầy đủ kết quả đo trước khi lưu",
+        "warning"
+      );
+      return;
+    }
+
+    if (!uphangloat && !dtc_id.trim()) {
+      Swal.fire(
+        "Thiếu thông tin",
+        "Vui lòng nhập ID TEST (hoặc chuyển sang chế độ LOT NVL / Up hàng loạt) trước khi lưu",
+        "warning"
+      );
       return;
     }
 

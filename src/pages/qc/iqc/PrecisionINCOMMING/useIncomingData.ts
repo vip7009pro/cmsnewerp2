@@ -307,8 +307,24 @@ export const useIncomingData = () => {
     }
     let errCode = "";
     for (let i = 0; i < iqc1datatable.length; i++) {
+      const row = iqc1datatable[i];
       try {
-        const res = await generalQuery("insertIQC1table", iqc1datatable[i]);
+        // Gửi payload tường minh: các dòng load từ server chỉ có LOT_VENDOR_IQC,
+        // backend insertIQC1table bắt buộc phải có LOT_VENDOR (nếu thiếu sẽ lỗi 500).
+        const res = await generalQuery("insertIQC1table", {
+          M_CODE: row.M_CODE,
+          M_LOT_NO: row.M_LOT_NO,
+          LOT_CMS: row.LOT_CMS ?? row.M_LOT_NO?.substring(0, 6),
+          LOT_VENDOR: row.LOT_VENDOR ?? row.LOT_VENDOR_IQC ?? "",
+          CUST_CD: row.CUST_CD ?? "",
+          EXP_DATE: row.EXP_DATE ?? "",
+          INPUT_LENGTH: row.INPUT_LENGTH ?? 0,
+          TOTAL_ROLL: row.TOTAL_ROLL ?? 0,
+          NQ_CHECK_ROLL: row.NQ_CHECK_ROLL ?? 0,
+          DTC_ID: row.DTC_ID ?? 0,
+          TEST_EMPL: row.TEST_EMPL ?? "",
+          REMARK: row.REMARK ?? "",
+        });
         if (res.data.tk_status === "NG") {
           errCode += `Lỗi: ${res.data.message} | `;
         }
@@ -352,12 +368,17 @@ export const useIncomingData = () => {
           REMARK: row.REMARK,
         });
         if (res.data.tk_status !== "NG") {
-          await generalQuery("updateQCPASSI222", {
-            M_CODE: row.M_CODE,
-            LOT_CMS: row.LOT_CMS,
-            VALUE: row.TOTAL_RESULT === "OK" ? "Y" : "N",
-          });
-          if (row.TOTAL_RESULT === "NG") {
+          const totalResult = (row.TOTAL_RESULT ?? "").toUpperCase();
+          // Chỉ đồng bộ QC_PASS sang I222 khi lô đã có kết luận.
+          // Dòng PD/trống nếu đẩy VALUE='N' sẽ set USE_YN='B' (khóa liệu) là sai nghiệp vụ.
+          if (totalResult === "OK" || totalResult === "NG") {
+            await generalQuery("updateQCPASSI222", {
+              M_CODE: row.M_CODE,
+              LOT_CMS: row.LOT_CMS,
+              VALUE: totalResult === "OK" ? "Y" : "N",
+            });
+          }
+          if (totalResult === "NG") {
             insertHoldingData(row.REMARK, row.M_CODE, row.LOT_CMS);
           }
         } else {
@@ -482,6 +503,11 @@ export const useIncomingData = () => {
   };
 
   const updateDataTable = (dataRow: IQC_INCOMMING_DATA, key: string, value: any) => {
+    // Gate quyền giống bản backup: chỉ bộ phận IQC được sửa kết quả trên lưới
+    if (!userData?.SUBDEPTNAME?.includes("IQC")) {
+      Swal.fire("Thông báo", "Bạn không có quyền thực hiện", "error");
+      return;
+    }
     Swal.fire({
       title: "Chắc chắn muốn update Data ?",
       text: "Suy nghĩ kỹ trước khi thực hiện",

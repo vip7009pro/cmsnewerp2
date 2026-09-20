@@ -43,6 +43,8 @@ export const useADDSPECData = () => {
   const [inspectiondatatable, setInspectionDataTable] = useState<Array<any>>([]);
   const [m_name] = useState("");
   const [quickFilterText, setQuickFilterText] = useState("");
+  // Đếm số dòng đang chọn: ref không gây re-render nên cần state riêng cho status bar
+  const [selectedCount, setSelectedCount] = useState(0);
 
   const selectedRowsData = useRef<Array<DTC_ADD_SPEC_DATA>>([]);
 
@@ -69,8 +71,8 @@ export const useADDSPECData = () => {
   };
 
   const getTestList = async () => {
-    let tempList: TestListTable[] = await f_loadDTC_TestList();
-    tempList.unshift({ TEST_CODE: 0, TEST_NAME: "ALL", SELECTED: false });
+    const tempList: TestListTable[] = await f_loadDTC_TestList();
+    tempList.unshift({ TEST_CODE: 0, TEST_NAME: "ALL", TEST_TIME: null, SELECTED: false });
     setTestList(tempList);
   };
 
@@ -344,6 +346,10 @@ export const useADDSPECData = () => {
   };
 
   const handleAddNewPoint = () => {
+    if (testname === "0") {
+      Swal.fire("Thông báo", "Hãy chọn một hạng mục test bất kỳ trước khi thêm điểm đo", "error");
+      return;
+    }
     const nextCode = inspectiondatatable.length + 1;
     const newPoint: any = {
       id: nextCode,
@@ -377,6 +383,7 @@ export const useADDSPECData = () => {
     const selectedIds = new Set(selectedRowsData.current.map((r: any) => r.id));
     setInspectionDataTable(inspectiondatatable.filter((r) => !selectedIds.has(r.id)));
     selectedRowsData.current = [];
+    setSelectedCount(0);
   };
 
   const toggleCheckNVL = () => {
@@ -408,6 +415,8 @@ export const useADDSPECData = () => {
     setInspectionDataTable,
     quickFilterText,
     setQuickFilterText,
+    selectedCount,
+    setSelectedCount,
     selectedRowsData,
     handletraDTCData,
     handleInsertSpec,
