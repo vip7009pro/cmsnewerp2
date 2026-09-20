@@ -607,12 +607,12 @@ const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
             <div className="precision-ycsx__gridToolbarLeft">
               <button
                 type="button"
-                className="precision-ycsx__toolBtn precision-ycsx__toolBtn--filterToggle"
+                className={`precision-ycsx__toolBtn precision-ycsx__toolBtn--filterToggle ${isMobile ? "precision-ycsx__toolBtn--keepLabel" : ""}`}
                 onClick={() => setIsFilterHidden((prev) => !prev)}
                 title={isFilterHidden ? "Hiện bộ lọc" : "Ẩn bộ lọc"}
               >
                 <FiSidebar />
-                <span>{isFilterHidden ? "Hiện Lọc" : "Ẩn Lọc"}</span>
+                <span>{isMobile ? "Lọc" : isFilterHidden ? "Hiện Lọc" : "Ẩn Lọc"}</span>
               </button>
 
               <div className="precision-ycsx__toolSep" />
@@ -620,7 +620,7 @@ const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
               {/* Nút In Tem AMZ */}
               <button
                 type="button"
-                className="precision-ycsx__toolBtn precision-ycsx__toolBtn--primary"
+                className={`precision-ycsx__toolBtn precision-ycsx__toolBtn--primary ${isMobile ? "precision-ycsx__toolBtn--keepLabel" : ""}`}
                 disabled={selectedRows.length === 0}
                 onClick={handlePreparePrint}
                 title="Xem trước và In tem AMZ cho các dòng được tích chọn"
@@ -630,7 +630,7 @@ const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
                 }}
               >
                 <FiPrinter size={14} />
-                <span>IN TEM AMZ ({selectedRows.length})</span>
+                <span>{isMobile ? `In tem (${selectedRows.length})` : `IN TEM AMZ (${selectedRows.length})`}</span>
               </button>
 
               {/* Offset X & Y — ẩn trên mobile để toolbar chỉ còn các nút, scroll ngang gọn hơn */}
@@ -666,37 +666,42 @@ const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
 
               <div className="precision-ycsx__toolSep" />
 
-              {/* Xuất Excel */}
+              {/* Xuất Excel — nhãn bọc trong <span> để CSS mobile xử lý được (trước đây là text node trần
+                  nên bị nhồi icon + chữ vào ô 30px) */}
               <button
                 type="button"
-                className="precision-ycsx__toolBtn"
+                className="precision-ycsx__toolBtn precision-ycsx__toolBtn--emerald precision-ycsx__toolBtn--keepLabel"
                 onClick={() => exportExcel(amzdatatable, "AMZ_ToanBo")}
+                title="Xuất Excel toàn bộ dữ liệu AMZ (EX1)"
               >
-                <FiDownload /> EX1
+                <FiDownload />
+                <span>EX1</span>
               </button>
               <button
                 type="button"
-                className="precision-ycsx__toolBtn"
+                className="precision-ycsx__toolBtn precision-ycsx__toolBtn--emerald precision-ycsx__toolBtn--keepLabel"
                 onClick={() =>
                   exportExcel(
                     selectedRows.length > 0 ? selectedRows : amzdatatable,
                     "AMZ_DongChon"
                   )
                 }
+                title="Xuất Excel các dòng đang tích chọn (EX2)"
               >
-                <FiDownload /> EX2
+                <FiDownload />
+                <span>EX2</span>
               </button>
             </div>
 
             <div className="precision-ycsx__gridToolbarRight">
               <button
                 type="button"
-                className="precision-ycsx__toolBtn precision-ycsx__toolBtn--emerald"
+                className={`precision-ycsx__toolBtn precision-ycsx__toolBtn--emerald ${isMobile ? "precision-ycsx__toolBtn--keepLabel" : ""}`}
                 onClick={onOpenAmzAddModal}
                 title="Mở modal tải dữ liệu Amazon hàng loạt"
               >
                 <AiFillAmazonCircle size={15} />
-                <span>+ THÊM DỮ LIỆU AMZ MỚI</span>
+                <span>{isMobile ? "+ AMZ" : "+ THÊM DỮ LIỆU AMZ MỚI"}</span>
               </button>
             </div>
           </div>

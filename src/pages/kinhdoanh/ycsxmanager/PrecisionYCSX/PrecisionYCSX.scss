@@ -963,6 +963,8 @@ $py-radius: 6px;
       flex-wrap: nowrap !important;
       flex: 0 0 auto !important;
       min-width: 0;
+      /* Base để 4px ⇒ trên mobile tăng lên 6px cho các nút không dính vào nhau */
+      gap: 6px;
     }
 
     &__toolSep {
@@ -988,6 +990,21 @@ $py-radius: 6px;
 
         > span {
           display: none;
+        }
+
+        /* Ngoại lệ: các nút cần giữ nhãn ngắn để phân biệt (EX1/EX2) — chỉ thu gọn icon */
+        &.precision-ycsx__toolBtn--keepLabel {
+          width: auto;
+          min-width: 0;
+          padding: 0 8px;
+          gap: 4px;
+
+          > span {
+            display: inline;
+            font-size: 10.5px;
+            font-weight: 700;
+            white-space: nowrap;
+          }
         }
       }
     }
