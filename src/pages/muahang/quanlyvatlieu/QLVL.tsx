@@ -177,7 +177,13 @@ const QLVL: React.FC = () => {
     try {
       const updRes = await generalQuery("updateMaterial", clickedRows);
       if (updRes.data.tk_status !== "NG") {
-        await generalQuery("updateM090FSC", clickedRows);
+        try {
+          await generalQuery("updateM090FSC", clickedRows);
+        } catch (fscErr) {
+          // updateMaterial đã thành công; lỗi đồng bộ bảng FSC chỉ ghi log,
+          // không được báo sai thành "không thể cập nhật vật liệu".
+          console.error("updateM090FSC failed:", fscErr);
+        }
         const userData = getUserData();
         const newNotification: NotificationElement = {
           CTR_CD: "002",

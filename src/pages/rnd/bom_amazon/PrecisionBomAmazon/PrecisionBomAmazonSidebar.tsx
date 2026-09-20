@@ -13,7 +13,9 @@ interface SidebarProps {
   setG_CODE_MAU: (val: string) => void;
   sidebarTab: SidebarTabMode;
   setSidebarTab: (val: SidebarTabMode) => void;
-  listamazontable: LIST_BOM_AMAZON[];
+  listBomFiltered: LIST_BOM_AMAZON[];
+  sidebarSearch: string;
+  setSidebarSearch: (val: string) => void;
   rows: CODE_INFO[];
   codeCMS: string;
   setCodeCMS: (val: string) => void;
@@ -31,7 +33,9 @@ export const PrecisionBomAmazonSidebar: React.FC<SidebarProps> = React.memo(
     setG_CODE_MAU,
     sidebarTab,
     setSidebarTab,
-    listamazontable,
+    listBomFiltered,
+    sidebarSearch,
+    setSidebarSearch,
     rows,
     codeCMS,
     setCodeCMS,
@@ -76,7 +80,7 @@ export const PrecisionBomAmazonSidebar: React.FC<SidebarProps> = React.memo(
           >
             <AiOutlineUnorderedList size={13} />
             <span>ĐÃ CÓ BOM</span>
-            <span className="countBadge">{listamazontable.length}</span>
+            <span className="countBadge">{listBomFiltered.length}</span>
           </button>
 
           <button
@@ -126,9 +130,8 @@ export const PrecisionBomAmazonSidebar: React.FC<SidebarProps> = React.memo(
               <input
                 type="text"
                 placeholder="Lọc mã đã có BOM Amazon..."
-                onChange={(e) => {
-                  // Có thể lọc nhanh qua AG-Grid filter hoặc nạp lại
-                }}
+                value={sidebarSearch}
+                onChange={(e) => setSidebarSearch(e.target.value)}
               />
             </div>
           </div>
@@ -141,7 +144,7 @@ export const PrecisionBomAmazonSidebar: React.FC<SidebarProps> = React.memo(
               showFilter={true}
               toolbar={<></>}
               columns={listBomColumns}
-              data={listamazontable}
+              data={listBomFiltered}
               onSelectionChange={() => {}}
               onRowClick={(params: any) => {
                 if (params.data?.G_CODE) {

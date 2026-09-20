@@ -43,6 +43,6 @@ export interface UseProductBarcodeDataReturn {
   updateBarcode: () => Promise<void>;
   deleteBarcode: () => Promise<void>;
   resetForm: () => void;
-  handleExportExcel: () => void;
+  handleExportExcel: (type?: "EX1" | "EX2") => void;
   dataSource: any;
 }

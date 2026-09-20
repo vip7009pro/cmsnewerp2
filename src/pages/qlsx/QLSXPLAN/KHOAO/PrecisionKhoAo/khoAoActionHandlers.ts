@@ -163,6 +163,7 @@ export const handleXuatKhoAoAction = ({
 interface AdminActionParams {
   selectedRows: TONLIEUXUONG[];
   userData: UserData | undefined;
+  activeTab: string;
   onSuccess: () => void;
   onReload: () => void;
 }
@@ -170,8 +171,16 @@ interface AdminActionParams {
 export const handleXoaRacAction = async ({
   selectedRows,
   userData,
+  activeTab,
   onReload,
 }: AdminActionParams) => {
+  // Chỉ cho phép xóa rác khi đang ở tab Tồn Kho SX Main, tránh xóa nhầm
+  // dữ liệu đang chọn ở tab Lịch Sử Nhập / Lịch Sử Xuất.
+  if (activeTab !== "TON") {
+    Swal.fire("Thông báo", "Chỉ có thể Xóa Rác khi đang ở tab Tồn Kho SX Main", "error");
+    return;
+  }
+
   const { value: pass1 } = await Swal.fire({
     title: "Xác nhận xóa rác",
     input: "password",
@@ -237,8 +246,15 @@ export const handleXoaRacAction = async ({
 export const handleAnRacAction = async ({
   selectedRows,
   userData,
+  activeTab,
   onSuccess,
 }: AdminActionParams) => {
+  // Chỉ cho phép ẩn rác khi đang ở tab Tồn Kho SX Main.
+  if (activeTab !== "TON") {
+    Swal.fire("Thông báo", "Chỉ có thể Ẩn Rác khi đang ở tab Tồn Kho SX Main", "error");
+    return;
+  }
+
   const { value: pass1 } = await Swal.fire({
     title: "Xác nhận ẩn rác",
     input: "password",

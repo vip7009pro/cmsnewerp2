@@ -13,7 +13,7 @@ import "./BOM_AMAZON.scss";
 const BOM_AMAZON: React.FC = () => {
   const {
     codephoilist,
-    listamazontable,
+    filteredListBomAmazon,
     bomamazontable,
     filteredBomData,
     G_CODE_MAU,
@@ -30,6 +30,8 @@ const BOM_AMAZON: React.FC = () => {
     setAMZ_PROD_NAME,
     sidebarTab,
     setSidebarTab,
+    sidebarSearch,
+    setSidebarSearch,
     quickSearchBom,
     setQuickSearchBom,
     isSidebarOpen,
@@ -86,7 +88,9 @@ const BOM_AMAZON: React.FC = () => {
           setG_CODE_MAU={setG_CODE_MAU}
           sidebarTab={sidebarTab}
           setSidebarTab={setSidebarTab}
-          listamazontable={listamazontable}
+          listBomFiltered={filteredListBomAmazon}
+          sidebarSearch={sidebarSearch}
+          setSidebarSearch={setSidebarSearch}
           rows={rows}
           codeCMS={codeCMS}
           setCodeCMS={setCodeCMS}

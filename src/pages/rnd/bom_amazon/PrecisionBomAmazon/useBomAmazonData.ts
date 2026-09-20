@@ -229,65 +229,95 @@ export const useBomAmazonData = (): UseBomAmazonDataReturn => {
     [handleCODEINFO]
   );
 
-  // CHECK TỒN TẠI BOM
+  // CHECK TỒN TẠI BOM — KHÔNG nuốt lỗi kết nối (ném ra cho caller xử lý),
+  // tránh trường hợp mất kết nối bị hiểu nhầm là "chưa tồn tại" rồi insert trùng.
   const checkExistBOMAMAZON = useCallback(async (G_CODE: string): Promise<boolean> => {
-    let existcode = true;
-    await generalQuery("checkExistBOMAMAZON", {
+    const response = await generalQuery("checkExistBOMAMAZON", {
       G_CODE: G_CODE,
-    })
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          existcode = response.data.data.length > 0;
-        } else {
-          existcode = false;
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        existcode = false;
-      });
-    return existcode;
+    });
+    if (response.data?.tk_status !== "NG") {
+      return (response.data?.data?.length ?? 0) > 0;
+    }
+    return false;
   }, []);
 
-  // LƯU BOM AMAZON (INSERT HOẶC UPDATE)
+  // LƯU BOM AMAZON (INSERT HOẶC UPDATE) — tổng hợp err_code theo từng dòng
   const addBOMAMAZON = useCallback(async () => {
     if (!codeinfoCMS) return;
-    const bomAmazonExist = await checkExistBOMAMAZON(codeinfoCMS);
 
-    if (!bomAmazonExist) {
-      // Thêm mới
-      Swal.fire("Thông báo", "Thêm BOM AMAZON mới", "warning");
-      for (let i = 0; i < bomamazontable.length; i++) {
-        await generalQuery("insertAmazonBOM", {
-          G_CODE: codeinfoCMS,
-          G_CODE_MAU: G_CODE_MAU,
-          DOITUONG_NO: bomamazontable[i].DOITUONG_NO,
-          GIATRI: bomamazontable[i].GIATRI,
-          REMARK: bomamazontable[i].REMARK,
-          AMZ_PROD_NAME: amz_prod_name,
-          AMZ_COUNTRY: amz_country,
-        }).catch((err) => console.error(err));
-      }
-    } else {
-      // Cập nhật
-      Swal.fire("Thông báo", "Update BOM AMAZON", "warning");
-      for (let i = 0; i < bomamazontable.length; i++) {
-        await generalQuery("updateAmazonBOM", {
-          G_CODE: codeinfoCMS,
-          G_CODE_MAU: bomamazontable[i].G_CODE_MAU,
-          DOITUONG_NO: bomamazontable[i].DOITUONG_NO,
-          GIATRI: bomamazontable[i].GIATRI,
-          REMARK: bomamazontable[i].REMARK,
-          AMZ_PROD_NAME: amz_prod_name,
-          AMZ_COUNTRY: amz_country,
-          DOITUONG_NAME2: bomamazontable[i].DOITUONG_NAME2,
-        }).catch((err) => console.error(err));
+    // Nếu chính bước kiểm tra tồn tại lỗi (mất kết nối) thì DỪNG, không insert mù.
+    let bomAmazonExist = false;
+    try {
+      bomAmazonExist = await checkExistBOMAMAZON(codeinfoCMS);
+    } catch (error: any) {
+      console.error(error);
+      Swal.fire(
+        "Lỗi",
+        "Không kiểm tra được BOM đã tồn tại: " + (error?.message ?? "lỗi kết nối"),
+        "error"
+      );
+      return;
+    }
+
+    const isInsert = !bomAmazonExist;
+
+    let err_code = "";
+    let successCount = 0;
+
+    for (let i = 0; i < bomamazontable.length; i++) {
+      const row = bomamazontable[i];
+      const rowLabel = `DOITUONG_NO ${row.DOITUONG_NO}`;
+      try {
+        const response = isInsert
+          ? await generalQuery("insertAmazonBOM", {
+              G_CODE: codeinfoCMS,
+              G_CODE_MAU: G_CODE_MAU,
+              DOITUONG_NO: row.DOITUONG_NO,
+              GIATRI: row.GIATRI,
+              REMARK: row.REMARK,
+              AMZ_PROD_NAME: amz_prod_name,
+              AMZ_COUNTRY: amz_country,
+            })
+          : await generalQuery("updateAmazonBOM", {
+              G_CODE: codeinfoCMS,
+              G_CODE_MAU: row.G_CODE_MAU,
+              DOITUONG_NO: row.DOITUONG_NO,
+              GIATRI: row.GIATRI,
+              REMARK: row.REMARK,
+              AMZ_PROD_NAME: amz_prod_name,
+              AMZ_COUNTRY: amz_country,
+              DOITUONG_NAME2: row.DOITUONG_NAME2,
+            });
+
+        if (response.data?.tk_status === "NG") {
+          err_code += `\n| ${rowLabel}: ${response.data?.message ?? "không rõ lỗi"}`;
+        } else {
+          successCount++;
+        }
+      } catch (error: any) {
+        err_code += `\n| ${rowLabel}: ${error?.message ?? "lỗi kết nối"}`;
       }
     }
 
     handleGETLISTBOMAMAZON("");
-    setIsBomExist(true);
-    Swal.fire("Thành công", "Đã lưu BOM Amazon hoàn tất!", "success");
+
+    if (err_code !== "") {
+      // Ghi một phần vẫn có ích: giữ trạng thái "đã tồn tại" nếu là update
+      // hoặc đã có ít nhất 1 dòng insert thành công.
+      setIsBomExist(!isInsert || successCount > 0);
+      Swal.fire(
+        "Lưu BOM chưa hoàn tất",
+        `Đã lưu ${successCount}/${bomamazontable.length} dòng. Các dòng lỗi:${err_code}`,
+        "error"
+      );
+    } else {
+      setIsBomExist(true);
+      Swal.fire(
+        "Thành công",
+        `Đã lưu BOM Amazon hoàn tất (${successCount} dòng)!`,
+        "success"
+      );
+    }
   }, [
     checkExistBOMAMAZON,
     codeinfoCMS,
@@ -396,6 +426,19 @@ export const useBomAmazonData = (): UseBomAmazonDataReturn => {
     });
   }, [bomamazontable, quickSearchBom]);
 
+  // FILTERED LIST BOM AMAZON (SIDEBAR SEARCH "ĐÃ CÓ BOM")
+  const filteredListBomAmazon = useMemo(() => {
+    if (!sidebarSearch.trim()) return listamazontable;
+    const kw = sidebarSearch.toLowerCase().trim();
+    return listamazontable.filter((row) => {
+      return (
+        row.G_CODE?.toLowerCase().includes(kw) ||
+        row.G_NAME?.toLowerCase().includes(kw) ||
+        row.G_NAME_KD?.toLowerCase().includes(kw)
+      );
+    });
+  }, [listamazontable, sidebarSearch]);
+
   // INITIAL LOAD
   useEffect(() => {
     handleGETLISTBOMAMAZON("");
@@ -405,6 +448,7 @@ export const useBomAmazonData = (): UseBomAmazonDataReturn => {
   return {
     codephoilist,
     listamazontable,
+    filteredListBomAmazon,
     bomamazontable,
     filteredBomData,
     G_CODE_MAU,

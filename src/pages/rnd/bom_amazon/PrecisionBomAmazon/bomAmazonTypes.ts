@@ -11,6 +11,7 @@ export interface BomStatusInfo {
 export interface UseBomAmazonDataReturn {
   codephoilist: CODEPHOI[];
   listamazontable: LIST_BOM_AMAZON[];
+  filteredListBomAmazon: LIST_BOM_AMAZON[];
   bomamazontable: BOM_AMAZON_DATA[];
   filteredBomData: BOM_AMAZON_DATA[];
   G_CODE_MAU: string;

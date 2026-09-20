@@ -145,7 +145,12 @@ export const PrecisionKhoAoToolbar: React.FC<PrecisionKhoAoToolbarProps> = ({
             type="button"
             className="btn-danger-action"
             onClick={onXoaRac}
-            title="Xóa vĩnh viễn cuộn liệu rác đã chọn (Yêu cầu mật khẩu quản trị)"
+            disabled={activeTab !== "TON" || isLoading}
+            title={
+              activeTab !== "TON"
+                ? "Chỉ có thể Xóa Rác khi đang ở tab Tồn Kho SX Main"
+                : "Xóa vĩnh viễn cuộn liệu rác đã chọn (Yêu cầu mật khẩu quản trị)"
+            }
           >
             <AiOutlineLock style={{ fontSize: 12 }} />
             <AiOutlineDelete style={{ fontSize: 13 }} />
@@ -156,7 +161,12 @@ export const PrecisionKhoAoToolbar: React.FC<PrecisionKhoAoToolbarProps> = ({
             type="button"
             className="btn-danger-action btn-danger-action--hide"
             onClick={onAnRac}
-            title="Ẩn cuộn liệu rác đã chọn khỏi danh sách hiển thị"
+            disabled={activeTab !== "TON" || isLoading}
+            title={
+              activeTab !== "TON"
+                ? "Chỉ có thể Ẩn Rác khi đang ở tab Tồn Kho SX Main"
+                : "Ẩn cuộn liệu rác đã chọn khỏi danh sách hiển thị"
+            }
           >
             <AiOutlineEyeInvisible style={{ fontSize: 13 }} />
             <span>Ẩn Rác</span>

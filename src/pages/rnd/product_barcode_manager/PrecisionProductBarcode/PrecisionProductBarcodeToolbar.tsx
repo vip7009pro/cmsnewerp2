@@ -10,7 +10,8 @@ interface ToolbarProps {
   setProdFilter: (val: ProductionStatusFilter) => void;
   quickSearch: string;
   setQuickSearch: (val: string) => void;
-  onExportExcel: () => void;
+  onExportEX1: () => void;
+  onExportEX2: () => void;
   onOpenPivot: () => void;
   totalCount: number;
   filteredCount: number;
@@ -24,7 +25,8 @@ export const PrecisionProductBarcodeToolbar: React.FC<ToolbarProps> = React.memo
     setProdFilter,
     quickSearch,
     setQuickSearch,
-    onExportExcel,
+    onExportEX1,
+    onExportEX2,
     onOpenPivot,
     totalCount,
     filteredCount,
@@ -108,11 +110,23 @@ export const PrecisionProductBarcodeToolbar: React.FC<ToolbarProps> = React.memo
           <button
             type="button"
             className="precision-barcode__btn precision-barcode__btn--excel"
-            onClick={onExportExcel}
-            title="Xuất bảng dữ liệu ra file Excel"
+            onClick={onExportEX1}
+            title="Xuất dữ liệu đang lọc ra file Excel"
           >
             <AiFillFileExcel size={14} />
-            <span>EXCEL</span>
+            <span>EX1</span>
+            <span className="badge">Đang lọc</span>
+          </button>
+
+          <button
+            type="button"
+            className="precision-barcode__btn precision-barcode__btn--excel"
+            onClick={onExportEX2}
+            title="Xuất toàn bộ dữ liệu ra file Excel"
+          >
+            <AiFillFileExcel size={14} />
+            <span>EX2</span>
+            <span className="badge">Tất cả</span>
           </button>
 
           <button

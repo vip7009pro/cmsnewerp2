@@ -238,8 +238,8 @@ export const PrecisionProductBarcodeForm: React.FC<FormProps> = React.memo(
             type="button"
             className="btnAction btnAction--add"
             onClick={onAdd}
-            disabled={!selectedRows?.G_CODE || !selectedRows?.BARCODE_RND}
-            title="Thêm mới barcode cho sản phẩm"
+            disabled={!selectedRows?.G_CODE || !selectedRows?.BARCODE_RND || !String(selectedRows?.BARCODE_STT ?? "").trim()}
+            title="Thêm mới barcode cho sản phẩm (cần Mã SP, STT và chuỗi Barcode R&D)"
           >
             <AiOutlinePlus size={14} />
             <span>THÊM MỚI</span>
@@ -249,7 +249,7 @@ export const PrecisionProductBarcodeForm: React.FC<FormProps> = React.memo(
             type="button"
             className="btnAction btnAction--update"
             onClick={onUpdate}
-            disabled={!selectedRows?.G_CODE}
+            disabled={!selectedRows?.G_CODE || !String(selectedRows?.BARCODE_STT ?? "").trim()}
             title="Cập nhật thông tin barcode"
           >
             <AiOutlineEdit size={14} />
@@ -260,7 +260,7 @@ export const PrecisionProductBarcodeForm: React.FC<FormProps> = React.memo(
             type="button"
             className="btnAction btnAction--delete"
             onClick={onDelete}
-            disabled={!selectedRows?.G_CODE}
+            disabled={!selectedRows?.G_CODE || !String(selectedRows?.BARCODE_STT ?? "").trim()}
             title="Xóa barcode (chỉ xóa khi chưa sản xuất)"
           >
             <AiOutlineDelete size={14} />

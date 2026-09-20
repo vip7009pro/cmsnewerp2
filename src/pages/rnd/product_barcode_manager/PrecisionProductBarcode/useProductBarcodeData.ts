@@ -128,31 +128,47 @@ export const useProductBarcodeData = (): UseProductBarcodeDataReturn => {
       Swal.fire("Cảnh báo", "Vui lòng chọn mã sản phẩm và nhập chuỗi Barcode R&D", "warning");
       return;
     }
+    if (!String(selectedRows.BARCODE_STT ?? "").trim()) {
+      Swal.fire("Cảnh báo", "Vui lòng nhập số thứ tự (STT) barcode", "warning");
+      return;
+    }
 
+    // Kiểm tra trùng trước khi thêm: nếu chính request kiểm tra lỗi thì DỪNG,
+    // không được insert mù (tránh tạo bản ghi trùng khi mất kết nối).
     let barcodeExist = false;
-    await generalQuery("checkbarcodeExist", selectedRows)
-      .then((response) => {
-        barcodeExist = response.data.tk_status !== "NG";
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    try {
+      const checkRes = await generalQuery("checkbarcodeExist", selectedRows);
+      barcodeExist = checkRes.data?.tk_status !== "NG";
+    } catch (error: any) {
+      console.error(error);
+      Swal.fire(
+        "Lỗi",
+        "Không kiểm tra được barcode trùng: " + (error?.message ?? "lỗi kết nối"),
+        "error"
+      );
+      return;
+    }
 
-    if (!barcodeExist) {
-      await generalQuery("addBarcode", selectedRows)
-        .then((response) => {
-          if (response.data.tk_status !== "NG") {
-            Swal.fire("Thông báo", "Thêm barcode thành công", "success");
-            load_barcode_table();
-          } else {
-            Swal.fire("Lỗi", "Thêm barcode thất bại: " + response.data.message, "error");
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } else {
+    if (barcodeExist) {
       Swal.fire("Thông báo", "Barcode đã tồn tại", "error");
+      return;
+    }
+
+    try {
+      const response = await generalQuery("addBarcode", selectedRows);
+      if (response.data?.tk_status !== "NG") {
+        Swal.fire("Thông báo", "Thêm barcode thành công", "success");
+        load_barcode_table();
+      } else {
+        Swal.fire(
+          "Lỗi",
+          "Thêm barcode thất bại: " + (response.data?.message ?? "không rõ lỗi"),
+          "error"
+        );
+      }
+    } catch (error: any) {
+      console.error(error);
+      Swal.fire("Lỗi", "Thêm barcode thất bại: " + (error?.message ?? "lỗi kết nối"), "error");
     }
   }, [selectedRows, load_barcode_table]);
 
@@ -162,25 +178,38 @@ export const useProductBarcodeData = (): UseProductBarcodeDataReturn => {
       Swal.fire("Cảnh báo", "Vui lòng chọn một barcode cần cập nhật", "warning");
       return;
     }
+    if (!String(selectedRows.BARCODE_STT ?? "").trim()) {
+      Swal.fire("Cảnh báo", "Vui lòng chọn/nhập số thứ tự (STT) barcode cần cập nhật", "warning");
+      return;
+    }
 
-    generalQuery("updateBarcode", selectedRows)
-      .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          Swal.fire("Thông báo", "Update barcode thành công", "success");
-          load_barcode_table();
-        } else {
-          Swal.fire("Lỗi", "Update barcode thất bại: " + response.data.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    try {
+      const response = await generalQuery("updateBarcode", selectedRows);
+      if (response.data?.tk_status !== "NG") {
+        Swal.fire("Thông báo", "Update barcode thành công", "success");
+        load_barcode_table();
+      } else {
+        Swal.fire(
+          "Lỗi",
+          "Update barcode thất bại: " + (response.data?.message ?? "không rõ lỗi"),
+          "error"
+        );
+      }
+    } catch (error: any) {
+      console.error(error);
+      Swal.fire("Lỗi", "Update barcode thất bại: " + (error?.message ?? "lỗi kết nối"), "error");
+    }
   }, [selectedRows, load_barcode_table]);
 
   // DELETE BARCODE
   const deleteBarcode = useCallback(async () => {
     if (!selectedRows.G_CODE) {
       Swal.fire("Cảnh báo", "Vui lòng chọn một barcode cần xóa", "warning");
+      return;
+    }
+
+    if (!String(selectedRows.BARCODE_STT ?? "").trim()) {
+      Swal.fire("Cảnh báo", "Vui lòng chọn barcode (có số thứ tự) cần xóa", "warning");
       return;
     }
 
@@ -198,33 +227,28 @@ export const useProductBarcodeData = (): UseProductBarcodeDataReturn => {
       cancelButtonColor: "#64748b",
       confirmButtonText: "Đồng ý xóa",
       cancelButtonText: "Hủy bỏ",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        generalQuery("deleteBarcode", selectedRows)
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              Swal.fire("Thông báo", "Delete barcode thành công", "success");
-              load_barcode_table();
-              resetForm();
-            } else {
-              Swal.fire("Lỗi", "Xóa barcode thất bại: " + response.data.message, "error");
-            }
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+        try {
+          const response = await generalQuery("deleteBarcode", selectedRows);
+          if (response.data?.tk_status !== "NG") {
+            Swal.fire("Thông báo", "Delete barcode thành công", "success");
+            load_barcode_table();
+            resetForm();
+          } else {
+            Swal.fire(
+              "Lỗi",
+              "Xóa barcode thất bại: " + (response.data?.message ?? "không rõ lỗi"),
+              "error"
+            );
+          }
+        } catch (error: any) {
+          console.error(error);
+          Swal.fire("Lỗi", "Xóa barcode thất bại: " + (error?.message ?? "lỗi kết nối"), "error");
+        }
       }
     });
   }, [selectedRows, load_barcode_table, resetForm]);
-
-  // EXCEL EXPORT
-  const handleExportExcel = useCallback(() => {
-    if (barcodedatatable.length > 0) {
-      SaveExcel(barcodedatatable, "PRODUCT_BARCODE_DATA");
-    } else {
-      Swal.fire("Thông báo", "Không có dữ liệu barcode để xuất", "warning");
-    }
-  }, [barcodedatatable]);
 
   // KPI DATA REALTIME
   const kpiData: BarcodeKpiData = useMemo(() => {
@@ -293,6 +317,22 @@ export const useProductBarcodeData = (): UseProductBarcodeDataReturn => {
 
     return result;
   }, [barcodedatatable, typeFilter, prodFilter, quickSearch]);
+
+  // EXCEL EXPORT (EX1: dữ liệu đang lọc, EX2: toàn bộ dữ liệu)
+  const handleExportExcel = useCallback(
+    (type: "EX1" | "EX2" = "EX1") => {
+      const rows = type === "EX1" ? filteredBarcodeData : barcodedatatable;
+      if (rows.length === 0) {
+        Swal.fire("Thông báo", "Không có dữ liệu barcode để xuất", "warning");
+        return;
+      }
+      SaveExcel(
+        rows,
+        type === "EX1" ? "PRODUCT_BARCODE_DATA_DANG_LOC" : "PRODUCT_BARCODE_DATA_TOAN_BO"
+      );
+    },
+    [filteredBarcodeData, barcodedatatable]
+  );
 
   // PIVOT DATA SOURCE
   const dataSource = useMemo(() => {

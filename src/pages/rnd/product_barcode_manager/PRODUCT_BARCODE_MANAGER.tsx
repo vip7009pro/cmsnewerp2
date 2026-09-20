@@ -97,7 +97,8 @@ const PRODUCT_BARCODE_MANAGER: React.FC = () => {
             setProdFilter={setProdFilter}
             quickSearch={quickSearch}
             setQuickSearch={setQuickSearch}
-            onExportExcel={handleExportExcel}
+            onExportEX1={() => handleExportExcel("EX1")}
+            onExportEX2={() => handleExportExcel("EX2")}
             onOpenPivot={() => setShowHidePivotTable(true)}
             totalCount={barcodedatatable.length}
             filteredCount={filteredBarcodeData.length}

@@ -123,6 +123,7 @@ export const useKhoAoData = (initialNextPlan?: string) => {
   const handleTabChange = useCallback((tab: "TON" | "LS_IN" | "LS_OUT") => {
     setActiveTab(tab);
     setDataTable([]);
+    setSearchKeyword("");
     tonkhoaodatafilter.current = [];
     if (tab === "TON") {
       handle_loadKhoAo(false);
@@ -164,20 +165,22 @@ export const useKhoAoData = (initialNextPlan?: string) => {
     handleXoaRacAction({
       selectedRows: tonkhoaodatafilter.current,
       userData,
+      activeTab,
       onSuccess: () => handle_loadKhoAo(true),
       onReload: () => handle_loadKhoAo(false),
     });
-  }, [userData, handle_loadKhoAo]);
+  }, [userData, activeTab, handle_loadKhoAo]);
 
   // Logic Ẩn Rác
   const handle_nhappassword_anrac = useCallback(() => {
     handleAnRacAction({
       selectedRows: tonkhoaodatafilter.current,
       userData,
+      activeTab,
       onSuccess: () => handle_loadKhoAo(false),
       onReload: () => handle_loadKhoAo(false),
     });
-  }, [userData, handle_loadKhoAo]);
+  }, [userData, activeTab, handle_loadKhoAo]);
 
   // Lọc dữ liệu theo searchKeyword
   const filteredData = useMemo(() => {

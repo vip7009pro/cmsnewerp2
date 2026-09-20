@@ -1,29 +1,32 @@
 # ACTIVE_STATE
 
 ## Mục tiêu task hiện tại
-Rà soát parity các module QC/IQC so với bản `.backup` và sửa sai khác logic + cải tiến điểm bất hợp lý.
+Rà soát parity 6 component RND / MUA / QLSX đã refactor Stitch so với bản `.backup` và sửa sai khác logic + cải tiến điểm bất hợp lý.
 
-- Đợt 1 (đã xong): `INCOMMING`, `DKDTC`, `ADDSPECDTC`, `DTCRESULT`, `TEST_TABLE`.
-- Đợt 2 (đã xong): `HOLDING`, `FAILING`, `BLOCK`, `NCR_MANAGER`.
+- Đợt 3 (đã xong): `QLVL`, `BOM_AMAZON`, `DESIGN_AMAZON`, `PRODUCT_BARCODE_MANAGER`, `KHOAO`, `KHOSUB`.
+- Đợt 1 & 2 (đã xong, module QC/IQC): `INCOMMING`, `DKDTC`, `ADDSPECDTC`, `DTCRESULT`, `TEST_TABLE`, `HOLDING`, `FAILING`, `BLOCK`, `NCR_MANAGER`.
 
-Trạng thái: **HOÀN THÀNH** (audit + fix + build pass). Chi tiết: `FINDINGS_PARITY_QC_DTC_MODULES.md`.
+Trạng thái: **HOÀN THÀNH** (audit + fix + build pass). Chi tiết: `FINDINGS_PARITY_RND_MUA_QLSX_MODULES.md`, `FINDINGS_PARITY_QC_DTC_MODULES.md`.
 
-## File đã chỉnh sửa (đợt 2)
-- `src/pages/qc/iqc/PrecisionFAILING/useFailingData.ts` — khôi phục gate `checkBP(["QC"])` cho nghiệp vụ Xuất kho; thêm `handleLotKeyDown` (Enter + luật PQC3); `checkPlanID` xoá `G_NAME` khi mã chỉ thị < 7 ký tự.
-- `src/pages/qc/iqc/PrecisionFAILING/PrecisionFailingFormIn.tsx`, `PrecisionFailingSidebar.tsx`, `FAILING.tsx` — nối prop `onLotKeyDown`.
-- `src/pages/qc/iqc/PrecisionBLOCK/useBlockData.ts` — sửa export Excel cột `PLSP`; guard `NCR_ID !== 0` cho `updateNCRIDBlocking`.
-- `src/pages/qc/iqc/PrecisionBLOCK/PrecisionBLOCKColumns.tsx` — thêm lại cột `USE_YN`.
-- `src/pages/qc/iqc/PrecisionHOLDING/useHoldingData.ts` — chặn `Update Reason` khi REASON rỗng.
-- `src/pages/qc/iqc/PrecisionNCR/PrecisionNCRSidebar.tsx` — reset cả `fromdate/todate` khi làm mới bộ lọc.
-- `src/pages/qc/interfaces/qcInterface.ts` — thêm `PLSP?: string` vào `BLOCK_DATA`.
-- `FINDINGS_PARITY_QC_DTC_MODULES.md`, `ROADMAP.md`.
+## File đã chỉnh sửa (đợt 3)
+- `src/pages/rnd/bom_amazon/PrecisionBomAmazon/useBomAmazonData.ts`, `bomAmazonTypes.ts`, `PrecisionBomAmazonSidebar.tsx`, `BOM_AMAZON.tsx` — nối lại `sidebarSearch` bị bỏ rơi: lọc tab "ĐÃ CÓ BOM" theo `G_CODE`/`G_NAME`/`G_NAME_KD`, sửa ô tìm kiếm chết.
+- `src/pages/qlsx/QLSXPLAN/KHOAO/PrecisionKhoAo/khoAoActionHandlers.ts`, `useKhoAoData.ts`, `PrecisionKhoAoToolbar.tsx` — guard `activeTab === "TON"` cho Xóa Rác / Ẩn Rác (trước đây có thể xóa dữ liệu thật khi đang ở tab LS IN / LS OUT); reset `searchKeyword` khi đổi tab.
+- `src/pages/rnd/product_barcode_manager/PrecisionProductBarcode/useProductBarcodeData.ts`, `barcodeManagerTypes.ts`, `PrecisionProductBarcodeForm.tsx`, `PrecisionProductBarcodeToolbar.tsx`, `PRODUCT_BARCODE_MANAGER.tsx` — validate `BARCODE_STT` (backend nội suy không nháy ⇒ rỗng là SQL lỗi); tách export Excel thành `EX1` (đang lọc) / `EX2` (toàn bộ).
+- `src/pages/muahang/quanlyvatlieu/QLVL.tsx` — bọc riêng `updateM090FSC` trong try/catch để lỗi đồng bộ phụ không báo sai "Không thể cập nhật vật liệu".
+- `src/pages/rnd/bom_amazon/PrecisionBomAmazon/useBomAmazonData.ts` — tổng hợp `err_code` theo từng dòng (`DOITUONG_NO`) cho `addBOMAMAZON`, báo `"Lưu BOM chưa hoàn tất x/y dòng"` khi có dòng lỗi; `checkExistBOMAMAZON` không nuốt lỗi kết nối + dừng trước khi insert mù; bỏ 2 Swal bắn giữa luồng.
+- `src/pages/rnd/product_barcode_manager/PrecisionProductBarcode/useProductBarcodeData.ts` — `addBarcode` dừng nếu bước check trùng lỗi (không insert mù); `addBarcode`/`updateBarcode`/`deleteBarcode` báo lỗi kèm `message` thật thay vì `console.error` im lặng.
+- `FINDINGS_PARITY_RND_MUA_QLSX_MODULES.md`, `ROADMAP.md`.
 
 ## Việc cần làm tiếp theo
-- Chạy lại audit tương tự cho các module IQC còn lại khi có `.backup` tương ứng (`IQC_REPORT`, `BNK_COMPONENT`, `HOLD_FAIL`).
-- Cân nhắc (khi có thời gian): `updateIncomingData_web` ghi `REMARK` nhưng chưa map đúng ngữ nghĩa `IQC_TEST_RESULT`/`DTC_RESULT`; kiểm tra lại audit trail khi đổi kết luận lô.
+- Nếu nghiệp vụ cho phép `BARCODE_STT` dạng chữ: sửa backend `practice1/services/rndService.js` bọc `N'...'` thay vì validate số ở frontend.
+- Nếu số dòng BOM/barcode lớn (> 100): gộp thành 1 request batch ở backend thay vì gọi tuần tự từng dòng.
+- Chạy lại audit tương tự cho các module QLSX/RND/QC còn lại khi có `.backup` tương ứng (`IQC_REPORT`, `BNK_COMPONENT`, `HOLD_FAIL`).
+- (QC, treo lại) `updateIncomingData_web` ghi `REMARK` nhưng chưa map đúng ngữ nghĩa `IQC_TEST_RESULT`/`DTC_RESULT`.
 
 ## Ghi chú kỹ thuật
-- Build kiểm chứng: `npm run build` (vite production) — thành công, `dist/index.html` ghi mới; `get_errors` trên các file đã sửa — 0 lỗi.
+- Build kiểm chứng: `npm run build` (vite production) — đợt 3 `EXIT=0` `built in 1m 3s`; sau fix `err_code` `EXIT=0` `built in 52.53s`; `get_errors` trên các folder đã sửa — 0 lỗi.
+- Backend trả `{tk_status, message}` (`NG` = lỗi SQL, `message` là error thật) còn `generalQuery` **throw** khi lỗi mạng. Muốn không báo sai thành công thì phải bắt **cả hai**: nhánh `tk_status === "NG"` **và** `catch`.
 - Repo có sẵn nhiều lỗi `tsc --noEmit` ở module khác; không dùng tsc làm gate.
-- Nhắc lại pitfall khi refactor: `checkBP` thường chỉ nằm trong handler ở bản backup → rất dễ mất khi tách hook; luôn grep `checkBP` trong file `.backup`.
+- Đợt 3: API parity & `checkBP` parity đều **100%**. Pitfall mới: **state/handler trong hook được export nhưng không được destructure ở controller ⇒ control chết** (BOM_AMAZON `sidebarSearch`). Luôn đối chiếu danh sách destructure với interface `Use*DataReturn`.
+- Pitfall khác: `.backup` của DESIGN_AMAZON có block `onResize`/`onResizeStop` là **dead code** (`enableResizing={false}`) — không được nhầm là nghiệp vụ bị mất.
 
