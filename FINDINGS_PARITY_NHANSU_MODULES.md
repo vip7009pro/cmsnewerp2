@@ -88,6 +88,58 @@ Phạm vi: 3 module Nhân sự đã refactor Stitch + 3 tab Đăng ký.
 - Trước: `onExportExcel`/`onOpenPivot` khai báo nhưng controller không truyền ⇒ 2 nút không render, trong khi EX1/EX2/PIVOT nằm trùng ở grid toolbar.
 - Fix: hợp nhất **một chỗ duy nhất** — toolbar nhận `onExportEX1`, `onExportEX2`, `onOpenPivot`, `filteredCount`, `totalCount` (badge hiển thị đúng số dòng); cụm nút trùng ở grid toolbar đã gỡ, grid toolbar chỉ còn ô tìm kiếm + meta "x/y nhân sự".
 
+## Đợt 5 — Quản lý Phòng Ban & Hồ sơ Nhân sự (2026-09-20)
+
+Phạm vi: `UserManager.tsx` vs `UserManager.backup.tsx`, `DeptManager.tsx` vs `DeptManager.backup.tsx`
+(+ các subcomponent trong `PrecisionUserManager/`, `PrecisionDeptManager/`).
+
+### 15. Khoá chính bị `readOnly` ⇒ không thể THÊM MỚI (HIGH)
+
+- 3 form `PrecisionDeptMainForm` / `PrecisionDeptSubForm` / `PrecisionDeptPosForm` khoá cứng `MAINDEPTCODE` / `SUBDEPTCODE` / `WORK_POSITION_CODE` bằng `readOnly` + icon 🔒.
+- Nhưng backend `practice1/services/nhansuService.js` (`insertmaindept`, `insertsubdept`, `insertworkposition`) **KHÔNG** dùng identity/cột tự tăng: mã do client gửi lên và được ghi thẳng vào `VALUES (...)`. Bản backup cho nhập tay cả 3 mã.
+- Hệ quả: nhấn "THÊM MỚI" luôn gửi mã `0` ⇒ lỗi SQL / ghi sai dữ liệu. Toàn bộ chức năng thêm bộ phận / phòng ban / vị trí bị vô hiệu.
+- Fix: `readOnly={!!code}` — chỉ khoá khi đang sửa bản ghi đã tồn tại (tránh đổi PK ngoài ý muốn), khi thêm mới thì nhập được mã.
+
+### 16. Chuỗi tải dữ liệu 3 cấp bị cũ sau khi sửa/xoá cấp cha (HIGH)
+
+- `handleLoadMainDept` chỉ tải tiếp cấp con khi `!selectedMainDept.MAINDEPTCODE` ⇒ sau khi **xoá/sửa** một bộ phận chính (mã ≠ 0), `handleLoadMainDept` không tải lại cấp 2/3.
+- Kết quả: bảng "Phòng ban trực thuộc" và "Vị trí công đoạn" vẫn còn dữ liệu của bộ phận vừa xoá ⇒ sửa/xoá nhầm bản ghi đã biến mất.
+- Đồng thời `handleLoadsubDept` / `loadWorkPosition` luôn `setSelected...(kq[0])`, nên mỗi lần bấm Reload lại mất dòng đang chọn.
+- Fix: chuỗi `handleLoadMainDept → handleLoadsubDept → loadWorkPosition` luôn tải đủ 3 cấp; dùng `kq.find(code hiện tại) ?? kq[0]` để **giữ lựa chọn** nếu còn tồn tại, tự chọn bản ghi vừa thêm, tự rơi về dòng đầu khi bản ghi bị xoá, và reset sạch cấp con khi danh sách cha rỗng.
+
+### 17. `handleDeleteInfo` không validate / không xác nhận (LOW)
+
+- Thêm `validateForm()` theo từng cấp (bắt buộc mã + tên + mã cha) trước mọi thao tác Add/Update.
+- Bọc `Swal.fire({showCancelButton})` xác nhận trước khi xoá (giữ nguyên `checkBP` khi `company !== "CMS"`).
+
+### 18. Mobile: không xem/cuộn được hết 3 bảng (HIGH — lỗi người dùng báo)
+
+- Nguyên nhân gốc: khối `.component_element & { height:100%; max-height:100%; flex:1 1 0px; min-height:0; overflow:hidden }` có **specificity cao hơn** block `@media (max-width:768px) { height:auto; overflow:visible }` đứng trước nó.
+  ⇒ Trên mobile, `.precision-deptmanager` vẫn bị `overflow:hidden` + `max-height:100%` + `flex-basis:0` ⇒ bị cắt cụt (chỉ thấy 2 bảng + header bảng 3) và vì mọi tổ tiên đều `height:100%` nên không có thanh cuộn nào hoạt động.
+- Fix (3 lớp):
+  1. `PrecisionDeptManager.scss` — lặp lại block mobile **bên trong** `.component_element &` để ghi đè bằng `!important`: `height:auto`, `max-height:none`, `flex:0 0 auto`, `overflow:visible`.
+  2. Bỏ `flex:1 1 0px` ở `__triGrid` / `__panel` trên mobile; hạ chiều cao bảng mobile `420px → 320px` cho gọn.
+  3. `QuanLyPhongBanNhanSu.scss` — trên mobile bỏ `flex-basis:0` + `min-height:100vh` cho `.tabs-container` / `.tab-content` / `.tab-pane` để trang cao theo nội dung; việc cuộn do `.component_element` (`overflow-y:auto`) đảm nhiệm.
+- Áp dụng cùng cách sửa cho `PrecisionUserManager.scss` (cùng lớp lỗi, trước đó chưa có media query nào).
+
+### 19. `UserManager` mất bước nạp face-api models (HIGH)
+
+- Bản backup có `loadModels()` trong `useEffect` mount: `ssdMobilenetv1` + `faceRecognitionNet` + `faceLandmark68Net` từ `/models`.
+- Bản refactor gọi thẳng `faceapi.detectSingleFace()` ⇒ face-api luôn báo model chưa load ⇒ **Train Face / Check Face chết 100%**.
+- Fix: helper `ensureFaceModels()` cache theo module scope (nạp 1 lần, tự cho phép thử lại nếu lỗi), gọi trong `useEffect` mount và `await` trước mỗi lần detect; bổ sung guard "chọn nhân viên trước" và thông báo lỗi nêu rõ đường dẫn ảnh `/Picture_NS/NS_<EMPL_NO>.jpg` + thư mục `/models`.
+
+### 20. Lỗi API bị nuốt im lặng + `CTR_CD` rỗng khi thêm nhân viên (MEDIUM)
+
+- `f_addEmployee` / `f_updateEmployee` **trả về chuỗi lỗi** (rỗng = thành công) nhưng bản refactor bỏ qua giá trị trả về ⇒ thêm/sửa thất bại vẫn im lặng. Fix: đọc kết quả, báo `Swal` lỗi và chỉ đóng modal khi thành công; `loadEmplInfo` nhận cờ `showNotice` để không bắn 2 popup liên tiếp.
+- `createNewUser()` xoá trắng `CTR_CD`, trong khi `insertemployee` ghi `ZTBEMPLINFO.CTR_CD = DATA.CTR_CD` ⇒ nhân viên mới không JOIN được với `ZTBSUBDEPARTMENT`/`ZTBWORKPOSITION`/`ZTBMAINDEPARMENT`. Fix: `CTR_CD: getCtrCd()` khi clear form + fallback `selectedRows.CTR_CD || getCtrCd()` ngay trước khi insert.
+- `createNewUser()` cũng mặc định `WORK_POSITION_CODE: 1` cứng → đổi sang vị trí đầu tiên có thật trong `workpositionload`.
+
+### 21. Nút PIVOT là hàng giả (MEDIUM)
+
+- `onOpenPivot` thực chất gọi `SaveExcel(filteredData, "DiemDanh_Pivot_Raw")` — một nút "PIVOT" chỉ xuất Excel với tên file sai ngữ cảnh.
+- Fix: tạo `PrecisionUserManager/PrecisionUserPivotModal.tsx` (React thuần, không thêm dependency) — chọn nhóm theo Bộ phận chính / Phòng ban – Tổ / Trạng thái / Chức vụ / Ca, thống kê Tổng – Đang làm – Đã nghỉ – Nghỉ sinh + thanh tỉ lệ, có dòng TỔNG CỘNG.
+- Đồng thời sửa nhãn 2 nút Excel cho đúng ngữ nghĩa: `EX1 Đang lọc` (dữ liệu sau filter + ô tìm kiếm) và `EX2 Toàn bộ`.
+
 ## Tồn đọng / rủi ro chưa xử lý
 
 1. **`PheDuyetNghiCMS` bulk duyệt**: chưa có chọn nhiều dòng để duyệt/từ chối hàng loạt (bản gốc cũng không có) — chỉ là gợi ý cải tiến.
@@ -100,4 +152,5 @@ Phạm vi: 3 module Nhân sự đã refactor Stitch + 3 tab Đăng ký.
 
 - Vòng 1: `get_errors` trên 10 file đã sửa → **0 lỗi**; `npm run build` **thành công** (`✓ 17013 modules transformed`).
 - Vòng 2: `node --check services/nhansuService.js` → **SYNTAX OK**; `get_errors` trên 9 file frontend đã sửa → **0 lỗi**; `npm run build` (vite production) → `✓ 17015 modules transformed`, `✓ built in 1m 14s`.
+- Đợt 5: `get_errors` trên 8 file đã sửa/tạo → **0 lỗi**; `npm run build` (vite production) → `EXIT=0` (dist + bản `.gz` phát sinh đầy đủ).
 - Build chỉ còn warning `eval` có sẵn từ `@bundled-es-modules/pdfjs-dist` (không liên quan thay đổi này).

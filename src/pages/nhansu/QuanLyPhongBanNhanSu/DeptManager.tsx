@@ -75,37 +75,63 @@ const DeptManager = () => {
 
   const handleLoadMainDept = async () => {
     setLoading(true);
-    let kq: MainDeptTableData[] = await f_loadMainDepList();
-    setMainDeptTable(kq || []);
+    const kq: MainDeptTableData[] = (await f_loadMainDepList()) || [];
+    setMainDeptTable(kq);
     setLoading(false);
-    if (kq && kq.length > 0 && !selectedMainDept.MAINDEPTCODE) {
-      setSelectedMainDept(kq[0]);
-      handleLoadsubDept(kq[0].MAINDEPTCODE);
+
+    if (kq.length === 0) {
+      setSelectedMainDept(initialMainDept);
+      setSubDeptTable([]);
+      setSelectedSubDept(initialSubDept);
+      setWorkPositionLoad([]);
+      setSelectedWorkPosition(initialWorkPos);
+      return;
     }
+
+    // Giữ bộ phận đang chọn nếu vẫn tồn tại; nếu vừa thêm mới thì chọn đúng bản ghi mới,
+    // nếu vừa xoá thì tự động rơi về bản ghi đầu tiên.
+    const current =
+      kq.find((item) => item.MAINDEPTCODE === selectedMainDept.MAINDEPTCODE) ??
+      kq[0];
+    setSelectedMainDept(current);
+    await handleLoadsubDept(current.MAINDEPTCODE);
   };
 
   const handleLoadsubDept = async (MAINDEPTCODE?: number) => {
-    let kq: SubDeptTableData[] = await f_loadSubDepList(MAINDEPTCODE);
-    setSubDeptTable(kq || []);
-    if (kq && kq.length > 0) {
-      setSelectedSubDept(kq[0]);
-      loadWorkPosition(kq[0].SUBDEPTCODE);
-    } else {
+    const kq: SubDeptTableData[] = (await f_loadSubDepList(MAINDEPTCODE)) || [];
+    setSubDeptTable(kq);
+
+    if (kq.length === 0) {
       setSelectedSubDept(initialSubDept);
       setWorkPositionLoad([]);
+      setSelectedWorkPosition(initialWorkPos);
+      return;
     }
+
+    const current =
+      kq.find((item) => item.SUBDEPTCODE === selectedSubDept.SUBDEPTCODE) ??
+      kq[0];
+    setSelectedSubDept(current);
+    await loadWorkPosition(current.SUBDEPTCODE);
   };
 
   const loadWorkPosition = async (SUBDEPTCODE?: number) => {
-    let kq: any[] = await f_loadWorkPositionList(SUBDEPTCODE);
-    setWorkPositionLoad(kq || []);
-    if (kq && kq.length > 0) {
-      setSelectedWorkPosition(kq[0]);
-    } else {
+    const kq: WORK_POSITION_DATA[] = (await f_loadWorkPositionList(SUBDEPTCODE)) || [];
+    setWorkPositionLoad(kq);
+
+    if (kq.length === 0) {
       setSelectedWorkPosition(initialWorkPos);
+      return;
     }
+
+    const current =
+      kq.find(
+        (item) => item.WORK_POSITION_CODE === selectedWorkPosition.WORK_POSITION_CODE
+      ) ?? kq[0];
+    setSelectedWorkPosition(current);
   };
 
+  /** Tải lại toàn bộ cây 3 cấp (dùng sau khi thêm / sửa / xoá) */
   const init = () => {
     handleLoadMainDept();
   };
@@ -142,8 +168,31 @@ const DeptManager = () => {
     setOpenDialog(true);
   };
 
+  /** Kiểm tra dữ liệu bắt buộc theo từng cấp trước khi gọi API */
+  const validateForm = (): string => {
+    if (tableSelection === 1) {
+      if (!selectedMainDept.MAINDEPTCODE) return "Vui lòng nhập Mã bộ phận chính (MAINDEPTCODE).";
+      if (!selectedMainDept.MAINDEPTNAME?.trim()) return "Vui lòng nhập Tên bộ phận chính.";
+    } else if (tableSelection === 2) {
+      if (!selectedSubDept.MAINDEPTCODE) return "Vui lòng chọn Bộ phận chính (MAINDEPTCODE).";
+      if (!selectedSubDept.SUBDEPTCODE) return "Vui lòng nhập Mã phòng ban con (SUBDEPTCODE).";
+      if (!selectedSubDept.SUBDEPTNAME?.trim()) return "Vui lòng nhập Tên phòng ban con.";
+    } else if (tableSelection === 3) {
+      if (!selectedWorkPosition.SUBDEPTCODE) return "Vui lòng chọn Phòng ban con (SUBDEPTCODE).";
+      if (!selectedWorkPosition.WORK_POSITION_CODE) return "Vui lòng nhập Mã vị trí (WORK_POSITION_CODE).";
+      if (!selectedWorkPosition.WORK_POSITION_NAME?.trim()) return "Vui lòng nhập Tên vị trí.";
+    }
+    return "";
+  };
+
   const handleAddInfo = async () => {
     const doAdd = async () => {
+      const invalid = validateForm();
+      if (invalid) {
+        Swal.fire("Thông báo", invalid, "warning");
+        return;
+      }
+
       let kq = "";
       if (tableSelection === 1) kq = await f_addMainDept(selectedMainDept);
       else if (tableSelection === 2) kq = await f_addSubDept(selectedSubDept);
@@ -167,6 +216,12 @@ const DeptManager = () => {
 
   const handleUpdateInfo = async () => {
     const doUpdate = async () => {
+      const invalid = validateForm();
+      if (invalid) {
+        Swal.fire("Thông báo", invalid, "warning");
+        return;
+      }
+
       let kq = "";
       if (tableSelection === 1) kq = await f_updateMainDept(selectedMainDept);
       else if (tableSelection === 2) kq = await f_updateSubDept(selectedSubDept);
@@ -189,14 +244,32 @@ const DeptManager = () => {
   };
 
   const handleDeleteInfo = async () => {
-    const doDelete = async () => {
+    const targetName =
+      tableSelection === 1
+        ? selectedMainDept.MAINDEPTNAME
+        : tableSelection === 2
+        ? selectedSubDept.SUBDEPTNAME
+        : selectedWorkPosition.WORK_POSITION_NAME;
+
+    const confirmAndDelete = async () => {
+      const confirm = await Swal.fire({
+        title: "Xác nhận xoá",
+        text: `Bạn có chắc chắn muốn xoá "${targetName || "bản ghi này"}"? Thao tác này không thể hoàn tác.`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Xoá",
+        cancelButtonText: "Huỷ",
+        confirmButtonColor: "#e11d48",
+      });
+      if (!confirm.isConfirmed) return;
+
       let kq = "";
       if (tableSelection === 1) kq = await f_deleteMainDept(selectedMainDept);
       else if (tableSelection === 2) kq = await f_deleteSubDept(selectedSubDept);
       else if (tableSelection === 3) kq = await f_deleteWorkPosition(selectedWorkPosition);
 
       if (kq === "") {
-        Swal.fire("Thông báo", "Xóa thành công!", "success");
+        Swal.fire("Thông báo", "Xoá thành công!", "success");
         setOpenDialog(false);
         init();
       } else {
@@ -205,9 +278,9 @@ const DeptManager = () => {
     };
 
     if (getCompany() !== "CMS") {
-      checkBP(getUserData(), ["NHANSU"], ["ALL"], ["ALL"], doDelete);
+      checkBP(getUserData(), ["NHANSU"], ["ALL"], ["ALL"], confirmAndDelete);
     } else {
-      doDelete();
+      confirmAndDelete();
     }
   };
 

@@ -66,21 +66,21 @@ export const PrecisionUserToolbar: React.FC<PrecisionUserToolbarProps> = ({
         <button
           className="precision-usermanager__btn precision-usermanager__btn--excel1"
           onClick={onExportEX1}
-          title="Xuất danh sách nhân viên đang lọc"
+          title="Xuất danh sách nhân viên đang lọc (theo bộ lọc + ô tìm kiếm hiện tại)"
           type="button"
         >
           <RiFileExcel2Line size={15} color="#10b981" />
-          <span>EX1 Export Full</span>
+          <span>EX1 Đang lọc</span>
         </button>
 
         <button
           className="precision-usermanager__btn precision-usermanager__btn--excel2"
           onClick={onExportEX2}
-          title="Xuất toàn bộ danh sách nhân viên"
+          title="Xuất toàn bộ danh sách nhân viên đã tải"
           type="button"
         >
           <RiFileExcel2Line size={15} color="#f59e0b" />
-          <span>EX2 Báo Cáo</span>
+          <span>EX2 Toàn bộ</span>
         </button>
 
         <button

@@ -17,13 +17,19 @@
   color: #1e293b;
   overflow: hidden;
 
+  // MOBILE: nhường việc cuộn dọc cho tổ tiên (.component_element đã có overflow-y: auto).
+  // Bắt buộc phải bỏ flex-basis 0 / max-height / overflow hidden, nếu không container
+  // sẽ bị co về 0 hoặc cắt cụt chỉ còn thấy 2 bảng đầu.
   @media (max-width: 768px) {
     height: auto !important;
-    min-height: 100vh;
-    overflow: visible;
+    max-height: none !important;
+    min-height: 0;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
     -webkit-overflow-scrolling: touch;
   }
 
+  // Anchor trong chế độ Multi-Tab
   .component_element & {
     width: 100%;
     max-width: 100%;
@@ -32,6 +38,15 @@
     flex: 1 1 0px;
     min-height: 0;
     overflow: hidden;
+
+    // Selector này có specificity cao hơn block @media phía trên nên phải ghi đè lại lần nữa
+    @media (max-width: 768px) {
+      height: auto !important;
+      max-height: none !important;
+      min-height: 0;
+      flex: 0 0 auto !important;
+      overflow: visible !important;
+    }
   }
 
   // 1. Header & Telemetry
@@ -253,8 +268,9 @@
 
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
-      min-height: auto;
+      min-height: 0;
       height: auto !important;
+      flex: 0 0 auto !important;
       overflow: visible;
       gap: 12px;
       padding-bottom: 28px;
@@ -275,8 +291,9 @@
     height: 100%;
 
     @media (max-width: 768px) {
-      min-height: 420px;
-      height: auto;
+      min-height: 0;
+      height: auto !important;
+      flex: 0 0 auto !important;
       overflow: visible;
     }
   }
@@ -418,9 +435,10 @@
     overflow: hidden;
 
     @media (max-width: 768px) {
-      min-height: 420px;
-      height: 420px;
-      overflow: visible;
+      height: 320px;
+      min-height: 320px;
+      flex: 0 0 auto !important;
+      overflow: hidden;
     }
 
     .agtable {
@@ -432,8 +450,8 @@
       flex-direction: column;
 
       @media (max-width: 768px) {
-        height: 420px !important;
-        min-height: 420px;
+        height: 320px !important;
+        min-height: 320px;
       }
 
       .toolbar {
@@ -446,8 +464,8 @@
         min-height: 0;
 
         @media (max-width: 768px) {
-          height: 420px !important;
-          min-height: 420px;
+          height: 320px !important;
+          min-height: 320px;
         }
       }
     }

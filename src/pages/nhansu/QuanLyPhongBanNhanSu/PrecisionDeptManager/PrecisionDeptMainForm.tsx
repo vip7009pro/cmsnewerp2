@@ -11,6 +11,10 @@ export const PrecisionDeptMainForm: React.FC<Props> = ({
   selectedMainDept,
   setMainDeptInfo,
 }) => {
+  // Mã bộ phận do người dùng nhập khi INSERT (không phải identity column).
+  // Chỉ khoá khi đang sửa bản ghi đã tồn tại để tránh đổi khoá chính ngoài ý muốn.
+  const isCodeLocked = !!selectedMainDept.MAINDEPTCODE;
+
   return (
     <>
       {/* Mã Bộ Phận (MAINDEPTCODE) */}
@@ -21,7 +25,7 @@ export const PrecisionDeptMainForm: React.FC<Props> = ({
             <span className="req">*</span>
           </label>
           <span className="precision-dept-modal__fieldBadge precision-dept-modal__fieldBadge--pk">
-            Khóa Chính PK
+            {isCodeLocked ? "Khóa Chính PK" : "Nhập Mã Mới"}
           </span>
         </div>
         <div className="precision-dept-modal__inputWrapper">
@@ -33,10 +37,15 @@ export const PrecisionDeptMainForm: React.FC<Props> = ({
             onChange={(e) =>
               setMainDeptInfo("MAINDEPTCODE", Number(e.target.value))
             }
-            readOnly
-            title="Khóa tự tăng / Không chỉnh sửa trực tiếp"
+            readOnly={isCodeLocked}
+            placeholder="VD: 10"
+            title={
+              isCodeLocked
+                ? "Đang sửa bản ghi có sẵn / Không đổi khóa chính"
+                : "Nhập mã bộ phận mới"
+            }
           />
-          <FiLock className="right-icon" size={14} />
+          {isCodeLocked && <FiLock className="right-icon" size={14} />}
         </div>
       </div>
 

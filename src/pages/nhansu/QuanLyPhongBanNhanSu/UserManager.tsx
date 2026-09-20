@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import "./UserManager.scss";
 import "./PrecisionUserManager/PrecisionUserManager.scss";
-import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../api/Api";
+import { generalQuery, getCompany, getCtrCd, getUserData, uploadQuery } from "../../../api/Api";
 import { EmployeeTableData } from "../interfaces/nhansuInterface";
 import AGTable from "../../../components/DataTable/AGTable";
 import {
@@ -25,6 +25,31 @@ import PrecisionUserToolbar from "./PrecisionUserManager/PrecisionUserToolbar";
 import { getColumnsUserManager } from "./PrecisionUserManager/PrecisionUserColumns";
 import PrecisionUserProfilePanel from "./PrecisionUserManager/PrecisionUserProfilePanel";
 import PrecisionUserModal from "./PrecisionUserManager/PrecisionUserModal";
+import PrecisionUserPivotModal from "./PrecisionUserManager/PrecisionUserPivotModal";
+
+// ===== FACE API MODEL LOADER =====
+// face-api.js cần nạp đủ 3 model (ssdMobilenetv1 + faceLandmark68 + faceRecognitionNet)
+// trước khi gọi detectSingleFace(). Bản backup nạp trong useEffect khi mount, bản refactor
+// đã làm mất bước này => Train/Check Face luôn thất bại.
+// Cache theo module scope để không nạp lại mỗi lần component re-mount.
+let faceModelsPromise: Promise<void> | null = null;
+const ensureFaceModels = async (): Promise<void> => {
+  if (!faceModelsPromise) {
+    faceModelsPromise = (async () => {
+      const faceapi = await import("face-api.js");
+      await Promise.all([
+        faceapi.nets.ssdMobilenetv1.loadFromUri("/models"), // Model detect mặt
+        faceapi.nets.faceRecognitionNet.loadFromUri("/models"), // Model trích xuất embedding 128D
+        faceapi.nets.faceLandmark68Net.loadFromUri("/models"), // Model landmarks
+      ]);
+    })().catch((error) => {
+      // Cho phép thử nạp lại ở lần bấm tiếp theo nếu lần này thất bại
+      faceModelsPromise = null;
+      throw error;
+    });
+  }
+  return faceModelsPromise;
+};
 
 const initialUserState: EmployeeTableData = {
   id: "",
@@ -88,9 +113,17 @@ const UserManager = () => {
   const [workpositionload, setWorkPositionLoad] = useState<Array<any>>([]);
   const [selectedRows, setSelectedRows] = useState<EmployeeTableData>(initialUserState);
   const [quickFilterText, setQuickFilterText] = useState("");
+  const [isPivotOpen, setIsPivotOpen] = useState(false);
   const [isMobile, setIsMobile] = useState<boolean>(() =>
     typeof window !== "undefined" ? window.innerWidth <= 768 : false
   );
+
+  // Nạp trước face-api models để nút Train/Check Face dùng được ngay
+  useEffect(() => {
+    ensureFaceModels().catch((error) => {
+      console.error("Không tải được face-api models từ /models:", error);
+    });
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -114,11 +147,12 @@ const UserManager = () => {
     setWorkPositionLoad(kq || []);
   };
 
-  const loadEmplInfo = async () => {
+  const loadEmplInfo = async (showNotice = true) => {
     setLoading(true);
     let kq: EmployeeTableData[] = await f_getEmployeeList();
     setEmplInfo(kq || []);
     setLoading(false);
+    if (!showNotice) return;
     if (kq && kq.length > 0) {
       if (!selectedRows.EMPL_NO) {
         setSelectedRows(kq[0]);
@@ -134,7 +168,17 @@ const UserManager = () => {
   };
 
   const createNewUser = () => {
-    setSelectedRows({ ...initialUserState, DOB: "", WORK_START_DATE: "", RESIGN_DATE: "" });
+    // CTR_CD là một phần của khóa ghi vào ZTBEMPLINFO (INSERT dùng DATA.CTR_CD),
+    // nếu để rỗng thì nhân viên mới sẽ không join được với phòng ban / vị trí.
+    const firstWorkPosition = workpositionload[0]?.WORK_POSITION_CODE ?? 0;
+    setSelectedRows({
+      ...initialUserState,
+      CTR_CD: getCtrCd() || "",
+      WORK_POSITION_CODE: firstWorkPosition,
+      DOB: "",
+      WORK_START_DATE: "",
+      RESIGN_DATE: "",
+    });
   };
 
   const uploadFile2 = async (fileToUpload: File) => {
@@ -174,9 +218,25 @@ const UserManager = () => {
 
   const handleAddEmployee = async () => {
     const doAdd = async () => {
-      await f_addEmployee(selectedRows);
-      loadEmplInfo();
+      // f_addEmployee / f_updateEmployee trả về CHUỖI LỖI (rỗng = thành công)
+      // => phải đọc kết quả trả về, nếu không lỗi sẽ bị nuốt im lặng.
+      if (!selectedRows.EMPL_NO?.trim()) {
+        Swal.fire("Thông báo", "Vui lòng nhập Mã ERP (EMPL_NO).", "warning");
+        return;
+      }
+      setLoading(true);
+      const errorMessage = await f_addEmployee({
+        ...selectedRows,
+        CTR_CD: selectedRows.CTR_CD || getCtrCd() || "",
+      });
+      setLoading(false);
+      if (errorMessage) {
+        Swal.fire("Thông báo", "Lỗi: " + errorMessage, "error");
+        return;
+      }
+      Swal.fire("Thông báo", "Thêm nhân viên thành công!", "success");
       setOpenDialog(false);
+      loadEmplInfo(false);
     };
     if (getCompany() !== "CMS") {
       checkBP(getUserData(), ["NHANSU"], ["ALL"], ["ALL"], doAdd);
@@ -187,9 +247,20 @@ const UserManager = () => {
 
   const handleUpdateEmployee = async () => {
     const doUpdate = async () => {
-      await f_updateEmployee(selectedRows);
-      loadEmplInfo();
+      if (!selectedRows.EMPL_NO?.trim()) {
+        Swal.fire("Thông báo", "Vui lòng chọn nhân viên cần cập nhật.", "warning");
+        return;
+      }
+      setLoading(true);
+      const errorMessage = await f_updateEmployee(selectedRows);
+      setLoading(false);
+      if (errorMessage) {
+        Swal.fire("Thông báo", "Lỗi: " + errorMessage, "error");
+        return;
+      }
+      Swal.fire("Thông báo", "Cập nhật nhân viên thành công!", "success");
       setOpenDialog(false);
+      loadEmplInfo(false);
     };
     if (getCompany() !== "CMS") {
       checkBP(getUserData(), ["NHANSU"], ["ALL"], ["ALL"], doUpdate);
@@ -200,12 +271,13 @@ const UserManager = () => {
 
   // Face API Handlers
   const extractEmbedding = async (imageUrl: string) => {
-    if (!imageUrl) {
-      Swal.fire("Thông báo", "Vui lòng nhập URL ảnh!", "error");
+    if (!selectedRows.EMPL_NO) {
+      Swal.fire("Thông báo", "Chọn nhân viên trước!", "warning");
       return;
     }
     setLoading(true);
     try {
+      await ensureFaceModels();
       const faceapi = await import("face-api.js");
       const img = await faceapi.fetchImage(imageUrl);
       const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
@@ -227,19 +299,26 @@ const UserManager = () => {
       }
     } catch (error) {
       console.error(error);
-      Swal.fire("Thông báo", "Lỗi khi trích xuất embedding!", "error");
+      Swal.fire(
+        "Thông báo",
+        "Không xử lý được ảnh khuôn mặt. Kiểm tra ảnh /Picture_NS/NS_" +
+          selectedRows.EMPL_NO +
+          ".jpg và model trong thư mục /models.",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const checkEmbedding = async (imageUrl: string) => {
-    if (!imageUrl) {
-      Swal.fire("Thông báo", "Vui lòng nhập URL ảnh!", "error");
+    if (!selectedRows.EMPL_NO) {
+      Swal.fire("Thông báo", "Chọn nhân viên trước!", "warning");
       return;
     }
     setLoading(true);
     try {
+      await ensureFaceModels();
       const faceapi = await import("face-api.js");
       const img = await faceapi.fetchImage(imageUrl);
       const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
@@ -250,14 +329,20 @@ const UserManager = () => {
       }
       const embedding = Array.from(detections.descriptor);
       let kq: any = await f_recognizeFaceID({ FACE_ID: embedding });
-      if (kq.tk_status !== "NG") {
+      if (kq && kq.tk_status !== "NG") {
         Swal.fire("Thông báo", "Xin chào " + kq.data.EMPL_NO, "success");
       } else {
-        Swal.fire("Thông báo", kq.message, "error");
+        Swal.fire("Thông báo", kq?.message ?? "Không nhận diện được khuôn mặt!", "error");
       }
     } catch (error) {
       console.error(error);
-      Swal.fire("Thông báo", "Lỗi khi nhận diện khuôn mặt!", "error");
+      Swal.fire(
+        "Thông báo",
+        "Không xử lý được ảnh khuôn mặt. Kiểm tra ảnh /Picture_NS/NS_" +
+          selectedRows.EMPL_NO +
+          ".jpg và model trong thư mục /models.",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
@@ -309,11 +394,11 @@ const UserManager = () => {
           <PrecisionUserToolbar
             resignedCheck={resigned_check}
             setResignedCheck={setResignedCheck}
-            onLoadData={loadEmplInfo}
+            onLoadData={() => loadEmplInfo()}
             onOpenAddModal={() => setOpenDialog(true)}
             onExportEX1={handleExportEX1}
             onExportEX2={handleExportEX2}
-            onOpenPivot={() => SaveExcel(filteredData, "DiemDanh_Pivot_Raw")}
+            onOpenPivot={() => setIsPivotOpen(true)}
             quickFilterText={quickFilterText}
             setQuickFilterText={setQuickFilterText}
             isLoading={loading}
@@ -373,6 +458,13 @@ const UserManager = () => {
         }
         onUploadAvatar={uploadFile2}
         isLoading={loading}
+      />
+
+      {/* Modal phân tích Pivot đa chiều theo bộ phận / tổ / trạng thái / chức vụ / ca */}
+      <PrecisionUserPivotModal
+        isOpen={isPivotOpen}
+        onClose={() => setIsPivotOpen(false)}
+        data={filteredData}
       />
     </div>
   );

@@ -17,6 +17,9 @@ export const PrecisionDeptPosForm: React.FC<Props> = ({
   subDeptList = [],
   parentSubDeptName,
 }) => {
+  // WORK_POSITION_CODE do người dùng nhập khi INSERT; chỉ khoá khi sửa bản ghi đã có.
+  const isCodeLocked = !!selectedWorkPosition.WORK_POSITION_CODE;
+
   return (
     <>
       {/* Mã Phòng Ban Cha (SUBDEPTCODE) */}
@@ -66,8 +69,13 @@ export const PrecisionDeptPosForm: React.FC<Props> = ({
             onChange={(e) =>
               setWorkPositionInfo("WORK_POSITION_CODE", Number(e.target.value))
             }
-            readOnly
-            title="Khóa tự tăng / Không chỉnh sửa trực tiếp"
+            readOnly={isCodeLocked}
+            placeholder="VD: 8"
+            title={
+              isCodeLocked
+                ? "Đang sửa bản ghi có sẵn / Không đổi khóa chính"
+                : "Nhập mã vị trí mới"
+            }
           />
         </div>
 

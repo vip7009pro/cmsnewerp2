@@ -18,6 +18,9 @@ export const PrecisionDeptSubForm: React.FC<Props> = ({
   mainDeptList = [],
   parentDeptName,
 }) => {
+  // SUBDEPTCODE do người dùng nhập khi INSERT; chỉ khoá khi sửa bản ghi đã có.
+  const isCodeLocked = !!selectedSubDept.SUBDEPTCODE;
+
   return (
     <>
       {/* Mã Bộ Phận Cha (MAINDEPTCODE) */}
@@ -60,7 +63,7 @@ export const PrecisionDeptSubForm: React.FC<Props> = ({
             <span className="req">*</span>
           </label>
           <span className="precision-dept-modal__fieldBadge precision-dept-modal__fieldBadge--pk">
-            Khóa Chính Sub
+            {isCodeLocked ? "Khóa Chính Sub" : "Nhập Mã Mới"}
           </span>
         </div>
         <div className="precision-dept-modal__inputWrapper">
@@ -72,10 +75,15 @@ export const PrecisionDeptSubForm: React.FC<Props> = ({
             onChange={(e) =>
               setSubDeptInfo("SUBDEPTCODE", Number(e.target.value))
             }
-            readOnly
-            title="Khóa tự tăng / Không chỉnh sửa trực tiếp"
+            readOnly={isCodeLocked}
+            placeholder="VD: 105"
+            title={
+              isCodeLocked
+                ? "Đang sửa bản ghi có sẵn / Không đổi khóa chính"
+                : "Nhập mã phòng ban con mới"
+            }
           />
-          <FiLock className="right-icon" size={14} />
+          {isCodeLocked && <FiLock className="right-icon" size={14} />}
         </div>
       </div>
 

@@ -17,6 +17,17 @@
   color: #1e293b;
   overflow: hidden;
 
+  // MOBILE: bỏ ràng buộc height/flex (nếu không sẽ bị co về 0 hoặc cắt cụt),
+  // nhường việc cuộn dọc cho tổ tiên .component_element (đã có overflow-y: auto).
+  @media (max-width: 768px) {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .component_element & {
     width: 100%;
     max-width: 100%;
@@ -25,6 +36,15 @@
     flex: 1 1 0px;
     min-height: 0;
     overflow: hidden;
+
+    // Specificity cao hơn block @media phía trên nên phải ghi đè lại cho mobile
+    @media (max-width: 768px) {
+      height: auto !important;
+      max-height: none !important;
+      min-height: 0;
+      flex: 0 0 auto !important;
+      overflow: visible !important;
+    }
   }
 
   // 1. Header & Telemetry
@@ -137,6 +157,15 @@
       grid-template-columns: 1fr;
       overflow-y: auto;
     }
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      height: auto !important;
+      max-height: none;
+      flex: 0 0 auto !important;
+      min-height: 0;
+      overflow: visible;
+    }
   }
 
   // 3. Left Panel: Data Table
@@ -153,6 +182,13 @@
     min-height: 0;
     height: 100%;
     overflow: hidden;
+
+    @media (max-width: 768px) {
+      height: auto !important;
+      flex: 0 0 auto !important;
+      min-height: 0;
+      overflow: visible;
+    }
   }
 
   &__toolbar {
@@ -299,6 +335,13 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+
+    @media (max-width: 768px) {
+      height: 60vh !important;
+      max-height: none !important;
+      min-height: 340px;
+      flex: 0 0 auto !important;
+    }
 
     .agtable {
       flex: 1 1 0px;
