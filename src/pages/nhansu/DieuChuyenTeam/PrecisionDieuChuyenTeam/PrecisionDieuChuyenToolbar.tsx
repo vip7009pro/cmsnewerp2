@@ -27,7 +27,7 @@ const PrecisionDieuChuyenToolbar: React.FC<PrecisionDieuChuyenToolbarProps> = ({
       {/* Bộ Lọc Nhà Máy & Ca Làm Việc */}
       <div className="precision-dieuchuyen__filterGroup">
         {/* Nhà máy */}
-        <div className="precision-dieuchuyen__filterPill">
+        {/* <div className="precision-dieuchuyen__filterPill">
           <span className="material-symbols-outlined" style={{ fontSize: 16, color: '#2563eb' }}>
             apartment
           </span>
@@ -44,7 +44,7 @@ const PrecisionDieuChuyenToolbar: React.FC<PrecisionDieuChuyenToolbarProps> = ({
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         {/* Team / Tổ gốc */}
         <div className="precision-dieuchuyen__filterPill">

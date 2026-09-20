@@ -41,7 +41,7 @@ const PrecisionDieuChuyenHeader: React.FC<PrecisionDieuChuyenHeaderProps> = ({
       {/* Main Title & Action Buttons */}
       <div className="header-main">
         <div className="header-title-wrap">
-          <h1>Kế hoạch Điều chuyển Nhân sự & Chi viện Ca Sản Xuất</h1>
+          <h1>Điều chuyển Nhân sự</h1>
           <span className="date-badge">Hôm nay, {currentDateStr}</span>
         </div>
 

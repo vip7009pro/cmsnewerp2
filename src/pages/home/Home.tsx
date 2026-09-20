@@ -590,8 +590,11 @@ function Home() {
                   </CustomTabs>
 
                   <div className="erpTabsToolbar">
-                    <span className="erpTabsCount">
-                      {tabs.filter((t) => t?.ELE_CODE !== "-1").length} tabs
+                    <span
+                      className="erpTabsCount"
+                      title={`${tabs.filter((t) => t?.ELE_CODE !== "-1").length} tab`}
+                    >
+                      {tabs.filter((t) => t?.ELE_CODE !== "-1").length}
                     </span>
                     <button
                       type="button"
@@ -602,7 +605,7 @@ function Home() {
                       }}
                     >
                       <CloseRounded style={{ fontSize: 12 }} />
-                      <span>Đóng tất cả</span>
+                      <span className="erpTabsCloseAllText">Đóng tất cả</span>
                     </button>
                   </div>
                 </div>
