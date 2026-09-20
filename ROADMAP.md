@@ -1,5 +1,11 @@
 # Roadmap - cmsnewerp2
 
+- [ ] KD PARITY (còn lại, cần backend/quyết định): thêm tham số `po_no`/`over`/`id` cho `traPlanDataFull` để 3 ô lọc Plan hoạt động; thêm cột REMARK cho `ZTBFCSTTB` nếu muốn lưu ghi chú FCST; xác nhận audit trail notification OVER (`NHU1903`); dọn dead code `PrecisionPoHeader`.
+
+- [x] KD PARITY: Khắc phục toàn bộ sai khác phát hiện khi audit 6 module Kinh Doanh — PO (3 luật validate, re-validate up hàng loạt, notification, gate nút Phê duyệt, validate Invoice từ PO), PLAN (PIVOT + EX1/EX2 theo filter + badge OK/NG thật), OVER (chip `Y` đỏ, chart đúng dữ liệu, giảm request khi đổi Only Pending), FCST (bỏ ô REMARK không có cột DB), CUST (luồng sửa dòng đang chọn, Add + Update cùng hiện, không ghi đè mã), INVOICE (memo cột, currency pivot, ưu tiên lỗi PO); loại bỏ dữ liệu master hardcode; diagnostics/build thành công (1m 6s).
+
+- [x] KD PARITY: Audit 6 module `PoManager`, `InvoiceManager`, `PlanManager`, `FCSTManager`, `CUST_MANAGER`, `OVER_MONITOR` so với bản `.backup`; ghi findings có bằng chứng dòng vào `FINDINGS_PARITY_KD_MODULES.md`; chưa sửa mã nguồn.
+
 - [x] YCSX: Chốt hành vi nghiệp vụ sau audit — `PROD_REQUEST_DATE` khi up hàng loạt luôn lấy ngày hôm nay cho mọi công ty (4 vị trí ghi dữ liệu), siết validate Insert thành `G_CODE + CUST_CD + QTY > 0`, giữ kiểm tra codeList err_code 8, giữ `updateYCSX` tự đóng modal + tra lại bảng, giữ cột preview Excel dạng tĩnh; diagnostics/build thành công.
 
 - [x] YCSX: Audit parity với `YCSXManager.backup.tsx`; khôi phục phân quyền `checkBP` cho Khóa/Mở YCSX và Khóa/Mở Liệu, khôi phục nút Mở Liệu, khôi phục chọn dòng để xóa trong preview Excel, khôi phục kiểm tra kết quả `f_insertYCSX` và thông báo NG chi tiết khi up hàng loạt, chuẩn hóa `DELIVERY_DT` cho input date; diagnostics/build thành công.

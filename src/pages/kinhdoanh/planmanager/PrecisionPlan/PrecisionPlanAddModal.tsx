@@ -25,43 +25,7 @@ interface Props {
 
 const DAY_FIELDS = Array.from({ length: 15 }, (_, i) => `D${i + 1}`);
 
-const FALLBACK_CUSTOMERS: CustomerListData[] = [
-  { CUST_CD: "0025", CUST_NAME_KD: "SEVT", CUST_NAME: "SAMSUNG ELECTRONICS VIETNAM THAI NGUYEN" },
-  { CUST_CD: "0002", CUST_NAME_KD: "MOBIS", CUST_NAME: "HYUNDAI MOBIS VIETNAM" },
-  { CUST_CD: "0003", CUST_NAME_KD: "DONGKWANG", CUST_NAME: "DONGKWANG CL CO., LTD" },
-  { CUST_CD: "0004", CUST_NAME_KD: "SAMKWANG", CUST_NAME: "SAMKWANG VINA CO., LTD" },
-  { CUST_CD: "0005", CUST_NAME_KD: "HAE SUNG", CUST_NAME: "HAESUNG OPTICS VIETNAM" },
-  { CUST_CD: "0006", CUST_NAME_KD: "ALMUS", CUST_NAME: "ALMUS VINA CO., LTD" },
-  { CUST_CD: "0007", CUST_NAME_KD: "SEV", CUST_NAME: "SAMSUNG ELECTRONICS VIETNAM (BAC NINH)" },
-  { CUST_CD: "0008", CUST_NAME_KD: "INNOTEK", CUST_NAME: "LG INNOTEK VIETNAM HAI PHONG" },
-];
-
-const FALLBACK_CODES: CodeListData[] = [
-  {
-    G_CODE: "7C09353A", G_NAME: "GH63-23259A_A_SM-5741B", G_NAME_KD: "GH63-23259A", USE_YN: "Y",
-    PROD_LAST_PRICE: 0
-  },
-  {
-    G_CODE: "7C09019B", G_NAME: "S029-00673B_B_Tab S10 FE", G_NAME_KD: "S029-00673B", USE_YN: "Y",
-    PROD_LAST_PRICE: 0
-  },
-  {
-    G_CODE: "7B09441A", G_NAME: "S029-00728A_A_A165B", G_NAME_KD: "S029-00728A", USE_YN: "Y",
-    PROD_LAST_PRICE: 0
-  },
-  {
-    G_CODE: "7C09014A", G_NAME: "GH63-22420A_A_SM-X626B", G_NAME_KD: "GH63-22420A", USE_YN: "Y",
-    PROD_LAST_PRICE: 0
-  },
-  {
-    G_CODE: "7A09927A", G_NAME: "LABEL-BARCODE 45X25", G_NAME_KD: "GH68-57003A", USE_YN: "Y",
-    PROD_LAST_PRICE: 0
-  },
-  {
-    G_CODE: "7A09871A", G_NAME: "LABEL-SERIAL 30X15", G_NAME_KD: "GH68-55201B", USE_YN: "Y",
-    PROD_LAST_PRICE: 0
-  },
-];
+// Không dùng dữ liệu master hardcode: chỉ lấy từ API để tránh chọn khách/mã không tồn tại thật
 
 const filterCustomerOptions = createFilterOptions<CustomerListData>({
   matchFrom: "any",
@@ -89,7 +53,7 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
   const [planDate, setPlanDate] = useState<string>(moment().format("YYYY-MM-DD"));
   const [remark, setRemark] = useState<string>("");
   const [dValues, setDValues] = useState<{ [key: string]: number }>(() =>
-    Object.fromEntries(DAY_FIELDS.map((f, i) => [f, i < 3 ? 20000 : 0]))
+    Object.fromEntries(DAY_FIELDS.map((f) => [f, 0]))
   );
 
   /* Load Metadata when opening modal */
@@ -112,15 +76,9 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
     }
   }, [open, customerList.length, codeList.length]);
 
-  const effectiveCustomers = useMemo(
-    () => (customerList.length > 0 ? customerList : FALLBACK_CUSTOMERS),
-    [customerList]
-  );
-
-  const effectiveCodes = useMemo(
-    () => (codeList.length > 0 ? codeList : FALLBACK_CODES),
-    [codeList]
-  );
+  // Chỉ dùng danh mục thật từ API (rỗng nếu API lỗi) để không tạo Plan với dữ liệu không có thật
+  const effectiveCustomers = customerList;
+  const effectiveCodes = codeList;
 
   const sumD = useMemo(
     () => DAY_FIELDS.reduce((acc, f) => acc + (Number(dValues[f]) || 0), 0),

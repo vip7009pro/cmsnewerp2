@@ -53,22 +53,24 @@ const PrecisionPoKpiGrid: React.FC<PrecisionPoKpiGridProps> = ({
           <span className="kpi-unit">EA</span>
         </div>
         <div className="kpi-footer">
-          <span>Kế hoạch năm 2026</span>
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 2,
-              fontWeight: 600,
-              color: "#059669",
-              background: "#ecfdf5",
-              padding: "1px 4px",
-              borderRadius: 4,
-            }}
-          >
-            <MdTrendingUp size={12} />
-            +4.8% YoY
-          </span>
+          <span>Kế hoạch năm {new Date().getFullYear()}</span>
+          {summary.total_pobalance_qty > 0 && (
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 2,
+                fontWeight: 600,
+                color: "#d97706",
+                background: "#fffbeb",
+                padding: "1px 4px",
+                borderRadius: 4,
+              }}
+            >
+              <MdTrendingUp size={12} />
+              Còn tồn: {summary.total_pobalance_qty.toLocaleString("en-US")} EA
+            </span>
+          )}
         </div>
       </div>
 

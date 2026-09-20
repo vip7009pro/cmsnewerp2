@@ -25,17 +25,7 @@ interface Props {
 
 const WEEK_FIELDS = Array.from({ length: 22 }, (_, i) => `W${i + 1}`);
 
-const FALLBACK_CUSTOMERS: CustomerListData[] = [
-  { CUST_CD: "0025", CUST_NAME_KD: "SEVT", CUST_NAME: "SAMSUNG ELECTRONICS VIETNAM THAI NGUYEN" },
-  { CUST_CD: "0002", CUST_NAME_KD: "MOBIS", CUST_NAME: "HYUNDAI MOBIS VIETNAM" },
-  { CUST_CD: "0003", CUST_NAME_KD: "DONGKWANG", CUST_NAME: "DONGKWANG CL CO., LTD" },
-  { CUST_CD: "0007", CUST_NAME_KD: "SEV", CUST_NAME: "SAMSUNG ELECTRONICS VIETNAM (BAC NINH)" },
-];
-
-const FALLBACK_CODES: CodeListData[] = [
-  { G_CODE: "7C09353A", G_NAME: "GH63-23259A_A_SM-5741B", G_NAME_KD: "GH63-23259A", USE_YN: "Y", PROD_LAST_PRICE: 0 },
-  { G_CODE: "7C09019B", G_NAME: "S029-00673B_B_Tab S10 FE", G_NAME_KD: "S029-00673B", USE_YN: "Y", PROD_LAST_PRICE: 0 },
-];
+// Không dùng dữ liệu master hardcode: chỉ lấy từ API để tránh chọn khách/mã không tồn tại thật
 
 const filterCustomerOptions = createFilterOptions<CustomerListData>({
   matchFrom: "any",
@@ -63,7 +53,6 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
   const [fcstYear, setFcstYear] = useState<string>(new Date().getFullYear().toString());
   const [fcstWeekNo, setFcstWeekNo] = useState<string>("");
   const [prodPrice, setProdPrice] = useState<string>("0");
-  const [remark, setRemark] = useState<string>("");
   const [wValues, setWValues] = useState<{ [key: string]: number }>(() =>
     Object.fromEntries(WEEK_FIELDS.map((f) => [f, 0]))
   );
@@ -93,15 +82,9 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
     }
   }, [open, customerList.length, codeList.length]);
 
-  const effectiveCustomers = useMemo(
-    () => (customerList.length > 0 ? customerList : FALLBACK_CUSTOMERS),
-    [customerList]
-  );
-
-  const effectiveCodes = useMemo(
-    () => (codeList.length > 0 ? codeList : FALLBACK_CODES),
-    [codeList]
-  );
+  // Chỉ dùng danh mục thật từ API (rỗng nếu API lỗi) để không tạo FCST với dữ liệu không có thật
+  const effectiveCustomers = customerList;
+  const effectiveCodes = codeList;
 
   const sumW = useMemo(
     () => WEEK_FIELDS.reduce((acc, f) => acc + (Number(wValues[f]) || 0), 0),
@@ -118,7 +101,6 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
     setFcstYear(new Date().getFullYear().toString());
     setFcstWeekNo("");
     setProdPrice("0");
-    setRemark("");
     setWValues(Object.fromEntries(WEEK_FIELDS.map((f) => [f, 0])));
     setUploadExcelJSon([]);
   };
@@ -581,14 +563,8 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
                 </div>
               </div>
 
-              {/* Remark Row */}
+              {/* Trạng thái đồng bộ */}
               <div className="precision-fcst__remarkRow">
-                <div className="precision-fcst__formGroup">
-                  <label className="precision-fcst__formLabel">Ghi Chú & Điều Kiện (REMARK):</label>
-                  <input className="precision-fcst__formInput" type="text"
-                    placeholder="Nhập ghi chú đặc biệt cho kế hoạch dự báo sản xuất..."
-                    value={remark} onChange={(e) => setRemark(e.target.value)} />
-                </div>
                 <div className="precision-fcst__formGroup">
                   <label className="precision-fcst__formLabel">Trạng thái (CHECKSTATUS):</label>
                   <span className="precision-fcst__statusBadge precision-fcst__statusBadge--ready">

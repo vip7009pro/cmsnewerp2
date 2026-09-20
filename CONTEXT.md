@@ -1,5 +1,25 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-20 (KD PARITY: Khắc phục toàn bộ sai khác 6 module Kinh Doanh)
+- Đã khắc phục hết mục A, B và các mục C/D của `FINDINGS_PARITY_KD_MODULES.md`. Chi tiết bảng "Trạng thái khắc phục" ở mục G của tài liệu đó.
+- **PO**: khôi phục 3 luật validate đơn lẻ (ver khóa `USE_YN`, giá phải khớp bảng giá MOQ khi non-CMS, chặn đổi giá PO khi sửa); up hàng loạt kiểm lại dữ liệu trước khi ghi DB; bổ sung notification cho Sửa/Xóa/Up; nút Phê duyệt bọc `checkBP(["KD"])` và chỉ chạy cho CMS; Invoice từ PO khôi phục kiểm tồn tại PO + so sánh ngày + notification; ngày Invoice mặc định về hôm qua; bỏ control chết "Chờ phê duyệt"; bỏ KPI giả.
+- **PLAN**: nút PIVOT hoạt động trở lại (modal dùng chung 2 tab); EX1 xuất dòng đang hiển thị sau lọc key theo `headerName` (giữ header ngày DD/MM), EX2 xuất toàn bộ; `okCount/ngCount` đẩy từ tab Plan Status lên header. Thêm mới `PrecisionPlan/PrecisionPlanPivotModal.tsx` và `PrecisionPlan/planGridUtils.tsx`.
+- **OVER**: `HANDLE_STATUS='Y'` hiển thị lại chip đỏ; chart dùng đúng dữ liệu full (bỏ fallback gây lệch số); đổi "Only Pending" chỉ còn 1 request và `deselectAll` grid khi reload.
+- **FCST**: bỏ ô REMARK khỏi form thủ công (backend `ZTBFCSTTB` không có cột REMARK nên trước đây dữ liệu nhập bị bỏ im lặng). Muốn lưu thật phải thêm cột DB + cập nhật `insert_fcst`.
+- **CUST**: khôi phục nút "Sửa Đối Tác" cho dòng đang click, modal hiện đồng thời Add + Update, không ghi đè mã khi user đã tự nhập.
+- **INVOICE**: memo hoá cột, khôi phục format `currency` cho pivot, ưu tiên lỗi "Không tồn tại PO" khi cập nhật.
+- **Rủi ro dữ liệu**: bỏ dữ liệu master hardcode ở modal Plan/FCST (chỉ dùng danh mục thật từ API); `dValues` mặc định D1–D15 = 0.
+- **Chưa làm (cần backend/quyết định nghiệp vụ)**: 3 ô lọc Plan (`po_no`/`over`/`id`) vì `traPlanDataFull` không nhận các tham số này; audit trail notification OVER vẫn `NHU1903`; bộ EX1/EX2/PIVOT built-in của lưới PO; dead code `PrecisionPoHeader`.
+- Diagnostics sạch và `npm run build` thành công (1m 6s).
+
+## Update - 2026-09-20 (Audit parity 6 module Kinh Doanh — chỉ đọc, chưa sửa)
+- Đã audit `PoManager`, `InvoiceManager`, `PlanManager`, `FCSTManager`, `CUST_MANAGER`, `OVER_MONITOR` so với bản `.backup` tương ứng.
+- Kết quả đầy đủ (có bằng chứng dòng, phân loại REGRESSION/IMPROVEMENT/NEUTRAL và thứ tự ưu tiên): xem `FINDINGS_PARITY_KD_MODULES.md`.
+- Tóm tắt mức CAO: PO mất 3 luật validate (ver khóa `USE_YN`, giá không có trong bảng giá, không được đổi giá PO khi sửa); Plan mất PIVOT (nút không có `onClick`, AGTable không nhận `toolbar`) và EX1 ≡ EX2 (mất lọc + mất header ngày trong file xuất).
+- Tóm tắt mức TRUNG BÌNH: PO up hàng loạt không re-validate, mất notification Sửa/Xóa/Up, nút Phê duyệt mới không `checkBP`, Invoice từ PO mất 2 validate; Plan mất 3 ô lọc (ID/Over/Invoice No) và `okCount={0}` làm badge header chết; OVER mất phân biệt `HANDLE_STATUS='Y'`; FCST không lưu REMARK (backend `ZTBFCSTTB` không có cột này); CUST mất luồng "chọn dòng → Add/Update".
+- Các điểm KHÔNG sai khác: permission gates của Invoice/Plan/FCST/OVER, AG Grid selection của 5 lưới chính, payload insert/update của cả 6 module, thuật toán sinh mã CUST, công thức tuần ISO và số liệu chart OVER, wiring 4 CustomEvent của FCSTManager, thứ tự check bulk import Plan/FCST/Invoice.
+- Chưa thay đổi mã nguồn nào trong lần audit này; chờ quyết định của người dùng theo thứ tự ưu tiên ở mục F của tài liệu findings.
+
 ## Update - 2026-09-20 (YCSX: Chốt hành vi up hàng loạt và validate Insert)
 - `PROD_REQUEST_DATE` khi Up YCSX hàng loạt nay **luôn = ngày hôm nay** (`moment().format("YYYYMMDD")`) cho mọi công ty, không còn lấy theo cột trong file Excel. Đã sửa cả 4 vị trí ghi dữ liệu: `f_insertYCSX` nhánh TT/AM, `f_insertYCSX` nhánh còn lại, `f_insertP500`, `f_insertP501`.
 - Validate "Insert" dòng thủ công vào lưới Excel giữ theo `G_CODE + CUST_CD + QTY > 0`; siết điều kiện số lượng từ `=== 0` thành `!(Number(QTY) > 0)` để chặn cả số âm và giá trị rỗng/NaN.

@@ -145,7 +145,8 @@ const makePivotField = (
   caption: string,
   dataField: string,
   dataType: "string" | "number" | "date",
-  summaryType: "count" | "sum"
+  summaryType: "count" | "sum",
+  format?: "fixedPoint" | "currency"
 ) => ({
   caption,
   width: 80,
@@ -154,7 +155,7 @@ const makePivotField = (
   allowFiltering: true,
   dataType,
   summaryType,
-  format: summaryType === "sum" && dataType === "number" ? "fixedPoint" : "fixedPoint",
+  format: format ?? (summaryType === "sum" && dataType === "number" ? "fixedPoint" : "fixedPoint"),
   headerFilter: { allowSearch: true, height: 500, width: 300 },
 });
 
@@ -173,8 +174,8 @@ export const createPivotDataSource = (data: InvoiceTableData[]) =>
       makePivotField("PO_NO", "PO_NO", "string", "count"),
       makePivotField("DELIVERY_DATE", "DELIVERY_DATE", "date", "count"),
       makePivotField("DELIVERY_QTY", "DELIVERY_QTY", "number", "sum"),
-      makePivotField("PROD_PRICE", "PROD_PRICE", "number", "sum"),
-      makePivotField("DELIVERED_AMOUNT", "DELIVERED_AMOUNT", "number", "sum"),
+      makePivotField("PROD_PRICE", "PROD_PRICE", "number", "sum", "currency"),
+      makePivotField("DELIVERED_AMOUNT", "DELIVERED_AMOUNT", "number", "sum", "currency"),
       makePivotField("REMARK", "REMARK", "string", "count"),
       makePivotField("INVOICE_NO", "INVOICE_NO", "string", "count"),
       makePivotField("PROD_TYPE", "PROD_TYPE", "string", "count"),

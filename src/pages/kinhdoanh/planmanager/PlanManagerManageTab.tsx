@@ -14,10 +14,14 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { SaveExcel } from "../../../api/services/excelService";
 import { PlanTableData } from "../interfaces/kdInterface";
 import { getManageColumns } from "./PrecisionPlan/PrecisionPlanColumns";
+import { exportFilteredRowsToExcel } from "./PrecisionPlan/planGridUtils";
+import PrecisionPlanPivotModal from "./PrecisionPlan/PrecisionPlanPivotModal";
 
 const PlanManagerManageTab: React.FC = () => {
   const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
   const podatatablefilter = useRef<Array<PlanTableData>>([]);
+  const gridRef = useRef<any>(null);
+  const [showPivot, setShowPivot] = useState(false);
 
   /* ── Filter States ── */
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -135,6 +139,7 @@ const PlanManagerManageTab: React.FC = () => {
   const planDataAGTable = useMemo(
     () => (
       <AGTable
+        ref={gridRef}
         suppressRowClickSelection={false}
         showFilter={true}
         columns={planColums}
@@ -204,13 +209,13 @@ const PlanManagerManageTab: React.FC = () => {
         <div className="precision-plan__gridToolbar">
           <div className="precision-plan__gridToolbarLeft">
             <div className="precision-plan__gridActions">
-              <button type="button" className="precision-plan__gridBtn precision-plan__gridBtn--excel" onClick={() => SaveExcel(plandatatable, "Plan_Data")} title="Xuất Excel toàn bộ">
+              <button type="button" className="precision-plan__gridBtn precision-plan__gridBtn--excel" onClick={() => exportFilteredRowsToExcel(gridRef.current?.api, plandatatable, "Plan_Data")} title="Xuất Excel các dòng đang hiển thị (sau khi lọc)">
                 📥 EX1
               </button>
-              <button type="button" className="precision-plan__gridBtn precision-plan__gridBtn--excel" onClick={() => SaveExcel(plandatatable, "Plan_Data_Full")} title="Xuất Excel đầy đủ">
+              <button type="button" className="precision-plan__gridBtn precision-plan__gridBtn--excel" onClick={() => SaveExcel(plandatatable, "Plan_Data_Full")} title="Xuất Excel toàn bộ dữ liệu">
                 📥 EX2
               </button>
-              <button type="button" className="precision-plan__gridBtn precision-plan__gridBtn--pivot" title="Phân tích Pivot">
+              <button type="button" className="precision-plan__gridBtn precision-plan__gridBtn--pivot" onClick={() => setShowPivot(true)} title="Phân tích Pivot">
                 📊 PIVOT
               </button>
               <button type="button" className="precision-plan__gridBtn precision-plan__gridBtn--danger" onClick={() => checkBP(userData, ["KD"], ["ALL"], ["ALL"], handleConfirmDeletePlan)} title="Xóa Plan đã chọn">
@@ -227,6 +232,14 @@ const PlanManagerManageTab: React.FC = () => {
           {planDataAGTable}
         </div>
       </div>
+
+      {/* Pivot Overlay */}
+      <PrecisionPlanPivotModal
+        isOpen={showPivot}
+        onClose={() => setShowPivot(false)}
+        data={plandatatable}
+        tableID="planManagePivot"
+      />
     </>
   );
 };

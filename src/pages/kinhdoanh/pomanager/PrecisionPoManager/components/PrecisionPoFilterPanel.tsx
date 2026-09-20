@@ -8,7 +8,6 @@ export interface PrecisionPoFilterState {
   alltime: boolean;
   justpobalance: boolean;
   urgentOnly: boolean;
-  pendingApproval: boolean;
   cust_name: string;
   codeKD: string;
   codeCMS: string;
@@ -126,14 +125,6 @@ const PrecisionPoFilterPanel: React.FC<PrecisionPoFilterPanelProps> = ({
               onChange={(e) => onFilterChange("urgentOnly", e.target.checked)}
             />
             <span style={{ color: "#e11d48", fontWeight: 500 }}>Hàng giao gấp (&lt; 24h)</span>
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={filters.pendingApproval}
-              onChange={(e) => onFilterChange("pendingApproval", e.target.checked)}
-            />
-            <span style={{ color: "#d97706", fontWeight: 500 }}>Chờ phê duyệt</span>
           </label>
         </div>
 

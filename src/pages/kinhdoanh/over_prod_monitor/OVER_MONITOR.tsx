@@ -26,6 +26,7 @@ const OVER_MONITOR: React.FC = () => {
   const [selectedCount, setSelectedCount] = useState<number>(0);
 
   const sltRows = useRef<PROD_OVER_DATA[]>([]);
+  const gridRef = useRef<any>(null);
 
   // Tải bảng dữ liệu chính theo trạng thái Pending
   const loadTableData = useCallback(async () => {
@@ -43,6 +44,8 @@ const OVER_MONITOR: React.FC = () => {
       setTableData(data || []);
       sltRows.current = [];
       setSelectedCount(0);
+      // Xoá luôn tick trên grid để tránh lệch giữa checkbox hiển thị và sltRows
+      gridRef.current?.api?.deselectAll?.();
     } catch (error) {
       console.error("Lỗi nạp dữ liệu sản xuất dư:", error);
     } finally {
@@ -204,10 +207,15 @@ const OVER_MONITOR: React.FC = () => {
     });
   }, [tableData, searchText]);
 
-  // Khởi tạo ban đầu và tải lại khi only_pending thay đổi
+  // Khởi tạo: nạp chart 1 lần theo dữ liệu đầy đủ (baseline giống bản legacy)
   useEffect(() => {
-    loadAllData();
-  }, [only_pending]);
+    loadChartData();
+  }, [loadChartData]);
+
+  // Đổi "Only Pending" chỉ nạp lại bảng (1 request), không kéo theo chart
+  useEffect(() => {
+    loadTableData();
+  }, [loadTableData]);
 
   return (
     <div className="precision-over-monitor">
@@ -223,7 +231,7 @@ const OVER_MONITOR: React.FC = () => {
         <PrecisionOverKpi data={tableData} />
 
         {/* 3. Biểu đồ xu hướng tuần Recharts (cho phép ẩn/hiện) */}
-        {showChart && <PrecisionOverChart data={chartData.length > 0 ? chartData : tableData} />}
+        {showChart && <PrecisionOverChart data={chartData} />}
 
         {/* 4. Thẻ Grid Table và Thanh Toolbar Điều Hành */}
         <div className="precision-over-grid-card">
@@ -243,6 +251,7 @@ const OVER_MONITOR: React.FC = () => {
 
           <div className="precision-over-table-wrapper">
             <AGTable
+              ref={gridRef}
               showFilter={true}
               toolbar={<div />}
               columns={columns}

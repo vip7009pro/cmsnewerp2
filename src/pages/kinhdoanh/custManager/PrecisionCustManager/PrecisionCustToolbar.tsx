@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { FiDownload, FiFileText, FiPieChart, FiPlus, FiRefreshCw, FiSearch } from "react-icons/fi";
+import { FiDownload, FiEdit3, FiFileText, FiPieChart, FiPlus, FiRefreshCw, FiSearch } from "react-icons/fi";
 
 export type CustFilterType = "ALL" | "KH" | "NCC" | "USE" | "NOT_USE";
 
@@ -9,6 +9,7 @@ interface PrecisionCustToolbarProps {
   searchKeyword: string;
   onChangeSearch: (val: string) => void;
   onAddNew: () => void;
+  onEditSelected: () => void;
   onRefresh: () => void;
   onExportEX1: () => void;
   onExportEX2: () => void;
@@ -28,6 +29,7 @@ const PrecisionCustToolbar: React.FC<PrecisionCustToolbarProps> = ({
   searchKeyword,
   onChangeSearch,
   onAddNew,
+  onEditSelected,
   onRefresh,
   onExportEX1,
   onExportEX2,
@@ -122,6 +124,17 @@ const PrecisionCustToolbar: React.FC<PrecisionCustToolbarProps> = ({
         >
           <FiPlus size={14} />
           <span>Thêm Mới Đối Tác</span>
+        </button>
+
+        {/* Nút Sửa dòng đang chọn (khôi phục luồng legacy: click dòng -> Sửa) */}
+        <button
+          type="button"
+          className="btn-action btn-action--refresh"
+          onClick={onEditSelected}
+          title="Sửa hồ sơ của dòng đang chọn trong bảng"
+        >
+          <FiEdit3 size={13} />
+          <span>Sửa Đối Tác</span>
         </button>
 
         {/* Nút Load */}

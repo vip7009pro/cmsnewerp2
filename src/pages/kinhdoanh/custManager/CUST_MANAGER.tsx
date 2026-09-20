@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import moment from "moment";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
@@ -49,6 +49,10 @@ const CUST_MANAGER: React.FC = () => {
   const [currentFilter, setCurrentFilter] = useState<CustFilterType>("ALL");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [showPivot, setShowPivot] = useState(false);
+  // Dòng đang được click trên lưới (độc lập với state form) để phục vụ nút "Sửa Đối Tác"
+  const clickedRowRef = useRef<CUST_INFO | null>(null);
+  // Đánh dấu user đã tự nhập mã, tránh bị ghi đè khi đổi phân loại
+  const codeTouched = useRef(false);
 
   // 1. Tải danh sách đối tác
   const handleCUSTINFO = useCallback(() => {
@@ -119,6 +123,7 @@ const CUST_MANAGER: React.FC = () => {
   // 3. Mở modal thêm mới
   const handleOpenAddNew = useCallback(async () => {
     const nextCode = await autogenerateCUST_CD("KH");
+    codeTouched.current = false;
     setSelectedRows({
       ...initialCustInfo,
       CUST_TYPE: "KH",
@@ -130,19 +135,39 @@ const CUST_MANAGER: React.FC = () => {
 
   // 4. Mở modal chỉnh sửa dòng
   const handleOpenEditRow = useCallback((row: CUST_INFO) => {
+    codeTouched.current = false;
     setSelectedRows({ ...row });
     setIsNewMode(false);
     setOpenModal(true);
   }, []);
 
-  // 5. Thay đổi trường form
+  // 4b. Sửa dòng đang click trên lưới (khôi phục luồng legacy: click dòng -> Add/Update)
+  const handleOpenEditSelected = useCallback(() => {
+    const row = clickedRowRef.current;
+    if (!row || !row.CUST_CD) {
+      Swal.fire(
+        "Thông báo",
+        "Vui lòng click chọn một dòng đối tác trên bảng để sửa",
+        "warning"
+      );
+      return;
+    }
+    handleOpenEditRow(row);
+  }, [handleOpenEditRow]);
+
+  // 5. Thay đổi trường form (đánh dấu khi user tự sửa mã để không ghi đè)
   const handleChangeField = useCallback((key: string, value: any) => {
+    if (key === "CUST_CD") codeTouched.current = true;
     setSelectedRows((prev) => ({ ...prev, [key]: value }));
   }, []);
 
-  // 6. Tự sinh mã trong modal
+  // 6. Tự sinh mã trong modal (không ghi đè mã user đã tự nhập)
   const handleModalAutoGenCode = useCallback(
     async (type: string) => {
+      if (codeTouched.current) {
+        setSelectedRows((prev) => ({ ...prev, CUST_TYPE: type }));
+        return;
+      }
       const nextCode = await autogenerateCUST_CD(type);
       setSelectedRows((prev) => ({ ...prev, CUST_TYPE: type, CUST_CD: nextCode }));
     },
@@ -153,6 +178,7 @@ const CUST_MANAGER: React.FC = () => {
   const handleClearModalForm = useCallback(async () => {
     const currentType = selectedRows.CUST_TYPE || "KH";
     const nextCode = await autogenerateCUST_CD(currentType);
+    codeTouched.current = false;
     setSelectedRows({
       ...initialCustInfo,
       CUST_TYPE: currentType,
@@ -337,6 +363,7 @@ const CUST_MANAGER: React.FC = () => {
         searchKeyword={searchKeyword}
         onChangeSearch={setSearchKeyword}
         onAddNew={handleOpenAddNew}
+        onEditSelected={handleOpenEditSelected}
         onRefresh={handleCUSTINFO}
         onExportEX1={handleExportEX1}
         onExportEX2={handleExportEX2}
@@ -368,6 +395,7 @@ const CUST_MANAGER: React.FC = () => {
             data={filteredData}
             showFilter={true}
             onRowClick={(params: any) => {
+              clickedRowRef.current = params.data;
               setSelectedRows(params.data);
             }}
           />

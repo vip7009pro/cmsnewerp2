@@ -369,27 +369,26 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
               <span>Đóng</span>
             </button>
 
-            {isNewMode ? (
-              <button
-                type="button"
-                className="btn-modal btn-modal--add"
-                onClick={onSaveAdd}
-                title="Lưu hồ sơ đối tác mới vào cơ sở dữ liệu"
-              >
-                <FiPlus size={15} />
-                <span>+ Thêm Mới Đối Tác</span>
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="btn-modal btn-modal--update"
-                onClick={onSaveEdit}
-                title="Cập nhật thay đổi hồ sơ đối tác"
-              >
-                <FiCheck size={15} />
-                <span>Cập Nhật Thông Tin</span>
-              </button>
-            )}
+            {/* Legacy hiển thị đồng thời cả Add và Update */}
+            <button
+              type="button"
+              className="btn-modal btn-modal--add"
+              onClick={onSaveAdd}
+              title="Lưu hồ sơ đối tác mới vào cơ sở dữ liệu"
+            >
+              <FiPlus size={15} />
+              <span>+ Thêm Mới Đối Tác</span>
+            </button>
+
+            <button
+              type="button"
+              className="btn-modal btn-modal--update"
+              onClick={onSaveEdit}
+              title="Cập nhật thay đổi hồ sơ đối tác"
+            >
+              <FiCheck size={15} />
+              <span>Cập Nhật Thông Tin</span>
+            </button>
           </div>
         </div>
       </div>

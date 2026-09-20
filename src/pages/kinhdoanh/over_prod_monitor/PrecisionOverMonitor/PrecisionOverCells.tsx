@@ -75,6 +75,25 @@ export const KdCfmCellRenderer: React.FC<KdCfmCellRendererProps> = (props) => {
 export const HandleStatusCellRenderer: React.FC<CustomCellRendererProps> = (props) => {
   const status = props.data?.HANDLE_STATUS;
   const isPending = status === "P";
+  // Legacy OVER_MONITOR: 'C' = xanh (đã xử lý), 'Y' = đỏ, còn lại = cam
+  const isHandledPending = status === "Y";
+
+  if (isHandledPending) {
+    return (
+      <div className="precision-cell-status">
+        <span
+          className="status-chip"
+          style={{
+            background: "#fee2e2",
+            color: "#b91c1c",
+            border: "1px solid #fecaca",
+          }}
+        >
+          CLOSED
+        </span>
+      </div>
+    );
+  }
 
   return (
     <div className="precision-cell-status">

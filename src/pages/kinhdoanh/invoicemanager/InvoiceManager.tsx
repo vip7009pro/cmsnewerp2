@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import moment from "moment";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
@@ -104,8 +104,8 @@ const InvoiceManager: React.FC = () => {
   const clickedRow = useRef<any>(null);
   const invoice_no_ref = useRef<string>("");
 
-  // ── Columns (memoized at module level) ──
-  const columns = getInvoiceColumns();
+  // ── Columns (memoized để không đổi identity mỗi render) ──
+  const columns = useMemo(() => getInvoiceColumns(), []);
 
   // ── Init ──
   useEffect(() => {
@@ -278,7 +278,10 @@ const InvoiceManager: React.FC = () => {
     let err_code: number = 0;
     let po_info = await f_checkPOInfo(selectedCode?.G_CODE ?? "", selectedCust?.CUST_CD ?? "", newpono);
     err_code = po_info.length > 0 ? (newinvoiceQTY > po_info[0].PO_BALANCE + old_invoice_qty ? 5 : err_code) : 1;
-    let cmp = f_compareTwoDate(newinvoicedate, po_info[0]?.PO_DATE?.substring(0, 10));
+    // Chỉ so sánh ngày khi PO thực sự tồn tại, để lỗi "Không tồn tại PO" không bị ghi đè
+    const cmp = po_info.length > 0
+      ? f_compareTwoDate(newinvoicedate, po_info[0]?.PO_DATE?.substring(0, 10))
+      : err_code;
     err_code = cmp === -1 ? 6 : err_code;
     err_code = f_compareDateToNow(newinvoicedate) ? 2 : err_code;
     err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;

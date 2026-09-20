@@ -55,7 +55,6 @@ const initialFilters: PrecisionPoFilterState = {
   alltime: false,
   justpobalance: true,
   urgentOnly: false,
-  pendingApproval: false,
   cust_name: "",
   codeKD: "",
   codeCMS: "",
@@ -346,21 +345,36 @@ const PrecisionPoManager: React.FC = () => {
     }
   };
 
-  // Thêm 1 PO thủ công
+  // Thêm 1 PO thủ công (khôi phục đầy đủ luật validate theo bản legacy)
   const handleAddSinglePO = async () => {
+    let err_code = 0;
+    err_code = (await f_checkPOExist(selectedCode?.G_CODE ?? "", selectedCust?.CUST_CD ?? "", poNo)) ? 1 : 0;
+    err_code = f_compareDateToNow(poDate) ? 2 : err_code;
+    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;
     if (!selectedCode?.G_CODE || !selectedCust?.CUST_CD || !poNo || !userData?.EMPL_NO || !poPrice) {
-      Swal.fire("Lỗi", "Vui lòng nhập đầy đủ thông tin bắt buộc", "error");
+      err_code = 4;
+    }
+    // Luật legacy: ngoài CMS, giá PO phải khớp bảng giá đã load theo MOQ
+    if (!isCMS) {
+      const recheckPrice = newCodePrice.filter(
+        (e: PRICEWITHMOQ) => poPrice === e.PROD_PRICE.toString()
+      ).length;
+      if (recheckPrice === 0) err_code = 5;
+    }
+
+    if (err_code !== 0) {
+      const msgs: Record<number, string> = {
+        1: "NG: Đã tồn tại PO",
+        2: "NG: Ngày PO không được trước ngày hôm nay",
+        3: "NG: Ver này đã bị khóa",
+        4: "NG: Không để trống thông tin bắt buộc",
+        5: "NG: Giá không tồn tại trong bảng giá",
+      };
+      Swal.fire("Thông báo", msgs[err_code] ?? "Lỗi", "error");
       return;
     }
-    const exist = await f_checkPOExist(selectedCode.G_CODE, selectedCust.CUST_CD, poNo);
-    if (exist) {
-      Swal.fire("Lỗi", "Số PO này đã tồn tại cho mã hàng và khách hàng này", "error");
-      return;
-    }
-    if (f_compareDateToNow(poDate)) {
-      Swal.fire("Lỗi", "Ngày PO không được trước ngày hôm nay", "error");
-      return;
-    }
+
+    if (!selectedCode || !selectedCust || !userData) return;
 
     const res = await f_insertPO({
       G_CODE: selectedCode.G_CODE,
@@ -434,10 +448,34 @@ const PrecisionPoManager: React.FC = () => {
 
   const handleUpdateSinglePO = async () => {
     if (!selectedID) return;
+    let err_code = 0;
+    err_code = (await f_checkPOExist(selectedCode?.G_CODE ?? "", selectedCust?.CUST_CD ?? "", poNo)) ? 0 : 1;
+    err_code = f_compareDateToNow(poDate) ? 2 : err_code;
+    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;
+    if (!selectedCode?.G_CODE || !selectedCust?.CUST_CD || !poNo || !userData?.EMPL_NO || !poPrice) {
+      err_code = 4;
+    }
     if (clickedRow.current && Number(poQty) < clickedRow.current.TOTAL_DELIVERED) {
-      Swal.fire("Lỗi", "Số lượng PO không được nhỏ hơn số lượng đã giao", "error");
+      err_code = 5;
+    }
+    // Luật legacy: ngoài CMS không được đổi giá PO đã tạo
+    if (!isCMS && clickedRow.current && Number(poPrice) !== clickedRow.current.PROD_PRICE) {
+      err_code = 6;
+    }
+
+    if (err_code !== 0) {
+      const msgs: Record<number, string> = {
+        1: "NG: Không tồn tại PO",
+        2: "NG: Ngày PO không được trước ngày hôm nay",
+        3: "NG: Ver này đã bị khóa",
+        4: "NG: Không để trống thông tin bắt buộc",
+        5: "NG: Số lượng po mới không được nhỏ hơn số lượng đã giao hàng",
+        6: "NG: Không được đổi giá PO, xóa tạo lại PO nhé",
+      };
+      Swal.fire("Thông báo", msgs[err_code] ?? "Kiểm tra xem PO có giao hàng chưa?", "error");
       return;
     }
+
     const res = await f_updatePO({
       G_CODE: selectedCode?.G_CODE,
       CUST_CD: selectedCust?.CUST_CD,
@@ -452,6 +490,22 @@ const PrecisionPoManager: React.FC = () => {
       PO_ID: selectedID,
     });
     if (res === "OK") {
+      const noti: NotificationElement = {
+        CTR_CD: "002",
+        NOTI_ID: -1,
+        NOTI_TYPE: "info",
+        TITLE: "Update PO",
+        CONTENT: `${userData?.EMPL_NO} (${userData?.MIDLAST_NAME} ${userData?.FIRST_NAME}), nhân viên ${userData?.WORK_POSITION_NAME} đã update PO po_id: ${selectedID} - ${selectedCode?.G_NAME_KD} - (${selectedCust?.CUST_NAME_KD}) - PO NO: ${poNo} - PO QTY: ${poQty} - PO DATE: ${poDate} - RD DATE: ${rdDate} - PROD PRICE: ${poPrice} - BEP: ${poBEP} - REMARK: ${poRemark}`,
+        SUBDEPTNAME: "KD",
+        MAINDEPTNAME: "KD",
+        INS_EMPL: userData?.EMPL_NO || "",
+        INS_DATE: moment().format("YYYY-MM-DD"),
+        UPD_EMPL: userData?.EMPL_NO || "",
+        UPD_DATE: moment().format("YYYY-MM-DD"),
+      };
+      if (await f_insert_Notification_Data(noti)) {
+        getSocket().emit("notification_panel", noti);
+      }
       Swal.fire("Thành công", "Cập nhật PO thành công!", "success");
       setOpenAddModal(false);
       setIsEditMode(false);
@@ -485,6 +539,22 @@ const PrecisionPoManager: React.FC = () => {
         }
       }
       if (!hasError) {
+        const noti: NotificationElement = {
+          CTR_CD: "002",
+          NOTI_ID: -1,
+          NOTI_TYPE: "warning",
+          TITLE: "Xóa PO",
+          CONTENT: `${userData?.EMPL_NO} (${userData?.MIDLAST_NAME} ${userData?.FIRST_NAME}), nhân viên ${userData?.WORK_POSITION_NAME} đã xóa PO_NO ${podatatablefilter.current.map((x: POTableData) => x.PO_NO).join(", ")} - CODE: ${podatatablefilter.current.map((x: POTableData) => x.G_NAME_KD).join(", ")}`,
+          SUBDEPTNAME: "KD",
+          MAINDEPTNAME: "KD",
+          INS_EMPL: userData?.EMPL_NO || "",
+          INS_DATE: moment().format("YYYY-MM-DD"),
+          UPD_EMPL: userData?.EMPL_NO || "",
+          UPD_DATE: moment().format("YYYY-MM-DD"),
+        };
+        if (await f_insert_Notification_Data(noti)) {
+          getSocket().emit("notification_panel", noti);
+        }
         Swal.fire("Thành công", "Đã xóa các PO được chọn!", "success");
         handletraPO();
       } else {
@@ -513,20 +583,38 @@ const PrecisionPoManager: React.FC = () => {
     setRdDate(r.RD_DATE || "");
     setPoNo(r.PO_NO || "");
     setInvoiceQty(0);
-    setInvoiceDate(moment().format("YYYY-MM-DD"));
+    // Legacy: ngày Invoice mặc định là ngày hôm qua
+    setInvoiceDate(moment().add(-1, "day").format("YYYY-MM-DD"));
     setInvoiceRemark("");
     setOpenInvoiceModal(true);
   };
 
   const handleAddInvoice = async () => {
-    if (invoiceQty <= 0) {
-      Swal.fire("Lỗi", "Số lượng giao phải lớn hơn 0", "error");
+    let err_code = 0;
+    err_code = (await f_checkPOExist(selectedCode?.G_CODE ?? "", selectedCust?.CUST_CD ?? "", poNo)) ? 0 : 1;
+    err_code = f_compareDateToNow(invoiceDate) ? 2 : err_code;
+    err_code = f_compareTwoDate(invoiceDate, poDate.substring(0, 10)) === -1 ? 6 : err_code;
+    err_code = selectedCode?.USE_YN === "N" ? 3 : err_code;
+    if (!selectedCode?.G_CODE || !selectedCust?.CUST_CD || !invoiceDate || !userData?.EMPL_NO || invoiceQty === 0) {
+      err_code = 4;
+    }
+    if (selectedCode?.PO_BALANCE !== undefined && selectedCode.PO_BALANCE < invoiceQty) {
+      err_code = 5;
+    }
+
+    if (err_code !== 0) {
+      const msgs: Record<number, string> = {
+        1: "NG: Không tồn tại PO",
+        2: "NG: Ngày Invoice không được trước ngày hôm nay",
+        3: "NG: Ver này đã bị khóa",
+        4: "NG: Không để trống thông tin bắt buộc",
+        5: "NG: Invoice QTY nhiều hơn PO BALANCE",
+        6: "NG: Ngày Invoice không được trước ngày PO",
+      };
+      Swal.fire("Thông báo", msgs[err_code] ?? "Lỗi", "error");
       return;
     }
-    if (selectedCode?.PO_BALANCE !== undefined && invoiceQty > selectedCode.PO_BALANCE) {
-      Swal.fire("Lỗi", "Số lượng Invoice vượt quá PO BALANCE tồn", "error");
-      return;
-    }
+
     const res = await f_insertInvoice({
       G_CODE: selectedCode?.G_CODE,
       CUST_CD: selectedCust?.CUST_CD,
@@ -539,6 +627,22 @@ const PrecisionPoManager: React.FC = () => {
       REMARK: invoiceRemark,
     });
     if (res === "OK") {
+      const noti: NotificationElement = {
+        CTR_CD: "002",
+        NOTI_ID: -1,
+        NOTI_TYPE: "success",
+        TITLE: "Invoice mới",
+        CONTENT: `${userData?.EMPL_NO} (${userData?.MIDLAST_NAME} ${userData?.FIRST_NAME}), nhân viên ${userData?.WORK_POSITION_NAME} đã thêm Invoice mới code G_NAME ${selectedCode?.G_CODE} - (${selectedCode?.G_NAME}), với số lượng: ${invoiceQty} cho khách hàng ${selectedCust?.CUST_CD} - ${selectedCust?.CUST_NAME_KD} .`,
+        SUBDEPTNAME: "KD",
+        MAINDEPTNAME: "KD",
+        INS_EMPL: userData?.EMPL_NO || "",
+        INS_DATE: moment().format("YYYY-MM-DD"),
+        UPD_EMPL: userData?.EMPL_NO || "",
+        UPD_DATE: moment().format("YYYY-MM-DD"),
+      };
+      if (await f_insert_Notification_Data(noti)) {
+        getSocket().emit("notification_panel", noti);
+      }
       Swal.fire("Thành công", "Thêm Invoice thành công!", "success");
       setOpenInvoiceModal(false);
       handletraPO();
@@ -601,24 +705,76 @@ const PrecisionPoManager: React.FC = () => {
     }
     Swal.fire({ title: "Đang tải lên...", text: "Vui lòng chờ", icon: "info", showConfirmButton: false });
     const temp = [...uploadExcelJson];
+    let insertedCount = 0;
     for (let i = 0; i < temp.length; i++) {
-      if (temp[i].CHECKSTATUS === "OK") {
-        const res = await f_insertPO({
-          G_CODE: temp[i].G_CODE,
-          CUST_CD: temp[i].CUST_CD,
-          PO_NO: temp[i].PO_NO,
-          EMPL_NO: userData?.EMPL_NO,
-          PO_QTY: temp[i].PO_QTY,
-          PO_DATE: temp[i].PO_DATE,
-          RD_DATE: temp[i].RD_DATE,
-          PROD_PRICE: temp[i].PROD_PRICE,
-          BEP: temp[i].BEP ?? 0,
-          REMARK: temp[i].REMARK,
-        });
-        temp[i].CHECKSTATUS = res === "OK" ? "INSERTED" : "Lỗi: " + res;
+      if (temp[i].CHECKSTATUS !== "OK") continue;
+
+      // Legacy: kiểm tra lại dữ liệu ngay trước khi ghi DB
+      let err = 0;
+      const exist = await f_checkPOExist(temp[i].G_CODE, temp[i].CUST_CD, temp[i].PO_NO);
+      if (exist) err = 1;
+      if (f_compareDateToNow(temp[i].PO_DATE)) err = 2;
+      const checkG = await f_checkG_CODE_USE_YN(temp[i].G_CODE);
+      if (checkG === 1) err = 3;
+      if (checkG === 2) err = 4;
+      if (!isCMS) {
+        const pr = await autoGetProdPrice(temp[i].G_CODE, temp[i].CUST_CD, temp[i].PO_QTY);
+        if (pr.prod_price !== 0) {
+          temp[i].PROD_PRICE = pr.prod_price;
+          temp[i].BEP = pr.bep;
+        } else {
+          err = 5;
+        }
       }
+      if (err !== 0) {
+        temp[i].CHECKSTATUS =
+          err === 1
+            ? "NG: Đã tồn tại PO"
+            : err === 2
+            ? "NG: Ngày PO trước hôm nay"
+            : err === 3
+            ? "NG: Ver bị khóa"
+            : err === 4
+            ? "NG: Không có Code ERP"
+            : "NG: Chưa có giá";
+        continue;
+      }
+
+      const res = await f_insertPO({
+        G_CODE: temp[i].G_CODE,
+        CUST_CD: temp[i].CUST_CD,
+        PO_NO: temp[i].PO_NO,
+        EMPL_NO: userData?.EMPL_NO,
+        PO_QTY: temp[i].PO_QTY,
+        PO_DATE: temp[i].PO_DATE,
+        RD_DATE: temp[i].RD_DATE,
+        PROD_PRICE: temp[i].PROD_PRICE,
+        BEP: temp[i].BEP ?? 0,
+        REMARK: temp[i].REMARK,
+      });
+      if (res === "OK") insertedCount++;
+      temp[i].CHECKSTATUS = res === "OK" ? "INSERTED" : "Lỗi: " + res;
     }
     setUploadExcelJson(temp);
+
+    if (insertedCount > 0) {
+      const noti: NotificationElement = {
+        CTR_CD: "002",
+        NOTI_ID: -1,
+        NOTI_TYPE: "success",
+        TITLE: "Thêm PO hàng loạt",
+        CONTENT: `${userData?.EMPL_NO} (${userData?.MIDLAST_NAME} ${userData?.FIRST_NAME}), nhân viên ${userData?.WORK_POSITION_NAME} đã thêm ${insertedCount} PO hàng loạt`,
+        SUBDEPTNAME: "KD",
+        MAINDEPTNAME: "KD",
+        INS_EMPL: userData?.EMPL_NO || "",
+        INS_DATE: moment().format("YYYY-MM-DD"),
+        UPD_EMPL: userData?.EMPL_NO || "",
+        UPD_DATE: moment().format("YYYY-MM-DD"),
+      };
+      if (await f_insert_Notification_Data(noti)) {
+        getSocket().emit("notification_panel", noti);
+      }
+    }
     Swal.fire("Thành công", "Đã hoàn thành thêm PO hàng loạt!", "success");
     handletraPO();
   };
@@ -672,11 +828,22 @@ const PrecisionPoManager: React.FC = () => {
             onEditSelected={() => checkBP(userData, ["KD"], ["ALL"], ["ALL"], handleFillEditForm)}
             onDeleteSelected={() => checkBP(userData, ["KD"], ["ALL"], ["ALL"], handleDeleteSelected)}
             onOpenInvoiceModal={() => checkBP(userData, ["KD"], ["ALL"], ["ALL"], handleOpenInvoice)}
-            onApprovePO={() => {
-              f_autopheduyetgia();
-              f_dongboGiaPO();
-              Swal.fire("Thông báo", "Đã phê duyệt và đồng bộ giá thành công!", "success");
-            }}
+            onApprovePO={() =>
+              checkBP(userData, ["KD"], ["ALL"], ["ALL"], () => {
+                // Legacy chỉ tự động phê duyệt/đồng bộ giá cho công ty CMS
+                if (!isCMS) {
+                  Swal.fire(
+                    "Thông báo",
+                    "Chức năng phê duyệt và đồng bộ giá chỉ áp dụng cho công ty CMS",
+                    "warning"
+                  );
+                  return;
+                }
+                f_autopheduyetgia();
+                f_dongboGiaPO();
+                Swal.fire("Thông báo", "Đã phê duyệt và đồng bộ giá thành công!", "success");
+              })
+            }
             onTogglePivot={() => setShowPivot(!showPivot)}
             onExportExcel={() => SaveExcel(displayData, "Danh_Sach_PO")}
           />
@@ -707,7 +874,7 @@ const PrecisionPoManager: React.FC = () => {
               </span>
             </div>
             <div className="footer-right">
-              <span className="font-mono-num">Live Sync: {moment().format("HH:mm:ss")} (18ms)</span>
+              <span className="font-mono-num">Live Sync: {moment().format("HH:mm:ss")}</span>
             </div>
           </div>
         </div>
