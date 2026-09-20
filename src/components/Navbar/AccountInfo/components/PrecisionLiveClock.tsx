@@ -8,9 +8,11 @@ interface MYCHAMCONG {
 
 interface PrecisionLiveClockProps {
   mychamcong?: MYCHAMCONG;
+  /** Viewport ≤ 768px: rút gọn tiêu đề, đưa ngày vào phụ đề, ẩn dải checkpoint tĩnh */
+  isMobile?: boolean;
 }
 
-export default function PrecisionLiveClock({ mychamcong }: PrecisionLiveClockProps) {
+export default function PrecisionLiveClock({ mychamcong, isMobile = false }: PrecisionLiveClockProps) {
   const todayStr = moment().format("DD/MM/YYYY");
   const weekdayStr = () => {
     const d = moment().day();
@@ -61,19 +63,27 @@ export default function PrecisionLiveClock({ mychamcong }: PrecisionLiveClockPro
             </span>
           </div>
           <div>
-            <h2 className="precision-hub__cardTitle">Điểm Danh Thời Gian Thực</h2>
-            <p className="precision-hub__cardSubtitle">Live Attendance Clock & Shift Monitoring</p>
+            <h2 className="precision-hub__cardTitle">
+              {isMobile ? "Chấm Công Hôm Nay" : "Điểm Danh Thời Gian Thực"}
+            </h2>
+            <p className="precision-hub__cardSubtitle">
+              {isMobile
+                ? `${todayStr} - ${weekdayStr()}`
+                : "Live Attendance Clock & Shift Monitoring"}
+            </p>
           </div>
         </div>
 
-        <div className="precision-hub__dateChip">
-          <span className="material-symbols-outlined" style={{ fontSize: 14, color: "#64748b" }}>
-            calendar_today
-          </span>
-          <span>
-            {todayStr} - {weekdayStr()}
-          </span>
-        </div>
+        {!isMobile && (
+          <div className="precision-hub__dateChip">
+            <span className="material-symbols-outlined" style={{ fontSize: 14, color: "#64748b" }}>
+              calendar_today
+            </span>
+            <span>
+              {todayStr} - {weekdayStr()}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Dual Check Status Cards: IN & OUT */}
@@ -167,7 +177,8 @@ export default function PrecisionLiveClock({ mychamcong }: PrecisionLiveClockPro
           />
         </div>
 
-        <div className="precision-hub__shiftCheckpoints">
+        {!isMobile && (
+          <div className="precision-hub__shiftCheckpoints">
           <div className="precision-hub__checkpoint">
             <span
               style={{
@@ -204,6 +215,7 @@ export default function PrecisionLiveClock({ mychamcong }: PrecisionLiveClockPro
             <span>17:00 Kết ca</span>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

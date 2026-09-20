@@ -1,28 +1,29 @@
 # ACTIVE_STATE
 
 ## Mục tiêu task hiện tại
-Rà soát parity `UserManager` / `DeptManager` (module Quản lý Phòng Ban & Hồ sơ Nhân sự) so với `.backup`, sửa sai khác logic + cải tiến điểm bất hợp lý, gồm lỗi mobile không xem/cuộn được hết 3 bảng ở `DeptManager`.
+Mobile experience cho `AccountInfo` / `PrecisionAccountInfo` (Navbar → Tài khoản): giảm padding sâu để tăng diện tích hiển thị + conditional rendering theo viewport; trên mobile chỉ hiển thị Avatar/thông tin cơ bản, giờ chấm công vào-ra, biểu đồ công trong tháng và Admin tool.
 
-Trạng thái: **HOÀN THÀNH** (audit + fix + `npm run build` EXIT=0). Chi tiết: `FINDINGS_PARITY_NHANSU_MODULES.md` mục 15-21.
+Trạng thái: **HOÀN THÀNH** (`npm run build` ✓ 17020 modules, EXIT=0). Chi tiết: `ROADMAP.md` — Đợt 6.
 
-## File đã chỉnh sửa (đợt 5)
-- `PrecisionDeptManager/PrecisionDeptMainForm.tsx`, `PrecisionDeptSubForm.tsx`, `PrecisionDeptPosForm.tsx` — bỏ `readOnly` cứng trên `MAINDEPTCODE`/`SUBDEPTCODE`/`WORK_POSITION_CODE` (chỉ khoá khi sửa bản ghi có sẵn) ⇒ khôi phục chức năng THÊM MỚI.
-- `DeptManager.tsx` — chuỗi tải 3 cấp luôn đồng bộ (`handleLoadMainDept → handleLoadsubDept → loadWorkPosition`), giữ dòng đang chọn qua `kq.find(code) ?? kq[0]`; thêm `validateForm()`; thêm xác nhận trước khi xoá.
-- `PrecisionDeptManager/PrecisionDeptManager.scss` — lặp block mobile **bên trong** `.component_element &` kèm `!important`; bỏ `flex:1 1 0px` ở `__triGrid`/`__panel`; chiều cao bảng mobile `420px → 320px`.
-- `QuanLyPhongBanNhanSu.scss` — mobile bỏ `flex-basis:0`/`min-height:100vh` cho `.tabs-container`/`.tab-content`/`.tab-pane`, nhường cuộn cho `.component_element`.
-- `PrecisionUserManager/PrecisionUserManager.scss` — cùng cách sửa mobile; `__gridContainer` mobile cao `60vh`.
-- `UserManager.tsx` — thêm `ensureFaceModels()` (cache module-scope, nạp 3 model từ `/models`) + `await` trước khi detect; đọc kết quả trả về của `f_addEmployee`/`f_updateEmployee` để báo lỗi thật; `createNewUser()` giữ `CTR_CD = getCtrCd()` và mặc định vị trí công đoạn theo `workpositionload`; nối pivot modal.
-- `PrecisionUserManager/PrecisionUserPivotModal.tsx` (MỚI) — pivot thật theo Bộ phận / Phòng ban – Tổ / Trạng thái / Chức vụ / Ca.
-- `PrecisionUserManager/PrecisionUserToolbar.tsx` — nhãn `EX1 Đang lọc` / `EX2 Toàn bộ`.
-- `FINDINGS_PARITY_NHANSU_MODULES.md`.
+## File đã chỉnh sửa (đợt 6)
+- `components/Navbar/AccountInfo/useIsMobile.ts` (MỚI) — hook `matchMedia("(max-width:768px)")` + listener `change`, dùng chung cho cả cụm.
+- `components/Navbar/AccountInfo/PrecisionAccountInfo.tsx` — gắn modifier `precision-hub--mobile`; mobile ẩn `PrecisionDossierRecord` + `PrecisionKpiGrid`, truyền `isMobile` xuống component con.
+- `components/Navbar/AccountInfo/components/PrecisionAttendanceChart.tsx` (MỚI) — tách canvas bar/line khỏi Timeline; mobile bỏ cuộn ngang, mặc định biểu đồ đường.
+- `components/Navbar/AccountInfo/components/PrecisionAttendanceTimeline.tsx` — nhận `isMobile`, rút gọn tiêu đề/legend/nút (icon-only); giữ nguyên logic Excel + tính tổng giờ.
+- `components/Navbar/AccountInfo/components/PrecisionHeroProfile.tsx`, `PrecisionLiveClock.tsx` — nhận `isMobile`, rút gọn nhãn và ẩn khối trang trí.
+- `components/Navbar/AccountInfo/components/PrecisionAdminTools.tsx` — nhóm control `flexWrap: wrap` để không tràn ngang.
+- `components/Navbar/AccountInfo/PrecisionAccountInfo.scss` — block `&--mobile` giảm padding/mật độ (hub `10px`, card `20→14px`, avatar `104→72px`, safe-area bottom); sau đó tinh chỉnh `__profileHeader` thành **CSS Grid** (`avatar | name` / `avatar | dept` / `meta meta`) kèm `__profileDetails { display: contents }` để avatar không còn chiếm riêng 1 dòng.
 
 ## Việc cần làm tiếp theo
+- (đợt 6) Kiểm thử thực tế trên thiết bị: xác nhận `precision-hub--mobile` không che mất vùng cuộn của `.component_element` và Admin tool nhập được trên màn 360px.
 - Mobile: toolbar riêng của `PrecisionDeptMainTable`/`SubTable`/`PosTable` nên thu gọn icon-only để đỡ chiếm chỗ.
 - (đợt 4, treo) Cấu hình quy chế thật cho hạn mức "3 lần giải trình/tháng" & "40h OT/tháng" (`PrecisionDangKyKpi.tsx` đang là hằng số).
 - (đợt 4, treo) Chọn nhiều dòng để duyệt/từ chối hàng loạt ở `PheDuyetNghiCMS`.
 - (QC, treo) `updateIncomingData_web` ghi `REMARK` nhưng chưa map đúng `IQC_TEST_RESULT`/`DTC_RESULT`.
 
 ## Ghi chú kỹ thuật
+- **Đợt 6 — AccountInfo mobile**: `AccountInfo.tsx` chỉ là proxy → `PrecisionAccountInfo`; class SCSS là `precision-hub__*` (không phải `accountinfo`). Override mobile dùng modifier `.precision-hub--mobile` (specificity 0,2,0) nên thắng base (0,1,0) mà **không cần** `!important`; `__profileToolbar` có margin âm nên khi đổi padding card phải đổi margin tương ứng (`-20px → -14px`).
+- **Pattern mobile chuẩn của repo**: `isMobile` lấy từ `window.matchMedia("(max-width: 768px)")` + listener `change`, rồi **conditional rendering** (không chỉ ẩn bằng CSS) — xem `PrecisionHeader.tsx`, `UserManager.tsx`, nay có hook chung `AccountInfo/useIsMobile.ts`.
 - **Pitfall mobile (Stitch)**: `.component_element & { ... }` có specificity (0,2,0) nên **luôn thắng** block `@media` ở cấp `.precision-xxx` (0,1,0). Muốn mobile có tác dụng phải lặp lại `@media (max-width:768px)` **bên trong** `.component_element &` kèm `!important` cho `height`/`max-height`/`flex`/`overflow`; nếu không container bị `overflow:hidden` + `max-height:100%` + `flex-basis:0` ⇒ cắt cụt nội dung và mất thanh cuộn.
 - **Pitfall schema danh mục nhân sự**: `MAINDEPTCODE`, `SUBDEPTCODE`, `WORK_POSITION_CODE` là mã **người dùng nhập**, không phải identity (xác nhận trong `practice1/services/nhansuService.js`) ⇒ không `readOnly` khi thêm mới.
 - **Pitfall `insertemployee`**: ghi `ZTBEMPLINFO.CTR_CD = DATA.CTR_CD` (không lấy payload chung) ⇒ form thêm mới phải luôn có `CTR_CD`, nếu rỗng thì nhân viên mới không JOIN được với phòng ban/vị trí.

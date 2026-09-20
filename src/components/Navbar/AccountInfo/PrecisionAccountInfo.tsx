@@ -15,6 +15,7 @@ import PrecisionDossierRecord from "./components/PrecisionDossierRecord";
 import PrecisionAttendanceTimeline from "./components/PrecisionAttendanceTimeline";
 import PrecisionAdminTools from "./components/PrecisionAdminTools";
 import PrecisionChangePasswordDialog from "./components/PrecisionChangePasswordDialog";
+import useIsMobile from "./useIsMobile";
 
 import "./PrecisionAccountInfo.scss";
 
@@ -28,6 +29,9 @@ export default function PrecisionAccountInfo() {
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData
   );
+  // Viewport <= 768px: mobile chỉ hiển thị thông tin cốt lõi (avatar, thông tin cơ bản,
+  // giờ chấm công vào/ra, biểu đồ công tháng, admin tool) và giảm padding.
+  const isMobile = useIsMobile();
 
   const [mychamcong, setMyChamCong] = useState<MYCHAMCONG>({
     MIN_TIME: "Chưa chấm",
@@ -241,7 +245,7 @@ export default function PrecisionAccountInfo() {
   const isAdmin = userData?.EMPL_NO === "NHU1903";
 
   return (
-    <div className="precision-hub">
+    <div className={`precision-hub${isMobile ? " precision-hub--mobile" : ""}`}>
       <div className="precision-hub__content">
         {/* 1. System Status Banner */}
         {/* <PrecisionStatusBanner shiftName={userData?.WORK_SHIF_NAME} /> */}
@@ -250,34 +254,36 @@ export default function PrecisionAccountInfo() {
         <div className="precision-hub__topGrid">
           <PrecisionHeroProfile
             userData={userData}
+            isMobile={isMobile}
             onOpenChangePassword={() => setOpenChangePw(true)}
             onUploadAvatar={handleUploadAvatar}
           />
-          <PrecisionLiveClock mychamcong={mychamcong} />
+          <PrecisionLiveClock mychamcong={mychamcong} isMobile={isMobile} />
         </div>
 
-        
-        {/* 4. Detailed Employee Dossier Record (Electronic HR Ledger) */}
-        <PrecisionDossierRecord userData={userData} />
+        {/* 4. Hồ sơ nhân sự điện tử: chỉ hiển thị trên desktop (mobile quá dài, ít giá trị) */}
+        {!isMobile && <PrecisionDossierRecord userData={userData} />}
 
-        {/* 5. 30-Day Attendance & Work Hour Timeline */}
+        {/* 5. Biểu đồ công & giờ làm việc trong tháng (giữ trên cả mobile) */}
         <PrecisionAttendanceTimeline
           attendanceTimeline={attendanceTimeline}
           isLoading={attendanceTimelineLoading}
           error={attendanceTimelineError}
           onRefresh={fetchAttendanceTimeline}
+          isMobile={isMobile}
         />
 
-        {/* 3. 6-Card KPI Metrics Grid */}
-        <PrecisionKpiGrid
-          workday={workday}
-          days={days}
-          overtimeday={overtimeday}
-          countxacnhan={countxacnhan}
-          nghiday={nghiday}
-          thuongphat={thuongphat}
-        />
-
+        {/* 3. 6-Card KPI Metrics Grid: desktop only, mobile đã có biểu đồ tháng thay thế */}
+        {!isMobile && (
+          <PrecisionKpiGrid
+            workday={workday}
+            days={days}
+            overtimeday={overtimeday}
+            countxacnhan={countxacnhan}
+            nghiday={nghiday}
+            thuongphat={thuongphat}
+          />
+        )}
 
         {/* 6. Admin Tools (NHU1903 Only) */}
         {isAdmin && <PrecisionAdminTools />}

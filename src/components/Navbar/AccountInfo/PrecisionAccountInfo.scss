@@ -24,6 +24,181 @@
     overflow-y: auto;
   }
 
+  /* ==========================================================================
+     MOBILE (≤ 768px) — class do JS gắn theo viewport (useIsMobile.ts)
+     Giảm mạnh padding lồng nhau để tăng diện tích hiển thị thực tế.
+     ========================================================================== */
+  &--mobile {
+    padding: 10px 10px calc(16px + env(safe-area-inset-bottom, 0px));
+
+    .precision-hub__content {
+      gap: 10px;
+    }
+
+    .precision-hub__topGrid {
+      gap: 10px;
+    }
+
+    /* Card: 20px -> 14px */
+    .precision-hub__card {
+      padding: 14px;
+      border-radius: 10px;
+    }
+
+    /* Ghép Avatar + thông tin cơ bản vào CÙNG một khối (avatar bên trái, họ tên/phòng ban
+       bên phải) để không tốn thêm 1 dòng chỉ cho avatar; meta grid tràn full width bên dưới. */
+    .precision-hub__profileHeader {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      grid-template-areas:
+        "avatar name"
+        "avatar dept"
+        "meta   meta";
+      column-gap: 12px;
+      row-gap: 4px;
+      align-items: start;
+    }
+
+    /* Bóc hộp trung gian để name/dept/meta trở thành grid item của profileHeader */
+    .precision-hub__profileDetails {
+      display: contents;
+    }
+
+    .precision-hub__avatarContainer {
+      grid-area: avatar;
+      align-self: start;
+    }
+
+    .precision-hub__avatarBox {
+      width: 64px;
+      height: 78px;
+    }
+
+    .precision-hub__avatarFallback {
+      font-size: 22px;
+    }
+
+    .precision-hub__avatarUploadBadge {
+      width: 20px;
+      height: 20px;
+      bottom: -4px;
+      right: -4px;
+    }
+
+    .precision-hub__nameRow {
+      grid-area: name;
+      gap: 5px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .precision-hub__userName {
+      font-size: 16px;
+      line-height: 1.15;
+    }
+
+    .precision-hub__jobBadge,
+    .precision-hub__positionBadge {
+      font-size: 10px;
+      padding: 2px 6px;
+    }
+
+    .precision-hub__departmentRow {
+      grid-area: dept;
+      gap: 4px;
+      font-size: 11.5px;
+      min-width: 0;
+    }
+
+    .precision-hub__metaGrid {
+      grid-area: meta;
+      gap: 6px;
+      padding-top: 6px;
+      margin-top: 2px;
+    }
+
+    .precision-hub__metaItem {
+      padding: 5px 6px;
+    }
+
+    .precision-hub__metaLabel {
+      font-size: 9px;
+    }
+
+    .precision-hub__metaValue {
+      font-size: 11.5px;
+    }
+
+    /* Thanh action đáy card: mép âm phải khớp padding card 14px */
+    .precision-hub__profileToolbar {
+      margin: 12px -14px -14px;
+      padding: 10px 14px;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
+
+    .precision-hub__cardTitle {
+      font-size: 13px;
+    }
+
+    .precision-hub__cardSubtitle {
+      font-size: 10.5px;
+    }
+
+    .precision-hub__cardHeader {
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 8px;
+    }
+
+    .precision-hub__headerIconWrap {
+      width: 26px;
+      height: 26px;
+    }
+
+    .precision-hub__dualCheckGrid {
+      gap: 8px;
+    }
+
+    .precision-hub__checkCard {
+      padding: 10px;
+      gap: 4px;
+    }
+
+    .precision-hub__checkTime {
+      font-size: 20px;
+    }
+
+    .precision-hub__shiftProgressBox {
+      padding: 8px 10px;
+      gap: 6px;
+    }
+
+    .precision-hub__chartHeaderActions {
+      flex-wrap: wrap;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .precision-hub__chartLegendStrip {
+      padding: 8px 10px;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .precision-hub__legendGroup {
+      gap: 10px;
+    }
+
+    .precision-hub__dossierRow {
+      grid-template-columns: 110px 1fr;
+    }
+
+    .precision-hub__adminGrid {
+      gap: 8px;
+    }
+  }
+
   &__content {
     max-width: 1520px;
     min-height: max-content;

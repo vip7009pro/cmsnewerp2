@@ -2086,3 +2086,14 @@
   - `UserManager`: nút PIVOT thực chất chỉ `SaveExcel(filteredData, "DiemDanh_Pivot_Raw")` ⇒ tạo `PrecisionUserPivotModal.tsx` (pivot thật: nhóm theo Bộ phận / Phòng ban – Tổ / Trạng thái / Chức vụ / Ca, thống kê Tổng – Đang làm – Đã nghỉ – Nghỉ sinh + tỉ lệ + dòng TỔNG CỘNG); đổi nhãn Excel thành `EX1 Đang lọc` / `EX2 Toàn bộ`.
   - Xác minh: get_errors 0 lỗi trên 8 file sửa/tạo; `npm run build` (vite production) `EXIT=0`.
 
+- [x] Đợt 6: Mobile experience cho `AccountInfo` (`PrecisionAccountInfo`) — 2026-09-20:
+  - Vấn đề người dùng báo: padding lồng nhau quá sâu (`16px 24px 48px` hub + `20px` card + `16px` toolbar) làm diện tích hiển thị trên mobile bị bóp; nội dung mobile hiển thị dàn trải, nhiều khối không cần thiết (sổ hồ sơ nhân sự, 6 KPI card).
+  - Thêm hook `useIsMobile.ts` (matchMedia `max-width:768px` + listener, đúng convention repo) ⇒ **conditional rendering theo viewport**, không chỉ ẩn bằng CSS.
+  - `PrecisionAccountInfo.tsx`: gắn modifier `precision-hub--mobile`; mobile CHỈ render Avatar + thông tin cơ bản (`PrecisionHeroProfile`), giờ chấm công vào/ra (`PrecisionLiveClock`), biểu đồ công tháng (`PrecisionAttendanceTimeline`) và Admin tool (NHU1903); ẩn `PrecisionDossierRecord` + `PrecisionKpiGrid`.
+  - `PrecisionHeroProfile.tsx`: ẩn dòng "Bảo mật hệ thống…" dài, gộp phòng ban 1 dòng, nhãn nút rút gọn (`Ảnh thẻ` / `Mật khẩu`).
+  - `PrecisionLiveClock.tsx`: tiêu đề ngắn "Chấm Công Hôm Nay", đưa ngày vào phụ đề thay cho `dateChip` riêng, ẩn dải checkpoint tĩnh (08:00/12:00/17:00).
+  - Tách `PrecisionAttendanceChart.tsx` khỏi `PrecisionAttendanceTimeline.tsx` (module hóa, giữ file < 300 dòng); mobile mặc định biểu đồ đường, bar chart bỏ cuộn ngang (`minWidth 840→0`, bar nhỏ, ẩn nhãn giờ trên đỉnh cột), legend/tổng giờ rút gọn, nút "Tải lại"/"Xuất Excel" còn icon-only.
+  - `PrecisionAccountInfo.scss`: thêm block `&--mobile` giảm padding/mật độ (hub `10px`, card `20→14px`, toolbar mép âm `-14px` khớp padding mới, avatar `104→72px`, chữ tiêu đề/giờ chấm nhỏ hơn, safe-area bottom).
+  - Tinh chỉnh tiếp theo yêu cầu người dùng (avatar nằm riêng 1 dòng gây lãng phí height): mobile cho `__profileHeader` thành **CSS Grid** `grid-template-areas: "avatar name" / "avatar dept" / "meta meta"` + `__profileDetails { display: contents }` ⇒ avatar nằm cùng khối với họ tên/phòng ban, meta grid tràn full width (rộng hơn 234px → 312px, mỗi ô ~153px thay vì ~114px); avatar `64×78px`, tên `16px`, badge `10px`, nhãn meta `9px`.
+  - Xác minh: get_errors 0 lỗi trên 6 file; `npm run build` (vite production) `✓ 17020 modules transformed`, EXIT=0.
+

@@ -74,7 +74,7 @@ export default function PrecisionAdminTools() {
       <Collapse in={showTools} timeout="auto" unmountOnExit>
         <div className="precision-hub__adminGrid">
           {/* Logout Remote Empl */}
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
             <TextField
               label="Mã NV cần Logout"
               size="small"
@@ -105,7 +105,7 @@ export default function PrecisionAdminTools() {
           </div>
 
           {/* Web Version */}
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
             <TextField
               label="Web Ver mới"
               size="small"
@@ -130,7 +130,7 @@ export default function PrecisionAdminTools() {
           </div>
 
           {/* Server Switch */}
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
             <select
               value={serverString}
               onChange={(e) => setServerString(e.target.value)}
@@ -159,7 +159,7 @@ export default function PrecisionAdminTools() {
           </div>
 
           {/* Update backend */}
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
             <input
               type="file"
               onChange={(e) => setUpdateFile(e.target.files?.[0] || null)}

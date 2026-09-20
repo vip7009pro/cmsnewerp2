@@ -7,12 +7,15 @@ import getsentence from "../../../String/String";
 
 interface PrecisionHeroProfileProps {
   userData?: UserData;
+  /** Viewport ≤ 768px: rút gọn nhãn nút và ẩn các dòng mô tả dài */
+  isMobile?: boolean;
   onOpenChangePassword: () => void;
   onUploadAvatar: (file: File) => void;
 }
 
 export default function PrecisionHeroProfile({
   userData,
+  isMobile = false,
   onOpenChangePassword,
   onUploadAvatar,
 }: PrecisionHeroProfileProps) {
@@ -108,11 +111,19 @@ export default function PrecisionHeroProfile({
             <span className="material-symbols-outlined" style={{ fontSize: 16, color: "#64748b" }}>
               corporate_fare
             </span>
-            <span>Main Department: {userData?.MAINDEPTNAME || "Khối Sản Xuất"}</span>
-            {userData?.SUBDEPTNAME && (
+            {isMobile ? (
+              <span>
+                {userData?.SUBDEPTNAME || userData?.MAINDEPTNAME || "Khối Sản Xuất"}
+              </span>
+            ) : (
               <>
-                <span style={{ color: "#cbd5e1" }}>•</span>
-                <span>Sub Department: {userData.SUBDEPTNAME}</span>
+                <span>Main Department: {userData?.MAINDEPTNAME || "Khối Sản Xuất"}</span>
+                {userData?.SUBDEPTNAME && (
+                  <>
+                    <span style={{ color: "#cbd5e1" }}>•</span>
+                    <span>Sub Department: {userData.SUBDEPTNAME}</span>
+                  </>
+                )}
               </>
             )}
           </div>
@@ -158,34 +169,38 @@ export default function PrecisionHeroProfile({
 
       {/* Profile Bottom Action Bar */}
       <div className="precision-hub__profileToolbar">
-        <div className="precision-hub__secInfo">
-          <span className="material-symbols-outlined" style={{ fontSize: 16, color: "#64748b" }}>
-            shield
-          </span>
-          <span>Bảo mật hệ thống: Xác thực tài khoản & Phân quyền ERP nội bộ</span>
-        </div>
+        {!isMobile && (
+          <div className="precision-hub__secInfo">
+            <span className="material-symbols-outlined" style={{ fontSize: 16, color: "#64748b" }}>
+              shield
+            </span>
+            <span>Bảo mật hệ thống: Xác thực tài khoản & Phân quyền ERP nội bộ</span>
+          </div>
+        )}
 
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, width: isMobile ? "100%" : undefined }}>
           <button
             type="button"
             className="precision-hub__btnAction"
+            style={{ flex: isMobile ? 1 : undefined }}
             onClick={() => fileInputRef.current?.click()}
           >
             <span className="material-symbols-outlined" style={{ fontSize: 15, color: "#64748b" }}>
               upload
             </span>
-            <span>Đổi ảnh thẻ</span>
+            <span>{isMobile ? "Ảnh thẻ" : "Đổi ảnh thẻ"}</span>
           </button>
 
           <button
             type="button"
             className="precision-hub__btnAction precision-hub__btnAction--primary"
+            style={{ flex: isMobile ? 1 : undefined }}
             onClick={onOpenChangePassword}
           >
             <span className="material-symbols-outlined" style={{ fontSize: 15 }}>
               lock_reset
             </span>
-            <span>Change password</span>
+            <span>{isMobile ? "Mật khẩu" : "Change password"}</span>
           </button>
         </div>
       </div>
