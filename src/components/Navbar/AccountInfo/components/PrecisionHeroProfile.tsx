@@ -112,7 +112,7 @@ export default function PrecisionHeroProfile({
               corporate_fare
             </span>
             {isMobile ? (
-              <span>
+              <span className="precision-hub__deptText">
                 {userData?.SUBDEPTNAME || userData?.MAINDEPTNAME || "Khối Sản Xuất"}
               </span>
             ) : (
@@ -125,6 +125,22 @@ export default function PrecisionHeroProfile({
                   </>
                 )}
               </>
+            )}
+
+            {/* Mobile: nút đổi mật khẩu dạng icon dồn cuối dòng sub department
+                (thay cho thanh action đáy card ⇒ tiết kiệm trọn 1 hàng) */}
+            {isMobile && (
+              <button
+                type="button"
+                className="precision-hub__pwIconBtn"
+                onClick={onOpenChangePassword}
+                title="Đổi mật khẩu tài khoản"
+                aria-label="Đổi mật khẩu tài khoản"
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: 15 }}>
+                  lock_reset
+                </span>
+              </button>
             )}
           </div>
 
@@ -167,43 +183,42 @@ export default function PrecisionHeroProfile({
         </div>
       </div>
 
-      {/* Profile Bottom Action Bar */}
-      <div className="precision-hub__profileToolbar">
-        {!isMobile && (
+      {/* Thanh action đáy card: DESKTOP ONLY. Trên mobile đã có upload ảnh thẻ bằng cách
+          click vào avatar và nút icon đổi mật khẩu nằm cạnh dòng phòng ban. */}
+      {!isMobile && (
+        <div className="precision-hub__profileToolbar">
           <div className="precision-hub__secInfo">
             <span className="material-symbols-outlined" style={{ fontSize: 16, color: "#64748b" }}>
               shield
             </span>
             <span>Bảo mật hệ thống: Xác thực tài khoản & Phân quyền ERP nội bộ</span>
           </div>
-        )}
 
-        <div style={{ display: "flex", alignItems: "center", gap: 8, width: isMobile ? "100%" : undefined }}>
-          <button
-            type="button"
-            className="precision-hub__btnAction"
-            style={{ flex: isMobile ? 1 : undefined }}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: 15, color: "#64748b" }}>
-              upload
-            </span>
-            <span>{isMobile ? "Ảnh thẻ" : "Đổi ảnh thẻ"}</span>
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <button
+              type="button"
+              className="precision-hub__btnAction"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: 15, color: "#64748b" }}>
+                upload
+              </span>
+              <span>Đổi ảnh thẻ</span>
+            </button>
 
-          <button
-            type="button"
-            className="precision-hub__btnAction precision-hub__btnAction--primary"
-            style={{ flex: isMobile ? 1 : undefined }}
-            onClick={onOpenChangePassword}
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: 15 }}>
-              lock_reset
-            </span>
-            <span>{isMobile ? "Mật khẩu" : "Change password"}</span>
-          </button>
+            <button
+              type="button"
+              className="precision-hub__btnAction precision-hub__btnAction--primary"
+              onClick={onOpenChangePassword}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: 15 }}>
+                lock_reset
+              </span>
+              <span>Change password</span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

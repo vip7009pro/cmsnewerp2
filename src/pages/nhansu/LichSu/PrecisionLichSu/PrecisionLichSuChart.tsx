@@ -23,6 +23,7 @@ interface PrecisionLichSuChartProps {
   fromDate: string;
   toDate: string;
   onRefresh: () => void;
+  isMobile?: boolean;
 }
 
 export const PrecisionLichSuChart: React.FC<PrecisionLichSuChartProps> = ({
@@ -33,6 +34,7 @@ export const PrecisionLichSuChart: React.FC<PrecisionLichSuChartProps> = ({
   fromDate,
   toDate,
   onRefresh,
+  isMobile = false,
 }) => {
   const todayYmd = moment().format("YYYY-MM-DD");
 
@@ -74,13 +76,20 @@ export const PrecisionLichSuChart: React.FC<PrecisionLichSuChartProps> = ({
     ? `TIME LINE ĐI LÀM (THÁNG ${moment().format("MM/YYYY")})`
     : `TIME LINE ĐI LÀM (${moment(fromDate).format("DD/MM")} - ${moment(toDate).format("DD/MM")})`;
 
+  // Mobile: rút gọn tiêu đề để luôn nằm gọn trên một dòng
+  const compactTitleText = isDefaultMonth
+    ? `TIMELINE T${moment().format("M/YYYY")}`
+    : `TIMELINE ${moment(fromDate).format("DD/MM")}-${moment(toDate).format("DD/MM")}`;
+
   return (
     <div className="precision-lichsu__chartCard">
       <div className="precision-lichsu__chartHeader">
         <div className="precision-lichsu__chartTitleGroup">
           <span className="chart-indicator"></span>
-          <span className="chart-title">{titleText}</span>
-          <span className="chart-unit">| Đơn vị: Giờ làm việc thực tế / ngày</span>
+          <span className="chart-title">{isMobile ? compactTitleText : titleText}</span>
+          <span className="chart-unit">
+            {isMobile ? "· Giờ thực tế/ngày" : "| Đơn vị: Giờ làm việc thực tế / ngày"}
+          </span>
         </div>
 
         <button
@@ -92,7 +101,7 @@ export const PrecisionLichSuChart: React.FC<PrecisionLichSuChartProps> = ({
           <span className="material-symbols-outlined" style={{ fontSize: 14 }}>
             refresh
           </span>
-          <span>Refresh</span>
+          {!isMobile && <span>Refresh</span>}
         </button>
       </div>
 

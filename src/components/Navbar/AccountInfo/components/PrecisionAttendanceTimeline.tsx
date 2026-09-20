@@ -64,58 +64,51 @@ export default function PrecisionAttendanceTimeline({
 
   return (
     <div className="precision-hub__card">
-      {/* Header & Controls */}
-      <div className="precision-hub__cardHeader" style={{ marginBottom: 12 }}>
-        <div className="precision-hub__cardHeaderLeft">
+      {/* Header & Controls — mobile dồn tiêu đề + Cột/Đường + Reload + Excel về ĐÚNG 1 DÒNG */}
+      <div
+        className="precision-hub__cardHeader"
+        style={{ marginBottom: isMobile ? 8 : 12 }}
+      >
+        <div
+          className={`precision-hub__cardHeaderLeft${
+            isMobile ? " precision-hub__cardHeaderLeft--nowrap" : ""
+          }`}
+        >
           <div className="precision-hub__headerIconWrap">
-            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+            <span className="material-symbols-outlined" style={{ fontSize: isMobile ? 15 : 18 }}>
               calendar_month
             </span>
           </div>
-          <div>
-            <h2 className="precision-hub__cardTitle">
-              {isMobile ? "Công Tháng Này" : "Biểu Đồ Chấm Công & Giờ Làm Việc Thực Tế"}
-            </h2>
-            {!isMobile && (
+          {isMobile ? (
+            <h2 className="precision-hub__cardTitle">Công Tháng Này</h2>
+          ) : (
+            <div>
+              <h2 className="precision-hub__cardTitle">
+                Biểu Đồ Chấm Công & Giờ Làm Việc Thực Tế
+              </h2>
               <p className="precision-hub__cardSubtitle">
                 Thống kê chi tiết từng ngày trong Tháng {currentMonthStr}. Định mức chuẩn: 8.0 giờ/ngày.
               </p>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         <div className="precision-hub__chartHeaderActions">
           {/* Toggle between Stitch Bar Chart and Recharts Line Chart */}
-          <div style={{ display: "flex", background: "#f1f5f9", borderRadius: 6, padding: 2, border: "1px solid #e2e8f0" }}>
+          <div className="precision-hub__chartToggle">
             <button
               type="button"
+              className={`precision-hub__chartToggleBtn${chartMode === "bar" ? " is-active" : ""}`}
               onClick={() => setChartMode("bar")}
-              style={{
-                padding: "3px 10px",
-                borderRadius: 4,
-                border: "none",
-                cursor: "pointer",
-                fontSize: 11,
-                fontWeight: 600,
-                background: chartMode === "bar" ? "#2563eb" : "transparent",
-                color: chartMode === "bar" ? "#ffffff" : "#64748b",
-              }}
+              title="Biểu đồ cột"
             >
               {isMobile ? "Cột" : "Biểu đồ cột (Stitch)"}
             </button>
             <button
               type="button"
+              className={`precision-hub__chartToggleBtn${chartMode === "line" ? " is-active" : ""}`}
               onClick={() => setChartMode("line")}
-              style={{
-                padding: "3px 10px",
-                borderRadius: 4,
-                border: "none",
-                cursor: "pointer",
-                fontSize: 11,
-                fontWeight: 600,
-                background: chartMode === "line" ? "#2563eb" : "transparent",
-                color: chartMode === "line" ? "#ffffff" : "#64748b",
-              }}
+              title="Biểu đồ đường"
             >
               {isMobile ? "Đường" : "Biểu đồ đường (Recharts)"}
             </button>
@@ -169,17 +162,21 @@ export default function PrecisionAttendanceTimeline({
         <div className="precision-hub__legendGroup">
           <div className="precision-hub__legendItem">
             <span className="precision-hub__legendColor precision-hub__legendColor--blue" />
-            <span>Giờ chuẩn (8.0h)</span>
+            <span>{isMobile ? "Giờ chuẩn 8h" : "Giờ chuẩn (8.0h)"}</span>
           </div>
 
           <div className="precision-hub__legendItem">
             <span className="precision-hub__legendColor precision-hub__legendColor--amber" />
-            <span>Tăng ca OT (&gt;8.0h)</span>
+            <span>{isMobile ? "OT >8h" : "Tăng ca OT (>8.0h)"}</span>
           </div>
 
           <div className="precision-hub__legendItem">
             <span className="precision-hub__legendColor precision-hub__legendColor--today" />
-            <span>Hôm nay ({todayDate < 10 ? "0" + todayDate : todayDate})</span>
+            <span>
+              {isMobile
+                ? "Hôm nay"
+                : `Hôm nay (${todayDate < 10 ? "0" + todayDate : todayDate})`}
+            </span>
           </div>
 
           {!isMobile && (

@@ -39,6 +39,9 @@ const LichSu_New: React.FC = () => {
   const [fromDate, setFromDate] = useState<string>(moment().format("YYYY-MM-01"));
   const [toDate, setToDate] = useState<string>(moment().format("YYYY-MM-DD"));
   const [isDefaultMonth, setIsDefaultMonth] = useState<boolean>(true);
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
   const [quickSearch, setQuickSearch] = useState<string>("");
   const [showPivotModal, setShowPivotModal] = useState<boolean>(false);
 
@@ -52,6 +55,23 @@ const LichSu_New: React.FC = () => {
   >([]);
   const [attendanceTimelineLoading, setAttendanceTimelineLoading] = useState(false);
   const [attendanceTimelineError, setAttendanceTimelineError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
 
   // 1. Fetch Timeline Chart Data
   const _rangeDays = (fromYmd: string, toYmd: string) => {
@@ -221,7 +241,7 @@ const LichSu_New: React.FC = () => {
   return (
     <div className="precision-lichsu">
       {/* 1. Header Banner */}
-      <PrecisionLichSuHeader userData={userData} />
+      {!isMobile && <PrecisionLichSuHeader userData={userData} />}
 
       {/* 2. Operational Toolbar */}
       <PrecisionLichSuToolbar
@@ -255,10 +275,11 @@ const LichSu_New: React.FC = () => {
         onExportEx1={() => SaveExcel(filteredData, "LichSuDiLam_DangLoc")}
         onExportEx2={() => SaveExcel(diemdanhnhomtable, "LichSuDiLam_TatCa")}
         onOpenPivot={() => setShowPivotModal(true)}
+        isMobile={isMobile}
       />
 
       {/* 3. Realtime KPI Cards */}
-      <PrecisionLichSuKpi data={diemdanhnhomtable} />
+      {!isMobile && <PrecisionLichSuKpi data={diemdanhnhomtable} />}
 
       {/* 4. Attendance Timeline Chart */}
       <PrecisionLichSuChart
@@ -268,6 +289,7 @@ const LichSu_New: React.FC = () => {
         isDefaultMonth={isDefaultMonth}
         fromDate={fromDate}
         toDate={toDate}
+        isMobile={isMobile}
         onRefresh={() => {
           if (isDefaultMonth) {
             fetchAttendanceTimeline(moment().startOf("month").format("YYYY-MM-DD"), moment().endOf("month").format("YYYY-MM-DD"));

@@ -56,33 +56,45 @@ export default function PrecisionLiveClock({ mychamcong, isMobile = false }: Pre
     <div className="precision-hub__card precision-hub__clockCard">
       {/* Clock Header */}
       <div className="precision-hub__cardHeader">
-        <div className="precision-hub__cardHeaderLeft">
-          <div className="precision-hub__headerIconWrap">
-            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
-              timer
-            </span>
-          </div>
-          <div>
-            <h2 className="precision-hub__cardTitle">
-              {isMobile ? "Chấm Công Hôm Nay" : "Điểm Danh Thời Gian Thực"}
-            </h2>
-            <p className="precision-hub__cardSubtitle">
-              {isMobile
-                ? `${todayStr} - ${weekdayStr()}`
-                : "Live Attendance Clock & Shift Monitoring"}
-            </p>
-          </div>
-        </div>
-
-        {!isMobile && (
-          <div className="precision-hub__dateChip">
-            <span className="material-symbols-outlined" style={{ fontSize: 14, color: "#64748b" }}>
-              calendar_today
-            </span>
-            <span>
+        {isMobile ? (
+          /* Mobile: icon + tiêu đề + ngày gộp đúng 1 dòng để tiết kiệm chiều cao */
+          <div className="precision-hub__cardHeaderLeft precision-hub__cardHeaderLeft--nowrap">
+            <div className="precision-hub__headerIconWrap">
+              <span className="material-symbols-outlined" style={{ fontSize: 15 }}>
+                timer
+              </span>
+            </div>
+            <h2 className="precision-hub__cardTitle">Chấm Công Hôm Nay</h2>
+            <span className="precision-hub__cardHeaderDot">•</span>
+            <span className="precision-hub__cardHeaderDate">
               {todayStr} - {weekdayStr()}
             </span>
           </div>
+        ) : (
+          <>
+            <div className="precision-hub__cardHeaderLeft">
+              <div className="precision-hub__headerIconWrap">
+                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+                  timer
+                </span>
+              </div>
+              <div>
+                <h2 className="precision-hub__cardTitle">Điểm Danh Thời Gian Thực</h2>
+                <p className="precision-hub__cardSubtitle">
+                  Live Attendance Clock & Shift Monitoring
+                </p>
+              </div>
+            </div>
+
+            <div className="precision-hub__dateChip">
+              <span className="material-symbols-outlined" style={{ fontSize: 14, color: "#64748b" }}>
+                calendar_today
+              </span>
+              <span>
+                {todayStr} - {weekdayStr()}
+              </span>
+            </div>
+          </>
         )}
       </div>
 
@@ -146,77 +158,77 @@ export default function PrecisionLiveClock({ mychamcong, isMobile = false }: Pre
         </div>
       </div>
 
-      {/* Shift Progress Box */}
-      <div className="precision-hub__shiftProgressBox">
-        <div className="precision-hub__shiftProgressHeader">
-          <span style={{ color: "#475569", fontWeight: 500 }}>
-            Tiến độ giờ chuẩn:{" "}
-            <strong style={{ color: "#0f172a", fontWeight: 700 }}>
-              {shiftProgress.hours}h / 8.0h
-            </strong>
-          </span>
-          <span
-            style={{
-              fontFamily: "JetBrains Mono, monospace",
-              fontWeight: 700,
-              fontSize: 11,
-              color: "#1d4ed8",
-              background: "#dbeafe",
-              padding: "2px 6px",
-              borderRadius: 4,
-            }}
-          >
-            {shiftProgress.percent}% hoàn thành
-          </span>
-        </div>
+      {/* Shift Progress Box — DESKTOP ONLY: mobile bỏ hẳn để dồn chỗ cho biểu đồ tháng */}
+      {!isMobile && (
+        <div className="precision-hub__shiftProgressBox">
+          <div className="precision-hub__shiftProgressHeader">
+            <span style={{ color: "#475569", fontWeight: 500 }}>
+              Tiến độ giờ chuẩn:{" "}
+              <strong style={{ color: "#0f172a", fontWeight: 700 }}>
+                {shiftProgress.hours}h / 8.0h
+              </strong>
+            </span>
+            <span
+              style={{
+                fontFamily: "JetBrains Mono, monospace",
+                fontWeight: 700,
+                fontSize: 11,
+                color: "#1d4ed8",
+                background: "#dbeafe",
+                padding: "2px 6px",
+                borderRadius: 4,
+              }}
+            >
+              {shiftProgress.percent}% hoàn thành
+            </span>
+          </div>
 
-        <div className="precision-hub__progressBarWrap">
-          <div
-            className="precision-hub__progressBarFill"
-            style={{ width: `${shiftProgress.percent}%` }}
-          />
-        </div>
+          <div className="precision-hub__progressBarWrap">
+            <div
+              className="precision-hub__progressBarFill"
+              style={{ width: `${shiftProgress.percent}%` }}
+            />
+          </div>
 
-        {!isMobile && (
           <div className="precision-hub__shiftCheckpoints">
-          <div className="precision-hub__checkpoint">
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "9999px",
-                background: hasIn ? "#10b981" : "#cbd5e1",
-              }}
-            />
-            <span>08:00 Vào ca</span>
-          </div>
+            <div className="precision-hub__checkpoint">
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "9999px",
+                  background: hasIn ? "#10b981" : "#cbd5e1",
+                }}
+              />
+              <span>08:00 Vào ca</span>
+            </div>
 
-          <div className="precision-hub__checkpoint">
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "9999px",
-                background: shiftProgress.hours >= 4 ? "#f59e0b" : "#cbd5e1",
-              }}
-            />
-            <span>12:00 Nghỉ trưa</span>
-          </div>
+            <div className="precision-hub__checkpoint">
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "9999px",
+                  background: shiftProgress.hours >= 4 ? "#f59e0b" : "#cbd5e1",
+                }}
+              />
+              <span>12:00 Nghỉ trưa</span>
+            </div>
 
-          <div className="precision-hub__checkpoint">
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "9999px",
-                background: hasOut ? "#2563eb" : "#cbd5e1",
-              }}
-            />
-            <span>17:00 Kết ca</span>
+            <div className="precision-hub__checkpoint">
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "9999px",
+                  background: hasOut ? "#2563eb" : "#cbd5e1",
+                }}
+              />
+              <span>17:00 Kết ca</span>
+            </div>
           </div>
         </div>
-        )}
-      </div>
+      )}
     </div>
   );
 }

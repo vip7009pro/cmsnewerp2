@@ -1,5 +1,11 @@
 # Roadmap - cmsnewerp2
 
+- [x] NHÂN SỰ/LỊCH SỬ: Tối ưu mobile theo viewport — ẩn header/KPI bằng conditional rendering, giữ filterbar + timeline + AGTable, bật cuộn dọc và cấp chiều cao ổn định cho grid; diagnostics sạch, production build thành công.
+
+- [x] NHÂN SỰ/LỊCH SỬ: Tinh gọn filter bar — bỏ nút `Load Data` trùng handler với Search; mobile xếp 2 ô ngày + checkbox trên một hàng 3 cột, Search full-width hàng dưới, EX1/EX2/PIVOT chia 3 cột; kiểm tra trực quan 390px/360px + desktop 1180px; build thành công.
+
+- [x] NHÂN SỰ/LỊCH SỬ: Giảm chiều cao mobile — ẩn cụm EX1/EX2/PIVOT ở toolbar trên mobile (trùng với toolbar dưới bảng), rút tiêu đề biểu đồ còn một dòng `TIMELINE T9/2026 · Giờ thực tế/ngày` và nút Refresh icon-only; build thành công.
+
 - [x] RND/MUA/QLSX PARITY (đợt 3): Audit 6 component `QLVL`, `BOM_AMAZON`, `DESIGN_AMAZON`, `PRODUCT_BARCODE_MANAGER`, `KHOAO`, `KHOSUB` so với bản `.backup` và sửa sai khác — BOM_AMAZON (nối lại `sidebarSearch` bị bỏ rơi, sửa ô tìm kiếm chết ở tab "ĐÃ CÓ BOM"), KHOAO (guard `activeTab === "TON"` cho Xóa Rác / Ẩn Rác tránh xóa dữ liệu thật khi đang ở tab LS IN/LS OUT; reset `searchKeyword` khi đổi tab), PRODUCT_BARCODE (validate `BARCODE_STT` vì backend nội suy không nháy; tách export `EX1` đang lọc / `EX2` toàn bộ), QLVL (bọc riêng `updateM090FSC` để lỗi đồng bộ phụ không báo sai kết quả cập nhật). API parity & `checkBP` parity đều 100%; chi tiết có bằng chứng dòng tại `FINDINGS_PARITY_RND_MUA_QLSX_MODULES.md`; diagnostics/build thành công (1m 3s).
 
 - [x] RND/MUA/QLSX PARITY (đợt 3, bổ sung): Thống nhất xử lý lỗi ghi dữ liệu theo mẫu `err_code` — `BOM_AMAZON.addBOMAMAZON` gom lỗi theo từng dòng (`DOITUONG_NO`) và chỉ báo thành công khi sạch lỗi, `checkExistBOMAMAZON` không nuốt lỗi kết nối (tránh insert trùng), `PRODUCT_BARCODE.addBarcode` dừng khi bước check trùng lỗi và `addBarcode`/`updateBarcode`/`deleteBarcode` báo lỗi kèm `message` thật thay vì im lặng; build thành công (52.53s).

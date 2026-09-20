@@ -613,17 +613,6 @@
       justify-content: space-between;
     }
 
-    &__toolbar {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    &__toolbarLeft,
-    &__toolbarRight {
-      width: 100%;
-      justify-content: flex-start;
-    }
-
     &__kpiGrid {
       grid-template-columns: repeat(2, 1fr);
       gap: 6px;
@@ -662,25 +651,116 @@
   @media (max-width: 768px) {
     padding: 6px 8px;
     gap: 6px;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     &__header {
       padding: 6px 10px;
     }
 
     &__toolbar {
-      padding: 6px 8px;
+      padding: 8px;
+      gap: 6px;
       align-items: stretch;
     }
 
-    &__toolbarLeft,
-    &__toolbarRight {
+    // Hàng lọc: 2 ô ngày + checkbox trên một dòng, Search full-width bên dưới
+    &__toolbarLeft {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
       width: 100%;
+      align-items: stretch;
+    }
+
+    &__filterItem {
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: center;
+      gap: 1px;
+      height: 40px;
+      min-width: 0;
+      padding: 3px 6px;
+      box-sizing: border-box;
+
+      label {
+        font-size: 9px;
+        font-weight: 700;
+        line-height: 1.1;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #64748b;
+      }
+
+      input[type="date"] {
+        width: 100%;
+        min-width: 0;
+        height: 24px;
+        padding: 0 3px;
+        font-size: 10.5px;
+        box-sizing: border-box;
+      }
+    }
+
+    &__checkboxLabel {
+      align-self: stretch;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 3px;
+      height: 40px;
+      padding: 0 4px 5px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      font-size: 10.5px;
+      box-sizing: border-box;
+    }
+
+    &__toolbarLeft &__btn {
+      grid-column: 1 / -1;
+      width: 100%;
+      height: 40px;
+      padding: 0 8px;
+      font-size: 11px;
+      box-sizing: border-box;
+    }
+
+    // Tiêu đề biểu đồ: ép gọn trên đúng một dòng để tiết kiệm chiều cao
+    &__chartHeader {
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    &__chartTitleGroup {
+      flex: 1 1 auto;
+      min-width: 0;
+      flex-wrap: nowrap;
+      overflow: hidden;
+
+      .chart-title {
+        font-size: 11px;
+        white-space: nowrap;
+      }
+
+      .chart-unit {
+        min-width: 0;
+        font-size: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    &__chartHeader &__btn {
+      flex: 0 0 auto;
+      padding: 0 8px;
     }
 
     &__gridCard {
-      min-height: 320px;
-      flex: 1 1 auto;
+      min-height: 420px;
+      height: 420px;
+      flex: 0 0 420px;
     }
 
     &__gridToolbar {
@@ -698,12 +778,23 @@
     }
 
     &__gridBody {
-      min-height: 280px;
+      min-height: 360px;
       flex: 1 1 auto;
 
       .agtable {
-        min-height: 280px;
+        min-height: 360px;
       }
+    }
+  }
+
+  .component_element & {
+    @media (max-width: 768px) {
+      height: 100% !important;
+      max-height: none !important;
+      min-height: 100% !important;
+      flex: 0 0 auto !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
     }
   }
 }

@@ -11,6 +11,7 @@ interface PrecisionLichSuToolbarProps {
   onExportEx1: () => void;
   onExportEx2: () => void;
   onOpenPivot: () => void;
+  isMobile?: boolean;
 }
 
 export const PrecisionLichSuToolbar: React.FC<PrecisionLichSuToolbarProps> = ({
@@ -24,6 +25,7 @@ export const PrecisionLichSuToolbar: React.FC<PrecisionLichSuToolbarProps> = ({
   onExportEx1,
   onExportEx2,
   onOpenPivot,
+  isMobile = false,
 }) => {
   return (
     <div className="precision-lichsu__toolbar">
@@ -70,56 +72,46 @@ export const PrecisionLichSuToolbar: React.FC<PrecisionLichSuToolbarProps> = ({
         </button>
       </div>
 
-      {/* Right: Load Data & Export Actions */}
-      <div className="precision-lichsu__toolbarRight">
-        <button
-          type="button"
-          className="precision-lichsu__btn precision-lichsu__btn--success"
-          onClick={onSearch}
-          title="Tải lại dữ liệu chấm công"
-        >
-          <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
-            sync
-          </span>
-          <span>Load Data</span>
-        </button>
+      {/* Right: Export Actions - ẩn trên mobile vì đã có sẵn ở toolbar dưới bảng */}
+      {!isMobile && (
+        <div className="precision-lichsu__toolbarRight">
+          <button
+            type="button"
+            className="precision-lichsu__btn precision-lichsu__btn--excel"
+            onClick={onExportEx1}
+            title="Xuất bảng tính danh sách đang lọc"
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
+              download
+            </span>
+            <span>EX1</span>
+          </button>
 
-        <button
-          type="button"
-          className="precision-lichsu__btn precision-lichsu__btn--excel"
-          onClick={onExportEx1}
-          title="Xuất bảng tính danh sách đang lọc"
-        >
-          <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
-            download
-          </span>
-          <span>EX1</span>
-        </button>
+          <button
+            type="button"
+            className="precision-lichsu__btn precision-lichsu__btn--excel"
+            onClick={onExportEx2}
+            title="Xuất toàn bộ dữ liệu ra Excel"
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
+              file_download
+            </span>
+            <span>EX2</span>
+          </button>
 
-        <button
-          type="button"
-          className="precision-lichsu__btn precision-lichsu__btn--excel"
-          onClick={onExportEx2}
-          title="Xuất toàn bộ dữ liệu ra Excel"
-        >
-          <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
-            file_download
-          </span>
-          <span>EX2</span>
-        </button>
-
-        <button
-          type="button"
-          className="precision-lichsu__btn precision-lichsu__btn--pivot"
-          onClick={onOpenPivot}
-          title="Phân tích tổng hợp đa chiều"
-        >
-          <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
-            pivot_table_chart
-          </span>
-          <span>PIVOT</span>
-        </button>
-      </div>
+          <button
+            type="button"
+            className="precision-lichsu__btn precision-lichsu__btn--pivot"
+            onClick={onOpenPivot}
+            title="Phân tích tổng hợp đa chiều"
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
+              pivot_table_chart
+            </span>
+            <span>PIVOT</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -39,9 +39,9 @@
       gap: 10px;
     }
 
-    /* Card: 20px -> 14px */
+    /* Card: 20px -> 12px cho cả 3 khối (thông tin cơ bản / chấm công / biểu đồ tháng) */
     .precision-hub__card {
-      padding: 14px;
+      padding: 12px;
       border-radius: 10px;
     }
 
@@ -110,84 +110,150 @@
       min-width: 0;
     }
 
+    /* 4 ô định danh (Mã nhân sự / Mã ERP / Thâm niên / Nhóm điểm danh) DỒN VỀ ĐÚNG 1 DÒNG */
     .precision-hub__metaGrid {
       grid-area: meta;
-      gap: 6px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 4px;
       padding-top: 6px;
       margin-top: 2px;
     }
 
     .precision-hub__metaItem {
-      padding: 5px 6px;
+      padding: 3px 4px;
+      gap: 1px;
+      min-width: 0;
     }
 
+    /* Nhãn cho phép xuống tối đa 2 dòng để không bị cắt cụt nghĩa */
     .precision-hub__metaLabel {
-      font-size: 9px;
+      font-size: 8px;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .precision-hub__metaValue {
-      font-size: 11.5px;
+      font-size: 10.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* Thanh action đáy card: mép âm phải khớp padding card 14px */
-    .precision-hub__profileToolbar {
-      margin: 12px -14px -14px;
-      padding: 10px 14px;
-      gap: 8px;
-      flex-wrap: nowrap;
-    }
-
+    /* Tiêu đề card: ép 1 dòng, không xuống hàng khi cạnh cụm điều khiển */
     .precision-hub__cardTitle {
-      font-size: 13px;
+      font-size: 12.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .precision-hub__cardSubtitle {
       font-size: 10.5px;
     }
 
+    /* Header card Chấm Công Hôm Nay: icon + tiêu đề + ngày trên ĐÚNG 1 DÒNG */
     .precision-hub__cardHeader {
-      flex-wrap: wrap;
-      gap: 8px;
-      padding-bottom: 8px;
+      flex-wrap: nowrap;
+      gap: 6px;
+      padding-bottom: 6px;
+    }
+
+    .precision-hub__cardHeaderLeft--nowrap {
+      flex: 1 1 auto;
+      flex-wrap: nowrap;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .precision-hub__cardHeaderDot {
+      color: #cbd5e1;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .precision-hub__cardHeaderDate {
+      min-width: 0;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #64748b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .precision-hub__headerIconWrap {
-      width: 26px;
-      height: 26px;
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
     }
 
     .precision-hub__dualCheckGrid {
-      gap: 8px;
+      gap: 6px;
+      margin: 2px 0;
     }
 
     .precision-hub__checkCard {
-      padding: 10px;
-      gap: 4px;
+      padding: 8px;
+      gap: 3px;
     }
 
     .precision-hub__checkTime {
-      font-size: 20px;
+      font-size: 19px;
     }
 
     .precision-hub__shiftProgressBox {
-      padding: 8px 10px;
-      gap: 6px;
+      padding: 6px 8px;
+      gap: 5px;
     }
 
+    /* Cụm điều khiển biểu đồ: Cột/Đường + Reload + Excel trên ĐÚNG 1 DÒNG */
     .precision-hub__chartHeaderActions {
-      flex-wrap: wrap;
-      gap: 6px;
-      width: 100%;
+      flex-wrap: nowrap;
+      gap: 5px;
+      width: auto;
+      flex-shrink: 0;
     }
 
+    /* Nút reload/Excel mobile chỉ còn icon vuông gọn */
+    .precision-hub__chartHeaderActions .precision-hub__btnAction {
+      width: 28px;
+      padding: 0;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .precision-hub__chartToggleBtn {
+      padding: 3px 7px;
+      font-size: 10.5px;
+    }
+
+    /* Legend: 3 chú thích gọn trên 1 DÒNG, phần tổng giờ tách xuống dòng riêng */
     .precision-hub__chartLegendStrip {
-      padding: 8px 10px;
-      gap: 8px;
-      font-size: 11px;
+      flex-direction: column;
+      align-items: stretch;
+      flex-wrap: nowrap;
+      gap: 6px;
+      padding: 6px 10px;
+      font-size: 10.5px;
     }
 
     .precision-hub__legendGroup {
+      flex-wrap: nowrap;
       gap: 10px;
+    }
+
+    .precision-hub__legendItem {
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .precision-hub__legendColor {
+      width: 8px;
+      height: 8px;
     }
 
     .precision-hub__dossierRow {
@@ -446,6 +512,40 @@
     font-size: 12px;
     color: #475569;
     font-weight: 500;
+  }
+
+  &__deptText {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Nút đổi mật khẩu dạng ICON (mobile) — nằm cùng dòng với sub department */
+  &__pwIconBtn {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    border: 1px solid #bfdbfe;
+    background: #eff6ff;
+    color: #1d4ed8;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: #dbeafe;
+      border-color: #2563eb;
+      color: #1e40af;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
   }
 
   &__metaGrid {
@@ -888,6 +988,41 @@
     display: flex;
     align-items: center;
     gap: 8px;
+  }
+
+  /* Segmented toggle Cột / Đường */
+  &__chartToggle {
+    display: flex;
+    background: #f1f5f9;
+    border-radius: 6px;
+    padding: 2px;
+    border: 1px solid #e2e8f0;
+  }
+
+  &__chartToggleBtn {
+    padding: 3px 10px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: inherit;
+    background: transparent;
+    color: #64748b;
+    transition: all 0.15s ease;
+
+    &:hover {
+      color: #0f172a;
+    }
+
+    &.is-active {
+      background: #2563eb;
+      color: #ffffff;
+
+      &:hover {
+        color: #ffffff;
+      }
+    }
   }
 
   &__chartLegendStrip {

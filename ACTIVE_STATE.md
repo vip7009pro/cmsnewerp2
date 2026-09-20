@@ -1,6 +1,31 @@
 # ACTIVE_STATE
 
 ## Mục tiêu task hiện tại
+Nén gọn màn hình mobile `PrecisionAccountInfo` (Navbar → Tài khoản) để trên 1 viewport thấy đủ: Thông tin cơ bản + Chấm công hôm nay + Biểu đồ công tháng.
+
+Trạng thái: **HOÀN THÀNH** (`npm run build` EXIT=0) + đã kiểm chứng trực quan bằng preview tĩnh rộng 390px.
+
+## File đã chỉnh sửa (đợt 7)
+- `AccountInfo/components/PrecisionHeroProfile.tsx` — 4 ô định danh (Mã nhân sự / Mã ERP / Thâm niên / Nhóm điểm danh) dồn về 1 dòng trên mobile; bỏ nút `Ảnh thẻ` (đã có click avatar); nút `Mật khẩu` → icon `lock_reset` (`__pwIconBtn`) nằm cuối dòng sub department ⇒ bỏ hẳn `profileToolbar` trên mobile.
+- `AccountInfo/components/PrecisionLiveClock.tsx` — header mobile gộp icon + tiêu đề + ngày về đúng 1 dòng; **bỏ hẳn `shiftProgressBox` (thanh tiến độ giờ chuẩn) trên mobile**, chỉ còn ở desktop.
+- `AccountInfo/components/PrecisionAttendanceTimeline.tsx` — mobile: tiêu đề `Công Tháng Này` + segmented `Cột/Đường` + nút reload + nút Excel dồn về **1 dòng** (thay inline style bằng class `__chartToggle` / `__chartToggleBtn`); legend rút gọn nhãn (`Giờ chuẩn 8h`, `OT >8h`, `Hôm nay`) để nằm **1 dòng**.
+- `AccountInfo/PrecisionAccountInfo.scss` — mobile: `__metaGrid` = `repeat(4, minmax(0,1fr))`, nhãn meta 8px (clamp 2 dòng), card padding `20px → 12px`, `__cardTitle` nowrap+ellipsis, header clock `nowrap`, `__chartHeaderActions` nowrap + `__btnAction` vuông 28px, `__chartLegendStrip` column + `__legendGroup` nowrap, thêm `__deptText` / `__pwIconBtn` / `__chartToggle` / `__chartToggleBtn`.
+
+## Mục tiêu task hiện tại (đợt 6)
+Tối ưu mobile cho `LichSu_New`: mobile chỉ hiển thị filterbar, timeline chart và AGTable; đảm bảo trang cuộn dọc và bảng có chiều cao render ổn định.
+
+Trạng thái: **HOÀN THÀNH** (`npm run build` ✓ 17020 modules). Chi tiết: `ROADMAP.md`.
+
+## File đã chỉnh sửa
+- `src/pages/nhansu/LichSu/LichSu_New.tsx` — conditional rendering theo `matchMedia("(max-width: 768px)")`, ẩn header/KPI trên mobile.
+- `src/pages/nhansu/LichSu/PrecisionLichSu/PrecisionLichSu.scss` — bật mobile page scroll, cố định vùng AGTable 420px; filter bar mobile: 2 ô ngày + checkbox (3 cột) rồi Search full-width; ép header biểu đồ về một dòng (`flex-wrap: nowrap` + `nowrap`/ellipsis cho title/unit).
+- `src/pages/nhansu/LichSu/PrecisionLichSu/PrecisionLichSuToolbar.tsx` — bỏ nút `Load Data` (trùng `onSearch` với nút Search); nhận `isMobile` và ẩn cụm EX1/EX2/PIVOT trên mobile (đã có ở toolbar dưới bảng).
+- `src/pages/nhansu/LichSu/PrecisionLichSu/PrecisionLichSuChart.tsx` — nhận `isMobile`; mobile dùng tiêu đề gọn `TIMELINE T9/2026` + `· Giờ thực tế/ngày`, nút Refresh chỉ còn icon.
+
+## Việc cần làm tiếp theo
+- Kiểm thử trực quan trên thiết bị mobile thực tế, đặc biệt chiều cao tab container và thao tác cuộn ngang AGTable.
+
+## Mục tiêu task hiện tại
 Mobile experience cho `AccountInfo` / `PrecisionAccountInfo` (Navbar → Tài khoản): giảm padding sâu để tăng diện tích hiển thị + conditional rendering theo viewport; trên mobile chỉ hiển thị Avatar/thông tin cơ bản, giờ chấm công vào-ra, biểu đồ công trong tháng và Admin tool.
 
 Trạng thái: **HOÀN THÀNH** (`npm run build` ✓ 17020 modules, EXIT=0). Chi tiết: `ROADMAP.md` — Đợt 6.
