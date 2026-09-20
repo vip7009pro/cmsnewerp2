@@ -1040,11 +1040,103 @@
     &__toolbar {
       padding: 6px 8px;
       align-items: stretch;
+      gap: 6px;
     }
 
-    &__filterGroup,
+    /* --- Bộ lọc (Ca làm việc + Ngày) gộp chung 1 dòng --- */
+    &__filterGroup {
+      width: 100%;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    &__filterPill {
+      height: 30px;
+      padding: 0 6px;
+      gap: 4px;
+      min-width: 0;
+
+      /* Ẩn nhãn chữ để tiết kiệm chiều ngang */
+      .label {
+        display: none;
+      }
+
+      &:first-child {
+        flex: 0 1 auto;
+      }
+
+      &:last-child {
+        flex: 1 1 auto;
+        overflow: hidden;
+      }
+
+      select {
+        min-width: 0;
+        max-width: 100%;
+        text-overflow: ellipsis;
+      }
+
+      strong {
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .date-prefix {
+        display: none;
+      }
+    }
+
+    /* --- Cụm nút hành động nhanh gộp chung 1 dòng --- */
     &__actionGroup {
       width: 100%;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    /* Nút "Điểm danh nhanh tất cả" -> icon button */
+    &__btnSuccess {
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      justify-content: center;
+      border-radius: 8px;
+
+      .btn-label {
+        display: none;
+      }
+    }
+
+    &__gridBtn {
+      flex: 0 0 auto;
+      height: 30px;
+      padding: 0 9px;
+      border-radius: 7px;
+
+      .badge {
+        display: none;
+      }
+    }
+
+    &__btnSquare {
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
     }
 
     &__kpiGrid {

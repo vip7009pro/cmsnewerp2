@@ -41,7 +41,7 @@ const PrecisionDiemDanhToolbar: React.FC<PrecisionDiemDanhToolbarProps> = ({
       {/* Bộ Lọc Nhà Máy, Ca & Ngày */}
       <div className="precision-diemdanh__filterGroup">
         {/* Nhà máy */}
-        <div className="precision-diemdanh__filterPill">
+        {/* <div className="precision-diemdanh__filterPill">
           <span className="material-symbols-outlined" style={{ fontSize: 16, color: '#2563eb' }}>
             apartment
           </span>
@@ -58,7 +58,7 @@ const PrecisionDiemDanhToolbar: React.FC<PrecisionDiemDanhToolbarProps> = ({
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         {/* Ca làm việc */}
         <div className="precision-diemdanh__filterPill">
@@ -87,7 +87,8 @@ const PrecisionDiemDanhToolbar: React.FC<PrecisionDiemDanhToolbarProps> = ({
           </span>
           <span className="label">Ngày:</span>
           <strong style={{ color: '#0f172a', fontWeight: 600 }}>
-            Hôm nay, {currentDateDisplay}
+            <span className="date-prefix">Hôm nay, </span>
+            {currentDateDisplay}
           </strong>
         </div>
       </div>
@@ -99,11 +100,12 @@ const PrecisionDiemDanhToolbar: React.FC<PrecisionDiemDanhToolbarProps> = ({
           className="precision-diemdanh__btnSuccess"
           onClick={onMarkAllPresent}
           title="Điểm danh nhanh tất cả nhân sự chưa điểm danh thành Đi Làm"
+          aria-label="Điểm danh nhanh tất cả"
         >
           <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
             done_all
           </span>
-          <span>Điểm danh nhanh tất cả</span>
+          <span className="btn-label">Điểm danh nhanh tất cả</span>
         </button>
 
         {onExportEX1 && (
