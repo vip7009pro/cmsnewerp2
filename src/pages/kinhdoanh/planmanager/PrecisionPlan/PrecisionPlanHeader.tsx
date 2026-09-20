@@ -8,6 +8,8 @@ interface Props {
   onOpenAddModal: () => void;
   okCount: number;
   ngCount: number;
+  /** Mobile: rút gọn nhãn sub-tab để nút "Thêm Plan" luôn nằm trong màn hình */
+  isMobile?: boolean;
 }
 
 const PrecisionPlanHeader: React.FC<Props> = ({
@@ -17,6 +19,7 @@ const PrecisionPlanHeader: React.FC<Props> = ({
   onOpenAddModal,
   okCount,
   ngCount,
+  isMobile = false,
 }) => {
   return (
     <div className="precision-plan__header">
@@ -38,7 +41,8 @@ const PrecisionPlanHeader: React.FC<Props> = ({
             onClick={() => onTabChange(1)}
           >
             <FiZap />
-            <span>Trạng thái kiểm tra Plan (Plan Status)</span>
+            {/* Mobile: nhãn dài làm sub-tabs tràn ngang, đẩy nút "Thêm Plan" ra khỏi màn hình */}
+            <span>{isMobile ? "Plan Status" : "Trạng thái kiểm tra Plan (Plan Status)"}</span>
           </button>
         )}
       </div>

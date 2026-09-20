@@ -521,6 +521,226 @@ $pp-radius: 4px;
     justify-content: center;
     padding: 16px;
   }
+
+  /* ══════════════════════════════════════════════════════════════════
+     MOBILE (≤768px)
+     - Header: sub-tabs scroll ngang + nút "Thêm Plan" LUÔN trong màn hình
+     - Bộ lọc: chuyển sang dạng FLOAT phủ trên bảng, toggle từ grid toolbar
+     - Grid toolbar: dồn 1 hàng, scroll ngang nếu tràn (không xuống dòng)
+     ══════════════════════════════════════════════════════════════════ */
+  @media (max-width: 768px) {
+    /* ── HEADER: nút "Thêm Plan" trước đây bị đẩy khỏi màn hình ── */
+    &__tabs {
+      flex: 1 1 auto;
+      min-width: 0;
+      height: auto;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        height: 0;
+      }
+    }
+
+    &__tab {
+      flex: 0 0 auto;
+      height: 30px;
+      padding: 0 10px;
+      font-size: 11.5px;
+    }
+
+    &__headerRight {
+      flex: 0 0 auto;
+      gap: 6px;
+      margin-left: auto;
+    }
+
+    &__kpiBadge {
+      font-size: 10px;
+      padding: 2px 6px;
+    }
+
+    &__addBtn {
+      flex: 0 0 auto;
+      height: 30px;
+      padding: 0 10px;
+      font-size: 11px;
+    }
+
+    /* ── BỘ LỌC DẠNG FLOAT ── */
+    &__content {
+      position: relative;
+    }
+
+    &__filterBackdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 35;
+      background: rgba(15, 23, 42, 0.35);
+      animation: pp-fade-in 0.15s ease-out;
+    }
+
+    &__toolbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: auto;
+      max-height: 100%;
+      z-index: 40;
+      flex-wrap: nowrap;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      padding: 10px;
+      overflow-y: auto;
+      background: $pp-card;
+      border-bottom: none;
+      border-radius: 8px;
+      box-shadow: 0 18px 40px -12px rgba(15, 23, 42, 0.45);
+      animation: pp-fade-in 0.15s ease-out;
+
+      /* Mỗi filter group thành 1 hàng: nhãn cố định + input giãn hết phần còn lại */
+      .precision-plan__filterGroup {
+        width: 100%;
+      }
+
+      .precision-plan__filterLabel {
+        min-width: 74px;
+      }
+
+      .precision-plan__filterInput {
+        flex: 1 1 auto;
+        width: auto;
+        height: 30px;
+
+        &--date,
+        &--text {
+          width: auto;
+        }
+      }
+
+      .precision-plan__filterSep {
+        display: none;
+      }
+
+      .precision-plan__filterCheck {
+        padding: 2px 0;
+      }
+
+      .precision-plan__filterBtn {
+        width: 100%;
+        height: 34px;
+        justify-content: center;
+        font-size: 12px;
+      }
+    }
+
+    /* Header của panel float: luôn có nút đóng vì panel phủ trọn vùng nội dung */
+    &__toolbarHead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 8px;
+      border-bottom: 1px solid $pp-border;
+      flex-shrink: 0;
+    }
+
+    &__toolbarTitle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: $pp-brand-700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+
+      svg {
+        color: $pp-brand-600;
+      }
+    }
+
+    &__toolbarClose {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      border-radius: $pp-radius;
+      border: 1px solid $pp-border-dark;
+      background: $pp-card;
+      color: $pp-slate-600;
+      cursor: pointer;
+
+      &:hover {
+        color: $pp-rose-600;
+        border-color: #fecdd3;
+        background: $pp-rose-50;
+      }
+    }
+
+    /* ── GRID TOOLBAR: 1 hàng, scroll ngang ── */
+    &__gridToolbar {
+      flex-wrap: nowrap;
+      padding: 6px 8px;
+      gap: 6px;
+    }
+
+    &__gridToolbarLeft {
+      flex-wrap: nowrap;
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        height: 0;
+      }
+    }
+
+    &__gridActions {
+      flex: 0 0 auto;
+    }
+
+    &__gridBtn {
+      flex: 0 0 auto;
+      height: 28px;
+      white-space: nowrap;
+
+      &--filter {
+        color: $pp-brand-700;
+        border-color: $pp-brand-200;
+        background: $pp-brand-50;
+
+        &:hover {
+          background: $pp-brand-100;
+        }
+      }
+
+      &--active {
+        background: $pp-brand-600;
+        border-color: $pp-brand-600;
+        color: #ffffff;
+
+        &:hover {
+          background: $pp-brand-700;
+        }
+      }
+    }
+
+    &__gridMeta {
+      /* Mobile: số dòng đã có ở footer AG Grid ⇒ ẩn để 5 nút vừa trọn 1 hàng */
+      display: none;
+    }
+  }
+}
+
+@keyframes pp-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
@@ -752,6 +972,95 @@ $pp-radius: 4px;
       }
     }
   }
+
+  /* ══════════════════════════════════════════════════════════════════
+     MOBILE (≤768px) — Modal Thêm Plan
+     Trước đây header bị flex bóp: title 8 dòng + subtitle 9 dòng (header cao 316px)
+     và nút X bị đẩy ra ngoài màn hình; dòng info cũng bị bóp thành 18 dòng.
+     ══════════════════════════════════════════════════════════════════ */
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 100%;
+    max-height: 94vh;
+    border-radius: 10px;
+
+    /* Chừa chỗ bên phải cho nút X (đã chuyển sang absolute) */
+    &__header {
+      position: relative;
+      flex-wrap: nowrap;
+      padding: 10px 46px 10px 12px;
+      gap: 8px;
+    }
+
+    &__headerLeft {
+      flex: 1 1 auto;
+      min-width: 0;
+      gap: 8px;
+    }
+
+    &__headerIcon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    /* Tiêu đề 1 dòng + ellipsis: không còn đẩy nội dung modal xuống */
+    &__title {
+      font-size: 12.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &__headerRight {
+      flex: 0 0 auto;
+      gap: 8px;
+    }
+
+    /* Nút X neo góc phải trên để luôn bấm được và không chiếm dòng */
+    &__closeBtn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 2;
+    }
+
+    &__modeToggle {
+      padding: 2px;
+      gap: 2px;
+    }
+
+    &__modeBtn {
+      padding: 5px 8px;
+      font-size: 11px;
+      gap: 4px;
+    }
+
+    &__body {
+      padding: 12px;
+      gap: 10px;
+    }
+
+    &__footer {
+      height: 48px;
+      min-height: 48px;
+      padding: 0 10px;
+      gap: 6px;
+    }
+
+    &__footerRight {
+      gap: 6px;
+      min-width: 0;
+    }
+
+    &__footerBtn {
+      height: 30px;
+      padding: 0 10px;
+      font-size: 11px;
+      gap: 4px;
+    }
+  }
 }
 
 /* ── MANUAL MODE FORM ── */
@@ -772,6 +1081,15 @@ $pp-radius: 4px;
     font-size: 11.5px;
     color: #1e40af;
     gap: 8px;
+
+    /* Mobile: xếp dọc, nếu không `__infoLeft` bị `__infoRight` (nowrap) bóp thành 18 dòng */
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 4px;
+      padding: 6px 8px;
+      font-size: 11px;
+    }
   }
 
   &__infoLeft {
@@ -784,6 +1102,14 @@ $pp-radius: 4px;
       color: #2563eb;
       flex-shrink: 0;
     }
+
+    @media (max-width: 768px) {
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 11px;
+    }
   }
 
   &__infoRight {
@@ -794,6 +1120,11 @@ $pp-radius: 4px;
     strong {
       color: #1e293b;
       font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      white-space: normal;
+      font-size: 10.5px;
     }
   }
 

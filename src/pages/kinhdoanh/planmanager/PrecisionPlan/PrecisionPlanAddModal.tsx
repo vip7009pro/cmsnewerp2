@@ -43,6 +43,27 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
   const userData = useSelector((state: RootState) => state.totalSlice.userData);
   const [activeMode, setActiveMode] = useState<"manual" | "excel">("manual");
 
+  // Viewport mobile (≤768px) — rút gọn chữ trong header/info để modal không bị đẩy nội dung xuống
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
+
   /* ── Master Data State ── */
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const [codeList, setCodeList] = useState<CodeListData[]>([]);
@@ -449,10 +470,17 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
               <FiCalendar size={16} />
             </div>
             <div>
-              <h3 className="pp-modal__title">Thêm Mới Kế Hoạch Giao hàng (Plan Entry)</h3>
-              <p className="pp-modal__subtitle">
-                Khởi tạo hoặc tải dữ liệu kế hoạch hàng loạt vào hệ thống
-              </p>
+              <h3
+                className="pp-modal__title"
+                title="Thêm Mới Kế Hoạch Giao hàng (Plan Entry)"
+              >
+                {isMobile ? "Thêm Kế Hoạch" : "Thêm Mới Kế Hoạch Giao hàng (Plan Entry)"}
+              </h3>
+              {!isMobile && (
+                <p className="pp-modal__subtitle">
+                  Khởi tạo hoặc tải dữ liệu kế hoạch hàng loạt vào hệ thống
+                </p>
+              )}
             </div>
           </div>
           <div className="pp-modal__headerRight">
@@ -463,7 +491,7 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
                   }`}
                 onClick={() => setActiveMode("manual")}
               >
-                <FiEdit3 size={13} /> Nhập Thủ Công
+                <FiEdit3 size={13} /> {isMobile ? "Thủ Công" : "Nhập Thủ Công"}
               </button>
               <button
                 type="button"
@@ -475,7 +503,7 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
                   size={13}
                   style={{ color: activeMode === "excel" ? "#047857" : "#059669" }}
                 />{" "}
-                Import File Excel
+                {isMobile ? "Excel" : "Import File Excel"}
               </button>
             </div>
             <button
@@ -496,9 +524,14 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
             <div className="pp-manual">
               {/* Info Banner */}
               <div className="pp-manual__info">
-                <span className="pp-manual__infoLeft">
+                <span
+                  className="pp-manual__infoLeft"
+                  title="Chọn Khách Hàng, Mã Sản Phẩm, Ngày Plan và phân bổ sản lượng giao hàng từ D1 đến D15."
+                >
                   <FiInfo size={15} />
-                  Chọn Khách Hàng, Mã Sản Phẩm, Ngày Plan và phân bổ sản lượng giao hàng từ D1 đến D15.
+                  {isMobile
+                    ? "Chọn KH, mã SP, ngày Plan và phân bổ D1–D15"
+                    : "Chọn Khách Hàng, Mã Sản Phẩm, Ngày Plan và phân bổ sản lượng giao hàng từ D1 đến D15."}
                 </span>
                 <span className="pp-manual__infoRight">
                   Phụ trách:{" "}

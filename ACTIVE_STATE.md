@@ -1,24 +1,36 @@
 # ACTIVE_STATE
 
-## Mục tiêu task hiện tại (đợt 9)
-Tối ưu giao diện mobile cho `InvoiceManager` (Kinh doanh → Quản lý Invoices, `/kinhdoanh/invoicemanager`) bằng **viewport conditional rendering**:
-1. 2 widget số lượng / số tiền giao hàng (đang nằm trong bộ lọc) → tách ra **KPI bar compact 1 hàng**, đặt trên cùng trang.
-2. Bộ lọc → **dạng FLOAT** phủ trên bảng như `PrecisionPoManager`.
-3. Toolbar AGTable → dồn **1 hàng duy nhất, scroll ngang** thay vì xuống dòng.
+## Mục tiêu task hiện tại (đợt 10)
+Tối ưu giao diện mobile cho `PlanManager` (Kinh doanh → Quản lý Plan, `/kinhdoanh/planmanager`) bằng **viewport conditional rendering**:
+1. Bộ lọc đang là dải input inline → chuyển sang **dạng FLOAT** như `PrecisionPoManager`.
+2. Nút "Thêm Plan" bị đẩy khỏi màn hình trên mobile → sửa cho luôn hiển thị.
+3. Modal **Thêm Plan**: header/info bị bóp thành nhiều dòng, đẩy toàn bộ nội dung xuống → sửa cho gọn 1–2 dòng.
 
-Trạng thái: **HOÀN THÀNH** — `npm run build` EXIT=0, get_errors 0 lỗi, đã đo layout trên dev server 3001.
+Trạng thái: **HOÀN THÀNH** — `npm run build` EXIT=0, get_errors 0 lỗi, đã đo layout trên dev server 3001 ở 393px và 1440px.
 
-## File đã chỉnh sửa (đợt 9)
-- `invoicemanager/PrecisionInvoiceManager/PrecisionInvoiceKpiBar.tsx` **(MỚI)** — 2 widget nén trong 1 hàng (`grid-template-columns: repeat(2, minmax(0,1fr))`, mỗi ô 2 dòng); tiền dùng `maximumFractionDigits: 0` + `title` giữ giá trị đầy đủ.
-- `invoicemanager/InvoiceManager.tsx` — thêm `isMobile` (`matchMedia` + listener); `filterCollapsed` khởi tạo theo `innerWidth <= 768` + effect `setFilterCollapsed(isMobile)`; render `PrecisionInvoiceKpiBar` + `stitch-inv__filter-backdrop` khi mobile; truyền `hideKpiSummary`/`isMobile`/`onClose` xuống panel và `isMobile` xuống toolbar.
-- `PrecisionInvoiceFilterPanel.tsx` — prop `hideKpiSummary` (mobile không render lại khối KPI trong sidebar); prop `isMobile` + `onClose` + nút đóng `stitch-inv__sidebar-close` (`FiX`, chỉ render trên mobile).
-- `PrecisionInvoiceToolbar.tsx` — nhận `isMobile`; nhãn nút toggle bộ lọc `Show/Hide` → `Lọc` trên mobile.
-- `PrecisionInvoiceManager.scss` — thêm `&__kpi-bar` / `&__kpi-chip*` / `&__sidebar-close` và block `@media (max-width:768px)` ở cuối `.stitch-inv`.
+## File đã chỉnh sửa (đợt 10)
+- `planmanager/PlanManager.tsx` — thêm `isMobile` (`matchMedia` + listener `change`); truyền xuống `PrecisionPlanHeader` và `PlanManagerManageTab`.
+- `PrecisionPlan/PrecisionPlanHeader.tsx` — nhận `isMobile`; mobile đổi nhãn sub-tab `Trạng thái kiểm tra Plan (Plan Status)` → **`Plan Status`** (nhãn dài chính là nguyên nhân đẩy nút Thêm Plan ra khỏi màn hình).
+- `PlanManagerManageTab.tsx` — nhận `isMobile`; thêm state `filterOpen` (effect đóng khi chuyển sang mobile); render `precision-plan__filterBackdrop` + header panel (`__toolbarHead`/`__toolbarTitle`/`__toolbarClose` với `FiX`); toolbar bộ lọc chỉ render khi `!isMobile || filterOpen`; thêm nút **BỘ LỌC** (`__gridBtn--filter`, class `--active` khi đang mở) vào `__gridActions`; tự đóng panel sau khi tra cứu thành công.
+- `PrecisionPlan/PrecisionPlanAddModal.tsx` — thêm `isMobile`; mobile rút gọn tiêu đề (`Thêm Kế Hoạch`), **ẩn hẳn `__subtitle`**, đổi nhãn mode `Nhập Thủ Công`→`Thủ Công` / `Import File Excel`→`Excel`, rút gọn dòng info banner; giữ text đầy đủ ở `title` (tooltip).
+- `PrecisionPlan/PrecisionPlan.scss` — block `@media (max-width:768px)` ở cuối `.precision-plan` (header/filter/grid toolbar) + block mobile trong `.pp-modal` (header 1 hàng, nút X absolute) + block mobile trong `.pp-manual__info/__infoLeft/__infoRight`; keyframes `pp-fade-in`.
 
 ## Việc cần làm tiếp theo
 - Kiểm thử thiết bị thật: bộ lọc float có bị bàn phím che khi nhập `input[type=date]` không; thao tác Pivot modal trên màn 320px.
+- Mobile: `PlanManagerStatusTab` + `PrecisionPlanAddModal` chưa được tối ưu (2 cột form / modal nhiều field).
 - Mobile: `PrecisionPOandStockFull`, `PrecisionQuotation`, `PrecisionYCSX` cũng để filter panel chiếm cột trái → áp lại pattern float này.
-- Mobile: `.stitch-inv__footer` và `.po-grid-footer` còn 2 nhóm trái/phải, nên rút gọn khi < 360px.
+- Mobile: `.stitch-inv__footer`, `.po-grid-footer`, `.precision-plan__footer` còn 2 nhóm trái/phải, nên rút gọn khi < 360px.
+
+## Ghi chú kỹ thuật (đợt 10 — PlanManager mobile)
+- **Nguyên nhân nút "Thêm Plan" biến mất**: `&__tabs` là flex item có `min-width: auto` mặc định; tab `white-space: nowrap` dài ⇒ min-content của tabs > bề rộng màn hình ⇒ `.precision-plan__header` (dù `flex-wrap: wrap`) bị tràn ngang và `.precision-plan` (`overflow: hidden`) cắt mất `&__headerRight`. **Fix 2 lớp**: (a) rút gọn nhãn tab bằng conditional rendering, (b) `&__tabs { flex:1 1 auto; min-width:0; overflow-x:auto }` + `&__headerRight { flex:0 0 auto; margin-left:auto }` ⇒ dù nhãn có dài thì tabs tự scroll, nút không bao giờ bị đẩy ra ngoài.
+- **Panel float nên co theo nội dung** (`top:0; left:0; right:0; bottom:auto; max-height:100%`) thay vì `inset:0`: nếu phủ kín thì backdrop bị che (không bấm được) và phần dưới trống trơn. Đo được: panel 468px, backdrop 725px ⇒ còn **257px backdrop bấm được**. Vẫn phải có nút đóng X trong header cho chắc.
+- Bộ lọc mobile dùng `flex-direction: column; align-items: stretch` + `.precision-plan__filterGroup { width:100% }`, nhãn `min-width:74px`, input `flex:1 1 auto` (phải override `width` của `--date`/`--text`); ẩn `__filterSep`; nút Tra Cứu full width 34px.
+- Grid toolbar mobile: `&__gridToolbar`/`&__gridToolbarLeft` `flex-wrap: nowrap` + `overflow-x:auto` + nút `flex:0 0 auto`; **ẩn `&__gridMeta`** (số dòng đã có ở footer AG Grid) ⇒ 5 nút vừa trọn 1 hàng, không cần scroll.
+- Lưu ý: `PrecisionPlan.scss` **không có token `$pp-radius-md`** (chỉ có `$pp-radius: 4px`) ⇒ dùng literal khi cần bo góc lớn hơn.
+- **Modal `.pp-modal` không có media query nào** ⇒ mobile bị flex bóp nát: `.pp-modal__headerLeft` (flex item cạnh `__headerRight` 315px) co còn **88px** ⇒ title **8 dòng** + subtitle **9 dòng** (header cao **316px**), và nút X bị đẩy ra ngoài modal (`x=423` > modal right 377). `.pp-manual__info` cũng bị `__infoRight { white-space: nowrap }` bóp `__infoLeft` thành **18 dòng** (info cao **329px**). Sau fix: header **52px**, info **50px**, body **không cần scroll**, nút X nằm trong modal.
+- Fix header modal mobile: `&__header { position: relative; flex-wrap: nowrap; padding: 10px 46px 10px 12px }` + `&__headerLeft { flex:1 1 auto; min-width:0 }` + `&__title { nowrap + ellipsis }` + `&__closeBtn { position:absolute; top:8px; right:8px }` (đưa X ra khỏi luồng để không chiếm dòng) + ẩn `__subtitle`.
+- Fix info banner mobile: `flex-direction: column; align-items: stretch` + `__infoLeft { min-width:0; nowrap; ellipsis }`.
+- **Pitfall**: `min-width: 0` là bắt buộc cho mọi flex item chứa text dài trong khối `display:flex` — nếu không, item sẽ co tới min-content (từng chữ) và text vỡ thành hàng chục dòng.
 
 ## Ghi chú kỹ thuật (đợt 9 — InvoiceManager mobile)
 - **Bộ lọc float phủ trọn workspace** (`&__sidebar { position:absolute; inset:0 }`) ⇒ KHÔNG còn chỗ bấm backdrop để đóng (backdrop bị panel che hoàn toàn) ⇒ **bắt buộc có nút đóng riêng trong header panel**. Khác với `PrecisionPoManager` (panel có sẵn `MdClose`).

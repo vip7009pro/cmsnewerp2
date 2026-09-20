@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./PrecisionPlan/PrecisionPlan.scss";
 import PrecisionPlanHeader from "./PrecisionPlan/PrecisionPlanHeader";
 import PrecisionPlanAddModal from "./PrecisionPlan/PrecisionPlanAddModal";
@@ -12,6 +12,27 @@ const PlanManager: React.FC = () => {
   const [okCount, setOkCount] = useState(0);
   const [ngCount, setNgCount] = useState(0);
   const showStatusTab = getCompany() === "CMS";
+
+  // Viewport mobile (≤768px) — điều khiển conditional rendering cho header / bộ lọc float
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
 
   // Nhận số dòng OK/NG thật từ tab Plan Status
   const handleCountsChange = useCallback((ok: number, ng: number) => {
@@ -37,11 +58,12 @@ const PlanManager: React.FC = () => {
         onOpenAddModal={() => setOpenAddModal(true)}
         okCount={okCount}
         ngCount={ngCount}
+        isMobile={isMobile}
       />
 
       {/* Active Tab Content */}
       <div className="precision-plan__content">
-        {activeTab === 0 && <PlanManagerManageTab />}
+        {activeTab === 0 && <PlanManagerManageTab isMobile={isMobile} />}
         {activeTab === 1 && showStatusTab && (
           <PlanManagerStatusTab onCountsChange={handleCountsChange} />
         )}

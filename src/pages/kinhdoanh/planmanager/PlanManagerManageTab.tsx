@@ -1,8 +1,8 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import moment from "moment";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
-import { FiSearch, FiTrash2, FiRefreshCw } from "react-icons/fi";
+import { FiSearch, FiTrash2, FiRefreshCw, FiFilter, FiX } from "react-icons/fi";
 
 import { RootState } from "../../../redux/store";
 import { UserData } from "../../../api/GlobalInterface";
@@ -17,11 +17,18 @@ import { getManageColumns } from "./PrecisionPlan/PrecisionPlanColumns";
 import { exportFilteredRowsToExcel } from "./PrecisionPlan/planGridUtils";
 import PrecisionPlanPivotModal from "./PrecisionPlan/PrecisionPlanPivotModal";
 
-const PlanManagerManageTab: React.FC = () => {
+const PlanManagerManageTab: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
   const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
   const podatatablefilter = useRef<Array<PlanTableData>>([]);
   const gridRef = useRef<any>(null);
   const [showPivot, setShowPivot] = useState(false);
+
+  /* ── Mobile: bộ lọc là panel FLOAT phủ trên bảng, ẩn/hiện bằng nút trên grid toolbar ── */
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  useEffect(() => {
+    if (isMobile) setFilterOpen(false);
+  }, [isMobile]);
 
   /* ── Filter States ── */
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -80,6 +87,8 @@ const PlanManagerManageTab: React.FC = () => {
               })
             );
           }
+          // Mobile: đóng panel float sau khi tra cứu để thấy ngay kết quả
+          if (isMobile) setFilterOpen(false);
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
         } else {
           Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -154,8 +163,36 @@ const PlanManagerManageTab: React.FC = () => {
 
   return (
     <>
-      {/* Filter Toolbar */}
+      {/* Mobile: bấm nền mờ để đóng bộ lọc float */}
+      {isMobile && filterOpen && (
+        <div
+          className="precision-plan__filterBackdrop"
+          onClick={() => setFilterOpen(false)}
+          title="Đóng bộ lọc"
+        />
+      )}
+
+      {/* Filter Toolbar — desktop luôn hiển thị inline; mobile là panel float, mở bằng nút trên grid toolbar */}
+      {(!isMobile || filterOpen) && (
       <div className="precision-plan__toolbar">
+        {/* Chỉ hiện trên mobile: tiêu đề + nút đóng panel float */}
+        {isMobile && (
+          <div className="precision-plan__toolbarHead">
+            <div className="precision-plan__toolbarTitle">
+              <FiFilter size={14} />
+              <span>Bộ Lọc Kế Hoạch</span>
+            </div>
+            <button
+              type="button"
+              className="precision-plan__toolbarClose"
+              onClick={() => setFilterOpen(false)}
+              title="Đóng bộ lọc"
+            >
+              <FiX size={14} />
+            </button>
+          </div>
+        )}
+
         <div className="precision-plan__filterGroup">
           <span className="precision-plan__filterLabel">Từ ngày:</span>
           <input type="date" className="precision-plan__filterInput precision-plan__filterInput--date" value={fromdate} onChange={(e) => setFromDate(e.target.value)} />
@@ -203,12 +240,24 @@ const PlanManagerManageTab: React.FC = () => {
           Tra Cứu Dữ Liệu
         </button>
       </div>
+      )}
 
       {/* Grid Container */}
       <div className="precision-plan__gridContainer">
         <div className="precision-plan__gridToolbar">
           <div className="precision-plan__gridToolbarLeft">
             <div className="precision-plan__gridActions">
+              {isMobile && (
+                <button
+                  type="button"
+                  className={`precision-plan__gridBtn precision-plan__gridBtn--filter${filterOpen ? " precision-plan__gridBtn--active" : ""}`}
+                  onClick={() => setFilterOpen(!filterOpen)}
+                  title={filterOpen ? "Ẩn bộ lọc" : "Mở bộ lọc"}
+                >
+                  <FiFilter size={11} />
+                  BỘ LỌC
+                </button>
+              )}
               <button type="button" className="precision-plan__gridBtn precision-plan__gridBtn--excel" onClick={() => exportFilteredRowsToExcel(gridRef.current?.api, plandatatable, "Plan_Data")} title="Xuất Excel các dòng đang hiển thị (sau khi lọc)">
                 📥 EX1
               </button>
