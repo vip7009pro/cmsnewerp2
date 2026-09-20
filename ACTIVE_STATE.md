@@ -1,27 +1,25 @@
 # ACTIVE_STATE
 
-## Mục tiêu task hiện tại (đợt 11)
-Tối ưu giao diện mobile cho `YCSXManager` (Kinh doanh → Quản lý YCSX, `/kinhdoanh/ycsxmanager`) bằng **viewport conditional rendering**:
-1. Bộ lọc sidebar 250px → **panel FLOAT** như `PrecisionPoManager`.
-2. **Ẩn 4 widget KPI** (tổng lệnh SX / đã duyệt / pending / vật liệu thiếu) trên mobile.
-3. Toolbar AGTable: **1 hàng duy nhất + scroll ngang**, nút icon vuông gọn, tối đa số nút hiển thị.
-4. Modal **Thêm YCSX mới** (cả Thủ Công & Excel/Lưới): không cắt xén, tiêu đề không wrap làm đẩy nội dung.
+## Mục tiêu task hiện tại (đợt 12)
+Tối ưu mobile cho tab **Amazon** + modal Upload AMZ bằng **viewport conditional rendering**:
+1. Bộ lọc đang cố định, không ẩn/hiện float được → **panel FLOAT** như các module trước.
+2. **Bỏ hết widget** (4 KPI card) trên mobile cho gọn.
+3. Modal **Nhập dữ liệu AMZ hàng loạt**: không cắt xén, tiêu đề không wrap đẩy nội dung xuống.
 
-Trạng thái: **HOÀN THÀNH** — `npm run build` EXIT=0, get_errors 0 lỗi, đã đo trên dev server 3001 @393×850.
+⚠️ **Phát hiện quan trọng**: `TraAMZ.tsx` + `TraAMZ.scss` (user tag) là **DEAD CODE** — chỉ được import bởi `YCSXManager.backup.tsx`, mà file backup này cũng không được route nào dùng. Tab Amazon đang chạy thật là `PrecisionYCSX/PrecisionAmzTab.tsx` (root `className="precision-ycsx"`), khớp đúng 2 triệu chứng user mô tả. ⇒ Đã tối ưu component ĐANG CHẠY, không sửa file chết.
 
-## File đã chỉnh sửa (đợt 11)
-- `ycsxmanager/YCSXManager.tsx` — thêm `isMobile`; `isFilterHidden` khởi tạo theo `innerWidth <= 768` + effect đồng bộ; **ẩn KPI bằng `{!isMobile && <PrecisionYCSXKpi …/>}`**; render `precision-ycsx__filterBackdrop`; truyền `isMobile`/`onClose` xuống filter panel, `isMobile` xuống header + toolbar.
-- `PrecisionYCSX/PrecisionYCSXFilterPanel.tsx` — thêm `isMobile`/`onClose` + wrapper `__filterHeaderActions` và nút đóng `__filterClose` (`FiX`); mobile đổi tiêu đề thành `BỘ LỌC YCSX`.
-- `PrecisionYCSX/PrecisionYCSXToolbar.tsx` — thêm `isMobile` → modifier `__gridToolbar--compact`; thêm icon `FiClock` cho nút **SET PENDING** (trước đây chỉ có chữ ⇒ khi ẩn nhãn sẽ thành nút trống); nút toggle bộ lọc có class riêng `__toolBtn--filterToggle`.
-- `PrecisionYCSX/PrecisionYCSXHeader.tsx` — thêm `isMobile`; rút gọn nhãn tab (`1. YCSX` / `2. Amazon`) và nút thêm (`+ YCSX` / `+ AMZ`).
-- `PrecisionYCSX/PrecisionYCSXAddModal.tsx` — thêm `isMobile`; rút gọn tiêu đề (`TẠO YCSX MỚI`) + ẩn `p` subtitle; tab mode → `Thủ Công` / `Excel / Lưới`; **chuyển các inline style sang dạng mobile** (container `maxWidth/width/height`, `modal-body padding: 10`, grid 6 cột → `repeat(2,…)`, hàng upload + footer xếp dọc/wrap) và rút gọn text dài trong chế độ Excel.
-- `PrecisionYCSX/PrecisionYCSX.scss` — thêm block `@media (max-width:768px)` cho `.precision-ycsx` (header/filter float/toolbar) và cho modal (`.precision-ycsx-modal-container`, `__modalModeTabs`, `__modalGridForm`, `__quickAddBar`).
+Trạng thái: **HOÀN THÀNH** — `npm run build` EXIT=0, get_errors 0 lỗi, đã đo trên dev server 3001 @393×850 và 1440×900.
+
+## File đã chỉnh sửa (đợt 12)
+- `PrecisionYCSX/PrecisionAmzTab.tsx` — thêm `isMobile`; `isFilterHidden` khởi tạo theo `innerWidth <= 768` + effect; **ẩn khối `__kpiGrid` (4 card) trên mobile**; render `precision-ycsx__filterBackdrop`; nút đóng `__filterClose` trong `__filterHeader`; toolbar gắn modifier `__gridToolbar--compact` + nút toggle có class `__toolBtn--filterToggle`; **ẩn nhóm input `Offset X/Y` trên mobile** để toolbar scroll gọn hơn.
+- `PrecisionYCSX/PrecisionAmzAddModal.tsx` — thêm `isMobile`; rút gọn tiêu đề (`NHẬP DỮ LIỆU AMZ`) + ẩn `p` subtitle; **chuyển inline style sang dạng mobile** (container `maxWidth/width/height`, `modal-body padding: 10`, grid `1.2fr 1.2fr 2fr` → `repeat(2,…)`, box thông tin `gridColumn: span 2`, banner upload xếp dọc, nhóm nút wrap, `modal-agtable-wrapper minHeight 380 → 220`) + rút gọn text (`Đã nạp`, `Kiểm tra trùng`, `Upload`, `XEM TRƯỚC AMZ`) + ẩn hint footer trên mobile.
+- `PrecisionYCSX/PrecisionYCSX.scss` — **không cần thêm gì**: block mobile đợt 11 cho `.precision-ycsx__filterPanel` (float) / `__filterClose` / `__gridToolbar--compact` / `.precision-ycsx-modal-container` được tái sử dụng vì `PrecisionAmzTab` dùng chung root `.precision-ycsx`.
 
 ## Việc cần làm tiếp theo
-- Kiểm thử thiết bị thật: bộ lọc float có bị bàn phím che khi nhập `input[type=date]` không; thao tác Pivot modal trên màn 320px.
-- Mobile: `PlanManagerStatusTab`, `PrecisionYCSXEditModal`, `PrecisionAmzAddModal`, `PrecisionYCSXPrintModals` chưa được tối ưu.
+- Kiểm thử thiết bị thật: bộ lọc float có bị bàn phím che khi nhập `input[type=date]` không; thao tác Pivot/Print dialog trên màn 320px.
+- **Dọn dead code**: `ycsxmanager/TraAMZ/TraAMZ.tsx` + `TraAMZ.scss` và `YCSXManager.backup.tsx`, `PlanManager*.backup.tsx` — chỉ còn được import bởi nhau, không route nào dùng ⇒ nên xoá.
+- Mobile: `PrecisionYCSXEditModal`, `PrecisionYCSXPrintModals`, dialog in tem AMZ (MUI Dialog) chưa được tối ưu.
 - Mobile: `PrecisionPOandStockFull`, `PrecisionQuotation` cũng để filter panel chiếm cột trái → áp lại pattern float này.
-- Mobile: `.stitch-inv__footer`, `.po-grid-footer`, `.precision-plan__footer` còn 2 nhóm trái/phải, nên rút gọn khi < 360px.
 
 ## Ghi chú kỹ thuật (đợt 10 — PlanManager mobile)
 - **Nguyên nhân nút "Thêm Plan" biến mất**: `&__tabs` là flex item có `min-width: auto` mặc định; tab `white-space: nowrap` dài ⇒ min-content của tabs > bề rộng màn hình ⇒ `.precision-plan__header` (dù `flex-wrap: wrap`) bị tràn ngang và `.precision-plan` (`overflow: hidden`) cắt mất `&__headerRight`. **Fix 2 lớp**: (a) rút gọn nhãn tab bằng conditional rendering, (b) `&__tabs { flex:1 1 auto; min-width:0; overflow-x:auto }` + `&__headerRight { flex:0 0 auto; margin-left:auto }` ⇒ dù nhãn có dài thì tabs tự scroll, nút không bao giờ bị đẩy ra ngoài.

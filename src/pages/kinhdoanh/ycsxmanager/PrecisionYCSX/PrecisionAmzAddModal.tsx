@@ -46,6 +46,28 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
   onClearExcel,
   progressValue,
 }) => {
+  // Viewport mobile (≤768px) — modal dùng nhiều inline style nên phải chuyển dạng mobile ngay tại TSX
+  // (CSS class không thể đè inline style)
+  const [isMobile, setIsMobile] = React.useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
+
   if (!open) return null;
 
   const amzColumns = getAmazonUploadColumns();
@@ -61,7 +83,11 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
     <div className="precision-ycsx-modal-backdrop" onClick={onClose}>
       <div
         className="precision-ycsx-modal-container"
-        style={{ maxWidth: 1000, width: "95vw", height: "88vh" }}
+        style={{
+          maxWidth: isMobile ? "100%" : 1000,
+          width: isMobile ? "100%" : "95vw",
+          height: isMobile ? "94vh" : "88vh",
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -71,8 +97,12 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
               <AiFillAmazonCircle style={{ fontSize: "22px" }} />
             </div>
             <div>
-              <h3>NHẬP DỮ LIỆU AMAZON HÀNG LOẠT (AMZ BULK UPLOAD)</h3>
-              <p>Hệ thống tự động phân tách lô 1.000 dòng và kiểm tra tính toàn vẹn dữ liệu barcode</p>
+              <h3 title="Nhập dữ liệu Amazon hàng loạt (AMZ Bulk Upload)">
+                {isMobile ? "NHẬP DỮ LIỆU AMZ" : "NHẬP DỮ LIỆU AMAZON HÀNG LOẠT (AMZ BULK UPLOAD)"}
+              </h3>
+              {!isMobile && (
+                <p>Hệ thống tự động phân tách lô 1.000 dòng và kiểm tra tính toàn vẹn dữ liệu barcode</p>
+              )}
             </div>
           </div>
           <button className="btn-close" onClick={onClose} title="Đóng modal">
@@ -81,14 +111,22 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="modal-body" style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "14px" }}>
+        <div
+          className="modal-body"
+          style={{
+            padding: isMobile ? "10px" : "16px",
+            display: "flex",
+            flexDirection: "column",
+            gap: isMobile ? "10px" : "14px",
+          }}
+        >
           {/* Form Criteria */}
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1.2fr 1.2fr 2fr",
-              gap: "14px",
-              padding: "14px",
+              gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "1.2fr 1.2fr 2fr",
+              gap: isMobile ? "8px" : "14px",
+              padding: isMobile ? "8px" : "14px",
               backgroundColor: "var(--bg-card)",
               borderRadius: "6px",
               border: "1px solid var(--border-color)",
@@ -136,6 +174,7 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
                 gridTemplateColumns: "1fr 1fr",
                 gap: "6px",
                 alignContent: "center",
+                gridColumn: isMobile ? "span 2" : "auto",
               }}
             >
               <div>
@@ -166,16 +205,17 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
           <div
             style={{
               display: "flex",
-              alignItems: "center",
+              flexDirection: isMobile ? "column" : "row",
+              alignItems: isMobile ? "stretch" : "center",
               justifyContent: "space-between",
-              padding: "8px 12px",
+              padding: isMobile ? "8px" : "8px 12px",
               backgroundColor: "#ffffff",
               borderRadius: 6,
               border: "1px solid #e2e8f0",
-              gap: 10,
+              gap: isMobile ? 8 : 10,
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
               <label
                 style={{
                   display: "inline-flex",
@@ -202,7 +242,7 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
               </label>
 
               <span style={{ fontSize: 11.5, color: "#64748b" }}>
-                Tổng số dòng đã nạp:{" "}
+                {isMobile ? "Đã nạp: " : "Tổng số dòng đã nạp: "}
                 <strong style={{ color: uploadExcelJson.length > 0 ? "#2563eb" : "#0f172a", fontSize: 12 }}>
                   {uploadExcelJson.length.toLocaleString()}
                 </strong>
@@ -224,7 +264,7 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
               )}
             </div>
 
-            <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               <button
                 type="button"
                 className="btn-secondary"
@@ -244,7 +284,7 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
                   cursor: uploadExcelJson.length === 0 ? "not-allowed" : "pointer",
                 }}
               >
-                <FiCheckCircle size={14} style={{ color: "#10b981" }} /> 1. Kiểm tra trùng
+                <FiCheckCircle size={14} style={{ color: "#10b981" }} /> {isMobile ? "Kiểm tra trùng" : "1. Kiểm tra trùng"}
               </button>
 
               <button
@@ -308,13 +348,13 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
                   color: "#ffffff",
                 }}
               >
-                <FiUploadCloud size={14} /> 2. Bắt đầu Upload Dữ liệu
+                <FiUploadCloud size={14} /> {isMobile ? "Upload" : "2. Bắt đầu Upload Dữ liệu"}
               </button>
             </div>
           </div>
 
           {/* Table Preview: Bảng xem trước dữ liệu AMZ chuẩn Stitch */}
-          <div className="modal-agtable-wrapper" style={{ flex: 1, minHeight: 380, display: "flex", flexDirection: "column" }}>
+          <div className="modal-agtable-wrapper" style={{ flex: 1, minHeight: isMobile ? 220 : 380, display: "flex", flexDirection: "column" }}>
             <div
               style={{
                 display: "flex",
@@ -327,11 +367,12 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
                 fontWeight: 700,
                 color: "#1e293b",
                 flexShrink: 0,
+                gap: 6,
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <FiFileText style={{ color: "#2563eb" }} />
-                <span>BẢNG XEM TRƯỚC DỮ LIỆU AMAZON</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+                <FiFileText style={{ color: "#2563eb", flexShrink: 0 }} />
+                <span>{isMobile ? "XEM TRƯỚC AMZ" : "BẢNG XEM TRƯỚC DỮ LIỆU AMAZON"}</span>
                 <span
                   style={{
                     fontSize: 10.5,
@@ -340,14 +381,17 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
                     color: "#ffffff",
                     padding: "1px 7px",
                     borderRadius: 10,
+                    flexShrink: 0,
                   }}
                 >
                   {uploadExcelJson.length.toLocaleString()} dòng
                 </span>
               </div>
-              <span style={{ fontSize: 11, fontWeight: 500, color: "#64748b" }}>
-                Tự động kiểm tra trùng & phân tách lô 1.000 dòng khi nạp
-              </span>
+              {!isMobile && (
+                <span style={{ fontSize: 11, fontWeight: 500, color: "#64748b" }}>
+                  Tự động kiểm tra trùng & phân tách lô 1.000 dòng khi nạp
+                </span>
+              )}
             </div>
             <div style={{ flex: 1, minHeight: 0, height: "100%" }}>
               <AGTable
@@ -361,9 +405,11 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
 
         {/* Footer */}
         <div className="modal-footer">
-          <div className="hint-text">
-            <span>* Lưu ý: Tên file phải chứa chính xác Model sản phẩm và ID công việc để đảm bảo chống nhầm lẫn.</span>
-          </div>
+          {!isMobile && (
+            <div className="hint-text">
+              <span>* Lưu ý: Tên file phải chứa chính xác Model sản phẩm và ID công việc để đảm bảo chống nhầm lẫn.</span>
+            </div>
+          )}
           <div className="action-btns">
             <button className="btn-secondary" onClick={onClose}>
               Đóng

@@ -66,7 +66,36 @@ const DEFAULT_COMPONENT_LIST: COMPONENT_DATA[] = [
 ];
 
 const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
-  const [isFilterHidden, setIsFilterHidden] = useState(false);
+  const [isFilterHidden, setIsFilterHidden] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
+  // Viewport mobile (≤768px) — điều khiển conditional rendering cho KPI / bộ lọc float / toolbar
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
+
+  // Mobile luôn đóng bộ lọc khi mới vào tab; desktop giữ nguyên trạng thái mở
+  useEffect(() => {
+    setIsFilterHidden(isMobile);
+  }, [isMobile]);
+
   const [isLoading, setisLoading] = useState(false);
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
   const [todate, setToDate] = useState(moment().format("YYYY-MM-DD"));
@@ -378,8 +407,9 @@ const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
       className="precision-ycsx"
       style={{ display: "flex", flexDirection: "column", height: "100%", width: "100%", overflow: "hidden" }}
     >
-      {/* 1. KPI Cards Amazon */}
-      <div className="precision-ycsx__kpiGrid">
+      {/* 1. KPI Cards Amazon — ẩn trên mobile cho gọn (yêu cầu tối ưu mobile) */}
+      {!isMobile && (
+        <div className="precision-ycsx__kpiGrid">
         {/* Card 1: Tổng Serial */}
         <div className="precision-ycsx__kpiCard precision-ycsx__kpiCard--blue">
           <div className="precision-ycsx__kpiInfo">
@@ -437,19 +467,39 @@ const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
             <FiClock />
           </div>
         </div>
-      </div>
+        </div>
+      )}
 
       {/* 2. Workspace Split Body */}
       <div className="precision-ycsx__mainBody">
-        {/* Left 250px Filter Sidebar */}
+        {/* Mobile: bấm nền mờ để đóng bộ lọc float */}
+        {isMobile && !isFilterHidden && (
+          <div
+            className="precision-ycsx__filterBackdrop"
+            onClick={() => setIsFilterHidden(true)}
+            title="Đóng bộ lọc"
+          />
+        )}
+
+        {/* Left 250px Filter Sidebar — mobile là panel FLOAT phủ trên bảng */}
         <aside
           className={`precision-ycsx__filterPanel ${isFilterHidden ? "precision-ycsx__filterPanel--hidden" : ""
             }`}
         >
           <div className="precision-ycsx__filterHeader">
             <span className="precision-ycsx__filterTitle">
-              <FiFilter /> BỘ LỌC TÌM KIẾM AMZ
+              <FiFilter /> {isMobile ? "BỘ LỌC AMZ" : "BỘ LỌC TÌM KIẾM AMZ"}
             </span>
+            {isMobile && (
+              <button
+                type="button"
+                className="precision-ycsx__filterClose"
+                onClick={() => setIsFilterHidden(true)}
+                title="Đóng bộ lọc"
+              >
+                <FiX size={15} />
+              </button>
+            )}
           </div>
 
           <div className="precision-ycsx__filterBody">
@@ -553,13 +603,13 @@ const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
         {/* Right Content */}
         <main className="precision-ycsx__content">
           {/* Action Toolbar */}
-          <div className="precision-ycsx__gridToolbar">
+          <div className={`precision-ycsx__gridToolbar ${isMobile ? "precision-ycsx__gridToolbar--compact" : ""}`}>
             <div className="precision-ycsx__gridToolbarLeft">
               <button
                 type="button"
-                className="precision-ycsx__toolBtn"
+                className="precision-ycsx__toolBtn precision-ycsx__toolBtn--filterToggle"
                 onClick={() => setIsFilterHidden((prev) => !prev)}
-                title="Ẩn/Hiện Sidebar bộ lọc"
+                title={isFilterHidden ? "Hiện bộ lọc" : "Ẩn bộ lọc"}
               >
                 <FiSidebar />
                 <span>{isFilterHidden ? "Hiện Lọc" : "Ẩn Lọc"}</span>
@@ -583,34 +633,36 @@ const PrecisionAmzTab: React.FC<Props> = ({ onOpenAmzAddModal }) => {
                 <span>IN TEM AMZ ({selectedRows.length})</span>
               </button>
 
-              {/* Offset X & Y */}
-              <div
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 4,
-                  fontSize: 11,
-                  color: "#475569",
-                  marginLeft: 4,
-                }}
-              >
-                <span>Offset X:</span>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={printOffsetX}
-                  onChange={(e) => setPrintOffsetX(Number(e.target.value))}
-                  style={{ width: 44, height: 24, padding: "0 4px", fontSize: 11 }}
-                />
-                <span>Y:</span>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={printOffsetY}
-                  onChange={(e) => setPrintOffsetY(Number(e.target.value))}
-                  style={{ width: 44, height: 24, padding: "0 4px", fontSize: 11 }}
-                />
-              </div>
+              {/* Offset X & Y — ẩn trên mobile để toolbar chỉ còn các nút, scroll ngang gọn hơn */}
+              {!isMobile && (
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 4,
+                    fontSize: 11,
+                    color: "#475569",
+                    marginLeft: 4,
+                  }}
+                >
+                  <span>Offset X:</span>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={printOffsetX}
+                    onChange={(e) => setPrintOffsetX(Number(e.target.value))}
+                    style={{ width: 44, height: 24, padding: "0 4px", fontSize: 11 }}
+                  />
+                  <span>Y:</span>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={printOffsetY}
+                    onChange={(e) => setPrintOffsetY(Number(e.target.value))}
+                    style={{ width: 44, height: 24, padding: "0 4px", fontSize: 11 }}
+                  />
+                </div>
+              )}
 
               <div className="precision-ycsx__toolSep" />
 
