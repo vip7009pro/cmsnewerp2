@@ -649,6 +649,196 @@ $p-slate-900: #0f172a;
     }
   }
 
+  /* ── 3b. COMPACT KPI TABLE (chỉ render trên mobile ≤768px) ── */
+  &__kpiTable {
+    flex-shrink: 0;
+    background: #ffffff;
+    border: 1px solid $p-slate-300;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    thead th {
+      background: $p-slate-100;
+      border-bottom: 1px solid $p-slate-300;
+      padding: 0;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: $p-slate-500;
+
+      &.kpi-head {
+        text-align: left;
+      }
+
+      // Nút thu gọn / mở rộng bảng (mặc định mở rộng)
+      .kpi-head__toggle {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        text-align: left;
+        font: inherit;
+        letter-spacing: inherit;
+        text-transform: inherit;
+        color: inherit;
+        transition: background 0.15s ease;
+
+        &:hover {
+          background: $p-slate-200;
+        }
+
+        svg {
+          flex: 0 0 auto;
+        }
+      }
+
+      .kpi-head__title {
+        flex: 1 1 auto;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .kpi-head__count {
+        flex: 0 0 auto;
+        padding: 0 4px;
+        border-radius: 4px;
+        background: $p-slate-300;
+        color: $p-slate-700;
+        font-size: 8.5px;
+        font-weight: 800;
+      }
+    }
+
+    // Đang thu gọn: bỏ đường kẻ dưới header để không bị double border với viền card
+    &--collapsed thead th {
+      border-bottom: none;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid $p-slate-200;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:nth-child(even) {
+        background: rgba($p-slate-100, 0.45);
+      }
+    }
+
+    .kpi-row__label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+      padding: 3px 8px;
+      border-left: 3px solid transparent;
+
+      .kpi-row__icon {
+        flex: 0 0 auto;
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .kpi-row__text {
+        min-width: 0;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        color: $p-slate-700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .kpi-row__value {
+      padding: 3px 8px;
+      text-align: right;
+      white-space: nowrap;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: $p-slate-900;
+
+      .kpi-row__unit {
+        margin-left: 3px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 9px;
+        font-weight: 600;
+        color: $p-slate-400;
+      }
+    }
+
+    /* Tone màu từng chỉ số — khớp với 8 tile ở desktop */
+    .kpi-row--po-balance {
+      .kpi-row__label { border-left-color: $p-blue-600; }
+      .kpi-row__icon { background: $p-blue-100; color: $p-blue-600; }
+      .kpi-row__value { color: $p-blue-800; }
+    }
+
+    .kpi-row--btp {
+      .kpi-row__label { border-left-color: $p-indigo-600; }
+      .kpi-row__icon { background: $p-indigo-100; color: $p-indigo-600; }
+      .kpi-row__value { color: $p-indigo-900; }
+    }
+
+    .kpi-row--ck {
+      .kpi-row__label { border-left-color: $p-amber-700; }
+      .kpi-row__icon { background: $p-amber-100; color: $p-amber-700; }
+      .kpi-row__value { color: $p-amber-800; }
+    }
+
+    .kpi-row--cnk {
+      .kpi-row__label { border-left-color: $p-sky-600; }
+      .kpi-row__icon { background: $p-sky-100; color: $p-sky-600; }
+      .kpi-row__value { color: $p-sky-700; }
+    }
+
+    .kpi-row--tp {
+      .kpi-row__label { border-left-color: $p-emerald-600; }
+      .kpi-row__icon { background: $p-emerald-100; color: $p-emerald-600; }
+      .kpi-row__value { color: $p-emerald-700; }
+    }
+
+    .kpi-row--block {
+      .kpi-row__label { border-left-color: $p-slate-800; }
+      .kpi-row__icon { background: $p-slate-800; color: #22d3ee; }
+      .kpi-row__value { color: $p-slate-800; }
+    }
+
+    .kpi-row--tong-ton {
+      .kpi-row__label { border-left-color: $p-orange-600; }
+      .kpi-row__icon { background: $p-orange-100; color: $p-orange-600; }
+      .kpi-row__value { color: $p-orange-700; }
+    }
+
+    .kpi-row--thua-thieu {
+      .kpi-row__label { border-left-color: $p-rose-600; }
+      .kpi-row__icon { background: $p-rose-100; color: $p-rose-600; }
+      .kpi-row__value { color: $p-rose-600; }
+    }
+  }
+
   /* ── 4. AG-GRID TABLE WORKSPACE CONTAINER ── */
   &__tableWrap {
     flex: 1 1 0px !important;
@@ -824,6 +1014,123 @@ $p-slate-900: #0f172a;
         overflow: auto;
         padding: 12px;
       }
+    }
+  }
+
+  /* ── 6. MOBILE VIEWPORT (≤768px) ── */
+  @media (max-width: 768px) {
+    padding: 6px 8px;
+    gap: 6px;
+    // Cho phép cuộn dọc khi tổng chiều cao vượt màn hình (tránh bị cắt cụt do overflow:hidden)
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    &__subnav {
+      gap: 6px;
+
+      .subnav-left {
+        flex: 1 1 auto;
+        min-width: 0;
+
+        .subnav-tab-btn {
+          width: 100%;
+          justify-content: center;
+          min-width: 0;
+          padding: 5px 8px;
+          font-size: 11px;
+        }
+      }
+
+      .subnav-right {
+        flex: 0 0 auto;
+        gap: 4px;
+
+        .btn-icon-util {
+          width: 28px;
+          height: 28px;
+        }
+      }
+    }
+
+    &__toolbar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      padding: 8px;
+
+      .toolbar-left {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        width: 100%;
+        min-width: 0;
+      }
+
+      // Hàng gộp: mobile 1 hàng = 1 nhóm điều khiển
+      .toolbar-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .toolbar-left .field-code {
+        flex: 1 1 auto;
+        min-width: 0;
+
+        // Nhãn "Code:" thừa vì placeholder đã mô tả đủ
+        label {
+          display: none;
+        }
+
+        .input-box {
+          flex: 1 1 auto;
+          min-width: 0;
+
+          input {
+            width: 100%;
+          }
+        }
+      }
+
+      .checkbox-label {
+        flex: 0 0 auto;
+        padding: 4px 8px;
+
+        span {
+          font-size: 11px;
+        }
+      }
+
+      .btn-search-gcode,
+      .btn-search-kd {
+        flex: 1 1 0;
+        justify-content: center;
+        min-width: 0;
+      }
+
+      .toolbar-right {
+        display: flex;
+        width: 100%;
+        min-width: 0;
+
+        .btn-tool-ex1,
+        .btn-tool-ex2,
+        .btn-tool-pivot {
+          flex: 1 1 0;
+          justify-content: center;
+          min-width: 0;
+          padding: 0 6px;
+        }
+      }
+    }
+
+    // Bảng AG Grid giữ chiều cao cố định để grid render ổn định trên mobile
+    &__tableWrap {
+      flex: 0 0 auto !important;
+      height: 60vh !important;
+      min-height: 320px !important;
     }
   }
 }

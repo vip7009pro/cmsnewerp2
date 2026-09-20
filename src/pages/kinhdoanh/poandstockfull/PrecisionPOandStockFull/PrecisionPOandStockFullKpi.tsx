@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   FiShoppingBag,
   FiCpu,
@@ -8,19 +8,110 @@ import {
   FiLock,
   FiLayers,
   FiAlertTriangle,
+  FiChevronDown,
+  FiChevronRight,
 } from "react-icons/fi";
+import type { IconType } from "react-icons";
 import { POFullSummary } from "../../interfaces/kdInterface";
 
 interface PrecisionPOandStockFullKpiProps {
   summary: POFullSummary;
+  /**
+   * Mobile (≤768px): thay 8 widget rời rạc bằng 1 bảng compact để dễ đọc.
+   * Desktop (mặc định): giữ nguyên 8 tile công nghiệp.
+   */
+  compact?: boolean;
 }
+
+interface KpiMetric {
+  key: keyof POFullSummary;
+  label: string;
+  hint: string;
+  tone: string;
+  Icon: IconType;
+}
+
+/* Descriptor dùng cho nhánh bảng compact trên mobile (giữ đúng thứ tự 8 chỉ số) */
+const KPI_TABLE_METRICS: KpiMetric[] = [
+  { key: "PO_BALANCE", label: "PO BALANCE", hint: "EA đơn chưa xuất", tone: "po-balance", Icon: FiShoppingBag },
+  { key: "BTP", label: "BTP (BÁN TP)", hint: "Tại các cụm máy SX", tone: "btp", Icon: FiCpu },
+  { key: "CK", label: "CK (CHỜ KIỂM)", hint: "Chờ kiểm tra", tone: "ck", Icon: FiClock },
+  { key: "CNK", label: "CNK (CHỜ NHẬP)", hint: "Chờ nhập kho", tone: "cnk", Icon: FiInbox },
+  { key: "TP", label: "TP (THÀNH PHẨM)", hint: "Tồn kho thành phẩm", tone: "tp", Icon: FiArchive },
+  { key: "BLOCK", label: "BLOCK (KHÓA)", hint: "Chặn xuất", tone: "block", Icon: FiLock },
+  { key: "TONG_TON", label: "TỔNG TỒN", hint: "Tồn kho toàn nhà máy", tone: "tong-ton", Icon: FiLayers },
+  { key: "THUATHIEU", label: "THỪA THIẾU", hint: "Thiếu hụt theo PO", tone: "thua-thieu", Icon: FiAlertTriangle },
+];
 
 const fmt = (num?: number) => {
   if (num === undefined || num === null || isNaN(num)) return "0";
   return num.toLocaleString("en-US");
 };
 
-const PrecisionPOandStockFullKpi: React.FC<PrecisionPOandStockFullKpiProps> = ({ summary }) => {
+const PrecisionPOandStockFullKpi: React.FC<PrecisionPOandStockFullKpiProps> = ({
+  summary,
+  compact = false,
+}) => {
+  /* ── Mobile: 1 bảng compact thay cho 8 widget ── */
+  /* Mặc định mở rộng; user có thể thu gọn để nhường chỗ cho bảng AG Grid */
+  const [collapsed, setCollapsed] = useState(false);
+
+  if (compact) {
+    return (
+      <div
+        className={`precision-po-stock__kpiTable${
+          collapsed ? " precision-po-stock__kpiTable--collapsed" : ""
+        }`}
+      >
+        <table>
+          <thead>
+            <tr>
+              <th className="kpi-head" colSpan={2}>
+                <button
+                  type="button"
+                  className="kpi-head__toggle"
+                  onClick={() => setCollapsed((prev) => !prev)}
+                  aria-expanded={!collapsed}
+                  title={
+                    collapsed
+                      ? "Mở rộng bảng chỉ số tồn kho"
+                      : "Thu gọn bảng chỉ số tồn kho"
+                  }
+                >
+                  {collapsed ? (
+                    <FiChevronRight size={13} />
+                  ) : (
+                    <FiChevronDown size={13} />
+                  )}
+                  <span className="kpi-head__title">Chỉ số tồn kho</span>
+                  <span className="kpi-head__count">{KPI_TABLE_METRICS.length}</span>
+                </button>
+              </th>
+            </tr>
+          </thead>
+          {!collapsed && (
+            <tbody>
+              {KPI_TABLE_METRICS.map(({ key, label, hint, tone, Icon }) => (
+                <tr key={key} className={`kpi-row kpi-row--${tone}`} title={hint}>
+                  <td className="kpi-row__label">
+                    <span className="kpi-row__icon">
+                      <Icon size={11} />
+                    </span>
+                    <span className="kpi-row__text">{label}</span>
+                  </td>
+                  <td className="kpi-row__value">
+                    {fmt(summary[key])}
+                    <span className="kpi-row__unit">EA</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          )}
+        </table>
+      </div>
+    );
+  }
+
   return (
     <div className="precision-po-stock__kpis">
       {/* 1. PO BALANCE */}

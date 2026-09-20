@@ -50,6 +50,11 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
   const [showPivot, setShowPivot] = useState<boolean>(false);
   const [liveTime, setLiveTime] = useState<string>(moment().format("HH:mm:ss"));
 
+  // Viewport mobile (≤768px) — điều khiển conditional rendering cho header/toolbar/KPI
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
   // Ref lưu dòng chọn
   const selectedRowsRef = useRef<any[]>([]);
 
@@ -64,6 +69,23 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
       setLiveTime(moment().format("HH:mm:ss"));
     }, 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Theo dõi viewport để bật/tắt layout mobile
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
   }, []);
 
   // 1. Tra cứu theo G_CODE
@@ -317,7 +339,7 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
   return (
     <div className="precision-po-stock">
       {/* 1. Sub-nav Header Utility Bar */}
-      <div className="precision-po-stock__subnav">
+      { !isMobile && <div className="precision-po-stock__subnav">
         <div className="subnav-left">
           <button type="button" className="subnav-tab-btn active">
             <span className="pulse-dot" />
@@ -329,11 +351,14 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
         </div>
 
         <div className="subnav-right">
-          <div className="live-timer-box">
-            <FiRefreshCw size={13} className="timer-icon" />
-            <span>Cập nhật tồn tức thời:</span>
-            <span className="timer-val">{liveTime}</span>
-          </div>
+          {/* Mobile: bỏ header "Cập nhật tồn tức thời" để tiết kiệm 1 hàng */}
+          {!isMobile && (
+            <div className="live-timer-box">
+              <FiRefreshCw size={13} className="timer-icon" />
+              <span>Cập nhật tồn tức thời:</span>
+              <span className="timer-val">{liveTime}</span>
+            </div>
+          )}
 
           <button
             type="button"
@@ -375,7 +400,7 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
             <FiMaximize2 size={14} />
           </button>
         </div>
-      </div>
+      </div>}
 
       {/* 2. Action Search & Filter Toolbar */}
       <PrecisionPOandStockFullToolbar
@@ -392,10 +417,11 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
         totalStock={pofullSummary.TONG_TON}
         responseRate={responseRate}
         isLoading={isLoading}
+        isMobile={isMobile}
       />
 
-      {/* 3. Industrial KPI Summary Strip (8 Tiles) */}
-      <PrecisionPOandStockFullKpi summary={pofullSummary} />
+      {/* 3. KPI: desktop = 8 tile công nghiệp, mobile = 1 bảng compact */}
+      <PrecisionPOandStockFullKpi summary={pofullSummary} compact={isMobile} />
 
       {/* 4. AG Grid Workspace Table */}
       <div className="precision-po-stock__tableWrap">
