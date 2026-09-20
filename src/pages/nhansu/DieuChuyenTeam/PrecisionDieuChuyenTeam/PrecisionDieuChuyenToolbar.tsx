@@ -51,7 +51,7 @@ const PrecisionDieuChuyenToolbar: React.FC<PrecisionDieuChuyenToolbarProps> = ({
           <span className="material-symbols-outlined" style={{ fontSize: 16, color: '#f59e0b' }}>
             schedule
           </span>
-          <span className="label">Team / Tổ gốc:</span>
+          <span className="label">Team:</span>
           <select
             value={workShiftCode}
             onChange={(e) => onShiftChange(Number(e.target.value))}

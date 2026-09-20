@@ -1049,7 +1049,15 @@
     background: #f8fafc;
     border-top: 1px solid #e2e8f0;
   }
+}
 
+/* --------------------------------------------------------------------------
+   MOBILE RESPONSIVE - TRANG ĐIỀU CHUYỂN (.precision-dieuchuyen)
+   LƯU Ý: block này trước đây bị lồng sai vào .precision-dieuchuyen-modal nên
+   toàn bộ style mobile của trang bị compile thành .precision-dieuchuyen-modal__*
+   và không hề có tác dụng.
+   -------------------------------------------------------------------------- */
+.precision-dieuchuyen {
   @media (max-width: 768px) {
     padding: 6px 8px;
     gap: 6px;
@@ -1061,12 +1069,65 @@
 
     &__toolbar {
       padding: 6px 8px;
-      align-items: stretch;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 6px;
     }
 
-    &__filterGroup,
+    /* --- Bộ lọc (Team / Tổ gốc + Ngày áp dụng) gộp chung 1 dòng --- */
+    &__filterGroup {
+      flex: 1 1 auto;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    &__filterPill {
+      height: 30px;
+      padding: 0 6px;
+      gap: 4px;
+      min-width: 0;
+
+      /* Ẩn nhãn chữ để tiết kiệm chiều ngang */
+      .label {
+        display: none;
+      }
+
+      &:first-child {
+        flex: 0 1 auto;
+      }
+
+      &:last-child {
+        flex: 1 1 auto;
+        overflow: hidden;
+      }
+
+      select {
+        min-width: 0;
+        max-width: 100%;
+        text-overflow: ellipsis;
+      }
+
+      strong {
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    /* --- Nút làm mới nằm cùng dòng với bộ lọc --- */
     &__actionGroup {
-      width: 100%;
+      flex: 0 0 auto;
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+
+    &__btnSquare {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
     }
 
     &__kpiGrid {
