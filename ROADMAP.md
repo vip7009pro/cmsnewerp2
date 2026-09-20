@@ -2055,3 +2055,23 @@
   - NCR_MANAGER: nút Làm mới bộ lọc reset thêm fromdate/todate.
   - Xác minh: get_errors 0 lỗi trên 9 file sửa; npm run build (vite production) thành công.
 
+- [x] Rà soát parity đợt 4 cho 3 module Nhân sự + 3 tab Đăng ký so với bản `.backup` — 2026-09-20:
+  - NS1 `DiemDanhNhomCMS`: "Điểm danh nhanh tất cả" từng ghi đè đơn nghỉ đã đăng ký (`OFF_ID != null && REASON_NAME !== 'Nửa phép'` bị bỏ qua) ⇒ bổ sung đúng gate của `AttendanceCell` backup + tách danh sách bị chặn.
+  - NS1 `DiemDanhNhomCMS`: bulk cập nhật state mù trước khi API trả về (`Promise.all`) ⇒ chuyển sang `Promise.allSettled`, kiểm tra `tk_status` từng dòng, báo "Hoàn tất một phần x/y".
+  - NS2 `DieuChuyenTeam`: ảnh thẻ dùng `/avatarpic/` (không tồn tại trong `public/`) ⇒ sửa về `/Picture_NS/NS_<EMPL_NO>.jpg`.
+  - NS2 `DieuChuyenTeam`: nhãn KPI "ĐANG CHI VIỆN / ĐIỀU ĐỘNG" thực chất chỉ là "đã set CALV" ⇒ đổi nhãn đúng ngữ nghĩa.
+  - NS2 `PheDuyetNghi`: KPI + Pivot đếm `APPROVAL_STATUS = 0` (Từ chối) vào "Chờ phê duyệt" ⇒ phân loại lại `0|3` = từ chối/đã xóa, `2` = chờ duyệt.
+  - NS2 `PheDuyetNghi`: nút RESET chỉ set state local (bug kế thừa từ backup) ⇒ gọi `setpheduyetnhom` `pheduyetvalue = 2`, chỉ cập nhật UI khi `tk_status === "OK"`.
+  - NS3 `PrecisionDangKy`: `ApprovalStatusCellRenderer` hiển thị `APPROVAL_STATUS = 0` là "Chờ duyệt" ⇒ tách thành "Từ chối"; bổ sung filter "Từ chối" ở bảng Lịch sử nghỉ (pending = 2/null).
+  - NS3 `PrecisionOtForm`: ô "Ngày tăng ca" không có tác dụng (backend `dangkytangcacanhan` luôn dùng `moment()`) ⇒ khoá ô + ghi chú; ghi rõ field chỉ là ghi chú nội bộ.
+  - NS3 `PrecisionLeaveForm`: nghỉ nửa ngày chỉ map `REASON_CODE = 2` khi kiểu nghỉ là "Phép năm" ⇒ đồng bộ UI/dữ liệu cho mọi kiểu nghỉ.
+  - Xác minh: get_errors 0 lỗi trên 10 file sửa; `npm run build` (vite production) `✓ 17013 modules transformed` thành công.
+
+- [x] Đợt 4 — vòng 2: xử lý 3 tồn đọng của nhóm Nhân sự — 2026-09-20:
+  - NS3 `PrecisionDangKyKpi`: bỏ 5 default cứng (quỹ phép 10/12, OT 28/40h, 1 lượt giải trình) ⇒ thêm hook `useMyMonthAttendance.ts` gọi `mydiemdanhnhom` theo tháng và tính 8 chỉ số thật (ngày công, giờ làm từ `WORKING_MINUTES`, giờ OT thực tế từ `FINAL_OVERTIMES`, ngày nghỉ có đơn, ngày chờ duyệt `APPROVAL_STATUS = 2`, số lần giải trình `XACNHAN`, số ngày đi muộn).
+  - NS3 `PrecisionDangKyKpi`: 4 card KPI mới + trạng thái loading hiển thị `--` + banner cảnh báo khi tải lỗi; SCSS `__kpis` chuyển lưới 4 cột, thêm `.kpi-card--pending`; KPI tự refresh theo `reloadTrigger`.
+  - `practice1/services/nhansuService.js`: 4 chỗ `res.send("NO_LEADER")` (setdiemdanhnhom, setdiemdanhnhom2 ×2, fixWorkHour) → `{ tk_status: "NG", message: "Không có quyền: chỉ Leader / Sub Leader / Dept Staff / ADMIN mới được điểm danh" }` (hết cảnh UI hiện "Nội dung: undefined").
+  - Frontend: thêm `src/api/services/responseService.ts` (`isTkOk` / `getTkMessage` / `getErrMessage`) và áp dụng cho `PrecisionAttendanceCell`, `PrecisionOvertimeCell`, `DiemDanhNhomCMS`, `PheDuyetNghiCMS`, `DieuChuyenTeamCMS`; các nhánh `catch` nay báo lỗi mạng thật thay vì `console.error` im lặng.
+  - NS1 `PrecisionDiemDanhToolbar`: nối lại prop chết `onExportExcel`/`onOpenPivot` ⇒ thay bằng `onExportEX1` / `onExportEX2` / `onOpenPivot` / `filteredCount` / `totalCount`; gỡ cụm EX1/EX2/PIVOT trùng ở grid toolbar (grid toolbar chỉ còn ô tìm kiếm + meta "x/y nhân sự").
+  - Xác minh: `node --check services/nhansuService.js` = SYNTAX OK; get_errors 0 lỗi trên 9 file frontend sửa; `npm run build` (vite production) `✓ 17015 modules transformed` · `✓ built in 1m 14s`.
+

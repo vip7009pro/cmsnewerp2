@@ -51,20 +51,20 @@ const PrecisionDieuChuyenKpi: React.FC<PrecisionDieuChuyenKpiProps> = ({ tableDa
         </div>
       </div>
 
-      {/* Card 2: Đang Chi Viện / Chuyển Ca */}
+      {/* Card 2: Đã gán ca điều động */}
       <div className="precision-dieuchuyen__kpiCard precision-dieuchuyen__kpiCard--amber">
         <div className="precision-dieuchuyen__kpiContent">
           <div className="kpi-top">
-            <span className="kpi-title">ĐANG CHI VIỆN / ĐIỀU ĐỘNG</span>
+            <span className="kpi-title">ĐÃ GÁN CA ĐIỀU ĐỘNG</span>
             <span className="kpi-badge kpi-badge--amber">{stats.transferredRate}% lực lượng</span>
           </div>
           <div className="kpi-numbers">
             <span className="kpi-val">
               {stats.assignedShift < 10 ? `0${stats.assignedShift}` : stats.assignedShift}
             </span>
-            <span className="kpi-desc">Đã gán ca chi viện</span>
+            <span className="kpi-desc">Nhân sự đã set ca (CALV)</span>
           </div>
-          <div className="kpi-subtext">Phân bổ ca làm việc liên xưởng / chuyền</div>
+          <div className="kpi-subtext">Số nhân sự đã được gán ca liên xưởng / liên chuyền</div>
         </div>
         <div className="precision-dieuchuyen__kpiIconBox">
           <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
@@ -73,20 +73,20 @@ const PrecisionDieuChuyenKpi: React.FC<PrecisionDieuChuyenKpiProps> = ({ tableDa
         </div>
       </div>
 
-      {/* Card 3: Quân Số Giữ Nguyên Tại Tổ */}
+      {/* Card 3: Chưa gán ca (giữ tổ gốc) */}
       <div className="precision-dieuchuyen__kpiCard precision-dieuchuyen__kpiCard--emerald">
         <div className="precision-dieuchuyen__kpiContent">
           <div className="kpi-top">
-            <span className="kpi-title">QUÂN SỐ BÁM LINE TỔ GỐC</span>
+            <span className="kpi-title">CHƯA GÁN CA (TỔ GỐC)</span>
             <span className="kpi-badge kpi-badge--emerald">{stats.stayingRate}%</span>
           </div>
           <div className="kpi-numbers">
             <span className="kpi-val">
               {stats.staying < 10 ? `0${stats.staying}` : stats.staying}
             </span>
-            <span className="kpi-desc">Nhân sự bám chuyền</span>
+            <span className="kpi-desc">Nhân sự chưa set ca</span>
           </div>
-          <div className="kpi-subtext">Đảm bảo định mức vận hành tối thiểu</div>
+          <div className="kpi-subtext">Chưa điều động ca, vẫn ở tổ gốc</div>
         </div>
         <div className="precision-dieuchuyen__kpiIconBox">
           <span className="material-symbols-outlined" style={{ fontSize: 20 }}>

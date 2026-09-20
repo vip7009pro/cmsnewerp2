@@ -31,7 +31,9 @@ export const NameAvatarCellRenderer = (params: any) => {
   const fullName = params.data?.FULL_NAME || '';
   const jobName = params.data?.JOB_NAME || params.data?.SUBDEPTNAME || '';
   const emplNo = params.data?.EMPL_NO || '';
-  const avatarUrl = `/avatarpic/${emplNo}.jpg`;
+  // FIX: thư mục ảnh thẻ nhân sự của repo là `public/Picture_NS/NS_<EMPL_NO>.jpg`
+  // (không tồn tại `public/avatarpic/`) nên trước đây ảnh luôn lỗi và chỉ hiện fallback chữ cái.
+  const avatarUrl = `/Picture_NS/NS_${emplNo}.jpg`;
 
   return (
     <div className="cell-avatar-name">

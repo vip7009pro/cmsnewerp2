@@ -38,7 +38,10 @@ export const PrecisionLeaveForm: React.FC<PrecisionLeaveFormProps> = ({ onSucces
   };
 
   const handleSubmitLeave = () => {
-    const finalReasonCode = leaveDurationType !== "full" && nghitype === 1 ? 2 : nghitype;
+    // DB không có trường riêng cho nghỉ nửa ngày: nửa ngày chỉ được biểu diễn qua REASON_CODE = 2 (Nửa phép).
+    // Vì vậy khi chọn nửa sáng/nửa chiều phải ép kiểu nghỉ về "Nửa phép" để UI và dữ liệu không lệch nhau.
+    const isHalfDay = leaveDurationType !== "full";
+    const finalReasonCode = isHalfDay ? 2 : nghitype;
     const insertData = {
       canghi: canghi,
       reason_code: finalReasonCode,
@@ -93,7 +96,13 @@ export const PrecisionLeaveForm: React.FC<PrecisionLeaveFormProps> = ({ onSucces
         <div className="form-field">
           <label>Kiểu nghỉ <span className="req">*</span></label>
           <select
-            value={nghitype}
+            value={leaveDurationType !== "full" ? 2 : nghitype}
+            disabled={leaveDurationType !== "full"}
+            title={
+              leaveDurationType !== "full"
+                ? "Nửa ngày được hệ thống ghi nhận là Nửa phép"
+                : undefined
+            }
             onChange={(e) => setNghiType(Number(e.target.value))}
           >
             <option value={1}>Phép năm (100% lương)</option>
@@ -171,6 +180,12 @@ export const PrecisionLeaveForm: React.FC<PrecisionLeaveFormProps> = ({ onSucces
 
         <span className="calc-badge">{calcLeaveDays()} ngày</span>
       </div>
+
+      {leaveDurationType !== "full" && (
+        <p style={{ margin: "-4px 0 4px", color: "#b45309", fontSize: "11px", fontWeight: 600 }}>
+          Nửa ngày sẽ được lưu với kiểu nghỉ "Nửa phép".
+        </p>
+      )}
 
       <div className="form-field">
         <label>Lý do cụ thể <span className="req">*</span></label>

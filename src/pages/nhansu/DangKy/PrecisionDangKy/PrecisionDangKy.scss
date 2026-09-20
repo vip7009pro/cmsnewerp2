@@ -154,15 +154,37 @@
     }
   }
 
-  // 3 KPI MICRO-CARDS
+  // 4 KPI MICRO-CARDS (Dữ liệu thật từ mydiemdanhnhom)
   &__kpis {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 8px;
     flex-shrink: 0;
 
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
     @media (max-width: 900px) {
       grid-template-columns: 1fr;
+    }
+
+    .kpi-warning {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #b45309;
+      font-size: 11px;
+      font-weight: 600;
+
+      .material-symbols-outlined {
+        font-size: 15px;
+      }
     }
 
     .kpi-card {
@@ -191,6 +213,12 @@
         border-left: 3px solid #0284c7;
         .kpi-icon { background: #f0f9ff; color: #0284c7; }
         .kpi-progress .fill { background: #0284c7; }
+      }
+
+      &--pending {
+        border-left: 3px solid #7c3aed;
+        .kpi-icon { background: #f5f3ff; color: #7c3aed; }
+        .kpi-progress .fill { background: #7c3aed; }
       }
 
       .kpi-icon {

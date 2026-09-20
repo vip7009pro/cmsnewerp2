@@ -231,7 +231,32 @@ export const ApprovalStatusCellRenderer: React.FC<any> = (params) => {
     );
   }
 
-  if (status === 0 || status === 2) {
+  // APPROVAL_STATUS = 0 là "Từ chối", không phải "Chờ duyệt" (hồ sơ: 1 = Đã duyệt, 2 = Chờ duyệt, 3 = Đã hủy/xóa)
+  if (status === 0) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+        <span
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "4px",
+            padding: "2px 8px",
+            borderRadius: "12px",
+            fontSize: "10.5px",
+            fontWeight: 700,
+            background: "#fef2f2",
+            color: "#b91c1c",
+            border: "1px solid #fecaca",
+          }}
+        >
+          <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: "#ef4444" }}></span>
+          <span>Từ chối</span>
+        </span>
+      </div>
+    );
+  }
+
+  if (status === 2 || status === null || status === undefined) {
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
         <span

@@ -31,12 +31,14 @@ export const PrecisionPheDuyetPivotModal: React.FC<PrecisionPheDuyetPivotModalPr
       const existing = map.get(key) || { total: 0, pending: 0, approved: 0, rejected: 0 };
       existing.total += 1;
 
+      // APPROVAL_STATUS: 0 = Từ chối, 1 = Đã duyệt, 2 = Chờ duyệt, 3 = Đã xóa.
+      // Cột "Đã xóa/Từ chối" phải gộp 0 và 3 (trước đây 0 bị tính nhầm vào "Chờ duyệt").
       if (item.APPROVAL_STATUS === 1) {
         existing.approved += 1;
-      } else if (item.APPROVAL_STATUS === 0 || item.APPROVAL_STATUS === 2) {
-        existing.pending += 1;
-      } else if (item.APPROVAL_STATUS === 3) {
+      } else if (item.APPROVAL_STATUS === 0 || item.APPROVAL_STATUS === 3) {
         existing.rejected += 1;
+      } else {
+        existing.pending += 1;
       }
 
       map.set(key, existing);

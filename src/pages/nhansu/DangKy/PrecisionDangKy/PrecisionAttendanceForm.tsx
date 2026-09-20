@@ -118,7 +118,7 @@ export const PrecisionAttendanceForm: React.FC<PrecisionAttendanceFormProps> = (
       </div>
 
       <div className="form-field">
-        <label>Lý do giải trình cụ thể</label>
+        <label>Lý do giải trình cụ thể (ghi chú nội bộ)</label>
         <textarea
           placeholder="Ghi rõ lý do quên quẹt thẻ hoặc sự cố máy quét..."
           value={confirmReason}

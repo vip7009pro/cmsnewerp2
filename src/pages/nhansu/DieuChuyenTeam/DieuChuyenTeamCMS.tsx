@@ -5,6 +5,7 @@ import moment from 'moment';
 import * as XLSX from 'xlsx';
 import { RootState } from '../../../redux/store';
 import { generalQuery, getSocket, getUserData } from '../../../api/Api';
+import { getTkMessage, isTkOk } from '../../../api/services/responseService';
 import { f_insert_Notification_Data } from '../../../api/services/notificationService';
 import { NotificationElement } from '../../../components/NotificationPanel/Notification';
 import { DiemDanhNhomData, WorkPositionTableData } from '../interfaces/nhansuInterface';
@@ -153,13 +154,13 @@ const DieuChuyenTeamCMS: React.FC<DieuChuyenTeamCMSProps> = ({ option1, option2 
   const setTeam = useCallback(async (EMPL_NO: string, value: number) => {
     try {
       const response = await generalQuery('setteamnhom', { teamvalue: value, EMPL_NO });
-      if (response.data.tk_status === 'OK') {
+      if (isTkOk(response)) {
         const teamName = value === 0 ? 'Hành Chính' : value === 1 ? 'TEAM 1' : 'TEAM 2';
         setDiemDanhNhomTable((prev) =>
           prev.map((p) => (p.EMPL_NO === EMPL_NO ? { ...p, WORK_SHIF_NAME: teamName } : p))
         );
       } else {
-        Swal.fire('Có lỗi', response.data.message, 'error');
+        Swal.fire('Có lỗi', getTkMessage(response), 'error');
       }
     } catch (err) {
       console.error('Lỗi setTeam:', err);
@@ -171,7 +172,7 @@ const DieuChuyenTeamCMS: React.FC<DieuChuyenTeamCMSProps> = ({ option1, option2 
     const EMPL_NO = params.data?.EMPL_NO;
     try {
       const response = await generalQuery('setca', { EMPL_NO, CALV: value });
-      if (response.data.tk_status === 'OK') {
+      if (isTkOk(response)) {
         setDiemDanhNhomTable((prev) =>
           prev.map((p) => (p.EMPL_NO === EMPL_NO ? { ...p, CALV: value } : p))
         );
@@ -196,7 +197,7 @@ const DieuChuyenTeamCMS: React.FC<DieuChuyenTeamCMSProps> = ({ option1, option2 
           getSocket().emit('notification_panel', newNotification);
         }
       } else {
-        Swal.fire('Có lỗi', response.data.message, 'error');
+        Swal.fire('Có lỗi', getTkMessage(response), 'error');
       }
     } catch (err) {
       console.error('Lỗi setCa:', err);
@@ -215,13 +216,13 @@ const DieuChuyenTeamCMS: React.FC<DieuChuyenTeamCMSProps> = ({ option1, option2 
   const setFactory = useCallback(async (EMPL_NO: string, value: number) => {
     try {
       const response = await generalQuery('setnhamay', { EMPL_NO, FACTORY: value });
-      if (response.data.tk_status === 'OK') {
+      if (isTkOk(response)) {
         const facName = value === 1 ? 'Nhà máy 1' : 'Nhà máy 2';
         setDiemDanhNhomTable((prev) =>
           prev.map((p) => (p.EMPL_NO === EMPL_NO ? { ...p, FACTORY_NAME: facName } : p))
         );
       } else {
-        Swal.fire('Có lỗi', response.data.message, 'error');
+        Swal.fire('Có lỗi', getTkMessage(response), 'error');
       }
     } catch (err) {
       console.error('Lỗi setFactory:', err);
@@ -250,7 +251,7 @@ const DieuChuyenTeamCMS: React.FC<DieuChuyenTeamCMSProps> = ({ option1, option2 
             WORK_POSITION_CODE,
             EMPL_NO,
           });
-          if (response.data.tk_status === 'OK') {
+          if (isTkOk(response)) {
             setDiemDanhNhomTable((prev) =>
               prev.map((p) =>
                 p.EMPL_NO === EMPL_NO
@@ -270,7 +271,7 @@ const DieuChuyenTeamCMS: React.FC<DieuChuyenTeamCMSProps> = ({ option1, option2 
               showConfirmButton: false,
             });
           } else {
-            Swal.fire('Lỗi', response.data.message, 'error');
+            Swal.fire('Lỗi', getTkMessage(response), 'error');
           }
         } catch (err) {
           console.error('Lỗi setViTri:', err);

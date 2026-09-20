@@ -107,11 +107,18 @@ export const PrecisionDangKyHistory: React.FC<PrecisionDangKyHistoryProps> = ({
       });
     }
 
-    // Lọc theo trạng thái duyệt (1: Đã duyệt, 2/0: Chờ duyệt, 3: Đã hủy)
+    // Lọc theo trạng thái duyệt (0: Từ chối, 1: Đã duyệt, 2: Chờ duyệt, 3: Đã hủy/xóa)
     if (filterStatus === "approved") {
       list = list.filter((item) => item.APPROVAL_STATUS === 1);
     } else if (filterStatus === "pending") {
-      list = list.filter((item) => item.APPROVAL_STATUS === 0 || item.APPROVAL_STATUS === 2);
+      list = list.filter(
+        (item) =>
+          item.APPROVAL_STATUS === 2 ||
+          item.APPROVAL_STATUS === null ||
+          item.APPROVAL_STATUS === undefined
+      );
+    } else if (filterStatus === "rejected") {
+      list = list.filter((item) => item.APPROVAL_STATUS === 0);
     } else if (filterStatus === "canceled") {
       list = list.filter((item) => item.APPROVAL_STATUS === 3);
     }
@@ -248,7 +255,8 @@ export const PrecisionDangKyHistory: React.FC<PrecisionDangKyHistoryProps> = ({
             <option value="all">Tất cả trạng thái</option>
             <option value="approved">Đã duyệt</option>
             <option value="pending">Chờ duyệt</option>
-            <option value="canceled">Đã hủy</option>
+            <option value="rejected">Từ chối</option>
+            <option value="canceled">Đã hủy / Xóa</option>
           </select>
 
           <div className="grid-actions">

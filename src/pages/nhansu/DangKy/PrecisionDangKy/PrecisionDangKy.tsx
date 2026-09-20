@@ -4,10 +4,13 @@ import PrecisionDangKyHeader from "./PrecisionDangKyHeader";
 import PrecisionDangKyKpi from "./PrecisionDangKyKpi";
 import PrecisionDangKyForms, { PortalTabType } from "./PrecisionDangKyForms";
 import PrecisionDangKyHistory from "./PrecisionDangKyHistory";
+import { useMyMonthAttendance } from "./useMyMonthAttendance";
 
 export const PrecisionDangKy: React.FC = () => {
   const [activeTab, setActiveTab] = useState<PortalTabType>("leave");
   const [reloadTrigger, setReloadTrigger] = useState<number>(0);
+  // KPI tháng của chính người dùng: tính từ mydiemdanhnhom, tự refresh sau mỗi lần đăng ký thành công
+  const monthStats = useMyMonthAttendance(reloadTrigger);
   const [isMobile, setIsMobile] = useState<boolean>(() =>
     typeof window !== "undefined" ? window.innerWidth <= 768 : false
   );
@@ -40,14 +43,8 @@ export const PrecisionDangKy: React.FC = () => {
           {/* HEADER BANNER & USER BADGE */}
           <PrecisionDangKyHeader />
 
-          {/* 3 KPI MICRO-CARDS (QUỸ PHÉP, OT, CHẤM CÔNG) */}
-          <PrecisionDangKyKpi
-            annualLeaveRemaining={10}
-            annualLeaveTotal={12}
-            monthlyOtHours={28.0}
-            monthlyOtMax={40.0}
-            pendingAttConfirmCount={1}
-          />
+          {/* 4 KPI MICRO-CARDS (NGÀY CÔNG, TĂNG CA, NGHỈ CHỜ DUYỆT, GIẢI TRÌNH CÔNG) */}
+          <PrecisionDangKyKpi stats={monthStats} />
         </>
       )}
 

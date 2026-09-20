@@ -8,10 +8,15 @@ interface PrecisionDiemDanhToolbarProps {
   onFactoryChange: (factory: string) => void;
   factoryList: string[];
   onMarkAllPresent: () => void;
-  onExportExcel?: () => void;
-  onOpenPivot?: () => void;
   onRefresh: () => void;
   loading?: boolean;
+  /** Số nhân sự đang hiển thị sau khi lọc (dùng cho badge nút EX1) */
+  filteredCount?: number;
+  /** Tổng số nhân sự của ca (dùng cho badge nút EX2) */
+  totalCount?: number;
+  onExportEX1?: () => void;
+  onExportEX2?: () => void;
+  onOpenPivot?: () => void;
 }
 
 const PrecisionDiemDanhToolbar: React.FC<PrecisionDiemDanhToolbarProps> = ({
@@ -21,10 +26,13 @@ const PrecisionDiemDanhToolbar: React.FC<PrecisionDiemDanhToolbarProps> = ({
   onFactoryChange,
   factoryList,
   onMarkAllPresent,
-  onExportExcel,
-  onOpenPivot,
   onRefresh,
   loading = false,
+  filteredCount = 0,
+  totalCount = 0,
+  onExportEX1,
+  onExportEX2,
+  onOpenPivot,
 }) => {
   const currentDateDisplay = moment().format('DD/MM/YYYY');
 
@@ -98,31 +106,47 @@ const PrecisionDiemDanhToolbar: React.FC<PrecisionDiemDanhToolbarProps> = ({
           <span>Điểm danh nhanh tất cả</span>
         </button>
 
-        {onExportExcel && (
+        {onExportEX1 && (
           <button
             type="button"
-            className="precision-diemdanh__btnWhite"
-            onClick={onExportExcel}
-            title="Xuất bảng điểm danh ra file Excel (.xlsx)"
+            className="precision-diemdanh__gridBtn precision-diemdanh__gridBtn--excel"
+            onClick={onExportEX1}
+            title={`Xuất ${filteredCount} nhân sự đang hiển thị/lọc ra Excel`}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: 16, color: '#059669' }}>
-              table_view
+            <span className="material-symbols-outlined" style={{ fontSize: 15 }}>
+              description
             </span>
-            <span>Xuất Excel</span>
+            <span>EX1</span>
+            <span className="badge">Đang lọc</span>
+          </button>
+        )}
+
+        {onExportEX2 && (
+          <button
+            type="button"
+            className="precision-diemdanh__gridBtn precision-diemdanh__gridBtn--excel"
+            onClick={onExportEX2}
+            title={`Xuất toàn bộ ${totalCount} nhân sự ra Excel`}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 15 }}>
+              file_download
+            </span>
+            <span>EX2</span>
+            <span className="badge">Tất cả</span>
           </button>
         )}
 
         {onOpenPivot && (
           <button
             type="button"
-            className="precision-diemdanh__btnWhite"
+            className="precision-diemdanh__gridBtn precision-diemdanh__gridBtn--pivot"
             onClick={onOpenPivot}
             title="Xem bảng phân tích tổng hợp Pivot theo tổ, ca và chức danh"
           >
-            <span className="material-symbols-outlined" style={{ fontSize: 16, color: '#2563eb' }}>
+            <span className="material-symbols-outlined" style={{ fontSize: 15 }}>
               pivot_table_chart
             </span>
-            <span>Pivot phân tích</span>
+            <span>PIVOT</span>
           </button>
         )}
 

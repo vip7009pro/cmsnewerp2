@@ -2,6 +2,7 @@ import React from 'react';
 import Swal from 'sweetalert2';
 import moment from 'moment';
 import { generalQuery, getSocket, getUserData } from '../../../../api/Api';
+import { getErrMessage, getTkMessage, isTkOk } from '../../../../api/services/responseService';
 import { f_insert_Notification_Data } from '../../../../api/services/notificationService';
 import { NotificationElement } from '../../../../components/NotificationPanel/Notification';
 import { DiemDanhNhomData } from '../../interfaces/nhansuInterface';
@@ -28,7 +29,7 @@ const PrecisionAttendanceCell: React.FC<PrecisionAttendanceCellProps> = ({
     };
     generalQuery('dangkynghi2_AUTO', insertData)
       .then((response: any) => {
-        if (response.data.tk_status === 'OK') {
+        if (isTkOk(response)) {
           const newProjects = tableData.map((p) =>
             p.EMPL_NO === data.EMPL_NO
               ? { ...p, ON_OFF: 0, REASON_NAME: 'AUTO' }
@@ -44,21 +45,26 @@ const PrecisionAttendanceCell: React.FC<PrecisionAttendanceCellProps> = ({
           Swal.fire(
             'Lỗi',
             'Người này nghỉ ko đăng ký, auto chuyển nghỉ, tuy nhiên thao tác thất bại! ' +
-              response.data.message,
+              getTkMessage(response),
             'error'
           );
         }
       })
       .catch((error: any) => {
         console.error(error);
+        Swal.fire(
+          'Lỗi',
+          `Auto đăng ký nghỉ thất bại: ${getErrMessage(error)}`,
+          'error'
+        );
       });
   };
 
   const xoadangkynghi_auto = () => {
     generalQuery('xoadangkynghi_AUTO', { EMPL_NO: data.EMPL_NO })
       .then((response: any) => {
-        if (response.data.tk_status !== 'OK') {
-          console.error('Xóa đăng ký nghỉ AUTO thất bại');
+        if (!isTkOk(response)) {
+          console.error('Xóa đăng ký nghỉ AUTO thất bại: ' + getTkMessage(response));
         }
       })
       .catch((error: any) => {
@@ -81,17 +87,18 @@ const PrecisionAttendanceCell: React.FC<PrecisionAttendanceCellProps> = ({
           CURRENT_CA: data.WORK_SHIF_NAME === 'Hành Chính' ? 0 : calv,
         })
           .then(async (response: any) => {
-            if (response.data.tk_status === 'OK') {
+            if (isTkOk(response)) {
               const newProjects = tableData.map((p) =>
                 p.EMPL_NO === data.EMPL_NO ? { ...p, ON_OFF: type } : p
               );
               setTableData(newProjects);
             } else {
-              Swal.fire('Có lỗi', 'Nội dung: ' + response.data.message, 'error');
+              Swal.fire('Có lỗi', 'Nội dung: ' + getTkMessage(response), 'error');
             }
           })
           .catch((error: any) => {
             console.error(error);
+            Swal.fire('Lỗi', `Điểm danh thất bại: ${getErrMessage(error)}`, 'error');
           });
       } else {
         Swal.fire(
@@ -116,7 +123,7 @@ const PrecisionAttendanceCell: React.FC<PrecisionAttendanceCellProps> = ({
         CURRENT_CA: data.WORK_SHIF_NAME === 'Hành Chính' ? 0 : calv,
       })
         .then((response: any) => {
-          if (response.data.tk_status === 'OK') {
+          if (isTkOk(response)) {
             const newProjects = tableData.map((p) =>
               p.EMPL_NO === data.EMPL_NO ? { ...p, ON_OFF: 0 } : p
             );
@@ -125,11 +132,12 @@ const PrecisionAttendanceCell: React.FC<PrecisionAttendanceCellProps> = ({
             }
             setTableData(newProjects);
           } else {
-            Swal.fire('Có lỗi', 'Nội dung: ' + response.data.message, 'error');
+            Swal.fire('Có lỗi', 'Nội dung: ' + getTkMessage(response), 'error');
           }
         })
         .catch((error: any) => {
           console.error(error);
+          Swal.fire('Lỗi', `Điểm danh nghỉ thất bại: ${getErrMessage(error)}`, 'error');
         });
     }
 

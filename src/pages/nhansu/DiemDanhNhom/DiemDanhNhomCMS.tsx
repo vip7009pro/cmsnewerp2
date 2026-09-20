@@ -6,6 +6,7 @@ import AGTable from '../../../components/DataTable/AGTable';
 import { DiemDanhNhomData } from '../interfaces/nhansuInterface';
 import { f_getDiemDanhNhom, f_updateWorkHour } from '../utils/nhansuUtils';
 import { generalQuery, getCompany } from '../../../api/Api';
+import { getErrMessage, getTkMessage, isTkOk } from '../../../api/services/responseService';
 
 import PrecisionDiemDanhHeader from './PrecisionDiemDanh/PrecisionDiemDanhHeader';
 import PrecisionDiemDanhToolbar from './PrecisionDiemDanh/PrecisionDiemDanhToolbar';
@@ -202,6 +203,7 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
         }
       } catch (err) {
         console.error('Lỗi khi tải dữ liệu điểm danh:', err);
+        Swal.fire('Lỗi', `Không tải được bảng điểm danh: ${getErrMessage(err)}`, 'error');
       } finally {
         setLoading(false);
       }
@@ -256,12 +258,29 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
   }, [diemdanhnhomtable, searchKeyword, selectedFactory]);
 
   // Action: Điểm danh nhanh tất cả
+  // PARITY: `AttendanceCell.onClick(1, calv)` ở bản backup CHẶN điểm danh với nhân sự đã có đơn nghỉ
+  // (OFF_ID != null và REASON_NAME !== 'Nửa phép'). Bulk action bắt buộc giữ đúng ràng buộc này,
+  // nếu không sẽ ghi đè đơn nghỉ đã đăng ký/đã duyệt của nhân viên.
   const handleMarkAllPresent = useCallback(async () => {
-    const unmarkedList = diemdanhnhomtable.filter((e) => e.ON_OFF === null);
-    if (unmarkedList.length === 0) {
+    const eligibleList = diemdanhnhomtable.filter(
+      (e) =>
+        e.ON_OFF === null &&
+        (e.OFF_ID === null || e.OFF_ID === undefined || e.REASON_NAME === 'Nửa phép')
+    );
+    const blockedList = diemdanhnhomtable.filter(
+      (e) =>
+        e.ON_OFF === null &&
+        e.OFF_ID !== null &&
+        e.OFF_ID !== undefined &&
+        e.REASON_NAME !== 'Nửa phép'
+    );
+
+    if (eligibleList.length === 0) {
       Swal.fire(
         'Thông báo',
-        'Tất cả nhân sự trong ca hiện tại đã được điểm danh!',
+        blockedList.length > 0
+          ? `Không còn ai có thể điểm danh. ${blockedList.length} nhân sự đã có đơn nghỉ nên không điểm danh được.`
+          : 'Tất cả nhân sự trong ca hiện tại đã được điểm danh!',
         'info'
       );
       return;
@@ -269,7 +288,11 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
 
     const confirm = await Swal.fire({
       title: 'Xác nhận điểm danh nhanh',
-      text: `Bạn có chắc chắn muốn điểm danh ĐI LÀM cho tất cả ${unmarkedList.length} nhân sự chưa điểm danh?`,
+      html: `Bạn có chắc chắn muốn điểm danh ĐI LÀM cho <b>${eligibleList.length}</b> nhân sự chưa điểm danh?${
+        blockedList.length > 0
+          ? `<br/><span style="color:#b45309">Bỏ qua ${blockedList.length} nhân sự đã có đơn nghỉ.</span>`
+          : ''
+      }`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#059669',
@@ -281,15 +304,9 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
     if (confirm.isConfirmed) {
       setLoading(true);
       try {
-        // Cập nhật state nội bộ tức thời
-        const updatedTable = diemdanhnhomtable.map((row) =>
-          row.ON_OFF === null ? { ...row, ON_OFF: 1 } : row
-        );
-        setDiemDanhNhomTable(updatedTable);
-
-        // Gọi API backend cho từng nhân sự chưa điểm danh
-        await Promise.all(
-          unmarkedList.map((emp) =>
+        // Gọi API tuần tự theo từng nhân sự đủ điều kiện, chỉ ghi state khi backend trả OK
+        const results = await Promise.allSettled(
+          eligibleList.map((emp) =>
             generalQuery('setdiemdanhnhom', {
               diemdanhvalue: 1,
               EMPL_NO: emp.EMPL_NO,
@@ -300,18 +317,44 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
                     ? 1
                     : 2,
               CURRENT_CA: emp.WORK_SHIF_NAME === 'Hành Chính' ? 0 : 1,
+            }).then((resp: any) => {
+              if (!isTkOk(resp)) {
+                throw new Error(`${emp.EMPL_NO}: ${getTkMessage(resp)}`);
+              }
+              return emp.EMPL_NO as string;
             })
           )
         );
 
-        Swal.fire({
-          title: 'Thành công',
-          text: `Đã điểm danh ĐI LÀM cho ${unmarkedList.length} nhân sự!`,
-          icon: 'success',
-          timer: 2000,
-          timerProgressBar: true,
-          showConfirmButton: false,
-        });
+        const successIds = results
+          .filter((r): r is PromiseFulfilledResult<string> => r.status === 'fulfilled')
+          .map((r) => r.value);
+        const failCount = results.length - successIds.length;
+
+        if (successIds.length > 0) {
+          setDiemDanhNhomTable((prev) =>
+            prev.map((row) =>
+              successIds.includes(row.EMPL_NO) ? { ...row, ON_OFF: 1 } : row
+            )
+          );
+        }
+
+        if (failCount === 0) {
+          Swal.fire({
+            title: 'Thành công',
+            text: `Đã điểm danh ĐI LÀM cho ${successIds.length} nhân sự!`,
+            icon: 'success',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          });
+        } else {
+          Swal.fire({
+            title: 'Hoàn tất một phần',
+            text: `Đã điểm danh ${successIds.length}/${results.length} nhân sự. ${failCount} nhân sự thất bại (kiểm tra quyền Leader hoặc dữ liệu ca).`,
+            icon: 'warning',
+          });
+        }
       } catch (err) {
         console.error('Lỗi điểm danh nhanh:', err);
         Swal.fire('Lỗi', 'Có lỗi xảy ra trong quá trình điểm danh nhanh', 'error');
@@ -525,7 +568,7 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
         </>
       )}
 
-      {/* 2. Toolbar & Action Controls */}
+      {/* 2. Toolbar & Action Controls (EX1/EX2/PIVOT hợp nhất về đây) */}
       <PrecisionDiemDanhToolbar
         workShiftCode={workShiftCode}
         onShiftChange={loadData}
@@ -535,6 +578,11 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
         onMarkAllPresent={handleMarkAllPresent}
         onRefresh={() => loadData(workShiftCode)}
         loading={loading}
+        filteredCount={filteredTableData.length}
+        totalCount={diemdanhnhomtable.length}
+        onExportEX1={handleExportEX1}
+        onExportEX2={handleExportEX2}
+        onOpenPivot={() => setIsPivotOpen(true)}
       />
 
       {!isMobile && (
@@ -571,47 +619,6 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
                   close
                 </span>
               )}
-            </div>
-
-            {/* Nút EX1, EX2, PIVOT đưa lên trên cùng thanh lọc nhanh */}
-            <div className="precision-diemdanh__gridActions">
-              <button
-                type="button"
-                className="precision-diemdanh__gridBtn precision-diemdanh__gridBtn--excel"
-                onClick={handleExportEX1}
-                title={`Xuất ${filteredTableData.length} nhân sự đang hiển thị/lọc ra Excel`}
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: 15 }}>
-                  description
-                </span>
-                <span>EX1</span>
-                <span className="badge">Đang lọc</span>
-              </button>
-
-              <button
-                type="button"
-                className="precision-diemdanh__gridBtn precision-diemdanh__gridBtn--excel"
-                onClick={handleExportEX2}
-                title={`Xuất toàn bộ ${diemdanhnhomtable.length} nhân sự ra Excel`}
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: 15 }}>
-                  file_download
-                </span>
-                <span>EX2</span>
-                <span className="badge">Tất cả</span>
-              </button>
-
-              <button
-                type="button"
-                className="precision-diemdanh__gridBtn precision-diemdanh__gridBtn--pivot"
-                onClick={() => setIsPivotOpen(true)}
-                title="Mở phân tích tổng hợp Pivot đa chiều"
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: 15 }}>
-                  pivot_table_chart
-                </span>
-                <span>PIVOT</span>
-              </button>
             </div>
           </div>
 

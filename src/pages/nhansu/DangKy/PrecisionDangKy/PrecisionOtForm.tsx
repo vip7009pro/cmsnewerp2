@@ -106,16 +106,17 @@ export const PrecisionOtForm: React.FC<PrecisionOtFormProps> = ({ onSuccess }) =
 
       <div className="form-grid-2">
         <div className="form-field">
-          <label>Ngày tăng ca <span className="req">*</span></label>
-          <input
-            type="date"
-            value={otDate}
-            onChange={(e) => setOtDate(e.target.value)}
-          />
+          {/* Backend `dangkytangcacanhan` luôn ghi OT cho ngày hiện tại (moment()), KHÔNG nhận tham số ngày.
+              Trước đây ô này cho chọn ngày tự do => người dùng tưởng đăng ký được cho ngày khác. */}
+          <label>Ngày tăng ca</label>
+          <input type="date" value={otDate} disabled readOnly />
+          <small style={{ color: "#b45309", fontSize: "10.5px", fontWeight: 600 }}>
+            Đơn tăng ca luôn áp dụng cho ngày hôm nay (máy chủ tự xác định).
+          </small>
         </div>
 
         <div className="form-field">
-          <label>Hệ số tính lương</label>
+          <label>Hệ số tính lương (tham khảo)</label>
           <select defaultValue="150">
             <option value="150">Tăng ca ngày thường (150%)</option>
             <option value="200">Tăng ca ngày nghỉ tuần (200%)</option>
@@ -156,7 +157,7 @@ export const PrecisionOtForm: React.FC<PrecisionOtFormProps> = ({ onSuccess }) =
       </div>
 
       <div className="form-field">
-        <label>Nội dung công việc tăng ca</label>
+        <label>Nội dung công việc tăng ca (ghi chú nội bộ)</label>
         <textarea
           placeholder="Ghi rõ nội dung công việc, line sản xuất hoặc mã PO..."
           value={otReason}

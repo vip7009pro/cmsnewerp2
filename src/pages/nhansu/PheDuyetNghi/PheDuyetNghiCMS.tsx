@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { generalQuery } from "../../../api/Api";
+import { getErrMessage, getTkMessage, isTkOk } from "../../../api/services/responseService";
 import "./PrecisionPheDuyetNghi/PrecisionPheDuyetNghi.scss";
 import Swal from "sweetalert2";
 import moment from "moment";
@@ -61,16 +62,17 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
         pheduyetvalue: 1,
       })
         .then((response) => {
-          if (response.data.tk_status === "OK") {
+          if (isTkOk(response)) {
             setDiemDanhNhomTable((prev) =>
               prev.map((p) => (p.OFF_ID === offId ? { ...p, APPROVAL_STATUS: 1 } : p))
             );
           } else {
-            Swal.fire("Có lỗi", "Nội dung: " + response.data.message, "error");
+            Swal.fire("Có lỗi", "Nội dung: " + getTkMessage(response), "error");
           }
         })
         .catch((error) => {
           console.error(error);
+          Swal.fire("Lỗi", `Duyệt đơn thất bại: ${getErrMessage(error)}`, "error");
         });
     } else {
       Swal.fire("Thông báo", "Đã điểm danh đi làm, không phê duyệt nghỉ được!", "warning");
@@ -83,23 +85,40 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
       pheduyetvalue: 0,
     })
       .then((response) => {
-        if (response.data.tk_status === "OK") {
+        if (isTkOk(response)) {
           setDiemDanhNhomTable((prev) =>
             prev.map((p) => (p.OFF_ID === offId ? { ...p, APPROVAL_STATUS: 0 } : p))
           );
         } else {
-          Swal.fire("Có lỗi", "Nội dung: " + response.data.message, "error");
+          Swal.fire("Có lỗi", "Nội dung: " + getTkMessage(response), "error");
         }
       })
       .catch((error) => {
         console.error(error);
+        Swal.fire("Lỗi", `Từ chối đơn thất bại: ${getErrMessage(error)}`, "error");
       });
   }, []);
 
   const handleReset = useCallback((offId: number) => {
-    setDiemDanhNhomTable((prev) =>
-      prev.map((p) => (p.OFF_ID === offId ? { ...p, APPROVAL_STATUS: 2 } : p))
-    );
+    // FIX: bản backup chỉ set state local nên sau khi F5 đơn quay lại trạng thái cũ.
+    // Reset = đưa đơn về Chờ duyệt (APPROVAL_STATUS = 2) và phải ghi xuống DB.
+    generalQuery("setpheduyetnhom", {
+      off_id: offId,
+      pheduyetvalue: 2,
+    })
+      .then((response) => {
+        if (isTkOk(response)) {
+          setDiemDanhNhomTable((prev) =>
+            prev.map((p) => (p.OFF_ID === offId ? { ...p, APPROVAL_STATUS: 2 } : p))
+          );
+        } else {
+          Swal.fire("Có lỗi", "Nội dung: " + getTkMessage(response), "error");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        Swal.fire("Lỗi", `Không thể kết nối máy chủ để reset đơn nghỉ: ${getErrMessage(error)}`, "error");
+      });
   }, []);
 
   const handleDelete = useCallback((offId: number) => {
@@ -119,17 +138,18 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
           pheduyetvalue: 3,
         })
           .then((response) => {
-            if (response.data.tk_status === "OK") {
+            if (isTkOk(response)) {
               setDiemDanhNhomTable((prev) =>
                 prev.map((p) => (p.OFF_ID === offId ? { ...p, APPROVAL_STATUS: 3 } : p))
               );
               Swal.fire("Đã Xóa", "Đã xóa đăng ký nghỉ thành công!", "success");
             } else {
-              Swal.fire("Có lỗi", "Nội dung: " + response.data.message, "error");
+              Swal.fire("Có lỗi", "Nội dung: " + getTkMessage(response), "error");
             }
           })
           .catch((error) => {
             console.error(error);
+            Swal.fire("Lỗi", `Xóa đơn nghỉ thất bại: ${getErrMessage(error)}`, "error");
           });
       }
     });
@@ -170,6 +190,8 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
   }, [loadPheDuyetNghi]);
 
   // Thống kê 4 KPI
+  // Nghiệp vụ APPROVAL_STATUS: 0 = Từ chối, 1 = Đã duyệt, 2 = Chờ duyệt, 3 = Đã xóa (backend DELETE).
+  // Card 4 hiển thị "Từ chối / Đã xóa" nên phải gộp 0 và 3; KHÔNG được coi 0 là "chờ duyệt".
   const stats = useMemo(() => {
     const total = diemdanhnhomtable.length;
     let pending = 0;
@@ -178,8 +200,8 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
 
     diemdanhnhomtable.forEach((item) => {
       if (item.APPROVAL_STATUS === 1) approved++;
-      else if (item.APPROVAL_STATUS === 0 || item.APPROVAL_STATUS === 2) pending++;
-      else if (item.APPROVAL_STATUS === 3) rejected++;
+      else if (item.APPROVAL_STATUS === 0 || item.APPROVAL_STATUS === 3) rejected++;
+      else pending++;
     });
 
     return { total, pending, approved, rejected };

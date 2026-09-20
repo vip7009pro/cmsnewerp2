@@ -2,6 +2,7 @@ import React from 'react';
 import Swal from 'sweetalert2';
 import moment from 'moment';
 import { generalQuery, getSocket, getUserData } from '../../../../api/Api';
+import { getErrMessage, getTkMessage, isTkOk } from '../../../../api/services/responseService';
 import { f_insert_Notification_Data } from '../../../../api/services/notificationService';
 import { NotificationElement } from '../../../../components/NotificationPanel/Notification';
 import { DiemDanhNhomData } from '../../interfaces/nhansuInterface';
@@ -26,7 +27,7 @@ const PrecisionOvertimeCell: React.FC<PrecisionOvertimeCellProps> = ({
       overtime_info: overtimeinfo,
     })
       .then(async (response: any) => {
-        if (response.data.tk_status === 'OK') {
+        if (isTkOk(response)) {
           const newProjects = tableData.map((p) =>
             p.EMPL_NO === data.EMPL_NO
               ? {
@@ -62,11 +63,12 @@ const PrecisionOvertimeCell: React.FC<PrecisionOvertimeCellProps> = ({
           }
           setTableData(newProjects);
         } else {
-          Swal.fire('Có lỗi', 'Nội dung: ' + response.data.message, 'error');
+          Swal.fire('Có lỗi', 'Nội dung: ' + getTkMessage(response), 'error');
         }
       })
       .catch((error: any) => {
         console.error(error);
+        Swal.fire('Lỗi', `Đăng ký tăng ca thất bại: ${getErrMessage(error)}`, 'error');
       });
   };
 
