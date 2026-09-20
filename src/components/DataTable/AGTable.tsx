@@ -41,39 +41,40 @@ interface AGInterface {
   getRowId?: (params: any) => string
 }
 
+// ===== CÁC HẰNG/CALLBACK MẶC ĐỊNH ĐƯỢC HOIST RA MODULE SCOPE =====
+// Lý do: nếu tạo mới (object/function literal) trong mỗi lần render của AGTable
+// thì AG Grid coi đây là prop thay đổi (rowStyle/getRowStyle/getRowId) và sẽ
+// refresh/redraw TOÀN BỘ row => mọi cell renderer bị render lại => nháy toàn bảng.
+const DEFAULT_ROW_STYLE = { backgroundColor: 'transparent', height: '20px' };
+const DEFAULT_GET_ROW_STYLE = (_params: any) => ({
+  backgroundColor: 'transparent',
+  fontSize: '0.6rem',
+});
+const DEFAULT_GET_ROW_ID = (params: any) => {
+  if (params.data?.id !== undefined && params.data?.id !== null) return String(params.data.id);
+  if (params.data?.NG_SX100_ID !== undefined && params.data?.NG_SX100_ID !== null) return String(params.data.NG_SX100_ID);
+  if (params.data?.PLAN_ID !== undefined && params.data?.PLAN_ID !== null) return String(params.data.PLAN_ID);
+  if (params.data?.PROD_REQUEST_NO !== undefined && params.data?.PROD_REQUEST_NO !== null) return String(params.data.PROD_REQUEST_NO);
+  if (params.node?.rowIndex !== undefined && params.node?.rowIndex !== null) return `row_${params.node.rowIndex}`;
+  return undefined;
+};
+const NOOP = () => { };
+
 const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [selectedrow, setSelectedrow] = useState(0);
-  const rowStyle = { backgroundColor: 'transparent', height: '20px' };
-  const getRowStyle = (params: any) => {
-    return { backgroundColor: 'transparent', fontSize: '0.6rem' };
-  };
-
-  const onRowdoubleClick = (params: any) => {
-  }
-  const onRowDragEnd = (params: any) => {
-  }
 
   const gridRefDefault = useRef<AgGridReact<any>>(null);
+
   const tableSelectionChange = useCallback(() => {
-    if (gridRef !== null) {
-      const selectedrows = gridRef.current!.api.getSelectedRows().length;
-      setSelectedrow(selectedrows);
-    }
-    else {
-      const selectedrows = gridRefDefault.current!.api.getSelectedRows().length;
-      setSelectedrow(selectedrows);
-    }
-  }, []);
+    const api = (gridRef ?? gridRefDefault).current?.api;
+    const selectedrows = api?.getSelectedRows().length ?? 0;
+    setSelectedrow(selectedrows);
+  }, [gridRef]);
 
   const setHeaderHeight = useCallback((value?: number) => {
-    if (gridRef !== null) {
-      gridRef.current!.api.setGridOption("headerHeight", value);
-    }
-    else {
-      gridRefDefault.current!.api.setGridOption("headerHeight", value);
-    }
-  }, []);
+    (gridRef ?? gridRefDefault).current?.api?.setGridOption("headerHeight", value);
+  }, [gridRef]);
 
   const defaultColDef = useMemo(() => {
     return {
@@ -122,19 +123,30 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
     }
   }, [ag_data.data])
 
-  let pvdts = new PivotGridDataSource({
-    fields: pivotDatasourcefiels,
-    store: ag_data.data,
-  })
+  const pvdts = useMemo(
+    () =>
+      new PivotGridDataSource({
+        fields: pivotDatasourcefiels,
+        store: ag_data.data,
+      }),
+    [pivotDatasourcefiels, ag_data.data]
+  );
 
   const onExportClick = () => {
-    if (gridRef !== null) {
-      gridRef.current!.api.exportDataAsCsv();
-    }
-    else {
-      gridRefDefault.current!.api.exportDataAsCsv();
-    }
+    (gridRef ?? gridRefDefault).current?.api?.exportDataAsCsv();
   };
+
+  const handleSelectionChanged = useCallback(
+    (params: any) => {
+      ag_data.onSelectionChange?.(params);
+      tableSelectionChange();
+    },
+    [ag_data.onSelectionChange, tableSelectionChange]
+  );
+
+  const handleGridReady = useCallback(() => {
+    setHeaderHeight(20);
+  }, [setHeaderHeight]);
 
   interface RowData {
     name: string;
@@ -226,20 +238,11 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
           rowHeight={ag_data.rowHeight ? ag_data.rowHeight : 25}
           defaultColDef={defaultColDef}
           ref={gridRef ?? gridRefDefault}
-          onGridReady={() => {
-            setHeaderHeight(20);
-          }}
+          onGridReady={handleGridReady}
           columnHoverHighlight={true}
-          rowStyle={rowStyle}
-          getRowStyle={ag_data.getRowStyle ?? getRowStyle}
-          getRowId={ag_data.getRowId ?? ((params: any) => {
-            if (params.data?.id !== undefined && params.data?.id !== null) return String(params.data.id);
-            if (params.data?.NG_SX100_ID !== undefined && params.data?.NG_SX100_ID !== null) return String(params.data.NG_SX100_ID);
-            if (params.data?.PLAN_ID !== undefined && params.data?.PLAN_ID !== null) return String(params.data.PLAN_ID);
-            if (params.data?.PROD_REQUEST_NO !== undefined && params.data?.PROD_REQUEST_NO !== null) return String(params.data.PROD_REQUEST_NO);
-            if (params.node?.rowIndex !== undefined && params.node?.rowIndex !== null) return `row_${params.node.rowIndex}`;
-            return undefined;
-          })}
+          rowStyle={DEFAULT_ROW_STYLE}
+          getRowStyle={ag_data.getRowStyle ?? DEFAULT_GET_ROW_STYLE}
+          getRowId={ag_data.getRowId ?? (DEFAULT_GET_ROW_ID as any)}
           rowSelection={"multiple"}
           rowMultiSelectWithClick={false}
           suppressRowClickSelection={ag_data.suppressRowClickSelection ?? true}
@@ -250,14 +253,11 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
           debounceVerticalScrollbar={false}
           enableCellTextSelection={true}
           floatingFiltersHeight={23}
-          onSelectionChanged={(params: any) => {
-            ag_data.onSelectionChange?.(params);
-            tableSelectionChange();
-          }}
+          onSelectionChanged={handleSelectionChanged}
           onRowClicked={ag_data.onRowClick}
-          onRowDoubleClicked={ag_data.onRowDoubleClick ?? onRowdoubleClick}
-          onRowDragMove={(e) => { }}
-          onRowDragEnd={ag_data.onRowDragEnd ?? onRowDragEnd}
+          onRowDoubleClicked={ag_data.onRowDoubleClick ?? NOOP}
+          onRowDragMove={NOOP}
+          onRowDragEnd={ag_data.onRowDragEnd ?? NOOP}
           onCellEditingStarted={ag_data.onCellEditingStarted}
           onCellEditingStopped={ag_data.onCellEditingStopped}
           onCellClicked={ag_data.onCellClick}

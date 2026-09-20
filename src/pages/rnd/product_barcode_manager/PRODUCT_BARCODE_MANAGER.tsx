@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { createProductBarcodeColumns } from "./PrecisionProductBarcode/PrecisionProductBarcodeColumns";
 import { PrecisionProductBarcodeForm } from "./PrecisionProductBarcode/PrecisionProductBarcodeForm";
 import { PrecisionProductBarcodeHeader } from "./PrecisionProductBarcode/PrecisionProductBarcodeHeader";
@@ -47,16 +47,25 @@ const PRODUCT_BARCODE_MANAGER: React.FC = () => {
   const columns = useMemo(() => createProductBarcodeColumns(), []);
 
   // Xử lý khi chọn dòng trên bảng
-  const handleSelectRow = (rowData: BARCODE_DATA) => {
-    setSelectedRows(rowData);
-    const matchedCode = codeList.find((x) => x.G_CODE === rowData.G_CODE) ?? {
-      G_CODE: rowData.G_CODE,
-      G_NAME: rowData.G_NAME,
-      PROD_LAST_PRICE: 0,
-      USE_YN: "N",
-    };
-    setSelectedCode(matchedCode);
-  };
+  // Dùng useCallback để giữ reference ổn định: nếu tạo mới mỗi render thì
+  // PrecisionProductBarcodeTable -> AGTable bị re-render dây chuyền và
+  // AG Grid phải refresh lại toàn bộ cell (nguyên nhân bảng bị "nháy").
+  const handleSelectRow = useCallback(
+    (rowData: BARCODE_DATA) => {
+      // Clone để form không giữ reference trực tiếp vào object của AG Grid
+      setSelectedRows({ ...rowData });
+      const matchedCode = codeList.find((x) => x.G_CODE === rowData.G_CODE) ?? {
+        G_CODE: rowData.G_CODE,
+        G_NAME: rowData.G_NAME,
+        PROD_LAST_PRICE: 0,
+        USE_YN: "N",
+      };
+      setSelectedCode(matchedCode);
+    },
+    [codeList, setSelectedRows, setSelectedCode]
+  );
+
+  const handleToggleForm = useCallback(() => setIsFormOpen((prev) => !prev), [setIsFormOpen]);
 
   return (
     <div className="precision-barcode product_barcode_mamanger">
@@ -66,7 +75,7 @@ const PRODUCT_BARCODE_MANAGER: React.FC = () => {
         toggleFullscreen={toggleFullscreen}
         onRefresh={load_barcode_table}
         isFormOpen={isFormOpen}
-        onToggleForm={() => setIsFormOpen((prev) => !prev)}
+        onToggleForm={handleToggleForm}
       />
 
       {/* 2. KPI MICRO-CARDS REALTIME */}

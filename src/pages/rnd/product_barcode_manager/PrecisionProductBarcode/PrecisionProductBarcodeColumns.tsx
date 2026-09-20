@@ -3,6 +3,77 @@ import BARCODE from "../../design_amazon/design_components/BARCODE";
 import DATAMATRIX from "../../design_amazon/design_components/DATAMATRIX";
 import QRCODE from "../../design_amazon/design_components/QRCODE";
 
+const CELL_WRAP_STYLE: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "100%",
+};
+
+const QR_DATA = (value: string) => ({
+  CAVITY_PRINT: 2,
+  DOITUONG_NAME: "bc",
+  DOITUONG_NO: 1,
+  DOITUONG_STT: "0",
+  FONT_NAME: "Arial",
+  FONT_SIZE: 6,
+  FONT_STYLE: "normal",
+  G_CODE_MAU: "",
+  GIATRI: value,
+  PHANLOAI_DT: "QR CODE",
+  POS_X: 0,
+  POS_Y: 0,
+  SIZE_W: 10,
+  SIZE_H: 10,
+  REMARK: "",
+  ROTATE: 0,
+});
+
+const BARCODE_DATA_1D = (value: string) => ({
+  ...QR_DATA(value),
+  SIZE_W: 60,
+  SIZE_H: 10,
+});
+
+/**
+ * Cell renderer mã vạch được memo hoá theo props nguyên thuỷ.
+ * Trước đây DATA object literal được tạo mới mỗi lần cell render khiến
+ * react-barcode / QRCode vẽ lại SVG => bảng bị "nháy" khi click dòng.
+ */
+const BarcodeVisual: React.FC<{ value?: string; type?: string }> = React.memo(
+  ({ value, type }) => {
+    if (!value) return null;
+
+    if (type === "QR") {
+      return (
+        <div style={CELL_WRAP_STYLE}>
+          <QRCODE DATA={QR_DATA(value)} />
+        </div>
+      );
+    }
+
+    if (type === "MATRIX") {
+      return (
+        <div style={CELL_WRAP_STYLE}>
+          <DATAMATRIX DATA={QR_DATA(value)} />
+        </div>
+      );
+    }
+
+    if (type === "1D") {
+      return (
+        <div style={CELL_WRAP_STYLE}>
+          <BARCODE DATA={BARCODE_DATA_1D(value)} />
+        </div>
+      );
+    }
+
+    return <>{value}</>;
+  }
+);
+
+BarcodeVisual.displayName = "BarcodeVisual";
+
 export const createProductBarcodeColumns = () => [
   {
     field: "G_CODE",
@@ -66,89 +137,9 @@ export const createProductBarcodeColumns = () => [
     field: "BARCODE_RND",
     headerName: "CODE_VISUALIZE",
     width: 250,
-    cellRenderer: (params: any) => {
-      const type = params.data?.BARCODE_TYPE;
-      const value = params.value;
-      if (!value) return null;
-
-      if (type === "QR") {
-        return (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
-            <QRCODE
-              DATA={{
-                CAVITY_PRINT: 2,
-                DOITUONG_NAME: "bc",
-                DOITUONG_NO: 1,
-                DOITUONG_STT: "0",
-                FONT_NAME: "Arial",
-                FONT_SIZE: 6,
-                FONT_STYLE: "normal",
-                G_CODE_MAU: "",
-                GIATRI: value,
-                PHANLOAI_DT: "QR CODE",
-                POS_X: 0,
-                POS_Y: 0,
-                SIZE_W: 10,
-                SIZE_H: 10,
-                REMARK: "",
-                ROTATE: 0,
-              }}
-            />
-          </div>
-        );
-      } else if (type === "1D") {
-        return (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
-            <BARCODE
-              DATA={{
-                CAVITY_PRINT: 2,
-                DOITUONG_NAME: "bc",
-                DOITUONG_NO: 1,
-                DOITUONG_STT: "0",
-                FONT_NAME: "Arial",
-                FONT_SIZE: 6,
-                FONT_STYLE: "normal",
-                G_CODE_MAU: "",
-                GIATRI: value,
-                PHANLOAI_DT: "QR CODE",
-                POS_X: 0,
-                POS_Y: 0,
-                SIZE_W: 60,
-                SIZE_H: 10,
-                REMARK: "",
-                ROTATE: 0,
-              }}
-            />
-          </div>
-        );
-      } else if (type === "MATRIX") {
-        return (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
-            <DATAMATRIX
-              DATA={{
-                CAVITY_PRINT: 2,
-                DOITUONG_NAME: "bc",
-                DOITUONG_NO: 1,
-                DOITUONG_STT: "0",
-                FONT_NAME: "Arial",
-                FONT_SIZE: 6,
-                FONT_STYLE: "normal",
-                G_CODE_MAU: "",
-                GIATRI: value,
-                PHANLOAI_DT: "QR CODE",
-                POS_X: 0,
-                POS_Y: 0,
-                SIZE_W: 10,
-                SIZE_H: 10,
-                REMARK: "",
-                ROTATE: 0,
-              }}
-            />
-          </div>
-        );
-      }
-      return value;
-    },
+    cellRenderer: (params: any) => (
+      <BarcodeVisual value={params.value} type={params.data?.BARCODE_TYPE} />
+    ),
   },
   {
     field: "SX_STATUS",

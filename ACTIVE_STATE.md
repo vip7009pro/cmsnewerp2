@@ -17,6 +17,12 @@ Trạng thái: **HOÀN THÀNH** (audit + fix + build pass). Chi tiết: `FINDING
 - `src/pages/rnd/product_barcode_manager/PrecisionProductBarcode/useProductBarcodeData.ts` — `addBarcode` dừng nếu bước check trùng lỗi (không insert mù); `addBarcode`/`updateBarcode`/`deleteBarcode` báo lỗi kèm `message` thật thay vì `console.error` im lặng.
 - `FINDINGS_PARITY_RND_MUA_QLSX_MODULES.md`, `ROADMAP.md`.
 
+## Fix nháy toàn bảng barcode khi click dòng (đã xong)
+- `src/components/DataTable/AGTable.tsx` — hoist `rowStyle`/`getRowStyle`/`getRowId`/`onRowDragMove`/`onRowDoubleClicked` ra module scope + `useCallback` cho `onSelectionChanged`/`onGridReady`/`tableSelectionChange`, `useMemo` cho `PivotGridDataSource`. Trước đây các prop này tạo mới mỗi render ⇒ AG Grid redraw toàn bộ row.
+- `src/pages/rnd/product_barcode_manager/PrecisionProductBarcode/PrecisionProductBarcodeColumns.tsx` — cell renderer `CODE_VISUALIZE` bọc trong `BarcodeVisual` (`React.memo`, props nguyên thuỷ `value`/`type`) để SVG/react-barcode không bị vẽ lại khi cell refresh.
+- `PrecisionProductBarcodeTable.tsx` — `useCallback` cho `onRowClick`, hoist `onSelectionChange`/`toolbar` ra module scope.
+- `PRODUCT_BARCODE_MANAGER.tsx` — `useCallback` cho `handleSelectRow`/`handleToggleForm`; clone row khi `setSelectedRows({...rowData})`.
+
 ## Việc cần làm tiếp theo
 - Nếu nghiệp vụ cho phép `BARCODE_STT` dạng chữ: sửa backend `practice1/services/rndService.js` bọc `N'...'` thay vì validate số ở frontend.
 - Nếu số dòng BOM/barcode lớn (> 100): gộp thành 1 request batch ở backend thay vì gọi tuần tự từng dòng.
@@ -29,4 +35,5 @@ Trạng thái: **HOÀN THÀNH** (audit + fix + build pass). Chi tiết: `FINDING
 - Repo có sẵn nhiều lỗi `tsc --noEmit` ở module khác; không dùng tsc làm gate.
 - Đợt 3: API parity & `checkBP` parity đều **100%**. Pitfall mới: **state/handler trong hook được export nhưng không được destructure ở controller ⇒ control chết** (BOM_AMAZON `sidebarSearch`). Luôn đối chiếu danh sách destructure với interface `Use*DataReturn`.
 - Pitfall khác: `.backup` của DESIGN_AMAZON có block `onResize`/`onResizeStop` là **dead code** (`enableResizing={false}`) — không được nhầm là nghiệp vụ bị mất.
+- Pitfall (bảng AG Grid): prop `rowStyle`/`getRowStyle`/`getRowId` của `AgGridReact` **phải là reference ổn định**; nếu tạo object/function literal trong thân component thì mỗi lần parent re-render AG Grid sẽ redraw toàn bộ row ⇒ cell renderer SVG/QR/barcode bị vẽ lại (hiện tượng "nháy"). Build kiểm chứng lần này: `npm run build` `EXIT=0`.
 
