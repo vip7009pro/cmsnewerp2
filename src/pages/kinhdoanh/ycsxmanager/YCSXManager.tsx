@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState, useCallback, useEffect } from "react";
 import * as XLSX from "xlsx";
 import moment from "moment";
 import Swal from "sweetalert2";
@@ -23,8 +23,37 @@ import { getYCSXColumns } from "./PrecisionYCSX/PrecisionYCSXColumns";
 
 const YCSXManager: React.FC = () => {
   const ycsx = useYCSXLogic();
-  const [isFilterHidden, setIsFilterHidden] = useState(false);
+  // Mobile: mặc định ẩn bộ lọc để bảng YCSX chiếm trọn chiều ngang (bộ lọc mở dạng float)
+  const [isFilterHidden, setIsFilterHidden] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
   const isCMS = getCompany() === "CMS";
+
+  // Viewport mobile (≤768px) — điều khiển conditional rendering cho KPI / bộ lọc float / toolbar
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
+
+  // Mobile luôn đóng bộ lọc khi mới vào trang; desktop giữ bộ lọc mở như cũ
+  useEffect(() => {
+    setIsFilterHidden(isMobile);
+  }, [isMobile]);
 
   // Grid Columns Configuration
   const columns = useMemo(() => {
@@ -210,6 +239,7 @@ const YCSXManager: React.FC = () => {
         }}
         onOpenAddAmzModal={() => ycsx.setIsAmzAddModalOpen(true)}
         isCMS={isCMS}
+        isMobile={isMobile}
       />
 
       {/* 2. Sub-Tab 1: Quản lý YCSX */}
@@ -226,14 +256,16 @@ const YCSXManager: React.FC = () => {
             overflow: "hidden",
           }}
         >
-          {/* KPI Dashboard */}
-          <PrecisionYCSXKpi
-            mode="ycsx"
-            totalCount={kpiData.totalCount}
-            approvedCount={kpiData.approvedCount}
-            pendingCount={kpiData.pendingCount}
-            materialShortageCount={kpiData.materialShortageCount}
-          />
+          {/* KPI Dashboard — ẩn trên mobile để nhường chỗ cho bảng (yêu cầu tối ưu mobile) */}
+          {!isMobile && (
+            <PrecisionYCSXKpi
+              mode="ycsx"
+              totalCount={kpiData.totalCount}
+              approvedCount={kpiData.approvedCount}
+              pendingCount={kpiData.pendingCount}
+              materialShortageCount={kpiData.materialShortageCount}
+            />
+          )}
 
           {/* Main 2-column Content Body */}
           <div
@@ -247,7 +279,16 @@ const YCSXManager: React.FC = () => {
               overflow: "hidden",
             }}
           >
-            {/* Left 250px Filter Sidebar */}
+            {/* Mobile: bấm nền mờ để đóng bộ lọc float */}
+            {isMobile && !isFilterHidden && (
+              <div
+                className="precision-ycsx__filterBackdrop"
+                onClick={() => setIsFilterHidden(true)}
+                title="Đóng bộ lọc"
+              />
+            )}
+
+            {/* Left 250px Filter Sidebar — mobile là panel FLOAT phủ trên bảng */}
             <PrecisionYCSXFilterPanel
               filters={filterValues}
               onFilterChange={handleFilterChange}
@@ -255,6 +296,8 @@ const YCSXManager: React.FC = () => {
               onReset={ycsx.clearYCSXform}
               isHidden={isFilterHidden}
               isCMS={isCMS}
+              isMobile={isMobile}
+              onClose={() => setIsFilterHidden(true)}
             />
 
             {/* Right Container: Toolbar + AG Grid Table */}
@@ -301,6 +344,7 @@ const YCSXManager: React.FC = () => {
                 onExportEX1={handleExportEX1}
                 onExportEX2={handleExportEX2}
                 onTogglePivot={() => ycsx.setShowPivot((prev) => !prev)}
+                isMobile={isMobile}
               />
 
               {/* Data Table Container with Fail-safe Full Height */}

@@ -804,6 +804,201 @@ $py-radius: 6px;
       }
     }
   }
+
+  /* ══════════════════════════════════════════════════════════════════
+     MOBILE (≤768px)
+     - Bộ lọc sidebar → panel FLOAT phủ trên bảng (toggle từ toolbar)
+     - Toolbar: 1 hàng duy nhất, scroll ngang, nút icon vuông gọn
+     - (KPI dashboard đã ẩn bằng conditional rendering ở YCSXManager.tsx)
+     Lưu ý: block base của `__filterPanel`/`__content`/`__mainBody` dùng khá nhiều
+     `!important` ⇒ override mobile cũng phải `!important`.
+     ══════════════════════════════════════════════════════════════════ */
+  @media (max-width: 768px) {
+    /* ── HEADER: tabs & nút thêm không được bị cắt khỏi màn hình ── */
+    &__header {
+      gap: 6px;
+    }
+
+    &__tabs {
+      flex: 1 1 100%;
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        height: 0;
+      }
+    }
+
+    &__tab {
+      flex: 0 0 auto;
+      height: 28px;
+      padding: 4px 9px;
+      font-size: 11.5px;
+      gap: 5px;
+    }
+
+    &__headerRight {
+      flex: 1 1 100%;
+      min-width: 0;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 6px;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        height: 0;
+      }
+
+      .precision-ycsx__toolBtn {
+        flex: 0 0 auto;
+        height: 28px;
+        padding: 0 8px;
+        font-size: 11px;
+      }
+    }
+
+    /* Chỉ báo telemetry chỉ mang tính trang trí ⇒ bỏ trên mobile để đủ chỗ cho nút */
+    &__socketStatus {
+      display: none;
+    }
+
+    &__kpiGrid {
+      /* Dự phòng nếu KPI còn được render ở nơi khác */
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      padding: 6px 8px;
+    }
+
+    &__mainBody,
+    &__body {
+      position: relative !important;
+    }
+
+    &__filterBackdrop {
+      position: absolute !important;
+      inset: 0 !important;
+      z-index: 35 !important;
+      background: rgba(15, 23, 42, 0.35) !important;
+    }
+
+    /* Bộ lọc dạng float: co theo nội dung để phần backdrop phía dưới vẫn bấm được */
+    &__filterPanel {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: auto !important;
+      z-index: 40 !important;
+      width: auto !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      height: auto !important;
+      max-height: 100% !important;
+      border-right: none !important;
+      border-radius: 8px !important;
+      box-shadow: 0 18px 40px -12px rgba(15, 23, 42, 0.45) !important;
+      background: $py-card !important;
+    }
+
+    &__filterHeader {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: $py-card;
+    }
+
+    &__filterHeaderActions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    &__filterClose {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      border-radius: 4px;
+      border: 1px solid $py-border-dark;
+      background: $py-card;
+      color: $py-slate-600;
+      cursor: pointer;
+
+      &:hover {
+        color: $py-rose-600;
+        border-color: #fecdd3;
+        background: $py-rose-50;
+      }
+    }
+
+    &__filterSearchBtn {
+      height: 34px;
+      font-size: 12px;
+    }
+
+    &__content,
+    &__gridContainer {
+      width: 100% !important;
+    }
+
+    /* ── TOOLBAR: 1 hàng, scroll ngang ── */
+    &__gridToolbar {
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      padding: 4px 6px !important;
+      gap: 6px !important;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        height: 0;
+      }
+    }
+
+    &__gridToolbarLeft,
+    &__gridToolbarRight {
+      flex-wrap: nowrap !important;
+      flex: 0 0 auto !important;
+      min-width: 0;
+    }
+
+    &__toolSep {
+      flex: 0 0 auto;
+    }
+
+    /* Nút gọn: vuông icon-only, ẩn nhãn (mọi nút đều đã có icon) */
+    .precision-ycsx__gridToolbar--compact {
+      .precision-ycsx__toolBtn {
+        width: 30px;
+        min-width: 30px;
+        height: 30px;
+        padding: 0;
+        justify-content: center;
+        flex: 0 0 auto;
+
+        svg {
+          width: 14px;
+          height: 14px;
+          margin: 0;
+          flex-shrink: 0;
+        }
+
+        > span {
+          display: none;
+        }
+      }
+    }
+
+    /* Nút toggle bộ lọc có màu riêng để dễ nhận biết khi đã ẩn nhãn */
+    &__toolBtn--filterToggle {
+      background: $py-brand-50 !important;
+      border-color: $py-brand-200 !important;
+      color: $py-brand-700 !important;
+    }
+  }
 }
 
 /* =========================================================================
@@ -1300,6 +1495,138 @@ $py-radius: 6px;
 
     @media (max-width: 1100px) {
       grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   MOBILE (≤768px) — MODAL TẠO YCSX (cả 2 chế độ Thủ Công & Excel/Lưới)
+   Mục tiêu: header/tab 1 dòng không bị wrap làm đẩy nội dung xuống; các grid
+   nhiều cột co về 2 cột; các hàng flex dài được xếp dọc.
+   (Phần inline style trong TSX cũng đã được chuyển sang dạng mobile.)
+   ═════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .precision-ycsx-modal-container,
+  .precision-ycsx__modalCard {
+    border-radius: 10px !important;
+
+    .modal-header {
+      padding: 8px 10px;
+      gap: 8px;
+
+      .title-group {
+        flex: 1 1 auto;
+        min-width: 0;
+        gap: 8px;
+
+        > div {
+          min-width: 0;
+        }
+
+        .badge-icon {
+          width: 28px;
+          height: 28px;
+          font-size: 14px;
+          flex-shrink: 0;
+        }
+
+        h3 {
+          font-size: 13px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        p {
+          display: none;
+        }
+      }
+
+      .btn-close {
+        flex: 0 0 auto;
+      }
+    }
+
+    .modal-footer {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      padding: 8px 10px;
+
+      /* Bỏ dòng ghi chú dài để footer gọn 1-2 hàng */
+      .hint-text {
+        display: none;
+      }
+
+      .action-btns {
+        gap: 6px;
+        flex-wrap: wrap;
+
+        button {
+          flex: 1 1 auto;
+          justify-content: center;
+          padding: 6px 10px;
+          font-size: 11px;
+        }
+      }
+    }
+
+    /* Lưới preview trong modal không cần cao 360px trên mobile */
+    .modal-agtable-wrapper {
+      height: 240px !important;
+      min-height: 220px !important;
+
+      .agtable,
+      .ag-theme-quartz,
+      .ag-root-wrapper {
+        height: 100% !important;
+        min-height: 220px !important;
+      }
+    }
+  }
+
+  .precision-ycsx__modalModeTabs {
+    padding: 4px 8px 0 8px;
+    gap: 4px;
+  }
+
+  .precision-ycsx__modalModeTab {
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    padding: 6px 8px;
+    font-size: 11px;
+    gap: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+
+    svg {
+      flex-shrink: 0;
+      width: 13px;
+      height: 13px;
+    }
+  }
+
+  .precision-ycsx__modalGridForm {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    /* Cha (.modal-body) đã có padding riêng ⇒ bỏ padding trùng */
+    padding: 0;
+  }
+
+  .precision-ycsx__quickAddBar {
+    padding: 8px 10px;
+    gap: 8px;
+
+    .quick-add-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .quick-add-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
     }
   }
 }

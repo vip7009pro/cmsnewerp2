@@ -1,24 +1,26 @@
 # ACTIVE_STATE
 
-## Mục tiêu task hiện tại (đợt 10)
-Tối ưu giao diện mobile cho `PlanManager` (Kinh doanh → Quản lý Plan, `/kinhdoanh/planmanager`) bằng **viewport conditional rendering**:
-1. Bộ lọc đang là dải input inline → chuyển sang **dạng FLOAT** như `PrecisionPoManager`.
-2. Nút "Thêm Plan" bị đẩy khỏi màn hình trên mobile → sửa cho luôn hiển thị.
-3. Modal **Thêm Plan**: header/info bị bóp thành nhiều dòng, đẩy toàn bộ nội dung xuống → sửa cho gọn 1–2 dòng.
+## Mục tiêu task hiện tại (đợt 11)
+Tối ưu giao diện mobile cho `YCSXManager` (Kinh doanh → Quản lý YCSX, `/kinhdoanh/ycsxmanager`) bằng **viewport conditional rendering**:
+1. Bộ lọc sidebar 250px → **panel FLOAT** như `PrecisionPoManager`.
+2. **Ẩn 4 widget KPI** (tổng lệnh SX / đã duyệt / pending / vật liệu thiếu) trên mobile.
+3. Toolbar AGTable: **1 hàng duy nhất + scroll ngang**, nút icon vuông gọn, tối đa số nút hiển thị.
+4. Modal **Thêm YCSX mới** (cả Thủ Công & Excel/Lưới): không cắt xén, tiêu đề không wrap làm đẩy nội dung.
 
-Trạng thái: **HOÀN THÀNH** — `npm run build` EXIT=0, get_errors 0 lỗi, đã đo layout trên dev server 3001 ở 393px và 1440px.
+Trạng thái: **HOÀN THÀNH** — `npm run build` EXIT=0, get_errors 0 lỗi, đã đo trên dev server 3001 @393×850.
 
-## File đã chỉnh sửa (đợt 10)
-- `planmanager/PlanManager.tsx` — thêm `isMobile` (`matchMedia` + listener `change`); truyền xuống `PrecisionPlanHeader` và `PlanManagerManageTab`.
-- `PrecisionPlan/PrecisionPlanHeader.tsx` — nhận `isMobile`; mobile đổi nhãn sub-tab `Trạng thái kiểm tra Plan (Plan Status)` → **`Plan Status`** (nhãn dài chính là nguyên nhân đẩy nút Thêm Plan ra khỏi màn hình).
-- `PlanManagerManageTab.tsx` — nhận `isMobile`; thêm state `filterOpen` (effect đóng khi chuyển sang mobile); render `precision-plan__filterBackdrop` + header panel (`__toolbarHead`/`__toolbarTitle`/`__toolbarClose` với `FiX`); toolbar bộ lọc chỉ render khi `!isMobile || filterOpen`; thêm nút **BỘ LỌC** (`__gridBtn--filter`, class `--active` khi đang mở) vào `__gridActions`; tự đóng panel sau khi tra cứu thành công.
-- `PrecisionPlan/PrecisionPlanAddModal.tsx` — thêm `isMobile`; mobile rút gọn tiêu đề (`Thêm Kế Hoạch`), **ẩn hẳn `__subtitle`**, đổi nhãn mode `Nhập Thủ Công`→`Thủ Công` / `Import File Excel`→`Excel`, rút gọn dòng info banner; giữ text đầy đủ ở `title` (tooltip).
-- `PrecisionPlan/PrecisionPlan.scss` — block `@media (max-width:768px)` ở cuối `.precision-plan` (header/filter/grid toolbar) + block mobile trong `.pp-modal` (header 1 hàng, nút X absolute) + block mobile trong `.pp-manual__info/__infoLeft/__infoRight`; keyframes `pp-fade-in`.
+## File đã chỉnh sửa (đợt 11)
+- `ycsxmanager/YCSXManager.tsx` — thêm `isMobile`; `isFilterHidden` khởi tạo theo `innerWidth <= 768` + effect đồng bộ; **ẩn KPI bằng `{!isMobile && <PrecisionYCSXKpi …/>}`**; render `precision-ycsx__filterBackdrop`; truyền `isMobile`/`onClose` xuống filter panel, `isMobile` xuống header + toolbar.
+- `PrecisionYCSX/PrecisionYCSXFilterPanel.tsx` — thêm `isMobile`/`onClose` + wrapper `__filterHeaderActions` và nút đóng `__filterClose` (`FiX`); mobile đổi tiêu đề thành `BỘ LỌC YCSX`.
+- `PrecisionYCSX/PrecisionYCSXToolbar.tsx` — thêm `isMobile` → modifier `__gridToolbar--compact`; thêm icon `FiClock` cho nút **SET PENDING** (trước đây chỉ có chữ ⇒ khi ẩn nhãn sẽ thành nút trống); nút toggle bộ lọc có class riêng `__toolBtn--filterToggle`.
+- `PrecisionYCSX/PrecisionYCSXHeader.tsx` — thêm `isMobile`; rút gọn nhãn tab (`1. YCSX` / `2. Amazon`) và nút thêm (`+ YCSX` / `+ AMZ`).
+- `PrecisionYCSX/PrecisionYCSXAddModal.tsx` — thêm `isMobile`; rút gọn tiêu đề (`TẠO YCSX MỚI`) + ẩn `p` subtitle; tab mode → `Thủ Công` / `Excel / Lưới`; **chuyển các inline style sang dạng mobile** (container `maxWidth/width/height`, `modal-body padding: 10`, grid 6 cột → `repeat(2,…)`, hàng upload + footer xếp dọc/wrap) và rút gọn text dài trong chế độ Excel.
+- `PrecisionYCSX/PrecisionYCSX.scss` — thêm block `@media (max-width:768px)` cho `.precision-ycsx` (header/filter float/toolbar) và cho modal (`.precision-ycsx-modal-container`, `__modalModeTabs`, `__modalGridForm`, `__quickAddBar`).
 
 ## Việc cần làm tiếp theo
 - Kiểm thử thiết bị thật: bộ lọc float có bị bàn phím che khi nhập `input[type=date]` không; thao tác Pivot modal trên màn 320px.
-- Mobile: `PlanManagerStatusTab` + `PrecisionPlanAddModal` chưa được tối ưu (2 cột form / modal nhiều field).
-- Mobile: `PrecisionPOandStockFull`, `PrecisionQuotation`, `PrecisionYCSX` cũng để filter panel chiếm cột trái → áp lại pattern float này.
+- Mobile: `PlanManagerStatusTab`, `PrecisionYCSXEditModal`, `PrecisionAmzAddModal`, `PrecisionYCSXPrintModals` chưa được tối ưu.
+- Mobile: `PrecisionPOandStockFull`, `PrecisionQuotation` cũng để filter panel chiếm cột trái → áp lại pattern float này.
 - Mobile: `.stitch-inv__footer`, `.po-grid-footer`, `.precision-plan__footer` còn 2 nhóm trái/phải, nên rút gọn khi < 360px.
 
 ## Ghi chú kỹ thuật (đợt 10 — PlanManager mobile)
@@ -31,6 +33,14 @@ Trạng thái: **HOÀN THÀNH** — `npm run build` EXIT=0, get_errors 0 lỗi, 
 - Fix header modal mobile: `&__header { position: relative; flex-wrap: nowrap; padding: 10px 46px 10px 12px }` + `&__headerLeft { flex:1 1 auto; min-width:0 }` + `&__title { nowrap + ellipsis }` + `&__closeBtn { position:absolute; top:8px; right:8px }` (đưa X ra khỏi luồng để không chiếm dòng) + ẩn `__subtitle`.
 - Fix info banner mobile: `flex-direction: column; align-items: stretch` + `__infoLeft { min-width:0; nowrap; ellipsis }`.
 - **Pitfall**: `min-width: 0` là bắt buộc cho mọi flex item chứa text dài trong khối `display:flex` — nếu không, item sẽ co tới min-content (từng chữ) và text vỡ thành hàng chục dòng.
+
+## Ghi chú kỹ thuật (đợt 11 — YCSXManager mobile)
+- Đo trước khi sửa @393×850: KPI chiếm **287px** (4 hàng × 1 cột); `__filterPanel` 220px tĩnh ⇒ `__content` chỉ còn **173px**; toolbar cao **352px** với nút xếp **10 hàng**; header `scrollWidth` 483 > 393 ⇒ nút `+ THÊM DỮ LIỆU AMZ` bị cắt.
+- **`!important` ở base ⇒ override mobile cũng phải `!important`**: `__filterPanel`, `__content`, `__gridContainer`, `__mainBody`, `__tableContainer` khai báo gần như mọi thuộc tính kèm `!important` ⇒ block mobile phải dùng `!important` mới thắng.
+- **Ẩn nhãn nút bằng CSS chỉ an toàn khi MỌI nút đều có icon**: nút `SET PENDING` trước đây chỉ có `<span>` ⇒ phải thêm `FiClock`, nếu không nút thành trống. Cách làm ít xâm lấn: gắn 1 modifier `__gridToolbar--compact` lên toolbar rồi CSS `.compact .toolBtn { width:30px; padding:0; > span { display:none } }`.
+- **Inline style không thể bị CSS class đè** ⇒ với modal YCSX phải sửa ngay trong TSX: `style={{ maxWidth: isMobile ? "100%" : 1100, … }}`, `padding: isMobile ? 10 : 16`, `gridTemplateColumns: isMobile ? "repeat(2, minmax(0,1fr))" : …`.
+- Panel float: dùng `top/left/right: 0; bottom: auto; max-height: 100%` (co theo nội dung) ⇒ backdrop còn **84px bấm được**; kèm nút X trong header.
+- **Công cụ**: `page.setViewportSize()` có lúc **không còn tác dụng** giữa phiên (viewport bị kẹp theo pane thật của VS Code, tụt về 245px) ⇒ luôn đọc lại `innerWidth` trước khi kết luận layout bị bóp.
 
 ## Ghi chú kỹ thuật (đợt 9 — InvoiceManager mobile)
 - **Bộ lọc float phủ trọn workspace** (`&__sidebar { position:absolute; inset:0 }`) ⇒ KHÔNG còn chỗ bấm backdrop để đóng (backdrop bị panel che hoàn toàn) ⇒ **bắt buộc có nút đóng riêng trong header panel**. Khác với `PrecisionPoManager` (panel có sẵn `MdClose`).

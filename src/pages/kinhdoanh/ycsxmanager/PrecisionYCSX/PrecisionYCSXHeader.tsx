@@ -10,6 +10,8 @@ interface Props {
   onOpenAddYcsxModal: () => void;
   onOpenAddAmzModal: () => void;
   isCMS: boolean;
+  /** Mobile: rút gọn nhãn tab & nút thêm để không bị đẩy/cắt khỏi màn hình */
+  isMobile?: boolean;
 }
 
 const PrecisionYCSXHeader: React.FC<Props> = ({
@@ -20,6 +22,7 @@ const PrecisionYCSXHeader: React.FC<Props> = ({
   onOpenAddYcsxModal,
   onOpenAddAmzModal,
   isCMS,
+  isMobile = false,
 }) => {
   return (
     <div className="precision-ycsx__header">
@@ -29,9 +32,10 @@ const PrecisionYCSXHeader: React.FC<Props> = ({
           type="button"
           className={`precision-ycsx__tab ${activeTab === 0 ? "precision-ycsx__tab--active" : ""}`}
           onClick={() => onSelectTab(0)}
+          title="Quản lý YCSX (YCSX Master)"
         >
           <FiClipboard />
-          <span>1. Quản lý YCSX (YCSX Master)</span>
+          <span>{isMobile ? "1. YCSX" : "1. Quản lý YCSX (YCSX Master)"}</span>
           <span className="precision-ycsx__tabBadge">{ycsxCount.toLocaleString("en-US")}</span>
         </button>
 
@@ -40,9 +44,10 @@ const PrecisionYCSXHeader: React.FC<Props> = ({
             type="button"
             className={`precision-ycsx__tab ${activeTab === 1 ? "precision-ycsx__tab--active" : ""}`}
             onClick={() => onSelectTab(1)}
+            title="Dữ liệu Amazon (Tra & Quản lý AMZ Data)"
           >
             <FiDatabase />
-            <span>2. Dữ liệu Amazon (Tra & Quản lý AMZ Data)</span>
+            <span>{isMobile ? "2. Amazon" : "2. Dữ liệu Amazon (Tra & Quản lý AMZ Data)"}</span>
             {amzCount > 0 && (
               <span className="precision-ycsx__tabBadge">{amzCount.toLocaleString("en-US")}</span>
             )}
@@ -65,7 +70,7 @@ const PrecisionYCSXHeader: React.FC<Props> = ({
           title="Thêm yêu cầu sản xuất mới"
         >
           <FiPlus size={14} />
-          <span>+ THÊM YCSX MỚI</span>
+          <span>{isMobile ? "+ YCSX" : "+ THÊM YCSX MỚI"}</span>
         </button>
 
         {/* Nút Thêm AMZ (Hiển thị cho CMS) */}
@@ -77,7 +82,7 @@ const PrecisionYCSXHeader: React.FC<Props> = ({
             title="Nhập dữ liệu Amazon mới hàng loạt"
           >
             <AiFillAmazonCircle size={15} />
-            <span>+ THÊM DỮ LIỆU AMZ</span>
+            <span>{isMobile ? "+ AMZ" : "+ THÊM DỮ LIỆU AMZ"}</span>
           </button>
         )}
       </div>

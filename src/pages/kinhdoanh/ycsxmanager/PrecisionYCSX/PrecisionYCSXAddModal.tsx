@@ -121,6 +121,28 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
   const [activeMode, setActiveMode] = useState<"manual" | "excel">("manual");
   const excelColumns = getExcelUploadColumns(isCMS);
 
+  // Viewport mobile (≤768px) — nhiều khối trong modal dùng inline style nên phải chuyển sang dạng mobile
+  // ngay tại TSX (CSS class không thể đè inline style).
+  const [isMobile, setIsMobile] = React.useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
+
   const handleDownloadTemplate = () => {
     const template = [{
       PROD_REQUEST_DATE: "20260919",
@@ -149,7 +171,11 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
     <div className="precision-ycsx-modal-backdrop" onClick={onClose}>
       <div
         className="precision-ycsx-modal-container"
-        style={{ maxWidth: 1100, width: "95vw", height: "92vh" }}
+        style={{
+          maxWidth: isMobile ? "100%" : 1100,
+          width: isMobile ? "100%" : "95vw",
+          height: isMobile ? "94vh" : "92vh",
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -159,8 +185,12 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
               <FiPlus />
             </div>
             <div>
-              <h3>TẠO YÊU CẦU SẢN XUẤT MỚI (YCSX HUB)</h3>
-              <p>Khởi tạo lệnh sản xuất đơn lẻ hoặc nhập hàng loạt từ bảng tính Excel</p>
+              <h3 title="Tạo yêu cầu sản xuất mới (YCSX Hub)">
+                {isMobile ? "TẠO YCSX MỚI" : "TẠO YÊU CẦU SẢN XUẤT MỚI (YCSX HUB)"}
+              </h3>
+              {!isMobile && (
+                <p>Khởi tạo lệnh sản xuất đơn lẻ hoặc nhập hàng loạt từ bảng tính Excel</p>
+              )}
             </div>
           </div>
           <button className="btn-close" onClick={onClose} title="Đóng modal">
@@ -176,9 +206,10 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
               activeMode === "manual" ? "precision-ycsx__modalModeTab--active" : ""
             }`}
             onClick={() => setActiveMode("manual")}
+            title="Nhập thủ công từng phiếu"
           >
             <FiEdit />
-            <span>1. Nhập Thủ Công (Từng Phiếu)</span>
+            <span>{isMobile ? "Thủ Công" : "1. Nhập Thủ Công (Từng Phiếu)"}</span>
           </button>
           <button
             type="button"
@@ -186,9 +217,10 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
               activeMode === "excel" ? "precision-ycsx__modalModeTab--active" : ""
             }`}
             onClick={() => setActiveMode("excel")}
+            title="Thêm hàng loạt bằng Excel & nhập lưới"
           >
             <FiUploadCloud />
-            <span>2. Thêm Hàng Loạt (Excel & Nhập Lưới)</span>
+            <span>{isMobile ? "Excel / Lưới" : "2. Thêm Hàng Loạt (Excel & Nhập Lưới)"}</span>
             {uploadExcelJson.length > 0 && (
               <span
                 style={{
@@ -207,7 +239,7 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="modal-body" style={{ padding: 16 }}>
+        <div className="modal-body" style={{ padding: isMobile ? 10 : 16 }}>
           {activeMode === "manual" ? (
             /* ── CHẾ ĐỘ 1: NHẬP THỦ CÔNG ── */
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -444,26 +476,35 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                 <div
                   style={{
                     display: "flex",
-                    alignItems: "center",
+                    alignItems: isMobile ? "flex-start" : "center",
+                    flexDirection: isMobile ? "column" : "row",
                     justifyContent: "space-between",
                     borderBottom: "1px solid #e2e8f0",
                     paddingBottom: 6,
+                    gap: 4,
                   }}
                 >
                   <span style={{ fontSize: 11.5, fontWeight: 700, color: "#1e293b", display: "flex", alignItems: "center", gap: 6 }}>
-                    <FiEdit style={{ color: "#2563eb" }} /> THÊM TỪNG DÒNG TRỰC TIẾP VÀO LƯỚI (QUICK ADD TO GRID)
+                    <FiEdit style={{ color: "#2563eb", flexShrink: 0 }} />
+                    {isMobile ? "THÊM TỪNG DÒNG VÀO LƯỚI" : "THÊM TỪNG DÒNG TRỰC TIẾP VÀO LƯỚI (QUICK ADD TO GRID)"}
                   </span>
-                  <span style={{ fontSize: 11, color: "#64748b" }}>
-                    Chọn thông tin bên dưới và bấm "Thêm Dòng Lưới" để đưa vào bảng preview
-                  </span>
+                  {!isMobile && (
+                    <span style={{ fontSize: 11, color: "#64748b" }}>
+                      Chọn thông tin bên dưới và bấm "Thêm Dòng Lưới" để đưa vào bảng preview
+                    </span>
+                  )}
                 </div>
 
                 {/* Grid 2 hàng đầy đủ 100% các trường */}
                 <div
                   style={{
                     display: "grid",
-                    gridTemplateColumns: isCMS ? "1.2fr 1.8fr 1fr 0.9fr 1fr 1fr" : "1.2fr 2fr 1.2fr 1fr 1fr 1fr",
-                    gap: 8,
+                    gridTemplateColumns: isMobile
+                      ? "repeat(2, minmax(0, 1fr))"
+                      : isCMS
+                      ? "1.2fr 1.8fr 1fr 0.9fr 1fr 1fr"
+                      : "1.2fr 2fr 1.2fr 1fr 1fr 1fr",
+                    gap: isMobile ? 6 : 8,
                     alignItems: "flex-end",
                   }}
                 >
@@ -574,8 +615,12 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                 <div
                   style={{
                     display: "grid",
-                    gridTemplateColumns: isCMS ? "1fr 1fr 1fr 1fr 2fr auto" : "1fr 1fr 2.5fr auto",
-                    gap: 8,
+                    gridTemplateColumns: isMobile
+                      ? "repeat(2, minmax(0, 1fr))"
+                      : isCMS
+                      ? "1fr 1fr 1fr 1fr 2fr auto"
+                      : "1fr 1fr 2.5fr auto",
+                    gap: isMobile ? 6 : 8,
                     alignItems: "flex-end",
                   }}
                 >
@@ -664,7 +709,7 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                       cursor: "pointer",
                     }}
                   >
-                    <FiPlus size={14} /> + Thêm Dòng Lưới
+                    <FiPlus size={14} /> {isMobile ? "Thêm Dòng" : "+ Thêm Dòng Lưới"}
                   </button>
                 </div>
               </div>
@@ -673,16 +718,17 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
               <div
                 style={{
                   display: "flex",
-                  alignItems: "center",
+                  flexDirection: isMobile ? "column" : "row",
+                  alignItems: isMobile ? "stretch" : "center",
                   justifyContent: "space-between",
-                  padding: "8px 12px",
+                  padding: isMobile ? 8 : "8px 12px",
                   background: "#ffffff",
                   border: "1px solid #e2e8f0",
                   borderRadius: 6,
-                  gap: 10,
+                  gap: isMobile ? 8 : 10,
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                   <label
                     htmlFor="ycsx-excel-file"
                     style={{
@@ -699,7 +745,7 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                     }}
                   >
                     <FiUploadCloud size={15} />
-                    <span>Chọn Tệp Excel (.xlsx, .xls)</span>
+                    <span>{isMobile ? "Chọn Tệp Excel" : "Chọn Tệp Excel (.xlsx, .xls)"}</span>
                   </label>
                   <input
                     id="ycsx-excel-file"
@@ -728,14 +774,14 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                     <FiDownload size={14} /> Tải template
                   </button>
                   <span style={{ fontSize: "11.5px", color: "#475569" }}>
-                    Tổng số dòng trong lưới:{" "}
+                    {isMobile ? "Tổng: " : "Tổng số dòng trong lưới: "}
                     <strong style={{ color: uploadExcelJson.length > 0 ? "#2563eb" : "inherit" }}>
-                      {uploadExcelJson.length.toLocaleString()} dòng
+                      {uploadExcelJson.length.toLocaleString()}{isMobile ? " dòng" : " dòng"}
                     </strong>
                   </span>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
                   <button
                     type="button"
                     onClick={onCheckExcel}
@@ -754,7 +800,7 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                       cursor: uploadExcelJson.length === 0 ? "not-allowed" : "pointer",
                     }}
                   >
-                    <FiCheckCircle size={14} /> 1. KIỂM TRA (CHECK)
+                    <FiCheckCircle size={14} /> {isMobile ? "KIỂM TRA" : "1. KIỂM TRA (CHECK)"}
                   </button>
 
                   <button
@@ -775,7 +821,7 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                       cursor: uploadExcelJson.length === 0 ? "not-allowed" : "pointer",
                     }}
                   >
-                    <FiUploadCloud size={14} /> 2. TẢI LÊN (UPLOAD)
+                    <FiUploadCloud size={14} /> {isMobile ? "TẢI LÊN" : "2. TẢI LÊN (UPLOAD)"}
                   </button>
 
                   <button
@@ -796,7 +842,7 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                       cursor: uploadExcelJson.length === 0 ? "not-allowed" : "pointer",
                     }}
                   >
-                    <FiTrash2 size={13} /> Xóa Lưới
+                    <FiTrash2 size={13} /> {isMobile ? "Xóa" : "Xóa Lưới"}
                   </button>
                 </div>
               </div>

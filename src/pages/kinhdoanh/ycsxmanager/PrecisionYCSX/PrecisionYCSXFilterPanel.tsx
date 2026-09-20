@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { FiFilter, FiZap } from "react-icons/fi";
+import { FiFilter, FiZap, FiX } from "react-icons/fi";
 
 export interface YCSXFilterState {
   fromdate: string;
@@ -27,6 +27,9 @@ interface Props {
   onReset: () => void;
   isHidden: boolean;
   isCMS: boolean;
+  /** Mobile: bộ lọc là panel float phủ trên bảng ⇒ cần nút đóng riêng */
+  isMobile?: boolean;
+  onClose?: () => void;
 }
 
 const PrecisionYCSXFilterPanel: React.FC<Props> = ({
@@ -36,6 +39,8 @@ const PrecisionYCSXFilterPanel: React.FC<Props> = ({
   onReset,
   isHidden,
   isCMS,
+  isMobile = false,
+  onClose,
 }) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -50,16 +55,28 @@ const PrecisionYCSXFilterPanel: React.FC<Props> = ({
       <div className="precision-ycsx__filterHeader">
         <div className="precision-ycsx__filterTitle">
           <FiFilter />
-          <span>BỘ LỌC YCSX (SX-01)</span>
+          <span>{isMobile ? "BỘ LỌC YCSX" : "BỘ LỌC YCSX (SX-01)"}</span>
         </div>
-        <button
-          type="button"
-          className="precision-ycsx__filterReset"
-          onClick={onReset}
-          title="Đặt lại bộ lọc mặc định"
-        >
-          Mặc định
-        </button>
+        <div className="precision-ycsx__filterHeaderActions">
+          <button
+            type="button"
+            className="precision-ycsx__filterReset"
+            onClick={onReset}
+            title="Đặt lại bộ lọc mặc định"
+          >
+            Mặc định
+          </button>
+          {isMobile && onClose && (
+            <button
+              type="button"
+              className="precision-ycsx__filterClose"
+              onClick={onClose}
+              title="Đóng bộ lọc"
+            >
+              <FiX size={15} />
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="precision-ycsx__filterBody">

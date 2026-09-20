@@ -9,6 +9,7 @@ import {
   FiPrinter,
   FiCheckSquare,
   FiDownload,
+  FiClock,
 } from "react-icons/fi";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import { AiOutlineFileSearch } from "react-icons/ai";
@@ -31,6 +32,8 @@ interface Props {
   onExportEX1: () => void;
   onExportEX2: () => void;
   onTogglePivot: () => void;
+  /** Mobile: thu nút về dạng icon vuông gọn để tối đa số nút trên 1 hàng scroll ngang */
+  isMobile?: boolean;
 }
 
 const PrecisionYCSXToolbar: React.FC<Props> = ({
@@ -51,16 +54,17 @@ const PrecisionYCSXToolbar: React.FC<Props> = ({
   onExportEX1,
   onExportEX2,
   onTogglePivot,
+  isMobile = false,
 }) => {
   return (
-    <div className="precision-ycsx__gridToolbar">
+    <div className={`precision-ycsx__gridToolbar ${isMobile ? "precision-ycsx__gridToolbar--compact" : ""}`}>
       {/* Left Command Actions */}
       <div className="precision-ycsx__gridToolbarLeft">
         <button
           type="button"
-          className="precision-ycsx__toolBtn"
+          className="precision-ycsx__toolBtn precision-ycsx__toolBtn--filterToggle"
           onClick={onToggleFilter}
-          title={isFilterHidden ? "Hiện thanh lọc bên trái" : "Ẩn thanh lọc bên trái"}
+          title={isFilterHidden ? "Hiện bộ lọc" : "Ẩn bộ lọc"}
         >
           <FiSidebar />
           <span>{isFilterHidden ? "Hiện Lọc" : "Ẩn Lọc"}</span>
@@ -114,6 +118,8 @@ const PrecisionYCSXToolbar: React.FC<Props> = ({
           onClick={onSetPending}
           title="Đặt lệnh về trạng thái Chờ duyệt (Set Pending)"
         >
+          {/* Phải có icon: trên mobile nhãn bị ẩn, không thì nút sẽ trống */}
+          <FiClock />
           <span>SET PENDING</span>
         </button>
 

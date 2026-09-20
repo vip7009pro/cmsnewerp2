@@ -2139,3 +2139,15 @@
   - Fix: thêm `isMobile` vào `PrecisionPlanAddModal.tsx` (rút gọn tiêu đề `Thêm Kế Hoạch`, ẩn `__subtitle`, nhãn mode `Thủ Công`/`Excel`, dòng info ngắn — text đầy đủ giữ ở `title`); `PrecisionPlan.scss` thêm block mobile cho `.pp-modal` (`header` nowrap + `padding-right:46px`, `__headerLeft { flex:1 1 auto; min-width:0 }`, `__title` nowrap+ellipsis, `__closeBtn` absolute góc phải trên) và cho `.pp-manual__info` (xếp dọc + `__infoLeft` ellipsis).
   - Kết quả đo @393×850: header **316px → 52px**, info **329px → 50px**, body **không cần scroll** (`bodyScrollable:false`), nút X nằm trong modal, tiêu đề không bị cắt, cả 2 chế độ Thủ Công/Excel đều 1 hàng header; desktop 1440px không hồi quy (modal 960×666, tiêu đề đầy đủ, còn subtitle, nút mode nhãn dài).
 
+- [x] Đợt 11: Mobile cho `YCSXManager` (Kinh doanh → Quản lý YCSX) — 2026-09-20:
+  - Vấn đề người dùng báo: bộ lọc sidebar chiếm cột trái; widget KPI chiếm nhiều chỗ; toolbar nút xuống dòng; modal Thêm YCSX (Thủ Công & Excel) bị cắt xén / tiêu đề wrap đẩy nội dung xuống.
+  - Đo hiện trạng @393×850: KPI **287px** (4 hàng × 1 cột); `__filterPanel` 220px tĩnh ⇒ `__content` còn **173px**; toolbar cao **352px** (nút xếp **10 hàng**); header `scrollWidth` 483 > 393 ⇒ nút `+ THÊM DỮ LIỆU AMZ` bị cắt.
+  - `YCSXManager.tsx`: thêm `isMobile`; `isFilterHidden` khởi tạo theo `innerWidth <= 768` + effect; **ẩn KPI** bằng `{!isMobile && <PrecisionYCSXKpi …/>}`; render `precision-ycsx__filterBackdrop`; truyền prop xuống panel/header/toolbar.
+  - `PrecisionYCSXFilterPanel.tsx`: `isMobile`/`onClose` + `__filterHeaderActions` + nút đóng `__filterClose` (FiX).
+  - `PrecisionYCSXToolbar.tsx`: `isMobile` → modifier `__gridToolbar--compact`; thêm `FiClock` cho nút **SET PENDING** (trước chỉ có chữ, ẩn nhãn sẽ thành nút trống); toggle bộ lọc có class `__toolBtn--filterToggle`.
+  - `PrecisionYCSXHeader.tsx`: `isMobile` → nhãn gọn `1. YCSX` / `2. Amazon` / `+ YCSX` / `+ AMZ`.
+  - `PrecisionYCSXAddModal.tsx`: `isMobile` → tiêu đề `TẠO YCSX MỚI` + ẩn subtitle; tab mode `Thủ Công` / `Excel / Lưới`; **chuyển inline style sang dạng mobile** (container, `modal-body padding`, grid 6 cột → 2 cột, hàng upload/footer) + rút gọn text dài ở chế độ Excel.
+  - `PrecisionYCSX.scss`: block `@media (max-width:768px)` cho header/filter float/toolbar + cho modal (`__modalModeTabs`, `__modalGridForm`, `__quickAddBar`, `.modal-agtable-wrapper` 360px → 240px).
+  - Kết quả @393×850: **KPI ẩn**, filter float `position:absolute` trùng `x/width` với mainBody (backdrop còn 84px bấm được, đóng được bằng cả X và bấm nền), `__content` **173px → 393px**, toolbar **16 nút trong 1 hàng** (30×30 icon-only, `scrollWidth 574` vs `clientWidth 393` ⇒ scroll ngang, không nút nào trống), header `scrollWidth == clientWidth == 393` và cả 4 nút đều trong viewport; modal Thủ Công: header 45px, tab 1 hàng, form 2 cột, body **không cần scroll**, footer 1 hàng; modal Excel: tiêu đề 1 dòng, mọi khối trong width, không cắt xén; `overflowXPx = 0` toàn trang.
+  - Xác minh: get_errors 0 lỗi trên 6 file; `npm run build` (vite production) `✓ built in 55.61s` EXIT=0.
+
