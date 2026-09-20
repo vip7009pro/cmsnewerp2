@@ -1,5 +1,7 @@
 # Roadmap - cmsnewerp2
 
+- [x] YCSX: Đưa font chữ bảng dữ liệu AGTable từ `0.72rem` về `0.6rem` để đồng bộ với các bảng khác; diagnostics/build thành công.
+
 - [x] PLAN: Sửa lỗi scrollbar ngang preview Excel bị cắt bởi xung đột chiều cao `360px/320px`; đồng bộ chiều cao wrapper/grid và hiển thị track scrollbar rõ ràng; diagnostics/build thành công.
 
 - [x] PLAN: Sửa Check Plan hàng loạt để cập nhật `OK`/`NG` theo từng dòng, không để một request lỗi làm toàn bộ bảng giữ `Waiting`; khôi phục scrollbar ngang preview Excel; diagnostics/build thành công.

@@ -36,9 +36,9 @@ const YCSXManager: React.FC = () => {
   // Row Styling
   const getRowStyle = useCallback((params: any) => {
     if (params.data?.USE_YN === "N") {
-      return { backgroundColor: "#fff9db", fontSize: "0.72rem" };
+      return { backgroundColor: "#fff9db", fontSize: "0.6rem" };
     }
-    return { backgroundColor: "#ffffff", fontSize: "0.72rem" };
+    return { backgroundColor: "#ffffff", fontSize: "0.6rem" };
   }, []);
 
   // Filter Object Memo

@@ -1,5 +1,10 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-20 (YCSX: Thu nhỏ font chữ bảng AGTable)
+- `YCSXManager.tsx` đổi font dòng dữ liệu từ `0.72rem` về `0.6rem`, đồng bộ với AGTable mặc định và bản YCSX cũ.
+- Giữ nguyên màu nền phân biệt dòng `USE_YN = N` và toàn bộ logic bảng.
+- Diagnostics sạch và `npm run build` thành công; còn warning có sẵn từ `pdfjs-dist` về `eval`.
+
 ## Update - 2026-09-20 (PLAN: Hiển thị scrollbar ngang trong khung preview Excel)
 - Nguyên nhân scrollbar không nhìn thấy: `previewBody` có `min-height: 360px` trong khi khung `preview` bị giới hạn `max-height: 320px` và `overflow: hidden`, làm phần scrollbar phía dưới bị cắt.
 - Đồng bộ khung preview và AG Grid về chiều cao flex hữu hạn, dùng `overflow-x: scroll` trên wrapper và thêm style track/thumb để thanh cuộn luôn hiển thị.
