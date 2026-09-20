@@ -9,7 +9,7 @@ export const column_XUATLIEUDATA = [
   {
     field: "G_CODE",
     headerName: "G_CODE",
-    width: 50,
+    width: 100,
     headerCheckboxSelection: true,
     checkboxSelection: true,
   },
