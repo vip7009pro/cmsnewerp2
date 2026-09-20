@@ -87,9 +87,17 @@ const PrecisionPoManager: React.FC = () => {
 
   // Filter & Search states
   const [filters, setFilters] = useState<PrecisionPoFilterState>(initialFilters);
-  const [filterCollapsed, setFilterCollapsed] = useState(false);
+  // Mobile: mặc định ẩn bộ lọc để bảng PO chiếm trọn chiều ngang (bộ lọc mở dạng float)
+  const [filterCollapsed, setFilterCollapsed] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
   const [quickSearchText, setQuickSearchText] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+
+  // Viewport mobile (≤768px) — điều khiển conditional rendering cho KPI / bộ lọc / toolbar
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
 
   // Modal visibility states
   const [openAddModal, setOpenAddModal] = useState(false);
@@ -245,6 +253,28 @@ const PrecisionPoManager: React.FC = () => {
     };
   }, [isCMS]);
 
+  // Theo dõi viewport: mobile ⇒ thu bộ lọc thành dạng float (không đẩy bảng sang phải)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
+
+  // Mobile luôn đóng bộ lọc khi mới vào trang; desktop giữ bộ lọc mở như cũ
+  useEffect(() => {
+    setFilterCollapsed(isMobile);
+  }, [isMobile]);
+
   // Global shortcut F2
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
@@ -398,9 +428,9 @@ const PrecisionPoManager: React.FC = () => {
         CONTENT: `${userData.EMPL_NO} (${userData.FIRST_NAME}) đã thêm PO ${poNo} (${selectedCode.G_NAME_KD})`,
         SUBDEPTNAME: "KD",
         MAINDEPTNAME: "KD",
-        INS_EMPL: userData.EMPL_NO,
+        INS_EMPL: userData.EMPL_NO ?? "",
         INS_DATE: moment().format("YYYY-MM-DD"),
-        UPD_EMPL: userData.EMPL_NO,
+        UPD_EMPL: userData.EMPL_NO ?? "",
         UPD_DATE: moment().format("YYYY-MM-DD"),
       };
       if (await f_insert_Notification_Data(noti)) {
@@ -795,15 +825,25 @@ const PrecisionPoManager: React.FC = () => {
 
   return (
     <div className="precision-po-manager">
-      {/* 1. 6 KPI MICRO-CARDS */}
+      {/* 1. 6 KPI MICRO-CARDS (mobile: siêu nén 2 hàng × 3 cột) */}
       <PrecisionPoKpiGrid
         summary={poSummary}
         currency={currency}
         totalOrdersCount={podatatable.length}
+        compact={isMobile}
       />
 
       {/* 3. WORKSPACE: FILTER + TABLE */}
-      <div className="po-main-workspace">
+      <div className={`po-main-workspace ${isMobile ? "po-main-workspace--mobile" : ""}`}>
+        {/* Mobile: bộ lọc float phủ trên bảng ⇒ bấm nền mờ để đóng */}
+        {isMobile && !filterCollapsed && (
+          <div
+            className="po-filter-backdrop"
+            onClick={() => setFilterCollapsed(true)}
+            title="Đóng bộ lọc"
+          />
+        )}
+
         {!filterCollapsed && (
           <PrecisionPoFilterPanel
             collapsed={false}
@@ -813,6 +853,7 @@ const PrecisionPoManager: React.FC = () => {
             onSearch={handletraPO}
             onReset={() => setFilters(initialFilters)}
             isSearching={isSearching}
+            isMobile={isMobile}
           />
         )}
 
@@ -846,6 +887,7 @@ const PrecisionPoManager: React.FC = () => {
             }
             onTogglePivot={() => setShowPivot(!showPivot)}
             onExportExcel={() => SaveExcel(displayData, "Danh_Sach_PO")}
+            isMobile={isMobile}
           />
 
           <PrecisionPoTable

@@ -1,5 +1,5 @@
 import React from "react";
-import { MdTune, MdChevronLeft, MdSearch, MdRestartAlt } from "react-icons/md";
+import { MdTune, MdChevronLeft, MdSearch, MdRestartAlt, MdClose } from "react-icons/md";
 import "../PrecisionPoManager.scss";
 
 export interface PrecisionPoFilterState {
@@ -31,6 +31,8 @@ interface PrecisionPoFilterPanelProps {
   onSearch: () => void;
   onReset: () => void;
   isSearching?: boolean;
+  /** Mobile: bộ lọc render dạng float phủ trên bảng, nút thu gọn thành nút đóng */
+  isMobile?: boolean;
 }
 
 const PrecisionPoFilterPanel: React.FC<PrecisionPoFilterPanelProps> = ({
@@ -41,6 +43,7 @@ const PrecisionPoFilterPanel: React.FC<PrecisionPoFilterPanelProps> = ({
   onSearch,
   onReset,
   isSearching = false,
+  isMobile = false,
 }) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -60,9 +63,9 @@ const PrecisionPoFilterPanel: React.FC<PrecisionPoFilterPanelProps> = ({
           type="button"
           className="btn-toggle-filter"
           onClick={onToggleCollapse}
-          title="Thu gọn bộ lọc"
+          title={isMobile ? "Đóng bộ lọc" : "Thu gọn bộ lọc"}
         >
-          <MdChevronLeft size={18} />
+          {isMobile ? <MdClose size={18} /> : <MdChevronLeft size={18} />}
         </button>
       </div>
 

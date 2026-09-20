@@ -14,12 +14,24 @@ interface PrecisionPoKpiGridProps {
   summary: POSummaryData;
   currency: string;
   totalOrdersCount: number;
+  /** Mobile: render dạng siêu nén 2 hàng × 3 cột, mỗi ô chỉ 2 dòng (nhãn + giá trị) */
+  compact?: boolean;
+}
+
+interface CompactKpiItem {
+  key: string;
+  label: string;
+  fullLabel: string;
+  value: string;
+  unit: string;
+  color: string;
 }
 
 const PrecisionPoKpiGrid: React.FC<PrecisionPoKpiGridProps> = ({
   summary,
   currency,
   totalOrdersCount,
+  compact = false,
 }) => {
   const deliveryPercent =
     summary.total_po_qty > 0
@@ -35,6 +47,86 @@ const PrecisionPoKpiGrid: React.FC<PrecisionPoKpiGridProps> = ({
     summary.total_po_amount > 0
       ? ((summary.total_delivered_amount / summary.total_po_amount) * 100).toFixed(2)
       : "0.00";
+
+  // Mobile compact: hàng 1 = 3 ô số lượng, hàng 2 = 3 ô số tiền (đúng thứ tự KPI 1→6)
+  const compactItems: CompactKpiItem[] = [
+    {
+      key: "po_qty",
+      label: "Tổng ĐH",
+      fullLabel: "Tổng đặt hàng (PO Qty)",
+      value: summary.total_po_qty.toLocaleString("en-US"),
+      unit: "EA",
+      color: "#1d4ed8",
+    },
+    {
+      key: "delivered_qty",
+      label: "Đã giao",
+      fullLabel: "Số lượng đã giao",
+      value: summary.total_delivered_qty.toLocaleString("en-US"),
+      unit: "EA",
+      color: "#047857",
+    },
+    {
+      key: "balance_qty",
+      label: "Tồn PO",
+      fullLabel: "Tồn PO cần sản xuất",
+      value: summary.total_pobalance_qty.toLocaleString("en-US"),
+      unit: "EA",
+      color: "#b45309",
+    },
+    {
+      key: "po_amount",
+      label: "Tổng giá trị",
+      fullLabel: `Tổng giá trị PO (${totalOrdersCount.toLocaleString("en-US")} đơn)`,
+      value: summary.total_po_amount.toLocaleString("en-US", {
+        style: "currency",
+        currency,
+        maximumFractionDigits: 0,
+      }),
+      unit: currency,
+      color: "#1d4ed8",
+    },
+    {
+      key: "delivered_amount",
+      label: "Giá trị giao",
+      fullLabel: `Giá trị đã giao (${billedPercent}% Bill)`,
+      value: summary.total_delivered_amount.toLocaleString("en-US", {
+        style: "currency",
+        currency,
+        maximumFractionDigits: 0,
+      }),
+      unit: currency,
+      color: "#0369a1",
+    },
+    {
+      key: "balance_amount",
+      label: "Giá trị còn lại",
+      fullLabel: "Giá trị PO còn lại",
+      value: summary.total_pobalance_amount.toLocaleString("en-US", {
+        style: "currency",
+        currency,
+        maximumFractionDigits: 0,
+      }),
+      unit: currency,
+      color: "#be123c",
+    },
+  ];
+
+  if (compact) {
+    return (
+      <div className="po-kpi-grid po-kpi-grid--compact">
+        {compactItems.map((item) => (
+          <div className="kpi-card" key={item.key} title={`${item.fullLabel}: ${item.value} ${item.unit}`}>
+            <span className="kpi-compact-label">{item.label}</span>
+            <span className="kpi-compact-value font-mono-num" style={{ color: item.color }}>
+              {item.value}
+              <span className="kpi-compact-unit">{item.unit}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="po-kpi-grid">

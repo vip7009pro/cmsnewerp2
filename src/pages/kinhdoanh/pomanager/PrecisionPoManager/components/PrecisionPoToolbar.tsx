@@ -25,6 +25,8 @@ interface PrecisionPoToolbarProps {
   onApprovePO: () => void;
   onTogglePivot: () => void;
   onExportExcel: () => void;
+  /** Mobile: các nút phụ thu gọn icon-only để toolbar không chiếm nhiều dòng */
+  isMobile?: boolean;
 }
 
 const PrecisionPoToolbar: React.FC<PrecisionPoToolbarProps> = ({
@@ -40,7 +42,12 @@ const PrecisionPoToolbar: React.FC<PrecisionPoToolbarProps> = ({
   onApprovePO,
   onTogglePivot,
   onExportExcel,
+  isMobile = false,
 }) => {
+  // Desktop: icon + label. Mobile: chỉ icon (title đã có tooltip) để toolbar gọn 2 hàng.
+  const actionClass = (variant = "") =>
+    `btn-grid-action ${variant} ${isMobile ? "is-icon-only" : ""}`.trim();
+
   return (
     <div className="po-grid-toolbar">
       {/* Left controls */}
@@ -52,14 +59,14 @@ const PrecisionPoToolbar: React.FC<PrecisionPoToolbarProps> = ({
           title={filterCollapsed ? "Mở bộ lọc" : "Ẩn bộ lọc"}
         >
           {filterCollapsed ? <MdMenu size={16} /> : <MdMenuOpen size={16} />}
-          <span>{filterCollapsed ? "Hiện bộ lọc" : "Ẩn bộ lọc"}</span>
+          <span>{isMobile ? "Bộ lọc" : filterCollapsed ? "Hiện bộ lọc" : "Ẩn bộ lọc"}</span>
         </button>
 
         <div className="table-quick-search">
           <MdSearch className="search-icon" />
           <input
             type="text"
-            placeholder="Lọc nhanh tại bảng..."
+            placeholder={isMobile ? "Lọc nhanh..." : "Lọc nhanh tại bảng..."}
             value={quickSearchText}
             onChange={(e) => onQuickSearchChange(e.target.value)}
           />
@@ -88,65 +95,65 @@ const PrecisionPoToolbar: React.FC<PrecisionPoToolbarProps> = ({
         {/* SECONDARY ACTIONS */}
         <button
           type="button"
-          className="btn-grid-action"
+          className={actionClass("btn-action-edit")}
           onClick={onEditSelected}
           title="Chỉnh sửa PO đang chọn"
         >
           <MdEdit size={15} color="#004ac6" />
-          <span>Sửa</span>
+          {!isMobile && <span>Sửa</span>}
         </button>
 
         <button
           type="button"
-          className="btn-grid-action"
+          className={actionClass("btn-action-invoice")}
           onClick={onOpenInvoiceModal}
           title="Tạo Invoice giao hàng cho PO đã chọn"
         >
           <MdReceiptLong size={15} color="#10b981" />
-          <span>Tạo Invoice</span>
+          {!isMobile && <span>Tạo Invoice</span>}
         </button>
 
         <button
           type="button"
-          className="btn-grid-action btn-action-danger"
+          className={actionClass("btn-action-danger")}
           onClick={onDeleteSelected}
           title="Xóa các PO đã chọn"
         >
           <MdDeleteOutline size={15} color="#f43f5e" />
-          <span>Xóa</span>
+          {!isMobile && <span>Xóa</span>}
         </button>
 
         <button
           type="button"
-          className="btn-grid-action btn-action-success"
+          className={actionClass("btn-action-success")}
           onClick={onApprovePO}
           title="Phê duyệt giá và đồng bộ PO"
         >
           <MdVerified size={15} color="#10b981" />
-          <span>Phê duyệt</span>
+          {!isMobile && <span>Phê duyệt</span>}
         </button>
 
-        <span className="toolbar-divider">|</span>
+        {!isMobile && <span className="toolbar-divider">|</span>}
 
         {/* UTILITY ACTIONS */}
         <button
           type="button"
-          className="btn-grid-action"
+          className={actionClass("btn-action-pivot")}
           onClick={onTogglePivot}
           title="Mở bảng phân tích xoay đa chiều Pivot"
         >
           <MdPivotTableChart size={15} color="#8b5cf6" />
-          <span>Pivot</span>
+          {!isMobile && <span>Pivot</span>}
         </button>
 
         <button
           type="button"
-          className="btn-grid-action"
+          className={actionClass("btn-action-excel")}
           onClick={onExportExcel}
           title="Xuất file Excel danh sách PO"
         >
           <MdFileDownload size={15} color="#059669" />
-          <span>Xuất Excel</span>
+          {!isMobile && <span>Xuất Excel</span>}
         </button>
       </div>
     </div>

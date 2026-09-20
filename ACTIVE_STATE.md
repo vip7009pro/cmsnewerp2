@@ -1,52 +1,33 @@
 # ACTIVE_STATE
 
 ## Mục tiêu task hiện tại
-Nén gọn màn hình mobile `PrecisionAccountInfo` (Navbar → Tài khoản) để trên 1 viewport thấy đủ: Thông tin cơ bản + Chấm công hôm nay + Biểu đồ công tháng.
+Tối ưu giao diện mobile cho `PrecisionPoManager` (Kinh doanh → Quản lý PO, route `/kinhdoanh/pomanager-v2`) bằng **viewport conditional rendering**:
+1. 6 widget KPI quá to → **siêu compact 2 hàng × 3 cột**, mỗi ô 2 dòng (hàng 1 = số lượng, hàng 2 = số tiền).
+2. Bộ lọc đơn hàng đang chiếm cột trái, đẩy bảng PO data sang phải → chuyển sang **dạng FLOAT** phủ trên bảng, ẩn/hiện bằng nút trên toolbar.
 
-Trạng thái: **HOÀN THÀNH** (`npm run build` EXIT=0) + đã kiểm chứng trực quan bằng preview tĩnh rộng 390px.
+Trạng thái: **HOÀN THÀNH** — `npm run build` EXIT=0, get_errors 0 lỗi, đã đo layout trên dev server 3001 ở 393px và 1440px.
 
-## File đã chỉnh sửa (đợt 7)
-- `AccountInfo/components/PrecisionHeroProfile.tsx` — 4 ô định danh (Mã nhân sự / Mã ERP / Thâm niên / Nhóm điểm danh) dồn về 1 dòng trên mobile; bỏ nút `Ảnh thẻ` (đã có click avatar); nút `Mật khẩu` → icon `lock_reset` (`__pwIconBtn`) nằm cuối dòng sub department ⇒ bỏ hẳn `profileToolbar` trên mobile.
-- `AccountInfo/components/PrecisionLiveClock.tsx` — header mobile gộp icon + tiêu đề + ngày về đúng 1 dòng; **bỏ hẳn `shiftProgressBox` (thanh tiến độ giờ chuẩn) trên mobile**, chỉ còn ở desktop.
-- `AccountInfo/components/PrecisionAttendanceTimeline.tsx` — mobile: tiêu đề `Công Tháng Này` + segmented `Cột/Đường` + nút reload + nút Excel dồn về **1 dòng** (thay inline style bằng class `__chartToggle` / `__chartToggleBtn`); legend rút gọn nhãn (`Giờ chuẩn 8h`, `OT >8h`, `Hôm nay`) để nằm **1 dòng**.
-- `AccountInfo/PrecisionAccountInfo.scss` — mobile: `__metaGrid` = `repeat(4, minmax(0,1fr))`, nhãn meta 8px (clamp 2 dòng), card padding `20px → 12px`, `__cardTitle` nowrap+ellipsis, header clock `nowrap`, `__chartHeaderActions` nowrap + `__btnAction` vuông 28px, `__chartLegendStrip` column + `__legendGroup` nowrap, thêm `__deptText` / `__pwIconBtn` / `__chartToggle` / `__chartToggleBtn`.
-
-## Mục tiêu task hiện tại (đợt 6)
-Tối ưu mobile cho `LichSu_New`: mobile chỉ hiển thị filterbar, timeline chart và AGTable; đảm bảo trang cuộn dọc và bảng có chiều cao render ổn định.
-
-Trạng thái: **HOÀN THÀNH** (`npm run build` ✓ 17020 modules). Chi tiết: `ROADMAP.md`.
-
-## File đã chỉnh sửa
-- `src/pages/nhansu/LichSu/LichSu_New.tsx` — conditional rendering theo `matchMedia("(max-width: 768px)")`, ẩn header/KPI trên mobile.
-- `src/pages/nhansu/LichSu/PrecisionLichSu/PrecisionLichSu.scss` — bật mobile page scroll, cố định vùng AGTable 420px; filter bar mobile: 2 ô ngày + checkbox (3 cột) rồi Search full-width; ép header biểu đồ về một dòng (`flex-wrap: nowrap` + `nowrap`/ellipsis cho title/unit).
-- `src/pages/nhansu/LichSu/PrecisionLichSu/PrecisionLichSuToolbar.tsx` — bỏ nút `Load Data` (trùng `onSearch` với nút Search); nhận `isMobile` và ẩn cụm EX1/EX2/PIVOT trên mobile (đã có ở toolbar dưới bảng).
-- `src/pages/nhansu/LichSu/PrecisionLichSu/PrecisionLichSuChart.tsx` — nhận `isMobile`; mobile dùng tiêu đề gọn `TIMELINE T9/2026` + `· Giờ thực tế/ngày`, nút Refresh chỉ còn icon.
+## File đã chỉnh sửa (đợt 8)
+- `pomanager/PrecisionPoManager/PrecisionPoManager.tsx` — thêm `isMobile` (`matchMedia("(max-width:768px)")` + listener `change`); `filterCollapsed` khởi tạo theo `innerWidth <= 768` + effect đồng bộ khi viewport đổi (mobile mặc định ĐÓNG bộ lọc để bảng full width); render `po-filter-backdrop` trên mobile để bấm nền đóng bộ lọc; truyền `compact`/`isMobile` xuống 3 component con.
+- `components/PrecisionPoKpiGrid.tsx` — prop `compact`; nhánh compact render 2 hàng × 3 cột, mỗi ô 2 dòng; tiền dùng `maximumFractionDigits: 0`; `title` giữ đủ ngữ nghĩa.
+- `components/PrecisionPoFilterPanel.tsx` — nhận `isMobile`; nút header đổi `MdChevronLeft` → `MdClose`.
+- `components/PrecisionPoToolbar.tsx` — nhận `isMobile`; nút phụ thêm class `is-icon-only` + không render `<span>` nhãn trên mobile (giữ `title`); ẩn divider giữa nhóm action.
+- `PrecisionPoManager.scss` — thêm `.po-kpi-grid--compact` (đặt NGOÀI media query) và block `@media (max-width:768px)` ở cuối `.precision-po-manager`.
 
 ## Việc cần làm tiếp theo
-- Kiểm thử trực quan trên thiết bị mobile thực tế, đặc biệt chiều cao tab container và thao tác cuộn ngang AGTable.
+- Kiểm thử thiết bị thật: bộ lọc float có bị bàn phím che khi nhập `input[type=date]` không; thao tác Pivot modal trên màn 320px.
+- Mobile: `PrecisionPOandStockFull`, `PrecisionQuotation`, `PrecisionYCSX` cũng để filter panel chiếm cột trái → áp lại pattern float này.
+- Mobile: `.po-grid-footer` còn 2 nhóm trái/phải, nên rút gọn khi < 360px.
 
-## Mục tiêu task hiện tại
-Mobile experience cho `AccountInfo` / `PrecisionAccountInfo` (Navbar → Tài khoản): giảm padding sâu để tăng diện tích hiển thị + conditional rendering theo viewport; trên mobile chỉ hiển thị Avatar/thông tin cơ bản, giờ chấm công vào-ra, biểu đồ công trong tháng và Admin tool.
+## Ghi chú kỹ thuật (đợt 8 — PrecisionPoManager mobile)
+- **Vì sao `.po-kpi-grid--compact` đặt NGOÀI media query**: base viết `.precision-po-manager .po-kpi-grid .kpi-card` (0,3,0); block compact viết `.precision-po-manager .po-kpi-grid--compact .kpi-card` cũng (0,3,0) nhưng **sau** trong file ⇒ thắng, không cần `!important` và không phụ thuộc media query.
+- **Phải override `max-height` của `.po-main-workspace`**: base đặt `max-height: calc(100% - 95px)` (giả định KPI grid 1 hàng ~95px). Mobile có KPI compact + gap ≈ 104px > 95px ⇒ giữ nguyên sẽ cắt ~9px đáy (mất footer). Mobile đặt `height:auto; max-height:none`.
+- **Bộ lọc float**: `.po-main-workspace` giữ `display:flex` + thêm `position:relative`; panel `position:absolute; inset:0; z-index:40`, backdrop `z-index:35`. Bảng vẫn là flex item duy nhất trong luồng ⇒ full width, `height:100%` vẫn phân giải được (main size của flex column là definite).
+- **Đo layout không cần backend**: trên dev server 3001, `await import("/src/pages/.../X.scss")` rồi `document.body.innerHTML = markup thật` → đo `getBoundingClientRect`/`getComputedStyle`. Phải `await document.fonts.ready` trước khi đo.
+- **PITFALL nút icon-only mobile**: chỉ thêm class `.is-icon-only { width:30px; padding:0 }` là **không đủ** — nhãn `<span>` vẫn render nên chữ tràn khỏi nút (`scrollWidth > clientWidth`), icon bị co còn 0 ⇒ nút nhìn như "đen trắng". Phải **ẩn nhãn bằng conditional rendering ở TSX** (`{!isMobile && <span>…</span>}`) + rule bảo hiểm `.is-icon-only span { display:none }`, và tô accent theo hành động (`btn-action-edit` / `-invoice` / `-danger` / `-success` / `-pivot` / `-excel`).
+- **Route thật của trang PO**: menu `Quản lý PO KD1` → `/kinhdoanh/pomanager` vẫn render `.precision-po-manager` (tab "Quản lý PO") ⇒ kiểm chứng được trên UI thật; `pomanager-v2` chỉ là alias route phụ.
 
-Trạng thái: **HOÀN THÀNH** (`npm run build` ✓ 17020 modules, EXIT=0). Chi tiết: `ROADMAP.md` — Đợt 6.
-
-## File đã chỉnh sửa (đợt 6)
-- `components/Navbar/AccountInfo/useIsMobile.ts` (MỚI) — hook `matchMedia("(max-width:768px)")` + listener `change`, dùng chung cho cả cụm.
-- `components/Navbar/AccountInfo/PrecisionAccountInfo.tsx` — gắn modifier `precision-hub--mobile`; mobile ẩn `PrecisionDossierRecord` + `PrecisionKpiGrid`, truyền `isMobile` xuống component con.
-- `components/Navbar/AccountInfo/components/PrecisionAttendanceChart.tsx` (MỚI) — tách canvas bar/line khỏi Timeline; mobile bỏ cuộn ngang, mặc định biểu đồ đường.
-- `components/Navbar/AccountInfo/components/PrecisionAttendanceTimeline.tsx` — nhận `isMobile`, rút gọn tiêu đề/legend/nút (icon-only); giữ nguyên logic Excel + tính tổng giờ.
-- `components/Navbar/AccountInfo/components/PrecisionHeroProfile.tsx`, `PrecisionLiveClock.tsx` — nhận `isMobile`, rút gọn nhãn và ẩn khối trang trí.
-- `components/Navbar/AccountInfo/components/PrecisionAdminTools.tsx` — nhóm control `flexWrap: wrap` để không tràn ngang.
-- `components/Navbar/AccountInfo/PrecisionAccountInfo.scss` — block `&--mobile` giảm padding/mật độ (hub `10px`, card `20→14px`, avatar `104→72px`, safe-area bottom); sau đó tinh chỉnh `__profileHeader` thành **CSS Grid** (`avatar | name` / `avatar | dept` / `meta meta`) kèm `__profileDetails { display: contents }` để avatar không còn chiếm riêng 1 dòng.
-
-## Việc cần làm tiếp theo
-- (đợt 6) Kiểm thử thực tế trên thiết bị: xác nhận `precision-hub--mobile` không che mất vùng cuộn của `.component_element` và Admin tool nhập được trên màn 360px.
-- Mobile: toolbar riêng của `PrecisionDeptMainTable`/`SubTable`/`PosTable` nên thu gọn icon-only để đỡ chiếm chỗ.
-- (đợt 4, treo) Cấu hình quy chế thật cho hạn mức "3 lần giải trình/tháng" & "40h OT/tháng" (`PrecisionDangKyKpi.tsx` đang là hằng số).
-- (đợt 4, treo) Chọn nhiều dòng để duyệt/từ chối hàng loạt ở `PheDuyetNghiCMS`.
-- (QC, treo) `updateIncomingData_web` ghi `REMARK` nhưng chưa map đúng `IQC_TEST_RESULT`/`DTC_RESULT`.
-
-## Ghi chú kỹ thuật
+## Ghi chú kỹ thuật tích luỹ
 - **Đợt 6 — AccountInfo mobile**: `AccountInfo.tsx` chỉ là proxy → `PrecisionAccountInfo`; class SCSS là `precision-hub__*` (không phải `accountinfo`). Override mobile dùng modifier `.precision-hub--mobile` (specificity 0,2,0) nên thắng base (0,1,0) mà **không cần** `!important`; `__profileToolbar` có margin âm nên khi đổi padding card phải đổi margin tương ứng (`-20px → -14px`).
 - **Pattern mobile chuẩn của repo**: `isMobile` lấy từ `window.matchMedia("(max-width: 768px)")` + listener `change`, rồi **conditional rendering** (không chỉ ẩn bằng CSS) — xem `PrecisionHeader.tsx`, `UserManager.tsx`, nay có hook chung `AccountInfo/useIsMobile.ts`.
 - **Pitfall mobile (Stitch)**: `.component_element & { ... }` có specificity (0,2,0) nên **luôn thắng** block `@media` ở cấp `.precision-xxx` (0,1,0). Muốn mobile có tác dụng phải lặp lại `@media (max-width:768px)` **bên trong** `.component_element &` kèm `!important` cho `height`/`max-height`/`flex`/`overflow`; nếu không container bị `overflow:hidden` + `max-height:100%` + `flex-basis:0` ⇒ cắt cụt nội dung và mất thanh cuộn.
