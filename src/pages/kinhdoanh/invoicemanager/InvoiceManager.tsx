@@ -37,6 +37,7 @@ import PrecisionInvoiceToolbar from "./PrecisionInvoiceManager/PrecisionInvoiceT
 import PrecisionInvoiceTable from "./PrecisionInvoiceManager/PrecisionInvoiceTable";
 import PrecisionInvoiceModals from "./PrecisionInvoiceManager/PrecisionInvoiceModals";
 import PrecisionInvoiceBulkImport from "./PrecisionInvoiceManager/PrecisionInvoiceBulkImport";
+import PrecisionInvoiceKpiBar from "./PrecisionInvoiceManager/PrecisionInvoiceKpiBar";
 import {
   getInvoiceColumns,
   createPivotDataSource,
@@ -66,7 +67,15 @@ const InvoiceManager: React.FC = () => {
 
   // ── Modal & View states ──
   const [openBulkModal, setOpenBulkModal] = useState(false);
-  const [filterCollapsed, setFilterCollapsed] = useState(false);
+  // Mobile: mặc định ẩn bộ lọc để bảng Invoice chiếm trọn chiều ngang (bộ lọc mở dạng float)
+  const [filterCollapsed, setFilterCollapsed] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
+  // Viewport mobile (≤768px) — điều khiển conditional rendering cho KPI bar / bộ lọc float / toolbar
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
 
   // ── Data states ──
   const [invoicedatatable, setInvoiceDataTable] = useState<InvoiceTableData[]>([]);
@@ -114,6 +123,28 @@ const InvoiceManager: React.FC = () => {
       setCodeList(await f_getcodelist(""));
     })();
   }, []);
+
+  // Theo dõi viewport: mobile ⇒ bộ lọc chuyển sang dạng float (không đẩy bảng sang phải)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
+
+  // Mobile luôn đóng bộ lọc khi mới vào trang; desktop giữ bộ lọc mở như cũ
+  useEffect(() => {
+    setFilterCollapsed(isMobile);
+  }, [isMobile]);
 
   // ── Filter handlers ──
   const handleFilterChange = useCallback(
@@ -370,8 +401,20 @@ const InvoiceManager: React.FC = () => {
 
   return (
     <div className="stitch-inv">
+      {/* ── Mobile KPI bar: 2 widget giao hàng nén trong 1 hàng, đặt trên cùng trang ── */}
+      {isMobile && <PrecisionInvoiceKpiBar invoiceSummary={invoiceSummary} />}
+
       {/* ── Main Workspace ── */}
       <div className="stitch-inv__workspace">
+        {/* Mobile: bộ lọc float phủ trên bảng ⇒ bấm nền mờ để đóng */}
+        {isMobile && !filterCollapsed && (
+          <div
+            className="stitch-inv__filter-backdrop"
+            onClick={() => setFilterCollapsed(true)}
+            title="Đóng bộ lọc"
+          />
+        )}
+
         {/* Filter Sidebar */}
         <aside className={`stitch-inv__sidebar${filterCollapsed ? " stitch-inv__sidebar--collapsed" : ""}`}>
           <PrecisionInvoiceFilterPanel
@@ -382,6 +425,9 @@ const InvoiceManager: React.FC = () => {
             onEnterKey={handleSearch}
             invoiceSummary={invoiceSummary}
             totalRows={invoicedatatable.length}
+            hideKpiSummary={isMobile}
+            isMobile={isMobile}
+            onClose={() => setFilterCollapsed(true)}
           />
         </aside>
 
@@ -397,6 +443,7 @@ const InvoiceManager: React.FC = () => {
             onTogglePivot={() => setShowPivot(!showPivot)}
             onExport={handleExport}
             invoiceNoRef={invoice_no_ref}
+            isMobile={isMobile}
           />
 
           <PrecisionInvoiceTable

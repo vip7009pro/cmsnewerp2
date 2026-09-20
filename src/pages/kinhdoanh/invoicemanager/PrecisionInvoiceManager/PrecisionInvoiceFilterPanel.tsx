@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { FiFilter, FiRotateCcw, FiSearch } from "react-icons/fi";
+import { FiFilter, FiRotateCcw, FiSearch, FiX } from "react-icons/fi";
 import { InvoiceSummaryData } from "../../interfaces/kdInterface";
 import { getGlobalSetting } from "../../../../api/Api";
 import { WEB_SETTING_DATA } from "../../../../api/GlobalInterface";
@@ -28,6 +28,11 @@ interface Props {
   onEnterKey: () => void;
   invoiceSummary: InvoiceSummaryData;
   totalRows: number;
+  /** Mobile: 2 widget giao hàng đã được tách ra KPI bar trên cùng trang ⇒ không render lại ở đây */
+  hideKpiSummary?: boolean;
+  /** Mobile: bộ lọc là panel float phủ trọn workspace nên cần nút đóng riêng */
+  isMobile?: boolean;
+  onClose?: () => void;
 }
 
 const PrecisionInvoiceFilterPanel: React.FC<Props> = ({
@@ -38,6 +43,9 @@ const PrecisionInvoiceFilterPanel: React.FC<Props> = ({
   onEnterKey,
   invoiceSummary,
   totalRows,
+  hideKpiSummary = false,
+  isMobile = false,
+  onClose,
 }) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") onEnterKey();
@@ -56,9 +64,20 @@ const PrecisionInvoiceFilterPanel: React.FC<Props> = ({
           <FiFilter />
           <span>Bộ Lọc Tra Cứu</span>
         </div>
-        <button className="stitch-inv__sidebar-reset" onClick={onReset}>
-          <FiRotateCcw size={10} /> Làm mới
-        </button>
+        <div className="stitch-inv__sidebar-header-actions">
+          <button className="stitch-inv__sidebar-reset" onClick={onReset}>
+            <FiRotateCcw size={10} /> Làm mới
+          </button>
+          {isMobile && onClose && (
+            <button
+              className="stitch-inv__sidebar-close"
+              onClick={onClose}
+              title="Đóng bộ lọc"
+            >
+              <FiX size={14} />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Form */}
@@ -129,33 +148,35 @@ const PrecisionInvoiceFilterPanel: React.FC<Props> = ({
       </div>
 
       {/* KPI Summary */}
-      <div className="stitch-inv__kpi-summary">
-        <div className="stitch-inv__kpi-label">Chỉ số theo bộ lọc</div>
-        <div className="stitch-inv__kpi-card stitch-inv__kpi-card--emerald">
-          <span className="stitch-inv__kpi-card-title" style={{ color: "#065f46" }}>
-            Delivered QTY (Đã giao)
-          </span>
-          <span className="stitch-inv__kpi-card-value" style={{ color: "#047857" }}>
-            {invoiceSummary.total_delivered_qty.toLocaleString("en-US")} <span>EA</span>
-          </span>
+      {!hideKpiSummary && (
+        <div className="stitch-inv__kpi-summary">
+          <div className="stitch-inv__kpi-label">Chỉ số theo bộ lọc</div>
+          <div className="stitch-inv__kpi-card stitch-inv__kpi-card--emerald">
+            <span className="stitch-inv__kpi-card-title" style={{ color: "#065f46" }}>
+              Delivered QTY (Đã giao)
+            </span>
+            <span className="stitch-inv__kpi-card-value" style={{ color: "#047857" }}>
+              {invoiceSummary.total_delivered_qty.toLocaleString("en-US")} <span>EA</span>
+            </span>
+          </div>
+          <div className="stitch-inv__kpi-card stitch-inv__kpi-card--blue">
+            <span className="stitch-inv__kpi-card-title" style={{ color: "#1e40af" }}>
+              Delivered Amount (Tổng tiền)
+            </span>
+            <span className="stitch-inv__kpi-card-value" style={{ color: "#1d4ed8" }}>
+              {invoiceSummary.total_delivered_amount.toLocaleString("en-US", {
+                style: "currency",
+                currency: currency,
+              })}{" "}
+              <span>{currency}</span>
+            </span>
+          </div>
+          <div className="stitch-inv__kpi-row">
+            <span>Tổng số Invoices:</span>
+            <span>{totalRows.toLocaleString("en-US")} đơn</span>
+          </div>
         </div>
-        <div className="stitch-inv__kpi-card stitch-inv__kpi-card--blue">
-          <span className="stitch-inv__kpi-card-title" style={{ color: "#1e40af" }}>
-            Delivered Amount (Tổng tiền)
-          </span>
-          <span className="stitch-inv__kpi-card-value" style={{ color: "#1d4ed8" }}>
-            {invoiceSummary.total_delivered_amount.toLocaleString("en-US", {
-              style: "currency",
-              currency: currency,
-            })}{" "}
-            <span>{currency}</span>
-          </span>
-        </div>
-        <div className="stitch-inv__kpi-row">
-          <span>Tổng số Invoices:</span>
-          <span>{totalRows.toLocaleString("en-US")} đơn</span>
-        </div>
-      </div>
+      )}
     </>
   );
 };

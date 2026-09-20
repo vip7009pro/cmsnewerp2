@@ -20,6 +20,8 @@ interface Props {
   onTogglePivot: () => void;
   onExport: () => void;
   invoiceNoRef: React.MutableRefObject<string>;
+  /** Mobile: rút gọn nhãn nút toggle bộ lọc cho vừa 1 hàng scroll ngang */
+  isMobile?: boolean;
 }
 
 const PrecisionInvoiceToolbar: React.FC<Props> = ({
@@ -32,14 +34,19 @@ const PrecisionInvoiceToolbar: React.FC<Props> = ({
   onTogglePivot,
   onExport,
   invoiceNoRef,
+  isMobile = false,
 }) => {
   return (
     <div className="stitch-inv__toolbar">
       <div className="stitch-inv__toolbar-left">
         {/* Toggle sidebar */}
-        <button className="stitch-inv__btn stitch-inv__btn--outline" onClick={onToggleSidebar}>
+        <button
+          className="stitch-inv__btn stitch-inv__btn--outline"
+          onClick={onToggleSidebar}
+          title={isMobile ? "Mở/đóng bộ lọc" : "Show/Hide bộ lọc"}
+        >
           <FiSidebar size={12} />
-          <span>Show/Hide</span>
+          <span>{isMobile ? "Lọc" : "Show/Hide"}</span>
         </button>
 
         <div className="stitch-inv__toolbar-sep" />

@@ -1,23 +1,31 @@
 # ACTIVE_STATE
 
-## Mục tiêu task hiện tại
-Tối ưu giao diện mobile cho `PrecisionPoManager` (Kinh doanh → Quản lý PO, route `/kinhdoanh/pomanager-v2`) bằng **viewport conditional rendering**:
-1. 6 widget KPI quá to → **siêu compact 2 hàng × 3 cột**, mỗi ô 2 dòng (hàng 1 = số lượng, hàng 2 = số tiền).
-2. Bộ lọc đơn hàng đang chiếm cột trái, đẩy bảng PO data sang phải → chuyển sang **dạng FLOAT** phủ trên bảng, ẩn/hiện bằng nút trên toolbar.
+## Mục tiêu task hiện tại (đợt 9)
+Tối ưu giao diện mobile cho `InvoiceManager` (Kinh doanh → Quản lý Invoices, `/kinhdoanh/invoicemanager`) bằng **viewport conditional rendering**:
+1. 2 widget số lượng / số tiền giao hàng (đang nằm trong bộ lọc) → tách ra **KPI bar compact 1 hàng**, đặt trên cùng trang.
+2. Bộ lọc → **dạng FLOAT** phủ trên bảng như `PrecisionPoManager`.
+3. Toolbar AGTable → dồn **1 hàng duy nhất, scroll ngang** thay vì xuống dòng.
 
-Trạng thái: **HOÀN THÀNH** — `npm run build` EXIT=0, get_errors 0 lỗi, đã đo layout trên dev server 3001 ở 393px và 1440px.
+Trạng thái: **HOÀN THÀNH** — `npm run build` EXIT=0, get_errors 0 lỗi, đã đo layout trên dev server 3001.
 
-## File đã chỉnh sửa (đợt 8)
-- `pomanager/PrecisionPoManager/PrecisionPoManager.tsx` — thêm `isMobile` (`matchMedia("(max-width:768px)")` + listener `change`); `filterCollapsed` khởi tạo theo `innerWidth <= 768` + effect đồng bộ khi viewport đổi (mobile mặc định ĐÓNG bộ lọc để bảng full width); render `po-filter-backdrop` trên mobile để bấm nền đóng bộ lọc; truyền `compact`/`isMobile` xuống 3 component con.
-- `components/PrecisionPoKpiGrid.tsx` — prop `compact`; nhánh compact render 2 hàng × 3 cột, mỗi ô 2 dòng; tiền dùng `maximumFractionDigits: 0`; `title` giữ đủ ngữ nghĩa.
-- `components/PrecisionPoFilterPanel.tsx` — nhận `isMobile`; nút header đổi `MdChevronLeft` → `MdClose`.
-- `components/PrecisionPoToolbar.tsx` — nhận `isMobile`; nút phụ thêm class `is-icon-only` + không render `<span>` nhãn trên mobile (giữ `title`); ẩn divider giữa nhóm action.
-- `PrecisionPoManager.scss` — thêm `.po-kpi-grid--compact` (đặt NGOÀI media query) và block `@media (max-width:768px)` ở cuối `.precision-po-manager`.
+## File đã chỉnh sửa (đợt 9)
+- `invoicemanager/PrecisionInvoiceManager/PrecisionInvoiceKpiBar.tsx` **(MỚI)** — 2 widget nén trong 1 hàng (`grid-template-columns: repeat(2, minmax(0,1fr))`, mỗi ô 2 dòng); tiền dùng `maximumFractionDigits: 0` + `title` giữ giá trị đầy đủ.
+- `invoicemanager/InvoiceManager.tsx` — thêm `isMobile` (`matchMedia` + listener); `filterCollapsed` khởi tạo theo `innerWidth <= 768` + effect `setFilterCollapsed(isMobile)`; render `PrecisionInvoiceKpiBar` + `stitch-inv__filter-backdrop` khi mobile; truyền `hideKpiSummary`/`isMobile`/`onClose` xuống panel và `isMobile` xuống toolbar.
+- `PrecisionInvoiceFilterPanel.tsx` — prop `hideKpiSummary` (mobile không render lại khối KPI trong sidebar); prop `isMobile` + `onClose` + nút đóng `stitch-inv__sidebar-close` (`FiX`, chỉ render trên mobile).
+- `PrecisionInvoiceToolbar.tsx` — nhận `isMobile`; nhãn nút toggle bộ lọc `Show/Hide` → `Lọc` trên mobile.
+- `PrecisionInvoiceManager.scss` — thêm `&__kpi-bar` / `&__kpi-chip*` / `&__sidebar-close` và block `@media (max-width:768px)` ở cuối `.stitch-inv`.
 
 ## Việc cần làm tiếp theo
 - Kiểm thử thiết bị thật: bộ lọc float có bị bàn phím che khi nhập `input[type=date]` không; thao tác Pivot modal trên màn 320px.
 - Mobile: `PrecisionPOandStockFull`, `PrecisionQuotation`, `PrecisionYCSX` cũng để filter panel chiếm cột trái → áp lại pattern float này.
-- Mobile: `.po-grid-footer` còn 2 nhóm trái/phải, nên rút gọn khi < 360px.
+- Mobile: `.stitch-inv__footer` và `.po-grid-footer` còn 2 nhóm trái/phải, nên rút gọn khi < 360px.
+
+## Ghi chú kỹ thuật (đợt 9 — InvoiceManager mobile)
+- **Bộ lọc float phủ trọn workspace** (`&__sidebar { position:absolute; inset:0 }`) ⇒ KHÔNG còn chỗ bấm backdrop để đóng (backdrop bị panel che hoàn toàn) ⇒ **bắt buộc có nút đóng riêng trong header panel**. Khác với `PrecisionPoManager` (panel có sẵn `MdClose`).
+- **Phải khai báo lại `&__sidebar--collapsed` trong block mobile**: rule mobile `&__sidebar` cùng specificity (0,2,0) nhưng nằm SAU `&__sidebar--collapsed` của desktop ⇒ nếu không khai báo lại, trạng thái collapse sẽ bị đè và panel luôn mở.
+- **Toolbar 1 hàng scroll ngang**: `&__toolbar-left { flex-wrap: nowrap; overflow-x: auto; min-width: 0; flex: 1 1 auto }` + `.stitch-inv__btn { flex: 0 0 auto; white-space: nowrap }`; ẩn `.stitch-inv__toolbar-right` (chỉ báo "Sẵn sàng") và ẩn scrollbar (`scrollbar-width:none`) cho gọn. Đo được: 8 nút `scrollWidth 825` vs `clientWidth 377` ở 393px, tất cả nằm 1 hàng.
+- **KPI bar tách khỏi bộ lọc**: trên mobile panel bộ lọc là overlay nên widget bên trong sẽ bị ẩn theo ⇒ phải tách ra KPI bar cấp trang (ngoài `__workspace`) để luôn nhìn thấy.
+- Đo ở 393px: KPI bar 393×51, 2 chip 185.5px/hàng, giá trị thực tế lớn (`445,810 EA`, `$11,331,644 USD`) **không bị clip**.
 
 ## Ghi chú kỹ thuật (đợt 8 — PrecisionPoManager mobile)
 - **Vì sao `.po-kpi-grid--compact` đặt NGOÀI media query**: base viết `.precision-po-manager .po-kpi-grid .kpi-card` (0,3,0); block compact viết `.precision-po-manager .po-kpi-grid--compact .kpi-card` cũng (0,3,0) nhưng **sau** trong file ⇒ thắng, không cần `!important` và không phụ thuộc media query.
