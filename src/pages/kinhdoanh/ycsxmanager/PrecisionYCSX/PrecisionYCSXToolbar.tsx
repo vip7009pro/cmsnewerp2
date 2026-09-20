@@ -27,6 +27,7 @@ interface Props {
   onLockYcsx: () => void;
   onUnlockYcsx: () => void;
   onLockMaterial: () => void;
+  onUnLockMaterial: () => void;
   onExportEX1: () => void;
   onExportEX2: () => void;
   onTogglePivot: () => void;
@@ -46,6 +47,7 @@ const PrecisionYCSXToolbar: React.FC<Props> = ({
   onLockYcsx,
   onUnlockYcsx,
   onLockMaterial,
+  onUnLockMaterial,
   onExportEX1,
   onExportEX2,
   onTogglePivot,
@@ -170,9 +172,18 @@ const PrecisionYCSXToolbar: React.FC<Props> = ({
           type="button"
           className="precision-ycsx__toolBtn precision-ycsx__toolBtn--iconOnly precision-ycsx__toolBtn--amber"
           onClick={onLockMaterial}
-          title="Khóa / Mở Khóa Liệu"
+          title="Khóa Liệu"
         >
           <FiLock />
+        </button>
+
+        <button
+          type="button"
+          className="precision-ycsx__toolBtn precision-ycsx__toolBtn--iconOnly precision-ycsx__toolBtn--emerald"
+          onClick={onUnLockMaterial}
+          title="Mở Khóa Liệu"
+        >
+          <FiUnlock />
         </button>
       </div>
 

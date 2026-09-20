@@ -237,7 +237,15 @@ export const useYCSXLogic = () => {
       setNewPhanLoai(selectedRow.PL_HANG ?? "TT");
       setLoaiSX(selectedRow.PHAN_LOAI);
       setLoaiXH(selectedRow.LOAIXH);
-      setNewDeliveryDate(selectedRow.DELIVERY_DT || moment().format("YYYY-MM-DD"));
+      // DELIVERY_DT trong DB là varchar(8) dạng YYYYMMDD, phải chuẩn hóa về YYYY-MM-DD cho input type="date"
+      const rawDelivery = selectedRow.DELIVERY_DT ?? "";
+      setNewDeliveryDate(
+        /^\d{8}$/.test(rawDelivery)
+          ? moment(rawDelivery, "YYYYMMDD").format("YYYY-MM-DD")
+          : rawDelivery
+            ? moment(rawDelivery).format("YYYY-MM-DD")
+            : moment().format("YYYY-MM-DD")
+      );
       setIsEditModalOpen(true);
     } else if (ycsxdatatablefilter.current.length === 0) {
       clearYCSXform();
@@ -1058,15 +1066,12 @@ export const useYCSXLogic = () => {
             PROD_REQUEST_NO: next_prod_request_no,
             G_CODE: uploadExcelJson[i].G_CODE,
           });
-          await f_insertYCSX({
+          let kq: string = await f_insertYCSX({
             PHANLOAI: uploadExcelJson[i].PHANLOAI,
             G_CODE: uploadExcelJson[i].G_CODE,
             CUST_CD: uploadExcelJson[i].CUST_CD,
             REMK: uploadExcelJson[i].REMK ?? "",
-            PROD_REQUEST_DATE:
-              getCompany() === "CMS"
-                ? moment().format("YYYYMMDD")
-                : uploadExcelJson[i].PROD_REQUEST_DATE,
+            PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
             PROD_REQUEST_NO: next_prod_request_no,
             CODE_50: uploadExcelJson[i].CODE_50,
             CODE_03: "01",
@@ -1135,11 +1140,12 @@ export const useYCSXLogic = () => {
               REQ_ID: 0,
             });
           }
-          tempjson[i].CHECKSTATUS = "OK";
+          tempjson[i].CHECKSTATUS =
+            kq === "OK" ? "OK" : "NG: Thêm YCSX mới thất bại: " + kq;
         } else {
           let next_process_lot_no_p501: string =
             await f_process_lot_no_generate(uploadExcelJson[i].PHANLOAI);
-          await f_insertYCSX({
+          let kq: string = await f_insertYCSX({
             PHANLOAI: uploadExcelJson[i].PHANLOAI,
             G_CODE: uploadExcelJson[i].G_CODE,
             CUST_CD: uploadExcelJson[i].CUST_CD,
@@ -1149,10 +1155,7 @@ export const useYCSXLogic = () => {
                   " REMARK: " +
                   (uploadExcelJson[i].REMK ?? "")
                 : "GD: " + (uploadExcelJson[i].REMK ?? ""),
-            PROD_REQUEST_DATE:
-              getCompany() === "CMS"
-                ? moment().format("YYYYMMDD")
-                : uploadExcelJson[i].PROD_REQUEST_DATE,
+            PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
             PROD_REQUEST_NO: next_prod_request_no,
             CODE_50: uploadExcelJson[i].CODE_50,
             CODE_03: uploadExcelJson[i].PHANLOAI === "GD" ? "09" : "01",
@@ -1209,10 +1212,7 @@ export const useYCSXLogic = () => {
             await f_insertP500({
               in_date: moment().format("YYYYMMDD"),
               next_process_in_no: next_p500_in_no,
-              PROD_REQUEST_DATE:
-                getCompany() === "CMS"
-                  ? moment().format("YYYYMMDD")
-                  : uploadExcelJson[i].PROD_REQUEST_DATE,
+              PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
               PROD_REQUEST_NO: next_prod_request_no,
               G_CODE: uploadExcelJson[i].G_CODE,
               EMPL_NO: userData?.EMPL_NO,
@@ -1226,10 +1226,7 @@ export const useYCSXLogic = () => {
               EMPL_NO: userData?.EMPL_NO,
               next_process_lot_no: next_process_lot_no_p501,
               next_process_prt_seq: next_process_lot_no_p501.substring(5, 8),
-              PROD_REQUEST_DATE:
-                getCompany() === "CMS"
-                  ? moment().format("YYYYMMDD")
-                  : uploadExcelJson[i].PROD_REQUEST_DATE,
+              PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
               PROD_REQUEST_NO: next_prod_request_no,
               PLAN_ID: next_prod_request_no + "A",
               PROCESS_NUMBER: 0,
@@ -1237,10 +1234,33 @@ export const useYCSXLogic = () => {
               USE_YN: "X",
             });
           }
-          tempjson[i].CHECKSTATUS = "OK";
+          tempjson[i].CHECKSTATUS =
+            kq === "OK" ? "OK" : "NG: Thêm YCSX mới thất bại: " + kq;
         }
-      } else {
-        tempjson[i].CHECKSTATUS = "NG: Lỗi kiểm tra mã " + err_code;
+      } else if (err_code === 5) {
+        tempjson[i].CHECKSTATUS = "NG: Chưa nhập phân loại xuất hàng";
+      } else if (err_code === 6) {
+        tempjson[i].CHECKSTATUS = "NG: Chưa nhập phân loại sản xuất";
+      } else if (err_code === 7) {
+        tempjson[i].CHECKSTATUS = "NG: Mã khách hàng không tồn tại";
+      } else if (err_code === 8) {
+        tempjson[i].CHECKSTATUS = "NG: Mã sản phẩm G_CODE không tồn tại";
+      } else if (err_code === 9) {
+        tempjson[i].CHECKSTATUS = "NG: Chưa nhập phân loại sản phẩm";
+      } else if (err_code === 10) {
+        tempjson[i].CHECKSTATUS =
+          "NG: BOM Giá của code này chưa có liệu main: Cần USAGE=main, MAIN_M=1";
+      } else if (err_code === 11) {
+        tempjson[i].CHECKSTATUS = "NG: " + checkBOM_Matching;
+      } else if (err_code === 12) {
+        tempjson[i].CHECKSTATUS =
+          "NG: Cùng G_NAME_KD hiện tại đang có hai ver được mở khóa";
+      } else if (err_code === 13) {
+        tempjson[i].CHECKSTATUS =
+          "NG: Code này chưa được duyệt sample monitor";
+      } else if (err_code === 14) {
+        tempjson[i].CHECKSTATUS =
+          "NG: Ngày giao hàng dự kiến không được trước ngày hôm nay";
       }
     }
     setisLoading(false);
@@ -1319,7 +1339,11 @@ export const useYCSXLogic = () => {
       FL_YN: isFirstLOT ? "Y" : "N",
       id: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
     };
-    if (!newycsx_row.G_CODE || !newycsx_row.CUST_CD || newycsx_row.PROD_REQUEST_QTY === 0) {
+    if (
+      !newycsx_row.G_CODE ||
+      !newycsx_row.CUST_CD ||
+      !(Number(newycsx_row.PROD_REQUEST_QTY) > 0)
+    ) {
       Swal.fire("Thông báo", "Vui lòng chọn Khách hàng, Mã code và Số lượng > 0", "error");
     } else {
       setUploadExcelJSon([...uploadExcelJson, newycsx_row]);

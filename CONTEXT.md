@@ -1,5 +1,26 @@
 # ERP Chat & Semantic Engine - Task Context & Status
 
+## Update - 2026-09-20 (YCSX: Chốt hành vi up hàng loạt và validate Insert)
+- `PROD_REQUEST_DATE` khi Up YCSX hàng loạt nay **luôn = ngày hôm nay** (`moment().format("YYYYMMDD")`) cho mọi công ty, không còn lấy theo cột trong file Excel. Đã sửa cả 4 vị trí ghi dữ liệu: `f_insertYCSX` nhánh TT/AM, `f_insertYCSX` nhánh còn lại, `f_insertP500`, `f_insertP501`.
+- Validate "Insert" dòng thủ công vào lưới Excel giữ theo `G_CODE + CUST_CD + QTY > 0`; siết điều kiện số lượng từ `=== 0` thành `!(Number(QTY) > 0)` để chặn cả số âm và giá trị rỗng/NaN.
+- Giữ nguyên kiểm tra `codeList` (err_code 8 = "Mã sản phẩm G_CODE không tồn tại") trong luồng check hàng loạt.
+- `updateYCSX` đã có sẵn hành vi đóng modal + `handletraYCSX()` để tra lại bảng, không cần sửa.
+- Bảng preview Excel tiếp tục dùng danh sách cột tĩnh `getExcelUploadColumns(isCMS)` để tránh cột rác khi file up sai tên cột. Lưu ý: cột lạ ngoài danh sách chuẩn sẽ không hiển thị (đúng theo lựa chọn).
+- Diagnostics sạch và `npm run build` thành công (53.24s).
+
+## Update - 2026-09-20 (YCSX: Audit parity với backup và khôi phục 3 lỗi nghiệp vụ)
+- Rà soát `YCSXManager.tsx` (refactor) với `YCSXManager.backup.tsx` toàn bộ luồng: tra YCSX, thêm/sửa/xóa, SET CLOSED/PENDING, phê duyệt, khóa/mở, Excel hàng loạt, Amazon, in YCSX/bản vẽ.
+- **Đã khôi phục 3 lỗi parity:**
+  1. Phân quyền `checkBP` cho Khóa YCSX/Mở khóa YCSX (`["KD"]`) và Khóa Liệu/Mở Liệu (`["MUA"]`) — trước đó đã bị mất hoàn toàn, route chỉ chặn theo `maindeptname="all"` + `jobname="Leader"` nên mọi phòng ban đều thao tác được.
+  2. Nút **Mở Liệu** (`handleConfirmUnLockMaterial`) — trước đó hook có export nhưng không được nối vào toolbar.
+  3. **Xóa dòng đã chọn trong bảng preview Excel** — `onSelectionChange` bị bỏ trống nên `ycsxdatatablefilterexcel.current` luôn rỗng; đã thêm prop `onExcelSelectionChange` xuyên từ `YCSXManager` → `PrecisionYCSXAddModal`.
+- **Đã khôi phục 2 lỗi toàn vẹn dữ liệu/thông báo:**
+  4. Luồng `Up YCSX hàng loạt` không kiểm tra kết quả `f_insertYCSX` nên insert lỗi vẫn ghi `OK`; đã khôi phục kiểm tra `kq` và báo `NG: Thêm YCSX mới thất bại`.
+  5. Khôi phục bộ thông báo NG chi tiết theo `err_code` 5–14 (trước đó gộp thành "Lỗi kiểm tra mã N").
+- **Sửa hiển thị ngày giao hàng khi mở modal Sửa:** `DELIVERY_DT` là `varchar(8)` dạng `YYYYMMDD`, cần chuẩn hóa sang `YYYY-MM-DD` mới hiển thị đúng trên `input type="date"` (giá trị gửi lên DB không đổi).
+- Các khác biệt còn lại có chủ đích/trung tính đã ghi nhận: `updateYCSX` tự đóng modal + reload bảng, thêm guard chọn dòng trước khi xóa/khóa, thêm `handletraYCSX()` sau up hàng loạt, cột preview Excel dùng danh sách tĩnh thay vì động, bỏ nút "Check Bản Vẽ" (vốn là no-op).
+- Diagnostics 4 file sạch và `npm run build` thành công.
+
 ## Update - 2026-09-20 (YCSX: Thu nhỏ font chữ bảng AGTable)
 - `YCSXManager.tsx` đổi font dòng dữ liệu từ `0.72rem` về `0.6rem`, đồng bộ với AGTable mặc định và bản YCSX cũ.
 - Giữ nguyên màu nền phân biệt dòng `USE_YN = N` và toàn bộ logic bảng.

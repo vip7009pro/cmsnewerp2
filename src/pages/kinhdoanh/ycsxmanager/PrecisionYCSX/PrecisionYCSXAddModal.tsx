@@ -75,6 +75,7 @@ interface Props {
   onUpExcel: () => void;
   onInsertRow: () => void;
   onClearExcel: () => void;
+  onExcelSelectionChange?: (rows: any[]) => void;
   isCMS: boolean;
 }
 
@@ -114,6 +115,7 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
   onUpExcel,
   onInsertRow,
   onClearExcel,
+  onExcelSelectionChange,
   isCMS,
 }) => {
   const [activeMode, setActiveMode] = useState<"manual" | "excel">("manual");
@@ -819,7 +821,11 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                       Bảng Xem Trước Dữ Liệu YCSX ({uploadExcelJson.length} bản ghi)
                     </div>
                   }
-                  onSelectionChange={() => {}}
+                  onSelectionChange={(params: any) => {
+                    onExcelSelectionChange?.(
+                      params?.api?.getSelectedRows?.() ?? []
+                    );
+                  }}
                 />
               </div>
             </div>

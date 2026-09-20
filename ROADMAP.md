@@ -1,5 +1,9 @@
 # Roadmap - cmsnewerp2
 
+- [x] YCSX: Chốt hành vi nghiệp vụ sau audit — `PROD_REQUEST_DATE` khi up hàng loạt luôn lấy ngày hôm nay cho mọi công ty (4 vị trí ghi dữ liệu), siết validate Insert thành `G_CODE + CUST_CD + QTY > 0`, giữ kiểm tra codeList err_code 8, giữ `updateYCSX` tự đóng modal + tra lại bảng, giữ cột preview Excel dạng tĩnh; diagnostics/build thành công.
+
+- [x] YCSX: Audit parity với `YCSXManager.backup.tsx`; khôi phục phân quyền `checkBP` cho Khóa/Mở YCSX và Khóa/Mở Liệu, khôi phục nút Mở Liệu, khôi phục chọn dòng để xóa trong preview Excel, khôi phục kiểm tra kết quả `f_insertYCSX` và thông báo NG chi tiết khi up hàng loạt, chuẩn hóa `DELIVERY_DT` cho input date; diagnostics/build thành công.
+
 - [x] YCSX: Đưa font chữ bảng dữ liệu AGTable từ `0.72rem` về `0.6rem` để đồng bộ với các bảng khác; diagnostics/build thành công.
 
 - [x] PLAN: Sửa lỗi scrollbar ngang preview Excel bị cắt bởi xung đột chiều cao `360px/320px`; đồng bộ chiều cao wrapper/grid và hiển thị track scrollbar rõ ràng; diagnostics/build thành công.

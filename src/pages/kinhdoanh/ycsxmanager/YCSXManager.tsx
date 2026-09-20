@@ -4,6 +4,7 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import { FiX } from "react-icons/fi";
 import { getCompany } from "../../../api/Api";
+import { checkBP } from "../../../api/services/permissionService";
 import AGTable from "../../../components/DataTable/AGTable";
 import "./PrecisionYCSX/PrecisionYCSX.scss";
 
@@ -285,9 +286,18 @@ const YCSXManager: React.FC = () => {
                 onPrintYcsx={ycsx.handlePrintYCSX}
                 onCheckBanVe={ycsx.handlePrintBanVe}
                 onApproveYcsx={ycsx.handleConfirmPDuyetYCSX}
-                onLockYcsx={ycsx.handleConfirmLockYCSX}
-                onUnlockYcsx={ycsx.handleConfirmOpenYCSX}
-                onLockMaterial={ycsx.handleConfirmLockMaterial}
+                onLockYcsx={() =>
+                  checkBP(ycsx.userData, ["KD"], ["ALL"], ["ALL"], ycsx.handleConfirmLockYCSX)
+                }
+                onUnlockYcsx={() =>
+                  checkBP(ycsx.userData, ["KD"], ["ALL"], ["ALL"], ycsx.handleConfirmOpenYCSX)
+                }
+                onLockMaterial={() =>
+                  checkBP(ycsx.userData, ["MUA"], ["ALL"], ["ALL"], ycsx.handleConfirmLockMaterial)
+                }
+                onUnLockMaterial={() =>
+                  checkBP(ycsx.userData, ["MUA"], ["ALL"], ["ALL"], ycsx.handleConfirmUnLockMaterial)
+                }
                 onExportEX1={handleExportEX1}
                 onExportEX2={handleExportEX2}
                 onTogglePivot={() => ycsx.setShowPivot((prev) => !prev)}
@@ -389,6 +399,9 @@ const YCSXManager: React.FC = () => {
         onUpExcel={ycsx.confirmUpYcsxHangLoat}
         onInsertRow={ycsx.handle_InsertYCSXTable}
         onClearExcel={ycsx.handle_DeleteYCSX_Excel}
+        onExcelSelectionChange={(rows) => {
+          ycsx.ycsxdatatablefilterexcel.current = rows;
+        }}
         isCMS={isCMS}
       />
 
