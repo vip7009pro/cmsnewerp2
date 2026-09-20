@@ -55,6 +55,7 @@ interface PrecisionFailingSidebarProps {
   checkLotNVL: (lot: string) => void;
   checkLotProcess: (lot: string) => void;
   checkEMPL_NAME: (sel: number, no: string) => void;
+  onLotKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export const PrecisionFailingSidebar: React.FC<PrecisionFailingSidebarProps> = (props) => {

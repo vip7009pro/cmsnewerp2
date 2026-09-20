@@ -1347,6 +1347,7 @@ export interface BLOCK_DATA {
   M_NAME: string;
   WIDTH_CD: number;
   VENDOR_NAME: string;
+  PLSP?: string;
 }
 
 export interface ALL_DOC_DATA {

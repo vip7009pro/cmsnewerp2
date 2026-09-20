@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import { AiOutlineSearch, AiOutlineBarcode, AiOutlineReload, AiOutlinePlus } from "react-icons/ai";
 import { PrecisionNCRFormInput } from "./PrecisionNCRFormInput";
 
@@ -56,6 +57,8 @@ export const PrecisionNCRSidebar: React.FC<PrecisionNCRSidebarProps> = ({ ncrDat
   const onSaveData = insertNCRData;
   const onStartNewRegister = handleStartNewRegister;
   const handleResetFilters = () => {
+    setFromDate(moment().format("YYYY-MM-DD"));
+    setToDate(moment().format("YYYY-MM-DD"));
     setVendor("");
     setM_Name("");
     setM_Code("");

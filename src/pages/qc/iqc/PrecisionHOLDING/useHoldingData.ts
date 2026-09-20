@@ -202,6 +202,16 @@ export const useHoldingData = () => {
       return;
     }
 
+    const reasonToUpdate = selectedRowsData.current[0].REASON ?? "";
+    if (String(reasonToUpdate).trim() === "") {
+      Swal.fire(
+        "Thông báo",
+        "Hãy nhập lý do lỗi (REASON) trên dòng đã chọn trước khi Update",
+        "warning"
+      );
+      return;
+    }
+
     Swal.fire({
       title: "Update hiện tượng lỗi",
       text: "Đang update thông tin lỗi...",
@@ -212,7 +222,6 @@ export const useHoldingData = () => {
     });
 
     let err_code = "";
-    const reasonToUpdate = selectedRowsData.current[0].REASON || "";
     for (let i = 0; i < selectedRowsData.current.length; i++) {
       try {
         const response = await generalQuery("updateMaterialHoldingReason", {

@@ -254,6 +254,11 @@ export const useBlockData = () => {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng để thực hiện", "error");
       return;
     }
+    // Tránh việc ghi đè NCR_ID hiện tại của lô về 0 khi quên nhập NCR_ID
+    if (!ncrId || ncrId === 0) {
+      Swal.fire("Thông báo", "NCR ID phải khác 0", "error");
+      return;
+    }
 
     Swal.fire({
       title: "Cập nhật mã NCR",
@@ -322,7 +327,7 @@ export const useBlockData = () => {
         ROLL_QTY: row.BLOCK_ROLL_QTY,
         TOTAL_QTY: row.BLOCK_TOTAL_QTY,
         DEFECT: row.DEFECT,
-        PLSP: row.USE_YN,
+        PLSP: row.PLSP ?? "",
         QC_PASS: row.QC_PASS,
         QC_PASS_DATE: row.QC_PASS_DATE,
         QC_PASS_EMPL: row.QC_PASS_EMPL,

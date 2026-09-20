@@ -54,6 +54,7 @@ const FAILING: React.FC = () => {
           onSaveData={saveFailingData}
           onOutputFail={updateQCFailTable}
           onSearch={handletraFailingData}
+          onLotKeyDown={failingData.handleLotKeyDown}
         />
 
         <div className="precision-failing-main-content">

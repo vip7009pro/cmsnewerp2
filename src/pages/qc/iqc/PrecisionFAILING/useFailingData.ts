@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useCallback,
+  type KeyboardEvent,
+} from "react";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import moment from "moment";
@@ -6,6 +13,7 @@ import { generalQuery } from "../../../../api/Api";
 import { RootState } from "../../../../redux/store";
 import { UserData } from "../../../../api/GlobalInterface";
 import { CustomerListData } from "../../../kinhdoanh/interfaces/kdInterface";
+import { checkBP } from "../../../../api/services/permissionService";
 import { QC_FAIL_DATA } from "../../interfaces/qcInterface";
 import {
   f_isM_CODE_in_M140_Main,
@@ -113,7 +121,11 @@ export const useFailingData = () => {
 
   // Check Plan ID
   const checkPlanID = useCallback((PLAN_ID: string) => {
-    if (!PLAN_ID || PLAN_ID.length < 7) return;
+    // Parity: mã chỉ thị ngắn thì xoá tên code đang hiển thị để tránh lưu sai
+    if (!PLAN_ID || PLAN_ID.length < 7) {
+      setGName("");
+      return;
+    }
     generalQuery("checkPLAN_ID", { PLAN_ID })
       .then((response) => {
         if (response.data.tk_status !== "NG" && response.data.data?.length > 0) {
@@ -330,6 +342,35 @@ export const useFailingData = () => {
     }
   }, [checkInput, isNewFailing, planId, m_lot_no, inspectiondatatable, addRow]);
 
+  // Handle Enter key on LOT input (Form IN) - parity với bản backup
+  const handleLotKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+
+      if (!checkInput()) {
+        Swal.fire("Thông báo", "Hãy nhập đủ thông tin trước khi đăng ký", "error");
+        return;
+      }
+
+      const lotArray = inspectiondatatable.map((el) => el.M_LOT_NO);
+      if (!pqc3Id || pqc3Id === 0) {
+        Swal.fire(
+          "Thông tin",
+          "Số chỉ thị này PQC chưa lập lỗi, không thêm được",
+          "error"
+        );
+        return;
+      }
+      if (lotArray.indexOf(m_lot_no) >= 0) {
+        Swal.fire("Thông tin", "Đã thêm cuộn này rồi", "error");
+        return;
+      }
+      addRow();
+    },
+    [checkInput, inspectiondatatable, pqc3Id, m_lot_no, addRow]
+  );
+
   // Save Failing Data to Database (Form IN)
   const saveFailingData = useCallback(async () => {
     if (inspectiondatatable.length === 0) {
@@ -399,7 +440,7 @@ export const useFailingData = () => {
   }, [inspectiondatatable]);
 
   // Update QC Fail Table Data (Form OUT - Output Liệu QC Fail)
-  const updateQCFailTable = useCallback(async () => {
+  const executeUpdateQCFailTable = useCallback(async () => {
     if (selectedRowsDataA.current.length === 0) {
       Swal.fire("Thông báo", "Chọn ít nhất 1 dòng trên lưới để thực hiện xuất", "error");
       return;
@@ -465,6 +506,13 @@ export const useFailingData = () => {
       Swal.fire("Thông báo", "Có lỗi: " + err_code, "warning");
     }
   }, [g_name, empl_name, empl_name2, request_empl, request_empl2, cust_cd, planId, remark, g_code]);
+
+  // Wrapper có phân quyền (parity với bản backup: checkBP(["QC"]))
+  const updateQCFailTable = useCallback(async () => {
+    await checkBP(userData, ["QC"], ["ALL"], ["ALL"], async () => {
+      await executeUpdateQCFailTable();
+    });
+  }, [userData, executeUpdateQCFailTable]);
 
   // Fetch QC Failing Data (Tra Data)
   const handletraFailingData = useCallback(() => {
@@ -755,6 +803,7 @@ export const useFailingData = () => {
     checkLotNVL,
     checkLotProcess,
     handleAddFailingRow,
+    handleLotKeyDown,
     saveFailingData,
     updateQCFailTable,
     handletraFailingData,

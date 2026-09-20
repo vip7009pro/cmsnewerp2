@@ -28,6 +28,7 @@ interface PrecisionFailingFormInProps {
   checkLotNVL: (lot: string) => void;
   checkLotProcess: (lot: string) => void;
   checkEMPL_NAME: (sel: number, no: string) => void;
+  onLotKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export const PrecisionFailingFormIn: React.FC<PrecisionFailingFormInProps> = ({
@@ -58,6 +59,7 @@ export const PrecisionFailingFormIn: React.FC<PrecisionFailingFormInProps> = ({
   checkLotNVL,
   checkLotProcess,
   checkEMPL_NAME,
+  onLotKeyDown,
 }) => {
   return (
     <>
@@ -99,6 +101,7 @@ export const PrecisionFailingFormIn: React.FC<PrecisionFailingFormInProps> = ({
           className="input-control input-control--mono input-control--bold text-emerald-700"
           placeholder={testtype === "NVL" ? "202304190123" : "1E75DC03"}
           value={testtype === "NVL" ? m_lot_no : process_lot_no}
+          onKeyDown={onLotKeyDown}
           onChange={(e) => {
             const val = e.target.value;
             if (testtype === "NVL") {

@@ -70,3 +70,68 @@ Phương pháp: đọc trực tiếp file mới + file `.backup`, đối chiếu
 ### E2. `loadIQC1table` (`practice1/services/qcService.js:2726`) — trả thêm cột `LOT_VENDOR`
 - Thêm `IQC1_TABLE.LOT_VENDOR` vào danh sách cột của CTE `IQCTB` (giữ nguyên alias `LOT_VENDOR_IQC` cho cột cũ, không phá vỡ phía FE).
 - Hệ quả: FE nhận được `LOT_VENDOR` gốc từ DB khi tra dữ liệu → LƯU SAVE ghi lại đúng giá trị gốc, không còn phụ thuộc fallback `LOT_VENDOR ?? LOT_VENDOR_IQC`.
+
+---
+
+# Audit Parity — Đợt 2: 4 module IQC (`HOLDING`, `FAILING`, `BLOCK`, `NCR_MANAGER`)
+
+Ngày: 2026-09-20. Phạm vi: `PrecisionHOLDING/`, `PrecisionFAILING/`, `PrecisionBLOCK/`, `PrecisionNCR/`.
+Phương pháp: đọc trực tiếp hook + sub-component mới, đối chiếu từng hành vi với `<MODULE>.backup.tsx`; các điểm nghi vấn được xác minh lại trên backend (`practice1/services/qcService.js`) trước khi kết luận.
+
+> **TRẠNG THÁI: ĐÃ KHẮC PHỤC** toàn bộ mục F1–F4, B5–B7, H1, N1.
+
+## F. REGRESSION (mất luật nghiệp vụ — đã sửa)
+
+### F1. FAILING — mất phân quyền `checkBP` ở nghiệp vụ Xuất kho liệu QC Fail
+- Backup `FAILING.backup.tsx` (nút **Xuất**): `checkBP(userData, ["QC"], ["ALL"], ["ALL"], updateQCFailTable)`.
+- New: `FAILING.tsx` truyền thẳng `onOutputFail={updateQCFailTable}` (cả toolbar lẫn sidebar) và hook `useFailingData.ts` **không import `checkBP`** → bất kỳ nhân viên nào vào được route cũng xuất được liệu fail.
+- Fix: tách hàm lõi `executeUpdateQCFailTable()` và bọc lại bằng `updateQCFailTable()` có gate `checkBP(userData, ["QC"], ["ALL"], ["ALL"], ...)` — khớp đúng backup.
+
+### F2. FAILING — mất thao tác Enter để thêm dòng kèm luật "PQC chưa lập lỗi"
+- Backup `FAILING.backup.tsx` (`handleKeyDown`, gắn vào input LOT): khi bấm **Enter** → nếu `checkInput()` thì yêu cầu `pqc3Id !== 0` (nếu chỉ thị chưa có PQC3 → chặn với thông báo *"Số chỉ thị này PQC chưa lập lỗi, không thêm được"*), rồi chống trùng LOT và `addRow()`.
+- New: input LOT không còn `onKeyDown`; toàn bộ nhánh kiểm tra `pqc3Id` **biến mất** → có thể thêm dòng fail cho chỉ thị chưa được PQC lập lỗi.
+- Fix: bổ sung `handleLotKeyDown` trong `useFailingData.ts` (đủ 3 nhánh như backup), nối qua prop `onLotKeyDown` → `PrecisionFailingSidebar` → `PrecisionFailingFormIn`.
+
+### F3. FAILING — `checkPlanID` không xoá `G_NAME` khi mã chỉ thị chưa đủ 7 ký tự
+- Backup: `if (length >= 7) {checkPlanID; checkPQC3_ID} else { setGName("") }` → tránh việc `g_name` cũ còn sót lại và bị ghi vào payload `G_NAME`.
+- New: chỉ `if (val.length >= 7) checkPlanID(val)` → `G_NAME` cũ tồn tại khi người dùng sửa lại mã chỉ thị.
+- Fix: khôi phục nhánh `setGName("")` trong `checkPlanID`.
+
+### F4. BLOCK — Excel export ghi sai cột `PLSP` bằng `USE_YN`
+- `useBlockData.ts` (`handleExportExcel`) map `PLSP: row.USE_YN` trong khi cột `PLSP` trên lưới lấy từ field `PLSP` (backend `loadBlockingData` trả `PHANLOAI AS PLSP` / `'NVL' AS PLSP`).
+- Hệ quả: file Excel cột PLSP chứa Y/N thay vì NVL/BTP/SP.
+- Fix: map `PLSP: row.PLSP ?? ""`, đồng thời bổ sung `PLSP?: string` vào `BLOCK_DATA` (`src/pages/qc/interfaces/qcInterface.ts`) vì interface trước đó thiếu field này.
+
+## B. ĐIỂM BẤT HỢP LÝ ĐÃ CẢI TIẾN (đợt 2)
+
+### B5. BLOCK — `UPDATE NCR_ID` không chặn `NCR_ID = 0`
+- `updateNCRIDBlocking` gọi `f_updateNCRIDForHolding/Failing(row.BLOCK_ID, ncrId)` cho mọi dòng đã chọn; nếu người dùng quên nhập `NCR_ID` (state mặc định `0`) thì **xoá trắng** NCR_ID hiện có của lô.
+- HOLDING đã có guard tương ứng (`NCR ID phải khác 0`); BLOCK thì không.
+- Fix: thêm guard `if (!ncrId || ncrId === 0) return Swal warning`.
+
+### B6. BLOCK — thiếu cột `USE_YN` so với backup
+- Backup `column_blocking_table` có `{ field: "USE_YN" }`; bản mới bỏ sót dù `USE_YN` vẫn được dùng để quyết định nhánh cập nhật I222 khi SET PASS/FAIL.
+- Fix: thêm lại cột `USE_YN` (badge active/inactive) vào `PrecisionBLOCKColumns.tsx`.
+
+### B7. HOLDING — `Update Reason` có thể xoá trắng lý do lỗi
+- `updateReason` lấy `REASON` của dòng chọn đầu tiên rồi ghi đè cho *tất cả* dòng đã chọn. Nếu người dùng chưa sửa ô REASON (rỗng/undefined) thì toàn bộ lý do lỗi bị ghi thành chuỗi rỗng.
+- Fix: chặn sớm khi `reasonToUpdate` rỗng, yêu cầu nhập REASON trước (cột REASON đã được bật `editable: true` trên lưới).
+
+## N. CẢI TIẾN NHỎ (đợt 2)
+
+### N1. NCR_MANAGER — nút "Làm mới bộ lọc" không reset khoảng ngày
+- `PrecisionNCRSidebar.handleResetFilters` chỉ xoá `vendor / m_name / m_code / cmsLOT / vendorLot`, để lại `fromdate`/`todate` đã đổi → người dùng tưởng đã về mặc định nhưng truy vấn vẫn bị giới hạn ngày.
+- Fix: reset thêm `fromdate`/`todate` về `moment().format("YYYY-MM-DD")`.
+
+## C2. ĐÃ KIỂM TRA VÀ GIỮ NGUYÊN (đợt 2 — không phải lỗi)
+
+- **HOLDING**: `setQCPASS`/`updateNCRIDHolding` — gate `SUBDEPTNAME === "IQC"` từ nút bấm backup đã được chuyển vào hook (tốt hơn, không thể bypass qua toolbar); nhánh `updateQCPASSI222_M_LOT_NO` chỉ chạy khi `USE_YN_I222 !== "X"` được giữ nguyên; bổ sung tra lại dữ liệu sau khi SET/UPDATE là cải tiến.
+- **FAILING**: nút **Add** bản mới giữ đúng bộ kiểm tra `f_isM_LOT_NO_in_P500 || f_isM_LOT_NO_in_IN_KHO_SX || f_isM_LOT_NO_in_O302` + thông báo *"LOT này không dùng cho chỉ thị này"* như backup; `saveFailingData` giữ nguyên luồng `f_resetIN_KHO_SX_IQC2` + `updateLOT_SX_STATUS` cho hàng BTP; `updateQCFailTable` giữ nguyên validate `g_name/empl_name/empl_name2` và luồng `f_nhapkhoao` khi vật liệu là liệu chính trong BOM.
+- **BLOCK**: `setQCPASS` giữ nguyên `f_updateStockM090()` sau khi cập nhật; `setClose` giữ nguyên gate MUA/IQC/NHU1903; nhánh FAILING dùng `PLAN_ID` còn HOLDING dùng `BLOCK_ID` đúng như backup.
+- **NCR_MANAGER**: `addRow` sinh `NCR_ID` bằng `Math.max(...)+1`, `NCR_NO = getCompany()+"1-"+YYYYMMDD`, `DEFECT_IMAGE='P'`, `PROCESS_STATUS='P'`, `COUNTERMEASURE='N'` — khớp backup; upload ảnh lỗi (`.png`) và đối sách (`.pdf/.pptx/.docx/.xlsx`) đều giữ gate `checkBP(["QC"], ["Leader","Dept Staff","Sub Leader"], ["ALL"])`; `SET COMPLETED/PENDING` giữ gate `checkBP(["QC"], ["Leader","Dept Staff","Sub Leader"], ["ALL"])`.
+- **NCR_MANAGER**: `PrecisionNCRRightPanel` coi `DEFECT_IMAGE = "P"` là *chưa có ảnh* (thay vì hiện LINK như backup) → hợp lý vì file PNG chưa tồn tại; giữ nguyên.
+
+## D2. XÁC MINH (đợt 2)
+
+- `get_errors` trên toàn bộ 9 file đã sửa: **0 lỗi**.
+- `npm run build` (vite build production) trong `cmsnewerp2`: **thành công**, `dist/index.html` được ghi mới.

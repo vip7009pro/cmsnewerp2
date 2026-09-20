@@ -2037,3 +2037,15 @@
 
 
 
+
+- [x] Rà soát parity đợt 2 cho 4 module IQC (HOLDING, FAILING, BLOCK, NCR_MANAGER) so với bản .backup — 2026-09-20:
+  - FAILING: khôi phục gate checkBP(['QC']) cho nghiệp vụ Xuất kho liệu QC Fail (bị mất khi tách hook).
+  - FAILING: khôi phục thao tác Enter trên ô LOT kèm luật 'PQC chưa lập lỗi thì không thêm được' + chống trùng LOT.
+  - FAILING: checkPlanID xoá G_NAME khi mã chỉ thị chưa đủ 7 ký tự.
+  - BLOCK: sửa Excel export cột PLSP (đang ghi nhầm USE_YN) và bổ sung PLSP vào interface BLOCK_DATA.
+  - BLOCK: thêm guard NCR_ID != 0 cho UPDATE NCR_ID (tránh xoá trắng NCR_ID của lô).
+  - BLOCK: khôi phục cột USE_YN trên lưới Blocking.
+  - HOLDING: chặn Update Reason khi ô REASON rỗng (tránh ghi đè lý do lỗi thành rỗng).
+  - NCR_MANAGER: nút Làm mới bộ lọc reset thêm fromdate/todate.
+  - Xác minh: get_errors 0 lỗi trên 9 file sửa; npm run build (vite production) thành công.
+

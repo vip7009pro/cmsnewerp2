@@ -204,6 +204,20 @@ export const getBlockingColumns = () => [
     },
   },
   {
+    field: "USE_YN",
+    headerName: "USE_YN",
+    resizable: true,
+    width: 70,
+    cellRenderer: (p: any) => {
+      const isY = p.value === "Y";
+      return (
+        <span className={`badge-pill badge-pill--${isY ? "active" : "inactive"}`}>
+          {p.value || "-"}
+        </span>
+      );
+    },
+  },
+  {
     field: "NCR_ID",
     headerName: "NCR_ID",
     resizable: true,
