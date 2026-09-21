@@ -287,8 +287,9 @@
         gap: 4px;
       }
 
-      input[type="text"],
-      select {
+      // Chỉ style input/select gốc của form (không đè lên input do MUI render trong Autocomplete)
+      > input[type="text"],
+      > select {
         height: 28px;
         width: 100%;
         padding: 0 8px;
@@ -316,6 +317,48 @@
         display: flex;
         flex-direction: column;
         gap: 4px;
+
+        // AUTOCOMPLETE MÃ SẢN PHẨM (compact high-density theo chuẩn Stitch)
+        .productCodeAutocomplete {
+          width: 100%;
+
+          .MuiOutlinedInput-root {
+            height: 28px;
+            min-height: 28px;
+            padding: 0 26px 0 8px;
+            font-size: 11.5px;
+            background: #ffffff;
+            border-radius: 5px;
+
+            .MuiOutlinedInput-notchedOutline {
+              border-color: #cbd5e1;
+            }
+
+            &:hover .MuiOutlinedInput-notchedOutline {
+              border-color: #94a3b8;
+            }
+
+            &.Mui-focused .MuiOutlinedInput-notchedOutline {
+              border-color: #2563eb;
+              box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+            }
+
+            .MuiAutocomplete-input {
+              padding: 0 !important;
+              font-size: 11.5px;
+              color: #1e293b;
+            }
+
+            .MuiAutocomplete-endAdornment {
+              right: 2px;
+
+              .MuiIconButton-root {
+                padding: 2px;
+                font-size: 15px;
+              }
+            }
+          }
+        }
 
         .productMeta {
           font-size: 11px;
@@ -365,7 +408,7 @@
 
     .visBox {
       width: 100%;
-      min-height: 80px;
+      min-height: 108px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -375,6 +418,54 @@
       padding: 6px;
       box-sizing: border-box;
       overflow: hidden;
+      position: relative; // khung định vị dự phòng cho mã vạch (position:absolute)
+
+      // KHUNG TEM PREVIEW: giữ tỉ lệ thật của tem (inline aspect-ratio) và
+      // là offsetParent để mã vạch absolute không "dạt" ra góc component.
+      .visStage {
+        position: relative;
+        max-width: 100%;
+        max-height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &--stretch {
+          width: 100%; // 1D: bám hết bề ngang khung, cao theo tỉ lệ
+        }
+
+        &--square {
+          height: 96px; // QR / 2D Matrix: khung vuông, không phóng to hết bề ngang
+        }
+
+        // Barcode/QR/Datamatrix được thiết kế cho canvas tem in: position:absolute theo mm
+        // => ép lại về luồng trong stage và scale theo khung xem trước.
+        .amz_barcode,
+        .amz_qrcode,
+        .amz_datamatrix {
+          position: relative !important;
+          top: auto !important;
+          left: auto !important;
+          width: 100% !important;
+          height: 100% !important;
+          transform: none !important;
+        }
+
+        .amz_barcode svg,
+        .amz_qrcode svg {
+          display: block !important;
+          width: 100% !important;
+          height: 100% !important;
+        }
+
+        // react-datamatrix-svg render ra <img> chứa svg data-url
+        .amz_datamatrix img {
+          display: block;
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: contain;
+        }
+      }
 
       .emptyHint {
         font-size: 11px;
@@ -681,4 +772,63 @@
   background: #f8fafc;
   border: 1px solid #cbd5e1;
   color: #334155;
+}
+
+// =============================================================
+// AUTOCOMPLETE MÃ SẢN PHẨM - POPPER (render qua Portal nên phải để GLOBAL)
+// =============================================================
+.productCodeAutocomplete-popper {
+  z-index: 1300; // nổi trên các card/pane của form
+
+  .MuiPaper-root {
+    margin-top: 2px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.14);
+  }
+
+  .MuiAutocomplete-listbox {
+    max-height: 260px;
+    padding: 2px 0;
+
+    .MuiAutocomplete-option {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      min-height: unset;
+      padding: 3px 8px;
+      font-size: 11.5px;
+      line-height: 1.35;
+
+      .optCode {
+        font-weight: 700;
+        color: #1d4ed8;
+        font-family: "JetBrains Mono", monospace;
+        white-space: nowrap;
+      }
+
+      .optName {
+        color: #475569;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      // Option đang được highlight sẵn (autoHighlight) => Enter sẽ chọn option này
+      &.Mui-focused {
+        background: #dbeafe;
+      }
+
+      &[aria-selected="true"] {
+        background: #eff6ff;
+      }
+    }
+  }
+
+  .MuiAutocomplete-noOptions {
+    padding: 6px 8px;
+    font-size: 11px;
+    color: #94a3b8;
+    font-style: italic;
+  }
 }

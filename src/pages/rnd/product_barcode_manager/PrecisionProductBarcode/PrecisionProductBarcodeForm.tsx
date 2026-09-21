@@ -1,11 +1,32 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { AiOutlineBarcode, AiOutlineDelete, AiOutlineEdit, AiOutlinePlus, AiOutlineReload } from "react-icons/ai";
 import { BsEye, BsQrCodeScan } from "react-icons/bs";
 import { CodeListData } from "../../../kinhdoanh/interfaces/kdInterface";
-import { BARCODE_DATA } from "../../interfaces/rndInterface";
+import { BARCODE_DATA, COMPONENT_DATA } from "../../interfaces/rndInterface";
 import BARCODE from "../../design_amazon/design_components/BARCODE";
 import DATAMATRIX from "../../design_amazon/design_components/DATAMATRIX";
 import QRCODE from "../../design_amazon/design_components/QRCODE";
+import { ProductCodeAutocomplete } from "./ProductCodeAutocomplete";
+
+// Giá trị nền dùng chung cho khối preview (POS_X/POS_Y phải bằng 0 vì đã có visStage neo sẵn)
+const PREVIEW_BASE: COMPONENT_DATA = {
+  CAVITY_PRINT: 2,
+  DOITUONG_NAME: "bc",
+  DOITUONG_NO: 1,
+  DOITUONG_STT: "0",
+  FONT_NAME: "Arial",
+  FONT_SIZE: 6,
+  FONT_STYLE: "normal",
+  G_CODE_MAU: "",
+  GIATRI: "",
+  PHANLOAI_DT: "1D BARCODE",
+  POS_X: 0,
+  POS_Y: 0,
+  SIZE_W: 60,
+  SIZE_H: 10,
+  REMARK: "",
+  ROTATE: 0,
+};
 
 interface FormProps {
   isOpen: boolean;
@@ -33,6 +54,32 @@ export const PrecisionProductBarcodeForm: React.FC<FormProps> = React.memo(
     onDelete,
     onReset,
   }) => {
+    // Chọn mã sản phẩm từ AutoComplete -> setSelectedCode + đồng bộ G_CODE/G_NAME cho form
+    const handleSelectCode = useCallback(
+      (val: CodeListData | null) => {
+        setSelectedCode(val);
+        setBarCodeInfo("G_CODE", val?.G_CODE ?? "");
+        setBarCodeInfo("G_NAME", val?.G_NAME ?? "");
+      },
+      [setSelectedCode, setBarCodeInfo]
+    );
+
+    // Loại mã đang chọn: 1D (60x10mm) / QR - MATRIX (10x10mm)
+    const barcodeType = selectedRows?.BARCODE_TYPE || "1D";
+    const is1D = barcodeType !== "QR" && barcodeType !== "MATRIX";
+
+    // Dữ liệu đưa vào component vẽ mã (BARCODE/QRCODE/DATAMATRIX dùng kích thước mm)
+    const previewData = useMemo<COMPONENT_DATA>(
+      () => ({
+        ...PREVIEW_BASE,
+        GIATRI: selectedRows?.BARCODE_RND ?? "",
+        PHANLOAI_DT: is1D ? "1D BARCODE" : barcodeType === "QR" ? "QR CODE" : "2D MATRIX",
+        SIZE_W: is1D ? 60 : 10,
+        SIZE_H: 10,
+      }),
+      [selectedRows?.BARCODE_RND, is1D, barcodeType]
+    );
+
     return (
       <aside className={`precision-barcode__formPane ${!isOpen ? "precision-barcode__formPane--collapsed" : ""}`}>
         {/* TIÊU ĐỀ FORM */}
@@ -55,24 +102,12 @@ export const PrecisionProductBarcodeForm: React.FC<FormProps> = React.memo(
               <span>MÃ SẢN PHẨM (PRODUCT CODE):</span>
             </label>
             <div className="codeSelectWrap">
-              <select
-                value={selectedCode?.G_CODE ?? ""}
-                onChange={(e) => {
-                  const found = codeList.find((x) => x.G_CODE === e.target.value) ?? null;
-                  setSelectedCode(found);
-                  setBarCodeInfo("G_CODE", e.target.value);
-                  if (found) {
-                    setBarCodeInfo("G_NAME", found.G_NAME);
-                  }
-                }}
-              >
-                <option value="">-- Chọn mã sản phẩm --</option>
-                {codeList.map((x) => (
-                  <option key={x.G_CODE} value={x.G_CODE}>
-                    {x.G_CODE} : {x.G_NAME}
-                  </option>
-                ))}
-              </select>
+              {/* AUTOCOMPLETE: gõ mã/tên để search, Enter chọn option đầu tiên của list sau lọc */}
+              <ProductCodeAutocomplete
+                codeList={codeList}
+                selectedCode={selectedCode}
+                onSelect={handleSelectCode}
+              />
               {selectedCode && (
                 <div className="productMeta" title={selectedCode.G_NAME}>
                   {selectedCode.G_CODE} — {selectedCode.G_NAME}
@@ -157,75 +192,26 @@ export const PrecisionProductBarcodeForm: React.FC<FormProps> = React.memo(
           <div className="visTitle">
             <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
               <BsEye size={12} color="#2563eb" />
-              <span>XEM TRƯỚC MÃ QUÉT TRỰC TIẾP ({selectedRows?.BARCODE_TYPE || "1D"})</span>
+              <span>XEM TRƯỚC MÃ QUÉT TRỰC TIẾP ({barcodeType})</span>
             </span>
           </div>
           <div className="visBox">
             {selectedRows?.BARCODE_RND ? (
-              selectedRows.BARCODE_TYPE === "QR" ? (
-                <QRCODE
-                  DATA={{
-                    CAVITY_PRINT: 2,
-                    DOITUONG_NAME: "bc",
-                    DOITUONG_NO: 1,
-                    DOITUONG_STT: "0",
-                    FONT_NAME: "Arial",
-                    FONT_SIZE: 6,
-                    FONT_STYLE: "normal",
-                    G_CODE_MAU: "",
-                    GIATRI: selectedRows.BARCODE_RND,
-                    PHANLOAI_DT: "QR CODE",
-                    POS_X: 0,
-                    POS_Y: 0,
-                    SIZE_W: 10,
-                    SIZE_H: 10,
-                    REMARK: "",
-                    ROTATE: 0,
-                  }}
-                />
-              ) : selectedRows.BARCODE_TYPE === "MATRIX" ? (
-                <DATAMATRIX
-                  DATA={{
-                    CAVITY_PRINT: 2,
-                    DOITUONG_NAME: "bc",
-                    DOITUONG_NO: 1,
-                    DOITUONG_STT: "0",
-                    FONT_NAME: "Arial",
-                    FONT_SIZE: 6,
-                    FONT_STYLE: "normal",
-                    G_CODE_MAU: "",
-                    GIATRI: selectedRows.BARCODE_RND,
-                    PHANLOAI_DT: "QR CODE",
-                    POS_X: 0,
-                    POS_Y: 0,
-                    SIZE_W: 10,
-                    SIZE_H: 10,
-                    REMARK: "",
-                    ROTATE: 0,
-                  }}
-                />
-              ) : (
-                <BARCODE
-                  DATA={{
-                    CAVITY_PRINT: 2,
-                    DOITUONG_NAME: "bc",
-                    DOITUONG_NO: 1,
-                    DOITUONG_STT: "0",
-                    FONT_NAME: "Arial",
-                    FONT_SIZE: 6,
-                    FONT_STYLE: "normal",
-                    G_CODE_MAU: "",
-                    GIATRI: selectedRows.BARCODE_RND,
-                    PHANLOAI_DT: "QR CODE",
-                    POS_X: 0,
-                    POS_Y: 0,
-                    SIZE_W: 60,
-                    SIZE_H: 10,
-                    REMARK: "",
-                    ROTATE: 0,
-                  }}
-                />
-              )
+              // visStage là khung định vị (position:relative) + có tỉ lệ mm của tem:
+              // các component BARCODE/QRCODE/DATAMATRIX đều render position:absolute theo mm
+              // nên BẮT BUỘC phải nằm trong stage này, nếu không sẽ "dạt" ra góc component.
+              <div
+                className={`visStage ${is1D ? "visStage--stretch" : "visStage--square"}`}
+                style={{ aspectRatio: `${previewData.SIZE_W} / ${previewData.SIZE_H}` }}
+              >
+                {barcodeType === "QR" ? (
+                  <QRCODE DATA={previewData} />
+                ) : barcodeType === "MATRIX" ? (
+                  <DATAMATRIX DATA={previewData} />
+                ) : (
+                  <BARCODE DATA={previewData} />
+                )}
+              </div>
             ) : (
               <span className="emptyHint">Nhập BARCODE_RND để hiển thị mã quét</span>
             )}

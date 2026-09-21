@@ -1,6 +1,19 @@
 # ACTIVE_STATE
 
-## Mục tiêu task hiện tại (đợt 13)
+## Mục tiêu task hiện tại (đợt 14)
+R&D → **Quản lý barcode sản phẩm** (`/rnd/productbarcodemanager`):
+1. List chọn **MÃ SẢN PHẨM** đổi từ `<select>` sang **AutoComplete** — gõ mã/tên để search, nhấn **Enter chọn luôn option đầu tiên** của list sau lọc.
+2. **Fix ô "XEM TRƯỚC MÃ QUÉT TRỰC TIẾP"**: mã vạch/QR không hiện trong khung mà "dạt" ra góc trên-trái component.
+Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 1m 27s`), `get_errors` 0 lỗi, đã kiểm chứng trên UI thật (Enter → chọn option đầu; nút X → clear G_CODE; preview 1D/QR/MATRIX đều nằm trong khung).
+
+## File đã chỉnh sửa (đợt 14)
+- `product_barcode_manager/PrecisionProductBarcode/ProductCodeAutocomplete.tsx` — **(mới)** component AutoComplete mã SP: `createFilterOptions({ matchFrom: "any", limit: 200 })` (search cả mã lẫn tên), `autoHighlight` (option đầu luôn highlight ⇒ Enter chọn luôn), `openOnFocus`/`selectOnFocus`/`handleHomeEndKeys`, `slotProps.popper.className = productCodeAutocomplete-popper`.
+- `PrecisionProductBarcodeForm.tsx` — thay `<select>` bằng `<ProductCodeAutocomplete>`; `handleSelectCode` set `selectedCode` + `G_CODE`/`G_NAME` (clear ⇒ `""`).
+- `PrecisionProductBarcode.scss` — style compact `.productCodeAutocomplete` (cao 28px khớp input trong form) + block **GLOBAL** `.productCodeAutocomplete-popper` (popper render qua Portal nên nằm ngoài `.precision-barcode`); selector `input[type="text"], select` đổi thành `> input[type="text"], > select` để không đè style lên input do MUI render.
+- `PrecisionProductBarcodeForm.tsx` — **(preview)** gom 3 literal DATA trùng lặp thành `PREVIEW_BASE` + `useMemo previewData` (SIZE_W 60x10mm cho 1D, 10x10mm cho QR/MATRIX); bọc mã vạch trong `<div className="visStage">` có `aspectRatio` theo mm.
+- `PrecisionProductBarcode.scss` — **(preview)** `.visBox` thêm `position: relative` + `min-height: 108px`; thêm `.visStage` (`position:relative`, `--stretch` width 100% cho 1D, `--square` 96px cho QR/Matrix) và ép `.amz_barcode/.amz_qrcode/.amz_datamatrix` về `position: relative` + `width/height: 100%` (`svg`, `img` cũng 100%).
+
+## Đợt 13 (đã xong)
 Sửa 3 lỗi QLSX/YCSX do user báo:
 1. In **Chỉ Thị / Chỉ Thị Combo**: tài khoản khác `NHU1903` báo lỗi "Command 'updateLossKT_ZTB_DM_HISTORY' not supported".
 2. **QUICKPLAN2_backup**: cột `IS_SETTING` trong bảng Plan tạm không tick/bỏ tick được.
@@ -78,6 +91,10 @@ Trạng thái: **HOÀN THÀNH** — `npm run build` (vite) `✓ built in 1m 58s`
 - Đợt 4 — **`APPROVAL_STATUS = 0` là "Từ chối"** (`1` duyệt, `2` chờ, `3` xoá ⇒ backend đổi thành `DELETE`); ảnh thẻ ở `public/Picture_NS/NS_<EMPL_NO>.jpg`, không có `public/avatarpic/`.
 - Đợt 4 — backend cũ có thể trả **chuỗi thuần** (`res.send("NO_LEADER")`); `generalQuery` **throw** khi lỗi mạng ⇒ phải bắt cả `tk_status === "NG"` và `catch`. Dùng `isTkOk`/`getTkMessage`/`getErrMessage` từ `src/api/services/responseService.ts`.
 - Đợt 4 — **hành động hàng loạt phải giữ đúng gate của cell đơn lẻ** và không set state mù trước khi API trả về. **UI có field mà backend không nhận** (`dangkytangcacanhan` luôn dùng `moment()`; `FINAL_OVERTIMES` mới là số phút OT thật) ⇒ luôn đối chiếu service trước khi tin tham số trên form.
+- **Đợt 14 — MUI `renderOption` không được spread props trực tiếp**: React 18.3 đã cảnh báo `A props object containing a "key" prop is being spread into JSX`; phải `const { key, ...optionProps } = props; return <li key={key} {...optionProps}>`.
+- **Đợt 14 — popper của `Autocomplete` render qua Portal (append vào body)** ⇒ CSS scoped theo `.precision-xxx` **không** với tới; phải khai báo class riêng ở cấp global (kèm `slotProps.popper.className`).
+- **Đợt 14 — SCSS dạng `.formItem input[type="text"]` sẽ bắt cả `<input>` bên trong `TextField` của MUI** (gây double border / sai chiều cao) ⇒ luôn scope bằng con trực tiếp `> input[type="text"]`.
+- **Đợt 14 — `BARCODE/QRCODE/DATAMATRIX` (design_amazon) render `position:absolute; top/left: POS_X/POS_Y mm` + size mm** (thiết kế cho canvas tem in). Đặt thẳng vào khung xem trước ⇒ `offsetParent` là `.component_element` nên mã "dạt" ra góc trên-trái component, khung preview trống. Fix: khung cha `position:relative` + ép con về `position:relative; width/height:100%` và set tỉ lệ khung theo đúng mm của tem. `DATAMATRIX` render `<img>` (svg data-url) chứ không phải `<svg>` ⇒ phải override cả `img`.
 - **Pitfall AG Grid**: `rowStyle`/`getRowStyle`/`getRowId` phải là reference ổn định, nếu không AG Grid redraw toàn bộ row (nháy cell SVG/QR/barcode).
 - **Pitfall header mobile**: `PrecisionHeader.tsx` cũ render brand + omnibar + action trên một hàng flex `space-between` với `flex-shrink:0` ⇒ tràn ngang, nút ngôn ngữ/thông báo/user pill bị đẩy khỏi viewport. Đã sửa bằng conditional rendering theo `isMobile` (`matchMedia max-width:768px`): mobile chỉ còn brand + 2 nút (toggle search, overflow) và gom toàn bộ hành động vào `PrecisionHeaderMobileMenu.tsx`; ô search dùng chung biến `searchBoxNode`, mobile render trong `__mobileSearch` (`position:absolute; top:100%`) nên không tăng chiều cao 48px. Backup: `PrecisionHeader.backup.tsx`.
 - Repo có sẵn nhiều lỗi `tsc --noEmit` ở module khác ⇒ **không dùng tsc làm gate**, dùng `npm run build` (vite) trong `g:\NODEJS\WEBCMS ERP2\cmsnewerp2`.
