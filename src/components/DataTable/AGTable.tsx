@@ -18,7 +18,10 @@ import { AiFillCloseCircle, AiFillFileExcel } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { ColDef, GridApi } from 'ag-grid-community';
-import PivotGridDataSource, { PivotGridDataType } from 'devextreme/ui/pivot_grid/data_source';
+// DevExtreme PivotGridDataSource chỉ cần TYPE ở đây. Import runtime phải là ĐỘNG (xem effect bên dưới):
+// import tĩnh sẽ kéo cả gói DevExtreme (devExtreme core + widgets ≈ 4.9 MB JS) vào đường khởi động,
+// vì AGTable nằm trong graph khởi động qua Home -> PageTabs -> ... -> TableFromQueryComponent.
+import type PivotGridDataSource from 'devextreme/ui/pivot_grid/data_source';
 import { MdOutlinePivotTableChart } from 'react-icons/md';
 import { SaveExcel } from '../../api/services/excelService';
 
@@ -136,14 +139,43 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
     }
   }, [ag_data.data])
 
-  const pvdts = useMemo(
-    () =>
-      new PivotGridDataSource({
-        fields: pivotDatasourcefiels,
-        store: ag_data.data,
-      }),
-    [pivotDatasourcefiels, ag_data.data]
-  );
+  // ===== PIVOT: chỉ nạp DevExtreme khi user THỰC SỰ mở bảng pivot =====
+  // Trước đây: `new PivotGridDataSource(...)` chạy trong useMemo cho MỌI bảng dù panel pivot đóng,
+  // và import tĩnh ở đầu file => mọi trang có bảng (và cả màn hình đăng nhập) phải tải DevExtreme.
+  const [pvdts, setPvdts] = useState<PivotGridDataSource | null>(null);
+  const [pivotLoading, setPivotLoading] = useState(false);
+  const pivotBuiltForRef = useRef<any[] | null>(null);
+
+  useEffect(() => {
+    if (!showhidePivotTable) return;
+
+    // Dữ liệu chưa đổi và đã có data source => tái sử dụng, mở lại panel là hiện ngay.
+    if (pvdts && pivotBuiltForRef.current === ag_data.data) {
+      setPivotLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setPivotLoading(true);
+
+    void (async () => {
+      const mod = await import('devextreme/ui/pivot_grid/data_source');
+      if (cancelled) return;
+      const PivotGridDataSourceCtor = mod.default;
+      setPvdts(
+        new PivotGridDataSourceCtor({
+          fields: pivotDatasourcefiels,
+          store: ag_data.data,
+        }) as unknown as PivotGridDataSource
+      );
+      pivotBuiltForRef.current = ag_data.data;
+      setPivotLoading(false);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [showhidePivotTable, pivotDatasourcefiels, ag_data.data, pvdts]);
 
   const onExportClick = () => {
     (gridRef ?? gridRefDefault).current?.api?.exportDataAsCsv();
@@ -299,18 +331,24 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
             <AiFillCloseCircle color="blue" size={15} />
             Close
           </IconButton>
-          <Suspense
-            fallback={
-              <div style={{ padding: 12, fontSize: 12, color: '#475569' }}>
-                Đang tải bảng phân tích xoay...
-              </div>
-            }
-          >
-            <PivotTable
-              datasource={pvdts}
-              tableID="datasxtablepivot"
-            />
-          </Suspense>
+          {pivotLoading || !pvdts ? (
+            <div style={{ padding: 12, fontSize: 12, color: '#475569' }}>
+              Đang tải bảng phân tích xoay...
+            </div>
+          ) : (
+            <Suspense
+              fallback={
+                <div style={{ padding: 12, fontSize: 12, color: '#475569' }}>
+                  Đang tải bảng phân tích xoay...
+                </div>
+              }
+            >
+              <PivotTable
+                datasource={pvdts}
+                tableID="datasxtablepivot"
+              />
+            </Suspense>
+          )}
         </div>
       )}
     </div>

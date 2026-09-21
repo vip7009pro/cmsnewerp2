@@ -35,22 +35,18 @@ export default defineConfig({
         /* entryFileNames: 'assets/[name]-[hash].js',
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[extname]', */
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('@mui')) return 'vendor-mui';
-            if (id.includes('ag-grid')) return 'vendor-ag-grid';
-            if (id.includes('devextreme')) return 'vendor-dx';
-            if (id.includes('xlsx') || id.includes('exceljs')) return 'vendor-excel';
-            if (id.includes('moment')) return 'vendor-moment';
-            // Do not manual split react core
-            if (id.includes('face-api.js')) return 'vendor-faceapi';
-            if (id.includes('opencv-js')) return 'vendor-opencv';
-            if (id.includes('recharts')) return 'vendor-recharts';
-            if (id.includes('reactflow')) return 'vendor-reactflow';
-            if (id.includes('jszip')) return 'vendor-jszip';
-            return 'vendor';
-          }
-        }
+        // ===== KHÔNG dùng manualChunks nữa (quyết định 2026-09-21 sau khi đo) =====
+        // Lịch sử: bản cũ gom mọi node_modules không khớp rule vào 1 chunk 'vendor' (~9.6 MB)
+        // => entry kéo theo cả monaco-editor/socket.io/lodash/moment/sweetalert2... dù chỉ dùng ở page lazy.
+        // Bản thử tiếp theo (gom từng nhóm thủ công) vẫn bị: chunk 'vendor-mui'/'vendor-dx' do Rollup
+        // tạo ra lại trở thành static dep của entry (đo được: entry -> z3rAlkf5.js -> nozJKXpV.js 6.5 MB,
+        // và index.html vẫn link dx.light.css 774 KB), trong khi ở dev graph khởi động ĐÃ SẠCH DevExtreme.
+        // => Trả quyền tách chunk cho Rollup: nó tách theo module graph, lib chỉ dùng ở page lazy sẽ
+        //    nằm trong async chunk thay vì bị preload.
+        // (giữ lại đây để tham chiếu nếu cần quay lại)
+        // manualChunks(id) { ... }
+
+        // entryFileNames/chunkFileNames giữ tên có hash để cache-busting hoạt động.
       },
     },
   },
