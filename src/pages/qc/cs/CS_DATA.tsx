@@ -7,7 +7,14 @@ import { PrecisionCSDataToolbar } from "./PrecisionCSData/PrecisionCSDataToolbar
 import { getCSDataColumns } from "./PrecisionCSData/PrecisionCSDataColumns";
 import { PrecisionCSDataTable } from "./PrecisionCSData/PrecisionCSDataTable";
 import { PrecisionCSDataNNDSModal } from "./PrecisionCSData/PrecisionCSDataNNDSModal";
-import { PrecisionCSDataPivotModal } from "./PrecisionCSData/PrecisionCSDataPivotModal";
+import { lazyComponent } from "../../../components/PivotChart/lazyOpenable";
+// Pivot modal chỉ nạp ĐỘNG khi user mở (module kéo theo DevExtreme) — page đã render có điều kiện
+// `{showPivotModal && ...}` nên chỉ cần lazy, xem lazyOpenable.tsx.
+const PrecisionCSDataPivotModal = lazyComponent(() =>
+  import("./PrecisionCSData/PrecisionCSDataPivotModal").then(
+    (m) => m.PrecisionCSDataPivotModal,
+  ),
+);
 
 const CS_DATA_TB: React.FC = () => {
   const {

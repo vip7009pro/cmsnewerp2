@@ -14,7 +14,11 @@ import PrecisionOverKpi from "./PrecisionOverMonitor/PrecisionOverKpi";
 import PrecisionOverChart from "./PrecisionOverMonitor/PrecisionOverChart";
 import PrecisionOverToolbar from "./PrecisionOverMonitor/PrecisionOverToolbar";
 import { getPrecisionOverColumns } from "./PrecisionOverMonitor/PrecisionOverColumns";
-import PrecisionOverPivotModal from "./PrecisionOverMonitor/PrecisionOverPivotModal";
+import { lazyOpenable } from "../../../components/PivotChart/lazyOpenable";
+// Pivot modal chỉ nạp ĐỘNG khi mở (module kéo theo DevExtreme) — xem lazyOpenable.tsx.
+const PrecisionOverPivotModal = lazyOpenable(() =>
+  import("./PrecisionOverMonitor/PrecisionOverPivotModal").then((m) => m.default),
+);
 
 const OVER_MONITOR: React.FC = () => {
   const [only_pending, setOnly_Pending] = useState<boolean>(true);

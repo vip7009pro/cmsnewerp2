@@ -20,7 +20,11 @@ import PrecisionQLVLKpi from "./PrecisionQLVL/PrecisionQLVLKpi";
 import PrecisionQLVLToolbar from "./PrecisionQLVL/PrecisionQLVLToolbar";
 import { buildQLVLColumns } from "./PrecisionQLVL/PrecisionQLVLColumns";
 import PrecisionQLVLAddModal from "./PrecisionQLVL/PrecisionQLVLAddModal";
-import PrecisionQLVLPivotModal from "./PrecisionQLVL/PrecisionQLVLPivotModal";
+import { lazyOpenable } from "../../../components/PivotChart/lazyOpenable";
+// Pivot modal chỉ nạp ĐỘNG khi mở (module kéo theo DevExtreme) — xem lazyOpenable.tsx.
+const PrecisionQLVLPivotModal = lazyOpenable(() =>
+  import("./PrecisionQLVL/PrecisionQLVLPivotModal").then((m) => m.default),
+);
 import { createQLVLPivotDataSource } from "./PrecisionQLVL/PrecisionQLVLPivotConfig";
 
 const initialClickedRow: MATERIAL_TABLE_DATA = {

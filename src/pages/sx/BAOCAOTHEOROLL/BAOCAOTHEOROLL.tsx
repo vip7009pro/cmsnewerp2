@@ -7,7 +7,13 @@ import { PrecisionBaoCaoRollKpi } from "./PrecisionBaoCaoRoll/PrecisionBaoCaoRol
 import { PrecisionBaoCaoRollCharts } from "./PrecisionBaoCaoRoll/PrecisionBaoCaoRollCharts";
 import { PrecisionBaoCaoRollSummary } from "./PrecisionBaoCaoRoll/PrecisionBaoCaoRollSummary";
 import { PrecisionBaoCaoRollGrid } from "./PrecisionBaoCaoRoll/PrecisionBaoCaoRollGrid";
-import { PrecisionBaoCaoRollPivotModal } from "./PrecisionBaoCaoRoll/PrecisionBaoCaoRollPivotModal";
+import { lazyOpenable } from "../../../components/PivotChart/lazyOpenable";
+// Pivot modal chỉ nạp ĐỘNG khi mở (module kéo theo DevExtreme) — xem lazyOpenable.tsx.
+const PrecisionBaoCaoRollPivotModal = lazyOpenable(() =>
+  import("./PrecisionBaoCaoRoll/PrecisionBaoCaoRollPivotModal").then(
+    (m) => m.PrecisionBaoCaoRollPivotModal,
+  ),
+);
 
 const BAOCAOTHEOROLL: React.FC = () => {
   const {

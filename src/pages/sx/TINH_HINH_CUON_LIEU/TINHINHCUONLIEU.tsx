@@ -7,7 +7,14 @@ import { PrecisionCuonLieuToolbar } from "./PrecisionCuonLieu/PrecisionCuonLieuT
 import { PrecisionCuonLieuChart } from "./PrecisionCuonLieu/PrecisionCuonLieuChart";
 import { buildCuonLieuColumns } from "./PrecisionCuonLieu/PrecisionCuonLieuColumns";
 import { PrecisionCuonLieuTable } from "./PrecisionCuonLieu/PrecisionCuonLieuTable";
-import { PrecisionCuonLieuPivotModal } from "./PrecisionCuonLieu/PrecisionCuonLieuPivotModal";
+import { lazyComponent } from "../../../components/PivotChart/lazyOpenable";
+// Pivot modal chỉ nạp ĐỘNG khi user mở (module kéo theo DevExtreme) — page đã render có điều kiện
+// `{showPivotModal && ...}` nên chỉ cần lazy, xem lazyOpenable.tsx.
+const PrecisionCuonLieuPivotModal = lazyComponent(() =>
+  import("./PrecisionCuonLieu/PrecisionCuonLieuPivotModal").then(
+    (m) => m.PrecisionCuonLieuPivotModal,
+  ),
+);
 
 const TINHHINHCUONLIEU: React.FC = () => {
   const {

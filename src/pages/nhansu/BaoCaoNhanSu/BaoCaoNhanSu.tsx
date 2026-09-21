@@ -27,7 +27,11 @@ import PrecisionBaoCaoMainDept from "./PrecisionBaoCaoNhanSu/PrecisionBaoCaoMain
 import PrecisionBaoCaoShiftMatrix from "./PrecisionBaoCaoNhanSu/PrecisionBaoCaoShiftMatrix";
 import PrecisionBaoCaoSubDept from "./PrecisionBaoCaoNhanSu/PrecisionBaoCaoSubDept";
 import PrecisionBaoCaoFullTable from "./PrecisionBaoCaoNhanSu/PrecisionBaoCaoFullTable";
-import PrecisionBaoCaoPivotModal from "./PrecisionBaoCaoNhanSu/PrecisionBaoCaoPivotModal";
+import { lazyOpenable } from "../../../components/PivotChart/lazyOpenable";
+// Pivot modal chỉ nạp ĐỘNG khi mở (module kéo theo DevExtreme) — xem lazyOpenable.tsx.
+const PrecisionBaoCaoPivotModal = lazyOpenable(() =>
+  import("./PrecisionBaoCaoNhanSu/PrecisionBaoCaoPivotModal").then((m) => m.default),
+);
 
 const BaoCaoNhanSu = () => {
   const userData: UserData | undefined = useSelector(

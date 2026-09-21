@@ -14,7 +14,11 @@ import PrecisionCustKpi from "./PrecisionCustManager/PrecisionCustKpi";
 import PrecisionCustToolbar, { CustFilterType } from "./PrecisionCustManager/PrecisionCustToolbar";
 import { getPrecisionCustColumns } from "./PrecisionCustManager/PrecisionCustColumns";
 import PrecisionCustModal from "./PrecisionCustManager/PrecisionCustModal";
-import PrecisionCustPivotModal from "./PrecisionCustManager/PrecisionCustPivotModal";
+import { lazyOpenable } from "../../../components/PivotChart/lazyOpenable";
+// Pivot modal chỉ nạp ĐỘNG khi mở: module này kéo theo DevExtreme (~6,4 MB) — xem lazyOpenable.tsx.
+const PrecisionCustPivotModal = lazyOpenable(() =>
+  import("./PrecisionCustManager/PrecisionCustPivotModal").then((m) => m.default),
+);
 import "./PrecisionCustManager/PrecisionCustManager.scss";
 
 const initialCustInfo: CUST_INFO = {

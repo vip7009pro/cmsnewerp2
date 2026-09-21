@@ -5,7 +5,15 @@ import { PrecisionDataSxHeader } from "./PrecisionDataSx/PrecisionDataSxHeader";
 import { PrecisionDataSxToolbar } from "./PrecisionDataSx/PrecisionDataSxToolbar";
 import { PrecisionDataSxSummary } from "./PrecisionDataSx/PrecisionDataSxSummary";
 import { PrecisionDataSxTracking } from "./PrecisionDataSx/PrecisionDataSxTracking";
-import { PrecisionDataSxPivotModal } from "./PrecisionDataSx/PrecisionDataSxPivotModal";
+import { lazyOpenable } from "../../../../components/PivotChart/lazyOpenable";
+// Pivot modal chỉ nạp ĐỘNG khi mở (module kéo theo DevExtreme) — xem lazyOpenable.tsx.
+// Lưu ý: modal này dùng prop "open" (không phải "isOpen").
+const PrecisionDataSxPivotModal = lazyOpenable(() =>
+  import("./PrecisionDataSx/PrecisionDataSxPivotModal").then(
+    (m) => m.PrecisionDataSxPivotModal,
+  ),
+  "open",
+);
 import { column_datasx_chithi } from "./PrecisionDataSx/PrecisionDataSxColumnsChiThi";
 import { column_datasx_ycsx } from "./PrecisionDataSx/PrecisionDataSxColumnsYcsx";
 import {

@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Collapse } from "@mui/material";
-import { FiSearch, FiX, FiChevronDown, FiZap, FiBookmark } from "react-icons/fi";
+import { FiSearch, FiX, FiChevronDown, FiZap, FiBookmark } from "../icons/localIconSet";
 import Swal from "sweetalert2";
 import { RootState } from "../../redux/store";
 import { ELE_ARRAY, UserData } from "../../api/GlobalInterface";

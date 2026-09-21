@@ -10,7 +10,11 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { SaveExcel } from "../../../api/services/excelService";
 import { getStatusColumns } from "./PrecisionPlan/PrecisionPlanColumns";
 import { exportFilteredRowsToExcel } from "./PrecisionPlan/planGridUtils";
-import PrecisionPlanPivotModal from "./PrecisionPlan/PrecisionPlanPivotModal";
+import { lazyOpenable } from "../../../components/PivotChart/lazyOpenable";
+// Pivot modal chỉ nạp ĐỘNG khi mở (module kéo theo DevExtreme) — xem lazyOpenable.tsx.
+const PrecisionPlanPivotModal = lazyOpenable(() =>
+  import("./PrecisionPlan/PrecisionPlanPivotModal").then((m) => m.default),
+);
 
 interface Props {
   /** Đẩy số dòng OK/NG lên header của PlanManager */

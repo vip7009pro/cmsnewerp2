@@ -3,7 +3,13 @@ import { createProductBarcodeColumns } from "./PrecisionProductBarcode/Precision
 import { PrecisionProductBarcodeForm } from "./PrecisionProductBarcode/PrecisionProductBarcodeForm";
 import { PrecisionProductBarcodeHeader } from "./PrecisionProductBarcode/PrecisionProductBarcodeHeader";
 import { PrecisionProductBarcodeKpi } from "./PrecisionProductBarcode/PrecisionProductBarcodeKpi";
-import { PrecisionProductBarcodePivotModal } from "./PrecisionProductBarcode/PrecisionProductBarcodePivotModal";
+import { lazyOpenable } from "../../../components/PivotChart/lazyOpenable";
+// Pivot modal chỉ nạp ĐỘNG khi mở (module kéo theo DevExtreme) — xem lazyOpenable.tsx.
+const PrecisionProductBarcodePivotModal = lazyOpenable(() =>
+  import("./PrecisionProductBarcode/PrecisionProductBarcodePivotModal").then(
+    (m) => m.PrecisionProductBarcodePivotModal,
+  ),
+);
 import { PrecisionProductBarcodeTable } from "./PrecisionProductBarcode/PrecisionProductBarcodeTable";
 import { PrecisionProductBarcodeToolbar } from "./PrecisionProductBarcode/PrecisionProductBarcodeToolbar";
 import { useProductBarcodeData } from "./PrecisionProductBarcode/useProductBarcodeData";

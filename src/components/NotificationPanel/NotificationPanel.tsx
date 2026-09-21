@@ -1,10 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  FiBell,
-  FiRefreshCw,
-  FiX,
-  FiArrowRight,
-} from "react-icons/fi";
+import { FiBell, FiRefreshCw, FiX, FiArrowRight } from "../icons/localIconSet";
 import Notification, { NotificationElement } from "./Notification";
 import { f_load_Notification_Data } from "../../api/services/notificationService";
 import "./NotificationPanel.scss";

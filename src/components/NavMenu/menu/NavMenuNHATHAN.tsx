@@ -1,15 +1,7 @@
 import { getlang } from "../../String/String";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { FaDonate, FaFileInvoiceDollar, FaCheckCircle, FaHistory, FaBomb, FaPaperPlane, FaWarehouse, FaScroll, FaPeopleArrows, FaBarcode, FaLongArrowAltRight, FaReact, FaProductHunt, FaStackOverflow, FaTools, FaFileImport, FaChalkboardTeacher, FaChartArea, FaChartPie } from 'react-icons/fa';
-import { BiCart, BiMoney, BiSortAZ, BiTrendingUp, BiUpload } from 'react-icons/bi';
-import { FcPlanner, FcSettings, FcBullish, FcPortraitMode, FcManager, FcCheckmark, FcPieChart, FcRefresh } from 'react-icons/fc';
-import { MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdOutlineChecklistRtl, MdOutlineDraw, MdOutlineProductionQuantityLimits, MdOutlineSignalWifiStatusbarNull, MdPrecisionManufacturing, MdTv } from 'react-icons/md';
-import { WiDayLightning } from 'react-icons/wi';
-import { SiStatuspal } from 'react-icons/si';
-import { AiFillAmazonCircle, AiFillAmazonSquare, AiFillCheckSquare, AiFillMinusCircle, AiOutlineCalendar, AiOutlineShoppingCart } from 'react-icons/ai';
-import { FcAbout, FcAcceptDatabase, FcAdvertising, FcApprove, FcCapacitor, FcCustomerSupport, FcInspection, FcProcess, FcServices } from 'react-icons/fc';
-import { GiPriceTag } from "react-icons/gi";
+import { FaDonate, FaFileInvoiceDollar, FaCheckCircle, FaHistory, FaBomb, FaPaperPlane, FaWarehouse, FaScroll, FaPeopleArrows, FaBarcode, FaLongArrowAltRight, FaReact, FaProductHunt, FaStackOverflow, FaTools, FaFileImport, FaChalkboardTeacher, FaChartArea, FaChartPie, BiCart, BiMoney, BiSortAZ, BiTrendingUp, BiUpload, FcPlanner, FcSettings, FcBullish, FcPortraitMode, FcManager, FcCheckmark, FcPieChart, FcRefresh, MdBugReport, MdDesignServices, MdInput, MdOutlineAppRegistration, MdOutlineAspectRatio, MdOutlineChecklistRtl, MdOutlineDraw, MdOutlineProductionQuantityLimits, MdOutlineSignalWifiStatusbarNull, MdPrecisionManufacturing, MdTv, WiDayLightning, SiStatuspal, AiFillAmazonCircle, AiFillAmazonSquare, AiFillCheckSquare, AiFillMinusCircle, AiOutlineCalendar, AiOutlineShoppingCart, FcAbout, FcAcceptDatabase, FcAdvertising, FcApprove, FcCapacitor, FcCustomerSupport, FcInspection, FcProcess, FcServices, GiPriceTag } from "../../icons/localIconSet";
 import { getCompany } from "../../../api/Api";
 
 export const NavMenuNHATHAN = (lang?: string) => {

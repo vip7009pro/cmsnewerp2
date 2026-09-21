@@ -15,7 +15,11 @@ import { SaveExcel } from "../../../api/services/excelService";
 import { PlanTableData } from "../interfaces/kdInterface";
 import { getManageColumns } from "./PrecisionPlan/PrecisionPlanColumns";
 import { exportFilteredRowsToExcel } from "./PrecisionPlan/planGridUtils";
-import PrecisionPlanPivotModal from "./PrecisionPlan/PrecisionPlanPivotModal";
+import { lazyOpenable } from "../../../components/PivotChart/lazyOpenable";
+// Pivot modal chỉ nạp ĐỘNG khi mở (module kéo theo DevExtreme) — xem lazyOpenable.tsx.
+const PrecisionPlanPivotModal = lazyOpenable(() =>
+  import("./PrecisionPlan/PrecisionPlanPivotModal").then((m) => m.default),
+);
 
 const PlanManagerManageTab: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
   const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);

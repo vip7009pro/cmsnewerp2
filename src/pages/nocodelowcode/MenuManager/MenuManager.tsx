@@ -15,6 +15,9 @@ import { Add, Edit, Delete, Refresh } from '@mui/icons-material';
 // Danh mục icon (7 bộ react-icons) đã tách sang ./menuIconCatalog và chỉ nạp ĐỘNG khi mở modal
 // chọn icon. Xem giải thích + số đo (4,9 MB / 90% entry chunk) trong menuIconCatalog.ts
 import type { MenuIconItem } from './menuIconCatalog';
+// FALLBACK: danh mục icon nay là danh sách tinh tuyển, nên tên icon cũ trong DB có thể không còn
+// trong danh mục -> tra tiếp sang bộ icon nội tuyến của sidebar để menu cũ không mất icon.
+import { getLocalIcon } from '../../../components/icons/localIconSet';
 import { generalQuery } from '../../../api/Api';
 import Swal from 'sweetalert2';
 
@@ -339,6 +342,7 @@ const MenuManager: React.FC = () => {
             <tbody>
               {mainMenus.map((menu) => {
                 const iconObj = iconList.find((icon) => icon.name === menu.MenuIcon);
+                const FallbackIcon = iconObj ? undefined : getLocalIcon(menu.MenuIcon);
                 return (
                   <tr
                     key={menu.MenuID}
@@ -349,7 +353,7 @@ const MenuManager: React.FC = () => {
                     <td>{menu.MenuName}</td>
                     <td>{menu.Text}</td>
                     <td>{menu.Link}</td>
-                    <td>{iconObj ? <iconObj.IconComponent color={menu.IconColor} /> : null}</td>
+                    <td>{iconObj ? <iconObj.IconComponent color={menu.IconColor} /> : FallbackIcon ? <FallbackIcon color={menu.IconColor} /> : null}</td>
                     <td>
                       <div style={{ width: 20, height: 20, background: menu.IconColor, borderRadius: '50%' }} />
                     </td>
@@ -388,6 +392,7 @@ const MenuManager: React.FC = () => {
             <tbody>
               {subMenus.filter((sm) => sm.MenuID === selectedMainMenu?.MenuID).map((submenu) => {
                 const iconObj = iconList.find((icon) => icon.name === submenu.SubMenuIcon);
+                const FallbackIcon = iconObj ? undefined : getLocalIcon(submenu.SubMenuIcon);
                 return (
                   <tr
                     key={submenu.SubMenuID}
@@ -400,7 +405,7 @@ const MenuManager: React.FC = () => {
                     <td>{submenu.Link}</td>
                     <td>{submenu.MenuCode}</td>
                     <td>{submenu.PAGE_ID}</td>
-                    <td>{iconObj ? <iconObj.IconComponent color={submenu.SubIconColor} /> : null}</td>
+                    <td>{iconObj ? <iconObj.IconComponent color={submenu.SubIconColor} /> : FallbackIcon ? <FallbackIcon color={submenu.SubIconColor} /> : null}</td>
                     <td>
                       <div style={{ width: 20, height: 20, background: submenu.SubIconColor, borderRadius: '50%' }} />
                     </td>

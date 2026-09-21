@@ -28,7 +28,11 @@ import {
 import PrecisionChamCongHeader from "./PrecisionBangChamCong/PrecisionChamCongHeader";
 import PrecisionChamCongToolbar from "./PrecisionBangChamCong/PrecisionChamCongToolbar";
 import PrecisionChamCongMiniKpi from "./PrecisionBangChamCong/PrecisionChamCongMiniKpi";
-import PrecisionChamCongPivotModal from "./PrecisionBangChamCong/PrecisionChamCongPivotModal";
+import { lazyOpenable } from "../../../components/PivotChart/lazyOpenable";
+// Pivot modal chỉ nạp ĐỘNG khi mở (module kéo theo DevExtreme) — xem lazyOpenable.tsx.
+const PrecisionChamCongPivotModal = lazyOpenable(() =>
+  import("./PrecisionBangChamCong/PrecisionChamCongPivotModal").then((m) => m.default),
+);
 
 const BANGCHAMCONG = () => {
   const userData: UserData | undefined = useSelector(

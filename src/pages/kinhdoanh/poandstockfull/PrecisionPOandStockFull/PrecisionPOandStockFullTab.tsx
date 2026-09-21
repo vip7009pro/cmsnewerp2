@@ -9,8 +9,8 @@ import {
   f_updateTONKIEM_M100,
 } from "../../../../api/services/inventoryService";
 import AGTable from "../../../../components/DataTable/AGTable";
-import PivotTable from "../../../../components/PivotChart/PivotChart";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import PivotTable from "../../../../components/PivotChart/LazyPivotTable";
+import { createPivotDataSource } from "../../../../components/PivotChart/lazyPivot";
 import { POFullCMS, POFullSummary } from "../../interfaces/kdInterface";
 
 import PrecisionPOandStockFullKpi from "./PrecisionPOandStockFullKpi";
@@ -323,23 +323,33 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
   }, [pofulldatatable]);
 
   // Pivot Table Datasource
-  const pvdts = useMemo(() => {
-    if (pofulldatatable.length === 0) return null;
-    const keys = Object.keys(pofulldatatable[0] || {});
-    const fields = keys.map((key) => ({
-      caption: key,
-      width: 100,
-      dataField: key,
-      allowSorting: true,
-      allowFiltering: true,
-      summaryType: typeof (pofulldatatable[0] as any)[key] === "number" ? "sum" : "count",
-    }));
-
-    return new PivotGridDataSource({
-      fields,
-      store: pofulldatatable,
-    });
-  }, [pofulldatatable]);
+  // ⚠️ DevExtreme CHỈ được nạp khi user thực sự mở pivot (trước đây `new PivotGridDataSource`
+  // ngay trong render ⇒ vừa mở page đã tải ~3,9 MB DevExtreme). Xem components/PivotChart/lazyPivot.ts
+  const [pvdts, setPvdts] = useState<any>(null);
+  useEffect(() => {
+    if (!showPivot) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void (async () => {
+      if (pofulldatatable.length === 0) {
+        if (!cancelled) setPvdts(null);
+        return;
+      }
+      const keys = Object.keys(pofulldatatable[0] || {});
+      const fields = keys.map((key) => ({
+        caption: key,
+        width: 100,
+        dataField: key,
+        allowSorting: true,
+        allowFiltering: true,
+        summaryType: typeof (pofulldatatable[0] as any)[key] === "number" ? "sum" : "count",
+      }));
+      const ds = await createPivotDataSource({ fields, store: pofulldatatable });
+      if (!cancelled) setPvdts(ds);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showPivot, pofulldatatable]);
 
   // Row selection handler
   const handleSelectionChange = useCallback((params: any) => {
@@ -454,7 +464,7 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
       </div>
 
       {/* 5. Pivot Table Modal Popup */}
-      {showPivot && pvdts && (
+      {showPivot && (
         <div className="precision-po-stock__pivotModal">
           <div className="pivot-modal-card">
             <div className="pivot-modal-header">
@@ -469,7 +479,12 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
               </button>
             </div>
             <div className="pivot-modal-body">
-              <PivotTable datasource={pvdts} tableID="pivot_po_stock_full" />
+              {pvdts ? (
+                <PivotTable datasource={pvdts} tableID="pivot_po_stock_full" />
+              ) : (
+                // DevExtreme đang được tải theo nhu cầu — chỉ hiện trong khoảnh khắc đầu.
+                <div className="pivot-loading">Đang tải bảng pivot…</div>
+              )}
             </div>
           </div>
         </div>

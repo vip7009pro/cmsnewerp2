@@ -1,12 +1,22 @@
 import React from "react";
 import { getCompany } from "../../../api/Api";
 import MyTabs from "../../../components/MyTab/MyTab";
-import INSPECTION from "../../qc/inspection/INSPECTION";
-import KHOTP from "../../kho/khotp/KHOTP";
-import KHOTPNEW from "../../kho/khotp_new/KHOTPNEW";
-import KHOLIEU from "../../kho/kholieu/KHOLIEU";
+import { lazyComponent } from "../../../components/PivotChart/lazyOpenable";
 import PrecisionPOandStockFullTab from "./PrecisionPOandStockFull/PrecisionPOandStockFullTab";
 import "./POandStockFull.scss";
+
+// ⚠️ Các tab anh em trước đây import TĨNH ⇒ vừa mở page "PO tích hợp tồn kho" đã phải tải toàn bộ
+// code của 4 module nặng (AG Grid, xlsx, DevExtreme ~3,1 MB — đo bằng performance resource).
+// `MyTabs` chỉ render tab đã được click (MyTab.tsx: renderedTabs[index] || activeTab === index)
+// nên chuyển sang lazy: chunk chỉ tải khi user thực sự mở tab đó.
+const INSPECTION = lazyComponent(() =>
+  import("../../qc/inspection/INSPECTION").then((m) => m.default),
+);
+const KHOTP = lazyComponent(() => import("../../kho/khotp/KHOTP").then((m) => m.default));
+const KHOTPNEW = lazyComponent(() =>
+  import("../../kho/khotp_new/KHOTPNEW").then((m) => m.default),
+);
+const KHOLIEU = lazyComponent(() => import("../../kho/kholieu/KHOLIEU").then((m) => m.default));
 
 /**
  * POandStockFull - Quản lý PO Tích Hợp Tồn Kho Toàn Diện

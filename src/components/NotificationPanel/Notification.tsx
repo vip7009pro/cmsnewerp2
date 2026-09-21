@@ -1,14 +1,6 @@
 import React from "react";
 import moment from "moment";
-import {
-  FiCheck,
-  FiInfo,
-  FiLayers,
-  FiAlertTriangle,
-  FiBell,
-  FiBriefcase,
-  FiArrowRight,
-} from "react-icons/fi";
+import { FiCheck, FiInfo, FiLayers, FiAlertTriangle, FiBell, FiBriefcase, FiArrowRight } from "../icons/localIconSet";
 import "./Notification.scss";
 
 export interface NotificationElement {
