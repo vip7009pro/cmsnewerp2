@@ -1,7 +1,7 @@
 import Swal from "sweetalert2";
 import { generalQuery, getUserData } from "../Api";
 import { CODE_FULL_INFO } from "../../pages/rnd/interfaces/rndInterface";
-import { zeroPad } from "./utilService";
+import { zeroPad } from "./utilCore";
 
 
 /**

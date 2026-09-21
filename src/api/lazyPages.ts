@@ -95,3 +95,6 @@ export const WH_REPORT = lazy(() => import("../pages/kho/khoreport/WH_REPORT"));
 export const PrecisionAccountInfo = lazy(() => import("../components/Navbar/AccountInfo/PrecisionAccountInfo"));
 export const PrecisionPreviewPage = lazy(() => import("../pages/precision/PrecisionPreviewPage"));
 export const PrecisionPoManager = lazy(() => import("../pages/kinhdoanh/pomanager/PrecisionPoManager/PrecisionPoManager"));
+// PVN_MENU trước đây import TĨNH page này => kéo cả nhánh AGTable (ag-grid + xlsx qua excelService)
+// và utilService (recharts + thư viện barcode) vào bundle khởi động cho MỌI công ty.
+export const BangChamCongTotal = lazy(() => import("../pages/nhansu/BangChamCong/BangChamCongTotal"));

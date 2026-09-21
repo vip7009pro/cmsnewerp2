@@ -25,7 +25,8 @@ import { Login } from "./api/lazyPages";
 import AppRoutes from "./AppRoutes";
 import { useSocketEvents } from "./hooks/useSocketEvents";
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
-import { requestFullScreen } from "./api/services/utilService";
+// requestFullScreen nằm ở utilCore (không kéo recharts/barcode) — KHÔNG import từ utilService.
+import { requestFullScreen } from "./api/services/utilCore";
 import { useAppBootstrap } from "./hooks/useAppBootstrap";
 import { useDocumentScrollIdleClass } from "./hooks/useDocumentScrollIdleClass";
 import AppBootScreen from "./components/AppBootScreen/AppBootScreen";

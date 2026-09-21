@@ -12,13 +12,17 @@ import IMAGE from "../../pages/rnd/design_amazon/design_components/IMAGE";
 import QRCODE from "../../pages/rnd/design_amazon/design_components/QRCODE";
 import { COMPONENT_DATA } from "../../pages/rnd/interfaces/rndInterface";
 
+// zeroPad / requestFullScreen / encryptData đã tách sang ./utilCore (không phụ thuộc UI) để chúng
+// không kéo recharts + thư viện barcode vào bundle khởi động. Re-export tại đây để GIỮ NGUYÊN
+// mọi call site hiện có (~151 file). Chi tiết: xem comment đầu file utilCore.ts
+// Lưu ý: file này KHÔNG được import bởi module nào thuộc graph khởi động nữa
+// (App.tsx, api/Api.ts, api/services/inventoryService.ts đã chuyển sang utilCore).
+export { zeroPad, requestFullScreen, encryptData } from "./utilCore";
+
 /**
  * General utility functions - extracted from GlobalFunction.tsx
  * Contains: formatting, validation, date, color, encryption, and misc utilities
  */
-
-export const zeroPad = (num: number, places: number) =>
-  String(num).padStart(places, "0");
 
 export function CustomResponsiveContainer(props: any) {
   return (
@@ -303,23 +307,7 @@ export const getWorkingDaysInMonth = (date: string) => {
   return workingDays;
 };
 
-export const requestFullScreen = (
-  elementRef: React.MutableRefObject<null>,
-  full_screen: number
-) => {
-  if (elementRef.current && full_screen === 1) {
-    const element = elementRef.current as HTMLElement;
-    if (element.requestFullscreen) {
-      element.requestFullscreen();
-    } else if ("mozRequestFullScreen" in element) {
-      (element as any).mozRequestFullScreen();
-    } else if ("webkitRequestFullscreen" in element) {
-      (element as any).webkitRequestFullscreen();
-    } else if ("msRequestFullscreen" in element) {
-      (element as any).msRequestFullscreen();
-    }
-  }
-};
+// requestFullScreen: đã chuyển sang ./utilCore và được re-export ở đầu file.
 
 function hexToRgb(hex: string) {
   hex = hex.replace('#', '');
@@ -373,79 +361,6 @@ export function minutesSince(upd_time: string): number {
   return diff;
 }
 
-export async function encryptData(
-  publicKey: string,
-  data: object
-): Promise<{ encryptedData: string; encryptedKey: string; iv: string }> {
-  try {
-    if (!window.isSecureContext || !window.crypto || !window.crypto.subtle) {
-      Swal.fire("Thống báo", "Crypto API is not available. Please use HTTPS or localhost.", "error");
-      throw new Error(
-        'Crypto API is not available. Please use HTTPS or localhost.'
-      );
-    }
-    const dataString = JSON.stringify(data);
-    const aesKey = await crypto.subtle.generateKey(
-      { name: "AES-GCM", length: 256 },
-      true,
-      ["encrypt", "decrypt"]
-    );
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const encodedData = new TextEncoder().encode(dataString);
-    const encryptedData = await crypto.subtle.encrypt(
-      { name: "AES-GCM", iv },
-      aesKey,
-      encodedData
-    );
-    const exportedKey = await crypto.subtle.exportKey("raw", aesKey);
-    const publicKeyBuffer = pemToArrayBuffer(publicKey);
-    const importedKey = await crypto.subtle.importKey(
-      "spki",
-      publicKeyBuffer,
-      { name: "RSA-OAEP", hash: "SHA-256" },
-      false,
-      ["encrypt"]
-    );
-    const encryptedKey = await crypto.subtle.encrypt(
-      { name: "RSA-OAEP" },
-      importedKey,
-      exportedKey
-    );
-    return {
-      encryptedData: arrayBufferToBase64(encryptedData),
-      encryptedKey: arrayBufferToBase64(encryptedKey),
-      iv: arrayBufferToBase64(iv),
-    };
-  } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
-    console.error("Encryption error:", error);
-    throw new Error(`Failed to encrypt data: ${errorMessage}`);
-  }
-}
+// encryptData đã chuyển sang ./utilCore (xem re-export ở đầu file).
 
-function pemToArrayBuffer(pem: string): ArrayBuffer {
-  try {
-    const b64 = pem
-      .replace(/-----BEGIN PUBLIC KEY-----/, "")
-      .replace(/-----END PUBLIC KEY-----/, "")
-      .replace(/\s/g, "");
-    const binary = atob(b64);
-    const buffer = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-      buffer[i] = binary.charCodeAt(i);
-    }
-    return buffer.buffer;
-  } catch (error: unknown) {
-    throw new Error("Invalid public key format");
-  }
-}
-
-function arrayBufferToBase64(buffer: ArrayBuffer | Uint8Array): string {
-  const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
-  let binary = "";
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
-}
+// pemToArrayBuffer / arrayBufferToBase64 (helper riêng của encryptData) đã chuyển sang ./utilCore.

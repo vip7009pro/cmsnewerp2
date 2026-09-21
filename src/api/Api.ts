@@ -10,7 +10,8 @@ import {
 /* import axios from 'axios'; */
 import axios from "axios";
 import { UserData, WEB_SETTING_DATA } from "./GlobalInterface";
-import { encryptData } from "./services/utilService";
+// encryptData nằm ở utilCore (không kéo recharts/barcode) — Api.ts thuộc graph khởi động.
+import { encryptData } from "./services/utilCore";
 import { DEFAULT_USER_DATA } from "./defaultUserData";
 
 const cookies = new Cookies();

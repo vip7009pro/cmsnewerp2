@@ -1,7 +1,7 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import "../home/home.scss";
 import { animated } from "@react-spring/web";
-import React, { useEffect, useState, Suspense, useMemo, useCallback, useRef, } from "react";
+import React, { useEffect, useState, Suspense, useMemo, useCallback, useRef, lazy } from "react";
 import { generalQuery, getCompany, getUserData, logout } from "../../api/Api";
 import Swal from "sweetalert2";
 import {
@@ -20,7 +20,12 @@ import Cookies from "universal-cookie";
 import { MENU_LIST_DATA } from "../../api/GlobalInterface";
 import { AccountInfo } from "../../api/lazyPages";
 import { getMenuList } from "./menuConfig";
-import PageTabs from "../nocodelowcode/components/PagesManager/Components/PageTabs/PageTabs";
+// PageTabs (render page low-code) chỉ dùng cho tab có PAGE_ID !== -1 — rất ít khi mở.
+// Import TĨNH ở đây khiến graph khởi động đi theo: Home -> PageTabs -> Page.tsx ->
+// FormComponent/TableComponent/TableFromQueryComponent -> AGTable -> ag-grid + xlsx (excelService)
+// => cả AG Grid, SheetJS, AGTable.scss bị tải cho MỌI user ngay màn hình đầu.
+// Chuyển sang lazy: chỉ tải khi thực sự render một tab low-code. (Đã có sẵn <Suspense> bao ngoài.)
+const PageTabs = lazy(() => import("../nocodelowcode/components/PagesManager/Components/PageTabs/PageTabs"));
 import PrecisionHeader from "../../components/Navbar/PrecisionHeader/PrecisionHeader";
 import { CloseRounded } from "@mui/icons-material";
 import NavMenuNew from "../../components/NavMenu/NavMenuNew";
