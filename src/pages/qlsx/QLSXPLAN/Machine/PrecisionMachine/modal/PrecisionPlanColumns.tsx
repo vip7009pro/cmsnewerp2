@@ -6,7 +6,7 @@ interface ColumnsProps {
   plandatatable?: QLSXPLANDATA[];
   setPlanDataTable?: React.Dispatch<React.SetStateAction<QLSXPLANDATA[]>>;
   onMovePlan?: (direction: "UP" | "DOWN", plan: QLSXPLANDATA) => void;
-  onDeletePlan?: (plan: QLSXPLANDATA) => void;
+  onDeletePlan?: (plans: QLSXPLANDATA[]) => void;
   onStartPlan?: (plan: QLSXPLANDATA) => void;
   onFinishPlan?: (plan: QLSXPLANDATA) => void;
 }

@@ -125,7 +125,7 @@ export interface UseMachinePlanModalReturn {
   addPlanLoadingLabel: string;
   // Thao tác Kế hoạch
   handleSaveSinglePlan: () => Promise<void>;
-  handleDeletePlan: (plan: QLSXPLANDATA) => Promise<void>;
+  handleDeletePlan: (plans: QLSXPLANDATA[]) => Promise<void>;
   handleMovePlan: (direction: "UP" | "DOWN", plan: QLSXPLANDATA) => Promise<void>;
   handleStartPlan: (plan: QLSXPLANDATA) => Promise<void>;
   handleFinishPlan: (plan: QLSXPLANDATA) => Promise<void>;

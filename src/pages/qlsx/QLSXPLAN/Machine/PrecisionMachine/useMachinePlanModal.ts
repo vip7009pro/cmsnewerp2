@@ -490,29 +490,61 @@ export const useMachinePlanModal = ({
   }, [datadinhmuc, onRefreshData, selectedPlan, userData, ycsxFilter.tempDM]);
 
   // Xóa plan (dùng ref để giữ reference ổn định không làm re-render columns)
+  // Khôi phục đúng logic bản gốc:
+  //  - Xóa TẤT CẢ các dòng PLAN đã CHECK (multi-select) chứ không chỉ 1 dòng đang click.
+  //  - f_deleteQLSXPlan đã kiểm tra đầy đủ điều kiện (CHOTBC, checkPLANID_O302, checkPLANID_OUT_KHO_AO)
+  //    => phải đọc err_code trả về để báo lỗi, KHÔNG được luôn báo "xóa thành công".
   const handleDeletePlan = useCallback(
-    async (plan: QLSXPLANDATA) => {
+    async (plans: QLSXPLANDATA[]) => {
+      if (!plans || plans.length === 0) {
+        Swal.fire("Thông báo", "Chọn ít nhất một dòng để xóa", "error");
+        return;
+      }
       checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
-        Swal.fire({
-          title: "Xác nhận xóa?",
-          text: `Bạn có chắc muốn xóa kế hoạch ${plan.PLAN_ID}?`,
+        const planIds = plans.map((p) => p.PLAN_ID).join(", ");
+        const confirmResult = await Swal.fire({
+          title: "Chắc chắn muốn xóa PLAN đã chọn ?",
+          text:
+            plans.length > 1
+              ? `Sẽ xóa ${plans.length} chỉ thị: ${planIds}`
+              : `Sẽ xóa chỉ thị: ${planIds}`,
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#ef4444",
           cancelButtonColor: "#64748b",
-          confirmButtonText: "Xóa",
+          confirmButtonText: "Vẫn Xóa!",
           cancelButtonText: "Hủy",
-        }).then(async (result) => {
-          if (result.isConfirmed) {
-            await f_deleteQLSXPlan([plan]);
-            await onRefreshData();
-            if (selectedPlanRef.current?.PLAN_ID === plan.PLAN_ID) {
-              setSelectedPlan(defaultPlan);
-              setChiThiDataTable([]);
-            }
-            Swal.fire("Đã xóa", "Kế hoạch đã được xóa", "success");
-          }
         });
+        if (!confirmResult.isConfirmed) return;
+
+        Swal.fire({
+          title: "Xóa Plan",
+          text: "Đang xóa plan, hãy chờ một chút",
+          icon: "info",
+          showCancelButton: false,
+          allowOutsideClick: false,
+          confirmButtonText: "OK",
+          showConfirmButton: false,
+        });
+
+        // f_deleteQLSXPlan trả về "0" khi thành công, ngược lại là chuỗi lỗi chi tiết
+        const err_code: string = await f_deleteQLSXPlan(plans);
+        if (err_code === "0") {
+          Swal.fire("Thông báo", "Xóa hoàn thành", "success");
+        } else {
+          Swal.fire("Thông báo", err_code, "error");
+        }
+
+        await onRefreshData();
+
+        const deletedIds = plans.map((p) => p.PLAN_ID);
+        if (
+          selectedPlanRef.current &&
+          deletedIds.includes(selectedPlanRef.current.PLAN_ID)
+        ) {
+          setSelectedPlan(defaultPlan);
+          setChiThiDataTable([]);
+        }
       });
     },
     [onRefreshData, userData]

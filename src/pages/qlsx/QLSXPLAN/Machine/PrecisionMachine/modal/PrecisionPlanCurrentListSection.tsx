@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   AiFillSave,
   AiOutlineArrowDown,
@@ -18,7 +18,7 @@ interface CurrentListSectionProps {
   selectedPlan: QLSXPLANDATA;
   onSelectPlan: (plan: QLSXPLANDATA) => void;
   onMovePlan: (direction: "UP" | "DOWN", plan: QLSXPLANDATA) => void;
-  onDeletePlan: (plan: QLSXPLANDATA) => void;
+  onDeletePlan: (plans: QLSXPLANDATA[]) => void;
   onStartPlan: (plan: QLSXPLANDATA) => void;
   onFinishPlan: (plan: QLSXPLANDATA) => void;
   // Toolbar Buttons nguyên bản
@@ -60,6 +60,9 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
     setPlanDataTable,
   }) => {
     const gridPlanRef = useRef<any>(null);
+    // Lưu các dòng PLAN đã CHECK (multi-select) để xóa hàng loạt (giống qlsxplandatafilter.current bản gốc)
+    const checkedPlanRowsRef = useRef<QLSXPLANDATA[]>([]);
+    const [checkedPlanCount, setCheckedPlanCount] = useState(0);
 
     const columns = useMemo(
       () =>
@@ -99,6 +102,29 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
       }
     }, [onPrintChiThi, selectedPlan]);
 
+    // Đồng bộ danh sách PLAN đang CHECK từ grid (giống qlsxplandatafilter.current bản gốc)
+    const handlePlanSelectionChange = React.useCallback((params: any) => {
+      const api = params?.api ?? gridPlanRef.current?.api;
+      const rows: QLSXPLANDATA[] = api?.getSelectedRows?.() ?? [];
+      checkedPlanRowsRef.current = rows;
+      setCheckedPlanCount(rows.length);
+    }, []);
+
+    // XÓA PLAN: ưu tiên xóa TẤT CẢ các dòng đã CHECK; nếu chưa check row nào thì xóa plan đang chọn
+    const handleDeleteSelectedPlans = React.useCallback(async () => {
+      const checked = checkedPlanRowsRef.current ?? [];
+      const targets: QLSXPLANDATA[] =
+        checked.length > 0
+          ? checked
+          : selectedPlan && selectedPlan.PLAN_ID !== "XXX"
+          ? [selectedPlan]
+          : [];
+      await onDeletePlan(targets);
+      gridPlanRef.current?.api?.deselectAll?.();
+      checkedPlanRowsRef.current = [];
+      setCheckedPlanCount(0);
+    }, [onDeletePlan, selectedPlan]);
+
     return (
       <div className="machine-plan-container">
         {/* THANH TOOLBAR ĐẦY ĐỦ NGUYÊN BẢN (CHUẨN STITCH HIGH-DENSITY - 1 DÒNG DUY NHẤT) */}
@@ -130,10 +156,13 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
 
             <button
               type="button"
-              disabled={!selectedPlan || selectedPlan.PLAN_ID === "XXX"}
-              onClick={() => onDeletePlan(selectedPlan)}
+              disabled={
+                checkedPlanCount === 0 &&
+                (!selectedPlan || selectedPlan.PLAN_ID === "XXX")
+              }
+              onClick={handleDeleteSelectedPlans}
               className="stb-ghost-rose"
-              title="Xóa kế hoạch đang chọn"
+              title="Xóa các kế hoạch đã check (hoặc kế hoạch đang chọn)"
             >
               <FcDeleteRow size={12} />
               <span>Xóa PLAN</span>
@@ -200,6 +229,7 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
             columns={columns}
             data={plans}
             onCellClick={handleCellClick}
+            onSelectionChange={handlePlanSelectionChange}
           />
         </div>
 
