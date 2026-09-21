@@ -1,4 +1,4 @@
-import React, { memo, useRef, useEffect, useState, ReactElement } from "react";
+import React, { memo, useRef, useEffect, useState, useMemo, ReactElement } from "react";
 import { useReactToPrint } from "react-to-print";
 import {
   FiPrinter,
@@ -28,11 +28,34 @@ const PrecisionYCSXPrintModals: React.FC<Props> = ({
   const isYCSX = openYCSXPrint;
   const isBanVe = openBanVePrint;
 
-  // React-to-print hook with optimized print styles
-  const handlePrint = useReactToPrint({
-    content: () => printRef.current,
-    documentTitle: isYCSX ? "YEU_CAU_SAN_XUAT" : "BAN_VE_SAN_XUAT",
-    pageStyle: `
+  /**
+   * Bản vẽ là khổ A4 NGANG full-bleed (canvas 297x208mm + 2 logo QC PASS tuyệt đối).
+   * Trước đây dùng chung `@page { size: auto; margin: 6mm }` => vùng in chỉ còn
+   * 210 - 12 = 198mm chiều cao, nhỏ hơn khối 208mm, nên logo QC PASS ở góc dưới-trái
+   * (absolute, không cắt được) bị đẩy trọn sang trang sau.
+   * => Với bản vẽ phải dùng khổ A4 landscape + margin 0 và reset margin của body
+   * để khối 208mm nằm gọn trong trang 210mm.
+   */
+  const printPageStyle = useMemo(() => {
+    if (isBanVe) {
+      return `
+        @page {
+          size: A4 landscape;
+          margin: 0;
+        }
+        html, body {
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        @media print {
+          body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+        }
+      `;
+    }
+    return `
       @page {
         size: auto;
         margin: 6mm;
@@ -43,7 +66,14 @@ const PrecisionYCSXPrintModals: React.FC<Props> = ({
           print-color-adjust: exact;
         }
       }
-    `,
+    `;
+  }, [isBanVe]);
+
+  // React-to-print hook with optimized print styles
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+    documentTitle: isYCSX ? "YEU_CAU_SAN_XUAT" : "BAN_VE_SAN_XUAT",
+    pageStyle: printPageStyle,
   });
 
   // Re-render trigger

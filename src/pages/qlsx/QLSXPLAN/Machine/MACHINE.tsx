@@ -2168,15 +2168,14 @@ const MACHINE = () => {
           className="buttonIcon"
           onClick={() => {
             if (qlsxplandatafilter.current.length > 0) {
-              if (userData?.EMPL_NO !== "NHU1903") {
-                checkBP(
-                  userData,
-                  ["QLSX"],
-                  ["ALL"],
-                  ["ALL"],
-                  handle_UpdatePlan
-                );
-              }
+              // Lưu plan trước khi in cho mọi tài khoản (bỏ nhánh hard-code NHU1903).
+              checkBP(
+                userData,
+                ["QLSX"],
+                ["ALL"],
+                ["ALL"],
+                handle_UpdatePlan
+              );
               setShowChiThi(true);
               setChiThiListRender(
                 renderChiThi(qlsxplandatafilter.current, myComponentRef)

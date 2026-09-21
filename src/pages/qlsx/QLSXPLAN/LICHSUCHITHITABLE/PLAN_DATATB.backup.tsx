@@ -1839,27 +1839,23 @@ const PLAN_DATATB = () => {
                 className='buttonIcon'
                 onClick={async () => {
                   if (qlsxplandatafilter.current.length > 0) {
-                    if (userData?.EMPL_NO !== "NHU1903") {
-                      checkBP(
-                        userData,
-                        ["QLSX"],
-                        ["ALL"],
-                        ["ALL"],
-                        async () => {
-                          await handle_UpdatePlan();
-                          setShowChiThi(true);
-                          setChiThiListRender(
-                            renderChiThi(qlsxplandatafilter.current, myComponentRef)
-                          );
-                        }
-                      );
-                    }
-                    else {
-                      setShowChiThi(true);
-                      setChiThiListRender(
-                        renderChiThi(qlsxplandatafilter.current, myComponentRef)
-                      );
-                    }
+                    // Snapshot selection trước khi lưu plan (handle_UpdatePlan load lại
+                    // grid và xoá selection) để bản in không bị rỗng.
+                    const selectedPlans = [...qlsxplandatafilter.current];
+                    // Lưu plan trước khi in cho mọi tài khoản (bỏ nhánh hard-code NHU1903).
+                    checkBP(
+                      userData,
+                      ["QLSX"],
+                      ["ALL"],
+                      ["ALL"],
+                      async () => {
+                        await handle_UpdatePlan();
+                        setShowChiThi(true);
+                        setChiThiListRender(
+                          renderChiThi(selectedPlans, myComponentRef)
+                        );
+                      }
+                    );
                     //console.log(ycsxdatatablefilter);
                   } else {
                     setShowChiThi(false);
@@ -1919,19 +1915,13 @@ const PLAN_DATATB = () => {
                               element.STEP === 0
                           );
                         if (chithimain.length === 1) {
-                          if (userData?.EMPL_NO !== "NHU1903") {
-                            await handle_UpdatePlan();
-                            setShowChiThi2(true);
-                            setChiThiListRender2(
-                              renderChiThi2(qlsxplandatafilter.current, myComponentRef)
-                            );
-                          }
-                          else {                            
-                            setShowChiThi2(true);
-                            setChiThiListRender2(
-                              renderChiThi2(qlsxplandatafilter.current, myComponentRef)
-                            );
-                          }
+                          // Lưu plan trước khi in cho mọi tài khoản (bỏ nhánh hard-code NHU1903).
+                          const selectedCombo = [...qlsxplandatafilter.current];
+                          await handle_UpdatePlan();
+                          setShowChiThi2(true);
+                          setChiThiListRender2(
+                            renderChiThi2(selectedCombo, myComponentRef)
+                          );
                         } else if (chithimain.length === 0) {
                           Swal.fire(
                             "Thông báo",

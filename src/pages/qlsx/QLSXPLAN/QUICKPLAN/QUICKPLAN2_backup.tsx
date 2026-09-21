@@ -83,6 +83,7 @@ const QUICKPLAN2_OLD: React.FC = () => {
     onCellEditingStopped,
     onCellClick,
     onSelectionChange,
+    handleToggleIsSetting,
     renderYCSX,
     renderBanVe,
     renderChiThi,
@@ -190,6 +191,7 @@ const QUICKPLAN2_OLD: React.FC = () => {
             onCellEditingStopped={onCellEditingStopped}
             onCellClick={onCellClick}
             onSelectionChange={onSelectionChange}
+            onToggleIsSetting={handleToggleIsSetting}
           />
         )}
       </div>

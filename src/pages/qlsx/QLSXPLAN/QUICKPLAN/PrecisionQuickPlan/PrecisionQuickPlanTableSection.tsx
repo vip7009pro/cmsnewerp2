@@ -25,6 +25,7 @@ interface PrecisionQuickPlanTableSectionProps {
   onCellEditingStopped: (params: any) => Promise<void>;
   onCellClick: (params: any) => Promise<void>;
   onSelectionChange: (params: any) => void;
+  onToggleIsSetting: (row: QLSXPLANDATA) => void;
 }
 
 export const PrecisionQuickPlanTableSection: React.FC<PrecisionQuickPlanTableSectionProps> = ({
@@ -39,10 +40,11 @@ export const PrecisionQuickPlanTableSection: React.FC<PrecisionQuickPlanTableSec
   onCellEditingStopped,
   onCellClick,
   onSelectionChange,
+  onToggleIsSetting,
 }) => {
   const columns = useMemo(() => {
-    return getColumnQuickPlanDataTable();
-  }, []);
+    return getColumnQuickPlanDataTable({ onToggleIsSetting });
+  }, [onToggleIsSetting]);
 
   return (
     <div className="quickplan-table-pane">

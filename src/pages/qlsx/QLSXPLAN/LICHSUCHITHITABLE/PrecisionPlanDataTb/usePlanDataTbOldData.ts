@@ -465,21 +465,20 @@ export const usePlanDataTbOldData = () => {
   };
 
   const handlePrintChiThi = async () => {
-    if (qlsxplandatafilter.current.length > 0) {
-      if (userData?.EMPL_NO !== "NHU1903") {
-        checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
-          await handle_UpdatePlan();
-          setShowChiThi(true);
-          setChiThiListRender(renderChiThi(qlsxplandatafilter.current, myComponentRef));
-        });
-      } else {
-        setShowChiThi(true);
-        setChiThiListRender(renderChiThi(qlsxplandatafilter.current, myComponentRef));
-      }
-    } else {
+    // Chụp lại danh sách đã chọn trước khi lưu plan (handle_UpdatePlan sẽ load lại grid
+    // và xoá selection, khiến bản in đọc lại ref có thể bị rỗng).
+    const selected = [...qlsxplandatafilter.current];
+    if (selected.length === 0) {
       setShowChiThi(false);
       Swal.fire("Thông báo", "Chọn ít nhất 1 Plan để in", "error");
+      return;
     }
+    // Lưu plan trước khi in cho mọi tài khoản (bỏ nhánh hard-code NHU1903).
+    checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
+      await handle_UpdatePlan();
+      setShowChiThi(true);
+      setChiThiListRender(renderChiThi(selected, myComponentRef));
+    });
   };
 
   const handlePrintChiThiCombo = async () => {
@@ -507,9 +506,8 @@ export const usePlanDataTbOldData = () => {
       if (ycsx_number === 1) {
         const chithimain = selected.filter((el) => el.STEP === 0);
         if (chithimain.length === 1) {
-          if (userData?.EMPL_NO !== "NHU1903") {
-            await handle_UpdatePlan();
-          }
+          // Lưu plan trước khi in cho mọi tài khoản (bỏ nhánh hard-code NHU1903).
+          await handle_UpdatePlan();
           setShowChiThi2(true);
           setChiThiListRender2(renderChiThi2(selected, myComponentRef));
         } else if (chithimain.length === 0) {

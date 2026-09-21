@@ -1,16 +1,23 @@
 # ACTIVE_STATE
 
-## Mục tiêu task hiện tại (đợt 12)
-Tối ưu mobile cho tab **Amazon** + modal Upload AMZ bằng **viewport conditional rendering**:
-1. Bộ lọc đang cố định, không ẩn/hiện float được → **panel FLOAT** như các module trước.
-2. **Bỏ hết widget** (4 KPI card) trên mobile cho gọn.
-3. Modal **Nhập dữ liệu AMZ hàng loạt**: không cắt xén, tiêu đề không wrap đẩy nội dung xuống.
+## Mục tiêu task hiện tại (đợt 13)
+Sửa 3 lỗi QLSX/YCSX do user báo:
+1. In **Chỉ Thị / Chỉ Thị Combo**: tài khoản khác `NHU1903` báo lỗi "Command 'updateLossKT_ZTB_DM_HISTORY' not supported".
+2. **QUICKPLAN2_backup**: cột `IS_SETTING` trong bảng Plan tạm không tick/bỏ tick được.
+3. **YCSXManager → In Bản Vẽ**: logo QC PASS góc dưới-trái bị đẩy sang trang 2 khi in A4.
 
-⚠️ **Phát hiện quan trọng**: `TraAMZ.tsx` + `TraAMZ.scss` (user tag) là **DEAD CODE** — chỉ được import bởi `YCSXManager.backup.tsx`, mà file backup này cũng không được route nào dùng. Tab Amazon đang chạy thật là `PrecisionYCSX/PrecisionAmzTab.tsx` (root `className="precision-ycsx"`), khớp đúng 2 triệu chứng user mô tả. ⇒ Đã tối ưu component ĐANG CHẠY, không sửa file chết.
+Trạng thái: **HOÀN THÀNH** — `npm run build` (vite) `✓ built in 1m 58s`, `get_errors` 0 lỗi.
 
-Trạng thái: **HOÀN THÀNH** — `npm run build` EXIT=0, get_errors 0 lỗi, đã đo trên dev server 3001 @393×850 và 1440×900.
+## File đã chỉnh sửa (đợt 13)
+- `QLSXPLAN/utils/khsxUtils.tsx` — `f_updateLossKT_ZTB_DM_HISTORY`: đổi command sang tên ĐÚNG của backend `updateDMLOSSKT_ZTB_DM_HISTORY` (nguồn lỗi popup đỏ); bước sync phụ trợ chỉ `console.warn` + trả `boolean`, không chặn luồng in.
+- `PrecisionPlanDataTb/usePlanDataTbData.ts`, `usePlanDataTbOldData.ts`, `PLAN_DATATB.backup.tsx`, `Machine/MACHINE.tsx` — bỏ nhánh hard-code `if (userData?.EMPL_NO !== "NHU1903")` trong handler in Chỉ Thị/Combo (nguyên nhân "chỉ NHU1903 in được"), snapshot `[...qlsxplandatafilter.current]` trước `handle_UpdatePlan()` để bản in không bị rỗng sau khi grid reload.
+- `QUICKPLAN/PrecisionQuickPlan/useQuickPlanData.ts` — thêm `handleToggleIsSetting` (đảo Y/N + ghi `localStorage["temp_plan_table"]` + clear selection) và export ra ngoài.
+- `QUICKPLAN/PrecisionQuickPlan/PrecisionQuickPlanTableSection.tsx` — nhận prop `onToggleIsSetting` và truyền vào `getColumnQuickPlanDataTable({ onToggleIsSetting })` (trước đây gọi không tham số nên checkbox `checked` không có handler).
+- `QUICKPLAN/QUICKPLAN2_backup.tsx` — destructure + truyền `onToggleIsSetting`.
+- `ycsxmanager/PrecisionYCSX/PrecisionYCSXPrintModals.tsx` — `pageStyle` riêng cho bản vẽ: `@page { size: A4 landscape; margin: 0 }` + reset margin `html, body`.
+- `ycsxmanager/DrawComponent/DrawComponent.scss` — `.drawcomponent` khai báo `297x208mm` + `overflow:hidden` + `break-inside:avoid`; `.draw { display:block }`; logo trái neo `bottom:4mm`.
 
-## File đã chỉnh sửa (đợt 12)
+## File đã chỉnh sửa (đợt 12 — mobile Amazon)
 - `PrecisionYCSX/PrecisionAmzTab.tsx` — thêm `isMobile`; `isFilterHidden` khởi tạo theo `innerWidth <= 768` + effect; **ẩn khối `__kpiGrid` (4 card) trên mobile**; render `precision-ycsx__filterBackdrop`; nút đóng `__filterClose` trong `__filterHeader`; toolbar gắn modifier `__gridToolbar--compact` + nút toggle có class `__toolBtn--filterToggle`; **ẩn nhóm input `Offset X/Y` trên mobile** để toolbar scroll gọn hơn.
 - `PrecisionYCSX/PrecisionAmzAddModal.tsx` — thêm `isMobile`; rút gọn tiêu đề (`NHẬP DỮ LIỆU AMZ`) + ẩn `p` subtitle; **chuyển inline style sang dạng mobile** (container `maxWidth/width/height`, `modal-body padding: 10`, grid `1.2fr 1.2fr 2fr` → `repeat(2,…)`, box thông tin `gridColumn: span 2`, banner upload xếp dọc, nhóm nút wrap, `modal-agtable-wrapper minHeight 380 → 220`) + rút gọn text (`Đã nạp`, `Kiểm tra trùng`, `Upload`, `XEM TRƯỚC AMZ`) + ẩn hint footer trên mobile.
 - `PrecisionYCSX/PrecisionAmzTab.tsx` — (vòng 2) nút **EX1/EX2** trước đây là `<FiDownload /> EX1` (**text node trần**, không bọc `<span>`) nên rule `.compact .toolBtn > span { display:none }` không match ⇒ bị nhồi icon + chữ vào ô 30px, nhìn như nút "đen trắng, ríu rít". Đã bọc nhãn trong `<span>`, thêm accent `--emerald` và class `--keepLabel` để mobile **giữ nhãn ngắn** (EX1 53×30, EX2 55×30) thay vì icon-only.
@@ -75,5 +82,8 @@ Trạng thái: **HOÀN THÀNH** — `npm run build` EXIT=0, get_errors 0 lỗi, 
 - **Pitfall header mobile**: `PrecisionHeader.tsx` cũ render brand + omnibar + action trên một hàng flex `space-between` với `flex-shrink:0` ⇒ tràn ngang, nút ngôn ngữ/thông báo/user pill bị đẩy khỏi viewport. Đã sửa bằng conditional rendering theo `isMobile` (`matchMedia max-width:768px`): mobile chỉ còn brand + 2 nút (toggle search, overflow) và gom toàn bộ hành động vào `PrecisionHeaderMobileMenu.tsx`; ô search dùng chung biến `searchBoxNode`, mobile render trong `__mobileSearch` (`position:absolute; top:100%`) nên không tăng chiều cao 48px. Backup: `PrecisionHeader.backup.tsx`.
 - Repo có sẵn nhiều lỗi `tsc --noEmit` ở module khác ⇒ **không dùng tsc làm gate**, dùng `npm run build` (vite) trong `g:\NODEJS\WEBCMS ERP2\cmsnewerp2`.
 - Quy ước tài liệu: findings → `FINDINGS_PARITY_<AREA>_MODULES.md`; tiến độ → `ROADMAP.md`; task hiện tại → `ACTIVE_STATE.md` (≤ 80 dòng).
-- Build kiểm chứng: đợt 3 `EXIT=0`; đợt 4 vòng 1 `✓ 17013 modules`, vòng 2 `✓ 17015 modules` (`✓ built in 1m 14s`), `node --check services/nhansuService.js` SYNTAX OK; đợt 5 `npm run build` `EXIT=0`.
+- Build kiểm chứng: đợt 3 `EXIT=0`; đợt 4 vòng 1 `✓ 17013 modules`, vòng 2 `✓ 17015 modules` (`✓ built in 1m 14s`), `node --check services/nhansuService.js` SYNTAX OK; đợt 5 `npm run build` `EXIT=0`; đợt 13 `✓ built in 1m 58s`.
+- **Đợt 13 — route thật của QLSXPLAN**: `QLSXPLAN.tsx` chỉ render bản refactor khi `EMPL_NO === "NHU1903z"` (có chữ `z`, không ai khớp) ⇒ QUICK PLAN chạy `QUICKPLAN2_backup.tsx`, PLAN TABLE chạy `PLAN_DATATB_backup.tsx` + `usePlanDataTbOldData.ts`. Sửa bug phải sửa ở các file này.
+- **Đợt 13 — tên command phải khớp `dbCommandHandlers`**: `practice1/services/dbService.js` tra `commandHandlers[command]`; tên command = tên hàm export trong `services/*.js`. Frontend gọi sai tên ⇒ `Command '...' not supported`. `generalQuery` tự inject `CTR_CD`/`COMPANY` nên không cần truyền tay.
+- **Đợt 13 — in ấn**: `react-to-print` default pageStyle = `@page { margin: 0 }`. Nếu nội dung in là khối full-bleed cố định (ví dụ `297x208mm`) thì KHÔNG được set `@page { margin: 6mm }` (vùng in còn 198mm < 208mm ⇒ phần tử absolute bị đẩy trọn sang trang sau).
 

@@ -1221,6 +1221,29 @@ export const useQuickPlanData = () => {
     qlsxplandatafilter.current = params!.api.getSelectedRows();
   }, []);
 
+  /**
+   * Bật/tắt cờ IS_SETTING ngay trên bảng Plan tạm (checkbox ở cột IS_SETTING).
+   * Trước đây cột này KHÔNG tick được vì cellRenderer dùng `checked` (controlled input)
+   * nhưng `getColumnQuickPlanDataTable()` được gọi mà không truyền `onToggleIsSetting`.
+   * Giữ đúng hành vi của QUICKPLAN2 bản cũ: đảo Y <-> N, lưu localStorage, xoá selection.
+   */
+  const handleToggleIsSetting = useCallback(
+    (row: QLSXPLANDATA) => {
+      if (!row) return;
+      const newdata = plandatatable.map((p) => {
+        const isSameRow =
+          p === row ||
+          (row.id !== undefined && p.id !== undefined && p.id === row.id);
+        if (!isSameRow) return p;
+        return { ...p, IS_SETTING: p.IS_SETTING === "Y" ? "N" : "Y" };
+      });
+      localStorage.setItem("temp_plan_table", JSON.stringify(newdata));
+      setPlanDataTable(newdata);
+      qlsxplandatafilter.current = [];
+    },
+    [plandatatable]
+  );
+
   return {
     userData,
     qtyFactor,
@@ -1306,6 +1329,7 @@ export const useQuickPlanData = () => {
     onCellEditingStopped,
     onCellClick,
     onSelectionChange,
+    handleToggleIsSetting,
     renderYCKT,
     renderChiThi,
     renderYCSX,

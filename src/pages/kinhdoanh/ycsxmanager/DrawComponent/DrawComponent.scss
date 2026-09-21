@@ -1,5 +1,13 @@
 .drawcomponent {
   position: relative;
+  /* Khoá khối bản vẽ đúng khổ A4 ngang (297x208mm). Có kích thước tường minh +
+     overflow: hidden để các watermark absolute không thể tràn ra ngoài hộp,
+     tránh bị đẩy sang trang 2 khi in. */
+  width: 297mm;
+  height: 208mm;
+  overflow: hidden;
+  break-inside: avoid;
+  page-break-inside: avoid;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -11,6 +19,7 @@
   .draw {
     width: 297mm !important;
     height: 208mm !important;
+    display: block;
   }
   .approval_info {
     position: absolute;
@@ -24,9 +33,11 @@
     top: 198mm;
     left: 91mm;
   }
+  /* Logo QC PASS góc dưới-trái: neo theo `bottom` để luôn nằm gọn trong hộp 208mm
+     (trước đây neo `top: 155mm` + ảnh 200px ≈ 53mm => đáy 207.9mm, sát mép gây tràn trang). */
   .qcpass {
     position: absolute;
-    top: 155mm;
+    bottom: 4mm;
     left: 5mm;
   }
   .qcpass2 {

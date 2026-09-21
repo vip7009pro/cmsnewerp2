@@ -573,21 +573,30 @@ export const f_saveQLSX = async (qlsxdata: any) => {
     });
   return isOk;
 };
-export const f_updateLossKT_ZTB_DM_HISTORY = async () => {
-  await generalQuery("updateLossKT_ZTB_DM_HISTORY", {})
-    .then((response) => {
-      if (response.data.tk_status !== "NG") {
-      } else {
-        Swal.fire(
-          "Thông báo",
-          "Lỗi update Loss KT ZTB DM History: " + response.data.message,
-          "error"
-        );
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+/**
+ * Đồng bộ LOSS_KT mới nhất từ ZTB_QLSXPLAN về bảng lịch sử định mức ZTB_DM_HISTORY.
+ *
+ * LƯU Ý TÊN COMMAND: backend (practice1/services/kinhdoanhService.js) export hàm
+ * `updateDMLOSSKT_ZTB_DM_HISTORY`. Tên cũ `updateLossKT_ZTB_DM_HISTORY` KHÔNG tồn tại
+ * trong `dbCommandHandlers`, nên backend trả về "Command '...' not supported" và hiện
+ * popup lỗi giữa luồng in Chỉ Thị / Chỉ Thị Combo (chỉ xảy ra với tài khoản không phải
+ * super user vì super user đang được bỏ qua bước lưu plan).
+ *
+ * Đây là bước đồng bộ phụ trợ (không ảnh hưởng nội dung in) => chỉ log cảnh báo,
+ * KHÔNG chặn (block) luồng nghiệp vụ chính. Trả về true/false để caller tự quyết định.
+ */
+export const f_updateLossKT_ZTB_DM_HISTORY = async (): Promise<boolean> => {
+  try {
+    const response = await generalQuery("updateDMLOSSKT_ZTB_DM_HISTORY", {});
+    if (response.data?.tk_status === "NG") {
+      console.warn("update Loss KT ZTB DM History:", response.data?.message);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.warn("update Loss KT ZTB DM History failed:", error);
+    return false;
+  }
 };
 export const f_updatePlanQLSX = async (planData: any) => {
   let kq: string = "";
