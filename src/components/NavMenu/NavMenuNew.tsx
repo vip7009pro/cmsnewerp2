@@ -17,6 +17,7 @@ import {
   normalizeSearchText,
 } from "./navMenuSearch";
 import { getDepartmentTheme, getSubMenuColorTheme } from "./navMenuThemes";
+import { useMobileBackClose } from "./useMobileBackClose";
 import "./NavMenuNew.scss";
 
 interface NavMenuNewProps {
@@ -29,6 +30,8 @@ interface NavMenuNewProps {
   onSearchEnter?: () => void;
   autoFocusSearch?: boolean;
 }
+
+const MOBILE_MEDIA_QUERY = "(max-width: 768px)";
 
 const getGroupKey = (menu: NAVMENUDATA) => `${menu.title}__${menu.path}`;
 
@@ -57,6 +60,22 @@ export const NavMenuNew: React.FC<NavMenuNewProps> = ({
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   const [userCollapsedGroups, setUserCollapsedGroups] = useState<Record<string, boolean>>({});
 
+  // --- Viewport mode: dưới 768px là mobile (bàn phím ảo không được tự bật) ---
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== "undefined" && window.matchMedia
+      ? window.matchMedia(MOBILE_MEDIA_QUERY).matches
+      : false
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mediaQuery = window.matchMedia(MOBILE_MEDIA_QUERY);
+    const handleViewportChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+    setIsMobile(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleViewportChange);
+    return () => mediaQuery.removeEventListener("change", handleViewportChange);
+  }, []);
+
   const company: string = useSelector((state: RootState) => state.totalSlice.company) || "CMS";
   const lang: string | undefined = useSelector((state: RootState) => state.totalSlice.lang);
   const tabModeSwap: boolean = useSelector((state: RootState) => state.totalSlice.tabModeSwap);
@@ -80,15 +99,22 @@ export const NavMenuNew: React.FC<NavMenuNewProps> = ({
     [effectiveSearchText, menus]
   );
 
-  // Auto focus search box
+  // Auto focus search box — CHỈ trên desktop.
+  // Mobile: tự focus sẽ bật bàn phím ảo ngay khi mở menu, che gần hết danh sách phân hệ.
   useEffect(() => {
-    if (!autoFocusSearch) return;
+    if (!autoFocusSearch || isMobile) return;
     const timer = setTimeout(() => {
       searchInputRef.current?.focus();
       searchInputRef.current?.select();
     }, 60);
     return () => clearTimeout(timer);
-  }, [autoFocusSearch]);
+  }, [autoFocusSearch, isMobile]);
+
+  // Mobile: nút Back (Android) / vuốt cạnh (iOS) đóng drawer thay vì thoát khỏi web.
+  // Chỉ áp dụng cho drawer nổi (overlay) — mode sidebar do trang tự quản lý trạng thái đóng/mở.
+  useMobileBackClose(isMobile && mode === "overlay" && Boolean(onClose), () => {
+    onClose?.();
+  });
 
   // Global Ctrl+K / Cmd+K & Escape shortcut
   useEffect(() => {
@@ -201,7 +227,9 @@ export const NavMenuNew: React.FC<NavMenuNewProps> = ({
 
   const drawerContent = (
     <aside
-      className={`navmenu-stitch-drawer navmenu-stitch-drawer--${mode} ${className || ""}`.trim()}
+      className={`navmenu-stitch-drawer navmenu-stitch-drawer--${mode} ${
+        isMobile ? "navmenu-stitch-drawer--mobile" : ""
+      } ${className || ""}`.trim()}
       id="navigationDrawer"
       aria-label="ERP Enterprise Navigation Drawer"
       onPointerDown={(e) => e.stopPropagation()}
@@ -245,7 +273,11 @@ export const NavMenuNew: React.FC<NavMenuNewProps> = ({
             ref={searchInputRef}
             type="text"
             className="navmenu-stitch-drawer__searchInput"
-            placeholder="Tìm nhanh module, mã (NS1, KD, QC...)"
+            placeholder={
+              isMobile
+                ? "Tìm phân hệ hoặc chức năng..."
+                : "Tìm nhanh module, mã (NS1, KD, QC...)"
+            }
             value={effectiveSearchText}
             onChange={(e) => handleSearchChange(e.target.value)}
             onFocus={onSearchFocus}
@@ -410,10 +442,10 @@ export const NavMenuNew: React.FC<NavMenuNewProps> = ({
           onClick={() => {
             if (mode === "overlay" && onClose) onClose();
           }}
-          title="Ghim thanh điều hướng"
+          title={isMobile ? "Đóng menu" : "Ghim thanh điều hướng"}
         >
-          <FiBookmark size={13} />
-          <span>Ghim Sidebar</span>
+          {isMobile ? <FiX size={13} /> : <FiBookmark size={13} />}
+          <span>{isMobile ? "Đóng menu" : "Ghim Sidebar"}</span>
         </button>
       </div>
     </aside>

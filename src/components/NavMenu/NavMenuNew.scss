@@ -600,3 +600,68 @@
     opacity: 0;
   }
 }
+
+/* ==========================================================================
+   MOBILE (<= 768px)
+   - Drawer overlay tràn viền, không còn khung nổi 10px (tiết kiệm ~20px bề ngang).
+   - Ô tìm kiếm / mục menu tăng chiều cao để đủ vùng chạm (>= 42px).
+   - Ẩn chip phím tắt ⌘K vì mobile không có bàn phím cứng.
+   ========================================================================== */
+@media only screen and (max-width: 768px) {
+  .navmenu-stitch-drawer {
+    &--overlay {
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 100%;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+    }
+
+    &__header {
+      padding: 12px 14px 10px;
+    }
+
+    &__searchInput {
+      height: 42px;
+      padding: 0 16px 0 34px;
+      font-size: 13px;
+      border-radius: 12px;
+    }
+
+    &__searchIcon {
+      left: 11px;
+    }
+
+    &__searchShortcut {
+      display: none;
+    }
+
+    &__list {
+      padding: 8px 10px;
+      gap: 5px;
+    }
+
+    &__groupBtn {
+      min-height: 52px;
+      padding: 10px 12px;
+    }
+
+    &__subLink {
+      min-height: 42px;
+      padding: 8px 10px;
+    }
+
+    &__footer {
+      padding: 8px 14px;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    }
+
+    &__pinBtn {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+  }
+}
