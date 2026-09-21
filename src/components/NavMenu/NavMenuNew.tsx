@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import { RootState } from "../../redux/store";
 import { ELE_ARRAY, UserData } from "../../api/GlobalInterface";
 import { addTab, hideSidebar, settabIndex } from "../../redux/slices/globalSlice";
-import { getNavMenu, NAVMENUDATA, SUBNAVMENUDATA } from "./getNavMenu";
+import type { NAVMENUDATA, SUBNAVMENUDATA } from "./getNavMenu";
 import {
   canUseTabMode,
   filterNavMenusByQuery,
@@ -82,7 +82,18 @@ export const NavMenuNew: React.FC<NavMenuNewProps> = ({
   const tabs: ELE_ARRAY[] = useSelector((state: RootState) => state.totalSlice.tabs);
   const userData: UserData | undefined = useSelector((state: RootState) => state.totalSlice.userData);
 
-  const menus = useMemo(() => getNavMenu(company, lang), [company, lang]);
+  // Danh mục menu: nạp ĐỘNG để 5 bộ icon react-icons của NavMenuCMS/NHATHAN/PVN
+  // không bị kéo vào bundle khởi động (xem comment trong Home.tsx).
+  const [menus, setMenus] = useState<NAVMENUDATA[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    void import("./getNavMenu").then(({ getNavMenu }) => {
+      if (!cancelled) setMenus(getNavMenu(company, lang));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [company, lang]);
   const effectiveSearchText = searchText ?? internalSearchText;
   const normalizedQuery = normalizeSearchText(effectiveSearchText).trim();
 

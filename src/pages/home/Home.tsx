@@ -27,12 +27,14 @@ import { getMenuList } from "./menuConfig";
 // Chuyển sang lazy: chỉ tải khi thực sự render một tab low-code. (Đã có sẵn <Suspense> bao ngoài.)
 const PageTabs = lazy(() => import("../nocodelowcode/components/PagesManager/Components/PageTabs/PageTabs"));
 import PrecisionHeader from "../../components/Navbar/PrecisionHeader/PrecisionHeader";
-import { CloseRounded } from "@mui/icons-material";
+import { ChevronLeftRounded, ChevronRightRounded, CloseRounded } from "@mui/icons-material";
 import NavMenuNew from "../../components/NavMenu/NavMenuNew";
-import { getNavMenu } from "../../components/NavMenu/getNavMenu";
+import type { NAVMENUDATA } from "../../components/NavMenu/getNavMenu";
 import { canUseTabMode, getFirstNavMenuSearchResult, normalizeMenuPath } from "../../components/NavMenu/navMenuSearch";
 import { requestChangelogPopup } from "../../components/Changelog/changelogEvents";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+// (đã bỏ) `import { MdChevronLeft, MdChevronRight } from "react-icons/md"`
+// react-icons/md bị NavMenuCMS/NHATHAN/PVN dùng kèm `Object.keys()` (menuIconCatalog) nên
+// Rollup phải giữ TOÀN BỘ bộ icon => 1.943 KB. Thay bằng MUI icon (tree-shake đúng).
 import { Link } from "react-router-dom";
 export const current_ver: number = getCompany() === "CMS" ? 2800 : 438;
 interface ELE_ARRAY {
@@ -96,7 +98,22 @@ function Home() {
   // (đã xoá) debug block: useEffect không có dependency array + console.log chạy mỗi lần render.
   // Nó so sánh 9 khóa state của shell trong MỌI commit của Home => chỉ phục vụ debug, không dùng cho UI.
   const menulist: MENU_LIST_DATA[] = useMemo(() => getMenuList(company, lang), [company, lang]);
-  const navMenus = useMemo(() => getNavMenu(company, lang), [company, lang]);
+
+  // Danh mục menu: nạp ĐỘNG **theo NHU CẦU** — chỉ khi user bấm Enter ở ô tìm kiếm.
+  // Lý do: `getNavMenu` -> NavMenuCMS/NHATHAN/PVN import ~45 icon từ 5 bộ react-icons, mà
+  // menuIconCatalog (icon picker) lại dùng `Object.keys()` nên Rollup phải giữ TOÀN BỘ 5 bộ.
+  // Import tĩnh => kéo cả ~4,9 MB icon vào bundle khởi động (đo: react-icons = 90% entry chunk).
+  // Nếu chỉ nạp động mà vẫn nạp NGAY khi mount thì chunk icon (~2,5 MB) vẫn tải ngay sau paint.
+  // Xem giải thích đầy đủ ở đầu file menuIconCatalog.ts
+  const navMenusPromiseRef = useRef<Promise<NAVMENUDATA[]> | null>(null);
+  const loadNavMenus = useCallback((): Promise<NAVMENUDATA[]> => {
+    if (!navMenusPromiseRef.current) {
+      navMenusPromiseRef.current = import("../../components/NavMenu/getNavMenu").then(
+        ({ getNavMenu }) => getNavMenu(company, lang)
+      );
+    }
+    return navMenusPromiseRef.current;
+  }, [company, lang]);
   const dispatch = useDispatch();
   const [checkVerWeb, setCheckVerWeb] = useState(1);
   const [menuOpenSource, setMenuOpenSource] = useState<"navbar" | "menu" | null>(null);
@@ -120,43 +137,46 @@ function Home() {
   }, [sidebarStatus]);
 
   const openFirstSearchResult = useCallback(() => {
-    const searchResult = getFirstNavMenuSearchResult(navMenus, menuSearchText);
-    if (!searchResult) return;
+    // Nạp danh mục menu theo nhu cầu rồi mới tra kết quả (xem loadNavMenus ở trên).
+    void loadNavMenus().then((menus) => {
+      const searchResult = getFirstNavMenuSearchResult(menus, menuSearchText);
+      if (!searchResult) return;
 
-    if (searchResult.subMenu) {
-      if (tabModeSwap) {
-        if (!canUseTabMode(userData, searchResult.subMenu.MENU_CODE)) {
-          Swal.fire("Cảnh báo", "Không đủ quyền hạn", "error");
+      if (searchResult.subMenu) {
+        if (tabModeSwap) {
+          if (!canUseTabMode(userData, searchResult.subMenu.MENU_CODE)) {
+            Swal.fire("Cảnh báo", "Không đủ quyền hạn", "error");
+            return;
+          }
+
+          const existedTabIndex = tabs.findIndex((ele) => ele.ELE_CODE === searchResult.subMenu?.MENU_CODE);
+          if (existedTabIndex !== -1) {
+            dispatch(settabIndex(existedTabIndex));
+          } else {
+            dispatch(
+              addTab({
+                ELE_NAME: searchResult.subMenu.title,
+                ELE_CODE: searchResult.subMenu.MENU_CODE,
+                REACT_ELE: "",
+                PAGE_ID: -1,
+              })
+            );
+            dispatch(settabIndex(tabs.length));
+          }
+
+          dispatch(hideSidebar("2"));
           return;
         }
 
-        const existedTabIndex = tabs.findIndex((ele) => ele.ELE_CODE === searchResult.subMenu?.MENU_CODE);
-        if (existedTabIndex !== -1) {
-          dispatch(settabIndex(existedTabIndex));
-        } else {
-          dispatch(
-            addTab({
-              ELE_NAME: searchResult.subMenu.title,
-              ELE_CODE: searchResult.subMenu.MENU_CODE,
-              REACT_ELE: "",
-              PAGE_ID: -1,
-            })
-          );
-          dispatch(settabIndex(tabs.length));
-        }
-
+        navigate(normalizeMenuPath(searchResult.subMenu.path));
         dispatch(hideSidebar("2"));
         return;
       }
 
-      navigate(normalizeMenuPath(searchResult.subMenu.path));
+      navigate(normalizeMenuPath(searchResult.menu.path));
       dispatch(hideSidebar("2"));
-      return;
-    }
-
-    navigate(normalizeMenuPath(searchResult.menu.path));
-    dispatch(hideSidebar("2"));
-  }, [dispatch, menuSearchText, navMenus, navigate, tabModeSwap, tabs, userData]);
+    });
+  }, [dispatch, loadNavMenus, menuSearchText, navigate, tabModeSwap, tabs, userData]);
 
   const updatechamcongdiemdanh = useCallback(() => {
     generalQuery("updatechamcongdiemdanhauto", {})
@@ -507,7 +527,7 @@ function Home() {
               dispatch(toggleSidebar("2"));
             }}
           >
-            {sidebarStatus ? <MdChevronLeft size={16} /> : <MdChevronRight size={16} />}
+            {sidebarStatus ? <ChevronLeftRounded style={{ fontSize: 16 }} /> : <ChevronRightRounded style={{ fontSize: 16 }} />}
           </div>
         )}
         <div className="outletdiv">

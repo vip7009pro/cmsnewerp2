@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './MenuManager.scss';
 import {
   Box,
@@ -12,13 +12,9 @@ import {
   Tooltip,
 } from '@mui/material';
 import { Add, Edit, Delete, Refresh } from '@mui/icons-material';
-import * as FaIcons from 'react-icons/fa';
-import * as BiIcons from 'react-icons/bi';
-import * as MdIcons from 'react-icons/md';
-import * as AiIcons from 'react-icons/ai';
-import * as FcIcons from 'react-icons/fc';
-import * as HiIcons from 'react-icons/hi';
-import * as IoIcons from 'react-icons/io';
+// Danh mục icon (7 bộ react-icons) đã tách sang ./menuIconCatalog và chỉ nạp ĐỘNG khi mở modal
+// chọn icon. Xem giải thích + số đo (4,9 MB / 90% entry chunk) trong menuIconCatalog.ts
+import type { MenuIconItem } from './menuIconCatalog';
 import { generalQuery } from '../../../api/Api';
 import Swal from 'sweetalert2';
 
@@ -43,53 +39,8 @@ export interface ISubMenu {
   PAGE_ID: number;
 }
 
-// --- Icon List Logic (from NavMenuNew) ---
-const getAllIcons = () => {
-  const faIconList = Object.keys(FaIcons).map((name) => ({
-    name,
-    library: 'fa',
-    IconComponent: FaIcons[name as keyof typeof FaIcons],
-  }));
-  const mdIconList = Object.keys(MdIcons).map((name) => ({
-    name,
-    library: 'md',
-    IconComponent: MdIcons[name as keyof typeof MdIcons],
-  }));
-  const biIconList = Object.keys(BiIcons).map((name) => ({
-    name,
-    library: 'bi',
-    IconComponent: BiIcons[name as keyof typeof BiIcons],
-  }));
-  const aiIconList = Object.keys(AiIcons).map((name) => ({
-    name,
-    library: 'ai',
-    IconComponent: AiIcons[name as keyof typeof AiIcons],
-  }));
-  const fcIconList = Object.keys(FcIcons).map((name) => ({
-    name,
-    library: 'fc',
-    IconComponent: FcIcons[name as keyof typeof FcIcons],
-  }));
-  const hiIconList = Object.keys(HiIcons).map((name) => ({
-    name,
-    library: 'hi',
-    IconComponent: HiIcons[name as keyof typeof HiIcons],
-  }));
-  const ioIconList = Object.keys(IoIcons).map((name) => ({
-    name,
-    library: 'io',
-    IconComponent: IoIcons[name as keyof typeof IoIcons],
-  }));
-  return [
-    ...faIconList,
-    ...mdIconList,
-    ...biIconList,
-    ...aiIconList,
-    ...fcIconList,
-    ...hiIconList,
-    ...ioIconList,
-  ];
-};
+// NOTE: danh mục icon (`getAllIcons`) đã chuyển sang ./menuIconCatalog — nạp động,
+// KHÔNG import tĩnh ở đây (xem comment đầu file menuIconCatalog.ts để biết lý do).
 
 // --- Main Component ---
 const MenuManager: React.FC = () => {
@@ -105,7 +56,30 @@ const MenuManager: React.FC = () => {
   const [iconSearch, setIconSearch] = useState('');
   const [iconDropdownType, setIconDropdownType] = useState<'main' | 'sub'>('main');
   const [reloadFlag, setReloadFlag] = useState(0);
-  const iconList = useMemo(() => getAllIcons(), []);
+
+  // Danh mục icon: nạp ĐỘNG, chỉ khi admin mở modal Thêm/Sửa menu (nơi có dropdown chọn icon).
+  // Trước đây `useMemo(() => getAllIcons(), [])` chạy ngay khi mount + import tĩnh namespace
+  // ⇒ kéo cả 7 bộ icon (~4,9 MB) vào bundle khởi động của MỌI user. Xem menuIconCatalog.ts
+  const [iconList, setIconList] = useState<MenuIconItem[]>([]);
+  const [iconCatalogLoading, setIconCatalogLoading] = useState(false);
+  const iconCatalogRequestedRef = useRef(false);
+
+  useEffect(() => {
+    if (!openMainMenuModal && !openSubMenuModal) return;
+    if (iconCatalogRequestedRef.current) return;
+    iconCatalogRequestedRef.current = true;
+
+    let cancelled = false;
+    setIconCatalogLoading(true);
+    void import('./menuIconCatalog').then(({ getAllIcons }) => {
+      if (cancelled) return;
+      setIconList(getAllIcons());
+      setIconCatalogLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [openMainMenuModal, openSubMenuModal]);
 
   // --- API CRUD ---
   const loadMainMenus = async () => {
@@ -311,6 +285,11 @@ const MenuManager: React.FC = () => {
           margin="normal"
         />
         <div className="icon-list">
+          {iconCatalogLoading && (
+            <Typography variant="caption" sx={{ p: 1 }}>
+              Đang tải danh mục icon…
+            </Typography>
+          )}
           {iconList
             .filter((icon) =>
               icon.name.toLowerCase().includes(iconSearch.toLowerCase())

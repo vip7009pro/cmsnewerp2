@@ -38,7 +38,7 @@ import { logout } from "../../../api/Api";
 import { UserData } from "../../../api/GlobalInterface";
 import NotificationPanel from "../../NotificationPanel/NotificationPanel";
 import NavMenuNew from "../../NavMenu/NavMenuNew";
-import { getNavMenu } from "../../NavMenu/getNavMenu";
+import type { NAVMENUDATA } from "../../NavMenu/getNavMenu";
 import { canUseTabMode, getFirstNavMenuSearchResult, normalizeMenuPath } from "../../NavMenu/navMenuSearch";
 import PrecisionHeaderMobileMenu from "./PrecisionHeaderMobileMenu";
 import "./PrecisionHeader.scss";
@@ -192,7 +192,20 @@ export default function PrecisionHeader({
       ? false
       : true;
 
-  const navMenus = useMemo(() => getNavMenu(company, lang), [company, lang]);
+  // Danh mục menu cho ô tìm kiếm: nạp ĐỘNG **theo NHU CẦU** (khi user tương tác ô tìm kiếm).
+  // Xem comment trong Home.tsx: `getNavMenu` -> NavMenuCMS/NHATHAN/PVN import ~45 icon từ
+  // 5 bộ react-icons, mà menuIconCatalog lại dùng `Object.keys()` nên Rollup phải giữ TOÀN BỘ
+  // 5 bộ (~4,6 MB). Nếu nạp ngay khi mount thì chunk đó tải ngay sau first paint cho MỌI user
+  // dù họ không dùng tới. Chỉ nạp khi user thực sự focus/gõ vào ô tìm kiếm.
+  const [navMenus, setNavMenus] = useState<NAVMENUDATA[]>([]);
+  const navMenusRequestedRef = useRef(false);
+  const ensureNavMenus = useCallback(() => {
+    if (navMenusRequestedRef.current) return;
+    navMenusRequestedRef.current = true;
+    void import("../../NavMenu/getNavMenu").then(({ getNavMenu }) => {
+      setNavMenus(getNavMenu(company, lang));
+    });
+  }, [company, lang]);
 
   // Load saved theme on mount
   useEffect(() => {
@@ -528,6 +541,7 @@ export default function PrecisionHeader({
           requestAnimationFrame(() => updateSearchMenuBounds());
         }}
         onFocus={() => {
+          ensureNavMenus();
           if (isMobile) return;
           setInternalMenuOpenSource("navbar");
           if (propOnSearchFocus) {
@@ -538,6 +552,7 @@ export default function PrecisionHeader({
           requestAnimationFrame(() => updateSearchMenuBounds());
         }}
         onClick={() => {
+          ensureNavMenus();
           if (isMobile) return;
           if (!isMenuOpen) {
             setInternalMenuOpenSource("navbar");

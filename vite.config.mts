@@ -5,8 +5,29 @@ import svgrPlugin from "vite-plugin-svgr";
 import ViteCompressionPlugin from 'vite-plugin-compression';
 
 // https://vitejs.dev/config/
+// Plugin CHẨN ĐOÁN (chỉ dùng khi cần soi bundle): in ra top module theo KB trong entry chunk.
+// Bật bằng biến môi trường: $env:ANALYZE_BUNDLE=1; npm run build
+const analyzeBundlePlugin = () => ({
+  name: 'analyze-bundle',
+  generateBundle(_opts: any, bundle: any) {
+    if (!process.env.ANALYZE_BUNDLE) return;
+    for (const [name, ch] of Object.entries<any>(bundle)) {
+      if (ch.type !== 'chunk' || !ch.isEntry) continue;
+      const mods = Object.entries<any>(ch.modules)
+        .map(([id, m]) => ({ id, kb: Math.round((m.renderedLength || 0) / 1024) }))
+        .sort((a, b) => b.kb - a.kb)
+        .slice(0, 30);
+      console.log(`\n[ANALYZE] entry chunk ${name} (${Math.round(ch.code.length / 1024)} KB)`);
+      for (const m of mods) {
+        console.log(`   ${String(m.kb).padStart(6)} KB  ${m.id.replace(/^.*node_modules[\\/]/, 'nm:').slice(0, 110)}`);
+      }
+    }
+  },
+}) as any;
+
 export default defineConfig({
   plugins: [react(), viteTsconfigPaths(), svgrPlugin(),
+    analyzeBundlePlugin(),
     ViteCompressionPlugin({
       verbose: true,
       disable: false,
