@@ -90,3 +90,8 @@ export const QUICKPLAN2 = lazy(() => import("../pages/qlsx/QLSXPLAN/QUICKPLAN/QU
 export const LichSu_New = lazy(() => import("../pages/nhansu/LichSu/LichSu_New"));
 export const YCTKManager = lazy(() => import("../pages/kinhdoanh/YCTK/YCTKManager"));
 export const WH_REPORT = lazy(() => import("../pages/kho/khoreport/WH_REPORT"));
+// 2 page Stitch dưới đây trước đây được import TĨNH trong AppRoutes.tsx nên bị kéo vào
+// initial bundle (kèm SCSS + AG Grid của chúng) dù user không mở tới. Chuyển sang lazy.
+export const PrecisionAccountInfo = lazy(() => import("../components/Navbar/AccountInfo/PrecisionAccountInfo"));
+export const PrecisionPreviewPage = lazy(() => import("../pages/precision/PrecisionPreviewPage"));
+export const PrecisionPoManager = lazy(() => import("../pages/kinhdoanh/pomanager/PrecisionPoManager/PrecisionPoManager"));

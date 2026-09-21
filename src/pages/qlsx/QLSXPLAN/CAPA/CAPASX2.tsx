@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
+import "../../../../theme/devextremeTheme";
 import { generalQuery, getGlobalSetting } from "../../../../api/Api";
 import {
   Chart,

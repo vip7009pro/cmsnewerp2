@@ -88,19 +88,8 @@ function Home() {
 
   const [menuSearchText, setMenuSearchText] = useState("");
 
-  const prevState = useRef<any>(null);
-  useEffect(() => {
-    if (prevState.current) {
-      const allProps: any = { theme, tabs, lang, company, tabIndex, tabModeSwap, sidebarStatus, cpnInfo, selectedServer, userData };
-      const diff = Object.keys(allProps).filter(k => allProps[k] !== prevState.current[k]);
-      if (diff.length > 0) {
-        console.log("⚠️ Home re-render caused by changes in: ", diff);
-      }
-    }
-    prevState.current = { theme, tabs, lang, company, tabIndex, tabModeSwap, sidebarStatus, cpnInfo, selectedServer, userData };
-  });
-
-  console.log("company", company);
+  // (đã xoá) debug block: useEffect không có dependency array + console.log chạy mỗi lần render.
+  // Nó so sánh 9 khóa state của shell trong MỌI commit của Home => chỉ phục vụ debug, không dùng cho UI.
   const menulist: MENU_LIST_DATA[] = useMemo(() => getMenuList(company, lang), [company, lang]);
   const navMenus = useMemo(() => getNavMenu(company, lang), [company, lang]);
   const dispatch = useDispatch();

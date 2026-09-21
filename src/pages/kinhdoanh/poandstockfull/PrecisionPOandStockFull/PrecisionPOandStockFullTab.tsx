@@ -58,9 +58,27 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
   // Ref lưu dòng chọn
   const selectedRowsRef = useRef<any[]>([]);
 
+  // Cache bộ cột AG Grid theo từng "chế độ" để GIỮ NGUYÊN REFERENCE của mảng.
+  // Trước đây mỗi lần bấm Search đều gọi getColumnsCodeCMS()/getColumnsCodePVN()/getColumnsCodeKD()
+  // => trả về mảng MỚI => AG Grid coi columnDefs đã đổi và dựng lại toàn bộ cột
+  // (mất sort/filter/width/scroll của cột). Cache lại thì cùng dữ liệu, cùng reference.
+  const columnCacheRef = useRef<{ cms?: Array<any>; pvn?: Array<any>; kd?: Array<any> }>({});
+  const getCachedColumns = useCallback((kind: "cms" | "pvn" | "kd") => {
+    const cache = columnCacheRef.current;
+    if (!cache[kind]) {
+      cache[kind] =
+        kind === "cms"
+          ? getColumnsCodeCMS()
+          : kind === "pvn"
+            ? getColumnsCodePVN()
+            : getColumnsCodeKD();
+    }
+    return cache[kind]!;
+  }, []);
+
   // Columns AG Grid ban đầu
-  const [columnDefinition, setColumnDefinition] = useState<Array<any>>(
-    isCMS ? getColumnsCodeCMS() : getColumnsCodePVN()
+  const [columnDefinition, setColumnDefinition] = useState<Array<any>>(() =>
+    isCMS ? getCachedColumns("cms") : getCachedColumns("pvn")
   );
 
   // Digital clock realtime
@@ -105,7 +123,7 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
       await f_updateTONKIEM_M100();
       setIsLoading(true);
 
-      setColumnDefinition(isCMS ? getColumnsCodeCMS() : getColumnsCodePVN());
+      setColumnDefinition(isCMS ? getCachedColumns("cms") : getCachedColumns("pvn"));
 
       const res = await generalQuery(
         isCMS ? "traPOFullCMS_New" : "traPOFullCMS2",
@@ -201,7 +219,7 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
       await f_updateTONKIEM_M100();
       setIsLoading(true);
 
-      setColumnDefinition(getColumnsCodeKD());
+      setColumnDefinition(getCachedColumns("kd"));
 
       const res = await generalQuery(
         isCMS ? "traPOFullKD_NEW" : "traPOFullKD2",
@@ -375,7 +393,7 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
             title="Chuyển chế độ hiển thị cột"
             onClick={() =>
               setColumnDefinition((prev) =>
-                prev === columnDefinition ? getColumnsCodeCMS() : columnDefinition
+                prev === columnDefinition ? getCachedColumns("cms") : columnDefinition
               )
             }
           >

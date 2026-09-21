@@ -1,6 +1,9 @@
 import React from "react";
 import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 
+// Theme DevExtreme đi kèm module này (thay vì import ở App.tsx) để không chặn render toàn app.
+import "../../theme/devextremeTheme";
+
 import PivotGrid, { Export, FieldChooser } from "devextreme-react/pivot-grid";
 const PivotTable = ({
   datasource,

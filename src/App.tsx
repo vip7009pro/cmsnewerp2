@@ -1,4 +1,3 @@
-import "devextreme/dist/css/dx.light.css";
 import { useEffect, Suspense, useRef, useMemo, useCallback } from "react";
 import {
   generalQuery,

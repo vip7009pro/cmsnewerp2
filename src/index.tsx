@@ -6,7 +6,9 @@ import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import "./index.css";
 import { SnackbarProvider } from 'notistack';
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// NOTE: @tanstack/react-query đã được gỡ khỏi cây provider vì toàn bộ src/ KHÔNG có
+// useQuery/useMutation/useQueryClient nào (đã kiểm tra bằng grep). Dependency vẫn còn trong
+// package.json để dùng lại khi cần; chỉ bỏ provider rỗng khỏi runtime/bundle.
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
@@ -20,17 +22,14 @@ if ('serviceWorker' in navigator) {
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
-const queryClient = new QueryClient();
 root.render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <Provider store={store}>
-        <SnackbarProvider maxSnack={5} autoHideDuration={5000} preventDuplicate>
-          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <App />
-          </BrowserRouter>
-        </SnackbarProvider>
-      </Provider>
-    </QueryClientProvider>
+    <Provider store={store}>
+      <SnackbarProvider maxSnack={5} autoHideDuration={5000} preventDuplicate>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <App />
+        </BrowserRouter>
+      </SnackbarProvider>
+    </Provider>
   </StrictMode>
 );

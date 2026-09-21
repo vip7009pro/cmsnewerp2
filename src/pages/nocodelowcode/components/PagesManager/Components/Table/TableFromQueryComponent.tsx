@@ -3,7 +3,9 @@ import AGTable from '../../../../../../components/DataTable/AGTable';
 import { IconButton } from '@mui/material';
 import { MdRefresh } from 'react-icons/md';
 import { f_getQueryFilterList, f_getQueryIDFromQueryName, f_runQuery } from '../../../../utils/nocodelowcodeUtils';
-import { QueryFilter } from '../../../../QueryManager/QueryManager';
+// `QueryFilter` chỉ là interface (type-only). Phải dùng `import type` để bundler không kéo
+// cả module QueryManager (-> @monaco-editor/react) vào initial bundle.
+import type { QueryFilter } from '../../../../QueryManager/QueryManager';
 import { useForm } from 'react-hook-form';
 
 

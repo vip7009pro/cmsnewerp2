@@ -1,5 +1,6 @@
 import React from "react";
 import { FiBarChart2, FiTrendingUp, FiDownload, FiCalendar } from "react-icons/fi";
+import "../../../../theme/devextremeTheme";
 import { Chart } from "devextreme-react";
 import { ArgumentAxis, CommonSeriesSettings, Format, Label, Legend, Series, Title, ValueAxis } from "devextreme-react/chart";
 import { SaveExcel } from "../../../../api/services/excelService";

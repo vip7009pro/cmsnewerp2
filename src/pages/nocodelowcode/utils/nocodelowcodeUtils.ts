@@ -1,7 +1,9 @@
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../api/Api";
 import { ComponentAttribute, Field, Form, Page, PageComponent, Record } from "../types/types";
-import { QueryFilter } from "../QueryManager/QueryManager";
+// `QueryFilter` chỉ là interface (type-only) -> dùng `import type` để không kéo
+// QueryManager (-> @monaco-editor/react) vào initial bundle.
+import type { QueryFilter } from "../QueryManager/QueryManager";
 
 
 export const f_loadFormList = async () => {

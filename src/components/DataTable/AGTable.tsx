@@ -1,7 +1,9 @@
 import {
   forwardRef,
+  lazy,
   ReactElement,
   memo,
+  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -16,10 +18,15 @@ import { AiFillCloseCircle, AiFillFileExcel } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { ColDef, GridApi } from 'ag-grid-community';
-import PivotTable from '../PivotChart/PivotChart';
 import PivotGridDataSource, { PivotGridDataType } from 'devextreme/ui/pivot_grid/data_source';
 import { MdOutlinePivotTableChart } from 'react-icons/md';
 import { SaveExcel } from '../../api/services/excelService';
+
+// PivotTable (bảng PIVOT của DevExtreme) chỉ được render khi user bấm nút PIVOT.
+// Import TĨNH ở đây khiến mọi trang có bảng phải tải sẵn widget DevExtreme + theme CSS
+// (~4.9 MB JS + ~774 KB CSS) — và tệ hơn: nó kéo cả 2 chunk đó vào initial bundle vì
+// Home -> PageTabs -> TableFromQueryComponent -> AGTable nằm trong graph khởi động.
+const PivotTable = lazy(() => import('../PivotChart/PivotChart'));
 
 interface AGInterface {
   data: Array<any>,
@@ -30,6 +37,12 @@ interface AGInterface {
   suppressRowClickSelection?: boolean,
   rowHeight?: number,
   columnWidth?: number,
+  /**
+   * Animation di chuyển row của AG Grid. Mặc định TẮT vì:
+   * mỗi lần sort/filter/refresh AG Grid phải chạy transition cho mọi row
+   * (× 228 chỗ dùng AGTable trong repo). Bật lại cho từng bảng nếu cần hiệu ứng.
+   */
+  animateRows?: boolean,
   onRowClick?: (e: any) => void,
   onCellClick?: (e: any) => void,
   onRowDoubleClick?: (e: any) => void,
@@ -232,7 +245,7 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
       <div className="ag-theme-quartz">
         <AgGridReact
           rowDragManaged={true} // Bật tính năng kéo hàng
-          animateRows={true}
+          animateRows={ag_data.animateRows ?? false}
           rowData={ag_data.data ?? []}
           columnDefs={ag_data.columns ?? defaultColumns}
           rowHeight={ag_data.rowHeight ? ag_data.rowHeight : 25}
@@ -286,10 +299,18 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
             <AiFillCloseCircle color="blue" size={15} />
             Close
           </IconButton>
-          <PivotTable
-            datasource={pvdts}
-            tableID="datasxtablepivot"
-          />
+          <Suspense
+            fallback={
+              <div style={{ padding: 12, fontSize: 12, color: '#475569' }}>
+                Đang tải bảng phân tích xoay...
+              </div>
+            }
+          >
+            <PivotTable
+              datasource={pvdts}
+              tableID="datasxtablepivot"
+            />
+          </Suspense>
         </div>
       )}
     </div>

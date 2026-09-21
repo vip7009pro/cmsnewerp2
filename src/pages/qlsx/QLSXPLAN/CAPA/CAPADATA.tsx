@@ -1,4 +1,5 @@
 import { IconButton } from "@mui/material";
+import "../../../../theme/devextremeTheme";
 import {
   Editing,
   FilterRow,
