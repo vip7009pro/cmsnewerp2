@@ -965,6 +965,18 @@ export const useMachinePlanModal = ({
           if (await f_insert_Notification_Data(notification)) {
             getSocket().emit("notification_panel", notification);
           }
+
+          /*
+           * FIX: Sau khi lưu ĐM thành công, bảng Kế hoạch (plandatatable) vẫn đang giữ
+           * snapshot ĐM CŨ. Vì handleSelectPlan() đọc ĐM trực tiếp từ rowData nên khi
+           * click lại vào dòng plan sẽ hiển thị lại định mức cũ, phải bấm "Refresh Plan"
+           * (tải lại getqlsxplan2) mới thấy ĐM mới.
+           * => Cập nhật ngay dòng plan đang chọn bằng ĐM vừa lưu và nạp lại dữ liệu plan
+           *    để lần click kế tiếp luôn ra định mức mới.
+           */
+          setSelectedPlan((prev) => ({ ...prev, ...(datadinhmuc as any) }));
+          await onRefreshData();
+
           Swal.fire("Thông báo", "Lưu Định mức thành công", "success");
         } else {
           Swal.fire("Thông báo", "Lỗi lưu định mức", "error");
@@ -974,7 +986,7 @@ export const useMachinePlanModal = ({
         Swal.fire("Lỗi", "Không thể lưu định mức", "error");
       }
     });
-  }, [datadinhmuc, selectedPlan, userData, ycsxFilter.tempDM]);
+  }, [datadinhmuc, onRefreshData, selectedPlan, userData, ycsxFilter.tempDM]);
 
   // Áp dụng Định Mức Mặc Định (ĐM MĐ)
   const handleSetDMMD = useCallback(() => {

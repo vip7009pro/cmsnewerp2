@@ -1,6 +1,7 @@
 import React from "react";
 import { FiTarget, FiTrendingUp } from "react-icons/fi";
 import ChartFCSTSamSung from "../../../../components/Chart/KD/ChartFCSTSamSung";
+import Widget from "../../../../components/Widget/Widget";
 import { FCSTAmountData } from "./kdReportQueries";
 
 interface PrecisionKDFcstSectionProps {
@@ -29,24 +30,16 @@ const PrecisionKDFcstSection: React.FC<PrecisionKDFcstSectionProps> = ({ fcstDat
               <span className="executive-card__title">FCST AMOUNT (4 WEEKS) - Tuần W{fcstData.FCSTWEEKNO}</span>
             </div>
           </div>
-          <div style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
-            <div>
-              <div style={{ fontSize: "11px", fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
-                Số Lượng Dự Báo (FCST Qty)
-              </div>
-              <div style={{ fontSize: "20px", fontWeight: 800, fontFamily: "JetBrains Mono", color: "#0f172a" }}>
-                {(fcstData.FCST4W_QTY * 1).toLocaleString("en-US")} <span style={{ fontSize: "12px", color: "#64748b" }}>EA</span>
-              </div>
-            </div>
-            <div>
-              <div style={{ fontSize: "11px", fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
-                Giá Trị Dự Báo (FCST Amount)
-              </div>
-              <div style={{ fontSize: "20px", fontWeight: 800, fontFamily: "JetBrains Mono", color: "#a855f7" }}>
-                ${fcstData.FCST4W_AMOUNT.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}{" "}
-                <span style={{ fontSize: "12px", color: "#64748b" }}>USD</span>
-              </div>
-            </div>
+          <div className="executive-card__widget-slot">
+            <Widget
+              widgettype="revenue"
+              label="FCST AMOUNT(4 WEEK)"
+              topColor="#eb99ff"
+              botColor="#99ccff"
+              qty={fcstData.FCST4W_QTY * 1}
+              amount={fcstData.FCST4W_AMOUNT}
+              percentage={0}
+            />
           </div>
         </div>
 
@@ -58,24 +51,16 @@ const PrecisionKDFcstSection: React.FC<PrecisionKDFcstSectionProps> = ({ fcstDat
               <span className="executive-card__title">FCST AMOUNT (8 WEEKS) - Tuần W{fcstData.FCSTWEEKNO}</span>
             </div>
           </div>
-          <div style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
-            <div>
-              <div style={{ fontSize: "11px", fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
-                Số Lượng Dự Báo (FCST Qty)
-              </div>
-              <div style={{ fontSize: "20px", fontWeight: 800, fontFamily: "JetBrains Mono", color: "#0f172a" }}>
-                {(fcstData.FCST8W_QTY * 1).toLocaleString("en-US")} <span style={{ fontSize: "12px", color: "#64748b" }}>EA</span>
-              </div>
-            </div>
-            <div>
-              <div style={{ fontSize: "11px", fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
-                Giá Trị Dự Báo (FCST Amount)
-              </div>
-              <div style={{ fontSize: "20px", fontWeight: 800, fontFamily: "JetBrains Mono", color: "#d97706" }}>
-                ${fcstData.FCST8W_AMOUNT.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}{" "}
-                <span style={{ fontSize: "12px", color: "#64748b" }}>USD</span>
-              </div>
-            </div>
+          <div className="executive-card__widget-slot">
+            <Widget
+              widgettype="revenue"
+              label="FCST AMOUNT(8 WEEK)"
+              topColor="#e6e600"
+              botColor="#ff99c2"
+              qty={fcstData.FCST8W_QTY * 1}
+              amount={fcstData.FCST8W_AMOUNT}
+              percentage={0}
+            />
           </div>
         </div>
       </div>

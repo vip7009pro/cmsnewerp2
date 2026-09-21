@@ -61,11 +61,12 @@ const ChartPOBalance: React.FC<ChartPOBalanceProps> = ({ data }) => {
   };
 
   return (
-    <div style={{ width: "100%", height: 340 }}>
-      <ResponsiveContainer width="100%" height={340}>
+    <div style={{ width: "100%", height: 360 }}>
+      <ResponsiveContainer width="100%" height={360}>
         <ComposedChart
           data={data}
-          margin={{ top: 28, right: 35, left: 15, bottom: 20 }}
+          margin={{ top: 34, right: 35, left: 15, bottom: 20 }}
+          barCategoryGap="18%"
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
           <XAxis
@@ -105,14 +106,14 @@ const ChartPOBalance: React.FC<ChartPOBalanceProps> = ({ data }) => {
             dataKey="RUNNING_BALANCE_AMOUNT"
             name="Giá Trị Tồn ($)"
             fill="#c084fc"
-            radius={[3, 3, 0, 0]}
-            maxBarSize={30}
+            radius={[4, 4, 0, 0]}
+            maxBarSize={90}
           >
             <LabelList
               dataKey="RUNNING_BALANCE_AMOUNT"
               position="top"
               formatter={(val: any) => (val ? "$" + nFormatter(Number(val), 1) : "")}
-              style={{ fontSize: 9, fill: "#7c3aed", fontWeight: 700, fontFamily: "JetBrains Mono" }}
+              style={{ fontSize: 11.5, fill: "#7c3aed", fontWeight: 700, fontFamily: "JetBrains Mono" }}
             />
           </Bar>
           <Line
@@ -120,17 +121,17 @@ const ChartPOBalance: React.FC<ChartPOBalanceProps> = ({ data }) => {
             type="monotone"
             dataKey="RUNNING_PO_BALANCE"
             name="Số Lượng Tồn (EA)"
-            stroke="#059669"
+            stroke="#1ece93"
             strokeWidth={2.5}
-            dot={{ r: 3, fill: "#059669" }}
-            activeDot={{ r: 5 }}
+            dot={{ r: 3.5, fill: "#059669" }}
+            activeDot={{ r: 5.5 }}
           >
             <LabelList
               dataKey="RUNNING_PO_BALANCE"
               position="top"
               offset={10}
               formatter={(val: any) => (val ? formatCompact(Number(val)) : "")}
-              style={{ fontSize: 9, fill: "#047857", fontWeight: 700, fontFamily: "JetBrains Mono" }}
+              style={{ fontSize: 11.5, fill: "#047857", fontWeight: 700, fontFamily: "JetBrains Mono" }}
             />
           </Line>
         </ComposedChart>

@@ -9,6 +9,7 @@ import KDPOBalanceSummaryByYear from "../../../../components/Chart/KD/KDPOBalanc
 import KDPOBalanceSummaryByCustomer from "../../../../components/Chart/KD/KDPOBalanceSummaryByCustomer";
 import KDPOBalanceSummaryByWeek from "../../../../components/Chart/KD/KDPOBalanceSummaryByWeek";
 import CustomerPobalancebyTypeNew from "../../../../components/DataTable/CustomerPoBalanceByTypeNew";
+import Widget from "../../../../components/Widget/Widget";
 import {
   PO_BALANCE_CUSTOMER,
   PO_BALANCE_DETAIL,
@@ -65,24 +66,16 @@ const PrecisionKDPOSection: React.FC<PrecisionKDPOSectionProps> = ({
             <span className="executive-card__title">PO Balance Information (Tổng Hợp Tồn Đơn PO)</span>
           </div>
         </div>
-        <div style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
-          <div>
-            <div style={{ fontSize: "11px", fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
-              Số Lượng Tồn Đơn (PO Balance Qty)
-            </div>
-            <div style={{ fontSize: "22px", fontWeight: 800, fontFamily: "JetBrains Mono", color: "#0f172a" }}>
-              {(poBalanceSummaryWdg.po_balance_qty * 1).toLocaleString("en-US")} <span style={{ fontSize: "12px", color: "#64748b" }}>EA</span>
-            </div>
-          </div>
-          <div>
-            <div style={{ fontSize: "11px", fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>
-              Giá Trị Tồn Đơn (Balance Amount)
-            </div>
-            <div style={{ fontSize: "22px", fontWeight: 800, fontFamily: "JetBrains Mono", color: "#2563eb" }}>
-              ${poBalanceSummaryWdg.po_balance_amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}{" "}
-              <span style={{ fontSize: "12px", color: "#64748b" }}>USD</span>
-            </div>
-          </div>
+        <div className="executive-card__widget-slot">
+          <Widget
+            widgettype="revenue"
+            label="PO BALANCE INFOMATION"
+            topColor="#ccff33"
+            botColor="#99ccff"
+            qty={poBalanceSummaryWdg.po_balance_qty * 1}
+            amount={poBalanceSummaryWdg.po_balance_amount}
+            percentage={20}
+          />
         </div>
       </div>
 

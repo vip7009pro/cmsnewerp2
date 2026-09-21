@@ -502,6 +502,21 @@
         padding: 8px;
       }
     }
+
+    // Khe cắm widget phong cách cũ (Widget gradient) - căn giữa, không kéo full width
+    &__widget-slot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 10px 16px 14px;
+      box-sizing: border-box;
+
+      > .widget {
+        width: 100%;
+        max-width: 420px;
+      }
+    }
   }
 
   // PO Customer Chart Styling (Chống xén, split view, full labels & data)

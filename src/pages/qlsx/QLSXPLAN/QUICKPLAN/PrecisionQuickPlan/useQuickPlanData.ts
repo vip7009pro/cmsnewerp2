@@ -812,6 +812,36 @@ export const useQuickPlanData = () => {
           if (err_code === "1") {
             Swal.fire("Thông báo", "Lưu thất bại, không được để trống ô cần thiết", "error");
           } else {
+            /*
+             * FIX: Bảng Plan nháp (plandatatable) là snapshot dữ liệu DM tại thời điểm
+             * Add Plan, còn onCellClick() nạp lại datadinhmuc từ chính dòng dữ liệu đó.
+             * Vì vậy sau khi Lưu Data ĐM thành công, click lại vào plan row vẫn ra ĐM CŨ
+             * cho tới khi tra cứu YCSX lại (Refresh Plan).
+             * => Ghi đè ĐM mới vào mọi dòng plan nháp cùng G_CODE + bảng YCSX tra cứu
+             *    và lưu lại localStorage để lần click kế tiếp luôn ra định mức mới.
+             */
+            const gCode = selectedPlan.current?.G_CODE;
+            if (gCode) {
+              const dmPatch: Partial<QLSXPLANDATA> = { ...datadinhmuc };
+              const patchedPlans = plandatatable.map((p) =>
+                p.G_CODE === gCode ? { ...p, ...dmPatch } : p
+              );
+              setPlanDataTable(patchedPlans);
+              localStorage.setItem("temp_plan_table", JSON.stringify(patchedPlans));
+              if (selectedPlan.current) {
+                selectedPlan.current = { ...selectedPlan.current, ...dmPatch };
+              }
+              setYcsxDataTable((prev) =>
+                prev.map((y) =>
+                  y.G_CODE === gCode ? { ...y, ...(dmPatch as any) } : y
+                )
+              );
+              setYcsxDataTableFilter((prev) =>
+                prev.map((y) =>
+                  y.G_CODE === gCode ? { ...y, ...(dmPatch as any) } : y
+                )
+              );
+            }
             Swal.fire("Thông báo", "Lưu thành công", "success");
           }
         }
@@ -1207,7 +1237,9 @@ export const useQuickPlanData = () => {
         LOSS_SETTING2: rowData.LOSS_SETTING2 ?? 0,
         LOSS_SETTING3: rowData.LOSS_SETTING3 ?? 0,
         LOSS_SETTING4: rowData.LOSS_SETTING4 ?? 0,
-        LOSS_KT: 0,
+        // Không hard-code 0: đọc LOSS_KT từ chính dòng plan để sau khi Lưu Data ĐM
+        // rồi click lại row vẫn thấy đúng định mức mới (đồng bộ với MACHINE).
+        LOSS_KT: rowData.LOSS_KT ?? 0,
         NOTE: rowData.NOTE ?? "",
       });
       if (rowData.G_CODE) {
