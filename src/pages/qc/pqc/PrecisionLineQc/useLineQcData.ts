@@ -77,13 +77,13 @@ export const useLineQcData = () => {
       return;
     }
     try {
-      const res = await generalQuery("checkMNAMEfromLot", { M_LOT_NO: lot });
+      const res = await generalQuery("checkMNAMEfromLotLineQC", { M_LOT_NO: lot });
       if (res.data.tk_status !== "NG" && res.data.data?.length > 0) {
         const item = res.data.data[0];
-        setMName(`${item.M_NAME || ""} | ${item.WIDTH_CD || ""}`);
+        setMName(`${item.M_NAME || ""}`);
         setMCode(item.M_CODE || "");
         setWidthCd(item.WIDTH_CD || 0);
-        setInCfmQty(item.OUT_CFM_QTY || 0);
+        setInCfmQty(item.IN_CFM_QTY || 0);
         setRollQty(item.ROLL_QTY || 0);
         setLieuQlSx(item.LIEUQL_SX === null ? "0" : item.LIEUQL_SX);
         setOutDate(item.OUT_DATE || "");
@@ -112,7 +112,7 @@ export const useLineQcData = () => {
         setInputNo(row.M_LOT_NO || "");
         await checkLotNVL(row.M_LOT_NO || "");
         setProcessLotNo(row.PROCESS_LOT_NO || "");
-        await checkKTDTC(row.PROCESS_LOT_NO || "");
+        //await checkKTDTC(row.PROCESS_LOT_NO || "");
       } else {
         if (sxArr[0].PROCESS_NUMBER === 0) {
           setInputNo("");
@@ -127,7 +127,7 @@ export const useLineQcData = () => {
             setInputNo(row2.M_LOT_NO || "");
             await checkLotNVL(row2.M_LOT_NO || "");
             setProcessLotNo(row2.PROCESS_LOT_NO || "");
-            await checkKTDTC(row2.PROCESS_LOT_NO || "");
+            //await checkKTDTC(row2.PROCESS_LOT_NO || "");
           } else {
             setInputNo("");
             setProcessLotNo("");
@@ -144,7 +144,7 @@ export const useLineQcData = () => {
   const checkDataSX = useCallback(async (id: string) => {
     if (!id || id.trim().length < 8) return;
     try {
-      const response = await generalQuery("loadDataSX", {
+      const response = await generalQuery("loaddatasxlineqc", {
         ALLTIME: true,
         FROM_DATE: "",
         TO_DATE: "",
@@ -182,7 +182,7 @@ export const useLineQcData = () => {
   const checkPlanID = useCallback(async (id: string) => {
     if (!id || id.trim().length < 8) return;
     try {
-      const response = await generalQuery("checkPLAN_ID", { PLAN_ID: id.trim() });
+      const response = await generalQuery("checkPlanIdLineQC", { PLAN_ID: id.trim() });
       if (response.data.tk_status !== "NG" && response.data.data?.length > 0) {
         const row = response.data.data[0];
         setGName(row.G_NAME || "");
