@@ -357,12 +357,28 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
     selectedRowsRef.current = selected;
   }, []);
 
-  // Tính tỷ lệ đáp ứng tồn kho
+  // Tỷ lệ đáp ứng = TỔNG "LƯỢNG ĐỦ" của từng dòng / TỔNG PO BALANCE.
+  // Mỗi dòng chỉ được tính phần tồn ĐỦ cho PO balance của CHÍNH dòng đó:
+  //     lượng đủ (dòng) = MIN(Grand Total Stock, PO Balance)
+  // ⇒ Dòng thừa KHÔNG bù được cho dòng thiếu.
+  // (Cách cũ: TỔNG_TỒN / TỔNG_PO_BALANCE là sai — tồn dư của code A sẽ bù cho phần thiếu của code B
+  //  nên tỷ lệ luôn bị đẩy lên cao giả tạo.)
+  // ⚠️ Dùng GRAND_TOTAL_STOCK (đúng nguồn đang cộng vào summary.TONG_TON) để nhất quán với "Tổng tồn kho".
   const responseRate = useMemo(() => {
-    if (pofullSummary.PO_BALANCE <= 0) return "0.00%";
-    const rate = (pofullSummary.TONG_TON / pofullSummary.PO_BALANCE) * 100;
-    return `${rate.toFixed(2)}%`;
-  }, [pofullSummary.PO_BALANCE, pofullSummary.TONG_TON]);
+    let fulfilledQty = 0;
+    let poBalanceTotal = 0;
+
+    pofulldatatable.forEach((row) => {
+      const poBalance = Number(row.PO_BALANCE) || 0;
+      if (poBalance <= 0) return; // dòng không còn PO balance ⇒ không đóng góp tử số lẫn mẫu số
+      const stock = Math.max(Number(row.GRAND_TOTAL_STOCK) || 0, 0);
+      poBalanceTotal += poBalance;
+      fulfilledQty += Math.min(stock, poBalance);
+    });
+
+    if (poBalanceTotal <= 0) return "0.00%";
+    return `${((fulfilledQty / poBalanceTotal) * 100).toFixed(2)}%`;
+  }, [pofulldatatable]);
 
   return (
     <div className="precision-po-stock">

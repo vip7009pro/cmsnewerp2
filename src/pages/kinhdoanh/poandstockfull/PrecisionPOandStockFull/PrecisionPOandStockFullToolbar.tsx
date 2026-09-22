@@ -165,7 +165,14 @@ const PrecisionPOandStockFullToolbar: React.FC<PrecisionPOandStockFullToolbarPro
               <span className="stat-dot">•</span>
               <span className="stat-item stat-item--rate">
                 Tỷ lệ đáp ứng:{" "}
-                <strong className="stat-rate-badge">
+                <strong
+                  className="stat-rate-badge"
+                  title={
+                    "Tỷ lệ đáp ứng = TỔNG lượng đủ của từng dòng / TỔNG PO Balance.\n" +
+                    "Lượng đủ của mỗi dòng = MIN(Tồn kho của dòng, PO Balance của dòng).\n" +
+                    "⇒ Tồn dư của code này KHÔNG bù cho phần thiếu của code khác."
+                  }
+                >
                   {responseRate}
                 </strong>
               </span>
