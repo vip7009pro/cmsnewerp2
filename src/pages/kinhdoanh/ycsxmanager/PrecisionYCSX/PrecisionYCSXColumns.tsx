@@ -651,6 +651,35 @@ export const getYCSXColumns = (options: ColumnOptions): any[] => {
 
 /* ── Columns for Excel Bulk Upload Preview ── */
 export const getExcelUploadColumns = (isCMS?: boolean): any[] => [
+  // CHECKSTATUS đứng ĐẦU (trước cả cột id có checkbox) để user thấy trạng thái check/up
+  // mà không phải cuộn ngang — modal hẹp, cột này trước đây nằm tít cuối bảng.
+  {
+    field: "CHECKSTATUS",
+    headerName: "CHECKSTATUS",
+    width: 220,
+    minWidth: 220,
+    cellRenderer: (params: any) => {
+      const status = params.data?.CHECKSTATUS ?? "";
+      if (status.slice(0, 2) === "OK") {
+        return (
+          <span style={{ color: "green" }}>
+            <b>{status}</b>
+          </span>
+        );
+      } else if (status.slice(0, 2) === "NG") {
+        return (
+          <span style={{ color: "red" }}>
+            <b>{status}</b>
+          </span>
+        );
+      }
+      return (
+        <span style={{ color: "blue" }}>
+          <b>{status}</b>
+        </span>
+      );
+    },
+  },
   { field: "id", headerName: "id", width: 80, checkboxSelection: true },
   { field: "PROD_REQUEST_DATE", headerName: "NGAY YC", width: 90 },
   { field: "CODE_50", headerName: "CODE_50", width: 80 },
@@ -674,32 +703,6 @@ export const getExcelUploadColumns = (isCMS?: boolean): any[] => [
   { field: "PO_NO", headerName: "PO_NO", width: 100 },
   { field: "PHANLOAI", headerName: "PHANLOAI", width: 80 },
   { field: "FL_YN", headerName: "YCSX_TAM_THOI", width: 80 },
-  {
-    field: "CHECKSTATUS",
-    headerName: "CHECKSTATUS",
-    width: 140,
-    cellRenderer: (params: any) => {
-      const status = params.data?.CHECKSTATUS ?? "";
-      if (status.slice(0, 2) === "OK") {
-        return (
-          <span style={{ color: "green" }}>
-            <b>{status}</b>
-          </span>
-        );
-      } else if (status.slice(0, 2) === "NG") {
-        return (
-          <span style={{ color: "red" }}>
-            <b>{status}</b>
-          </span>
-        );
-      }
-      return (
-        <span style={{ color: "blue" }}>
-          <b>{status}</b>
-        </span>
-      );
-    },
-  },
 ];
 
 /* ── Columns for Amazon Bulk Upload Preview ── */

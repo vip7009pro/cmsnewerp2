@@ -90,6 +90,8 @@ export const getFCSTManageColumns = (): any[] => [
 
 /* ── Excel upload columns (for AddModal) ── */
 export const FCST_EXCEL_COLUMNS: any[] = [
+  // CHECKSTATUS luôn đứng ĐẦU để user thấy trạng thái check/up mà không phải cuộn ngang
+  { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 220, minWidth: 220, cellRenderer: renderCheckStatus },
   { field: "EMPL_NO", headerName: "EMPL_NO", width: 50 },
   { field: "CUST_CD", headerName: "CUST_CD", width: 50 },
   { field: "G_CODE", headerName: "G_CODE", width: 50 },
@@ -102,5 +104,4 @@ export const FCST_EXCEL_COLUMNS: any[] = [
     headerName: `W${i + 1}`,
     width: 50,
   })),
-  { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200, cellRenderer: renderCheckStatus },
 ];

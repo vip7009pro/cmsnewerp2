@@ -454,19 +454,23 @@ export const f_readUploadFileFromFile = (
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       const json: any = XLSX.utils.sheet_to_json(worksheet,{ defval: null });
-      console.log(json)
-      let keys = Object.keys(json[0]);
-      console.log(keys)
-      keys.push("CHECKSTATUS");
-      let uploadexcelcolumn = keys.map((e, index) => {
+      if (json.length === 0) {
+        setRow([]);
+        setColumn([]);
+        return;
+      }
+      // CHECKSTATUS luôn đứng ĐẦU để user thấy trạng thái check/up mà không phải cuộn ngang
+      let keys = Object.keys(json[0]).filter((k) => k !== "CHECKSTATUS");
+      keys.unshift("CHECKSTATUS");
+      let uploadexcelcolumn = keys.map((e) => {
         return {
           field: e,
           headerName: e,
-          width: 100,
+          width: e === "CHECKSTATUS" ? 220 : 100,
+          minWidth: e === "CHECKSTATUS" ? 220 : 100,
           cellRenderer: e === "CHECKSTATUS" ? renderCheckStatus : undefined,
         };
       });
-      console.log(uploadexcelcolumn);
       setRow(
         json.map((element: any, index: number) => {
           return { ...element, CHECKSTATUS: "Waiting", id: index };

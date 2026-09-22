@@ -239,19 +239,26 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
       const worksheet = workbook.Sheets[sheetName];
       const json: any = XLSX.utils.sheet_to_json(worksheet);
       const keys = json.length > 0 ? Object.keys(json[0]) : [];
-      const cols = keys.map((k) => ({
-        field: k,
-        headerName: k,
-        width: DAY_FIELDS.includes(k) ? 62 : k === "REMARK" ? 150 : 92,
-        minWidth: DAY_FIELDS.includes(k) ? 62 : k === "REMARK" ? 150 : 92,
-      }));
-        cols.push({
+      // CHECKSTATUS luôn đứng ĐẦU để user thấy trạng thái check/up mà không phải cuộn ngang
+      const cols: any[] = [
+        {
           field: "CHECKSTATUS",
           headerName: "CHECKSTATUS",
-          width: 200,
-          minWidth: 200,
+          width: 220,
+          minWidth: 220,
           cellRenderer: renderCheckStatus,
-        });
+        },
+      ];
+      keys
+        .filter((k) => k !== "CHECKSTATUS")
+        .forEach((k) =>
+          cols.push({
+            field: k,
+            headerName: k,
+            width: DAY_FIELDS.includes(k) ? 62 : k === "REMARK" ? 150 : 92,
+            minWidth: DAY_FIELDS.includes(k) ? 62 : k === "REMARK" ? 150 : 92,
+          })
+        );
       setColumnsExcel(cols);
       setUploadExcelJSon(
         json.map((el: any, idx: number) => ({
