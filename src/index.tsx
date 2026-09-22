@@ -25,7 +25,12 @@ const root = ReactDOM.createRoot(
 root.render(
   <StrictMode>
     <Provider store={store}>
-      <SnackbarProvider maxSnack={5} autoHideDuration={5000} preventDuplicate>
+      <SnackbarProvider
+        maxSnack={5}
+        autoHideDuration={5000}
+        preventDuplicate
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <App />
         </BrowserRouter>
