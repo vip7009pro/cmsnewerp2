@@ -16,7 +16,7 @@ import {
 import {
   f_addQLSXPLANFast,
   f_deleteChiThiMaterialLine,
-  f_deleteQLSXPlan,
+  f_deleteQLSXPlanFast,
   f_getMachineListData,
   f_getRecentDMData,
   f_handle_xuatdao_sample,
@@ -461,8 +461,8 @@ export const useMachinePlanModal = ({
           );
           setAddPlanProgress(70);
           setAddPlanLoadingLabel("Đang cập nhật danh sách kế hoạch...");
-          await refreshMachinePlans();
-          await onRefreshData();
+          // 2 luồng refresh độc lập -> chạy song song để tiết kiệm 1 vòng round-trip
+          await Promise.all([refreshMachinePlans(), onRefreshData()]);
           setAddPlanProgress(100);
           if (addErrCode) {
             Swal.fire("Thông báo", addErrCode, "warning");
@@ -561,16 +561,45 @@ export const useMachinePlanModal = ({
           showConfirmButton: false,
         });
 
-        // f_deleteQLSXPlan trả về "0" khi thành công, ngược lại là chuỗi lỗi chi tiết
-        const err_code: string = await f_deleteQLSXPlan(plans);
-        if (err_code === "0") {
-          Swal.fire("Thông báo", "Xóa hoàn thành", "success");
+        // BẢN NHANH: 1 request duy nhất cho cả batch (batch-check O302/OUT_KHO_SX + DELETE theo batch).
+        // Kết quả trả về danh sách PLAN_ID đã xóa + chuỗi lỗi cụ thể theo từng PLAN_ID.
+        const deleteResult = await f_deleteQLSXPlanFast(plans);
+        const deletedIdsResult = deleteResult.deleted || [];
+        const errorList = (deleteResult.errors || "")
+          .split(" | ")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const escapeHtml = (s: string) =>
+          s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+        if (deletedIdsResult.length > 0 && errorList.length === 0) {
+          Swal.fire(
+            "Xóa thành công",
+            `Đã xóa ${deletedIdsResult.length} chỉ thị: ${deletedIdsResult.join(", ")}`,
+            "success"
+          );
+        } else if (deletedIdsResult.length > 0) {
+          Swal.fire({
+            icon: "warning",
+            title: `Đã xóa ${deletedIdsResult.length} chỉ thị, ${errorList.length} chỉ thị không xóa được`,
+            html:
+              `<div style="text-align:left;font-size:13px;margin-bottom:6px">` +
+              `<b>Đã xóa:</b> ${escapeHtml(deletedIdsResult.join(", "))}</div>` +
+              `<div style="text-align:left;font-size:13px"><b>Không xóa được:</b><br/>` +
+              errorList.map((e) => `• ${escapeHtml(e)}`).join("<br/>") +
+              `</div>`,
+          });
         } else {
-          Swal.fire("Thông báo", err_code, "error");
+          Swal.fire({
+            icon: "error",
+            title: "Không xóa được chỉ thị",
+            html:
+              errorList.map((e) => `• ${escapeHtml(e)}`).join("<br/>") ||
+              "Không có chỉ thị nào được xóa",
+          });
         }
 
-        await refreshMachinePlans();
-        await onRefreshData();
+        await Promise.all([refreshMachinePlans(), onRefreshData()]);
 
         const deletedIds = plans.map((p) => p.PLAN_ID);
         if (

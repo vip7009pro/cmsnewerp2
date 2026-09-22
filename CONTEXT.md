@@ -4175,3 +4175,26 @@ Build a complete ERP Chat system that enables:
 - Kết quả: ~9 round-trip -> ~4 round-trip (1 add + 2 plan máy + 1 refresh sàn song song) và bỏ MERGE toàn bảng.
 - Tương thích ngược: các command cũ (`addPlanQLSX`, `getLastestPLAN_ID`, `getLastestPLANORDER`, `checkProd_request_no_Exist_O302`, `updateDMLOSSKT_ZTB_DM_HISTORY`) và hàm `f_addQLSXPLAN` giữ nguyên cho FE production phiên bản cũ.
 - Lưu ý: `handleAddPlanFromYCSX` vẫn truyền `datadinhmuc as any` vào tham số `tempDM` (đối tượng luôn truthy) => giữ nguyên hành vi cũ, không đổi nghiệp vụ.
+
+## Update - 2026-09-22 (Tăng tốc Xóa PLAN + sửa thông báo "00" của Add to PLAN)
+
+### Đo được (luồng xóa cũ `f_deleteQLSXPlan`, mỗi 1 plan)
+- 3 request HTTP/plan: `checkPLANID_O302` (SELECT TOP 1 * trên O302) -> `checkPLANID_OUT_KHO_AO` (SELECT TOP 1 * trên OUT_KHO_SX) -> `deletePlanQLSX` (4 lệnh DELETE chạy đơn lẻ: ZTB_QLSXPLAN, ZTB_QLSXCHITHI, O300, O301).
+- Cộng refresh sau khi xóa => ~5-6 round-trip/plan. Xóa nhiều dòng thì nhân theo số dòng.
+
+### Cải tiến
+- Backend: command mới `deletePlanQLSXFast` (sanxuatService.js): batch-check tồn tại O302 + OUT_KHO_SX (chỉ lấy cột PLAN_ID), phân loại plan bị chặn (CHOTBC / đã xuất O302 / đã xuất OUT_KHO_SX) và DELETE theo batch `PLAN_ID IN (...)`, mỗi bảng 1 lệnh. Nội dung thông báo lỗi giữ nguyên chuỗi như bản cũ.
+- Frontend: `f_deleteQLSXPlanFast` (khsxUtils, trả "" khi thành công) + `handleDeletePlan` trong `useMachinePlanModal` dùng bản nhanh => 3 request/plan -> 1 request cho cả batch.
+- Thêm: sau add/delete, `refreshMachinePlans()` và `onRefreshData()` chạy song song (Promise.all) thay vì tuần tự.
+- Tương thích ngược: `checkPLANID_O302`, `checkPLANID_OUT_KHO_AO`, `deletePlanQLSX`, `f_deleteQLSXPlan` giữ nguyên cho FE production cũ.
+
+### Fix thông báo "00" khi Add to PLAN thành công
+- Do chuỗi "0" bị ghép đôi: backend trả `message: "0"` khi thành công còn FE khởi tạo `err_code = "0"` rồi cộng thêm message.
+- Quy ước mới cho các hàm fast: chuỗi RỖNG nghĩa là thành công; modal chỉ hiện cảnh báo khi chuỗi khác rỗng.
+
+### Fix thông báo xóa PLAN (2026-09-22, bổ sung)
+- Lỗi: sau khi xóa thành công vẫn hiện chuỗi "Không có dòng dữ liệu nào | ..." lặp 3 lần.
+- Nguyên nhân: queryDB() trả tk_status "NG" + message "Không có dòng dữ liệu nào" khi DELETE không khớp dòng nào (bình thường với ZTB_QLSXCHITHI/O300/O301), code cũ coi đó là lỗi.
+- Sửa: thêm helper `isNoRowAffectedMessage` (sanxuatService.js) để bỏ qua thông báo no-op; DELETE theo batch, nếu có lỗi SQL thật thì truy vấn lại ZTB_QLSXPLAN để báo lỗi cụ thể theo TỪNG PLAN_ID (`Chỉ thị {PLAN_ID}: không xóa được (…lỗi…)`).
+- FE: `f_deleteQLSXPlanFast` trả `{ deleted: string[], errors: string }`; modal hiển thị 3 trạng thái rõ nghĩa: xóa hết (nêu số lượng + danh sách PLAN_ID đã xóa), xóa một phần (liệt kê đã xóa / không xóa được), không xóa được (liệt kê lý do theo từng PLAN_ID).
+- Chuẩn hoá lại câu chữ: `Chỉ thị {PLAN_ID}: đã chốt báo cáo nên không xóa được`, `..: đã xuất Kho NVL`, `..: đã xuất Kho SX Main`.

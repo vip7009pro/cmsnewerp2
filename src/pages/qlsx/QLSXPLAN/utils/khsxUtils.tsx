@@ -2502,6 +2502,52 @@ export const f_deleteQLSXPlan = async (planToDelete: QLSXPLANDATA[]) => {
   }
   return err_code;
 };
+/**
+ * Xóa chỉ thị - BẢN NHANH (chỉ 1 request cho cả batch).
+ *
+ * Vì sao cần: bản cũ `f_deleteQLSXPlan` với MỖI plan gọi 3 request HTTP
+ * (checkPLANID_O302 -> checkPLANID_OUT_KHO_AO -> deletePlanQLSX), trong đó 2 request
+ * kiểm tra tồn tại lại dùng `SELECT TOP 1 *` trên bảng rộng, và 4 lệnh DELETE chạy đơn lẻ.
+ * Xóa 1 plan tốn ~2s.
+ *
+ * Bản nhanh gọi command `deletePlanQLSXFast`: backend tự batch-check O302/OUT_KHO_SX
+ * và DELETE theo batch (mỗi bảng 1 lệnh với PLAN_ID IN (...)).
+ *
+ * Giá trị trả về: { deleted: danh sách PLAN_ID đã xóa, errors: chuỗi lỗi (rỗng = thành công hoàn toàn) }
+ */
+export interface DeletePlanFastResult {
+  deleted: string[];
+  errors: string;
+}
+export const f_deleteQLSXPlanFast = async (
+  planToDelete: QLSXPLANDATA[]
+): Promise<DeletePlanFastResult> => {
+  if (!planToDelete || planToDelete.length === 0) {
+    return { deleted: [], errors: "Chọn ít nhất một dòng để xóa" };
+  }
+  const rows = planToDelete
+    .filter((p) => p && p.PLAN_ID)
+    .map((p) => ({ PLAN_ID: p.PLAN_ID, CHOTBC: p.CHOTBC ?? "" }));
+  if (rows.length === 0) {
+    return { deleted: [], errors: "Dòng chỉ thị không hợp lệ" };
+  }
+  try {
+    const response = await generalQuery("deletePlanQLSXFast", { ROWS: rows });
+    if (response.data.tk_status === "NG") {
+      return {
+        deleted: [],
+        errors: response.data.message || "Không thể xóa chỉ thị",
+      };
+    }
+    return {
+      deleted: response.data?.data?.deleted || [],
+      errors: response.data?.message || "",
+    };
+  } catch (error) {
+    console.log(error);
+    return { deleted: [], errors: "Lỗi kết nối máy chủ" };
+  }
+};
 export const f_deleteChiThiMaterialLine = async (
   qlsxchithidatafilter: QLSXCHITHIDATA[],
   org_chithi_data: QLSXCHITHIDATA[]
