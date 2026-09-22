@@ -15,8 +15,6 @@ import './AGTable.scss'
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from '@mui/material';
 import { AiFillCloseCircle, AiFillFileExcel } from 'react-icons/ai';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
 import { ColDef, GridApi } from 'ag-grid-community';
 // DevExtreme PivotGridDataSource chỉ cần TYPE ở đây. Import runtime phải là ĐỘNG (xem effect bên dưới):
 // import tĩnh sẽ kéo cả gói DevExtreme (devExtreme core + widgets ≈ 4.9 MB JS) vào đường khởi động,
@@ -234,16 +232,16 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
     return filteredRows;
   };
 
-  const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
-  useEffect(() => {
-  }, [])
-
   return (
     <div className='agtable'>
-      {ag_data.toolbar !== undefined && <div className="toolbar" style={{ backgroundImage: theme.CMS.backgroundImage }}>
+      {/* Toolbar Stitch: chỉ còn chrome trung tính (nền slate + viền dưới).
+          Đã bỏ `theme.CMS.backgroundImage` inline vì nó đè mọi style CSS và tạo
+          dải gradient neon xanh lá rất nặng mắt. */}
+      {ag_data.toolbar !== undefined && <div className="toolbar">
         {ag_data.toolbar}
         <IconButton
-          className="buttonIcon"
+          className="buttonIcon agtable__toolBtn agtable__toolBtn--excel"
+          title="Xuất các dòng đang lọc ra Excel (EX1)"
           onClick={() => {
             //onExportClick();
             //onExportExcelClick();
@@ -252,26 +250,28 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
             SaveExcel(kq, "Data Table");
           }}
         >
-          <AiFillFileExcel color="green" size={15} />
-          EX1
+          <AiFillFileExcel color="#059669" size={15} />
+          <span className="agtable__toolLabel agtable__toolLabel--excel">EX1</span>
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className="buttonIcon agtable__toolBtn agtable__toolBtn--excel"
+          title="Xuất toàn bộ dữ liệu ra Excel (EX2)"
           onClick={() => {
             SaveExcel(ag_data.data, "Data Table");
           }}
         >
-          <AiFillFileExcel color="green" size={15} />
-          EX2
+          <AiFillFileExcel color="#059669" size={15} />
+          <span className="agtable__toolLabel agtable__toolLabel--excel">EX2</span>
         </IconButton>
         <IconButton
-          className="buttonIcon"
+          className="buttonIcon agtable__toolBtn agtable__toolBtn--pivot"
+          title="Mở bảng phân tích Pivot đa chiều"
           onClick={() => {
             setShowHidePivotTable(!showhidePivotTable);
           }}
         >
-          <MdOutlinePivotTableChart color="#ff33bb" size={15} />
-          PIVOT
+          <MdOutlinePivotTableChart color="#7c3aed" size={15} />
+          <span className="agtable__toolLabel agtable__toolLabel--pivot">PIVOT</span>
         </IconButton>
       </div>}
       <div className="ag-theme-quartz">

@@ -1,8 +1,28 @@
 .pivotdatatable {
   display: flex;
-  overflow: scroll;
+  /* FIX: `overflow: scroll` ép hiện sẵn 2 thanh cuộn (ngang + dọc) dù nội dung vừa khung;
+     lồng trong `.pivottable1` (cũng từng `overflow: scroll`) ⇒ panel PIVOT có tới 4 thanh cuộn.
+     Dùng `auto` + thanh mảnh: chỉ hiện khi thật sự tràn. */
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
   width: 100%;
   height: 100%;
   padding: 10px;
   justify-content: flex-start;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
 }

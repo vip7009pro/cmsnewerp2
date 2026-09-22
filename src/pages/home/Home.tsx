@@ -245,6 +245,7 @@ function Home() {
     console.log("local ver", current_ver);
     checkWebVer();
     let intervalID = window.setInterval(() => {
+      console.log("change refresh token and check webver every 30s");
       checkWebVer(intervalID);
       getchamcong();
     }, 30000);

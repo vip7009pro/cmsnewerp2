@@ -62,6 +62,8 @@ const DATASX: React.FC = () => {
   const tableChiThi = useMemo(
     () => (
       <AGTable
+        toolbar={<></>}
+        showFilter={true}
         columns={column_datasx_chithi}
         data={datasxtable}
         onRowClick={handleRowClickChiThi}

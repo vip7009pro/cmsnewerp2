@@ -1,5 +1,12 @@
 # ACTIVE_STATE
 
+## Đợt 15 — Style lại toolbar AGTable theo Stitch (2026-09-22)
+`src/components/DataTable/AGTable.tsx` + `AGTable.scss` + `src/components/PivotChart/PivotChart.scss`.
+- Bỏ inline `backgroundImage: theme.CMS.backgroundImage` (nguồn dải gradient neon) + xoá `useSelector`/`RootState` không còn dùng.
+- Toolbar: `#f8fafc` + `border-bottom 1px #e2e8f0`, `min-height 32px`, `gap 4px 6px`; chip `agtable__toolBtn--excel/--pivot` + nhãn `agtable__toolLabel` bọc trong `<span>`.
+- FIX "2 scrollbar luôn hiện sẵn": `.agtable .toolbar`, `.pivottable1`, `.pivotdatatable` đổi `overflow: scroll` → `overflow-x:auto / overflow-y:hidden` + scrollbar mảnh. Đo trước: 10px dọc + 10px ngang; sau: 0.
+Trạng thái: **HOÀN THÀNH** — `npm run build` OK, `get_errors` 0 lỗi, đã verify bằng browser tool trên dev 3001.
+
 ## Mục tiêu task hiện tại (đợt 14)
 R&D → **Quản lý barcode sản phẩm** (`/rnd/productbarcodemanager`):
 1. List chọn **MÃ SẢN PHẨM** đổi từ `<select>` sang **AutoComplete** — gõ mã/tên để search, nhấn **Enter chọn luôn option đầu tiên** của list sau lọc.
