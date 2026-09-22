@@ -1,5 +1,19 @@
 # ACTIVE_STATE
 
+## Đợt 16 — Fix màn hình trắng khi Logout + chắc hoá login/logout (2026-09-22)
+`src/App.tsx` + `src/components/ErrorBoundary/ErrorBoundary.tsx` + `src/api/Api.ts` + `src/pages/home/Home.tsx`.
+- **Root cause**: `Login` là `React.lazy` nhưng `App.tsx` render trần `{!globalLoginState && <Login />}` — không Suspense/ErrorBoundary. User vào thẳng app bằng token còn hạn ⇒ chunk Login chưa tải ⇒ bấm Logout thì lazy suspend không boundary ⇒ React 18 unmount root ⇒ trắng màn hình, phải F5 (nên lỗi chỉ "đôi khi": phụ thuộc chunk đã cache trong phiên hay chưa).
+- Fix: bọc `<Login />` trong `<Suspense fallback={<AppBootScreen />}>` + `<ErrorBoundary>`; warm-up `import("./pages/login/Login")` sau boot 1.5s.
+- `ErrorBoundary`: auto `location.reload()` 1 lần/15s khi gặp lỗi tải chunk (deploy mới ⇒ chunk cũ 404), guard `sessionStorage.erp_chunk_autoreload_at`.
+- `logout()`: thêm cờ `loggingOut` (chống gọi trùng), bỏ `setTimeout(1000)` → xoá `userData` + hạ `loginState` cùng nhịp render; thêm `isLoggingOut()`. `Home.getchamcong()` thêm guard `!isLoggingOut()` để không ghi lại token sau khi đã logout.
+Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 1m 41s`), `get_errors` 0 lỗi, dev 3001 không có vite error overlay.
+
+## Việc cần làm tiếp theo (đợt 16)
+- Cân nhắc reset URL về `/` khi logout và/hoặc chuyển `logout()` sang `navigate` để `ProtectedRoute` không giữ route sâu.
+- (Backend) JWT secret hard-code `"nguyenvanhung"` + token stateless ⇒ logout chỉ có tác dụng client-side; xem có cần blacklist/refresh-rotation không.
+- `update_socket` đang gọi `socket.emit` trong reducer (side-effect, StrictMode double-invoke ở dev).
+- `ACTIVE_STATE.md` đang vượt xa giới hạn 80 dòng — nên nén các đợt ≤ 12 thành 1 mục lưu trữ.
+
 ## Đợt 15 — Style lại toolbar AGTable theo Stitch (2026-09-22)
 `src/components/DataTable/AGTable.tsx` + `AGTable.scss` + `src/components/PivotChart/PivotChart.scss`.
 - Bỏ inline `backgroundImage: theme.CMS.backgroundImage` (nguồn dải gradient neon) + xoá `useSelector`/`RootState` không còn dùng.

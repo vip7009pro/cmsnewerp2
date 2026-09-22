@@ -16,6 +16,9 @@ import { DEFAULT_USER_DATA } from "./defaultUserData";
 
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;
+
+// Cờ chống logout trùng lặp (xem logout() bên dưới).
+let loggingOut = false;
 export function getSever(): string {
   const state = store.getState();
   //console.log(state.totalSlice.server_ip);
@@ -77,6 +80,8 @@ if (server_ip_local !== undefined) {
 } else {
 }
 export function login(user: string, pass: string) {
+  // Vào màn đăng nhập mới ⇒ mở lại khoá chống logout trùng.
+  loggingOut = false;
   let API_URL = getSever() + "/api";
   axios
     .post(API_URL, {
@@ -147,19 +152,43 @@ export function login(user: string, pass: string) {
     });
 }
 export function logout() {
-  cookies.set("token", "reset", { path: "/" });
-  localStorage.removeItem("publicKey");
+  // Chống logout trùng lặp: nhiều nguồn có thể gọi logout() cùng lúc
+  // (nút Logout ở header/sidebar, token hết hạn, license check, socket notification "logout").
+  if (loggingOut) return;
+  loggingOut = true;
+
+  try {
+    // Giá trị "reset" là quy ước của backend (xem authService.logout trong practice1).
+    cookies.set("token", "reset", { path: "/" });
+    localStorage.removeItem("publicKey");
+  } catch (error) {
+    console.log(error);
+  }
+
+  const emplNo = getUserData()?.EMPL_NO;
   store.dispatch(
-    update_socket({ 
+    update_socket({
       event: "logout",
-      data: getUserData()?.EMPL_NO,
+      data: emplNo,
     })
   );
+
+  // Trước đây phần này nằm trong setTimeout 1000ms: trong đúng 1 giây đó AppRoutes vẫn còn
+  // render với token đã bị vô hiệu ⇒ các interval nền (refresh token 30s, checkWebVer,
+  // checkLicense) bắn request lỗi, thậm chí trigger logout lần 2 → nhấp nháy / trắng màn hình.
+  // Nay xoá dữ liệu user và hạ cờ đăng nhập NGAY trong cùng một nhịp render.
   /* Swal.fire("Thông báo", "Đăng xuất thành công !", "success"); */
-  setTimeout(() => {
-    /* window.location.href = "/"; */
-    store.dispatch(logoutSlice(false));
-  }, 1000);
+  store.dispatch(changeUserData(DEFAULT_USER_DATA));
+  store.dispatch(logoutSlice(false));
+}
+
+/**
+ * Đang trong quá trình logout.
+ * Dùng để chặn các tác vụ nền ghi lại cookie token sau khi đã đăng xuất
+ * (ví dụ checkMYCHAMCONG trong Home.tsx ghi REFRESH_TOKEN về cookie).
+ */
+export function isLoggingOut(): boolean {
+  return loggingOut;
 }
 export async function checkLogin() {
   let API_URL = getSever() + "/api";

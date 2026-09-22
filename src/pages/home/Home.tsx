@@ -2,7 +2,13 @@ import { Outlet, useNavigate } from "react-router-dom";
 import "../home/home.scss";
 import { animated } from "@react-spring/web";
 import React, { useEffect, useState, Suspense, useMemo, useCallback, useRef, lazy } from "react";
-import { generalQuery, getCompany, getUserData, logout } from "../../api/Api";
+import {
+  generalQuery,
+  getCompany,
+  getUserData,
+  isLoggingOut,
+  logout,
+} from "../../api/Api";
 import Swal from "sweetalert2";
 import {
   IconButton,
@@ -198,7 +204,10 @@ function Home() {
         // làm mọi request sau đó bị "jwt malformed" cho tới khi đăng nhập lại.
         const tkStatus = String(response?.data?.tk_status ?? "").toUpperCase();
         const rfr_token: string | undefined = response?.data?.REFRESH_TOKEN;
-        if (tkStatus !== "NG" && rfr_token) {
+        // Ngoài guard tk_status/token, còn phải chặn trường hợp request checkMYCHAMCONG
+        // được bắn TRƯỚC khi logout nhưng response về SAU: nếu vẫn ghi cookie thì token
+        // hợp lệ được "hồi sinh", user đã đăng xuất trên UI nhưng F5 lại vào được app.
+        if (tkStatus !== "NG" && rfr_token && !isLoggingOut()) {
           cookies.set("token", rfr_token, {
             path: "/",
             sameSite: "lax",

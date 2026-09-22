@@ -222,6 +222,20 @@ function App() {
     }
   }, [isBootstrapping, getIPAddress, handleEnableNotifications]);
 
+  // Warm-up chunk màn hình đăng nhập.
+  // Người dùng vào app bằng token còn hạn sẽ KHÔNG bao giờ render <Login /> ở lần boot đầu,
+  // nên chunk Login chỉ được tải đúng lúc bấm Logout. Nạp trước ở đây (cùng module key với
+  // lazy() trong lazyPages.ts) để React.lazy resolve đồng bộ ⇒ logout ra màn login tức thì.
+  useEffect(() => {
+    if (isBootstrapping) return;
+    const timer = window.setTimeout(() => {
+      void import("./pages/login/Login").catch(() => {
+        /* Bỏ qua: lần render thật sẽ tự thử lại và đã có ErrorBoundary xử lý. */
+      });
+    }, 1500);
+    return () => window.clearTimeout(timer);
+  }, [isBootstrapping]);
+
   return (
     <ThemeProvider theme={appTheme}>
       <CssBaseline />
@@ -241,7 +255,21 @@ function App() {
             </Suspense>
           </div>
         )}
-        {!isBootstrapping && !globalLoginState && <Login />}
+        {/**
+         * Login là component React.lazy (xem api/lazyPages.ts).
+         * BẮT BUỘC phải có Suspense + ErrorBoundary bọc ngoài.
+         * Trước đây render trần `<Login />` nên khi chunk Login chưa từng được tải
+         * (user đăng nhập bằng token còn hạn, vào thẳng app) → lazy suspend mà không có
+         * boundary nào phía trên ⇒ React 18 unmount toàn bộ root ⇒ màn hình trắng cho tới
+         * khi F5 (F5 tải lại chunk trong lúc boot nên hiển thị được màn login).
+         */}
+        {!isBootstrapping && !globalLoginState && (
+          <Suspense fallback={<AppBootScreen />}>
+            <ErrorBoundary>
+              <Login />
+            </ErrorBoundary>
+          </Suspense>
+        )}
         <Notifications />
       </>
     </ThemeProvider>
