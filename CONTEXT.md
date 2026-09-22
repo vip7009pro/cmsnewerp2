@@ -4198,3 +4198,19 @@ Build a complete ERP Chat system that enables:
 - Sửa: thêm helper `isNoRowAffectedMessage` (sanxuatService.js) để bỏ qua thông báo no-op; DELETE theo batch, nếu có lỗi SQL thật thì truy vấn lại ZTB_QLSXPLAN để báo lỗi cụ thể theo TỪNG PLAN_ID (`Chỉ thị {PLAN_ID}: không xóa được (…lỗi…)`).
 - FE: `f_deleteQLSXPlanFast` trả `{ deleted: string[], errors: string }`; modal hiển thị 3 trạng thái rõ nghĩa: xóa hết (nêu số lượng + danh sách PLAN_ID đã xóa), xóa một phần (liệt kê đã xóa / không xóa được), không xóa được (liệt kê lý do theo từng PLAN_ID).
 - Chuẩn hoá lại câu chữ: `Chỉ thị {PLAN_ID}: đã chốt báo cáo nên không xóa được`, `..: đã xuất Kho NVL`, `..: đã xuất Kho SX Main`.
+
+## Update - 2026-09-22 (Tăng tốc nút "Lưu CT + ĐKXK" trong PLANVISUAL)
+
+### Đo được (luồng cũ)
+- `f_saveChiThiMaterialTable`: ~4N+1 request (mỗi dòng vật liệu: updateLIEUQL_SX_M140, deleteM_CODE_ZTB_QLSXCHITHI (gọi lặp cùng 1 danh sách), checkM_CODE_PLAN_ID_Exist, updateChiThi/insertChiThi).
+- `f_handleDangKyXuatLieu`: ~5 + N×2..4 request (checkPLANID_O300, getO300_LAST_OUT_NO, getP400, insertO300, deleteM_CODE_O301, rồi mỗi dòng: checkM_CODE_PLAN_ID_Exist_in_O301, checkPLANID_O301, updateDKXLPLAN, insertO301/updateO301).
+- N=8 liệu => có thể tới 50+ request HTTP cho 1 lần bấm.
+
+### Cải tiến
+- Backend: command mới `luuChiThiVaDangKyXuatLieu` (sanxuatService.js) gộp cả 2 bước trong 1 request:
+  * Phần A: giữ nguyên 4 điều kiện validate liệu QL SX; batch UPDATE M140 (2 lệnh theo nhóm), DELETE M_CODE không còn trong danh sách (1 lệnh), UPSERT ZTB_QLSXCHITHI bằng MERGE.
+  * Phần B: check O300 (1 query dùng cho cả OUT_NO/OUT_DATE), sinh OUT_NO mới + lấy P400.CODE_50 + insert O300 khi chưa có, DELETE M_CODE không còn trong O301 (1 lệnh), 1 query lấy toàn bộ O301 (M_CODE + OUT_SEQ) thay cho N lần check, UPSERT O301 (giữ nguyên công thức OUT_SEQ = Last_seq + i + 1), update DKXL 1 lần cho mỗi PLAN_ID.
+  * Giữ nguyên thứ tự nghiệp vụ cũ (kể cả việc insert O300 xảy ra trước khi kiểm tra tổng mét) và dừng không đăng ký nếu phần lưu chỉ thị có lỗi.
+  * Thông báo lỗi rõ nghĩa hơn: "Chưa chọn liệu QL SX", "Chỉ được chọn 1 liệu QL SX duy nhất", "Liệu QL SX bị trùng với liệu thường cùng tên", "Chỉ thị vật liệu {M_CODE}: số mét = 0"...
+- Frontend: `f_luuChiThiVaDangKyXuatLieuFast` (khsxUtils) trả `{saved, registered, errors}`; `handleDangKyXuatLieu` trong `useMachinePlanModal` dùng bản nhanh => 50+ request -> 1 request + reload chỉ thị + refresh plan máy.
+- Tương thích ngược: `f_saveChiThiMaterialTable`, `f_handleDangKyXuatLieu` và toàn bộ command cũ giữ nguyên (vẫn được MACHINE.tsx, usePlanDataTbData.ts... sử dụng).

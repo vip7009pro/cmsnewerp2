@@ -21,10 +21,10 @@ import {
   f_getRecentDMData,
   f_handle_xuatdao_sample,
   f_handle_xuatlieu_sample,
-  f_handleDangKyXuatLieu,
   f_handleGetChiThiTable,
   f_handleResetChiThiTable,
   f_handletraYCSXQLSX,
+  f_luuChiThiVaDangKyXuatLieuFast,
   f_saveChiThiMaterialTable,
   f_saveQLSX,
   f_saveSinglePlan,
@@ -704,7 +704,7 @@ export const useMachinePlanModal = ({
     });
   }, [getMaterialRowsToSave, refreshMachinePlans, reloadMaterialRows, saveMaterialRows, userData]);
 
-  // Đăng ký xuất liệu: lưu chỉ thị trước, sau đó mới đăng ký O300/O301.
+  // Đăng ký xuất liệu: BẢN NHANH - 1 request duy nhất cho cả "lưu chỉ thị" + "đăng ký O300/O301".
   const handleDangKyXuatLieu = useCallback(async () => {
     const confirmResult = await Swal.fire({
       title: "Chắc chắn muốn đăng ký xuất liệu?",
@@ -718,20 +718,26 @@ export const useMachinePlanModal = ({
 
     checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
       setIsMaterialActionLoading(true);
-      setMaterialActionProgress(10);
-      setMaterialActionLabel("Đang lưu chỉ thị vật liệu...");
+      setMaterialActionProgress(20);
+      setMaterialActionLabel("Đang lưu chỉ thị và đăng ký xuất liệu...");
       try {
         const rows = getMaterialRowsToSave();
-        const saveError = await saveMaterialRows(rows);
-        if (saveError !== "0") {
-          Swal.fire("Thông báo", saveError, "error");
-          return;
-        }
-        setMaterialActionProgress(45);
-        setMaterialActionLabel("Đang đăng ký xuất kho vật liệu...");
-        const registerError = await f_handleDangKyXuatLieu(selectedPlan, selectedFactory, rows);
-        if (registerError !== "0") {
-          Swal.fire("Thông báo", registerError, "error");
+        const actionResult = await f_luuChiThiVaDangKyXuatLieuFast(
+          selectedPlan,
+          selectedFactory,
+          rows
+        );
+
+        setMaterialActionProgress(70);
+        setMaterialActionLabel("Đang tải lại chỉ thị và kế hoạch...");
+        selectedMaterialRowsRef.current = [];
+        await reloadMaterialRows();
+        setMaterialActionProgress(90);
+        await refreshMachinePlans();
+        setMaterialActionProgress(100);
+
+        if (actionResult.errors) {
+          Swal.fire("Thông báo", actionResult.errors, "error");
           return;
         }
 
@@ -751,13 +757,6 @@ export const useMachinePlanModal = ({
         if (await f_insert_Notification_Data(notification)) {
           getSocket().emit("notification_panel", notification);
         }
-        setMaterialActionProgress(75);
-        setMaterialActionLabel("Đang tải lại chỉ thị và kế hoạch...");
-        selectedMaterialRowsRef.current = [];
-        await reloadMaterialRows();
-        setMaterialActionProgress(90);
-        await refreshMachinePlans();
-        setMaterialActionProgress(100);
         Swal.fire("Thành công", "Đã đăng ký xuất liệu thành công", "success");
       } catch (err) {
         Swal.fire("Lỗi", "Không thể đăng ký xuất liệu", "error");
@@ -765,7 +764,7 @@ export const useMachinePlanModal = ({
         setIsMaterialActionLoading(false);
       }
     });
-  }, [getMaterialRowsToSave, refreshMachinePlans, reloadMaterialRows, saveMaterialRows, selectedFactory, selectedPlan, userData]);
+  }, [getMaterialRowsToSave, refreshMachinePlans, reloadMaterialRows, selectedFactory, selectedPlan, userData]);
 
   // Xóa dòng chỉ thị
   const handleDeleteChiThiLine = useCallback(

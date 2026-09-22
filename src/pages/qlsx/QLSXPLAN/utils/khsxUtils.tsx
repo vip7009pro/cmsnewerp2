@@ -1888,6 +1888,74 @@ export const f_saveChiThiMaterialTable = async (
   }
   return err_code;
 };
+/**
+ * Lưu chỉ thị vật liệu + Đăng ký xuất liệu - BẢN NHANH (1 request duy nhất).
+ *
+ * Vì sao cần: bản cũ chạy 2 hàm nối tiếp với rất nhiều request:
+ *   - `f_saveChiThiMaterialTable`: ~4N+1 request (mỗi dòng gọi updateLIEUQL_SX_M140,
+ *     deleteM_CODE_ZTB_QLSXCHITHI, checkM_CODE_PLAN_ID_Exist, updateChiThi/insertChiThi)
+ *   - `f_handleDangKyXuatLieu`: ~5 + N×2..4 request (checkPLANID_O300, getO300_LAST_OUT_NO, getP400,
+ *     insertO300, deleteM_CODE_O301, checkM_CODE_PLAN_ID_Exist_in_O301, checkPLANID_O301,
+ *     updateDKXLPLAN, insertO301/updateO301)
+ *   => N=8 liệu có thể tốn 50+ request HTTP.
+ *
+ * Bản nhanh gọi command `luuChiThiVaDangKyXuatLieu`: backend batch UPDATE M140, batch DELETE,
+ * UPSERT bằng MERGE và batched check O300/O301; nghiệp vụ giữ nguyên như bản cũ.
+ *
+ * Trả về: { saved, registered, errors } - errors rỗng nghĩa là thành công hoàn toàn.
+ */
+export interface LuuChiThiVaDangKyResult {
+  saved: boolean;
+  registered: boolean;
+  errors: string;
+}
+export const f_luuChiThiVaDangKyXuatLieuFast = async (
+  selectedPlan: QLSXPLANDATA,
+  selectedFactory: string,
+  chithidatatable: QLSXCHITHIDATA[]
+): Promise<LuuChiThiVaDangKyResult> => {
+  if (!chithidatatable || chithidatatable.length === 0) {
+    return { saved: false, registered: false, errors: "Chọn ít nhất một liệu để đăng ký" };
+  }
+  const rows = chithidatatable.map((r) => ({
+    PLAN_ID: r.PLAN_ID,
+    M_CODE: r.M_CODE,
+    M_NAME: r.M_NAME,
+    LIEUQL_SX: r.LIEUQL_SX,
+    M_ROLL_QTY: r.M_ROLL_QTY,
+    M_MET_QTY: r.M_MET_QTY,
+    M_QTY: r.M_QTY,
+  }));
+  const plan = {
+    PLAN_ID: selectedPlan?.PLAN_ID,
+    G_CODE: selectedPlan?.G_CODE,
+    PROD_REQUEST_NO: selectedPlan?.PROD_REQUEST_NO,
+    PROD_REQUEST_DATE: selectedPlan?.PROD_REQUEST_DATE,
+    PROCESS_NUMBER: selectedPlan?.PROCESS_NUMBER,
+    FACTORY: selectedFactory,
+  };
+  try {
+    const response = await generalQuery("luuChiThiVaDangKyXuatLieu", {
+      PLAN: plan,
+      ROWS: rows,
+    });
+    if (response.data.tk_status === "NG") {
+      return {
+        saved: false,
+        registered: false,
+        errors: response.data.message || "Không thể lưu chỉ thị và đăng ký xuất liệu",
+      };
+    }
+    return {
+      saved: !!response.data?.data?.saved,
+      registered: !!response.data?.data?.registered,
+      errors: response.data?.message || "",
+    };
+  } catch (error) {
+    console.log(error);
+    return { saved: false, registered: false, errors: "Lỗi kết nối máy chủ" };
+  }
+};
 export const f_handletraYCSXQLSX = async (filterdata: any) => {
   console.log("filterdata", filterdata);
   let ycsxdata: YCSXTableData[] = [];
