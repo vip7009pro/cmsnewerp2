@@ -8,6 +8,7 @@ import {
   FiAlertCircle,
 } from "react-icons/fi";
 import { renderBanVe, renderYCSX } from "../../../qlsx/QLSXPLAN/utils/khsxUtils";
+import { useBackdropClose } from "../../utils/useBackdropClose";
 
 interface Props {
   openYCSXPrint: boolean;
@@ -115,6 +116,9 @@ const PrecisionYCSXPrintModals: React.FC<Props> = ({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [openYCSXPrint, openBanVePrint, onClose, handlePrint]);
 
+  // Chỉ đóng khi click hẳn ra ngoài modal (tránh kéo chuột ra ngoài làm tắt modal)
+  const backdropProps = useBackdropClose(onClose);
+
   if (!openYCSXPrint && !openBanVePrint) return null;
 
   const modalTitle = isYCSX
@@ -126,7 +130,7 @@ const PrecisionYCSXPrintModals: React.FC<Props> = ({
     : `Đã chọn: ${selectedRows.length} bản vẽ • Sẵn sàng in bản vẽ kỹ thuật & tem kiểm soát`;
 
   return (
-    <div className="precision-ycsx-modal-backdrop" onClick={onClose}>
+    <div className="precision-ycsx-modal-backdrop" {...backdropProps}>
       <div
         className="precision-ycsx-modal-container precision-ycsx-print-modal"
         onClick={(e) => e.stopPropagation()}

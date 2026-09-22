@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import { FiX, FiEdit, FiSave, FiRefreshCw } from "react-icons/fi";
 import { Autocomplete, TextField, createFilterOptions } from "@mui/material";
+import { useBackdropClose } from "../../utils/useBackdropClose";
 import { CodeListData, CustomerListData } from "../../interfaces/kdInterface";
 
 interface Props {
@@ -70,10 +71,13 @@ const PrecisionYCSXEditModal: React.FC<Props> = ({
   onClear,
   isCMS = true,
 }) => {
+  // Chỉ đóng khi click hẳn ra ngoài modal (tránh kéo chuột ra ngoài làm tắt modal)
+  const backdropProps = useBackdropClose(onClose);
+
   if (!open) return null;
 
   return (
-    <div className="precision-ycsx-modal-backdrop" onClick={onClose}>
+    <div className="precision-ycsx-modal-backdrop" {...backdropProps}>
       <div
         className="precision-ycsx-modal-container"
         style={{ maxWidth: 920, width: "95vw" }}

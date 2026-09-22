@@ -43,6 +43,7 @@ import {
   createPivotDataSource,
 } from "./PrecisionInvoiceManager/PrecisionInvoiceColumns";
 import { FiX } from "react-icons/fi";
+import { useBackdropClose } from "../utils/useBackdropClose";
 
 const initialFilters: InvoiceFilterState = {
   fromdate: moment().format("YYYY-MM-DD"),
@@ -67,6 +68,8 @@ const InvoiceManager: React.FC = () => {
 
   // ── Modal & View states ──
   const [openBulkModal, setOpenBulkModal] = useState(false);
+  // Chỉ đóng modal bulk khi click hẳn ra ngoài (tránh kéo chuột ra ngoài làm tắt modal)
+  const bulkBackdropProps = useBackdropClose(() => setOpenBulkModal(false));
   // Mobile: mặc định ẩn bộ lọc để bảng Invoice chiếm trọn chiều ngang (bộ lọc mở dạng float)
   const [filterCollapsed, setFilterCollapsed] = useState<boolean>(() =>
     typeof window !== "undefined" ? window.innerWidth <= 768 : false
@@ -474,7 +477,7 @@ const InvoiceManager: React.FC = () => {
 
       {/* ── Bulk Import Modal ── */}
       {openBulkModal && (
-        <div className="stitch-inv__modal-overlay" onClick={() => setOpenBulkModal(false)}>
+        <div className="stitch-inv__modal-overlay" {...bulkBackdropProps}>
           <div className="stitch-inv__modal stitch-inv__modal--bulk" onClick={(e) => e.stopPropagation()}>
             <PrecisionInvoiceBulkImport onClose={() => setOpenBulkModal(false)} />
           </div>

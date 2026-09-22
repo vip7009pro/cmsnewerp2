@@ -16,6 +16,7 @@ import { RootState } from "../../../../redux/store";
 import { CodeListData, CustomerListData } from "../../interfaces/kdInterface";
 import { f_getcodelist, f_getcustomerlist } from "../../utils/kdUtils";
 import { FCST_EXCEL_COLUMNS } from "./PrecisionFCSTColumns";
+import { useBackdropClose } from "../../utils/useBackdropClose";
 import "./PrecisionFCST.scss";
 
 interface Props {
@@ -63,6 +64,9 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
   const [isLoading, setisLoading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const excelFileInputRef = useRef<HTMLInputElement>(null);
+
+  // Chỉ đóng khi click hẳn ra ngoài modal (tránh kéo chuột ra ngoài làm tắt modal)
+  const backdropProps = useBackdropClose(onClose);
 
   /* ── Load Master Data ── */
   useEffect(() => {
@@ -402,7 +406,7 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
   if (!open) return null;
 
   return (
-    <div className="precision-fcst__modalOverlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+    <div className="precision-fcst__modalOverlay" {...backdropProps}>
       <div className="precision-fcst__modal">
         {/* ── Modal Header ── */}
         <div className="precision-fcst__modalHeader">

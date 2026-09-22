@@ -3,6 +3,7 @@ import * as XLSX from "xlsx";
 import { FiX, FiUploadCloud, FiCheckCircle, FiTrash2, FiInfo, FiLayers, FiFileText } from "react-icons/fi";
 import { AiFillAmazonCircle } from "react-icons/ai";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { useBackdropClose } from "../../utils/useBackdropClose";
 import { getAmazonUploadColumns } from "./PrecisionYCSXColumns";
 
 interface Props {
@@ -56,6 +57,9 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
   const [isDragOver, setIsDragOver] = React.useState(false);
   const amzFileInputRef = React.useRef<HTMLInputElement>(null);
 
+  // Chỉ đóng khi click hẳn ra ngoài modal (tránh kéo chuột ra ngoài làm tắt modal)
+  const backdropProps = useBackdropClose(onClose);
+
   // Kéo-thả file AMZ (.csv / .xlsx / .xls) từ ngoài vào vùng drop
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -93,7 +97,7 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
   };
 
   return (
-    <div className="precision-ycsx-modal-backdrop" onClick={onClose}>
+    <div className="precision-ycsx-modal-backdrop" {...backdropProps}>
       <div
         className="precision-ycsx-modal-container"
         style={{

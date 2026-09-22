@@ -20,6 +20,7 @@ import PrecisionYCSXPrintModals from "./PrecisionYCSX/PrecisionYCSXPrintModals";
 import PrecisionAmzAddModal from "./PrecisionYCSX/PrecisionAmzAddModal";
 import PrecisionAmzTab from "./PrecisionYCSX/PrecisionAmzTab";
 import { getYCSXColumns } from "./PrecisionYCSX/PrecisionYCSXColumns";
+import { useBackdropClose } from "../utils/useBackdropClose";
 
 const YCSXManager: React.FC = () => {
   const ycsx = useYCSXLogic();
@@ -54,6 +55,9 @@ const YCSXManager: React.FC = () => {
   useEffect(() => {
     setIsFilterHidden(isMobile);
   }, [isMobile]);
+
+  // Chỉ đóng khi click hẳn ra ngoài modal (tránh kéo chuột ra ngoài làm tắt modal)
+  const pivotBackdropProps = useBackdropClose(() => ycsx.setShowPivot(false));
 
   // Grid Columns Configuration
   const columns = useMemo(() => {
@@ -521,7 +525,7 @@ const YCSXManager: React.FC = () => {
       {ycsx.showPivot && (
         <div
           className="precision-ycsx-modal-backdrop"
-          onClick={() => ycsx.setShowPivot(false)}
+          {...pivotBackdropProps}
         >
           <div
             className="precision-ycsx-modal-container"

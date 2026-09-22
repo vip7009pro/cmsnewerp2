@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { CodeListData, CustomerListData } from "../../interfaces/kdInterface";
 import { f_getcodelist, f_getcustomerlist, renderCheckStatus } from "../../utils/kdUtils";
+import { useBackdropClose } from "../../utils/useBackdropClose";
 import "./PrecisionPlan.scss";
 
 interface Props {
@@ -222,6 +223,9 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
   const [selectedFileSize, setSelectedFileSize] = useState("");
   const [isDragOver, setIsDragOver] = useState(false);
   const excelSelected = useRef<any[]>([]);
+
+  // Chỉ đóng khi click hẳn ra ngoài modal (tránh kéo chuột ra ngoài làm tắt modal)
+  const backdropProps = useBackdropClose(onClose);
 
   // Đọc 1 File Excel (dùng chung cho input[type=file] và vùng kéo-thả)
   const applyExcelFile = useCallback((file: File) => {
@@ -479,9 +483,7 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
   return (
     <div
       className="pp-modal-overlay"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
+      {...backdropProps}
     >
       <div className="pp-modal">
         {/* ── Modal Header ── */}
