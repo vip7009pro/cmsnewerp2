@@ -61,6 +61,8 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
   const [uploadExcelJson, setUploadExcelJSon] = useState<any[]>([]);
   const [trigger, setTrigger] = useState(true);
   const [isLoading, setisLoading] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const excelFileInputRef = useRef<HTMLInputElement>(null);
 
   /* ── Load Master Data ── */
   useEffect(() => {
@@ -178,29 +180,42 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
   };
 
   /* ── Excel Mode: Read File ── */
+  // Đọc 1 File Excel (dùng chung cho input[type=file] và vùng kéo-thả)
+  const applyExcelFile = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (ev: any) => {
+      const data = ev.target.result;
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const json: any = XLSX.utils.sheet_to_json(worksheet);
+      setUploadExcelJSon(
+        json.map((element: any, index: number) => ({
+          ...element,
+          id: index,
+          CHECKSTATUS: "Waiting",
+          ...Object.fromEntries(
+            WEEK_FIELDS.map((f) => [f, element[f] === undefined || element[f] === "" ? 0 : element[f]])
+          ),
+        }))
+      );
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
   const readUploadFile = (e: any) => {
     e.preventDefault();
-    if (e.target.files) {
-      const reader = new FileReader();
-      reader.onload = (ev: any) => {
-        const data = ev.target.result;
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const json: any = XLSX.utils.sheet_to_json(worksheet);
-        setUploadExcelJSon(
-          json.map((element: any, index: number) => ({
-            ...element,
-            id: index,
-            CHECKSTATUS: "Waiting",
-            ...Object.fromEntries(
-              WEEK_FIELDS.map((f) => [f, element[f] === undefined || element[f] === "" ? 0 : element[f]])
-            ),
-          }))
-        );
-      };
-      reader.readAsArrayBuffer(e.target.files[0]);
-    }
+    const file = e.target?.files?.[0];
+    if (file) applyExcelFile(file);
+  };
+
+  // Kéo-thả file Excel từ ngoài vào vùng drop của modal
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    const file = e.dataTransfer?.files?.[0];
+    if (file) applyExcelFile(file);
   };
 
   const handleDownloadTemplate = () => {
@@ -236,7 +251,8 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
     });
 
     try {
-      const tempjson = [...uploadExcelJson];
+      // Clone từng row: mutate row cũ (cùng reference) làm AG Grid không refresh cột CHECKSTATUS.
+      const tempjson = uploadExcelJson.map((r) => ({ ...r }));
       for (let i = 0; i < tempjson.length; i++) {
         let err_code = 0;
         const row = tempjson[i];
@@ -275,7 +291,8 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
   /* ── Excel Mode: Upload FCST ── */
   const handle_upFcstHangLoat = async () => {
     setisLoading(true);
-    let tempjson = [...uploadExcelJson];
+    // Clone từng row để AG Grid cập nhật CHECKSTATUS ngay sau khi up.
+    const tempjson = uploadExcelJson.map((r) => ({ ...r }));
     for (let i = 0; i < tempjson.length; i++) {
       let err_code = 0;
       await generalQuery("checkFcstExist", {
@@ -583,19 +600,38 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
                 </div>
               </div>
 
-              <div className="precision-fcst__excelUploadArea">
+              <div
+                className={`precision-fcst__excelUploadArea${isDragOver ? " precision-fcst__excelUploadArea--over" : ""}`}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsDragOver(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsDragOver(false);
+                }}
+                onDrop={handleDrop}
+                onClick={(e) => {
+                  // Bấm vào vùng drop để chọn file (trừ khi bấm vào nút bên trong)
+                  if ((e.target as HTMLElement).closest("button, input")) return;
+                  excelFileInputRef.current?.click();
+                }}
+              >
                 <FiUploadCloud />
                 <div className="precision-fcst__excelUploadText">
-                  Chọn file Excel (.xlsx, .xls) để tải lên
+                  Kéo thả file Excel (.xlsx, .xls) vào đây hoặc bấm để chọn file
                 </div>
                 <div className="precision-fcst__excelUploadSubtext">
                   Cấu trúc: EMPL_NO, CUST_CD, G_CODE, PROD_PRICE, YEAR, WEEKNO, W1-W22
                 </div>
                 <input
+                  ref={excelFileInputRef}
                   type="file"
                   accept=".xlsx,.xls"
                   onChange={readUploadFile}
-                  style={{ marginTop: 8 }}
+                  style={{ display: "none" }}
                 />
                 <button
                   type="button"
@@ -604,6 +640,12 @@ const PrecisionFCSTAddModal: React.FC<Props> = ({ open, onClose }) => {
                 >
                   <FiDownload /> Tải template
                 </button>
+                {uploadExcelJson.length > 0 && (
+                  <div className="precision-fcst__excelFileInfo">
+                    <FiFileText />
+                    <span>Đã nạp {uploadExcelJson.length} dòng dữ liệu từ file</span>
+                  </div>
+                )}
               </div>
 
               {uploadExcelJson.length > 0 && (

@@ -45,6 +45,7 @@ interface PrecisionPoAddModalProps {
   uploadExcelJson: any[];
   columnsExcel: any[];
   onLoadExcelFile: (e: any) => void;
+  onDropExcelFile: (file: File) => void;
   onCheckBulkPO: () => void;
   onUploadBulkPO: () => void;
 }
@@ -112,10 +113,21 @@ const PrecisionPoAddModal: React.FC<PrecisionPoAddModalProps> = ({
   uploadExcelJson,
   columnsExcel,
   onLoadExcelFile,
+  onDropExcelFile,
   onCheckBulkPO,
   onUploadBulkPO,
 }) => {
   const [activeTab, setActiveTab] = useState<"single" | "excel">("single");
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  // Nhận file kéo-thả từ ngoài vào vùng drop của modal
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    const file = e.dataTransfer?.files?.[0];
+    if (file) onDropExcelFile(file);
+  };
 
   // Tính toán Tổng thành tiền dự kiến
   const estTotalUsd = useMemo(() => {
@@ -475,6 +487,7 @@ const PrecisionPoAddModal: React.FC<PrecisionPoAddModalProps> = ({
                     <span>Chọn File Excel</span>
                     <input
                       type="file"
+                      id="poBulkFileInput"
                       accept=".xlsx, .xls"
                       className="sr-only"
                       style={{ display: "none" }}
@@ -510,6 +523,36 @@ const PrecisionPoAddModal: React.FC<PrecisionPoAddModalProps> = ({
                     <span>UP PO</span>
                   </button>
                 </div>
+              </div>
+
+              {/* Drag & Drop Zone: kéo file Excel từ ngoài vào modal */}
+              <div
+                className={`excel-dropzone${isDragOver ? " excel-dropzone--over" : ""}`}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsDragOver(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsDragOver(false);
+                }}
+                onDrop={handleDrop}
+                onClick={() => {
+                  const input = document.getElementById("poBulkFileInput") as HTMLInputElement | null;
+                  input?.click();
+                }}
+              >
+                <MdOutlineUploadFile size={22} />
+                <span className="excel-dropzone-text">
+                  Kéo thả file Excel (.xlsx, .xls) vào đây hoặc bấm để chọn file
+                </span>
+                {uploadExcelJson.length > 0 && (
+                  <span className="excel-dropzone-file">
+                    Đang nạp {uploadExcelJson.length} dòng dữ liệu
+                  </span>
+                )}
               </div>
 
               {/* Data Grid Preview */}

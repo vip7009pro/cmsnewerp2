@@ -979,6 +979,12 @@ $pf-radius: 4px;
       border-color: $pf-brand-500;
     }
 
+    &--over {
+      border-color: $pf-brand-500;
+      border-style: solid;
+      background: $pf-brand-50;
+    }
+
     svg {
       width: 32px;
       height: 32px;

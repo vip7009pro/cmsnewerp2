@@ -15,6 +15,7 @@ import {
   f_compareTwoDate,
   f_insertInvoice,
   f_readUploadFile,
+  f_readUploadFileFromFile,
 } from "../../utils/kdUtils";
 
 interface Props {
@@ -27,10 +28,21 @@ const PrecisionInvoiceBulkImport: React.FC<Props> = ({ onClose }) => {
   const [columnsExcel, setColumnsExcel] = useState<Array<any>>([]);
   const [uploadExcelJson, setUploadExcelJson] = useState<Array<any>>([]);
   const [trigger, setTrigger] = useState(true);
+  const [isDragOver, setIsDragOver] = useState(false);
   const excelSelected = useRef<any[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadFile = (e: any) => {
     f_readUploadFile(e, setUploadExcelJson, setColumnsExcel);
+  };
+
+  // Kéo-thả file Excel từ ngoài vào vùng drop
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    const file = e.dataTransfer?.files?.[0];
+    if (file) f_readUploadFileFromFile(file, setUploadExcelJson, setColumnsExcel);
   };
 
   const handleDownloadTemplate = () => {
@@ -52,7 +64,9 @@ const PrecisionInvoiceBulkImport: React.FC<Props> = ({ onClose }) => {
 
   const handle_checkInvoiceHangLoat = async () => {
     if (uploadExcelJson.length > 0) {
-      let tempjson = uploadExcelJson;
+      // Clone từng row: mutate row cũ (cùng reference) khiến AG Grid không refresh
+      // cột CHECKSTATUS => phải đóng/mở lại modal mới thấy trạng thái mới.
+      const tempjson = uploadExcelJson.map((r) => ({ ...r }));
       for (let i = 0; i < uploadExcelJson.length; i++) {
         let err_code: number = 0;
         let po_info: Array<any> = await f_checkPOInfo(
@@ -102,7 +116,8 @@ const PrecisionInvoiceBulkImport: React.FC<Props> = ({ onClose }) => {
   };
 
   const handle_upInvoiceHangLoat = async () => {
-    let tempjson = uploadExcelJson;
+    // Clone từng row để AG Grid cập nhật CHECKSTATUS ngay sau khi up.
+    const tempjson = uploadExcelJson.map((r) => ({ ...r }));
     for (let i = 0; i < uploadExcelJson.length; i++) {
       let err_code: number = 0;
       let po_info: Array<any> = await f_checkPOInfo(
@@ -278,7 +293,25 @@ const PrecisionInvoiceBulkImport: React.FC<Props> = ({ onClose }) => {
       </div>
 
       {/* Drag & Drop Zone */}
-      <div className="stitch-inv__dropzone">
+      <div
+        className={`stitch-inv__dropzone${isDragOver ? " stitch-inv__dropzone--over" : ""}`}
+        onDragOver={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsDragOver(true);
+        }}
+        onDragLeave={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsDragOver(false);
+        }}
+        onDrop={handleDrop}
+        onClick={(e) => {
+          // Bấm vào vùng drop để chọn file (trừ khi bấm vào label/button bên trong)
+          if ((e.target as HTMLElement).closest("label, button")) return;
+          fileInputRef.current?.click();
+        }}
+      >
         <div className="stitch-inv__dropzone-icon">
           <FiUploadCloud />
         </div>
@@ -290,8 +323,10 @@ const PrecisionInvoiceBulkImport: React.FC<Props> = ({ onClose }) => {
         </div>
         <div className="stitch-inv__dropzone-actions">
           <input
+            ref={fileInputRef}
             type="file"
             id="bulkFileInput"
+            accept=".xlsx,.xls"
             style={{ display: "none" }}
             onChange={loadFile}
           />

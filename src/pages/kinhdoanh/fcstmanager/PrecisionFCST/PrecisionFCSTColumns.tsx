@@ -6,6 +6,7 @@
 import React from "react";
 import { getGlobalSetting } from "../../../../api/Api";
 import { WEB_SETTING_DATA } from "../../../../api/GlobalInterface";
+import { renderCheckStatus } from "../../utils/kdUtils";
 
 /* ── Helper: Lấy currency từ global settings ── */
 const getCurrency = (): string => {
@@ -101,5 +102,5 @@ export const FCST_EXCEL_COLUMNS: any[] = [
     headerName: `W${i + 1}`,
     width: 50,
   })),
-  { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200 },
+  { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200, cellRenderer: renderCheckStatus },
 ];

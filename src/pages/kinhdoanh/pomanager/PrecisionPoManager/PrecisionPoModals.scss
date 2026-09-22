@@ -635,6 +635,48 @@
         }
       }
 
+      .excel-dropzone {
+        border: 2px dashed #cbd5e1;
+        border-radius: 8px;
+        background: #f8fafc;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s;
+
+        svg {
+          color: #64748b;
+        }
+
+        &:hover {
+          border-color: #2563eb;
+          background: #eff6ff;
+        }
+
+        &--over {
+          border-color: #2563eb;
+          background: #dbeafe;
+        }
+
+        .excel-dropzone-text {
+          font-size: 12px;
+          font-weight: 600;
+          color: #334155;
+        }
+
+        .excel-dropzone-file {
+          font-size: 11px;
+          font-weight: 700;
+          color: #059669;
+          font-family: 'JetBrains Mono', monospace;
+        }
+      }
+
       .excel-grid-container {
         border: 1px solid #e2e8f0;
         border-radius: 8px;

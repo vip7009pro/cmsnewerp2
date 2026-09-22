@@ -890,6 +890,11 @@ $stitch-font-mono: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
     &:hover {
       border-color: $stitch-brand-500;
     }
+
+    &--over {
+      border-color: $stitch-brand-500;
+      background: $stitch-brand-50;
+    }
   }
 
   &__dropzone-icon {

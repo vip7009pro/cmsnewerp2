@@ -425,17 +425,32 @@ export const f_insertInvoice = async (invoiceData: any) => {
     });
   return kq;
 };
-export const f_readUploadFile = (
-  e: any,
+/**
+ * Cell renderer dùng chung cho cột CHECKSTATUS của các bảng import Excel hàng loạt:
+ * - "Waiting" (chưa check) : xanh dương
+ * - tiền tố "OK"           : xanh lá
+ * - còn lại (NG/Lỗi...)    : đỏ
+ */
+export const renderCheckStatus = (params: any) => {
+  const raw = params?.value ?? params?.data?.CHECKSTATUS;
+  const text = raw === undefined || raw === null ? "" : String(raw);
+  const color = text === "Waiting" ? "blue" : text.slice(0, 2) === "OK" ? "green" : "red";
+  return <span style={{ color, fontWeight: "bold" }}>{text}</span>;
+};
+/**
+ * Đọc nội dung file Excel (File object) và đổ vào state dòng/cột.
+ * Tách riêng khỏi `f_readUploadFile` để dùng được cho cả input[type=file] và vùng kéo-thả (drop zone).
+ */
+export const f_readUploadFileFromFile = (
+  file: File,
   setRow: React.Dispatch<React.SetStateAction<Array<any>>>,
   setColumn: React.Dispatch<React.SetStateAction<Array<any>>>
 ) => {
-  e.preventDefault();
-  if (e.target.files) {
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      const data = e.target.result;
-      const workbook = XLSX.read(data, { type: "array" });
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e: any) => {
+    const data = e.target.result;
+    const workbook = XLSX.read(data, { type: "array" });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       const json: any = XLSX.utils.sheet_to_json(worksheet,{ defval: null });
@@ -448,32 +463,7 @@ export const f_readUploadFile = (
           field: e,
           headerName: e,
           width: 100,
-          cellRenderer: (ele: any) => {
-            //console.log(ele);
-            if (e === "CHECKSTATUS") {
-              if (ele.data[e] === "Waiting") {
-                return (
-                  <span style={{ color: "blue", fontWeight: "bold" }}>
-                    {ele.data[e]}
-                  </span>
-                );
-              } else if (ele.data[e] === "OK") {
-                return (
-                  <span style={{ color: "green", fontWeight: "bold" }}>
-                    {ele.data[e]}
-                  </span>
-                );
-              } else {
-                return (
-                  <span style={{ color: "red", fontWeight: "bold" }}>
-                    {ele.data[e]}
-                  </span>
-                );
-              }
-            } else {
-              return <span>{ele.data[e]}</span>;
-            }
-          },
+          cellRenderer: e === "CHECKSTATUS" ? renderCheckStatus : undefined,
         };
       });
       console.log(uploadexcelcolumn);
@@ -483,9 +473,18 @@ export const f_readUploadFile = (
         })
       );
       setColumn(uploadexcelcolumn);
-    };
-    reader.readAsArrayBuffer(e.target.files[0]);
-  }
+  };
+  reader.readAsArrayBuffer(file);
+};
+/** Wrapper cũ: đọc file từ event của input[type=file]. */
+export const f_readUploadFile = (
+  e: any,
+  setRow: React.Dispatch<React.SetStateAction<Array<any>>>,
+  setColumn: React.Dispatch<React.SetStateAction<Array<any>>>
+) => {
+  e?.preventDefault?.();
+  const file: File | undefined = e?.target?.files?.[0];
+  if (file) f_readUploadFileFromFile(file, setRow, setColumn);
 };
 export const datediff = (date1: string, date2: string) => {
   var d1 = moment.utc(date1);

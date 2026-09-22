@@ -1487,6 +1487,12 @@ $pp-radius: 4px;
       border-color: #2563eb;
       background: #eff6ff;
     }
+
+    &--over {
+      border-color: #2563eb;
+      border-style: solid;
+      background: #dbeafe;
+    }
   }
 
   &__dropIcon {

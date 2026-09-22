@@ -15,7 +15,7 @@ import AGTable from "../../../../components/DataTable/AGTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import { CodeListData, CustomerListData } from "../../interfaces/kdInterface";
-import { f_getcodelist, f_getcustomerlist } from "../../utils/kdUtils";
+import { f_getcodelist, f_getcustomerlist, renderCheckStatus } from "../../utils/kdUtils";
 import "./PrecisionPlan.scss";
 
 interface Props {
@@ -220,43 +220,53 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState("");
   const [selectedFileSize, setSelectedFileSize] = useState("");
+  const [isDragOver, setIsDragOver] = useState(false);
   const excelSelected = useRef<any[]>([]);
+
+  // Đọc 1 File Excel (dùng chung cho input[type=file] và vùng kéo-thả)
+  const applyExcelFile = useCallback((file: File) => {
+    setSelectedFileName(file.name);
+    setSelectedFileSize((file.size / 1024).toFixed(1) + " KB");
+    const reader = new FileReader();
+    reader.onload = (evt: any) => {
+      const data = evt.target.result;
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const json: any = XLSX.utils.sheet_to_json(worksheet);
+      const keys = json.length > 0 ? Object.keys(json[0]) : [];
+      const cols = keys.map((k) => ({
+        field: k,
+        headerName: k,
+        width: DAY_FIELDS.includes(k) ? 62 : k === "REMARK" ? 150 : 92,
+        minWidth: DAY_FIELDS.includes(k) ? 62 : k === "REMARK" ? 150 : 92,
+      }));
+        cols.push({
+          field: "CHECKSTATUS",
+          headerName: "CHECKSTATUS",
+          width: 200,
+          minWidth: 200,
+          cellRenderer: renderCheckStatus,
+        });
+      setColumnsExcel(cols);
+      setUploadExcelJSon(
+        json.map((el: any, idx: number) => ({
+          ...el,
+          id: idx,
+          CHECKSTATUS: "Waiting",
+          ...Object.fromEntries(
+            DAY_FIELDS.map((f) => [f, el[f] === undefined || el[f] === "" ? 0 : el[f]])
+          ),
+        }))
+      );
+    };
+    reader.readAsArrayBuffer(file);
+  }, []);
 
   const loadFile = (e: any) => {
     e.preventDefault();
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setSelectedFileName(file.name);
-      setSelectedFileSize((file.size / 1024).toFixed(1) + " KB");
-      const reader = new FileReader();
-      reader.onload = (evt: any) => {
-        const data = evt.target.result;
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const json: any = XLSX.utils.sheet_to_json(worksheet);
-        const keys = json.length > 0 ? Object.keys(json[0]) : [];
-        const cols = keys.map((k) => ({
-          field: k,
-          headerName: k,
-          width: DAY_FIELDS.includes(k) ? 62 : k === "REMARK" ? 150 : 92,
-          minWidth: DAY_FIELDS.includes(k) ? 62 : k === "REMARK" ? 150 : 92,
-        }));
-        cols.push({ field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 200, minWidth: 200 });
-        setColumnsExcel(cols);
-        setUploadExcelJSon(
-          json.map((el: any, idx: number) => ({
-            ...el,
-            id: idx,
-            CHECKSTATUS: "Waiting",
-            ...Object.fromEntries(
-              DAY_FIELDS.map((f) => [f, el[f] === undefined || el[f] === "" ? 0 : el[f]])
-            ),
-          }))
-        );
-      };
-      reader.readAsArrayBuffer(file);
-    }
+    const file = e.target.files?.[0];
+    if (file) applyExcelFile(file);
   };
 
   const handleDownloadTemplate = () => {
@@ -305,7 +315,8 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
     });
 
     try {
-      const tempjson = [...uploadExcelJson];
+      // Clone từng row: mutate row cũ (cùng reference) làm AG Grid không refresh cột CHECKSTATUS.
+      const tempjson = uploadExcelJson.map((r) => ({ ...r }));
       for (let i = 0; i < tempjson.length; i++) {
         let err_code = 0;
         const row = tempjson[i];
@@ -350,7 +361,8 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
   };
 
   const handle_upPlanHangLoat = async () => {
-    const tempjson = [...uploadExcelJson];
+    // Clone từng row để AG Grid cập nhật CHECKSTATUS ngay sau khi up.
+    const tempjson = uploadExcelJson.map((r) => ({ ...r }));
     for (let i = 0; i < tempjson.length; i++) {
       let err_code = 0;
       await generalQuery("checkPlanExist", {
@@ -452,6 +464,15 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
   );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Kéo-thả file Excel từ ngoài vào vùng drop của modal
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    const file = e.dataTransfer?.files?.[0];
+    if (file) applyExcelFile(file);
+  };
 
   if (!open) return null;
 
@@ -695,7 +716,21 @@ const PrecisionPlanAddModal: React.FC<Props> = ({ open, onClose }) => {
             /* ═══ EXCEL MODE ═══ */
             <div className="pp-excel">
               {/* Drop Zone */}
-              <div className="pp-excel__dropzone" onClick={() => fileInputRef.current?.click()}>
+              <div
+                className={`pp-excel__dropzone${isDragOver ? " pp-excel__dropzone--over" : ""}`}
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsDragOver(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsDragOver(false);
+                }}
+                onDrop={handleDrop}
+              >
                 <div className="pp-excel__dropIcon">
                   <FiFileText size={22} />
                 </div>

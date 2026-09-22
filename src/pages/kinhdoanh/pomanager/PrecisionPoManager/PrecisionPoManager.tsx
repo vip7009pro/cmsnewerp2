@@ -36,6 +36,7 @@ import {
   f_loadPoDataFull,
   f_loadprice,
   f_readUploadFile,
+  f_readUploadFileFromFile,
   f_updatePO,
 } from "../../utils/kdUtils";
 
@@ -686,13 +687,20 @@ const PrecisionPoManager: React.FC = () => {
     f_readUploadFile(e, setUploadExcelJson, setColumnsExcel);
   };
 
+  // Kéo-thả file từ ngoài vào modal (drop zone)
+  const handleDropExcelFile = (file: File) => {
+    f_readUploadFileFromFile(file, setUploadExcelJson, setColumnsExcel);
+  };
+
   const handleCheckBulkPO = async () => {
     if (uploadExcelJson.length === 0) {
       Swal.fire("Thông báo", "Chưa có dòng nào trong file", "warning");
       return;
     }
     Swal.fire({ title: "Đang kiểm tra...", text: "Vui lòng chờ giây lát", icon: "info", showConfirmButton: false });
-    const temp = [...uploadExcelJson];
+    // PHẢI clone từng row: nếu mutate row cũ thì AG Grid không nhận ra row thay đổi
+    // (row giữ nguyên reference) nên cột CHECKSTATUS không đổi màu cho tới khi mở lại modal.
+    const temp = uploadExcelJson.map((r) => ({ ...r }));
     for (let i = 0; i < temp.length; i++) {
       let err = 0;
       const exist = await f_checkPOExist(temp[i].G_CODE, temp[i].CUST_CD, temp[i].PO_NO);
@@ -734,7 +742,8 @@ const PrecisionPoManager: React.FC = () => {
       return;
     }
     Swal.fire({ title: "Đang tải lên...", text: "Vui lòng chờ", icon: "info", showConfirmButton: false });
-    const temp = [...uploadExcelJson];
+    // Clone từng row để AG Grid phát hiện thay đổi CHECKSTATUS ngay sau khi up.
+    const temp = uploadExcelJson.map((r) => ({ ...r }));
     let insertedCount = 0;
     for (let i = 0; i < temp.length; i++) {
       if (temp[i].CHECKSTATUS !== "OK") continue;
@@ -1008,6 +1017,7 @@ const PrecisionPoManager: React.FC = () => {
         uploadExcelJson={uploadExcelJson}
         columnsExcel={columnsExcel}
         onLoadExcelFile={handleLoadExcelFile}
+        onDropExcelFile={handleDropExcelFile}
         onCheckBulkPO={handleCheckBulkPO}
         onUploadBulkPO={handleUploadBulkPO}
       />
