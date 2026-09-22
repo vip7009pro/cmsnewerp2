@@ -249,10 +249,12 @@ export function dynamicSort(property: string) {
   };
 }
 
-export const isValidInput = (input: string) => {
-  const regex = /^[a-zA-Z0-9_]*$/;
-  return regex.test(input);
-};
+/* isValidInput (thuần, không phụ thuộc UI) đã được chuyển sang `utilCore.ts`.
+   File này import `recharts` + 6 design_components (kéo theo jsbarcode/qrcode…) nên module
+   nằm trong graph khởi động — như trang Login — phải import TRỰC TIẾP từ `utilCore`,
+   nếu không sẽ kéo cả recharts + thư viện barcode vào chunk của trang đó.
+   Re-export ở đây để các call site cũ không phải sửa. */
+export { isValidInput } from "./utilCore";
 
 export const checkHSD2 = (
   hsdVL: number,

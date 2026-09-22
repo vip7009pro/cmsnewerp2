@@ -133,8 +133,8 @@ const Login = () => {
           position: "absolute",
           backgroundImage: `url('${
             company === "CMS"
-              ? `/companybackground.png`
-              : `/companybackground.png`
+              ? `/companybackground.jpg`
+              : `/companybackground.jpg`
           }')`,
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",

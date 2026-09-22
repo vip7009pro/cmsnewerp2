@@ -58,7 +58,6 @@ export const NavMenuNew: React.FC<NavMenuNewProps> = ({
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const [internalSearchText, setInternalSearchText] = useState("");
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
-  const [userCollapsedGroups, setUserCollapsedGroups] = useState<Record<string, boolean>>({});
 
   // --- Viewport mode: dưới 768px là mobile (bàn phím ảo không được tự bật) ---
   const [isMobile, setIsMobile] = useState<boolean>(() =>
@@ -154,50 +153,57 @@ export const NavMenuNew: React.FC<NavMenuNewProps> = ({
     return "";
   }, [tabs]);
 
-  const activeDefaultKey = useMemo(() => {
-    const byCode = tabModeSwap
-      ? menus.find((m) => m.subNav?.some((s) => s.MENU_CODE === lastLiveTabCode))
-      : null;
-    if (byCode) return getGroupKey(byCode);
+  const activeTabGroupKey = useMemo(() => {
+    if (!tabModeSwap) return "";
+    const byCode = menus.find((m) => m.subNav?.some((s) => s.MENU_CODE === lastLiveTabCode));
+    return byCode ? getGroupKey(byCode) : "";
+  }, [lastLiveTabCode, menus, tabModeSwap]);
 
-    const byPath = menus.find((m) =>
-      m.subNav && m.subNav.length > 0
-        ? m.subNav.some((s) => isRouteActive(location.pathname, s.path))
-        : isRouteActive(location.pathname, m.path)
-    );
-    if (byPath) return getGroupKey(byPath);
-
-    return menus[0] ? getGroupKey(menus[0]) : "";
-  }, [lastLiveTabCode, location.pathname, menus, tabModeSwap]);
-
-  // Auto expand matching groups on search, or reset cleanly to active group when search is cleared
+  // Trạng thái mở/đóng nhóm:
+  // - Lần đầu mở menu: KHÔNG xổ sẵn nhóm nào (trước đây luôn tự xổ nhóm đầu tiên hoặc
+  //   nhóm chứa route hiện tại ⇒ vừa bất ngờ vừa tốn công render/dựng animation).
+  // - Chỉ tự xổ khi người dùng ĐANG tìm kiếm (kết quả khớp vài nhóm) — và thu gọn lại
+  //   khi xóa hết nội dung tìm kiếm.
+  const previousQueryRef = useRef("");
   useEffect(() => {
-    if (normalizedQuery) {
-      const matchingKeys: Record<string, boolean> = {};
-      visibleMenus.forEach((m) => {
-        if (m.subNav && m.subNav.length > 0) {
-          const matched =
-            includesMenuText(m.title, normalizedQuery) ||
-            m.subNav.some(
-              (sub) =>
-                includesMenuText(sub.title, normalizedQuery) ||
-                includesMenuText(sub.MENU_CODE, normalizedQuery)
-            );
-          if (matched) {
-            matchingKeys[getGroupKey(m)] = true;
-          }
-        }
-      });
-      setOpenGroups(matchingKeys);
-    } else {
-      // Khi xóa hết search, chỉ mở duy nhất nhóm đang active/đầu tiên để tránh chồng chéo nhiều nhóm
-      if (activeDefaultKey) {
-        setOpenGroups({ [activeDefaultKey]: true });
-      } else {
+    if (!normalizedQuery) {
+      if (previousQueryRef.current) {
+        previousQueryRef.current = "";
         setOpenGroups({});
       }
+      return;
     }
-  }, [normalizedQuery, visibleMenus, activeDefaultKey]);
+
+    previousQueryRef.current = normalizedQuery;
+    const matchingKeys: Record<string, boolean> = {};
+    visibleMenus.forEach((m) => {
+      if (m.subNav && m.subNav.length > 0) {
+        const matched =
+          includesMenuText(m.title, normalizedQuery) ||
+          m.subNav.some(
+            (sub) =>
+              includesMenuText(sub.title, normalizedQuery) ||
+              includesMenuText(sub.MENU_CODE, normalizedQuery)
+          );
+        if (matched) {
+          matchingKeys[getGroupKey(m)] = true;
+        }
+      }
+    });
+    setOpenGroups(matchingKeys);
+  }, [normalizedQuery, visibleMenus]);
+
+  // Chế độ đa nhiệm tab: khi tab đang active thuộc nhóm khác thì mở nhóm đó.
+  // Bỏ qua lần chạy đầu để lúc mới mở menu không nhóm nào bị xổ sẵn.
+  const didInitTabGroupRef = useRef(false);
+  useEffect(() => {
+    if (!didInitTabGroupRef.current) {
+      didInitTabGroupRef.current = true;
+      return;
+    }
+    if (!activeTabGroupKey) return;
+    setOpenGroups({ [activeTabGroupKey]: true });
+  }, [activeTabGroupKey]);
 
   const handleGroupToggle = (menuKey: string) => {
     setOpenGroups((prev) => {

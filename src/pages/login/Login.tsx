@@ -9,7 +9,7 @@ import {
   changeSelectedServer,
   changeServer,
 } from "../../redux/slices/globalSlice";
-import { isValidInput } from "../../api/services/utilService";
+import { isValidInput } from "../../api/services/utilCore";
 import Swal from "sweetalert2";
 import { PrecisionLoginHeader } from "./PrecisionLogin/PrecisionLoginHeader";
 import { PrecisionLoginForm } from "./PrecisionLogin/PrecisionLoginForm";
@@ -18,6 +18,7 @@ import { PrecisionLoginFooter } from "./PrecisionLogin/PrecisionLoginFooter";
 const Login: React.FC = () => {
   const dispatch = useDispatch();
   const passRef = useRef<HTMLInputElement>(null);
+  const loadingTimerRef = useRef<number | null>(null);
 
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
@@ -30,6 +31,16 @@ const Login: React.FC = () => {
   const cpnInfo = useSelector((state: RootState) => state.totalSlice.cpnInfo);
   const ctr_cd = useSelector((state: RootState) => state.totalSlice.ctr_cd) || "002";
   const selectedServer = useSelector((state: RootState) => state.totalSlice.selectedServer) || "";
+
+  // Dọn timer trạng thái loading khi rời màn hình đăng nhập
+  useEffect(() => {
+    return () => {
+      if (loadingTimerRef.current !== null) {
+        window.clearTimeout(loadingTimerRef.current);
+        loadingTimerRef.current = null;
+      }
+    };
+  }, []);
 
   // Khởi tạo server và ngôn ngữ từ localStorage / Redux
   useEffect(() => {
@@ -137,7 +148,12 @@ const Login: React.FC = () => {
       setIsLoading(true);
       login(user.trim(), pass);
     } finally {
-      setTimeout(() => setIsLoading(false), 1500);
+      // Đăng nhập thành công sẽ chuyển trang ⇒ nếu không clear timer, callback dưới đây
+      // sẽ chạy sau khi Login đã unmount (setState "mồ côi").
+      if (loadingTimerRef.current !== null) {
+        window.clearTimeout(loadingTimerRef.current);
+      }
+      loadingTimerRef.current = window.setTimeout(() => setIsLoading(false), 1500);
     }
   }, [user, pass, rememberMe]);
 

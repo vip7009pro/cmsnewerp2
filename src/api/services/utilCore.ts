@@ -18,6 +18,12 @@ import type { MutableRefObject } from "react";
 export const zeroPad = (num: number, places: number) =>
   String(num).padStart(places, "0");
 
+/** Chỉ cho phép chữ/số/gạch dưới — dùng cho validate username & password ở màn Login. */
+export const isValidInput = (input: string) => {
+  const regex = /^[a-zA-Z0-9_]*$/;
+  return regex.test(input);
+};
+
 export const requestFullScreen = (
   elementRef: MutableRefObject<null>,
   full_screen: number
