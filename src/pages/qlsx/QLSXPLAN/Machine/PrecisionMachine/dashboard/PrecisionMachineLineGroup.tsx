@@ -6,12 +6,15 @@ interface LineGroupProps {
   series: string;
   factory: string;
   machines: EQ_STT[];
-  plans: QLSXPLANDATA[];
+  /** Map chỉ thị rút gọn theo khóa `${FACTORY}|${PLAN_EQ}` (ưu tiên - tránh filter lặp) */
+  plansByMachine?: Record<string, QLSXPLANDATA[]>;
+  /** Fallback cho màn hình cũ: danh sách plan dùng chung toàn sàn */
+  plans?: QLSXPLANDATA[];
   onOpenPlanModal: (machineName: string, factory: string) => void;
 }
 
 export const PrecisionMachineLineGroup: React.FC<LineGroupProps> = React.memo(
-  ({ series, factory, machines, plans, onOpenPlanModal }) => {
+  ({ series, factory, machines, plansByMachine, plans, onOpenPlanModal }) => {
     // Thông tin cấu hình theo từng loại Series Line
     let lineName = `CHUYỀN MÁY DẬP ${series}`;
     let lineDesc = `• ${machines.length} Cụm Máy Đang Quản Lý`;
@@ -63,14 +66,21 @@ export const PrecisionMachineLineGroup: React.FC<LineGroupProps> = React.memo(
 
         {/* Machine Cards Grid */}
         <div className={`precision-machine__machineGrid ${gridModifier}`}>
-          {machines.map((machine, idx) => (
-            <PrecisionMachineCard
-              key={idx}
-              machine={machine}
-              plans={plans}
-              onDoubleClick={() => onOpenPlanModal(machine.EQ_NAME || "NA", machine.FACTORY || factory)}
-            />
-          ))}
+          {machines.map((machine, idx) => {
+            const machinePlanRows = plansByMachine
+              ? plansByMachine[`${machine.FACTORY || ""}|${machine.EQ_NAME || ""}`] || []
+              : (plans || []).filter(
+                  (p) => p.PLAN_EQ === machine.EQ_NAME && p.PLAN_FACTORY === machine.FACTORY
+                );
+            return (
+              <PrecisionMachineCard
+                key={idx}
+                machine={machine}
+                plans={machinePlanRows}
+                onDoubleClick={() => onOpenPlanModal(machine.EQ_NAME || "NA", machine.FACTORY || factory)}
+              />
+            );
+          })}
         </div>
       </section>
     );

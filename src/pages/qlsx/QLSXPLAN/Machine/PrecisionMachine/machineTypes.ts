@@ -95,6 +95,11 @@ export interface UseMachineDataReturn {
   selectedFactory: string;
   setSelectedFactory: (f: string) => void;
   openPlanModal: (machineName: string, factory: string) => void;
+  /** Chi tiết chỉ thị của máy đang mở modal (đã ghép SLC/CD/LOSS_KT) */
+  machinePlans: QLSXPLANDATA[];
+  isMachinePlansLoading: boolean;
+  /** Tải lại chỉ thị + SLC cho 1 máy (dùng sau khi thêm/xóa/sửa plan hoặc định mức) */
+  loadMachinePlans: (machine: string, factory: string) => Promise<QLSXPLANDATA[]>;
 }
 
 // Hook Return Types cho Modal Plan trên máy
@@ -107,6 +112,9 @@ export interface UseMachinePlanModalReturn {
   // Danh sách plan của máy
   currentMachinePlans: QLSXPLANDATA[];
   setCurrentMachinePlans: React.Dispatch<React.SetStateAction<QLSXPLANDATA[]>>;
+  /** Tải lại riêng chỉ thị của máy đang chọn (nhẹ hơn nhiều so với load lại cả sàn) */
+  refreshMachinePlans: () => Promise<void>;
+  isMachinePlansLoading: boolean;
   // Định mức
   datadinhmuc: DataDinhMucState;
   setDataDinhMuc: React.Dispatch<React.SetStateAction<DataDinhMucState>>;

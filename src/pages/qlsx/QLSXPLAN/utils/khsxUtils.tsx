@@ -764,6 +764,260 @@ export const f_updatePlanOrder = (plan_date: string) => {
       console.log(error);
     });
 };
+/* ============================================================================================
+ * PHÂN RÃ QUERY KẾ HOẠCH SẢN XUẤT (thay thế dần getqlsxplan2 cho tab PLANVISUAL)
+ *  - f_loadQLSXPlanSummary  : command getqlsxplanSummary  (siêu nhẹ - machine cards + KPI)
+ *  - f_loadQLSXPlanByMachine: command getqlsxplanByMachine (chi tiết plan của 1 máy)
+ *  - f_loadQLSXPlanSLC      : command getqlsxplanSLC       (SLC/CD/LOSS_KT cho nhóm YCSX của máy)
+ *  - applySlcToPlans        : ghép SLC vào danh sách plan của máy
+ * ========================================================================================== */
+const isEqUsable = (eq?: string | null): boolean =>
+  !(eq === "NO" || eq === "NA" || eq === "" || eq === null || eq === undefined);
+
+/** Chuẩn hóa 1 dòng plan thô -> QLSXPLANDATA (dùng chung cho các command phân rã). */
+const normalizePlanRow = (
+  element: any,
+  index: number,
+  slc?: YCSX_SLC_DATA
+): QLSXPLANDATA => {
+  const cd1 = slc?.CD1 ?? element.CD1 ?? 0;
+  const cd2 = slc?.CD2 ?? element.CD2 ?? 0;
+  const cd3 = slc?.CD3 ?? element.CD3 ?? 0;
+  const cd4 = slc?.CD4 ?? element.CD4 ?? 0;
+
+  const rawSlc1 = slc?.SLC_CD1 ?? element.SLC_CD1 ?? 0;
+  const rawSlc2 = slc?.SLC_CD2 ?? element.SLC_CD2 ?? 0;
+  const rawSlc3 = slc?.SLC_CD3 ?? element.SLC_CD3 ?? 0;
+  const rawSlc4 = slc?.SLC_CD4 ?? element.SLC_CD4 ?? 0;
+
+  const slcCd1 = !isEqUsable(element.EQ1) ? 0 : rawSlc1;
+  const slcCd2 = !isEqUsable(element.EQ2) ? 0 : rawSlc2;
+  const slcCd3 = !isEqUsable(element.EQ3) ? 0 : rawSlc3;
+  const slcCd4 = !isEqUsable(element.EQ4) ? 0 : rawSlc4;
+
+  const tonCd1 = !isEqUsable(element.EQ1) ? 0 : slcCd1 - cd1;
+  const tonCd2 = !isEqUsable(element.EQ2) ? 0 : slcCd2 - cd2;
+  const tonCd3 = !isEqUsable(element.EQ3) ? 0 : slcCd3 - cd3;
+  const tonCd4 = !isEqUsable(element.EQ4) ? 0 : slcCd4 - cd4;
+
+  const rawLossKt = slc?.LOSS_KT ?? element.LOSS_KT ?? 0;
+
+  return {
+    ...element,
+    ORG_LOSS_KT: getCompany() === "CMS" ? rawLossKt : 0,
+    LOSS_KT:
+      getCompany() === "CMS" ? (rawLossKt > 5 ? 5 : rawLossKt) : 0,
+    G_NAME:
+      getAuditMode() == 0
+        ? element?.G_NAME
+        : element?.G_NAME?.search("CNDB") == -1
+        ? element?.G_NAME
+        : "TEM_NOI_BO",
+    G_NAME_KD:
+      getAuditMode() == 0
+        ? element?.G_NAME_KD
+        : element?.G_NAME?.search("CNDB") == -1
+        ? element?.G_NAME_KD
+        : "TEM_NOI_BO",
+    PLAN_DATE: element.PLAN_DATE
+      ? moment.utc(element.PLAN_DATE).format("YYYY-MM-DD")
+      : element.PLAN_DATE,
+    EQ_STATUS:
+      element.EQ_STATUS === "B"
+        ? "Đang setting"
+        : element.EQ_STATUS === "M"
+        ? "Đang Run"
+        : element.EQ_STATUS === "K"
+        ? "Chạy xong"
+        : "Chưa chạy",
+    ACHIVEMENT_RATE:
+      element.PLAN_QTY > 0 ? ((element.KETQUASX ?? 0) / element.PLAN_QTY) * 100 : 0,
+    SLC_CD1: slcCd1,
+    SLC_CD2: slcCd2,
+    SLC_CD3: slcCd3,
+    SLC_CD4: slcCd4,
+    CD1: cd1,
+    CD2: cd2,
+    CD3: cd3,
+    CD4: cd4,
+    TON_CD1: tonCd1,
+    TON_CD2: tonCd2,
+    TON_CD3: tonCd3,
+    TON_CD4: tonCd4,
+    SETTING_START_TIME:
+      element.SETTING_START_TIME === null
+        ? "X"
+        : moment.utc(element.SETTING_START_TIME).format("HH:mm:ss"),
+    MASS_START_TIME:
+      element.MASS_START_TIME === null
+        ? "X"
+        : moment.utc(element.MASS_START_TIME).format("HH:mm:ss"),
+    MASS_END_TIME:
+      element.MASS_END_TIME === null
+        ? "X"
+        : moment.utc(element.MASS_END_TIME).format("HH:mm:ss"),
+    CURRENT_SLC:
+      element.PROCESS_NUMBER === 1
+        ? slcCd1
+        : element.PROCESS_NUMBER === 2
+        ? slcCd2
+        : element.PROCESS_NUMBER === 3
+        ? slcCd3
+        : slcCd4,
+    id: index,
+  };
+};
+
+/**
+ * Danh sách chỉ thị RÚT GỌN cho machine card + KPI sàn sản xuất.
+ * Dùng command `getqlsxplanSummary` (không join bảng nặng).
+ */
+export const f_loadQLSXPlanSummary = async (
+  plan_date: string,
+  machine: string,
+  factory: string
+): Promise<QLSXPLANDATA[]> => {
+  let planData: QLSXPLANDATA[] = [];
+  try {
+    const response = await generalQuery("getqlsxplanSummary", {
+      PLAN_DATE: plan_date,
+      MACHINE: machine,
+      FACTORY: factory,
+    });
+    if (response.data.tk_status !== "NG") {
+      planData = response.data.data.map((element: any, index: number) => ({
+        ...element,
+        id: index,
+        PLAN_DATE: element.PLAN_DATE
+          ? moment.utc(element.PLAN_DATE).format("YYYY-MM-DD")
+          : element.PLAN_DATE,
+        G_NAME:
+          getAuditMode() == 0
+            ? element?.G_NAME
+            : element?.G_NAME?.search("CNDB") == -1
+            ? element?.G_NAME
+            : "TEM_NOI_BO",
+        G_NAME_KD:
+          getAuditMode() == 0
+            ? element?.G_NAME_KD
+            : element?.G_NAME?.search("CNDB") == -1
+            ? element?.G_NAME_KD
+            : "TEM_NOI_BO",
+        ACHIVEMENT_RATE:
+          element.PLAN_QTY > 0
+            ? ((element.KETQUASX ?? 0) / element.PLAN_QTY) * 100
+            : 0,
+      }));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return planData;
+};
+
+/**
+ * Chi tiết chỉ thị CỦA 1 MÁY (mở modal plan window).
+ * Dùng command `getqlsxplanByMachine` - đã bỏ BB pivot / LOSSKT / SLC (tải riêng qua f_loadQLSXPlanSLC).
+ */
+export const f_loadQLSXPlanByMachine = async (
+  plan_date: string,
+  eq_name: string,
+  factory: string
+): Promise<QLSXPLANDATA[]> => {
+  let planData: QLSXPLANDATA[] = [];
+  try {
+    const response = await generalQuery("getqlsxplanByMachine", {
+      PLAN_DATE: plan_date,
+      EQ_NAME: eq_name,
+      FACTORY: factory,
+    });
+    if (response.data.tk_status !== "NG") {
+      planData = response.data.data.map((element: any, index: number) =>
+        normalizePlanRow(element, index)
+      );
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return planData;
+};
+
+/**
+ * Số lượng cần (SLC) theo từng công đoạn + CD + LOSS_KT cho đúng nhóm YCSX của máy.
+ * Dùng command `getqlsxplanSLC`. Trả về map theo PROD_REQUEST_NO.
+ */
+export const f_loadQLSXPlanSLC = async (
+  prodRequestNoList: string[]
+): Promise<Record<string, YCSX_SLC_DATA>> => {
+  const slcMap: Record<string, YCSX_SLC_DATA> = {};
+  if (!prodRequestNoList || prodRequestNoList.length === 0) return slcMap;
+  try {
+    const response = await generalQuery("getqlsxplanSLC", {
+      PROD_REQUEST_NO_LIST: prodRequestNoList,
+    });
+    if (response.data.tk_status !== "NG") {
+      (response.data.data || []).forEach((element: YCSX_SLC_DATA) => {
+        if (element?.PROD_REQUEST_NO) {
+          slcMap[element.PROD_REQUEST_NO] = element;
+        }
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return slcMap;
+};
+
+/** Ghép dữ liệu SLC (CD/SLC/TON/LOSS_KT) vào danh sách plan của máy (không chuẩn hóa lại). */
+export const applySlcToPlans = (
+  plans: QLSXPLANDATA[],
+  slcMap: Record<string, YCSX_SLC_DATA>
+): QLSXPLANDATA[] => {
+  if (!plans || plans.length === 0) return [];
+  return plans.map((plan) => {
+    const slc = slcMap?.[plan.PROD_REQUEST_NO];
+    if (!slc) return plan;
+
+    const cd1 = slc.CD1 ?? 0;
+    const cd2 = slc.CD2 ?? 0;
+    const cd3 = slc.CD3 ?? 0;
+    const cd4 = slc.CD4 ?? 0;
+
+    const slcCd1 = !isEqUsable(plan.EQ1) ? 0 : slc.SLC_CD1 ?? 0;
+    const slcCd2 = !isEqUsable(plan.EQ2) ? 0 : slc.SLC_CD2 ?? 0;
+    const slcCd3 = !isEqUsable(plan.EQ3) ? 0 : slc.SLC_CD3 ?? 0;
+    const slcCd4 = !isEqUsable(plan.EQ4) ? 0 : slc.SLC_CD4 ?? 0;
+
+    const rawLossKt = slc.LOSS_KT ?? plan.ORG_LOSS_KT ?? 0;
+
+    return {
+      ...plan,
+      CD1: cd1,
+      CD2: cd2,
+      CD3: cd3,
+      CD4: cd4,
+      SLC_CD1: slcCd1,
+      SLC_CD2: slcCd2,
+      SLC_CD3: slcCd3,
+      SLC_CD4: slcCd4,
+      TON_CD1: isEqUsable(plan.EQ1) ? slcCd1 - cd1 : 0,
+      TON_CD2: isEqUsable(plan.EQ2) ? slcCd2 - cd2 : 0,
+      TON_CD3: isEqUsable(plan.EQ3) ? slcCd3 - cd3 : 0,
+      TON_CD4: isEqUsable(plan.EQ4) ? slcCd4 - cd4 : 0,
+      ORG_LOSS_KT: getCompany() === "CMS" ? rawLossKt : 0,
+      LOSS_KT: getCompany() === "CMS" ? (rawLossKt > 5 ? 5 : rawLossKt) : 0,
+      CURRENT_SLC:
+        plan.PROCESS_NUMBER === 1
+          ? slcCd1
+          : plan.PROCESS_NUMBER === 2
+          ? slcCd2
+          : plan.PROCESS_NUMBER === 3
+          ? slcCd3
+          : slcCd4,
+    };
+  });
+};
+
 export const f_loadQLSXPLANDATA = async (
   plan_date: string,
   machine: string,

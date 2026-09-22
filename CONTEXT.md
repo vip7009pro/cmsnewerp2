@@ -4139,3 +4139,25 @@ Build a complete ERP Chat system that enables:
 - Identified that cmsvina4285.com resolves to a remote IP (14.160.33.94) while the local backend is running on localhost. Local requests to the domain were timing out due to network mismatch.
 - Uncommented TEST_SERVER (http://localhost:3007) in globalSlice.ts's apiUrlArray so that the user can test the local backend directly without routing through the external DDNS domain.
 
+
+## Update - 2026-09-22 (Phân rã query chỉ thị sản xuất cho tab PLANVISUAL)
+
+### Vấn đề
+- Tab `QLSXPLAN/Machine/PLANVISUAL.tsx` dùng CHUNG 1 query `getqlsxplan2` cho cả danh sách máy bên ngoài lẫn bảng chỉ thị trong modal.
+- Query này rất nặng (BB pivot sản lượng, LOSSKT 10 ngày gần nhất, SLC 4 công đoạn, P400, P501) và phải load lại toàn bộ sàn sau mỗi thao tác thêm/xóa plan, đăng ký xuất liệu, lưu định mức.
+
+### Đã phân rã (backend `practice1/services/sanxuatService.js`)
+- `getqlsxplanSummary`: chỉ ZTB_QLSXPLAN + M100, trả các cột tối thiểu -> machine card + KPI sàn.
+- `getqlsxplanByMachine`: chỉ thị của ĐÚNG 1 máy (PLAN_EQ + PLAN_DATE + PLAN_FACTORY), thêm KQ_SX_TAM (P501 giới hạn theo plan của máy) và LEADTIME/ACC_TIME tính trong phạm vi máy. Không có BB pivot/LOSSKT/SLC.
+- `getqlsxplanSLC`: tính CD1..CD4, SLC_CD1..CD4, LOSS_KT cho đúng nhóm PROD_REQUEST_NO của máy (tham số `PROD_REQUEST_NO_LIST`).
+- `getqlsxplan2` (và `getqlsxplan2_New`) giữ nguyên cho các màn hình cũ.
+
+### Frontend
+- `khsxUtils.tsx`: thêm `f_loadQLSXPlanSummary`, `f_loadQLSXPlanByMachine`, `f_loadQLSXPlanSLC`, `applySlcToPlans` (ghép SLC vào plan; không chuẩn hóa lại để tránh lỗi double-format thời gian).
+- `useMachineData.ts`: `plandatatable` giờ là bản rút gọn; thêm `machinePlans`, `isMachinePlansLoading`, `loadMachinePlans(machine, factory)` (tải plan theo máy + SLC rồi merge).
+- `useMachinePlanModal.ts`: nhận `machinePlans`/`loadMachinePlans`; thêm `refreshMachinePlans()`; mọi thao tác plan/vật tư/định mức chỉ refresh 1 máy. Vẫn nhận `plandatatable` làm fallback cho `MACHINE_backup.tsx`.
+- `PLANVISUAL.tsx`: gom chỉ thị theo khóa `${FACTORY}|${PLAN_EQ}` (plansByMachine) truyền xuống `PrecisionMachineLineGroup` -> card không filter lại.
+- `PrecisionPlanCurrentListSection`: badge "Đang tải chỉ thị..." khi refresh theo máy (SCSS thêm `.stb-badge--amber`).
+
+### Lưu ý
+- Backend chạy bằng PM2 từ `index.js` nên chỉ cần restart tiến trình để nhận command mới; chỉ build `npm run build` khi phát hành file `outbinary/updatebe.exe`.

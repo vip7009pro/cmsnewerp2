@@ -158,7 +158,13 @@ interface UseMachinePlanModalProps {
   selectedMachine: string;
   selectedFactory: string;
   selectedPlanDate: string;
-  plandatatable: QLSXPLANDATA[];
+  /** Chi tiết chỉ thị của đúng máy đang chọn (do useMachineData tải theo máy) */
+  machinePlans?: QLSXPLANDATA[];
+  isMachinePlansLoading?: boolean;
+  /** Tải lại chỉ thị + SLC của máy đang chọn */
+  loadMachinePlans?: (machine: string, factory: string) => Promise<QLSXPLANDATA[]>;
+  /** Fallback cho màn hình cũ: danh sách plan dùng chung toàn sàn */
+  plandatatable?: QLSXPLANDATA[];
   onRefreshData: () => Promise<void>;
 }
 
@@ -166,6 +172,9 @@ export const useMachinePlanModal = ({
   selectedMachine,
   selectedFactory,
   selectedPlanDate,
+  machinePlans,
+  isMachinePlansLoading,
+  loadMachinePlans,
   plandatatable,
   onRefreshData,
 }: UseMachinePlanModalProps): UseMachinePlanModalReturn => {
@@ -253,13 +262,16 @@ export const useMachinePlanModal = ({
   });
 
   // Lọc kế hoạch thuộc máy đang chọn
+  // (machinePlans đã được backend lọc đúng PLAN_EQ + PLAN_FACTORY nên không cần filter lại;
+  //  nếu màn hình cũ truyền plandatatable dùng chung thì fallback về danh sách đó)
+  const sourcePlans = machinePlans ?? plandatatable;
   const currentMachinePlansFromProps = useMemo(() => {
-    return plandatatable.filter(
+    return (sourcePlans ?? []).filter(
       (p) =>
         p.PLAN_EQ === selectedMachine &&
         p.PLAN_FACTORY === (selectedFactory || "NM1")
     );
-  }, [plandatatable, selectedMachine, selectedFactory]);
+  }, [sourcePlans, selectedMachine, selectedFactory]);
 
   // Local state copy để IS_SETTING checkbox có thể update ngay lập tức mà không cần re-fetch
   const [localPlans, setLocalPlans] = useState<QLSXPLANDATA[]>([]);
@@ -268,6 +280,20 @@ export const useMachinePlanModal = ({
   }, [currentMachinePlansFromProps]);
 
   const currentMachinePlans = localPlans.length > 0 ? localPlans : currentMachinePlansFromProps;
+
+  /**
+   * Refresh RIÊNG chỉ thị của máy đang chọn.
+   * Trước đây mỗi thao tác (thêm/xóa plan, xuất liệu, lưu định mức...) đều gọi onRefreshData()
+   * => phải chạy lại query getqlsxplan2 nặng cho TOÀN BỘ máy. Nay chỉ tải lại 1 máy.
+   */
+  const refreshMachinePlans = useCallback(async () => {
+    if (loadMachinePlans) {
+      await loadMachinePlans(selectedMachine, selectedFactory || "NM1");
+      return;
+    }
+    // Fallback cho màn hình cũ không có loader theo máy
+    await onRefreshData();
+  }, [loadMachinePlans, onRefreshData, selectedMachine, selectedFactory]);
 
   // Nạp danh sách máy cho dropdown EQ1-4
   useEffect(() => {
@@ -433,6 +459,7 @@ export const useMachinePlanModal = ({
           );
           setAddPlanProgress(70);
           setAddPlanLoadingLabel("Đang cập nhật danh sách kế hoạch...");
+          await refreshMachinePlans();
           await onRefreshData();
           setAddPlanProgress(100);
           Swal.fire("Thành công", `Đã thêm kế hoạch cho ${selectedMachine}`, "success");
@@ -445,7 +472,7 @@ export const useMachinePlanModal = ({
         }
       });
     },
-    [datadinhmuc, onRefreshData, selectedFactory, selectedMachine, selectedPlanDate, userData]
+    [datadinhmuc, onRefreshData, refreshMachinePlans, selectedFactory, selectedMachine, selectedPlanDate, userData]
   );
 
   // Lưu thông tin single plan
@@ -474,6 +501,7 @@ export const useMachinePlanModal = ({
         if (await f_insert_Notification_Data(newNotification)) {
           getSocket().emit("notification_panel", newNotification);
         }
+        await refreshMachinePlans();
         await onRefreshData();
         const updatedChiThi = await f_handleGetChiThiTable(
           selectedPlan,
@@ -487,7 +515,7 @@ export const useMachinePlanModal = ({
         Swal.fire("Lỗi", "Không thể lưu kế hoạch", "error");
       }
     });
-  }, [datadinhmuc, onRefreshData, selectedPlan, userData, ycsxFilter.tempDM]);
+  }, [datadinhmuc, onRefreshData, refreshMachinePlans, selectedPlan, userData, ycsxFilter.tempDM]);
 
   // Xóa plan (dùng ref để giữ reference ổn định không làm re-render columns)
   // Khôi phục đúng logic bản gốc:
@@ -535,6 +563,7 @@ export const useMachinePlanModal = ({
           Swal.fire("Thông báo", err_code, "error");
         }
 
+        await refreshMachinePlans();
         await onRefreshData();
 
         const deletedIds = plans.map((p) => p.PLAN_ID);
@@ -547,7 +576,7 @@ export const useMachinePlanModal = ({
         }
       });
     },
-    [onRefreshData, userData]
+    [onRefreshData, refreshMachinePlans, userData]
   );
 
   // Di chuyển thứ tự plan (Lên / Xuống) - dùng currentMachinePlansRef để giữ reference ổn định
@@ -567,12 +596,12 @@ export const useMachinePlanModal = ({
 
       try {
         await f_updateBatchPlan(newPlans);
-        await onRefreshData();
+        await refreshMachinePlans();
       } catch (err) {
         console.error("Lỗi cập nhật thứ tự plan:", err);
       }
     },
-    [onRefreshData]
+    [refreshMachinePlans]
   );
 
   // Bắt đầu / Kết thúc Plan
@@ -582,9 +611,9 @@ export const useMachinePlanModal = ({
         PLAN_ID: plan.PLAN_ID,
         STATUS: "RUNNING",
       });
-      await onRefreshData();
+      await refreshMachinePlans();
     },
-    [onRefreshData]
+    [refreshMachinePlans]
   );
 
   const handleFinishPlan = useCallback(
@@ -593,9 +622,9 @@ export const useMachinePlanModal = ({
         PLAN_ID: plan.PLAN_ID,
         STATUS: "COMPLETED",
       });
-      await onRefreshData();
+      await refreshMachinePlans();
     },
-    [onRefreshData]
+    [refreshMachinePlans]
   );
 
   // Lưu chỉ thị vật liệu, giữ nguyên quy tắc chọn dòng của bản gốc.
@@ -626,7 +655,7 @@ export const useMachinePlanModal = ({
           await reloadMaterialRows();
           setMaterialActionProgress(80);
           setMaterialActionLabel("Đang cập nhật danh sách kế hoạch...");
-          await onRefreshData();
+          await refreshMachinePlans();
           setMaterialActionProgress(100);
           Swal.fire("Thành công", "Đã lưu bảng chỉ thị vật liệu", "success");
         } else {
@@ -638,7 +667,7 @@ export const useMachinePlanModal = ({
         setIsMaterialActionLoading(false);
       }
     });
-  }, [getMaterialRowsToSave, onRefreshData, reloadMaterialRows, saveMaterialRows, userData]);
+  }, [getMaterialRowsToSave, refreshMachinePlans, reloadMaterialRows, saveMaterialRows, userData]);
 
   // Đăng ký xuất liệu: lưu chỉ thị trước, sau đó mới đăng ký O300/O301.
   const handleDangKyXuatLieu = useCallback(async () => {
@@ -692,7 +721,7 @@ export const useMachinePlanModal = ({
         selectedMaterialRowsRef.current = [];
         await reloadMaterialRows();
         setMaterialActionProgress(90);
-        await onRefreshData();
+        await refreshMachinePlans();
         setMaterialActionProgress(100);
         Swal.fire("Thành công", "Đã đăng ký xuất liệu thành công", "success");
       } catch (err) {
@@ -701,7 +730,7 @@ export const useMachinePlanModal = ({
         setIsMaterialActionLoading(false);
       }
     });
-  }, [getMaterialRowsToSave, onRefreshData, reloadMaterialRows, saveMaterialRows, selectedFactory, selectedPlan, userData]);
+  }, [getMaterialRowsToSave, refreshMachinePlans, reloadMaterialRows, saveMaterialRows, selectedFactory, selectedPlan, userData]);
 
   // Xóa dòng chỉ thị
   const handleDeleteChiThiLine = useCallback(
@@ -902,6 +931,7 @@ export const useMachinePlanModal = ({
           Swal.fire("Thông báo", "Có lỗi: " + err_code, "error");
         } else {
           Swal.fire("Thông báo", "Lưu PLAN thành công", "success");
+          await refreshMachinePlans();
           await onRefreshData();
         }
       } catch (err) {
@@ -909,7 +939,7 @@ export const useMachinePlanModal = ({
         Swal.fire("Lỗi", "Không thể lưu danh sách kế hoạch", "error");
       }
     });
-  }, [currentMachinePlans, onRefreshData, userData]);
+  }, [currentMachinePlans, onRefreshData, refreshMachinePlans, userData]);
 
   // Lưu Data Định Mức (f_saveQLSX)
   const handleSaveDataDinhMuc = useCallback(async () => {
@@ -1007,7 +1037,7 @@ export const useMachinePlanModal = ({
            *    để lần click kế tiếp luôn ra định mức mới.
            */
           setSelectedPlan((prev) => ({ ...prev, ...(datadinhmuc as any) }));
-          await onRefreshData();
+          await refreshMachinePlans();
 
           Swal.fire("Thông báo", "Lưu Định mức thành công", "success");
         } else {
@@ -1018,7 +1048,7 @@ export const useMachinePlanModal = ({
         Swal.fire("Lỗi", "Không thể lưu định mức", "error");
       }
     });
-  }, [datadinhmuc, onRefreshData, selectedPlan, userData, ycsxFilter.tempDM]);
+  }, [datadinhmuc, refreshMachinePlans, selectedPlan, userData, ycsxFilter.tempDM]);
 
   // Áp dụng Định Mức Mặc Định (ĐM MĐ)
   const handleSetDMMD = useCallback(() => {
@@ -1082,6 +1112,8 @@ export const useMachinePlanModal = ({
     handleSelectPlan,
     currentMachinePlans,
     setCurrentMachinePlans: setLocalPlans,
+    refreshMachinePlans,
+    isMachinePlansLoading: isMachinePlansLoading ?? false,
     datadinhmuc,
     setDataDinhMuc,
     recentDMData,
@@ -1136,7 +1168,7 @@ export const useMachinePlanModal = ({
     handleSetDMMD,
     canSetDMMD,
     totalMachineTime,
-    onRefreshData,
+    onRefreshData: refreshMachinePlans,
     handleSetPendingYCSX,
     handlePrintYCSXList,
     handlePrintBanVeList,

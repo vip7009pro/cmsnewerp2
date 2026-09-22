@@ -2,7 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import moment from "moment";
 import Swal from "sweetalert2";
 import { EQ_STT, QLSXPLANDATA } from "../../interfaces/khsxInterface";
-import { f_handle_loadEQ_STATUS, f_loadQLSXPLANDATA } from "../../utils/khsxUtils";
+import {
+  applySlcToPlans,
+  f_handle_loadEQ_STATUS,
+  f_loadQLSXPlanByMachine,
+  f_loadQLSXPlanSLC,
+  f_loadQLSXPlanSummary,
+} from "../../utils/khsxUtils";
 import { MachineKpiData, UseMachineDataReturn } from "./machineTypes";
 import useLocalStorageArray from "../LoadSelectedMachineHook";
 
@@ -16,8 +22,13 @@ export const useMachineData = (): UseMachineDataReturn => {
   const [selected_eq, setSelected_eq] = useLocalStorageArray("selected_eq");
   const [eq_series, setEq_Series] = useState<string[]>(EQ_SERIES_LIST);
   const [eq_status, setEq_Status] = useState<EQ_STT[]>([]);
+  // plandatatable: danh sách RÚT GỌN của cả sàn (machine cards + KPI)
   const [plandatatable, setPlanDataTable] = useState<QLSXPLANDATA[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // Chi tiết chỉ thị CỦA MÁY ĐANG MỞ MODAL (chỉ tải khi cần)
+  const [machinePlans, setMachinePlans] = useState<QLSXPLANDATA[]>([]);
+  const [isMachinePlansLoading, setIsMachinePlansLoading] = useState<boolean>(false);
 
   // Modal Plan Control
   const [showPlanWindow, setShowPlanWindow] = useState<boolean>(false);
@@ -37,11 +48,11 @@ export const useMachineData = (): UseMachineDataReturn => {
     }
   }, []);
 
-  // Nạp dữ liệu kế hoạch dập
+  // Nạp dữ liệu kế hoạch dập (bản RÚT GỌN: chỉ đủ cho machine card + KPI)
   const loadQLSXPlan = useCallback(async (planDate: string) => {
     setIsLoading(true);
     try {
-      const data = await f_loadQLSXPLANDATA(planDate, "ALL", "ALL");
+      const data = await f_loadQLSXPlanSummary(planDate, "ALL", "ALL");
       setPlanDataTable(data);
     } catch (error) {
       console.error("Lỗi nạp QLSX Plan:", error);
@@ -49,6 +60,44 @@ export const useMachineData = (): UseMachineDataReturn => {
       setIsLoading(false);
     }
   }, []);
+
+  /**
+   * Nạp CHI TIẾT chỉ thị của 1 máy (2 bước, đều nhẹ vì phạm vi chỉ 1 máy):
+   *  1. getqlsxplanByMachine -> thông tin plan + định mức + leadtime
+   *  2. getqlsxplanSLC       -> CD/SLC/LOSS_KT cho đúng các YCSX của máy
+   * Sau đó ghép lại thành QLSXPLANDATA hoàn chỉnh cho bảng plan trong modal.
+   */
+  const loadMachinePlans = useCallback(
+    async (machine: string, f: string): Promise<QLSXPLANDATA[]> => {
+      if (!machine) return [];
+      setIsMachinePlansLoading(true);
+      try {
+        const planRows = await f_loadQLSXPlanByMachine(
+          selectedPlanDate,
+          machine,
+          f || factory
+        );
+        const ycsxList = [
+          ...new Set(
+            planRows
+              .map((p) => p.PROD_REQUEST_NO)
+              .filter((v): v is string => !!v)
+          ),
+        ];
+        const slcMap = await f_loadQLSXPlanSLC(ycsxList);
+        const merged = applySlcToPlans(planRows, slcMap);
+        setMachinePlans(merged);
+        return merged;
+      } catch (error) {
+        console.error("Lỗi nạp plan theo máy:", error);
+        setMachinePlans([]);
+        return [];
+      } finally {
+        setIsMachinePlansLoading(false);
+      }
+    },
+    [factory, selectedPlanDate]
+  );
 
   // Làm mới toàn bộ
   const refreshAll = useCallback(async () => {
@@ -86,17 +135,20 @@ export const useMachineData = (): UseMachineDataReturn => {
     });
   }, [refreshAll]);
 
-  // Mở modal khi double-click card máy
+  // Mở modal khi double-click card máy -> chỉ tải chỉ thị của đúng máy đó
   const openPlanModal = useCallback((machineName: string, f: string) => {
     setSelectedMachine(machineName);
     setSelectedFactory(f || factory);
     setShowPlanWindow(true);
-  }, [factory]);
+    void loadMachinePlans(machineName, f || factory);
+  }, [factory, loadMachinePlans]);
 
   // Polling chu kỳ 3s nạp trạng thái máy realtime
   useEffect(() => {
     handle_loadEQ_STATUS();
     loadQLSXPlan(selectedPlanDate);
+    // Đổi ngày kế hoạch => chi tiết plan của máy cũ không còn giá trị
+    setMachinePlans([]);
 
     const intervalID = window.setInterval(() => {
       handle_loadEQ_STATUS();
@@ -170,5 +222,8 @@ export const useMachineData = (): UseMachineDataReturn => {
     selectedFactory,
     setSelectedFactory,
     openPlanModal,
+    machinePlans,
+    isMachinePlansLoading,
+    loadMachinePlans,
   };
 };

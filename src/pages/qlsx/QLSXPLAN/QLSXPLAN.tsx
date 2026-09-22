@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense } from "react";
+import React, { useEffect, Suspense, lazy } from "react";
 import "./QLSXPLAN.scss";
 import KHCT from "./KHCT/KHCT";
 import { useSelector } from "react-redux";
@@ -6,6 +6,7 @@ import { RootState } from "../../../redux/store";
 import { getCompany, getUserData } from "../../../api/Api";
 import LONGTERM_PLAN from "./LICHSUCHITHITABLE/LONGTERM_PLAN";
 import MyTabs from "../../../components/MyTab/MyTab";
+const PLAN_VISUAL = lazy(() => import("./Machine/PLANVISUAL"));
 const BTP_AUTO = React.lazy(() => import("../../sx/BTP_AUTO/BTP_AUTO"));
 const MACHINE_OLD = React.lazy(() => import("./Machine/MACHINE_backup"));
 const PLAN_DATATB_OLD = React.lazy(() => import("./LICHSUCHITHITABLE/PLAN_DATATB_backup"));
@@ -31,7 +32,7 @@ const QLSXPLAN = () => {
             {getCompany() === "CMS" && getUserData()?.EMPL_NO === "NHU1903z" ? (
               <MACHINE />
             ) : (
-              <MACHINE_OLD />
+              <PLAN_VISUAL />
             )}
           </MyTabs.Tab>
           {getCompany() === "CMS" && (

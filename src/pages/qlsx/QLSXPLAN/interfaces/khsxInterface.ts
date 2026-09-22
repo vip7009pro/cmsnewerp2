@@ -768,6 +768,11 @@ export interface YCSX_SLC_DATA {
   SLC_CD2: number;
   SLC_CD3: number;
   SLC_CD4: number;
+  /** Sản lượng đã chốt theo từng công đoạn (command getqlsxplanSLC) */
+  CD1?: number;
+  CD2?: number;
+  CD3?: number;
+  CD4?: number;
 }
 export interface TEMLOTSX_DATA {
   INS_DATE: string;

@@ -90,6 +90,7 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
       detailLoadingLabel,
       materialActionProgress,
       materialActionLabel,
+      isMachinePlansLoading,
     } = modalController;
 
     return (
@@ -181,6 +182,7 @@ export const PrecisionMachinePlanModal: React.FC<ModalProps> = React.memo(
                   totalMachineTime={totalMachineTime}
                   plandatatable={currentMachinePlans}
                   setPlanDataTable={setCurrentMachinePlans}
+                  isPlanLoading={isMachinePlansLoading}
                 />
 
                 <div className={`precision-plan-modal__detailContent${isDetailLoading ? " is-loading" : ""}`}>

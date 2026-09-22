@@ -35,6 +35,8 @@ interface CurrentListSectionProps {
   // Dùng để IS_SETTING checkbox hoạt động
   plandatatable?: QLSXPLANDATA[];
   setPlanDataTable?: React.Dispatch<React.SetStateAction<QLSXPLANDATA[]>>;
+  /** Đang tải lại chỉ thị của máy (query theo máy, không phải cả sàn) */
+  isPlanLoading?: boolean;
 }
 
 export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> = React.memo(
@@ -58,6 +60,7 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
     totalMachineTime,
     plandatatable,
     setPlanDataTable,
+    isPlanLoading,
   }) => {
     const gridPlanRef = useRef<any>(null);
     // Lưu các dòng PLAN đã CHECK (multi-select) để xóa hàng loạt (giống qlsxplandatafilter.current bản gốc)
@@ -211,6 +214,11 @@ export const PrecisionPlanCurrentListSection: React.FC<CurrentListSectionProps> 
 
           {/* Phải: Total time & Badge Plan */}
           <div className="toolbar-info-group">
+            {isPlanLoading && (
+              <span className="stb-badge stb-badge--amber" title="Đang tải lại chỉ thị của máy">
+                Đang tải chỉ thị...
+              </span>
+            )}
             <span className="stb-badge stb-badge--emerald">
               Total: {(totalMachineTime || 0).toLocaleString("en-US", { maximumFractionDigits: 0 })} min
             </span>
