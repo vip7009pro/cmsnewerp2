@@ -14,7 +14,7 @@ import {
   RecentDM,
 } from "../../interfaces/khsxInterface";
 import {
-  f_addQLSXPLAN,
+  f_addQLSXPLANFast,
   f_deleteChiThiMaterialLine,
   f_deleteQLSXPlan,
   f_getMachineListData,
@@ -450,7 +450,9 @@ export const useMachinePlanModal = ({
         try {
           setAddPlanProgress(35);
           setAddPlanLoadingLabel("Đang tạo kế hoạch trên máy...");
-          await f_addQLSXPLAN(
+          // BẢN NHANH: 1 request duy nhất (gộp kiểm tra YCSX hệ thống cũ + tính PLAN_ID/PLAN_ORDER + insert
+          // + đồng bộ LOSS_KT trong phạm vi YCSX vừa thêm). Không cần gọi thêm updateDMLOSSKT_ZTB_DM_HISTORY.
+          const addErrCode = await f_addQLSXPLANFast(
             [ycsxRow],
             selectedPlanDate,
             selectedMachine,
@@ -462,7 +464,11 @@ export const useMachinePlanModal = ({
           await refreshMachinePlans();
           await onRefreshData();
           setAddPlanProgress(100);
-          Swal.fire("Thành công", `Đã thêm kế hoạch cho ${selectedMachine}`, "success");
+          if (addErrCode) {
+            Swal.fire("Thông báo", addErrCode, "warning");
+          } else {
+            Swal.fire("Thành công", `Đã thêm kế hoạch cho ${selectedMachine}`, "success");
+          }
         } catch (err) {
           console.error("Lỗi add plan:", err);
           Swal.fire("Lỗi", "Không thể thêm kế hoạch", "error");

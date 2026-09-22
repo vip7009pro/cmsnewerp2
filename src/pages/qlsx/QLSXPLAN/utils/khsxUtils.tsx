@@ -2757,6 +2757,127 @@ export const f_addQLSXPLAN = async (
   }
   return err_code;
 };
+/**
+ * Thêm chỉ thị vào máy - BẢN NHANH (chỉ 1 request duy nhất).
+ *
+ * Vì sao cần: bản cũ `f_addQLSXPLAN` gọi tuần tự 4 request cho MỖI dòng
+ * (checkProd_request_no_Exist_O302 -> getLastestPLAN_ID -> getLastestPLANORDER -> addPlanQLSX)
+ * rồi gọi thêm `updateDMLOSSKT_ZTB_DM_HISTORY` (MERGE quét toàn bảng) => chậm ~3s/plan.
+ *
+ * Bản nhanh gửi cả danh sách dòng cho command `addPlanQLSXFast`; backend tự làm:
+ *  - kiểm tra YCSX thuộc hệ thống cũ (1 query cho cả batch)
+ *  - tính PLAN_ID kế tiếp + PLAN_ORDER kế tiếp (1 query cho cả batch)
+ *  - INSERT từng dòng
+ *  - đồng bộ LOSS_KT giới hạn trong đúng các YCSX vừa thêm
+ * => ~5 request + 1 MERGE toàn bảng  ->  1 request.
+ * Phần tính PLAN_QTY / PROCESS_NUMBER vẫn giữ nguyên công thức như bản cũ để không đổi nghiệp vụ.
+ *
+ * Giá trị trả về: chuỗi RỖNG ("") = thành công, ngược lại là nội dung lỗi để hiển thị.
+ */
+export const f_addQLSXPLANFast = async (
+  ycsxdatatablefilter: YCSXTableData[],
+  selectedPlanDate: string,
+  selectedMachine: string,
+  selectedFactory: string,
+  tempDM?: any
+) => {
+  let err_code: string = "";
+  if (!ycsxdatatablefilter || ycsxdatatablefilter.length === 0) {
+    return "Chọn ít nhất 1 YCSX để Add !";
+  }
+  const qtyFactor: number =
+    parseInt(
+      getGlobalSetting()?.filter(
+        (ele: WEB_SETTING_DATA, index: number) => ele.ITEM_NAME === "DAILY_TIME"
+      )[0]?.CURRENT_VALUE ?? "840"
+    ) /
+    2 /
+    60;
+  const selected_eq: string = selectedMachine.substring(0, 2);
+  const rowsToAdd: {
+    PROD_REQUEST_NO: string;
+    G_CODE: string;
+    PROCESS_NUMBER: number;
+    PLAN_QTY: number;
+  }[] = [];
+
+  for (let i = 0; i < ycsxdatatablefilter.length; i++) {
+    const ycsxRow = ycsxdatatablefilter[i];
+    const proc_number: number =
+      selected_eq === ycsxRow.EQ1
+        ? 1
+        : selected_eq === ycsxRow.EQ2
+        ? 2
+        : selected_eq === ycsxRow.EQ3
+        ? 3
+        : selected_eq === ycsxRow.EQ4
+        ? 4
+        : 0;
+    const UPH: number =
+      proc_number === 1
+        ? ycsxRow.UPH1 ?? 999999999
+        : proc_number === 2
+        ? ycsxRow.UPH2 ?? 999999999
+        : proc_number === 3
+        ? ycsxRow.UPH3 ?? 999999999
+        : proc_number === 4
+        ? ycsxRow.UPH4 ?? 999999999
+        : 999999999;
+    const TON: number =
+      proc_number === 1
+        ? ycsxRow.TON_CD1 ?? 0
+        : proc_number === 2
+        ? ycsxRow.TON_CD2 ?? 0
+        : proc_number === 3
+        ? ycsxRow.TON_CD3 ?? 0
+        : proc_number === 4
+        ? ycsxRow.TON_CD4 ?? 0
+        : 0;
+    if (proc_number === 0 && tempDM === false) {
+      err_code += "Không đúng máy trong BOM | ";
+      continue;
+    }
+    if (!ycsxRow.PROD_REQUEST_NO) {
+      err_code += "Dòng YCSX không hợp lệ | ";
+      continue;
+    }
+    rowsToAdd.push({
+      PROD_REQUEST_NO: ycsxRow.PROD_REQUEST_NO,
+      G_CODE: ycsxRow.G_CODE,
+      PROCESS_NUMBER: proc_number,
+      PLAN_QTY:
+        getCompany() === "PVN"
+          ? TON < 0
+            ? 0
+            : TON
+          : TON <= 0
+          ? 0
+          : TON < UPH * qtyFactor
+          ? TON
+          : UPH * qtyFactor,
+    });
+  }
+
+  if (rowsToAdd.length === 0) return err_code;
+
+  try {
+    const response = await generalQuery("addPlanQLSXFast", {
+      PLAN_DATE: selectedPlanDate,
+      PLAN_EQ: selectedMachine,
+      PLAN_FACTORY: selectedFactory,
+      ROWS: rowsToAdd,
+    });
+    if (response.data.tk_status === "NG") {
+      err_code += (response.data.message || "Lỗi thêm plan") + " | ";
+    } else if (response.data.message) {
+      err_code += response.data.message;
+    }
+  } catch (error) {
+    console.log(error);
+    err_code += "Lỗi kết nối máy chủ | ";
+  }
+  return err_code;
+};
 export const f_handle_xuatlieu_sample = async (selectedPlan: QLSXPLANDATA) => {
   let err_code: string = "0";
   if (selectedPlan.PLAN_ID !== "XXX") {

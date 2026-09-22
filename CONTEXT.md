@@ -4161,3 +4161,17 @@ Build a complete ERP Chat system that enables:
 
 ### Lưu ý
 - Backend chạy bằng PM2 từ `index.js` nên chỉ cần restart tiến trình để nhận command mới; chỉ build `npm run build` khi phát hành file `outbinary/updatebe.exe`.
+
+## Update - 2026-09-22 (Tăng tốc Add to PLAN trong PLANVISUAL)
+
+### Đo được (luồng cũ `f_addQLSXPLAN`, mỗi 1 plan)
+- 4 request nối tiếp: `checkProd_request_no_Exist_O302` -> `getLastestPLAN_ID` -> `getLastestPLANORDER` (`SELECT TOP 1 *` + ORDER BY PLAN_ORDER) -> `addPlanQLSX`.
+- Sau đó gọi thêm `updateDMLOSSKT_ZTB_DM_HISTORY`: MERGE quét TOÀN BỘ ZTB_DM_HISTORY + window function trên toàn bộ ZTB_QLSXPLAN => nút cổ chai lớn nhất và không cần thiết cho 1 plan mới.
+- Cộng thêm 2 request refresh chỉ thị máy + 1 lượt refresh sàn => ~9 round-trip HTTP cho 1 plan.
+
+### Cải tiến
+- Backend: command mới `addPlanQLSXFast` (sanxuatService.js) gộp toàn bộ: check hệ thống cũ (1 query cho cả batch), tính PLAN_ORDER kế tiếp (1 query), tính PLAN_ID kế tiếp (1 query MAX(PLAN_ID) GROUP BY), INSERT từng dòng, và đồng bộ LOSS_KT CHỈ trong phạm vi YCSX vừa thêm.
+- Frontend: `f_addQLSXPLANFast` (khsxUtils) + `handleAddPlanFromYCSX` trong `useMachinePlanModal` dùng bản nhanh => 1 request thay cho 5.
+- Kết quả: ~9 round-trip -> ~4 round-trip (1 add + 2 plan máy + 1 refresh sàn song song) và bỏ MERGE toàn bảng.
+- Tương thích ngược: các command cũ (`addPlanQLSX`, `getLastestPLAN_ID`, `getLastestPLANORDER`, `checkProd_request_no_Exist_O302`, `updateDMLOSSKT_ZTB_DM_HISTORY`) và hàm `f_addQLSXPLAN` giữ nguyên cho FE production phiên bản cũ.
+- Lưu ý: `handleAddPlanFromYCSX` vẫn truyền `datadinhmuc as any` vào tham số `tempDM` (đối tượng luôn truthy) => giữ nguyên hành vi cũ, không đổi nghiệp vụ.
