@@ -1396,48 +1396,55 @@ export const useYCSXLogic = () => {
       .catch(() => {});
   };
 
+  // Đọc file AMZ từ File object (dùng chung cho input[type=file] và vùng kéo-thả).
+  // Hỗ trợ cả .csv (Amazon export) lẫn .xlsx/.xls.
+  const readUploadFileAmazonFromFile = (file: File) => {
+    let filename: string = file.name;
+    let checkmodel: boolean = filename.search(prod_model) === -1 ? false : true;
+    let checkIDCV: boolean = filename.search(id_congviec) === -1 ? false : true;
+    if (!checkmodel) {
+      Swal.fire("Thông báo", "Nghi vấn sai model", "error");
+      setUploadExcelJSon([]);
+    } else if (!checkIDCV) {
+      Swal.fire("Thông báo", "Không đúng ID công việc đã nhập", "error");
+      setUploadExcelJSon([]);
+    } else {
+      const isCsv: boolean = /\.csv$/i.test(filename);
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const data = e.target.result;
+        const workbook: any = isCsv
+          ? XLSX.read(String(data), { type: "string" })
+          : XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        let json: any = XLSX.utils.sheet_to_json(worksheet, {
+          header: ["DATA"],
+          defval: "",
+        });
+        let valueArray = json.slice(1).map((element: any) => element.DATA);
+        var isDuplicate = valueArray.some(function (item: any, idx: number) {
+          return valueArray.indexOf(item) !== idx;
+        });
+        if (isDuplicate) {
+          Swal.fire("Thông báo", "Có giá trị trùng lặp !", "error");
+          setUploadExcelJSon([]);
+        } else {
+          let newjson = json.map((element: any, index: number) => {
+            return { ...element, id: index, CHECKSTATUS: "Waiting" };
+          });
+          setUploadExcelJSon(newjson);
+        }
+      };
+      if (isCsv) reader.readAsText(file, "utf-8");
+      else reader.readAsArrayBuffer(file);
+    }
+  };
+
   const readUploadFileAmazon = (e: any) => {
     e.preventDefault();
-    if (e.target.files) {
-      let filename: string = e.target.files[0].name;
-      let checkmodel: boolean =
-        filename.search(prod_model) === -1 ? false : true;
-      let checkIDCV: boolean =
-        filename.search(id_congviec) === -1 ? false : true;
-      if (!checkmodel) {
-        Swal.fire("Thông báo", "Nghi vấn sai model", "error");
-        setUploadExcelJSon([]);
-      } else if (!checkIDCV) {
-        Swal.fire("Thông báo", "Không đúng ID công việc đã nhập", "error");
-        setUploadExcelJSon([]);
-      } else {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          const data = e.target.result;
-          const workbook = XLSX.read(data, { type: "array" });
-          const sheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[sheetName];
-          let json: any = XLSX.utils.sheet_to_json(worksheet, {
-            header: ["DATA"],
-            defval: "",
-          });
-          let valueArray = json.slice(1).map((element: any) => element.DATA);
-          var isDuplicate = valueArray.some(function (item: any, idx: number) {
-            return valueArray.indexOf(item) !== idx;
-          });
-          if (isDuplicate) {
-            Swal.fire("Thông báo", "Có giá trị trùng lặp !", "error");
-            setUploadExcelJSon([]);
-          } else {
-            let newjson = json.map((element: any, index: number) => {
-              return { ...element, id: index, CHECKSTATUS: "Waiting" };
-            });
-            setUploadExcelJSon(newjson);
-          }
-        };
-        reader.readAsArrayBuffer(e.target.files[0]);
-      }
-    }
+    const file: File | undefined = e.target?.files?.[0];
+    if (file) readUploadFileAmazonFromFile(file);
   };
 
   const upAmazonDataSuperFast = async () => {
@@ -1711,6 +1718,7 @@ export const useYCSXLogic = () => {
     progressvalue,
     handle_findAmazonCodeInfo,
     readUploadFileAmazon,
+    readUploadFileAmazonFromFile,
     upAmazonDataSuperFast,
     f_checkDuplicateAMZ,
   };

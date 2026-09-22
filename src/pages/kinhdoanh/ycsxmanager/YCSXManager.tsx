@@ -510,6 +510,7 @@ const YCSXManager: React.FC = () => {
         onFindAmazonCodeInfo={ycsx.handle_findAmazonCodeInfo}
         uploadExcelJson={ycsx.uploadExcelJson}
         onUploadFileAmazon={ycsx.readUploadFileAmazon}
+        onDropFileAmazon={ycsx.readUploadFileAmazonFromFile}
         onUpAmazonData={ycsx.upAmazonDataSuperFast}
         onCheckDuplicateAMZ={ycsx.f_checkDuplicateAMZ}
         onClearExcel={() => ycsx.setUploadExcelJSon([])}

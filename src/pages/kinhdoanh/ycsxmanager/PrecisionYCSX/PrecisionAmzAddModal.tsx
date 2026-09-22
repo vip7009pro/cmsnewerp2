@@ -20,6 +20,7 @@ interface Props {
   onFindAmazonCodeInfo: (ycsxNo: string) => void;
   uploadExcelJson: any[];
   onUploadFileAmazon: (e: any) => void;
+  onDropFileAmazon: (file: File) => void;
   onUpAmazonData: () => void;
   onCheckDuplicateAMZ: () => void;
   onClearExcel: () => void;
@@ -41,6 +42,7 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
   onFindAmazonCodeInfo,
   uploadExcelJson,
   onUploadFileAmazon,
+  onDropFileAmazon,
   onUpAmazonData,
   onCheckDuplicateAMZ,
   onClearExcel,
@@ -51,6 +53,17 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
   const [isMobile, setIsMobile] = React.useState<boolean>(() =>
     typeof window !== "undefined" ? window.innerWidth <= 768 : false
   );
+  const [isDragOver, setIsDragOver] = React.useState(false);
+  const amzFileInputRef = React.useRef<HTMLInputElement>(null);
+
+  // Kéo-thả file AMZ (.csv / .xlsx / .xls) từ ngoài vào vùng drop
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    const file = e.dataTransfer?.files?.[0];
+    if (file) onDropFileAmazon(file);
+  };
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;
@@ -216,7 +229,9 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-              <label
+              <button
+                type="button"
+                onClick={() => amzFileInputRef.current?.click()}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -232,14 +247,8 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
                   transition: "all 0.15s ease",
                 }}
               >
-                <FiUploadCloud style={{ fontSize: 15, color: "#2563eb" }} /> Chọn File Excel AMZ
-                <input
-                  type="file"
-                  accept=".xlsx, .xls"
-                  style={{ display: "none" }}
-                  onChange={onUploadFileAmazon}
-                />
-              </label>
+                <FiUploadCloud style={{ fontSize: 15, color: "#2563eb" }} /> Chọn File AMZ (.csv, .xlsx, .xls)
+              </button>
 
               <span style={{ fontSize: 11.5, color: "#64748b" }}>
                 {isMobile ? "Đã nạp: " : "Tổng số dòng đã nạp: "}
@@ -353,6 +362,70 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
             </div>
           </div>
 
+          {/* Drop Zone: kéo-thả file AMZ từ ngoài vào modal (.csv / .xlsx / .xls) */}
+          <div
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsDragOver(true);
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsDragOver(false);
+            }}
+            onDrop={handleDrop}
+            onClick={(e) => {
+              // Bấm vào vùng drop để chọn file (trừ khi bấm vào nút bên trong)
+              if ((e.target as HTMLElement).closest("button, input")) return;
+              amzFileInputRef.current?.click();
+            }}
+            style={{
+              border: `2px dashed ${isDragOver ? "#ff9900" : "#cbd5e1"}`,
+              borderRadius: 6,
+              padding: isMobile ? "12px 10px" : "16px 14px",
+              textAlign: "center",
+              background: isDragOver ? "#fff7ed" : "#f8fafc",
+              cursor: "pointer",
+              transition: "border-color 0.15s ease, background 0.15s ease",
+            }}
+          >
+            <input
+              ref={amzFileInputRef}
+              type="file"
+              accept=".csv,.xlsx,.xls"
+              style={{ display: "none" }}
+              onChange={onUploadFileAmazon}
+            />
+            <div
+              style={{
+                width: 38,
+                height: 38,
+                margin: "0 auto 6px",
+                borderRadius: "50%",
+                background: "#fff7ed",
+                border: "1px solid #fed7aa",
+                color: "#ff9900",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 18,
+              }}
+            >
+              <FiUploadCloud />
+            </div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#1e293b" }}>
+              Kéo thả file Amazon (.csv, .xlsx, .xls) vào đây hoặc bấm để chọn file
+            </div>
+            <div style={{ fontSize: 10.5, color: "#64748b", marginTop: 2 }}>
+              Tên file phải chứa Model sản phẩm và ID công việc • Đã nạp{" "}
+              <strong style={{ color: uploadExcelJson.length > 0 ? "#2563eb" : "#0f172a" }}>
+                {uploadExcelJson.length.toLocaleString()}
+              </strong>{" "}
+              dòng
+            </div>
+          </div>
+
           {/* Table Preview: Bảng xem trước dữ liệu AMZ chuẩn Stitch */}
           <div className="modal-agtable-wrapper" style={{ flex: 1, minHeight: isMobile ? 220 : 380, display: "flex", flexDirection: "column" }}>
             <div
@@ -407,7 +480,7 @@ const PrecisionAmzAddModal: React.FC<Props> = ({
         <div className="modal-footer">
           {!isMobile && (
             <div className="hint-text">
-              <span>* Lưu ý: Tên file phải chứa chính xác Model sản phẩm và ID công việc để đảm bảo chống nhầm lẫn.</span>
+              <span>* Lưu ý: Tên file phải chứa chính xác Model sản phẩm và ID công việc để đảm bảo chống nhầm lẫn. Hỗ trợ .csv, .xlsx, .xls.</span>
             </div>
           )}
           <div className="action-btns">
