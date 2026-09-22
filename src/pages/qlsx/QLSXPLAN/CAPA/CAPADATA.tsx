@@ -18,11 +18,11 @@ import { AiFillCloseCircle, AiFillFileExcel } from "react-icons/ai";
 import Swal from "sweetalert2";
 import "./CAPADATA.scss";
 import { MdOutlinePivotTableChart } from "react-icons/md";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import { createPivotDataSource } from "../../../../components/PivotChart/lazyPivot";
 import { generalQuery } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/services/excelService";
 import { checkBP } from "../../../../api/services/permissionService";
-import PivotTable from "../../../../components/PivotChart/PivotChart";
+import PivotTable from "../../../../components/PivotChart/LazyPivotTable";
 import { BiSearch } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -226,7 +226,21 @@ const CAPADATA = () => {
     ),
     [dataleadtimecapa],
   );
-  const dataSource = new PivotGridDataSource({
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts):
+  // `buildPivotConfig` chỉ là object cấu hình, KHÔNG dựng DevExtreme cho tới khi bấm PIVOT.
+  const [dataSource, setDataSource] = useState<any>(null);
+  useEffect(() => {
+    if (!showhidePivotTable) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void (async () => {
+      const ds = await createPivotDataSource(buildPivotConfig());
+      if (!cancelled) setDataSource(ds);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showhidePivotTable, dataleadtimecapa]);
+  const buildPivotConfig = () => ({
     fields: [
       {
         caption: "PROD_REQUEST_NO",
@@ -783,7 +797,11 @@ const CAPADATA = () => {
               <AiFillCloseCircle color="blue" size={15} />
               Close
             </IconButton>
-            <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
+            {dataSource ? (
+              <PivotTable datasource={dataSource} tableID="invoicetablepivot" />
+            ) : (
+              <div className="pivot-loading">Đang tải bảng pivot…</div>
+            )}
           </div>
         )}
       </div>

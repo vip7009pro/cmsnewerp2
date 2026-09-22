@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useRef, useState, useCallback } from "react"
 import moment from "moment";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import PivotTable from "../../../../components/PivotChart/PivotChart";
+import { createPivotDataSource } from "../../../../components/PivotChart/lazyPivot";
+import PivotTable from "../../../../components/PivotChart/LazyPivotTable";
 import { RootState } from "../../../../redux/store";
 import { UserData, WEB_SETTING_DATA } from "../../../../api/GlobalInterface";
 import { getCompany, getGlobalSetting, getSever, getSocket, getUserData } from "../../../../api/Api";
@@ -810,18 +810,28 @@ const PrecisionPoManager: React.FC = () => {
   };
 
   // Pivot DataSource
-  const pivotDataSource = useMemo(() => {
-    return new PivotGridDataSource({
-      fields: [
-        { caption: "Khách Hàng", dataField: "CUST_NAME_KD", dataType: "string", area: "row" },
-        { caption: "Số PO", dataField: "PO_NO", dataType: "string", area: "row" },
-        { caption: "Mã Sản Phẩm", dataField: "G_NAME_KD", dataType: "string", area: "row" },
-        { caption: "Số Lượng PO", dataField: "PO_QTY", dataType: "number", summaryType: "sum", area: "data" },
-        { caption: "Tổng Tiền ($)", dataField: "PO_AMOUNT", dataType: "number", summaryType: "sum", area: "data" },
-      ],
-      store: podatatable,
-    });
-  }, [podatatable]);
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts).
+  const [pivotDataSource, setPivotDataSource] = useState<any>(null);
+  useEffect(() => {
+    if (!showPivot) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void (async () => {
+      const ds = await createPivotDataSource({
+        fields: [
+          { caption: "Khách Hàng", dataField: "CUST_NAME_KD", dataType: "string", area: "row" },
+          { caption: "Số PO", dataField: "PO_NO", dataType: "string", area: "row" },
+          { caption: "Mã Sản Phẩm", dataField: "G_NAME_KD", dataType: "string", area: "row" },
+          { caption: "Số Lượng PO", dataField: "PO_QTY", dataType: "number", summaryType: "sum", area: "data" },
+          { caption: "Tổng Tiền ($)", dataField: "PO_AMOUNT", dataType: "number", summaryType: "sum", area: "data" },
+        ],
+        store: podatatable,
+      });
+      if (!cancelled) setPivotDataSource(ds);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showPivot, podatatable]);
 
   return (
     <div className="precision-po-manager">
@@ -941,7 +951,11 @@ const PrecisionPoManager: React.FC = () => {
               </button>
             </div>
             <div className="pivot-modal-body">
-              <PivotTable datasource={pivotDataSource} tableID="precision_po_pivot" />
+              {pivotDataSource ? (
+                <PivotTable datasource={pivotDataSource} tableID="precision_po_pivot" />
+              ) : (
+                <div className="pivot-loading">Đang tải bảng pivot…</div>
+              )}
             </div>
             <div className="pivot-modal-footer">
               <button

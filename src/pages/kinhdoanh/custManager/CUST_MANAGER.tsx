@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import moment from "moment";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
 import { generalQuery, getSocket, getUserData } from "../../../api/Api";
 import { SaveExcel } from "../../../api/services/excelService";
 import { f_insert_Notification_Data } from "../../../api/services/notificationService";
@@ -332,18 +332,28 @@ const CUST_MANAGER: React.FC = () => {
   }, [custinfodatatable]);
 
   // Cấu hình Pivot Table
-  const pivotDataSource = useMemo(() => {
-    return new PivotGridDataSource({
-      fields: [
-        { caption: "Phân loại", dataField: "CUST_TYPE", area: "row" },
-        { caption: "Trạng thái", dataField: "USE_YN", area: "column" },
-        { caption: "Tên KD", dataField: "CUST_NAME_KD", area: "filter" },
-        { caption: "Địa chỉ", dataField: "CUST_ADDR1", area: "filter" },
-        { summaryType: "count", area: "data", caption: "Số lượng đối tác" },
-      ],
-      store: custinfodatatable,
-    });
-  }, [custinfodatatable]);
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts).
+  const [pivotDataSource, setPivotDataSource] = useState<any>(null);
+  useEffect(() => {
+    if (!showPivot) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void (async () => {
+      const ds = await createPivotDataSource({
+        fields: [
+          { caption: "Phân loại", dataField: "CUST_TYPE", area: "row" },
+          { caption: "Trạng thái", dataField: "USE_YN", area: "column" },
+          { caption: "Tên KD", dataField: "CUST_NAME_KD", area: "filter" },
+          { caption: "Địa chỉ", dataField: "CUST_ADDR1", area: "filter" },
+          { summaryType: "count", area: "data", caption: "Số lượng đối tác" },
+        ],
+        store: custinfodatatable,
+      });
+      if (!cancelled) setPivotDataSource(ds);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showPivot, custinfodatatable]);
 
   // Cột AG-Grid
   const columns = useMemo(() => getPrecisionCustColumns(handleOpenEditRow), [handleOpenEditRow]);
@@ -420,11 +430,14 @@ const CUST_MANAGER: React.FC = () => {
       />
 
       {/* 6. Modal Phân Tích Pivot Table */}
-      <PrecisionCustPivotModal
-        isOpen={showPivot}
-        onClose={() => setShowPivot(false)}
-        dataSource={pivotDataSource}
-      />
+      {/* Chỉ mount khi có DataSource (DevExtreme nạp theo nhu cầu) — modal cũng là lazy. */}
+      {showPivot && pivotDataSource && (
+        <PrecisionCustPivotModal
+          isOpen={showPivot}
+          onClose={() => setShowPivot(false)}
+          dataSource={pivotDataSource}
+        />
+      )}
     </div>
   );
 };

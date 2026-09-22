@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import moment from "moment";
 import Swal from "sweetalert2";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import { createPivotDataSource } from "../../../../../components/PivotChart/lazyPivot";
 import {
   DAILY_YCSX_RESULT,
   LICHSUINPUTLIEU_DATA,
@@ -202,12 +202,24 @@ export const useDataSxData = () => {
 
   const selectedYCSX = useRef<YCSX_SX_DATA>(initialYcsxDetail);
 
-  const [selectedDataSource, setSelectedDataSource] = useState<PivotGridDataSource>(
-    new PivotGridDataSource({
-      fields: fields_datasx_chithi,
-      store: [],
-    })
-  );
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts):
+  // `pivotConfig` chỉ là object cấu hình, DataSource thật được dựng khi bấm PIVOT.
+  const [selectedDataSource, setSelectedDataSource] = useState<any>(null);
+  const [pivotConfig, setPivotConfig] = useState<any>({
+    fields: fields_datasx_chithi,
+    store: [],
+  });
+  useEffect(() => {
+    if (!showhidePivotTable) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void (async () => {
+      const ds = await createPivotDataSource(pivotConfig);
+      if (!cancelled) setSelectedDataSource(ds);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showhidePivotTable, pivotConfig]);
 
   const getMachineList = useCallback(async () => {
     try {
@@ -282,12 +294,11 @@ export const useDataSxData = () => {
 
       setLossTableInfo(kq?.summary || initialLossTable);
       setDataSXTable(kq?.datasx || []);
-      setSelectedDataSource(
-        new PivotGridDataSource({
-          fields: fields_datasx_chithi,
-          store: kq?.datasx || [],
-        })
-      );
+      // Chỉ lưu cấu hình — DevExtreme được dựng khi user mở pivot (xem lazyPivot.ts).
+      setPivotConfig({
+        fields: fields_datasx_chithi,
+        store: kq?.datasx || [],
+      });
       setSelectButton(true);
 
       if (kq?.datasx && kq.datasx.length > 0) {
@@ -337,12 +348,11 @@ export const useDataSxData = () => {
 
       setLossTableInfo(kq?.summary || initialLossTable);
       setDataSXTable(kq?.datasx || []);
-      setSelectedDataSource(
-        new PivotGridDataSource({
-          fields: fields_datasx_ycsx,
-          store: kq?.datasx || [],
-        })
-      );
+      // Chỉ lưu cấu hình — DevExtreme được dựng khi user mở pivot (xem lazyPivot.ts).
+      setPivotConfig({
+        fields: fields_datasx_ycsx,
+        store: kq?.datasx || [],
+      });
       setSelectButton(false);
 
       if (kq?.datasx && kq.datasx.length > 0) {

@@ -1,6 +1,7 @@
 import React from "react";
 import moment from "moment";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+// ⚠️ DevExtreme nạp theo nhU cầu: factory trả về Promise (xem components/PivotChart/lazyPivot.ts).
+import { createPivotDataSource as createPivotGridDataSource } from "../../../../components/PivotChart/lazyPivot";
 
 export const formatDecimal = (value: any, minDec = 2, maxDec = 6) => {
   const parsed = Number(value);
@@ -224,7 +225,7 @@ export const fields_banggia2 = [
 ];
 
 export const createPivotDataSource = (data: any[], fields: any = fields_banggia2) => {
-  return new PivotGridDataSource({
+  return createPivotGridDataSource({
     fields: fields as any,
     store: data,
   });

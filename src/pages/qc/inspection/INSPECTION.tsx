@@ -1,11 +1,11 @@
 // INSPECTION.tsx - Master Controller Phòng Kiểm Tra / Data Kiểm Tra (Google Stitch High-Density)
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import moment from "moment";
 import Swal from "sweetalert2";
 import { AiFillCloseCircle } from "react-icons/ai";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import PivotTable from "../../../components/PivotChart/PivotChart";
+import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
+import PivotTable from "../../../components/PivotChart/LazyPivotTable";
 import AGTable from "../../../components/DataTable/AGTable";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import { SaveExcel } from "../../../api/services/excelService";
@@ -69,12 +69,23 @@ const INSPECTION: React.FC = () => {
   const [showhidePivotTable, setShowHidePivotTable] = useState(false);
   const [showFilter, setShowFilter] = useState(true);
 
-  const [selectedDataSource, setSelectedDataSource] = useState<PivotGridDataSource>(
-    new PivotGridDataSource({
-      fields: fieldsinputkiem,
-      store: inspectiondatatable,
-    })
-  );
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts):
+  // `pivotConfig` chỉ là object cấu hình, DataSource thật được dựng khi bấm PIVOT.
+  const [selectedDataSource, setSelectedDataSource] = useState<any>(null);
+  const [pivotConfig, setPivotConfig] = useState<any>({
+    fields: fieldsinputkiem,
+    store: inspectiondatatable,
+  });
+  useEffect(() => {
+    if (!showhidePivotTable) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void createPivotDataSource(pivotConfig).then((ds) => {
+      if (!cancelled) setSelectedDataSource(ds);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [showhidePivotTable, pivotConfig]);
 
   // Helper hiển thị Swal Loading
   const showLoading = () => {
@@ -132,12 +143,11 @@ const INSPECTION: React.FC = () => {
           );
           setSummaryInspect("Tổng Nhập: " + summaryInput.toLocaleString("en-US") + " EA");
           setInspectionDataTable(loadeddata);
-          setSelectedDataSource(
-            new PivotGridDataSource({
-              fields: fieldsinputkiem,
-              store: loadeddata,
-            })
-          );
+          // Chỉ lưu cấu hình — DevExtreme dựng khi user mở pivot (xem lazyPivot.ts).
+          setPivotConfig({
+            fields: fieldsinputkiem,
+            store: loadeddata,
+          });
           setColumnDefinition(column_inspect_input);
           setActiveAction("nhapkiem");
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
@@ -193,12 +203,11 @@ const INSPECTION: React.FC = () => {
           );
           setSummaryInspect("Tổng Xuất: " + summaryOutput.toLocaleString("en-US") + " EA");
           setInspectionDataTable(loadeddata);
-          setSelectedDataSource(
-            new PivotGridDataSource({
-              fields: fieldsoutputkiem,
-              store: loadeddata,
-            })
-          );
+          // Chỉ lưu cấu hình — DevExtreme dựng khi user mở pivot (xem lazyPivot.ts).
+          setPivotConfig({
+            fields: fieldsoutputkiem,
+            store: loadeddata,
+          });
           setColumnDefinition(column_inspect_output);
           setActiveAction("xuatkiem");
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
@@ -247,12 +256,11 @@ const INSPECTION: React.FC = () => {
             })
           );
           setInspectionDataTable(loadeddata);
-          setSelectedDataSource(
-            new PivotGridDataSource({
-              fields: fieldsinoutputkiem,
-              store: loadeddata,
-            })
-          );
+          // Chỉ lưu cấu hình — DevExtreme dựng khi user mở pivot (xem lazyPivot.ts).
+          setPivotConfig({
+            fields: fieldsinoutputkiem,
+            store: loadeddata,
+          });
           setColumnDefinition(column_inspect_inoutycsx);
           setActiveAction("nhapxuat");
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
@@ -304,12 +312,11 @@ const INSPECTION: React.FC = () => {
             })
           );
           setInspectionDataTable(loadeddata);
-          setSelectedDataSource(
-            new PivotGridDataSource({
-              fields: fieldsnhatkykiem,
-              store: loadeddata,
-            })
-          );
+          // Chỉ lưu cấu hình — DevExtreme dựng khi user mở pivot (xem lazyPivot.ts).
+          setPivotConfig({
+            fields: fieldsnhatkykiem,
+            store: loadeddata,
+          });
           setColumnDefinition(column_inspection_NG);
           setActiveAction("nhatky");
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
@@ -358,12 +365,11 @@ const INSPECTION: React.FC = () => {
             })
           );
           setInspectionDataTable(loadeddata);
-          setSelectedDataSource(
-            new PivotGridDataSource({
-              fields: fieldsinspectbalance,
-              store: loadeddata,
-            })
-          );
+          // Chỉ lưu cấu hình — DevExtreme dựng khi user mở pivot (xem lazyPivot.ts).
+          setPivotConfig({
+            fields: fieldsinspectbalance,
+            store: loadeddata,
+          });
           setColumnDefinition(column_inspect_balance);
           setActiveAction("chokiem");
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");
@@ -412,12 +418,11 @@ const INSPECTION: React.FC = () => {
             })
           );
           setInspectionDataTable(loadeddata);
-          setSelectedDataSource(
-            new PivotGridDataSource({
-              fields: fieldsinspectionpatrol,
-              store: loadeddata,
-            })
-          );
+          // Chỉ lưu cấu hình — DevExtreme dựng khi user mở pivot (xem lazyPivot.ts).
+          setPivotConfig({
+            fields: fieldsinspectionpatrol,
+            store: loadeddata,
+          });
           setColumnDefinition(column_inspect_patrol);
           setActiveAction("patrol");
           Swal.fire("Thông báo", "Đã load " + response.data.data.length + " dòng", "success");

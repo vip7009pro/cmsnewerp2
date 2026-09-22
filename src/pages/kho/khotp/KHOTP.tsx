@@ -1,11 +1,11 @@
 // KHOTP.tsx - Master Controller Kho Thành Phẩm (Google Stitch High-Density Enterprise)
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import moment from "moment";
 import Swal from "sweetalert2";
 import { AiFillCloseCircle } from "react-icons/ai";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import PivotTable from "../../../components/PivotChart/PivotChart";
+import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
+import PivotTable from "../../../components/PivotChart/LazyPivotTable";
 import AGTable from "../../../components/DataTable/AGTable";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
 import { SaveExcel } from "../../../api/services/excelService";
@@ -363,11 +363,19 @@ const KHOTP: React.FC = () => {
   }, [whdatatable, columnDefinition, showFilter]);
 
   // Pivot DataSource
-  const pivotDataSource = useMemo(() => {
-    return new PivotGridDataSource({
-      store: whdatatable,
-    });
-  }, [whdatatable]);
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts).
+  const [pivotDataSource, setPivotDataSource] = useState<any>(null);
+  useEffect(() => {
+    if (!showPivotModal) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void (async () => {
+      const ds = await createPivotDataSource({ store: whdatatable });
+      if (!cancelled) setPivotDataSource(ds);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showPivotModal, whdatatable]);
 
   return (
     <div className="precision-khotp">
@@ -433,7 +441,11 @@ const KHOTP: React.FC = () => {
               </button>
             </div>
             <div className="precision-khotp__pivotContent">
-              <PivotTable datasource={pivotDataSource} tableID="khotppivot" />
+              {pivotDataSource ? (
+                <PivotTable datasource={pivotDataSource} tableID="khotppivot" />
+              ) : (
+                <div className="pivot-loading">Đang tải bảng pivot…</div>
+              )}
             </div>
           </div>
         </div>

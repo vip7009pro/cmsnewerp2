@@ -2,7 +2,7 @@ import React from "react";
 import { IconButton } from "@mui/material";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { MdOutlinePivotTableChart } from "react-icons/md";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import type PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import PivotTable from "../../../../../components/PivotChart/PivotChart";
 
 interface PrecisionDataSxPivotModalProps {

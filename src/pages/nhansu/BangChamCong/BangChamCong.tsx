@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import moment from "moment";
 import Swal from "sweetalert2";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { UserData } from "../../../api/GlobalInterface";
@@ -49,13 +49,24 @@ const BANGCHAMCONG = () => {
   const [trunghiviec, setTruNghiViec] = useState(true);
   const [trunghisinh, setTruNghiSinh] = useState(true);
 
-  const [selectedDataSource, setSelectedDataSource] =
-    useState<PivotGridDataSource>(
-      new PivotGridDataSource({
-        fields: getPivotFieldsChamCong(),
-        store: [],
-      })
-    );
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts):
+  // `pivotConfig` chỉ là object cấu hình, DataSource thật được dựng khi bấm PIVOT.
+  const [selectedDataSource, setSelectedDataSource] = useState<any>(null);
+  const [pivotConfig, setPivotConfig] = useState<any>({
+    fields: getPivotFieldsChamCong(),
+    store: [],
+  });
+  useEffect(() => {
+    if (!showhidePivotTable) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void (async () => {
+      const ds = await createPivotDataSource(pivotConfig);
+      if (!cancelled) setSelectedDataSource(ds);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showhidePivotTable, pivotConfig]);
 
   const columns = useMemo(() => getChamCongColumns(), []);
 
@@ -92,12 +103,11 @@ const BANGCHAMCONG = () => {
         if (response.data.tk_status !== "NG") {
           const formatted = formatChamCongRawData(response.data.data || []);
           setBangChamCong2(formatted);
-          setSelectedDataSource(
-            new PivotGridDataSource({
-              fields: getPivotFieldsChamCong(),
-              store: formatted,
-            })
-          );
+          // Chỉ lưu cấu hình — DevExtreme được dựng khi user mở pivot (xem lazyPivot.ts).
+          setPivotConfig({
+            fields: getPivotFieldsChamCong(),
+            store: formatted,
+          });
           Swal.fire(
             "Thông báo",
             `Đã tải ${formatted.length} dòng chấm công thành công!`,
@@ -293,12 +303,14 @@ const BANGCHAMCONG = () => {
         />
       </div>
 
-      {/* 4. Pivot Modal */}
-      <PrecisionChamCongPivotModal
-        isOpen={showhidePivotTable}
-        onClose={() => setShowHidePivotTable(false)}
-        dataSource={selectedDataSource}
-      />
+      {/* 4. Pivot Modal — chỉ mount khi DataSource sẵn sàng (DevExtreme nạp theo nhu cầu) */}
+      {showhidePivotTable && selectedDataSource && (
+        <PrecisionChamCongPivotModal
+          isOpen={showhidePivotTable}
+          onClose={() => setShowHidePivotTable(false)}
+          dataSource={selectedDataSource}
+        />
+      )}
     </div>
   );
 };

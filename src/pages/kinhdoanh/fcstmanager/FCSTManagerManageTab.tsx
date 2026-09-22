@@ -7,8 +7,8 @@ import { UserData } from "../../../api/GlobalInterface";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
 import AGTable from "../../../components/DataTable/AGTable";
-import PivotTable from "../../../components/PivotChart/PivotChart";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import PivotTable from "../../../components/PivotChart/LazyPivotTable";
+import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
 import { SaveExcel } from "../../../api/services/excelService";
 import { FCSTTableData } from "../interfaces/kdInterface";
 import PrecisionFCSTFilterPanel from "./PrecisionFCST/PrecisionFCSTFilterPanel";
@@ -211,17 +211,27 @@ const FCSTManagerManageTab = () => {
   }, [fcstdatatable]);
 
   /* ── DevExtreme Pivot DataSource ── */
-  const pivotDataSource = useMemo(() => {
-    return new PivotGridDataSource({
-      fields: column_fcsttable.map((col: any) => ({
-        caption: col.headerName,
-        dataField: col.field,
-        dataType: col.type === "number" ? "number" : "string",
-        area: col.area ?? undefined,
-      })),
-      store: fcstdatatable,
-    });
-  }, [column_fcsttable, fcstdatatable]);
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts).
+  const [pivotDataSource, setPivotDataSource] = useState<any>(null);
+  useEffect(() => {
+    if (!showhidePivotTable) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void (async () => {
+      const ds = await createPivotDataSource({
+        fields: column_fcsttable.map((col: any) => ({
+          caption: col.headerName,
+          dataField: col.field,
+          dataType: col.type === "number" ? "number" : "string",
+          area: col.area ?? undefined,
+        })),
+        store: fcstdatatable,
+      });
+      if (!cancelled) setPivotDataSource(ds);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showhidePivotTable, column_fcsttable, fcstdatatable]);
 
   /* ── Listen to events from header ── */
   useEffect(() => {
@@ -311,10 +321,14 @@ const FCSTManagerManageTab = () => {
               </button>
             </div>
             <div className="precision-fcst__pivotBody">
-              <PivotTable
-                datasource={pivotDataSource}
-                tableID="precision_fcst_pivot"
-              />
+              {pivotDataSource ? (
+                <PivotTable
+                  datasource={pivotDataSource}
+                  tableID="precision_fcst_pivot"
+                />
+              ) : (
+                <div className="pivot-loading">Đang tải bảng pivot…</div>
+              )}
             </div>
             <div className="precision-fcst__pivotFooter">
               <button

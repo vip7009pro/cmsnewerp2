@@ -1,7 +1,8 @@
 import React from "react";
 import { getCompany, getGlobalSetting } from "../../../../api/Api";
 import { WEB_SETTING_DATA } from "../../../../api/GlobalInterface";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+// ⚠️ DevExtreme nạp theo nhU cầu: factory trả về Promise (xem components/PivotChart/lazyPivot.ts).
+import { createPivotDataSource as createPivotGridDataSource } from "../../../../components/PivotChart/lazyPivot";
 import { InvoiceTableData } from "../../interfaces/kdInterface";
 
 const getCurrency = (): string =>
@@ -160,7 +161,7 @@ const makePivotField = (
 });
 
 export const createPivotDataSource = (data: InvoiceTableData[]) =>
-  new PivotGridDataSource({
+  createPivotGridDataSource({
     fields: [
       makePivotField("PROD_MAIN_MATERIAL", "PROD_MAIN_MATERIAL", "string", "count"),
       makePivotField("DELIVERY_ID", "DELIVERY_ID", "number", "sum"),

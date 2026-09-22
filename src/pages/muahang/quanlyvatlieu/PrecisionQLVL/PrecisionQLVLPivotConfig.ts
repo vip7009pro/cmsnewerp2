@@ -1,8 +1,9 @@
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+// ⚠️ DevExtreme nạp theo nhU cầu: factory trả về Promise (xem components/PivotChart/lazyPivot.ts).
+import { createPivotDataSource as createPivotGridDataSource } from "../../../../components/PivotChart/lazyPivot";
 import { MATERIAL_TABLE_DATA } from "../interfaces/muaInterface";
 
 export const createQLVLPivotDataSource = (data: MATERIAL_TABLE_DATA[]) => {
-  return new PivotGridDataSource({
+  return createPivotGridDataSource({
     fields: [
       {
         caption: "INS_DATE",

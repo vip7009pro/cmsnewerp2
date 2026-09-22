@@ -1,12 +1,12 @@
 // KHOLIEU.tsx - Master Controller Kho Liệu (Google Stitch High-Density Enterprise)
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import moment from "moment";
 import Swal from "sweetalert2";
 import { FiX } from "react-icons/fi";
 import { MdInput, MdOutput } from "react-icons/md";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import PivotTable from "../../../components/PivotChart/PivotChart";
+import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
+import PivotTable from "../../../components/PivotChart/LazyPivotTable";
 import AGTable from "../../../components/DataTable/AGTable";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
 import { checkBP } from "../../../api/services/permissionService";
@@ -281,24 +281,35 @@ const KHOLIEU: React.FC = () => {
   }, [whdatatable, mode]);
 
   // Cấu hình Pivot Grid DataSource
-  const pivotDataSource = useMemo(() => {
-    return new PivotGridDataSource({
-      fields: [
-        { caption: "M_CODE", width: 100, dataField: "M_CODE", area: "row" },
-        { caption: "M_NAME", width: 150, dataField: "M_NAME", area: "row" },
-        { caption: "LOTNCC", width: 100, dataField: "LOTNCC", area: "column" },
-        {
-          caption: "SỐ LƯỢNG",
-          dataField: mode === "XUAT" ? "TOTAL_OUT_QTY" : mode === "NHAP" ? "TOTAL_IN_QTY" : "TOTAL_OK",
-          dataType: "number",
-          summaryType: "sum",
-          format: "fixedPoint",
-          area: "data",
-        },
-      ],
-      store: whdatatable,
-    });
-  }, [whdatatable, mode]);
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts):
+  // trước đây `new PivotGridDataSource` chạy ngay khi render ⇒ mở page là tải DevExtreme.
+  const [pivotDataSource, setPivotDataSource] = useState<any>(null);
+  useEffect(() => {
+    if (!showPivotModal) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void (async () => {
+      const ds = await createPivotDataSource({
+        fields: [
+          { caption: "M_CODE", width: 100, dataField: "M_CODE", area: "row" },
+          { caption: "M_NAME", width: 150, dataField: "M_NAME", area: "row" },
+          { caption: "LOTNCC", width: 100, dataField: "LOTNCC", area: "column" },
+          {
+            caption: "SỐ LƯỢNG",
+            dataField: mode === "XUAT" ? "TOTAL_OUT_QTY" : mode === "NHAP" ? "TOTAL_IN_QTY" : "TOTAL_OK",
+            dataType: "number",
+            summaryType: "sum",
+            format: "fixedPoint",
+            area: "data",
+          },
+        ],
+        store: whdatatable,
+      });
+      if (!cancelled) setPivotDataSource(ds);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showPivotModal, whdatatable, mode]);
 
   return (
     <div className="precision-kholieu">
@@ -452,7 +463,12 @@ const KHOLIEU: React.FC = () => {
               </button>
             </div>
             <div className="modal-body" style={{ height: "calc(100% - 50px)" }}>
-              <PivotTable datasource={pivotDataSource} tableID={""} />
+              {pivotDataSource ? (
+                <PivotTable datasource={pivotDataSource} tableID={""} />
+              ) : (
+                // DevExtreme đang được tải theo nhu cầu — chỉ hiện trong khoảnh khắc đầu.
+                <div className="pivot-loading">Đang tải bảng pivot…</div>
+              )}
             </div>
           </div>
         </div>

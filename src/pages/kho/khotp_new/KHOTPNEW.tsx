@@ -6,8 +6,8 @@ import Swal from "sweetalert2";
 import "./KHOTPNEW.scss";
 import { generalQuery, getAuditMode, getUserData } from "../../../api/Api";
 import { checkBP } from "../../../api/services/permissionService";
-import PivotTable from "../../../components/PivotChart/PivotChart";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import PivotTable from "../../../components/PivotChart/LazyPivotTable";
+import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
 import AGTable from "../../../components/DataTable/AGTable";
 import { MdOutlinePivotTableChart } from "react-icons/md";
 import { KTP_IN, KTP_OUT, STOCK_G_CODE, STOCK_G_NAME_KD, STOCK_PROD_REQUEST_NO } from "../interfaces/khoInterface";
@@ -904,13 +904,23 @@ const KHOTPNEW = () => {
     },
   ];
 
-  const [selectedDataSource, setSelectedDataSource] =
-    useState<PivotGridDataSource>(
-      new PivotGridDataSource({
-        fields: ktp_in_fields,
-        store: whDataTable,
-      }),
-    );
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts):
+  // `pivotConfig` chỉ là object cấu hình, DataSource thật được dựng khi bấm PIVOT.
+  const [selectedDataSource, setSelectedDataSource] = useState<any>(null);
+  const [pivotConfig, setPivotConfig] = useState<any>({
+    fields: ktp_in_fields,
+    store: whDataTable,
+  });
+  useEffect(() => {
+    if (!showhidePivotTable) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void createPivotDataSource(pivotConfig).then((ds) => {
+      if (!cancelled) setSelectedDataSource(ds);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [showhidePivotTable, pivotConfig]);
 
   const clearSelection = () => {
     if (dataGridRef.current) {
@@ -1483,30 +1493,27 @@ G_NAME_KD: getAuditMode() == 0? element?.G_NAME_KD : element?.G_NAME?.search('CN
                 switch (buttonselected) {
                   case "GR":
                     loadKTP_IN();
-                    setSelectedDataSource(
-                      new PivotGridDataSource({
-                        fields: ktp_in_fields,
-                        store: whDataTable,
-                      }),
-                    );
+                    // Chỉ lưu cấu hình — DevExtreme dựng khi user mở pivot (xem lazyPivot.ts).
+                    setPivotConfig({
+                      fields: ktp_in_fields,
+                      store: whDataTable,
+                    });
                     break;
                   case "GI":
                     loadKTP_OUT();
-                    setSelectedDataSource(
-                      new PivotGridDataSource({
-                        fields: ktp_out_fields,
-                        store: whDataTable,
-                      }),
-                    );
+                    // Chỉ lưu cấu hình — DevExtreme dựng khi user mở pivot (xem lazyPivot.ts).
+                    setPivotConfig({
+                      fields: ktp_out_fields,
+                      store: whDataTable,
+                    });
                     break;
                   case "STOCKFULL":
                     loadSTOCKFULL();
-                    setSelectedDataSource(
-                      new PivotGridDataSource({
-                        fields: ktp_in_fields,
-                        store: whDataTable,
-                      }),
-                    );
+                    // Chỉ lưu cấu hình — DevExtreme dựng khi user mở pivot (xem lazyPivot.ts).
+                    setPivotConfig({
+                      fields: ktp_in_fields,
+                      store: whDataTable,
+                    });
                     break;
                   case "STOCKG_CODE":
                     loadSTOCK_G_CODE();

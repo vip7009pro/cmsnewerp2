@@ -10,7 +10,10 @@ import { f_insert_Notification_Data } from "../../../api/services/notificationSe
 import { SaveExcel } from "../../../api/services/excelService";
 import { MdOutlineDelete, MdOutlinePivotTableChart, MdUpdate } from "react-icons/md";
 import { FaFileInvoiceDollar } from "react-icons/fa";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+// ⚠️ DEVEXTREME CHỈ NẠP THEO NHU CẦU: file này tạo `dataSource` nhưng KHÔNG render ở đâu
+// (dead code — kiểm tra bằng grep `datasource=`), nên chuyển sang factory async để module
+// không còn phụ thuộc TĨNH vào DevExtreme. Xem components/PivotChart/lazyPivot.ts.
+import { createPivotDataSource as createPivotGridDataSource } from "../../../components/PivotChart/lazyPivot";
 import { RootState } from "../../../redux/store";
 import { useSelector } from "react-redux";
 import { TbLogout } from "react-icons/tb";
@@ -729,7 +732,7 @@ const InvoiceManagerManageTab = () => {
     { field: "CHECKSTATUS", headerName: "CHECKSTATUS", width: 90 },
   ];
 
-  const dataSource = new PivotGridDataSource({
+  const dataSource = createPivotGridDataSource({
     fields: [
       {
         caption: "PROD_MAIN_MATERIAL",

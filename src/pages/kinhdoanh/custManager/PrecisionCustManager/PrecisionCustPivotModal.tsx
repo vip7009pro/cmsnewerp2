@@ -1,6 +1,6 @@
 import React from "react";
 import { FiX } from "react-icons/fi";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import type PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import PivotTable from "../../../../components/PivotChart/PivotChart";
 
 interface PrecisionCustPivotModalProps {

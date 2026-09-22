@@ -8,7 +8,7 @@ import { UserData } from "../../../api/GlobalInterface";
 import { checkBP } from "../../../api/services/permissionService";
 import { SaveExcel } from "../../../api/services/excelService";
 import AGTable from "../../../components/DataTable/AGTable";
-import PivotTable from "../../../components/PivotChart/PivotChart";
+import PivotTable from "../../../components/PivotChart/LazyPivotTable";
 import { BANGGIA_DELETED_DATA } from "../interfaces/kdInterface";
 import { f_loadbanggiaDeletedHistory } from "../utils/kdUtils";
 import { createPivotDataSource, formatDecimal } from "./PrecisionQuotation/PrecisionPriceColumns";
@@ -31,6 +31,19 @@ const QuotationDeleteHistory: React.FC = () => {
   /* ── Data States ── */
   const [rows, setRows] = useState<BANGGIA_DELETED_DATA[]>([]);
   const [showPivot, setShowPivot] = useState(false);
+
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts).
+  const [pivotDataSource, setPivotDataSource] = useState<any>(null);
+  useEffect(() => {
+    if (!showPivot) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void createPivotDataSource(rows).then((ds) => {
+      if (!cancelled) setPivotDataSource(ds);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [showPivot, rows]);
 
   /* ── Load Data ── */
   const loadDeletedPriceHistory = useCallback(async () => {
@@ -297,7 +310,11 @@ const QuotationDeleteHistory: React.FC = () => {
               </button>
             </div>
             <div className="precision-quotation__modal-body" style={{ padding: 6, height: "calc(100% - 85px)" }}>
-              <PivotTable datasource={createPivotDataSource(rows)} tableID="pivotDeleteHistory" />
+              {pivotDataSource ? (
+                <PivotTable datasource={pivotDataSource} tableID="pivotDeleteHistory" />
+              ) : (
+                <div className="pivot-loading">Đang tải bảng pivot…</div>
+              )}
             </div>
             <div className="precision-quotation__modal-footer">
               <button

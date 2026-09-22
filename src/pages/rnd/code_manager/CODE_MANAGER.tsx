@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Swal from "sweetalert2";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import PivotTable from "../../../components/PivotChart/PivotChart";
+import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
+import PivotTable from "../../../components/PivotChart/LazyPivotTable";
 import AGTable from "../../../components/DataTable/AGTable";
 import { generalQuery, uploadQuery } from "../../../api/Api";
 import { checkBP } from "../../../api/services/permissionService";
@@ -178,22 +178,32 @@ const CODE_MANAGER: React.FC = () => {
   }, [rows]);
 
   // 8. Cấu hình Pivot Grid DataSource
-  const pivotDataSource = useMemo(() => {
-    return new PivotGridDataSource({
-      fields: [
-        { caption: "PROD_TYPE", width: 120, dataField: "PROD_TYPE", area: "row" },
-        { caption: "PROD_MODEL", width: 140, dataField: "PROD_MODEL", area: "row" },
-        { caption: "PACKING_TYPE", width: 110, dataField: "PACKING_TYPE", area: "column" },
-        {
-          caption: "SỐ LƯỢNG MÃ",
-          dataField: "G_CODE",
-          summaryType: "count",
-          area: "data",
-        },
-      ],
-      store: filteredRows,
-    });
-  }, [filteredRows]);
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts).
+  const [pivotDataSource, setPivotDataSource] = useState<any>(null);
+  useEffect(() => {
+    if (!showPivotModal) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void (async () => {
+      const ds = await createPivotDataSource({
+        fields: [
+          { caption: "PROD_TYPE", width: 120, dataField: "PROD_TYPE", area: "row" },
+          { caption: "PROD_MODEL", width: 140, dataField: "PROD_MODEL", area: "row" },
+          { caption: "PACKING_TYPE", width: 110, dataField: "PACKING_TYPE", area: "column" },
+          {
+            caption: "SỐ LƯỢNG MÃ",
+            dataField: "G_CODE",
+            summaryType: "count",
+            area: "data",
+          },
+        ],
+        store: filteredRows,
+      });
+      if (!cancelled) setPivotDataSource(ds);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showPivotModal, filteredRows]);
 
   return (
     <div className="precision-code-manager">
@@ -309,7 +319,11 @@ const CODE_MANAGER: React.FC = () => {
               </button>
             </div>
             <div style={{ padding: "12px", height: "calc(100% - 50px)", overflow: "auto" }}>
-              <PivotTable datasource={pivotDataSource} tableID="ProductMasterPivot" />
+              {pivotDataSource ? (
+                <PivotTable datasource={pivotDataSource} tableID="ProductMasterPivot" />
+              ) : (
+                <div className="pivot-loading">Đang tải bảng pivot…</div>
+              )}
             </div>
           </div>
         </div>

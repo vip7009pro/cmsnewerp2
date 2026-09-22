@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { Button, IconButton } from "@mui/material";
 import Swal from "sweetalert2";
 import { MdOutlinePivotTableChart } from "react-icons/md";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import type PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 import "./PoManagerAddTab.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";

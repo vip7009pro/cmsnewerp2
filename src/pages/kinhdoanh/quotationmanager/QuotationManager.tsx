@@ -71,7 +71,20 @@ const QuotationManager: React.FC = () => {
   const [showPivot, setShowPivot] = useState(false);
   const [showUpPrice, setShowUpPrice] = useState(false);
   const [showPrint, setShowPrint] = useState(false);
-  const [selectedDataSource, setSelectedDataSource] = useState<any>(createPivotDataSource([]));
+  const [selectedDataSource, setSelectedDataSource] = useState<any>(null);
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts):
+  // chỉ lưu CẤU HÌNH, DataSource thật được dựng khi bấm pivot.
+  const [pivotConfig, setPivotConfig] = useState<any>({ store: [], fields: undefined });
+  useEffect(() => {
+    if (!showPivot) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void createPivotDataSource(pivotConfig.store, pivotConfig.fields).then((ds) => {
+      if (!cancelled) setSelectedDataSource(ds);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [showPivot, pivotConfig]);
 
   const quotationprintref = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({ content: () => quotationprintref.current });
@@ -126,7 +139,7 @@ const QuotationManager: React.FC = () => {
         setBangGia(loaded);
         setRows(loaded);
         setColumns(getColumnGiaNgang());
-        setSelectedDataSource(createPivotDataSource(loaded));
+        setPivotConfig({ store: loaded, fields: undefined });
       } else {
         Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
       }
@@ -160,7 +173,7 @@ const QuotationManager: React.FC = () => {
         setBangGia2(loaded);
         setRows(loaded);
         setColumns(getColumnGiaDoc());
-        setSelectedDataSource(createPivotDataSource(loaded, fields_banggia2));
+        setPivotConfig({ store: loaded, fields: fields_banggia2 });
       } else {
         Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
       }
@@ -193,7 +206,8 @@ const QuotationManager: React.FC = () => {
         setBangGia2(loaded);
         setRows(loaded);
         setColumns(getColumnGiaDoc());
-        setSelectedDataSource(createPivotDataSource(loaded, fields_banggia2));
+        // Chỉ lưu cấu hình — DevExtreme dựng khi user mở pivot (xem lazyPivot.ts).
+        setPivotConfig({ store: loaded, fields: fields_banggia2 });
       } else {
         Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
       }

@@ -9,8 +9,8 @@ import { getCompany, getGlobalSetting, getSever, getSocket, getUserData } from "
 import { checkBP } from "../../../api/services/permissionService";
 import { f_insert_Notification_Data } from "../../../api/services/notificationService";
 import { MdOutlineDelete, MdOutlinePivotTableChart } from "react-icons/md";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
-import PivotTable from "../../../components/PivotChart/PivotChart";
+import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
+import PivotTable from "../../../components/PivotChart/LazyPivotTable";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { UserData, WEB_SETTING_DATA } from "../../../api/GlobalInterface";
@@ -563,7 +563,20 @@ const PoManagerManageTab: React.FC = () => {
     limit: 100,
   });
 
-  const dataSource = new PivotGridDataSource({
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts).
+  const [dataSource, setDataSource] = useState<any>(null);
+  useEffect(() => {
+    if (!showhidePivotTable) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void (async () => {
+      const ds = await createPivotDataSource(buildPivotConfig());
+      if (!cancelled) setDataSource(ds);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showhidePivotTable, podatatable]);
+  const buildPivotConfig = () => ({
     fields: [
       { caption: "PO_ID", dataField: "PO_ID", dataType: "number", summaryType: "count", area: "row" },
       { caption: "CUST_NAME_KD", dataField: "CUST_NAME_KD", dataType: "string", summaryType: "count", area: "row" },
@@ -1545,7 +1558,11 @@ const PoManagerManageTab: React.FC = () => {
             <AiFillCloseCircle color="blue" size={15} />
             Close
           </IconButton>
-          <PivotTable datasource={dataSource} tableID="potablepivot" />
+          {dataSource ? (
+            <PivotTable datasource={dataSource} tableID="potablepivot" />
+          ) : (
+            <div className="pivot-loading">Đang tải bảng pivot…</div>
+          )}
         </div>
       )}
     </div>

@@ -9,7 +9,7 @@ import { f_insert_Notification_Data } from "../../../api/services/notificationSe
 import { SaveExcel } from "../../../api/services/excelService";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { UserData } from "../../../api/GlobalInterface";
-import PivotTable from "../../../components/PivotChart/PivotChart";
+import PivotTable from "../../../components/PivotChart/LazyPivotTable";
 import {
   CodeListData,
   CustomerListData,
@@ -107,6 +107,19 @@ const InvoiceManager: React.FC = () => {
 
   // ── Pivot ──
   const [showPivot, setShowPivot] = useState(false);
+
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts).
+  const [pivotDataSource, setPivotDataSource] = useState<any>(null);
+  useEffect(() => {
+    if (!showPivot) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void createPivotDataSource(invoicedatatable).then((ds) => {
+      if (!cancelled) setPivotDataSource(ds);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [showPivot, invoicedatatable]);
 
   // ── Refs ──
   const invoicedatatablefilter = useRef<InvoiceTableData[]>([]);
@@ -503,7 +516,11 @@ const InvoiceManager: React.FC = () => {
               </button>
             </div>
             <div className="stitch-inv__pivot-body">
-              <PivotTable datasource={createPivotDataSource(invoicedatatable)} tableID="invoicePivot" />
+              {pivotDataSource ? (
+                <PivotTable datasource={pivotDataSource} tableID="invoicePivot" />
+              ) : (
+                <div className="pivot-loading">Đang tải bảng pivot…</div>
+              )}
             </div>
           </div>
         </div>

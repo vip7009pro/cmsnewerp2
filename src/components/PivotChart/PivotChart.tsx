@@ -1,5 +1,5 @@
 import React from "react";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import type PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
 
 // Theme DevExtreme đi kèm module này (thay vì import ở App.tsx) để không chặn render toàn app.
 import "../../theme/devextremeTheme";

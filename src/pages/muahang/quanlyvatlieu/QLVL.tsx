@@ -283,9 +283,18 @@ const QLVL: React.FC = () => {
   }, [data, searchKeyword]);
 
   // DataSource cho Pivot Table
-  const pivotDataSource = useMemo(() => {
-    return createQLVLPivotDataSource(data);
-  }, [data]);
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts).
+  const [pivotDataSource, setPivotDataSource] = useState<any>(null);
+  useEffect(() => {
+    if (!showPivotModal) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void createQLVLPivotDataSource(data).then((ds) => {
+      if (!cancelled) setPivotDataSource(ds);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [showPivotModal, data]);
 
   // Cấu hình cột bảng AGTable
   const columns = useMemo(() => {

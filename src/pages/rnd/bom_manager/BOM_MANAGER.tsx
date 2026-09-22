@@ -5,7 +5,7 @@ import { useReactToPrint } from "react-to-print";
 import { generalQuery, getCompany } from "../../../api/Api";
 import { renderElement } from "../../../api/services/utilService";
 import AGTable from "../../../components/DataTable/AGTable";
-import PivotTable from "../../../components/PivotChart/PivotChart";
+import PivotTable from "../../../components/PivotChart/LazyPivotTable";
 import { RootState } from "../../../redux/store";
 import BOM_DESIGN from "./BOM_DESIGN";
 import {
@@ -22,7 +22,7 @@ import PrecisionBOMTemLotModal from "./PrecisionBOMManager/PrecisionBOMTemLotMod
 import { useBOMManagerActions } from "./PrecisionBOMManager/useBOMManagerActions";
 import { useBOMManagerData } from "./PrecisionBOMManager/useBOMManagerData";
 import { COMPONENT_DATA } from "../interfaces/rndInterface";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
 import { FiX } from "react-icons/fi";
 
 import {
@@ -230,17 +230,27 @@ const BOM_MANAGER: React.FC = () => {
   );
 
   // DataSource cho Pivot Grid đa chiều
-  const pivotDataSource = useMemo(() => {
-    return new PivotGridDataSource({
-      fields: [
-        { caption: "G_CODE", width: 120, dataField: "G_CODE", area: "row" },
-        { caption: "M_CODE", width: 100, dataField: "M_CODE", area: "row" },
-        { caption: "M_NAME", width: 160, dataField: "M_NAME", area: "row" },
-        { caption: "M_QTY", dataField: "M_QTY", dataType: "number", summaryType: "sum", format: "fixedPoint", area: "data" },
-      ],
-      store: bomgiatable.length > 0 ? bomgiatable : bomsxtable,
-    });
-  }, [bomgiatable, bomsxtable]);
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts).
+  const [pivotDataSource, setPivotDataSource] = useState<any>(null);
+  useEffect(() => {
+    if (!showPivot) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void (async () => {
+      const ds = await createPivotDataSource({
+        fields: [
+          { caption: "G_CODE", width: 120, dataField: "G_CODE", area: "row" },
+          { caption: "M_CODE", width: 100, dataField: "M_CODE", area: "row" },
+          { caption: "M_NAME", width: 160, dataField: "M_NAME", area: "row" },
+          { caption: "M_QTY", dataField: "M_QTY", dataType: "number", summaryType: "sum", format: "fixedPoint", area: "data" },
+        ],
+        store: bomgiatable.length > 0 ? bomgiatable : bomsxtable,
+      });
+      if (!cancelled) setPivotDataSource(ds);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showPivot, bomgiatable, bomsxtable]);
 
   return (
     <div className="precision-bom">
@@ -407,7 +417,11 @@ const BOM_MANAGER: React.FC = () => {
               </button>
             </div>
             <div style={{ padding: "12px", height: "calc(100% - 50px)", overflow: "auto" }}>
-              <PivotTable datasource={pivotDataSource} tableID="BOMPivotMaster" />
+              {pivotDataSource ? (
+                <PivotTable datasource={pivotDataSource} tableID="BOMPivotMaster" />
+              ) : (
+                <div className="pivot-loading">Đang tải bảng pivot…</div>
+              )}
             </div>
           </div>
         </div>

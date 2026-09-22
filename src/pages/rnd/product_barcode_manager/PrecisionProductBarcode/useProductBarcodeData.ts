@@ -10,7 +10,7 @@ import {
   ProductionStatusFilter,
   UseProductBarcodeDataReturn,
 } from "./barcodeManagerTypes";
-import PivotGridDataSource from "devextreme/ui/pivot_grid/data_source";
+import { createPivotDataSource } from "../../../../components/PivotChart/lazyPivot";
 
 const INITIAL_ROW_STATE: BARCODE_DATA = {
   G_CODE: "",
@@ -335,9 +335,21 @@ export const useProductBarcodeData = (): UseProductBarcodeDataReturn => {
   );
 
   // PIVOT DATA SOURCE
-  const dataSource = useMemo(() => {
-    return new PivotGridDataSource({
-      fields: [
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts).
+  const [dataSource, setDataSource] = useState<any>(null);
+  useEffect(() => {
+    if (!showhidePivotTable) return; // chưa mở pivot -> không tải DevExtreme
+    let cancelled = false;
+    void (async () => {
+      const ds = await createPivotDataSource(buildPivotConfig());
+      if (!cancelled) setDataSource(ds);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showhidePivotTable, datasxtable]);
+  const buildPivotConfig = () => ({
+    fields: [
         { caption: "INS_DATE", width: 80, dataField: "INS_DATE", dataType: "date", summaryType: "count" },
         { caption: "M_LOT_NO", width: 80, dataField: "M_LOT_NO", dataType: "string", summaryType: "count" },
         { caption: "M_CODE", width: 80, dataField: "M_CODE", dataType: "string", summaryType: "count" },
@@ -382,8 +394,7 @@ export const useProductBarcodeData = (): UseProductBarcodeDataReturn => {
         { caption: "FACTORY", width: 80, dataField: "FACTORY", dataType: "string", summaryType: "count" },
       ],
       store: datasxtable,
-    });
-  }, [datasxtable]);
+  });
 
   // ON MOUNT (Chỉ chạy đúng 1 lần duy nhất khi khởi tạo tab)
   useEffect(() => {
