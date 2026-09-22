@@ -192,12 +192,18 @@ function Home() {
   const getchamcong = useCallback(() => {
     generalQuery("checkMYCHAMCONG", {})
       .then((response) => {
-        //console.log(response.data);
-        if (response.data.tk_status !== "NG") {
-          //console.log('data',response.data.REFRESH_TOKEN);
-          let rfr_token: string = response.data.REFRESH_TOKEN;
-          cookies.set("token", rfr_token, { path: "/" });
-        } else {
+        // Chỉ ghi đè cookie khi server THỰC SỰ trả token mới.
+        // Lưu ý: processApi trả "ng" (chữ thường) khi handler lỗi và KHÔNG có REFRESH_TOKEN.
+        // Nếu không guard, `cookies.set("token", undefined)` sẽ ghi chuỗi "undefined"
+        // làm mọi request sau đó bị "jwt malformed" cho tới khi đăng nhập lại.
+        const tkStatus = String(response?.data?.tk_status ?? "").toUpperCase();
+        const rfr_token: string | undefined = response?.data?.REFRESH_TOKEN;
+        if (tkStatus !== "NG" && rfr_token) {
+          cookies.set("token", rfr_token, {
+            path: "/",
+            sameSite: "lax",
+            secure: window.location.protocol === "https:",
+          });
         }
       })
       .catch((error) => {
