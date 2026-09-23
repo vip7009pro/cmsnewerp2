@@ -138,21 +138,47 @@ export const useBOMManagerActions = ({
     return valid && checkHSD();
   };
 
-  // Kiểm tra tính hợp lệ của mã
-  const checkCodeValid = (code: CODE_FULL_INFO) => {
-    if (getCompany() !== "CMS" && userData?.MAINDEPTNAME === "KD") {
-      return true;
-    }
-    const abc: any = code;
-    for (const [k, v] of Object.entries(abc)) {
-      if (
-        (v === null || v === "") &&
-        !["REMK", "FACTORY", "Setting1", "Setting2", "Setting3", "Setting4", "UPH1", "UPH2", "UPH3", "UPH4", "Step1", "Step2", "Step3", "Step4", "LOSS_SX1", "LOSS_SX2", "LOSS_SX3", "LOSS_SX4", "LOSS_SETTING1", "LOSS_SETTING2", "LOSS_SETTING3", "LOSS_SETTING4", "LOSS_ST_SX1", "LOSS_ST_SX2", "LOSS_ST_SX3", "LOSS_ST_SX4", "NOTE", "EQ3", "EQ4"].includes(k)
-      ) {
-        return false;
+  // Lấy CODE_27 từ PROD_TYPE (khớp logic backend/backup: TSP/OLED/UV=C, LABEL=A, TAPE=B, RIBBON=E)
+  const getCode27 = (prodTypeRaw: string): string => {
+    const pType = (prodTypeRaw || "").trim().toUpperCase();
+    if (pType === "LABEL") return "A";
+    if (pType === "TAPE") return "B";
+    if (pType === "RIBBON") return "E";
+    return "C";
+  };
+
+  // Lấy G_CODE kế tiếp dựa trên SEQ_NO hiện có trong DB
+  const getNextG_CODE = async (CODE_12: string, CODE_27: string) => {
+    let nextseq = "";
+    let nextseqno = "";
+    try {
+      const response = await generalQuery("getNextSEQ_G_CODE", { CODE_12, CODE_27 });
+      const currentseq = response.data?.data?.[0]?.LAST_SEQ_NO;
+      if (response.data?.tk_status !== "NG" && currentseq !== null && currentseq !== undefined) {
+        if (CODE_12 === "9") {
+          nextseq = zeroPad(Number(currentseq) + 1, 6);
+          nextseqno = nextseq;
+        } else {
+          nextseq = zeroPad(Number(currentseq) + 1, 5) + "A";
+          nextseqno = zeroPad(Number(currentseq) + 1, 5);
+        }
+      } else if (CODE_12 === "9") {
+        nextseq = "000001";
+        nextseqno = nextseq;
+      } else {
+        nextseq = "00001A";
+        nextseqno = "00001";
+      }
+    } catch {
+      if (CODE_12 === "9") {
+        nextseq = "000001";
+        nextseqno = nextseq;
+      } else {
+        nextseq = "00001A";
+        nextseqno = "00001";
       }
     }
-    return true;
+    return { NEXT_G_CODE: CODE_12 + CODE_27 + nextseq, NEXT_SEQ_NO: nextseqno };
   };
 
   const handleinsertCodeTBG = async (NEWG_CODE: string) => {
@@ -212,63 +238,40 @@ export const useBOMManagerActions = ({
 
   // Thêm mã mới
   const handleAddNewCode = async () => {
-    if (!checkCodeValid(codefullinfo)) {
-      Swal.fire("Lỗi", "Vui lòng điền đầy đủ các thông tin cần thiết", "error");
-      return;
-    }
-
     try {
       const isCMS = getCompany() === "CMS";
       const checkg_name_kd = await checkG_NAME_KD_Exist(
         codefullinfo.G_NAME_KD === undefined ? "zzzzzzzzz" : codefullinfo.G_NAME_KD
       );
 
+      // handleCheckCodeInfo sẽ báo ra chính xác trường thông tin còn thiếu (đối với CMS)
       if ((isCMS && (await handleCheckCodeInfo())) || (!isCMS && checkg_name_kd === false)) {
-        let CODE_27 = "C";
-        const prodType = (codefullinfo.PROD_TYPE || "").trim();
-        if (prodType === "TSP" || prodType === "OLED" || prodType === "UV") {
-          CODE_27 = "C";
-        } else if (prodType === "LABEL") {
-          CODE_27 = "L";
-        } else if (prodType === "TAPE") {
-          CODE_27 = "T";
-        } else if (prodType === "RIBBON") {
-          CODE_27 = "R";
-        } else if (prodType === "SPT") {
-          CODE_27 = "S";
-        }
+        const CODE_27 = getCode27(codefullinfo.PROD_TYPE);
+        const nextcodeinfo = await getNextG_CODE(codefullinfo.CODE_12, CODE_27);
+        const nextcode = nextcodeinfo.NEXT_G_CODE;
+        const nextgseqno = nextcodeinfo.NEXT_SEQ_NO;
 
-        const maxRes = await generalQuery("checkmaxG_CODE", {
-          PROD_PROJECT: codefullinfo.PROD_PROJECT,
-          PROD_MODEL: codefullinfo.PROD_MODEL,
-          CODE_12: codefullinfo.CODE_12,
+        const insertRes = await generalQuery("insertM100", {
+          G_CODE: nextcode,
+          CODE_27,
+          NEXT_SEQ_NO: nextgseqno,
+          CODE_FULL_INFO: codefullinfo,
         });
 
-        if (maxRes.data.tk_status !== "NG") {
-          const max_seq: number = Number(maxRes.data.data[0].MAX_SEQ ?? 0);
-          const current_seq: number = max_seq + 1;
-          const max_g_code = `${codefullinfo.CODE_12}${CODE_27}${zeroPad(current_seq, 5)}A`;
-
-          const insertRes = await generalQuery("insertCodeInfo", {
-            ...codefullinfo,
-            G_CODE: max_g_code,
-            CODE_27,
-            SEQ_NO: current_seq,
-            REV_NO: "A",
-            DEFAULT_DM: defaultDM,
-          });
-
-          if (insertRes.data.tk_status === "OK") {
-            Swal.fire("Thành công", `Đã thêm mã mới: ${max_g_code}`, "success");
-            handleCODEINFO();
-            handleSelectCode(max_g_code);
-            await handleinsertCodeTBG(max_g_code);
-          } else {
-            Swal.fire("Thất bại", insertRes.data.message || "Lỗi khi thêm mã", "error");
-          }
+        if (insertRes.data.tk_status !== "NG") {
+          Swal.fire("Thông báo", `Code mới: ${nextcode}`, "success");
+          handleCODEINFO();
+          handleSelectCode(nextcode);
+          await handleinsertCodeTBG(nextcode);
+        } else {
+          Swal.fire("Thông báo", `Lỗi: ${insertRes.data.message}`, "error");
         }
       } else if (!isCMS) {
-        Swal.fire("Cảnh báo", `Code ${codefullinfo.G_NAME_KD ?? "zzzzzzzzz"} đã tồn tại`, "error");
+        Swal.fire(
+          "Cảnh báo",
+          `Code ${codefullinfo.G_NAME_KD ?? "zzzzzzzzz"} đã tồn tại`,
+          "error"
+        );
       }
     } catch (err) {
       console.error(err);
@@ -299,20 +302,9 @@ export const useBOMManagerActions = ({
     }
     try {
       const isCMS = getCompany() === "CMS";
+      // handleCheckCodeInfo sẽ báo ra chính xác trường thông tin còn thiếu (đối với CMS)
       if ((isCMS && (await handleCheckCodeInfo())) || !isCMS) {
-        let CODE_27 = "C";
-        const prodType = (codefullinfo.PROD_TYPE || "").trim();
-        if (prodType === "TSP" || prodType === "OLED" || prodType === "UV") {
-          CODE_27 = "C";
-        } else if (prodType === "LABEL") {
-          CODE_27 = "L";
-        } else if (prodType === "TAPE") {
-          CODE_27 = "T";
-        } else if (prodType === "RIBBON") {
-          CODE_27 = "R";
-        } else if (prodType === "SPT") {
-          CODE_27 = "S";
-        }
+        const CODE_27 = getCode27(codefullinfo.PROD_TYPE);
 
         let newGCODE = "";
         let nextseqno = "";
@@ -329,20 +321,20 @@ export const useBOMManagerActions = ({
           newGCODE = codefullinfo.CODE_12 + CODE_27 + nextseqno + NEXT_REV_NO;
         }
 
-        const res = await generalQuery("insertCodeInfo", {
-          ...codefullinfo,
+        const res = await generalQuery("insertM100_AddVer", {
           G_CODE: newGCODE,
           CODE_27,
-          REV_NO: NEXT_REV_NO || "A",
-          DEFAULT_DM: defaultDM,
+          NEXT_SEQ_NO: nextseqno,
+          REV_NO: NEXT_REV_NO,
+          CODE_FULL_INFO: codefullinfo,
         });
 
-        if (res.data.tk_status === "OK") {
-          Swal.fire("Thành công", `Đã thêm phiên bản mới: Rev.${NEXT_REV_NO || "A"}`, "success");
+        if (res.data.tk_status !== "NG") {
+          Swal.fire("Thông báo", `Code ver mới: ${newGCODE}`, "success");
           handleCODEINFO();
           await handleinsertCodeTBG(newGCODE);
         } else {
-          Swal.fire("Thất bại", res.data.message || "Lỗi tạo phiên bản mới", "error");
+          Swal.fire("Thông báo", `Lỗi: ${res.data.message}`, "error");
         }
       }
     } catch (err) {
