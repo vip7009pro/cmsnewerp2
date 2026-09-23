@@ -292,7 +292,7 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                     getOptionLabel={(opt) => {
                       if (!opt) return "";
                       if (typeof opt === "string") return opt;
-                      return `${opt.G_CODE || ""}: ${opt.G_NAME_KD || opt.G_NAME || ""}`;
+                      return `${opt.G_CODE || ""}: ${opt.G_NAME || opt.G_NAME_KD || ""}`;
                     }}
                     value={selectedCode}
                     onChange={(_, val) => onSelectCode(val as CodeListData)}

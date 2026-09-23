@@ -171,7 +171,7 @@ const PrecisionKHOLIEUFilterPanel: React.FC<PrecisionKHOLIEUFilterPanelProps> = 
         </div>
 
         {/* LOT NCC kèm nút UPD LOT NCC */}
-        <div className="precision-kholieu__formGroup precision-kholieu__formGroup--lotNcc">
+        {/* <div className="precision-kholieu__formGroup precision-kholieu__formGroup--lotNcc">
           <label>LOT NCC (Vendor Lot):</label>
           <div className="lot-input-wrapper">
             <input
@@ -189,7 +189,7 @@ const PrecisionKHOLIEUFilterPanel: React.FC<PrecisionKHOLIEUFilterPanelProps> = 
               UPD LOT NCC
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Checkbox Group */}
         <div className="precision-kholieu__checkboxGroup">
