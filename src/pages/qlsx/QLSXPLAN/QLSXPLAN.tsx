@@ -6,10 +6,9 @@ import { RootState } from "../../../redux/store";
 import { getCompany, getUserData } from "../../../api/Api";
 import LONGTERM_PLAN from "./LICHSUCHITHITABLE/LONGTERM_PLAN";
 import MyTabs from "../../../components/MyTab/MyTab";
+const PLAN_TABLE = lazy(() => import("./LICHSUCHITHITABLE/PLAN_TABLE"));
 const PLAN_VISUAL = lazy(() => import("./Machine/PLANVISUAL"));
 const BTP_AUTO = React.lazy(() => import("../../sx/BTP_AUTO/BTP_AUTO"));
-const MACHINE_OLD = React.lazy(() => import("./Machine/MACHINE_backup"));
-const PLAN_DATATB_OLD = React.lazy(() => import("./LICHSUCHITHITABLE/PLAN_DATATB_backup"));
 const MACHINE = React.lazy(() => import("./Machine/MACHINE"));
 const ACHIVEMENTTB = React.lazy(() => import("./ACHIVEMENTTB/ACHIVEMENTTB"));
 const LICHSUINPUTLIEU = React.lazy(() => import("./LICHSUINPUTLIEU/LICHSUINPUTLIEU"));
@@ -53,7 +52,7 @@ const QLSXPLAN = () => {
             {getCompany() === "CMS" && getUserData()?.EMPL_NO === "NHU1903z" ? (
               <PLAN_DATATB />
             ) : (
-              <PLAN_DATATB_OLD />
+              <PLAN_TABLE />
             )}
           </MyTabs.Tab>
           {getCompany() === "CMS" && (
