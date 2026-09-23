@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import moment from "moment";
 import Swal from "sweetalert2";
-import { generalQuery, getCompany } from "../../../../api/Api";
+import { generalQuery, getCompany, getUserData } from "../../../../api/Api";
 import { CustomerListData, DEFAULT_DM } from "../../../kinhdoanh/interfaces/kdInterface";
 import { FSC_LIST_DATA } from "../../../muahang/interfaces/muaInterface";
 import { MaterialListData } from "../../../qc/interfaces/qcInterface";
@@ -119,6 +120,80 @@ export const useBOMManagerData = () => {
     setCurrentProcessList([]);
     Swal.fire("Thông báo", "Đã làm sạch form nhập liệu", "success");
   };
+
+  const handleNewProduct = useCallback(() => {
+    const isCMS = getCompany() === "CMS";
+    const defaultCust = customerList[0]?.CUST_CD || "0000";
+    const defaultMat = masterMaterialList[0]?.M_NAME || "PET 50U";
+    const defaultExp = masterMaterialList[0]?.EXP_DATE ?? 12;
+    const defaultMachine = machineList[0]?.EQ_NAME || "NA";
+    const timestamp = moment().format("YYMMDD_HHmmss");
+
+    const newCodeInfo: CODE_FULL_INFO = {
+      ...initialCodeFullInfo,
+      G_CODE: "",
+      G_NAME: `NEW_RND_${moment().format("YYMMDD")}`,
+      G_NAME_KD: `ITEM_${timestamp}`,
+      PROD_PROJECT: "COMMON",
+      PROD_MODEL: "COMMON",
+      CODE_12: "7",
+      PROD_TYPE: isCMS ? "TSP" : "LABEL",
+      DESCR: "SẢN PHẨM MỚI",
+      PROD_MAIN_MATERIAL: defaultMat,
+      G_LENGTH: 100,
+      G_WIDTH: 50,
+      PD: 100,
+      G_C: 1,
+      G_C_R: 1,
+      G_CG: 0,
+      G_LG: 0,
+      G_SG_L: 5,
+      G_SG_R: 5,
+      PACK_DRT: "1",
+      KNIFE_TYPE: 0,
+      KNIFE_LIFECYCLE: 70000,
+      KNIFE_PRICE: 0,
+      CODE_33: "03",
+      PROD_DVT: "01",
+      ROLE_EA_QTY: 1000,
+      RPM: 0,
+      PIN_DISTANCE: 0,
+      PROCESS_TYPE: "1",
+      EQ1: defaultMachine,
+      EQ2: "NA",
+      EQ3: "NA",
+      EQ4: "NA",
+      PROD_DIECUT_STEP: 1,
+      PROD_PRINT_TIMES: 0,
+      PO_TYPE: "E1",
+      FSC: "N",
+      FSC_CODE: "01",
+      APPROVED_YN: "N",
+      USE_YN: "Y",
+      CUST_CD: defaultCust,
+      REV_NO: "A",
+      REMK: "",
+      QL_HSD: "N",
+      EXP_DATE: String(defaultExp),
+      INS_EMPL: getUserData()?.EMPL_NO || "ADMIN",
+      INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
+    };
+
+    setCodeFullInfo(newCodeInfo);
+    setSelectedMasterMaterial(
+      masterMaterialList[0] || { M_NAME: defaultMat, EXP_DATE: defaultExp }
+    );
+    setBOMSXTable([]);
+    setBOMGIATable([]);
+    setCurrentProcessList([]);
+    Swal.fire({
+      icon: "success",
+      title: "Đã tạo mới sản phẩm",
+      text: "Đã điền đầy đủ các thông số mặc định hợp lệ. Bạn có thể nhấn ADD để tạo mã BOM mới ngay!",
+      timer: 1600,
+      showConfirmButton: false,
+    });
+  }, [customerList, masterMaterialList, machineList]);
 
   const handleGETBOMSX = useCallback(async (G_CODE: string) => {
     try {
@@ -304,6 +379,7 @@ export const useBOMManagerData = () => {
     bomgiaSelectedRows,
     handleSetCodeInfo,
     handleClearInfo,
+    handleNewProduct,
     handleCODEINFO,
     handleGETBOMSX,
     handleGETBOMGIA,

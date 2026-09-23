@@ -3,6 +3,7 @@ import {
   AiFillDelete,
   AiFillFileAdd,
   AiOutlineCloudUpload,
+  AiOutlineFileAdd,
   AiOutlinePushpin,
   AiOutlineSearch,
 } from "react-icons/ai";
@@ -22,6 +23,7 @@ interface PrecisionBOMSidebarProps {
   isLoading: boolean;
   onSearchCode: () => void;
   onSearchKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onNew: () => void;
   onAdd: () => void;
   onAddVer: () => void;
   onOpenBulkUpload: () => void;
@@ -50,6 +52,7 @@ const PrecisionBOMSidebar: React.FC<PrecisionBOMSidebarProps> = ({
   isLoading,
   onSearchCode,
   onSearchKeyDown,
+  onNew,
   onAdd,
   onAddVer,
   onOpenBulkUpload,
@@ -110,57 +113,56 @@ const PrecisionBOMSidebar: React.FC<PrecisionBOMSidebarProps> = ({
           </button>
         </div>
 
-        {/* Action Command Palette: ADD, ADD VER, UP LOẠT (ngay cạnh ADD VER), UPDATE, CLEAR */}
+        {/* Action Command Palette: NEW, ADD, ADD VER, UP LOẠT, UPDATE (Đủ trên 1 dòng compact) */}
         <div className="action-buttons-grid">
-          {/* Nút 1: ADD */}
+          {/* Nút 1: NEW */}
+          <button
+            className="btn-action btn-action--new"
+            onClick={onNew}
+            title="Tạo mới & reset toàn bộ thông tin sản phẩm mặc định (đảm bảo bấm ADD được ngay)"
+          >
+            <AiOutlineFileAdd size={12} />
+            <span>NEW</span>
+          </button>
+
+          {/* Nút 2: ADD */}
           <button
             className="btn-action btn-action--add"
             onClick={onAdd}
             title="Tạo mã BOM mới hoàn toàn"
           >
-            <AiFillFileAdd size={13} />
+            <AiFillFileAdd size={12} />
             <span>ADD</span>
           </button>
 
-          {/* Nút 2: ADD VER */}
+          {/* Nút 3: ADD VER */}
           <button
             className="btn-action btn-action--add-ver"
             onClick={onAddVer}
             title="Thêm phiên bản mới (Rev) cho mã hiện hành"
           >
-            <MdUpgrade size={14} />
+            <MdUpgrade size={13} />
             <span>ADD VER</span>
           </button>
 
-          {/* Nút 3: UP LOẠT (Đặt ngay cạnh ADD VER theo yêu cầu người dùng) */}
+          {/* Nút 4: UP LOẠT */}
           <button
             className="btn-action btn-action--bulk-up"
             onClick={onOpenBulkUpload}
             title="Nạp dữ liệu hàng loạt từ file Excel"
           >
-            <AiOutlineCloudUpload size={14} />
+            <AiOutlineCloudUpload size={13} />
             <span>UP LOẠT</span>
           </button>
 
-          {/* Nút 4: UPDATE */}
+          {/* Nút 5: UPDATE */}
           <button
             className="btn-action btn-action--update"
             onClick={onUpdate}
             title="Cập nhật thông số mã hiện hành"
           >
-            <MdOutlineUpdate size={14} />
+            <MdOutlineUpdate size={13} />
             <span>UPDATE</span>
-          </button>
-
-          {/* Nút 5: CLEAR */}
-          <button
-            className="btn-action btn-action--clear"
-            onClick={onClear}
-            title="Xóa trắng form nhập liệu"
-            style={{ gridColumn: "span 2" }}
-          >
-            <AiFillDelete size={13} />
-            <span>CLEAR FORM</span>
           </button>
         </div>
 
@@ -168,6 +170,13 @@ const PrecisionBOMSidebar: React.FC<PrecisionBOMSidebarProps> = ({
         <div className="quick-subtools">
           <button className="tool-link" onClick={onResetBanVe} title="Khôi phục link bản vẽ">
             <BiReset size={12} /> Reset BV
+          </button>
+          <button
+            className={`tool-link tool-link--clear`}
+            onClick={onClear}
+            title="Xóa trắng form nhập liệu"
+          >
+            <AiFillDelete size={11} /> Clear
           </button>
           <button
             className={`tool-link tool-link--edit`}

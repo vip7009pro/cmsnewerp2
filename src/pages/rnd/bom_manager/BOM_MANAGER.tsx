@@ -87,6 +87,7 @@ const BOM_MANAGER: React.FC = () => {
     bomgiaSelectedRows,
     handleSetCodeInfo,
     handleClearInfo,
+    handleNewProduct,
     handleCODEINFO,
     handleSelectCode,
   } = bomData;
@@ -269,6 +270,7 @@ const BOM_MANAGER: React.FC = () => {
           onSearchKeyDown={(e) => {
             if (e.key === "Enter") handleCODEINFO();
           }}
+          onNew={handleNewProduct}
           onAdd={confirmAddNewCode}
           onAddVer={confirmAddNewVer}
           onOpenBulkUpload={() => setShowBulkModal(true)}

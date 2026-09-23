@@ -501,20 +501,21 @@
         }
       }
 
-      // Action Buttons (ADD, ADD VER, UP LOẠT, UPDATE, CLEAR)
+      // Action Buttons (NEW, ADD, ADD VER, UP LOẠT, UPDATE trên 1 dòng)
       .action-buttons-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 4px;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 3px;
 
         .btn-action {
           height: 24px;
           min-width: 0;
-          padding: 0 4px;
+          padding: 0 2px;
           border: none;
           border-radius: 4px;
-          font-size: 9px;
+          font-size: 8.5px;
           font-weight: 700;
+          letter-spacing: -0.2px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -522,9 +523,17 @@
           cursor: pointer;
           transition: transform 0.05s ease, background 0.15s ease;
           user-select: none;
+          white-space: nowrap;
 
           &:active {
             transform: scale(0.96);
+          }
+
+          &--new {
+            background: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 1px 2px rgba(2, 132, 199, 0.25);
+            &:hover { background: #0369a1; }
           }
 
           &--add {
@@ -591,6 +600,11 @@
 
           &--edit {
             color: #059669;
+          }
+
+          &--clear {
+            color: #ef4444;
+            &:hover { color: #dc2626; }
           }
 
           &--pin {
@@ -893,6 +907,17 @@
               color: #64748b;
               font-weight: 500;
               white-space: nowrap;
+
+              &--invalid {
+                color: #dc2626 !important;
+                font-weight: 700 !important;
+
+                &::after {
+                  content: " *";
+                  color: #ef4444;
+                  font-weight: 900;
+                }
+              }
             }
 
             .field-input, select.field-input {

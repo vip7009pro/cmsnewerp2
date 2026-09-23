@@ -21,6 +21,13 @@ const filterOptions1 = createFilterOptions({
   limit: 100,
 });
 
+const isFieldEmpty = (val: any): boolean => {
+  return val === null || val === undefined || String(val).trim() === "";
+};
+
+const getLabelClass = (isInvalid: boolean) =>
+  `field-label${isInvalid ? " field-label--invalid" : ""}`;
+
 interface PrecisionBOMSpecGridProps {
   codeFullInfo: CODE_FULL_INFO;
   handleSetCodeInfo: (field: string, val: any) => void;
@@ -106,7 +113,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
             </div>
             <div className="spec-fields">
               <div className="spec-row">
-                <span className="field-label">Khách hàng:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.CUST_CD))} title={isFieldEmpty(codeFullInfo?.CUST_CD) ? "Chưa chọn khách hàng" : ""}>Khách hàng:</span>
                 <Autocomplete
                   disabled={enableform}
                   size="small"
@@ -140,7 +147,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Dự án/Project:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.PROD_PROJECT))} title={isFieldEmpty(codeFullInfo?.PROD_PROJECT) ? "Chưa nhập dự án" : ""}>Dự án/Project:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -150,7 +157,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Model:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.PROD_MODEL))} title={isFieldEmpty(codeFullInfo?.PROD_MODEL) ? "Chưa nhập model" : ""}>Model:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -160,7 +167,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Đặc tính SP:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.CODE_12))} title={isFieldEmpty(codeFullInfo?.CODE_12) ? "Chưa chọn đặc tính SP" : ""}>Đặc tính SP:</span>
                 <select
                   className="field-input"
                   disabled={enableform}
@@ -174,7 +181,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 </select>
               </div>
               <div className="spec-row">
-                <span className="field-label">Phân loại:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.PROD_TYPE))} title={isFieldEmpty(codeFullInfo?.PROD_TYPE) ? "Chưa chọn phân loại" : ""}>Phân loại:</span>
                 <select
                   className="field-input"
                   disabled={enableform}
@@ -191,7 +198,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 </select>
               </div>
               <div className="spec-row">
-                <span className="field-label">{company === "CMS" ? "Code KD:" : "Code KT:"}</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.G_NAME_KD))} title={isFieldEmpty(codeFullInfo?.G_NAME_KD) ? "Chưa nhập Code KD/KT" : ""}>{company === "CMS" ? "Code KD:" : "Code KT:"}</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -201,7 +208,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">VL Chính:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.PROD_MAIN_MATERIAL))} title={isFieldEmpty(codeFullInfo?.PROD_MAIN_MATERIAL) ? "Chưa chọn VL chính" : ""}>VL Chính:</span>
                 <Autocomplete
                   disabled={enableform}
                   size="small"
@@ -241,7 +248,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Code RnD:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.G_NAME))} title={isFieldEmpty(codeFullInfo?.G_NAME) ? "Chưa nhập Code RnD" : ""}>Code RnD:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -251,7 +258,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Mô tả/Spec:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.DESCR))} title={isFieldEmpty(codeFullInfo?.DESCR) ? "Chưa nhập mô tả/spec" : ""}>Mô tả/Spec:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -271,7 +278,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
             </div>
             <div className="spec-fields">
               <div className="spec-row">
-                <span className="field-label">Dài SP (L):</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.G_LENGTH))} title={isFieldEmpty(codeFullInfo?.G_LENGTH) ? "Thiếu chiều dài" : ""}>Dài SP (L):</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -281,7 +288,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Rộng SP (W):</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.G_WIDTH))} title={isFieldEmpty(codeFullInfo?.G_WIDTH) ? "Thiếu chiều rộng" : ""}>Rộng SP (W):</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -291,7 +298,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Bước P/D:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.PD))} title={isFieldEmpty(codeFullInfo?.PD) ? "Thiếu bước P/D" : ""}>Bước P/D:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -301,7 +308,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Cavity hàng:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.G_C_R))} title={isFieldEmpty(codeFullInfo?.G_C_R) ? "Thiếu cavity hàng" : ""}>Cavity hàng:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -311,7 +318,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Cavity cột:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.G_C))} title={isFieldEmpty(codeFullInfo?.G_C) ? "Thiếu cavity cột" : ""}>Cavity cột:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -321,7 +328,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">K/c hàng:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.G_LG))} title={isFieldEmpty(codeFullInfo?.G_LG) ? "Thiếu k/c hàng" : ""}>K/c hàng:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -331,7 +338,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">K/c cột:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.G_CG))} title={isFieldEmpty(codeFullInfo?.G_CG) ? "Thiếu k/c cột" : ""}>K/c cột:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -341,7 +348,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Liner T/P:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.G_SG_L) || isFieldEmpty(codeFullInfo?.G_SG_R))} title={isFieldEmpty(codeFullInfo?.G_SG_L) || isFieldEmpty(codeFullInfo?.G_SG_R) ? "Thiếu kích thước liner" : ""}>Liner T/P:</span>
                 <div style={{ display: "flex", gap: "5px", maxWidth: "115px" }}>
                   <input
                     className="field-input"
@@ -372,7 +379,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
             </div>
             <div className="spec-fields">
               <div className="spec-row">
-                <span className="field-label">Hướng cuộn:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.PACK_DRT))} title={isFieldEmpty(codeFullInfo?.PACK_DRT) ? "Chưa chọn hướng cuộn" : ""}>Hướng cuộn:</span>
                 <select
                   className="field-input"
                   disabled={enableform}
@@ -384,7 +391,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 </select>
               </div>
               <div className="spec-row">
-                <span className="field-label">Loại dao:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.KNIFE_TYPE))} title={isFieldEmpty(codeFullInfo?.KNIFE_TYPE) ? "Chưa chọn loại dao" : ""}>Loại dao:</span>
                 <select
                   className="field-input"
                   disabled={enableform}
@@ -397,7 +404,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 </select>
               </div>
               <div className="spec-row">
-                <span className="field-label">Tuổi dao:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.KNIFE_LIFECYCLE))} title={isFieldEmpty(codeFullInfo?.KNIFE_LIFECYCLE) ? "Thiếu tuổi dao" : ""}>Tuổi dao:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -407,7 +414,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Đơn giá dao:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.KNIFE_PRICE))} title={isFieldEmpty(codeFullInfo?.KNIFE_PRICE) ? "Thiếu đơn giá dao" : ""}>Đơn giá dao:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -417,7 +424,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Packing Type:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.CODE_33))} title={isFieldEmpty(codeFullInfo?.CODE_33) ? "Chưa chọn packing type" : ""}>Packing Type:</span>
                 <select
                   className="field-input"
                   disabled={enableform}
@@ -429,7 +436,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 </select>
               </div>
               <div className="spec-row">
-                <span className="field-label">Đơn vị:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.PROD_DVT))} title={isFieldEmpty(codeFullInfo?.PROD_DVT) ? "Chưa chọn đơn vị" : ""}>Đơn vị:</span>
                 <select
                   className="field-input"
                   disabled={enableform}
@@ -446,7 +453,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 </select>
               </div>
               <div className="spec-row">
-                <span className="field-label">Packing QTY:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.ROLE_EA_QTY))} title={isFieldEmpty(codeFullInfo?.ROLE_EA_QTY) ? "Thiếu packing QTY" : ""}>Packing QTY:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -456,7 +463,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">RPM:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.RPM))} title={isFieldEmpty(codeFullInfo?.RPM) ? "Thiếu RPM" : ""}>RPM:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -466,7 +473,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">PIN DISTANCE:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.PIN_DISTANCE))} title={isFieldEmpty(codeFullInfo?.PIN_DISTANCE) ? "Thiếu pin distance" : ""}>PIN DISTANCE:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -486,7 +493,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
             </div>
             <div className="spec-fields">
               <div className="spec-row">
-                <span className="field-label">Process Type:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.PROCESS_TYPE))} title={isFieldEmpty(codeFullInfo?.PROCESS_TYPE) ? "Chưa nhập process type" : ""}>Process Type:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -496,7 +503,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Máy 1:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.EQ1))} title={isFieldEmpty(codeFullInfo?.EQ1) ? "Chưa chọn máy 1" : ""}>Máy 1:</span>
                 <select
                   className="field-input"
                   disabled={enableform}
@@ -510,7 +517,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 </select>
               </div>
               <div className="spec-row">
-                <span className="field-label">Máy 2:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.EQ2))} title={isFieldEmpty(codeFullInfo?.EQ2) ? "Chưa chọn máy 2" : ""}>Máy 2:</span>
                 <select
                   className="field-input"
                   disabled={enableform}
@@ -524,7 +531,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 </select>
               </div>
               <div className="spec-row">
-                <span className="field-label">Máy 3:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.EQ3))} title={isFieldEmpty(codeFullInfo?.EQ3) ? "Chưa chọn máy 3" : ""}>Máy 3:</span>
                 <select
                   className="field-input"
                   disabled={enableform}
@@ -538,7 +545,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 </select>
               </div>
               <div className="spec-row">
-                <span className="field-label">Máy 4:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.EQ4))} title={isFieldEmpty(codeFullInfo?.EQ4) ? "Chưa chọn máy 4" : ""}>Máy 4:</span>
                 <select
                   className="field-input"
                   disabled={enableform}
@@ -552,7 +559,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 </select>
               </div>
               <div className="spec-row">
-                <span className="field-label">Số bước dao:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.PROD_DIECUT_STEP))} title={isFieldEmpty(codeFullInfo?.PROD_DIECUT_STEP) ? "Thiếu số bước dao" : ""}>Số bước dao:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -562,7 +569,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Số lần in:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.PROD_PRINT_TIMES))} title={isFieldEmpty(codeFullInfo?.PROD_PRINT_TIMES) ? "Thiếu số lần in" : ""}>Số lần in:</span>
                 <input
                   className="field-input"
                   disabled={enableform}
@@ -572,7 +579,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">PO / FSC:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.PO_TYPE) || isFieldEmpty(codeFullInfo?.FSC))} title={isFieldEmpty(codeFullInfo?.PO_TYPE) || isFieldEmpty(codeFullInfo?.FSC) ? "Chưa chọn PO / FSC" : ""}>PO / FSC:</span>
                 <div style={{ display: "flex", gap: "2px", maxWidth: "115px" }}>
                   <select
                     className="field-input"
@@ -622,7 +629,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 />
               </div>
               <div className="spec-row">
-                <span className="field-label">Loại FSC:</span>
+                <span className={getLabelClass(codeFullInfo?.FSC === "Y" && isFieldEmpty(codeFullInfo?.FSC_CODE))} title={codeFullInfo?.FSC === "Y" && isFieldEmpty(codeFullInfo?.FSC_CODE) ? "FSC yêu cầu chọn loại FSC" : ""}>Loại FSC:</span>
                 <select
                   className="field-input"
                   disabled={enableform || codeFullInfo?.FSC === "N"}
@@ -637,7 +644,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 </select>
               </div>
               <div className="spec-row">
-                <span className="field-label">QL_HSD / HSD:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.QL_HSD) || (codeFullInfo?.QL_HSD === "Y" && (!codeFullInfo?.EXP_DATE || Number(codeFullInfo?.EXP_DATE) === 0)))} title={codeFullInfo?.QL_HSD === "Y" && (!codeFullInfo?.EXP_DATE || Number(codeFullInfo?.EXP_DATE) === 0) ? "Quản lý HSD yêu cầu chọn thời hạn sử dụng" : ""}>QL_HSD / HSD:</span>
                 <div style={{ display: "flex", gap: "2px", maxWidth: "115px" }}>
                   <select
                     className="field-input"
@@ -665,7 +672,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 </div>
               </div>
               <div className="spec-row">
-                <span className="field-label">Phê duyệt:</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.APPROVED_YN))} title={isFieldEmpty(codeFullInfo?.APPROVED_YN) ? "Chưa chọn trạng thái phê duyệt" : ""}>Phê duyệt:</span>
                 <select
                   className="field-input"
                   disabled={enableform}
@@ -677,7 +684,7 @@ const PrecisionBOMSpecGrid: React.FC<PrecisionBOMSpecGridProps> = ({
                 </select>
               </div>
               <div className="spec-row">
-                <span className="field-label">Mở/Khóa (USE):</span>
+                <span className={getLabelClass(isFieldEmpty(codeFullInfo?.USE_YN))} title={isFieldEmpty(codeFullInfo?.USE_YN) ? "Chưa chọn trạng thái USE_YN" : ""}>Mở/Khóa (USE):</span>
                 <label style={{ display: "flex", alignItems: "center", gap: 3, cursor: "pointer" }}>
                   <Checkbox
                     size="small"

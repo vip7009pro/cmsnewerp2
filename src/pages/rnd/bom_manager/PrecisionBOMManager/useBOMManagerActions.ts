@@ -87,7 +87,7 @@ export const useBOMManagerActions = ({
     return valid;
   };
 
-  const handleCheckCodeInfo2 = async () => {
+  const handleCheckCodeInfo2 = async (isNew: boolean = false) => {
     if (getCompany() !== "CMS" && userData?.MAINDEPTNAME === "KD") return true;
 
     const abc: any = codefullinfo;
@@ -124,6 +124,11 @@ export const useBOMManagerActions = ({
           "UPD_DATE",
           "UPD_EMPL",
           "PDBV",
+          "BANVE",
+          "APPSHEET",
+          "NO_INSPECTION",
+          "M_NAME_FULLBOM",
+          ...(isNew || !codefullinfo.G_CODE ? ["G_CODE"] : []),
         ].includes(k)
       ) {
         Swal.fire("Thông báo", `Không được để trống: ${k}`, "error");
@@ -133,8 +138,8 @@ export const useBOMManagerActions = ({
     return true;
   };
 
-  const handleCheckCodeInfo = async () => {
-    const valid = await handleCheckCodeInfo2();
+  const handleCheckCodeInfo = async (isNew: boolean = false) => {
+    const valid = await handleCheckCodeInfo2(isNew);
     return valid && checkHSD();
   };
 
@@ -245,7 +250,7 @@ export const useBOMManagerActions = ({
       );
 
       // handleCheckCodeInfo sẽ báo ra chính xác trường thông tin còn thiếu (đối với CMS)
-      if ((isCMS && (await handleCheckCodeInfo())) || (!isCMS && checkg_name_kd === false)) {
+      if ((isCMS && (await handleCheckCodeInfo(true))) || (!isCMS && checkg_name_kd === false)) {
         const CODE_27 = getCode27(codefullinfo.PROD_TYPE);
         const nextcodeinfo = await getNextG_CODE(codefullinfo.CODE_12, CODE_27);
         const nextcode = nextcodeinfo.NEXT_G_CODE;
