@@ -16,6 +16,9 @@
   user-select: none;
   outline: 0;
   pointer-events: none;
+  /* PERF: khoá layout/paint trong khối bản vẽ (canvas PDF khổ lớn) để repaint
+     không lan ra toàn bộ trang in xung quanh. */
+  contain: layout paint;
   .draw {
     width: 297mm !important;
     height: 208mm !important;

@@ -1032,13 +1032,17 @@ $py-radius: 6px;
   width: 100vw !important;
   height: 100vh !important;
   z-index: 99999 !important;
-  background: rgba(15, 23, 42, 0.72) !important;
-  backdrop-filter: blur(4px) !important;
+  /* PERF: bỏ `backdrop-filter: blur() !important` phủ toàn viewport. Lớp overlay này
+     nằm trên cây DOM rất nặng (AG Grid + bảng YCSX) nên mọi repaint trong modal buộc
+     trình duyệt re-sample + blur lại toàn bộ nền => lag khi mở/scroll modal in.
+     Dùng nền tối đặc hơn để vẫn giữ cảm giác dim & focus. */
+  background: rgba(15, 23, 42, 0.82) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   padding: 16px !important;
   box-sizing: border-box !important;
+  isolation: isolate !important;
 }
 
 .precision-ycsx-modal-container,
@@ -1716,6 +1720,9 @@ $py-radius: 6px;
   background: #ffffff !important;
   box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35) !important;
   animation: py-fadeIn 0.2s ease-out;
+  /* PERF: cô lập layout/style + tách layer riêng cho modal in. */
+  contain: layout style;
+  will-change: transform;
 
   .modal-header {
     padding: 12px 20px;
@@ -1782,7 +1789,7 @@ $py-radius: 6px;
       background: transparent;
       color: #64748b;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 
       &:hover {
         background: #f1f5f9;
@@ -1850,7 +1857,7 @@ $py-radius: 6px;
         background: #ffffff;
         color: #334155;
         cursor: pointer;
-        transition: all 0.15s ease;
+        transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 
         svg {
           font-size: 13px;
@@ -1886,7 +1893,7 @@ $py-radius: 6px;
         border: none;
         cursor: pointer;
         color: #ffffff !important;
-        transition: all 0.15s ease;
+        transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 
         svg {
           font-size: 15px;
@@ -1946,7 +1953,7 @@ $py-radius: 6px;
         background: #ffffff;
         color: #475569;
         cursor: pointer;
-        transition: all 0.15s ease;
+        transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 
         &:hover {
           background: #f1f5f9;
@@ -1966,6 +1973,8 @@ $py-radius: 6px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    /* PERF: giới hạn vùng repaint trong stage của modal in. */
+    contain: layout paint;
 
     .modal-print-sheet {
       background: #ffffff !important;
@@ -1977,6 +1986,21 @@ $py-radius: 6px;
       min-width: 210mm;
       max-width: 100%;
       box-sizing: border-box;
+
+      /* PERF: chỉ render các trang nằm trong viewport (YCSX / bản vẽ). Khi in nhiều
+         phiếu, trang off-screen bị bỏ qua layout + paint => scroll mượt.
+         Scope @media screen nên bản in thật (react-to-print) không bị ảnh hưởng. */
+      @media screen {
+        .ycsxcomponent {
+          content-visibility: auto;
+          contain-intrinsic-size: auto 297mm;
+        }
+
+        .drawcomponent {
+          content-visibility: auto;
+          contain-intrinsic-size: auto 208mm;
+        }
+      }
 
       .empty-print-state {
         padding: 60px 24px;

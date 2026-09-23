@@ -1,4 +1,4 @@
-import React, { memo, useRef, useEffect, useState, useMemo, ReactElement } from "react";
+import React, { memo, useCallback, useRef, useEffect, useState, useMemo, ReactElement } from "react";
 import { useReactToPrint } from "react-to-print";
 import {
   FiPrinter,
@@ -24,7 +24,8 @@ const PrecisionYCSXPrintModals: React.FC<Props> = ({
   selectedRows,
 }) => {
   const printRef = useRef<HTMLDivElement>(null);
-  const [renderedContent, setRenderedContent] = useState<Array<ReactElement>>([]);
+  // Bộ đếm dùng cho nút "Tạo lại bản in" (buộc tính lại nội dung in).
+  const [renderKey, setRenderKey] = useState(0);
 
   const isYCSX = openYCSXPrint;
   const isBanVe = openBanVePrint;
@@ -77,27 +78,22 @@ const PrecisionYCSXPrintModals: React.FC<Props> = ({
     pageStyle: printPageStyle,
   });
 
-  // Re-render trigger
-  const handleReRender = () => {
-    if (isYCSX && selectedRows.length > 0) {
-      setRenderedContent(renderYCSX(selectedRows));
-    } else if (isBanVe && selectedRows.length > 0) {
-      setRenderedContent(renderBanVe(selectedRows));
-    } else {
-      setRenderedContent([]);
-    }
-  };
+  // PERF: nội dung in được TÍNH NGAY TRONG RENDER thay vì setState trong useEffect.
+  // Cách cũ gây double render: mở modal -> render trang rỗng -> effect setState ->
+  // render LẠI toàn bộ cây khổ A4 (rất nặng khi in nhiều YCSX / nhiều bản vẽ PDF).
+  const renderedContent = useMemo<Array<ReactElement>>(() => {
+    if (selectedRows.length === 0) return [];
+    if (openYCSXPrint) return renderYCSX(selectedRows);
+    if (openBanVePrint) return renderBanVe(selectedRows);
+    return [];
+    // renderKey chỉ dùng để buộc tính lại khi bấm "Tạo lại bản in (Re-render)".
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openYCSXPrint, openBanVePrint, selectedRows, renderKey]);
 
-  // Sync rendered content when modal opens or selected rows change
-  useEffect(() => {
-    if (openYCSXPrint && selectedRows.length > 0) {
-      setRenderedContent(renderYCSX(selectedRows));
-    } else if (openBanVePrint && selectedRows.length > 0) {
-      setRenderedContent(renderBanVe(selectedRows));
-    } else {
-      setRenderedContent([]);
-    }
-  }, [openYCSXPrint, openBanVePrint, selectedRows]);
+  // Nút Re-render: chỉ cần tăng key, useMemo ở trên sẽ tự dựng lại nội dung.
+  const handleReRender = useCallback(() => {
+    setRenderKey((k) => k + 1);
+  }, []);
 
   // Global keyboard shortcuts: Esc to close, Ctrl+P to print
   useEffect(() => {

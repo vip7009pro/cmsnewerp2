@@ -1068,13 +1068,19 @@
   position: fixed;
   inset: 0;
   z-index: 10050;
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(4px);
+  /* PERF: TUYỆT ĐỐI KHÔNG dùng `backdrop-filter: blur(...)` ở overlay toàn viewport.
+     Lớp này nằm trên một cây DOM rất nặng (AG Grid + bảng chi tiết + YCSX) nên mỗi
+     lần có repaint bên trong modal, trình duyệt phải re-sample + blur lại toàn bộ
+     vùng nền phía sau => lag rất nặng khi mở/scroll/đổi tab modal.
+     Thay bằng nền tối đặc hơn một chút: giữ nguyên cảm giác "dim & focus" nhưng GPU rảnh. */
+  background: rgba(15, 23, 42, 0.82);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 16px;
   box-sizing: border-box;
+  /* Tạo stacking context riêng: modal không hoà trộn/không kéo theo paint của app. */
+  isolation: isolate;
 
   .precision-print-modal-window {
     background: #ffffff;
@@ -1087,6 +1093,10 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    /* PERF: giới hạn layout/style bên trong modal, không lan ra app phía sau;
+       will-change đưa modal lên layer riêng => mở modal & scroll mượt hơn. */
+    contain: layout style;
+    will-change: transform;
 
     &--full {
       width: 98vw;
@@ -1170,7 +1180,12 @@
         justify-content: center;
         cursor: pointer;
         padding: 0;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        /* PERF: tránh `transition: all` (theo dõi & repaint mọi thuộc tính khi hover). */
+        transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+          border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+          color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+          transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+          box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
         &:hover {
           background: #ef4444;
@@ -1219,7 +1234,8 @@
         align-items: center;
         gap: 6px;
         cursor: pointer;
-        transition: all 0.18s ease;
+        transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease,
+          box-shadow 0.18s ease, transform 0.18s ease;
 
         .reload-icon {
           color: #d97706;
@@ -1297,7 +1313,7 @@
           display: inline-flex;
           align-items: center;
           gap: 4px;
-          transition: all 0.15s ease;
+          transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
           box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
 
           &:hover {
@@ -1328,7 +1344,10 @@
         align-items: center;
         gap: 7px;
         cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        /* PERF: hover chỉ đổi background/transform/shadow => chỉ transition đúng các thuộc tính đó. */
+        transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+          box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+          transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
         &:hover {
           background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%);
@@ -1353,6 +1372,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      /* PERF: paint/layout của vùng canvas không được thổi ra ngoài modal. */
+      contain: layout paint;
 
       .print-paper-sheet {
         background: #ffffff;
@@ -1362,6 +1383,24 @@
         min-width: fit-content;
         max-width: 100%;
         box-sizing: border-box;
+      }
+
+      /* PERF: chỉ render những TRANG nằm trong viewport. Khi in nhiều chỉ thị/YCSX,
+         các trang off-screen bị bỏ qua layout + paint => mở modal và scroll mượt.
+         Chỉ áp dụng cho @media screen nên KHÔNG ảnh hưởng bản in thật
+         (react-to-print copy stylesheet, khối @media print giữ nguyên hành vi). */
+      @media screen {
+        .print-paper-sheet > .chithicomponent,
+        .print-paper-sheet > .chithicomponent2,
+        .print-paper-sheet > .ycsxcomponent {
+          content-visibility: auto;
+          contain-intrinsic-size: auto 297mm;
+        }
+
+        .print-paper-sheet > .drawcomponent {
+          content-visibility: auto;
+          contain-intrinsic-size: auto 208mm;
+        }
       }
     }
   }

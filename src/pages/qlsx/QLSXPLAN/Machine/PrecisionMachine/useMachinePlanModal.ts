@@ -837,14 +837,18 @@ export const useMachinePlanModal = ({
   }, [maxLieu]);
 
   // Render các bản in
+  // PERF: chỉ cho phép MỘT cửa sổ xem trước in mở tại một thời điểm. Trước đây
+  // `tabycsx` và `tabbanve` độc lập nhau nhưng lại dùng CHUNG `ycsxprintref` và chung
+  // `ycsxlistrender`, nên nếu người dùng bấm "In YCSX" rồi "In Bản Vẽ" thì cả 2 modal
+  // cùng mount và render trùng nội dung in => DOM khổ A4 bị nhân đôi, rất nặng.
   const renderPrintYCSX = useCallback(() => {
     setYCSXListRender(renderYCSX([selectedPlan] as any));
-    setSelection((prev: any) => ({ ...prev, tabycsx: true }));
+    setSelection((prev: any) => ({ ...prev, tabycsx: true, tabbanve: false }));
   }, [selectedPlan]);
 
   const renderPrintBanVe = useCallback(() => {
     setYCSXListRender(renderBanVe([selectedPlan] as any));
-    setSelection((prev: any) => ({ ...prev, tabbanve: true }));
+    setSelection((prev: any) => ({ ...prev, tabycsx: false, tabbanve: true }));
   }, [selectedPlan]);
 
   const renderPrintChiThi = useCallback((plansToRender?: QLSXPLANDATA[]) => {
@@ -906,7 +910,7 @@ export const useMachinePlanModal = ({
       Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in", "warning");
       return;
     }
-    setSelection((prev: any) => ({ ...prev, tabycsx: true }));
+    setSelection((prev: any) => ({ ...prev, tabycsx: true, tabbanve: false }));
     setYCSXListRender(renderYCSX(rows as any));
   }, []);
 
@@ -916,7 +920,7 @@ export const useMachinePlanModal = ({
       Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để in bản vẽ", "warning");
       return;
     }
-    setSelection((prev: any) => ({ ...prev, tabbanve: true }));
+    setSelection((prev: any) => ({ ...prev, tabycsx: false, tabbanve: true }));
     setYCSXListRender(renderBanVe(rows as any));
   }, []);
 

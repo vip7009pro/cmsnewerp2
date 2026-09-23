@@ -646,13 +646,14 @@
     position: fixed;
     inset: 0;
     z-index: 10050;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(4px);
+    /* PERF: bỏ backdrop-filter blur toàn viewport (nguyên nhân lag khi mở modal in). */
+    background: rgba(15, 23, 42, 0.82);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 16px;
     box-sizing: border-box;
+    isolation: isolate;
 
     .precision-print-modal-window {
       background: #ffffff;
@@ -665,6 +666,9 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      /* PERF: cô lập layout/style + tách layer riêng cho modal. */
+      contain: layout style;
+      will-change: transform;
 
       &__header {
         padding: 10px 18px;
@@ -722,7 +726,8 @@
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+            transform 0.2s ease;
 
           &:hover {
             background: #ef4444;
@@ -756,7 +761,7 @@
           align-items: center;
           gap: 6px;
           cursor: pointer;
-          transition: all 0.18s ease;
+          transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
           &:hover {
             background: #eff6ff;
@@ -779,7 +784,7 @@
           align-items: center;
           gap: 7px;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
           &:hover {
             background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%);
@@ -798,6 +803,8 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        /* PERF: giới hạn vùng repaint trong canvas modal. */
+        contain: layout paint;
 
         .print-paper-sheet {
           background: #ffffff;
@@ -807,6 +814,22 @@
           min-width: fit-content;
           max-width: 100%;
           box-sizing: border-box;
+        }
+
+        /* PERF: chỉ render trang nằm trong viewport (chỉ thị / YCSX / bản vẽ).
+           Scope @media screen => bản in thật không bị ảnh hưởng. */
+        @media screen {
+          .print-paper-sheet > .chithicomponent,
+          .print-paper-sheet > .chithicomponent2,
+          .print-paper-sheet > .ycsxcomponent {
+            content-visibility: auto;
+            contain-intrinsic-size: auto 297mm;
+          }
+
+          .print-paper-sheet > .drawcomponent {
+            content-visibility: auto;
+            contain-intrinsic-size: auto 208mm;
+          }
         }
       }
     }

@@ -42,7 +42,7 @@ import { requestChangelogPopup } from "../../components/Changelog/changelogEvent
 // react-icons/md bị NavMenuCMS/NHATHAN/PVN dùng kèm `Object.keys()` (menuIconCatalog) nên
 // Rollup phải giữ TOÀN BỘ bộ icon => 1.943 KB. Thay bằng MUI icon (tree-shake đúng).
 import { Link } from "react-router-dom";
-export const current_ver: number = getCompany() === "CMS" ? 2804 : 438;
+export const current_ver: number = getCompany() === "CMS" ? 2805 : 438;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;
@@ -260,7 +260,7 @@ function Home() {
     console.log("local ver", current_ver);
     checkWebVer();
     let intervalID = window.setInterval(() => {
-      console.log("change refresh token and check webver every 30s");
+      //console.log("change refresh token and check webver every 30s");
       checkWebVer(intervalID);
       getchamcong();
     }, 30000);

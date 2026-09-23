@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 import "./DrawComponent.scss";
 import { usePdf } from "@mikecousins/react-pdf";
 import moment from "moment";
@@ -22,18 +22,19 @@ const DrawComponent = ({
   const userData: UserData | undefined = useSelector(
     (state: RootState) => state.totalSlice.userData,
   );
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
   const canvasRef = useRef(null);
   let draw_path = "/banve/";
-  const [version, setVersion] = useState(Date.now());
+  // Cache-busting: cố định theo vòng đời component (trước đây có thêm setVersion
+  // không dùng tới, gây thêm 1 state thừa cho mỗi bản vẽ được render).
+  const [version] = useState(() => Date.now());
   const { pdfDocument, pdfPage } = usePdf({
     file: draw_path + G_CODE + ".pdf?v=" + version,
     page,
     scale: 3,
     canvasRef,
   });
-  
-  console.log('PDBV',PDBV);
+
   return (
     <div className="drawcomponent">
       <canvas className="draw" ref={canvasRef} />
@@ -59,4 +60,4 @@ const DrawComponent = ({
   );
 };
 
-export default DrawComponent;
+export default memo(DrawComponent);
