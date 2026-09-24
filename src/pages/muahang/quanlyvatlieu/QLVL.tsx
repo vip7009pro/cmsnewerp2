@@ -139,13 +139,28 @@ const QLVL: React.FC = () => {
   // 5. Thêm mới vật liệu
   const addMaterial = useCallback(async () => {
     try {
-      const checkRes = await generalQuery("checkMaterialExist", { M_NAME: clickedRows.M_NAME });
+      if (!clickedRows.M_NAME || !clickedRows.M_NAME.trim()) {
+        Swal.fire("Cảnh báo", "Vui lòng nhập Mã Vật Liệu trước khi lưu!", "warning");
+        return;
+      }
+
+      const checkRes = await generalQuery("checkMaterialExist", { M_NAME: clickedRows.M_NAME.trim() });
       if (checkRes.data.tk_status !== "NG") {
         Swal.fire("Thông báo", `Mã vật liệu ${clickedRows.M_NAME} đã tồn tại trong hệ thống`, "error");
         return;
       }
 
-      const addRes = await generalQuery("addMaterial", clickedRows);
+      const payload: MATERIAL_TABLE_DATA = {
+        ...clickedRows,
+        M_NAME: clickedRows.M_NAME.trim(),
+        SSPRICE: Number(clickedRows.SSPRICE) || 0,
+        CMSPRICE: Number(clickedRows.CMSPRICE) || 0,
+        SLITTING_PRICE: Number(clickedRows.SLITTING_PRICE) || 0,
+        MASTER_WIDTH: Number(clickedRows.MASTER_WIDTH) || 0,
+        ROLL_LENGTH: Number(clickedRows.ROLL_LENGTH) || 0,
+      };
+
+      const addRes = await generalQuery("addMaterial", payload);
       if (addRes.data.tk_status !== "NG") {
         const userData = getUserData();
         const newNotification: NotificationElement = {
@@ -153,7 +168,7 @@ const QLVL: React.FC = () => {
           NOTI_ID: -1,
           NOTI_TYPE: "success",
           TITLE: "Thêm vật liệu mới",
-          CONTENT: `${userData?.EMPL_NO} (${userData?.MIDLAST_NAME} ${userData?.FIRST_NAME}), nhân viên ${userData?.WORK_POSITION_NAME} đã thêm vật liệu mới ${clickedRows.M_NAME}.`,
+          CONTENT: `${userData?.EMPL_NO} (${userData?.MIDLAST_NAME} ${userData?.FIRST_NAME}), nhân viên ${userData?.WORK_POSITION_NAME} đã thêm vật liệu mới ${payload.M_NAME}.`,
           SUBDEPTNAME: "KD,RND,IQC,ĐỘ TIN CẬY,QC",
           MAINDEPTNAME: "KD,RND,KHO,QC",
           INS_EMPL: userData?.EMPL_NO || "SYSTEM",
@@ -179,10 +194,25 @@ const QLVL: React.FC = () => {
   // 6. Cập nhật vật liệu
   const updateMaterial = useCallback(async () => {
     try {
-      const updRes = await generalQuery("updateMaterial", clickedRows);
+      if (!clickedRows.M_NAME || !clickedRows.M_NAME.trim()) {
+        Swal.fire("Cảnh báo", "Vui lòng nhập Mã Vật Liệu trước khi lưu!", "warning");
+        return;
+      }
+
+      const payload: MATERIAL_TABLE_DATA = {
+        ...clickedRows,
+        M_NAME: clickedRows.M_NAME.trim(),
+        SSPRICE: Number(clickedRows.SSPRICE) || 0,
+        CMSPRICE: Number(clickedRows.CMSPRICE) || 0,
+        SLITTING_PRICE: Number(clickedRows.SLITTING_PRICE) || 0,
+        MASTER_WIDTH: Number(clickedRows.MASTER_WIDTH) || 0,
+        ROLL_LENGTH: Number(clickedRows.ROLL_LENGTH) || 0,
+      };
+
+      const updRes = await generalQuery("updateMaterial", payload);
       if (updRes.data.tk_status !== "NG") {
         try {
-          await generalQuery("updateM090FSC", clickedRows);
+          await generalQuery("updateM090FSC", payload);
         } catch (fscErr) {
           // updateMaterial đã thành công; lỗi đồng bộ bảng FSC chỉ ghi log,
           // không được báo sai thành "không thể cập nhật vật liệu".
@@ -194,7 +224,7 @@ const QLVL: React.FC = () => {
           NOTI_ID: -1,
           NOTI_TYPE: "info",
           TITLE: "Update thông tin vật liệu",
-          CONTENT: `${userData?.EMPL_NO} (${userData?.MIDLAST_NAME} ${userData?.FIRST_NAME}), nhân viên ${userData?.WORK_POSITION_NAME} đã cập nhật vật liệu ${clickedRows.M_NAME}.`,
+          CONTENT: `${userData?.EMPL_NO} (${userData?.MIDLAST_NAME} ${userData?.FIRST_NAME}), nhân viên ${userData?.WORK_POSITION_NAME} đã cập nhật vật liệu ${payload.M_NAME}.`,
           SUBDEPTNAME: "KD,RND,IQC,ĐỘ TIN CẬY,QC",
           MAINDEPTNAME: "KD,RND,KHO,QC",
           INS_EMPL: userData?.EMPL_NO || "SYSTEM",

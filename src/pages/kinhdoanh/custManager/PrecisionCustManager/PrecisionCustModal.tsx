@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   FiBriefcase,
   FiCheck,
@@ -11,7 +11,7 @@ import {
   FiX,
   FiZap,
 } from "react-icons/fi";
-import { CUST_INFO } from "../interfaces/kdInterface";
+import { CUST_INFO } from "../../interfaces/kdInterface";
 
 interface PrecisionCustModalProps {
   isOpen: boolean;
@@ -25,6 +25,15 @@ interface PrecisionCustModalProps {
   isNewMode: boolean;
 }
 
+const isFieldEmpty = (val: any): boolean => {
+  if (val === null || val === undefined) return true;
+  const str = String(val).trim();
+  return str === "" || str === "undefined" || str === "null";
+};
+
+const getLabelClass = (isInvalid: boolean): string =>
+  `field-label${isInvalid ? " field-label--invalid" : ""}`;
+
 const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
   isOpen,
   onClose,
@@ -36,12 +45,30 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
   onSaveEdit,
   isNewMode,
 }) => {
+  const mouseDownTarget = useRef<EventTarget | null>(null);
+
   if (!isOpen) return null;
 
   const isKH = custInfo.CUST_TYPE === "KH";
 
+  const handleOverlayMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    mouseDownTarget.current = e.target;
+  };
+
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Chỉ đóng modal khi người dùng chủ động click trực tiếp vào vùng mờ overlay ngoài modal:
+    if (e.target === e.currentTarget && mouseDownTarget.current === e.currentTarget) {
+      onClose();
+    }
+    mouseDownTarget.current = null;
+  };
+
   return (
-    <div className="precision-cust__modalOverlay" onClick={onClose}>
+    <div
+      className="precision-cust__modalOverlay"
+      onMouseDown={handleOverlayMouseDown}
+      onClick={handleOverlayClick}
+    >
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
         <div className={`modal-header ${isKH ? "modal-header--kh" : "modal-header--ncc"}`}>
@@ -90,7 +117,7 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
 
               <div className="fields-list">
                 <div className="field-item">
-                  <label className="field-label">
+                  <label className={getLabelClass(isFieldEmpty(custInfo.CUST_TYPE))}>
                     <span>Phân loại đối tác</span>
                     <span className="req">*</span>
                   </label>
@@ -110,7 +137,7 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
                 </div>
 
                 <div className="field-item">
-                  <label className="field-label">
+                  <label className={getLabelClass(isFieldEmpty(custInfo.CUST_CD))}>
                     <span>Mã đối tác (CUST_CD)</span>
                     <span className="req">*</span>
                   </label>
@@ -134,7 +161,7 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
                 </div>
 
                 <div className="field-item">
-                  <label className="field-label">
+                  <label className={getLabelClass(isFieldEmpty(custInfo.CUST_NAME_KD))}>
                     <span>Tên viết tắt (CUST_NAME_KD)</span>
                     <span className="req">*</span>
                   </label>
@@ -150,7 +177,9 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
                 </div>
 
                 <div className="field-item">
-                  <label className="field-label">Tên pháp nhân đầy đủ</label>
+                  <label className={getLabelClass(isFieldEmpty(custInfo.CUST_NAME))}>
+                    Tên pháp nhân đầy đủ
+                  </label>
                   <div className="input-wrap">
                     <input
                       type="text"
@@ -162,7 +191,9 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
                 </div>
 
                 <div className="field-item">
-                  <label className="field-label">Mã số thuế (TAX_NO)</label>
+                  <label className={getLabelClass(isFieldEmpty(custInfo.TAX_NO))}>
+                    Mã số thuế (TAX_NO)
+                  </label>
                   <div className="input-wrap">
                     <input
                       type="text"
@@ -175,7 +206,9 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
                 </div>
 
                 <div className="field-item">
-                  <label className="field-label">Trạng thái hoạt động</label>
+                  <label className={getLabelClass(isFieldEmpty(custInfo.USE_YN))}>
+                    Trạng thái hoạt động
+                  </label>
                   <div className="input-wrap">
                     <select
                       value={custInfo.USE_YN}
@@ -198,7 +231,9 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
 
               <div className="fields-list">
                 <div className="field-item">
-                  <label className="field-label">Người đại diện / Giám đốc</label>
+                  <label className={getLabelClass(isFieldEmpty(custInfo.BOSS_NAME))}>
+                    Người đại diện / Giám đốc
+                  </label>
                   <div className="input-wrap">
                     <input
                       type="text"
@@ -210,7 +245,9 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
                 </div>
 
                 <div className="field-item">
-                  <label className="field-label">Hotline / Di động (TEL_NO1)</label>
+                  <label className={getLabelClass(isFieldEmpty(custInfo.TEL_NO1))}>
+                    Hotline / Di động (TEL_NO1)
+                  </label>
                   <div className="input-wrap">
                     <input
                       type="text"
@@ -223,7 +260,9 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
                 </div>
 
                 <div className="field-item">
-                  <label className="field-label">Số ĐT cố định (CUST_NUMBER)</label>
+                  <label className={getLabelClass(isFieldEmpty(custInfo.CUST_NUMBER))}>
+                    Số ĐT cố định (CUST_NUMBER)
+                  </label>
                   <div className="input-wrap">
                     <input
                       type="text"
@@ -236,7 +275,9 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
                 </div>
 
                 <div className="field-item">
-                  <label className="field-label">Số Fax (FAX_NO)</label>
+                  <label className={getLabelClass(isFieldEmpty(custInfo.FAX_NO))}>
+                    Số Fax (FAX_NO)
+                  </label>
                   <div className="input-wrap">
                     <input
                       type="text"
@@ -249,7 +290,9 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
                 </div>
 
                 <div className="field-item">
-                  <label className="field-label">Email liên hệ / Hóa đơn</label>
+                  <label className={getLabelClass(isFieldEmpty(custInfo.EMAIL))}>
+                    Email liên hệ / Hóa đơn
+                  </label>
                   <div className="input-wrap">
                     <input
                       type="email"
@@ -272,7 +315,9 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
 
               <div className="fields-list">
                 <div className="field-item">
-                  <label className="field-label">Địa chỉ trụ sở chính (ADDR1)</label>
+                  <label className={getLabelClass(isFieldEmpty(custInfo.CUST_ADDR1))}>
+                    Địa chỉ trụ sở chính (ADDR1)
+                  </label>
                   <div className="input-wrap">
                     <input
                       type="text"
@@ -284,7 +329,9 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
                 </div>
 
                 <div className="field-item">
-                  <label className="field-label">Địa chỉ nhà máy / Xưởng 2</label>
+                  <label className={getLabelClass(isFieldEmpty(custInfo.CUST_ADDR2))}>
+                    Địa chỉ nhà máy / Xưởng 2
+                  </label>
                   <div className="input-wrap">
                     <input
                       type="text"
@@ -296,7 +343,9 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
                 </div>
 
                 <div className="field-item">
-                  <label className="field-label">Địa chỉ kho / Văn phòng 3</label>
+                  <label className={getLabelClass(isFieldEmpty(custInfo.CUST_ADDR3))}>
+                    Địa chỉ kho / Văn phòng 3
+                  </label>
                   <div className="input-wrap">
                     <input
                       type="text"
@@ -308,7 +357,9 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
                 </div>
 
                 <div className="field-item">
-                  <label className="field-label">Mã bưu chính (POSTAL)</label>
+                  <label className={getLabelClass(isFieldEmpty(custInfo.CUST_POSTAL))}>
+                    Mã bưu chính (POSTAL)
+                  </label>
                   <div className="input-wrap">
                     <input
                       type="text"
@@ -321,7 +372,9 @@ const PrecisionCustModal: React.FC<PrecisionCustModalProps> = ({
                 </div>
 
                 <div className="field-item">
-                  <label className="field-label">Ghi chú nghiệp vụ (REMK)</label>
+                  <label className={getLabelClass(isFieldEmpty(custInfo.REMK))}>
+                    Ghi chú nghiệp vụ (REMK)
+                  </label>
                   <div className="input-wrap">
                     <textarea
                       placeholder="Ghi chú đặc thù giao nhận, công nợ..."

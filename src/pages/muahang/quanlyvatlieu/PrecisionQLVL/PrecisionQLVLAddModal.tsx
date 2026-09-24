@@ -24,6 +24,17 @@ const filterOptions = createFilterOptions({
   limit: 100,
 });
 
+const isFieldEmpty = (val: any, checkZero: boolean = false): boolean => {
+  if (val === null || val === undefined) return true;
+  const str = String(val).trim();
+  if (str === "" || str === "-") return true;
+  if (checkZero && (Number(val) === 0 || isNaN(Number(val)))) return true;
+  return false;
+};
+
+const getLabelClass = (isInvalid: boolean): string =>
+  `qlvl-form-label${isInvalid ? " qlvl-form-label--invalid" : ""}`;
+
 const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
   isOpen,
   onClose,
@@ -72,8 +83,8 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
           {/* Cột Trái */}
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <div>
-              <label style={{ display: "block", fontWeight: 700, color: "#334155", marginBottom: 3 }}>
-                Mã Vật Liệu <span style={{ color: "#ef4444" }}>*</span>
+              <label className={getLabelClass(isFieldEmpty(materialInfo?.M_NAME))}>
+                Mã Vật Liệu
               </label>
               <input
                 type="text"
@@ -94,7 +105,7 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
             </div>
 
             <div>
-              <label style={{ display: "block", fontWeight: 700, color: "#334155", marginBottom: 3 }}>
+              <label className={getLabelClass(isFieldEmpty(materialInfo?.CUST_CD))}>
                 Nhà Cung Cấp (Vendor)
               </label>
               <Autocomplete
@@ -108,14 +119,19 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
                   `${option.CUST_CD ? option.CUST_NAME_KD || "" : "SSJ"}${option.CUST_CD || "0049"}`
                 }
                 value={
-                  currentVendor || {
+                  currentVendor || (materialInfo?.CUST_CD ? {
+                    CUST_CD: materialInfo.CUST_CD,
+                    CUST_NAME: materialInfo.CUST_NAME_KD || materialInfo.CUST_CD,
+                    CUST_NAME_KD: materialInfo.CUST_NAME_KD || materialInfo.CUST_CD,
+                  } : {
                     CUST_CD: company === "CMS" ? "0049" : "KH000",
                     CUST_NAME: company === "CMS" ? "SSJ" : "PVN",
                     CUST_NAME_KD: company === "CMS" ? "SSJ" : "PVN",
-                  }
+                  })
                 }
                 onChange={(_, newValue: any) => {
                   onChangeInfo("CUST_CD", newValue?.CUST_CD || "");
+                  onChangeInfo("CUST_NAME_KD", newValue?.CUST_NAME_KD || "");
                 }}
                 renderInput={(params) => (
                   <TextField {...params} sx={{ "& .MuiInputBase-root": { height: 32, fontSize: "0.75rem" } }} />
@@ -124,7 +140,7 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
             </div>
 
             <div>
-              <label style={{ display: "block", fontWeight: 700, color: "#334155", marginBottom: 3 }}>
+              <label className={getLabelClass(isFieldEmpty(materialInfo?.DESCR))}>
                 Mô Tả Vật Liệu (DESCR)
               </label>
               <input
@@ -145,7 +161,7 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
               <div>
-                <label style={{ display: "block", fontWeight: 700, color: "#334155", marginBottom: 3 }}>
+                <label className={getLabelClass(isFieldEmpty(materialInfo?.SSPRICE))}>
                   Open Price ($)
                 </label>
                 <input
@@ -153,7 +169,7 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
                   step="0.01"
                   placeholder="0.00"
                   value={materialInfo?.SSPRICE ?? ""}
-                  onChange={(e) => onChangeInfo("SSPRICE", parseFloat(e.target.value) || 0)}
+                  onChange={(e) => onChangeInfo("SSPRICE", e.target.value === "" ? "" : parseFloat(e.target.value))}
                   style={{
                     width: "100%",
                     height: 30,
@@ -166,7 +182,7 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
                 />
               </div>
               <div>
-                <label style={{ display: "block", fontWeight: 700, color: "#334155", marginBottom: 3 }}>
+                <label className={getLabelClass(isFieldEmpty(materialInfo?.CMSPRICE))}>
                   Origin Price ($)
                 </label>
                 <input
@@ -174,7 +190,7 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
                   step="0.01"
                   placeholder="0.00"
                   value={materialInfo?.CMSPRICE ?? ""}
-                  onChange={(e) => onChangeInfo("CMSPRICE", parseFloat(e.target.value) || 0)}
+                  onChange={(e) => onChangeInfo("CMSPRICE", e.target.value === "" ? "" : parseFloat(e.target.value))}
                   style={{
                     width: "100%",
                     height: 30,
@@ -189,7 +205,7 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
             </div>
 
             <div>
-              <label style={{ display: "block", fontWeight: 700, color: "#334155", marginBottom: 3 }}>
+              <label className={getLabelClass(isFieldEmpty(materialInfo?.SLITTING_PRICE))}>
                 Phí Xẻ Slitting ($)
               </label>
               <input
@@ -197,7 +213,7 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
                 step="0.001"
                 placeholder="0.000"
                 value={materialInfo?.SLITTING_PRICE ?? ""}
-                onChange={(e) => onChangeInfo("SLITTING_PRICE", parseFloat(e.target.value) || 0)}
+                onChange={(e) => onChangeInfo("SLITTING_PRICE", e.target.value === "" ? "" : parseFloat(e.target.value))}
                 style={{
                   width: "100%",
                   height: 30,
@@ -215,14 +231,14 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
               <div>
-                <label style={{ display: "block", fontWeight: 700, color: "#334155", marginBottom: 3 }}>
+                <label className={getLabelClass(isFieldEmpty(materialInfo?.MASTER_WIDTH, true))}>
                   Master Width (mm)
                 </label>
                 <input
                   type="number"
                   placeholder="VD: 1050"
                   value={materialInfo?.MASTER_WIDTH ?? ""}
-                  onChange={(e) => onChangeInfo("MASTER_WIDTH", parseFloat(e.target.value) || 0)}
+                  onChange={(e) => onChangeInfo("MASTER_WIDTH", e.target.value === "" ? "" : parseFloat(e.target.value))}
                   style={{
                     width: "100%",
                     height: 30,
@@ -235,14 +251,14 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
                 />
               </div>
               <div>
-                <label style={{ display: "block", fontWeight: 700, color: "#334155", marginBottom: 3 }}>
+                <label className={getLabelClass(isFieldEmpty(materialInfo?.ROLL_LENGTH, true))}>
                   Roll Length (m)
                 </label>
                 <input
                   type="number"
                   placeholder="VD: 500"
                   value={materialInfo?.ROLL_LENGTH ?? ""}
-                  onChange={(e) => onChangeInfo("ROLL_LENGTH", parseFloat(e.target.value) || 0)}
+                  onChange={(e) => onChangeInfo("ROLL_LENGTH", e.target.value === "" ? "" : parseFloat(e.target.value))}
                   style={{
                     width: "100%",
                     height: 30,
@@ -257,7 +273,7 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
             </div>
 
             <div>
-              <label style={{ display: "block", fontWeight: 700, color: "#334155", marginBottom: 3 }}>
+              <label className={getLabelClass(isFieldEmpty(materialInfo?.EXP_DATE))}>
                 Hạn Sử Dụng (Tháng)
               </label>
               <input
@@ -278,7 +294,7 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 8 }}>
               <div>
-                <label style={{ display: "block", fontWeight: 700, color: "#334155", marginBottom: 3 }}>
+                <label className={getLabelClass(isFieldEmpty(materialInfo?.FSC))}>
                   Chuẩn FSC
                 </label>
                 <select
@@ -304,7 +320,7 @@ const PrecisionQLVLAddModal: React.FC<PrecisionQLVLAddModalProps> = ({
               </div>
 
               <div>
-                <label style={{ display: "block", fontWeight: 700, color: "#334155", marginBottom: 3 }}>
+                <label className={getLabelClass(materialInfo?.FSC === "Y" && isFieldEmpty(materialInfo?.FSC_CODE))}>
                   Loại FSC Code
                 </label>
                 <select

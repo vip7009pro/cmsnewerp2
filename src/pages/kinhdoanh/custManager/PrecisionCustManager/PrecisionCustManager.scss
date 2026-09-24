@@ -663,9 +663,27 @@
                   font-weight: 600;
                   color: #475569;
                   display: flex;
+                  align-items: center;
                   justify-content: space-between;
+                  transition: color 0.15s ease;
 
                   .req { color: #e11d48; }
+
+                  &--invalid {
+                    color: #dc2626 !important;
+                    font-weight: 800 !important;
+
+                    .req {
+                      color: #ef4444 !important;
+                      font-weight: 900 !important;
+                    }
+
+                    &:not(:has(.req))::after {
+                      content: " *";
+                      color: #ef4444;
+                      font-weight: 900;
+                    }
+                  }
                 }
 
                 .input-wrap {

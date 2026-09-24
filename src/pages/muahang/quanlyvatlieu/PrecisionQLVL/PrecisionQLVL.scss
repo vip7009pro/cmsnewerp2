@@ -560,6 +560,26 @@
     background: #f1f5f9 !important;
     border-top: 1px solid #e2e8f0 !important;
   }
+
+  .qlvl-form-label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 3px;
+    transition: color 0.15s ease;
+
+    &--invalid {
+      color: #dc2626 !important;
+      font-weight: 800 !important;
+
+      &::after {
+        content: " *";
+        color: #ef4444;
+        font-weight: 900;
+      }
+    }
+  }
 }
 
 // --- Modal Hồ Sơ Kỹ Thuật Vật Liệu (VLDOC) Styles ---
