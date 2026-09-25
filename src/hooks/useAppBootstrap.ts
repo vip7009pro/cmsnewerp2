@@ -85,21 +85,24 @@ export function useAppBootstrap(): boolean {
           dispatch(changeDiemDanhState(false));
         }
 
-        if (loginData.data.tk_status === "ng") {
+        const tkStatus = String(loginData?.data?.tk_status ?? "").toLowerCase();
+        const userData = loginData?.data?.data;
+
+        if (tkStatus !== "ok" || !userData) {
           dispatch(logout(false));
           dispatch(changeUserData(DEFAULT_USER_DATA));
         } else {
-          dispatch(changeUserData(loginData.data.data));
+          dispatch(changeUserData(userData));
           if (
-            loginData.data.data.JOB_NAME === "Worker" ||
-            loginData.data.data.POSITION_CODE === 4
+            userData.JOB_NAME === "Worker" ||
+            userData.POSITION_CODE === 4
           ) {
             dispatch(setTabModeSwap(false));
           }
           dispatch(
             update_socket({
               event: "login",
-              data: loginData.data.data.EMPL_NO,
+              data: userData.EMPL_NO,
             })
           );
           dispatch(login(true));

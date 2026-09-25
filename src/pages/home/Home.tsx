@@ -259,16 +259,41 @@ function Home() {
   useEffect(() => {
     console.log("local ver", current_ver);
     checkWebVer();
+    getchamcong();
+
+    let lastRefreshAt = Date.now();
+
+    const triggerRefreshIfVisible = () => {
+      if (document.visibilityState === "visible") {
+        lastRefreshAt = Date.now();
+        checkWebVer();
+        getchamcong();
+      }
+    };
+
     let intervalID = window.setInterval(() => {
-      //console.log("change refresh token and check webver every 30s");
-      checkWebVer(intervalID);
-      getchamcong();
+      triggerRefreshIfVisible();
     }, 30000);
+
+    // Khi máy tính thức dậy từ chế độ Sleep hoặc người dùng quay lại tab ERP sau một thời gian dài,
+    // tự động kích hoạt làm mới token ngay lập tức nếu đã quá 60 giây.
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        const now = Date.now();
+        if (now - lastRefreshAt > 60000) {
+          triggerRefreshIfVisible();
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     checkERPLicense();
+
     return () => {
       window.clearInterval(intervalID);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, []);
+  }, [checkERPLicense, checkWebVer, getchamcong]);
   //useRenderLag(true, 2500);
   const isPVN = company === "PVN";
   const didRestoreTabsRef = useRef(false);

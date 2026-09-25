@@ -16,9 +16,46 @@ import { DEFAULT_USER_DATA } from "./defaultUserData";
 
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;
+axios.defaults.timeout = 45000; // 45 giây chống treo socket vô hạn trên trình duyệt
 
 // Cờ chống logout trùng lặp (xem logout() bên dưới).
 let loggingOut = false;
+let authExpiredAlertShown = false;
+
+export function notifySessionExpired(customMessage?: string) {
+  if (authExpiredAlertShown || isLoggingOut()) return;
+  authExpiredAlertShown = true;
+  Swal.fire({
+    title: "Hết phiên làm việc",
+    text:
+      customMessage ||
+      "Phiên đăng nhập đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.",
+    icon: "warning",
+    confirmButtonText: "Đồng ý",
+  }).then(() => {
+    authExpiredAlertShown = false;
+    logout();
+  });
+}
+
+// Bắt mã 401 hoặc payload { tk_status: "TOKEN_EXPIRED" } tập trung cho toàn ứng dụng
+axios.interceptors.response.use(
+  (response) => {
+    const tkStatus = String(response?.data?.tk_status ?? "").toUpperCase();
+    if (tkStatus === "TOKEN_EXPIRED") {
+      notifySessionExpired(response?.data?.message);
+    }
+    return response;
+  },
+  (error) => {
+    const status = error?.response?.status;
+    const tkStatus = String(error?.response?.data?.tk_status ?? "").toUpperCase();
+    if (status === 401 || tkStatus === "TOKEN_EXPIRED") {
+      notifySessionExpired(error?.response?.data?.message);
+    }
+    return Promise.reject(error);
+  }
+);
 export function getSever(): string {
   const state = store.getState();
   //console.log(state.totalSlice.server_ip);
@@ -82,6 +119,7 @@ if (server_ip_local !== undefined) {
 export function login(user: string, pass: string) {
   // Vào màn đăng nhập mới ⇒ mở lại khoá chống logout trùng.
   loggingOut = false;
+  authExpiredAlertShown = false;
   let API_URL = getSever() + "/api";
   axios
     .post(API_URL, {
@@ -105,24 +143,30 @@ export function login(user: string, pass: string) {
           "Chúc mừng bạn, đăng nhập thành công !",
           "success"
         );       
-        cookies.set("token", Jresult.token_content, { path: "/" });        
+        cookies.set("token", Jresult.token_content, {
+          path: "/",
+          sameSite: "lax",
+          secure: window.location.protocol === "https:",
+        });        
         localStorage.setItem("publicKey", Jresult.publicKey);
         checkLogin()
           .then((data) => {
             //console.log("data", data);
             
-            if (data.data.tk_status.toUpperCase() === "NG") {              
+            const tkStatus = String(data?.data?.tk_status ?? "").toUpperCase();
+            const userData = data?.data?.data;
+            if (tkStatus !== "OK" || !userData) {              
               store.dispatch(loginSlice(false));
               store.dispatch(
                 changeUserData(DEFAULT_USER_DATA)
               );
             } else {             
-              if (data.data.data.WORK_STATUS_CODE !== 0) {
-                store.dispatch(changeUserData(data.data.data));
+              if (userData.WORK_STATUS_CODE !== 0) {
+                store.dispatch(changeUserData(userData));
                 store.dispatch(
                   update_socket({
                     event: "login",
-                    data: data.data.data.EMPL_NO,
+                    data: userData.EMPL_NO,
                   })
                 );              
                 store.dispatch(loginSlice(true));
@@ -201,11 +245,15 @@ export async function checkLogin() {
   }
 //  console.log("publicKey",publicKey)
   let encryptedData = !window.isSecureContext ? datacheck : await encryptData(publicKey??"",datacheck);
-  let data = await axios.post(API_URL, {
-    secureContext: window.isSecureContext,    
-    command: "checklogin",
-    DATA: encryptedData,
-  });
+  let data = await axios.post(
+    API_URL,
+    {
+      secureContext: window.isSecureContext,    
+      command: "checklogin",
+      DATA: encryptedData,
+    },
+    { timeout: 20000 }
+  );
   return data;
 }
 export async function aiQuery(question: string, options?: { 
@@ -237,6 +285,7 @@ export async function aiQuery(question: string, options?: {
     },
     {
       withCredentials: true,
+      timeout: 60000,
     },
   );
   return data;
@@ -261,11 +310,12 @@ export async function aiExecuteSql(sql: string) {
     },
     {
       withCredentials: true,
+      timeout: 60000,
     },
   );
   return data;
 }
-export async function generalQuery(command: string, queryData: any) {
+export async function generalQuery(command: string, queryData: any, options?: { timeout?: number }) {
   const CURRENT_API_URL = getSever() + "/api";
   // console.log('API URL', CURRENT_API_URL);
   let publicKey = localStorage.getItem("publicKey");
@@ -279,11 +329,17 @@ export async function generalQuery(command: string, queryData: any) {
   //console.log("secureContext",window.isSecureContext)
   //console.log("publicKey",publicKey)
   let encryptedData = !window.isSecureContext ? DATA : await encryptData(publicKey??"",DATA);
-  let data = await axios.post(CURRENT_API_URL, {
-    secureContext: window.isSecureContext,
-    command: command,
-    DATA: encryptedData,
-  });
+  let data = await axios.post(
+    CURRENT_API_URL,
+    {
+      secureContext: window.isSecureContext,
+      command: command,
+      DATA: encryptedData,
+    },
+    {
+      timeout: options?.timeout ?? 45000,
+    }
+  );
 //delay 1s
  /*  if(getCompany() === "CMS"){
     await new Promise((resolve) => setTimeout(resolve, 2000));
