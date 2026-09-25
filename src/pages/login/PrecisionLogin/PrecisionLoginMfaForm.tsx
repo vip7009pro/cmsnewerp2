@@ -34,11 +34,26 @@ export const PrecisionLoginMfaForm: React.FC<PrecisionLoginMfaFormProps> = ({
     const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
 
     if (isAndroid) {
-      // 1. Android: Dùng Intent Scheme để mở trực tiếp Google Authenticator package com.google.android.apps.authenticator2
-      // Nếu máy chưa cài app sẽ tự chuyển sang trang Google Play Store
+      // 1. Android: Cần chỉ định rõ action=MAIN và category=LAUNCHER để Android OS mở thẳng màn hình chính của app
+      // Nếu thiếu action & category, Chrome không tìm thấy Activity khởi chạy nên sẽ tự nhảy vào Google Play
       const androidIntentUrl =
-        "intent://#Intent;package=com.google.android.apps.authenticator2;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.google.android.apps.authenticator2;end";
-      window.location.href = androidIntentUrl;
+        "intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.google.android.apps.authenticator2;end";
+
+      // Dùng thẻ link ẩn kích hoạt click trực tiếp
+      const link = document.createElement("a");
+      link.href = androidIntentUrl;
+      link.rel = "noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Dự phòng sau 600ms nếu Intent không phản hồi, thử tiếp scheme otpauth://
+      const start = Date.now();
+      setTimeout(() => {
+        if (Date.now() - start < 1800) {
+          window.location.href = "otpauth://";
+        }
+      }, 600);
     } else if (isIOS) {
       // 2. iOS: Mở URL Scheme của Google Authenticator
       const start = Date.now();
