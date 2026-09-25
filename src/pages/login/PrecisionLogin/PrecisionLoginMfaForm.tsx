@@ -3,6 +3,9 @@ import SecurityIcon from "@mui/icons-material/Security";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import KeyIcon from "@mui/icons-material/Key";
 import DialpadIcon from "@mui/icons-material/Dialpad";
+import SmartphoneIcon from "@mui/icons-material/Smartphone";
+import { Tooltip } from "@mui/material";
+import Swal from "sweetalert2";
 
 interface PrecisionLoginMfaFormProps {
   user: string;
@@ -24,6 +27,59 @@ export const PrecisionLoginMfaForm: React.FC<PrecisionLoginMfaFormProps> = ({
   useEffect(() => {
     inputRef.current?.focus();
   }, [isBackupMode]);
+
+  const handleOpenAuthenticator = () => {
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    const isAndroid = /android/i.test(userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+
+    if (isAndroid) {
+      // 1. Android: Dùng Intent Scheme để mở trực tiếp Google Authenticator package com.google.android.apps.authenticator2
+      // Nếu máy chưa cài app sẽ tự chuyển sang trang Google Play Store
+      const androidIntentUrl =
+        "intent://#Intent;package=com.google.android.apps.authenticator2;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.google.android.apps.authenticator2;end";
+      window.location.href = androidIntentUrl;
+    } else if (isIOS) {
+      // 2. iOS: Mở URL Scheme của Google Authenticator
+      const start = Date.now();
+      window.location.href = "googleauthenticator://";
+      setTimeout(() => {
+        if (Date.now() - start < 2000) {
+          window.location.href = "otpauth://";
+        }
+      }, 500);
+    } else {
+      // 3. Desktop: Hướng dẫn mở ứng dụng trên điện thoại di động
+      Swal.fire({
+        icon: "info",
+        title: "Google Authenticator",
+        html: `
+          <div style="font-size: 0.85rem; color: #475569; text-align: left; line-height: 1.6;">
+            <p style="margin-bottom: 8px;">
+              📱 Bạn đang dùng máy tính. Ứng dụng <b>Google Authenticator</b> nằm trên <b>điện thoại di động</b> của bạn.
+            </p>
+            <p style="margin-bottom: 8px;">
+              👉 Vui lòng mở ứng dụng <b>Google Authenticator</b> trên điện thoại để xem mã 6 chữ số và nhập vào ô xác thực.
+            </p>
+            <div style="margin-top: 12px; padding: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.78rem;">
+              Chưa cài ứng dụng trên điện thoại?
+              <div style="display: flex; gap: 10px; margin-top: 6px; justify-content: center;">
+                <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; font-weight: 600;">
+                  Google Play (Android)
+                </a>
+                <span>•</span>
+                <a href="https://apps.apple.com/app/google-authenticator/id388497605" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; font-weight: 600;">
+                  App Store (iOS)
+                </a>
+              </div>
+            </div>
+          </div>
+        `,
+        confirmButtonText: "Đã hiểu",
+        confirmButtonColor: "#2563eb",
+      });
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,8 +151,26 @@ export const PrecisionLoginMfaForm: React.FC<PrecisionLoginMfaFormProps> = ({
               fontSize: isBackupMode ? "1.1rem" : "1.35rem",
               letterSpacing: isBackupMode ? "3px" : "6px",
               fontWeight: 700,
+              minWidth: 0,
             }}
           />
+
+          {!isBackupMode && (
+            <Tooltip
+              title="Mở ứng dụng Google Authenticator trên thiết bị"
+              arrow
+              placement="top"
+            >
+              <button
+                type="button"
+                className="precision-login-wrapper__open-app-btn"
+                onClick={handleOpenAuthenticator}
+              >
+                <SmartphoneIcon sx={{ fontSize: "16px" }} />
+                <span>Mở App</span>
+              </button>
+            </Tooltip>
+          )}
         </div>
       </div>
 

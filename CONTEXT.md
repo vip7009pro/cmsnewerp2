@@ -12,7 +12,9 @@
   * Hộp trạng thái MFA dạng cột đứng, nút kích hoạt/tắt tràn viền dễ thao tác ngón cái, modal quét QR tự co giãn 180px, ô nhập OTP 6 số bàn phím số (`inputMode="numeric"`).
 - **4. Sửa Lỗi Company Not Supported Khi Nhập OTP 2FA ([Api.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/api/Api.ts))**:
   * Bổ sung `COMPANY: getCompany() || "CMS"` và `CTR_CD` vào `DATA` payload của hàm `verifyMfaLogin` đồng bộ chuẩn backend.
-- **5. Xác Thực Toàn Diện**: `npm run build` thành công 100% (exit code 0), bundle tối ưu.
+- **5. Nút Mở Nhanh Google Authenticator Tích Hợp Trong Ô Nhập OTP ([PrecisionLoginMfaForm.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/login/PrecisionLogin/PrecisionLoginMfaForm.tsx))**:
+  * Đặt nút `[📲 Mở App]` gọn gàng bên trong góc phải của ô input-box (thay vì div bọc flex bên ngoài làm đẩy tràn ra rìa màn hình mobile). Tự động kích hoạt Android Intent Scheme (`intent://#Intent;package=com.google.android.apps.authenticator2...`), URL Scheme `googleauthenticator://` trên iOS và popup trên desktop.
+- **6. Xác Thực Toàn Diện**: `npm run build` thành công 100% (exit code 0), bundle tối ưu.
 
 ## Update - 2026-09-25 (AUTH/MFA: Tích hợp Google Authenticator 2FA TOTP RFC 6238 & Refactor SettingPage Chuẩn Stitch)
 - Tách module hóa dưới 300 dòng/file trong thư mục `src/pages/setting/PrecisionSetting/`.

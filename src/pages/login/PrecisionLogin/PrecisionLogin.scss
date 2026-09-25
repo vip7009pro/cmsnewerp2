@@ -299,6 +299,40 @@
     }
   }
 
+  // Nút mở nhanh ứng dụng Google Authenticator bên trong góc phải ô nhập OTP
+  &__open-app-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 32px;
+    padding: 0 10px;
+    margin-right: 5px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.05);
+
+    &:hover {
+      background: #dbeafe;
+      border-color: #93c5fd;
+      color: #1e40af;
+    }
+
+    &:active {
+      transform: translateY(0);
+      background: #bfdbfe;
+    }
+  }
+
+
   // Cụm Server & Branch 2 cột ngang
   &__meta-row {
     display: grid;
