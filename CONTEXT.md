@@ -10,7 +10,7 @@
 - **3. Tối Ưu UX MFA Card & Push Notification ([PrecisionSettingMfaCard.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/setting/PrecisionSetting/PrecisionSettingMfaCard.tsx) & [PrecisionSettingNotification.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/setting/PrecisionSetting/PrecisionSettingNotification.tsx))**:
   * Header thu gọn tiêu đề & ẩn breadcrumb rườm rà trên mobile.
   * Hộp trạng thái MFA dạng cột đứng, nút kích hoạt/tắt tràn viền dễ thao tác ngón cái, modal quét QR tự co giãn 180px, ô nhập OTP 6 số bàn phím số (`inputMode="numeric"`).
-  * **Guideline Bước 1 thiết lập MFA**: Thêm nút **"Mở Google Authenticator (Tự Động Thêm)"** đính kèm URI `otpauth://` để người dùng di động mở app và tự thêm tài khoản tức thì mà không cần camera quét QR; tự động chuyển hướng Google Play / App Store nếu máy chưa cài đặt app.
+  * **Guideline Bước 1 thiết lập MFA**: Đồng bộ 100% logic hàm `handleOpenAuthenticatorApp` giống hệt màn hình Login (đã hoạt động hoàn hảo trên thực tế); kích hoạt Android Intent Scheme (`action=MAIN;category=LAUNCHER`), loại bỏ hoàn toàn các lệnh hẹn giờ tự ý redirect sang Google Play và popup toast clipboard gây phân tâm. Có sẵn các link Google Play và App Store trực tiếp ở chân trang để người dùng chưa có app chủ động tải.
 - **4. Sửa Lỗi Company Not Supported Khi Nhập OTP 2FA ([Api.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/api/Api.ts))**:
   * Bổ sung `COMPANY: getCompany() || "CMS"` và `CTR_CD` vào `DATA` payload của hàm `verifyMfaLogin` đồng bộ chuẩn backend.
 - **5. Nút Mở Nhanh Google Authenticator Tích Hợp Trong Ô Nhập OTP ([PrecisionLoginMfaForm.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/login/PrecisionLogin/PrecisionLoginMfaForm.tsx))**:

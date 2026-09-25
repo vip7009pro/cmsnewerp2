@@ -178,21 +178,17 @@ export const PrecisionSettingMfaCard: React.FC<PrecisionSettingMfaCardProps> = (
     document.body.removeChild(element);
   };
 
-  const handleOpenOrInstallApp = () => {
+  const handleOpenAuthenticatorApp = () => {
     const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
     const isAndroid = /android/i.test(userAgent);
     const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
 
     if (isAndroid) {
-      // 1. Trên Android: Mở Intent với data là otpauth URI để Google Authenticator tự động thêm tài khoản
-      // Kèm fallback sang Google Play Store nếu máy chưa cài
-      const playStoreUrl = "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2";
-      const androidIntentUrl = `intent://#Intent;action=android.intent.action.VIEW;data=${encodeURIComponent(
-        otpauthUrl
-      )};package=com.google.android.apps.authenticator2;S.browser_fallback_url=${encodeURIComponent(
-        playStoreUrl
-      )};end`;
+      // 1. Android: Dùng Intent chuẩn ACTION_MAIN và CATEGORY_LAUNCHER (giống hệt màn hình Login)
+      const androidIntentUrl =
+        "intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.google.android.apps.authenticator2;end";
 
+      // Dùng thẻ link ẩn kích hoạt click trực tiếp
       const link = document.createElement("a");
       link.href = androidIntentUrl;
       link.rel = "noreferrer";
@@ -200,49 +196,42 @@ export const PrecisionSettingMfaCard: React.FC<PrecisionSettingMfaCardProps> = (
       link.click();
       document.body.removeChild(link);
 
-      // Dự phòng nếu intent không phản hồi sau 800ms
+      // Dự phòng sau 600ms nếu Intent không phản hồi, thử tiếp scheme otpauth://
       const start = Date.now();
       setTimeout(() => {
         if (Date.now() - start < 1800) {
-          window.location.href = playStoreUrl;
+          window.location.href = "otpauth://";
         }
-      }, 800);
+      }, 600);
     } else if (isIOS) {
-      // 2. Trên iOS: Mở bằng URI scheme otpauth://
-      const appStoreUrl = "https://apps.apple.com/app/google-authenticator/id388497605";
+      // 2. iOS: Mở URL Scheme của Google Authenticator (giống hệt màn hình Login)
       const start = Date.now();
-      if (otpauthUrl) {
-        window.location.href = otpauthUrl;
-      } else {
-        window.location.href = "googleauthenticator://";
-      }
-
-      // Nếu sau 1.2s chưa chuyển trang (chưa cài app), tự chuyển sang App Store
+      window.location.href = "googleauthenticator://";
       setTimeout(() => {
         if (Date.now() - start < 2000) {
-          window.location.href = appStoreUrl;
+          window.location.href = "otpauth://";
         }
-      }, 1200);
+      }, 500);
     } else {
-      // 3. Trên Desktop:
+      // 3. Desktop: Hướng dẫn mở ứng dụng trên điện thoại
       Swal.fire({
         icon: "info",
-        title: "Cài Đặt Google Authenticator",
+        title: "Google Authenticator",
         html: `
           <div style="font-size: 0.85rem; color: #475569; text-align: left; line-height: 1.6;">
             <p style="margin-bottom: 8px;">
-              💻 Bạn đang thực hiện trên máy tính. Hãy dùng camera ứng dụng <b>Google Authenticator</b> trên điện thoại để quét mã QR ở trên.
+              📱 Bạn đang dùng máy tính. Hãy dùng camera ứng dụng <b>Google Authenticator</b> trên điện thoại để quét mã QR ở trên.
             </p>
             <p style="margin-bottom: 8px;">
               Nếu trên điện thoại của bạn chưa cài đặt ứng dụng:
             </p>
             <div style="display: flex; gap: 10px; margin-top: 10px; justify-content: center;">
               <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; font-weight: 600;">
-                Tải Google Play (Android)
+                Google Play (Android)
               </a>
               <span>•</span>
               <a href="https://apps.apple.com/app/google-authenticator/id388497605" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; font-weight: 600;">
-                Tải App Store (iOS)
+                App Store (iOS)
               </a>
             </div>
           </div>
@@ -389,7 +378,7 @@ export const PrecisionSettingMfaCard: React.FC<PrecisionSettingMfaCardProps> = (
                     variant="contained"
                     fullWidth
                     startIcon={<SmartphoneIcon />}
-                    onClick={handleOpenOrInstallApp}
+                    onClick={handleOpenAuthenticatorApp}
                     sx={{
                       backgroundColor: "#2563eb",
                       textTransform: "none",
