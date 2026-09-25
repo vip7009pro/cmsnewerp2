@@ -116,12 +116,16 @@ if (server_ip_local !== undefined) {
   UPLOAD_URL = server_ip_local + "/uploadfile";
 } else {
 }
-export function login(user: string, pass: string) {
+export function login(
+  user: string,
+  pass: string,
+  onMfaRequired?: (mfaData: { temp_token: string; user: string; ctr_cd: string }) => void
+) {
   // Vào màn đăng nhập mới ⇒ mở lại khoá chống logout trùng.
   loggingOut = false;
   authExpiredAlertShown = false;
   let API_URL = getSever() + "/api";
-  axios
+  return axios
     .post(API_URL, {
       command: "login",
       user: user,
@@ -132,35 +136,30 @@ export function login(user: string, pass: string) {
         COMPANY: getCompany(),
         USER: user,
         PASS: pass,
-      }
+      },
     })
     .then((response: any) => {
-      var Jresult = response.data;    
-      //console.log("Jresult", Jresult);  
-      if (Jresult?.tk_status?.toUpperCase() === "OK") {       
+      var Jresult = response.data;
+      if (Jresult?.tk_status?.toUpperCase() === "OK") {
         Swal.fire(
           "Thông báo",
           "Chúc mừng bạn, đăng nhập thành công !",
           "success"
-        );       
+        );
         cookies.set("token", Jresult.token_content, {
           path: "/",
           sameSite: "lax",
           secure: window.location.protocol === "https:",
-        });        
+        });
         localStorage.setItem("publicKey", Jresult.publicKey);
         checkLogin()
           .then((data) => {
-            //console.log("data", data);
-            
             const tkStatus = String(data?.data?.tk_status ?? "").toUpperCase();
             const userData = data?.data?.data;
-            if (tkStatus !== "OK" || !userData) {              
+            if (tkStatus !== "OK" || !userData) {
               store.dispatch(loginSlice(false));
-              store.dispatch(
-                changeUserData(DEFAULT_USER_DATA)
-              );
-            } else {             
+              store.dispatch(changeUserData(DEFAULT_USER_DATA));
+            } else {
               if (userData.WORK_STATUS_CODE !== 0) {
                 store.dispatch(changeUserData(userData));
                 store.dispatch(
@@ -168,14 +167,14 @@ export function login(user: string, pass: string) {
                     event: "login",
                     data: userData.EMPL_NO,
                   })
-                );              
+                );
                 store.dispatch(loginSlice(true));
-                setTimeout(() => {                  
+                setTimeout(() => {
                   store.dispatch(loginSlice(true));
                 }, 1000);
               } else {
-                cookies.set("token", "", { path: "/" });        
-                Swal.fire(                  
+                cookies.set("token", "", { path: "/" });
+                Swal.fire(
                   "Thông báo",
                   "Nghỉ việc rồi không truy cập được!",
                   "error"
@@ -186,15 +185,112 @@ export function login(user: string, pass: string) {
           .catch((err) => {
             console.log(err + " ");
           });
+        return Jresult;
+      } else if (Jresult?.tk_status?.toUpperCase() === "MFA_REQUIRED") {
+        if (onMfaRequired) {
+          onMfaRequired({
+            temp_token: Jresult.temp_token,
+            user: Jresult.user || user,
+            ctr_cd: Jresult.ctr_cd || getCtrCd(),
+          });
+        }
+        return Jresult;
       } else {
         Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
+        return Jresult;
       }
     })
     .catch((error: any) => {
       Swal.fire("Thông báo", "Có lỗi: " + error, "warning");
       console.log(error);
+      throw error;
     });
 }
+
+export async function verifyMfaLogin(
+  user: string,
+  ctrCd: string,
+  tempToken: string,
+  otpCode: string
+) {
+  let API_URL = getSever() + "/api";
+  const company = getCompany() || "CMS";
+  return axios
+    .post(API_URL, {
+      command: "verifyMfaLogin",
+      user: user,
+      ctr_cd: ctrCd,
+      temp_token: tempToken,
+      otp_code: otpCode,
+      DATA: {
+        COMPANY: company,
+        CTR_CD: ctrCd,
+        user: user,
+        ctr_cd: ctrCd,
+        temp_token: tempToken,
+        otp_code: otpCode,
+      },
+    })
+    .then((response: any) => {
+      const Jresult = response.data;
+      if (Jresult?.tk_status?.toUpperCase() === "OK") {
+        Swal.fire(
+          "Thông báo",
+          "Xác thực 2 bước thành công! Đang vào hệ thống...",
+          "success"
+        );
+        cookies.set("token", Jresult.token_content, {
+          path: "/",
+          sameSite: "lax",
+          secure: window.location.protocol === "https:",
+        });
+        localStorage.setItem("publicKey", Jresult.publicKey);
+        checkLogin()
+          .then((data) => {
+            const tkStatus = String(data?.data?.tk_status ?? "").toUpperCase();
+            const userData = data?.data?.data;
+            if (tkStatus !== "OK" || !userData) {
+              store.dispatch(loginSlice(false));
+              store.dispatch(changeUserData(DEFAULT_USER_DATA));
+            } else {
+              if (userData.WORK_STATUS_CODE !== 0) {
+                store.dispatch(changeUserData(userData));
+                store.dispatch(
+                  update_socket({
+                    event: "login",
+                    data: userData.EMPL_NO,
+                  })
+                );
+                store.dispatch(loginSlice(true));
+                setTimeout(() => {
+                  store.dispatch(loginSlice(true));
+                }, 1000);
+              } else {
+                cookies.set("token", "", { path: "/" });
+                Swal.fire(
+                  "Thông báo",
+                  "Nghỉ việc rồi không truy cập được!",
+                  "error"
+                );
+              }
+            }
+          })
+          .catch((err) => {
+            console.log(err + " ");
+          });
+        return Jresult;
+      } else {
+        Swal.fire("Thông báo", "Lỗi: " + response.data.message, "error");
+        return Jresult;
+      }
+    })
+    .catch((error: any) => {
+      Swal.fire("Thông báo", "Có lỗi: " + error, "warning");
+      console.log(error);
+      throw error;
+    });
+}
+
 export function logout() {
   // Chống logout trùng lặp: nhiều nguồn có thể gọi logout() cùng lúc
   // (nút Logout ở header/sidebar, token hết hạn, license check, socket notification "logout").

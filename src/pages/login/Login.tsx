@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import "./PrecisionLogin/PrecisionLogin.scss";
-import { getCompany, login } from "../../api/Api";
+import { getCompany, login, verifyMfaLogin } from "../../api/Api";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import {
@@ -13,6 +13,7 @@ import { isValidInput } from "../../api/services/utilCore";
 import Swal from "sweetalert2";
 import { PrecisionLoginHeader } from "./PrecisionLogin/PrecisionLoginHeader";
 import { PrecisionLoginForm } from "./PrecisionLogin/PrecisionLoginForm";
+import { PrecisionLoginMfaForm } from "./PrecisionLogin/PrecisionLoginMfaForm";
 import { PrecisionLoginFooter } from "./PrecisionLogin/PrecisionLoginFooter";
 
 const Login: React.FC = () => {
@@ -25,6 +26,11 @@ const Login: React.FC = () => {
   const [server_string, setServer_String] = useState("");
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [mfaData, setMfaData] = useState<{
+    temp_token: string;
+    user: string;
+    ctr_cd: string;
+  } | null>(null);
 
   const lang = useSelector((state: RootState) => state.totalSlice.lang) ?? "vi";
   const company = useSelector((state: RootState) => state.totalSlice.company) || "CMS";
@@ -146,7 +152,9 @@ const Login: React.FC = () => {
 
     try {
       setIsLoading(true);
-      login(user.trim(), pass);
+      login(user.trim(), pass, (data) => {
+        setMfaData(data);
+      });
     } finally {
       // Đăng nhập thành công sẽ chuyển trang ⇒ nếu không clear timer, callback dưới đây
       // sẽ chạy sau khi Login đã unmount (setState "mồ côi").
@@ -156,6 +164,22 @@ const Login: React.FC = () => {
       loadingTimerRef.current = window.setTimeout(() => setIsLoading(false), 1500);
     }
   }, [user, pass, rememberMe]);
+
+  const handleVerifyMfa = useCallback(
+    async (otpCode: string) => {
+      if (!mfaData) return;
+      try {
+        setIsLoading(true);
+        await verifyMfaLogin(mfaData.user, mfaData.ctr_cd, mfaData.temp_token, otpCode);
+      } finally {
+        if (loadingTimerRef.current !== null) {
+          window.clearTimeout(loadingTimerRef.current);
+        }
+        loadingTimerRef.current = window.setTimeout(() => setIsLoading(false), 1500);
+      }
+    },
+    [mfaData]
+  );
 
   const handlePassKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -199,30 +223,41 @@ const Login: React.FC = () => {
             activeServerName={selectedServer}
           />
 
-          <PrecisionLoginForm
-            user={user}
-            pass={pass}
-            serverString={server_string}
-            ctrCd={ctr_cd}
-            company={company}
-            cpnInfo={cpnInfo}
-            currentLang={lang}
-            isLoading={isLoading}
-            passRef={passRef}
-            onUserChange={(e) => setUser(e.target.value)}
-            onPassChange={(e) => setPass(e.target.value)}
-            onUserKeyDown={handleUserKeyDown}
-            onPassKeyDown={handlePassKeyDown}
-            onServerChange={handleServerChange}
-            onBranchChange={handleBranchChange}
-            onSubmit={handleSubmit}
-          />
+          {mfaData ? (
+            <PrecisionLoginMfaForm
+              user={mfaData.user}
+              isLoading={isLoading}
+              onVerify={handleVerifyMfa}
+              onCancel={() => setMfaData(null)}
+            />
+          ) : (
+            <>
+              <PrecisionLoginForm
+                user={user}
+                pass={pass}
+                serverString={server_string}
+                ctrCd={ctr_cd}
+                company={company}
+                cpnInfo={cpnInfo}
+                currentLang={lang}
+                isLoading={isLoading}
+                passRef={passRef}
+                onUserChange={(e) => setUser(e.target.value)}
+                onPassChange={(e) => setPass(e.target.value)}
+                onUserKeyDown={handleUserKeyDown}
+                onPassKeyDown={handlePassKeyDown}
+                onServerChange={handleServerChange}
+                onBranchChange={handleBranchChange}
+                onSubmit={handleSubmit}
+              />
 
-          <PrecisionLoginFooter
-            currentLang={lang}
-            rememberMe={rememberMe}
-            onRememberMeChange={setRememberMe}
-          />
+              <PrecisionLoginFooter
+                currentLang={lang}
+                rememberMe={rememberMe}
+                onRememberMeChange={setRememberMe}
+              />
+            </>
+          )}
         </div>
       </div>
     </div>

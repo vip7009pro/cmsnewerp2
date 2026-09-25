@@ -1,0 +1,615 @@
+// PrecisionSetting.scss - Chuẩn Google Stitch Enterprise High-Density & Mobile First
+.precision-setting {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px;
+  background: #f8fafc;
+  gap: 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  .component_element & {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    flex: 1;
+    min-height: 0;
+  }
+
+  // --- MOBILE WRAPPER OVERRIDES ---
+  &--mobile {
+    padding: 8px 10px;
+    gap: 10px;
+  }
+
+  // --- HEADER SECTION ---
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+
+    &--mobile {
+      padding: 8px 12px;
+      gap: 8px;
+
+      .precision-setting__title {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  &__header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+
+    .header-icon {
+      color: #2563eb;
+      font-size: 1.35rem;
+    }
+  }
+
+  &__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: #64748b;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+    }
+  }
+
+  &__header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__badge-telemetry {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #334155;
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+  }
+
+  // --- MOBILE SEGMENTED TABS ---
+  &__mobile-tabs {
+    display: flex;
+    align-items: center;
+    background: #e2e8f0;
+    padding: 3px;
+    border-radius: 10px;
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
+
+    .mobile-tab-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 40px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      padding: 0 6px;
+
+      .tab-icon {
+        font-size: 1.1rem;
+      }
+
+      .tab-badge {
+        font-size: 0.65rem;
+        padding: 1px 6px;
+        border-radius: 10px;
+        font-weight: 700;
+
+        &.badge-on {
+          background: #dcfce7;
+          color: #166534;
+        }
+
+        &.badge-off {
+          background: #fee2e2;
+          color: #991b1b;
+        }
+
+        &.badge-count {
+          background: #f1f5f9;
+          color: #334155;
+          border: 1px solid #cbd5e1;
+        }
+      }
+
+      &.active {
+        background: #ffffff;
+        color: #2563eb;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  // --- MOBILE CONTENT WRAPPER ---
+  &__mobile-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    animation: settingTabFadeIn 0.2s ease-in-out;
+  }
+
+  @keyframes settingTabFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // --- BODY GRID ---
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    width: 100%;
+
+    @media (min-width: 992px) {
+      grid-template-columns: 420px 1fr;
+    }
+  }
+
+  // --- CARD CHUNG ---
+  &__card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+
+      .card-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #1e293b;
+
+        .card-icon {
+          font-size: 1.15rem;
+          color: #2563eb;
+        }
+      }
+
+      &--mobile {
+        padding: 8px 12px;
+      }
+    }
+
+    &-body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+
+  // --- MFA CARD STYLES ---
+  &__mfa-status-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    gap: 10px;
+
+    &--enabled {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+
+    &--disabled {
+      background: #fffbeb;
+      border-color: #fef3c7;
+    }
+
+    &--mobile {
+      flex-direction: column;
+      align-items: stretch;
+
+      .status-left {
+        width: 100%;
+      }
+
+      .status-right-action {
+        width: 100%;
+        margin-top: 4px;
+      }
+    }
+
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .status-icon-wrapper {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+
+        &.active {
+          background: #dcfce7;
+          color: #15803d;
+        }
+
+        &.inactive {
+          background: #fef3c7;
+          color: #b45309;
+        }
+      }
+
+      .status-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        .status-label {
+          font-size: 0.85rem;
+          font-weight: 700;
+          color: #0f172a;
+        }
+
+        .status-desc {
+          font-size: 0.72rem;
+          color: #64748b;
+        }
+      }
+    }
+  }
+
+  &__mfa-features {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: #475569;
+
+      .feat-icon {
+        color: #2563eb;
+        font-size: 1rem;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+    }
+  }
+
+  // --- MOBILE TABLE TOOLBAR ---
+  &__mobile-table-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+
+    .mobile-action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+  }
+
+  // --- MOBILE PARAM CARD LIST ---
+  &__mobile-param-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+
+    .mobile-empty-msg {
+      text-align: center;
+      padding: 30px 12px;
+      color: #94a3b8;
+      font-size: 0.85rem;
+    }
+
+    .param-card-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px 12px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+
+      .param-card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .param-id-badge {
+          background: #f1f5f9;
+          color: #64748b;
+          font-size: 0.7rem;
+          font-weight: 700;
+          padding: 2px 6px;
+          border-radius: 4px;
+        }
+
+        .param-item-name {
+          font-size: 0.88rem;
+          font-weight: 700;
+          color: #1e3a8a;
+          word-break: break-all;
+        }
+      }
+
+      .param-card-default {
+        font-size: 0.75rem;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        code {
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          padding: 1px 5px;
+          border-radius: 4px;
+          font-family: monospace;
+          color: #334155;
+        }
+      }
+
+      .param-card-input-box {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 2px;
+
+        label {
+          font-size: 0.72rem;
+          font-weight: 600;
+          color: #475569;
+        }
+
+        .param-mobile-input {
+          width: 100%;
+          min-height: 38px;
+          padding: 6px 10px;
+          font-size: 0.88rem;
+          border: 1px solid #cbd5e1;
+          border-radius: 6px;
+          outline: none;
+          box-sizing: border-box;
+          background: #ffffff;
+
+          &:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+          }
+        }
+      }
+    }
+  }
+
+  // --- DESKTOP TABLE STYLES ---
+  &__table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      text-align: left;
+
+      thead {
+        background: #f1f5f9;
+
+        th {
+          padding: 8px 12px;
+          font-weight: 600;
+          color: #475569;
+          border-bottom: 1px solid #cbd5e1;
+          white-space: nowrap;
+        }
+      }
+
+      tbody {
+        tr {
+          border-bottom: 1px solid #f1f5f9;
+          transition: background 0.15s ease;
+
+          &:hover {
+            background: #f8fafc;
+          }
+
+          td {
+            padding: 6px 12px;
+            color: #1e293b;
+            vertical-align: middle;
+
+            .table-input {
+              width: 100%;
+              max-width: 280px;
+              padding: 4px 8px;
+              font-size: 0.8rem;
+              border: 1px solid #cbd5e1;
+              border-radius: 4px;
+              outline: none;
+              box-sizing: border-box;
+
+              &:focus {
+                border-color: #2563eb;
+                box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // --- MODAL DIALOGS ---
+  &__modal-stepper {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    .step-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+
+      .step-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #0f172a;
+
+        .step-num {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 22px;
+          height: 22px;
+          background: #2563eb;
+          color: #ffffff;
+          border-radius: 50%;
+          font-size: 0.75rem;
+        }
+      }
+
+      .qr-area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+      }
+
+      .secret-text-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-family: monospace;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #1e293b;
+        background: #f1f5f9;
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: 1px dashed #cbd5e1;
+      }
+    }
+
+    .backup-codes-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      padding: 10px;
+      background: #f1f5f9;
+      border-radius: 8px;
+
+      .backup-code-item {
+        font-family: monospace;
+        font-weight: 700;
+        font-size: 0.82rem;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        padding: 6px;
+        text-align: center;
+        color: #0f172a;
+        letter-spacing: 1px;
+      }
+    }
+  }
+}
