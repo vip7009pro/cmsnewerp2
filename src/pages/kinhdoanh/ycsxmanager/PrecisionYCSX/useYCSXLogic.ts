@@ -164,35 +164,39 @@ export const useYCSXLogic = () => {
   };
 
   // Tra cứu YCSX
-  const handletraYCSX = async () => {
-    Swal.fire({
-      title: "Tra YCSX",
-      text: "Đang tải dữ liệu, hãy chờ chút",
-      icon: "info",
-      showCancelButton: false,
-      allowOutsideClick: false,
-      confirmButtonText: "OK",
-      showConfirmButton: false,
-    });
-    const data = await f_traYCSX({
-      alltime: alltime,
-      start_date: fromdate,
-      end_date: todate,
-      cust_name: cust_name,
-      codeCMS: codeCMS,
-      codeKD: codeKD,
-      prod_type: prod_type,
-      empl_name: empl_name,
-      phanloai: phanloai,
-      ycsx_pending: ycsxpendingcheck,
-      inspect_inputcheck: inspectInputcheck,
-      prod_request_no: prodrequestno,
-      material: material,
-      phanloaihang: phanloaihang,
-      material_yes: materialYES,
-    });
+  const handletraYCSX = async (isSilent: boolean = false) => {
+    if (!isSilent) {
+      Swal.fire({
+        title: "Tra YCSX",
+        text: "Đang tải dữ liệu, hãy chờ chút",
+        icon: "info",
+        showCancelButton: false,
+        allowOutsideClick: false,
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+      });
+    }
+    const data = await f_traYCSX(
+      {
+        alltime: alltime,
+        start_date: fromdate,
+        end_date: todate,
+        cust_name: cust_name,
+        codeCMS: codeCMS,
+        codeKD: codeKD,
+        prod_type: prod_type,
+        empl_name: empl_name,
+        phanloai: phanloai,
+        ycsx_pending: ycsxpendingcheck,
+        inspect_inputcheck: inspectInputcheck,
+        prod_request_no: prodrequestno,
+        material: material,
+        phanloaihang: phanloaihang,
+        material_yes: materialYES,
+      },
+      isSilent
+    );
     setYcsxDataTable(data);
-    Swal.close();
   };
 
   const handleSearchCodeKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -271,7 +275,7 @@ export const useYCSXLogic = () => {
         err_code = 4;
       }
       if (err_code === 0) {
-        await f_updateYCSX({
+        const kq = await f_updateYCSX({
           G_CODE: selectedCode?.G_CODE,
           CUST_CD: selectedCust_CD?.CUST_CD,
           PROD_REQUEST_NO: selectedID,
@@ -283,7 +287,9 @@ export const useYCSXLogic = () => {
           DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
         });
         setIsEditModalOpen(false);
-        handletraYCSX();
+        if (kq === "OK") {
+          await handletraYCSX(true);
+        }
       } else if (err_code === 1) {
         Swal.fire("Thông báo", "NG: Không tồn tại YCSX", "error");
       } else if (err_code === 4) {
@@ -296,8 +302,15 @@ export const useYCSXLogic = () => {
 
   // Delete YCSX
   const deleteYCSX = async () => {
+    Swal.fire({
+      title: "Đang xóa YCSX",
+      text: "Vui lòng chờ trong giây lát...",
+      icon: "info",
+      showConfirmButton: false,
+      allowOutsideClick: false,
+    });
     await f_batchDeleteYCSX(ycsxdatatablefilter.current);
-    handletraYCSX();
+    await handletraYCSX(true);
   };
 
   const handleConfirmDeleteYCSX = () => {
@@ -313,9 +326,9 @@ export const useYCSXLogic = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn Xóa!",
+      cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Tiến hành Xóa", "Đang Xóa YCSX hàng loạt", "success");
         deleteYCSX();
       }
     });
@@ -342,7 +355,7 @@ export const useYCSXLogic = () => {
         }
         if (!err_code) {
           Swal.fire("Thông báo", "SET PDuyet YCSX thành công !", "success");
-          handletraYCSX();
+          await handletraYCSX(true);
         } else {
           Swal.fire("Thông báo", "Có lỗi SQL khi phê duyệt", "error");
         }
@@ -394,7 +407,7 @@ export const useYCSXLogic = () => {
       }
       if (!err_code) {
         Swal.fire("Thông báo", "SET YCSX thành công", "success");
-        handletraYCSX();
+        await handletraYCSX(true);
       } else {
         Swal.fire("Thông báo", "Có lỗi SQL", "error");
       }
@@ -463,7 +476,7 @@ export const useYCSXLogic = () => {
       }
       if (!err_code) {
         Swal.fire("Thông báo", "SET Liệu YCSX thành công", "success");
-        handletraYCSX();
+        await handletraYCSX(true);
       } else {
         Swal.fire("Thông báo", "Có lỗi SQL", "error");
       }
@@ -532,7 +545,7 @@ export const useYCSXLogic = () => {
       }
       if (!err_code) {
         Swal.fire("Thông báo", "SET YCSX thành công", "success");
-        handletraYCSX();
+        await handletraYCSX(true);
       } else {
         Swal.fire("Thông báo", "Có lỗi SQL", "error");
       }
@@ -726,7 +739,7 @@ export const useYCSXLogic = () => {
           Swal.fire("Thông báo", "Thêm YCSX mới thành công", "success");
           clearYCSXform();
           setIsAddModalOpen(false);
-          handletraYCSX();
+          await handletraYCSX(true);
         } else {
           Swal.fire("Thông báo", "Thêm YCSX mới thất bại: " + kq, "error");
         }
@@ -786,6 +799,33 @@ export const useYCSXLogic = () => {
           FL_YN: isFirstLOT ? "Y" : "N",
         });
         if (kq === "OK") {
+          let next_p500_in_no: string = await f_getNextP500_IN_NO();
+          if (newphanloai !== "GD") {
+            await f_insertP500({
+              in_date: moment().format("YYYYMMDD"),
+              next_process_in_no: next_p500_in_no,
+              PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
+              PROD_REQUEST_NO: next_prod_request_no,
+              G_CODE: selectedCode?.G_CODE,
+              EMPL_NO: userData?.EMPL_NO,
+              phanloai: newphanloai,
+              PLAN_ID: next_prod_request_no + "A",
+              PR_NB: 0,
+            });
+            await f_insertP501({
+              in_date: moment().format("YYYYMMDD"),
+              next_process_in_no: next_p500_in_no,
+              EMPL_NO: userData?.EMPL_NO,
+              next_process_lot_no: next_process_lot_no_p501,
+              next_process_prt_seq: next_process_lot_no_p501.substring(5, 8),
+              PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
+              PROD_REQUEST_NO: next_prod_request_no,
+              PLAN_ID: next_prod_request_no + "A",
+              PROCESS_NUMBER: 0,
+              TEMP_QTY: newycsxqty,
+              USE_YN: "X",
+            });
+          }
           let newNotification: NotificationElement = {
             CTR_CD: "002",
             NOTI_ID: -1,
@@ -805,36 +845,9 @@ export const useYCSXLogic = () => {
           Swal.fire("Thông báo", "Thêm YCSX mới thành công", "success");
           clearYCSXform();
           setIsAddModalOpen(false);
-          handletraYCSX();
+          await handletraYCSX(true);
         } else {
           Swal.fire("Thông báo", "Thêm YCSX mới thất bại: " + kq, "error");
-        }
-        let next_p500_in_no: string = await f_getNextP500_IN_NO();
-        if (newphanloai !== "GD") {
-          await f_insertP500({
-            in_date: moment().format("YYYYMMDD"),
-            next_process_in_no: next_p500_in_no,
-            PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
-            PROD_REQUEST_NO: next_prod_request_no,
-            G_CODE: selectedCode?.G_CODE,
-            EMPL_NO: userData?.EMPL_NO,
-            phanloai: newphanloai,
-            PLAN_ID: next_prod_request_no + "A",
-            PR_NB: 0,
-          });
-          await f_insertP501({
-            in_date: moment().format("YYYYMMDD"),
-            next_process_in_no: next_p500_in_no,
-            EMPL_NO: userData?.EMPL_NO,
-            next_process_lot_no: next_process_lot_no_p501,
-            next_process_prt_seq: next_process_lot_no_p501.substring(5, 8),
-            PROD_REQUEST_DATE: moment().format("YYYYMMDD"),
-            PROD_REQUEST_NO: next_prod_request_no,
-            PLAN_ID: next_prod_request_no + "A",
-            PROCESS_NUMBER: 0,
-            TEMP_QTY: newycsxqty,
-            USE_YN: "X",
-          });
         }
       }
     } else if (err_code === 2) {
@@ -1283,7 +1296,7 @@ export const useYCSXLogic = () => {
     Swal.fire("Thông báo", "Đã hoàn thành Up YCSX hàng loạt", "success");
     await f_updateDMSX_LOSS_KT();
     setUploadExcelJSon(tempjson);
-    handletraYCSX();
+    await handletraYCSX(true);
   };
 
   const confirmUpYcsxHangLoat = () => {

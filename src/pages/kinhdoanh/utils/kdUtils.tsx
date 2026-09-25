@@ -809,7 +809,7 @@ export const f_isIDCongViecExist = async (
   return checkIDcongViecTonTai;
 };
 
-export const f_traYCSX = async (searchFilter: any) => {
+export const f_traYCSX = async (searchFilter: any, isSilent: boolean = false) => {
   let kq: YCSXTableData[] = [];
   await generalQuery("traYCSXDataFull", {
     alltime: searchFilter.alltime,
@@ -875,11 +875,14 @@ export const f_traYCSX = async (searchFilter: any) => {
           }
         );
         kq = loadeddata;
-        Swal.fire(
-          "Thông báo",
-          "Đã load " + response.data.data.length + " dòng",
-          "success"
-        );
+        if (!isSilent) {
+          Swal.fire({
+            title: "Thông báo",
+            text: "Đã load " + response.data.data.length + " dòng",
+            icon: "success",
+            confirmButtonText: "OK",
+          });
+        }
       } else {
         kq = [];
         Swal.fire("Thông báo", "Nội dung: " + response.data.message, "error");
@@ -887,6 +890,9 @@ export const f_traYCSX = async (searchFilter: any) => {
     })
     .catch((error) => {
       console.log(error);
+      if (!isSilent) {
+        Swal.fire("Lỗi", "Không thể kết nối máy chủ tra YCSX: " + error, "error");
+      }
     });
   return kq;
 };
@@ -1355,7 +1361,7 @@ export const f_checkYCSX_EXIST = async (PROD_REQUEST_NO: string) => {
 };
 
 export const f_updateYCSX = async (YCSXDATA: any) => {
-  let err_code: string = "";
+  let err_code: string = "NG";
   await generalQuery("update_ycsx", {
     G_CODE: YCSXDATA.G_CODE,
     CUST_CD: YCSXDATA.CUST_CD,
@@ -1370,17 +1376,20 @@ export const f_updateYCSX = async (YCSXDATA: any) => {
     .then((response) => {
       console.log(response.data.tk_status);
       if (response.data.tk_status !== "NG") {
-        Swal.fire("Thông báo", "Update YCSX thành công", "success");
+        err_code = "OK";
+        Swal.fire("Thông báo", "Cập nhật YCSX thành công", "success");
       } else {
+        err_code = "NG";
         Swal.fire(
           "Thông báo",
-          "Update YCSX thất bại: " + response.data.message,
+          "Cập nhật YCSX thất bại: " + response.data.message,
           "error"
         );
       }
     })
     .catch((error) => {
       console.log(error);
+      err_code = "NG";
     });
   return err_code;
 };

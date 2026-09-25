@@ -2034,3 +2034,8 @@ $py-radius: 6px;
   }
 }
 
+/* ── 9. SWEETALERT2 HIGH PRIORITY Z-INDEX OVERRIDE ── */
+body .swal2-container,
+.swal2-container {
+  z-index: 2147483647 !important;
+}
