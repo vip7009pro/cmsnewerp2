@@ -100,6 +100,7 @@ const DATASX: React.FC = () => {
   const tableYcsx = useMemo(
     () => (
       <AGTable
+        toolbar={<></>}
         columns={column_datasx_ycsx}
         data={datasxtable}
         onRowClick={handleRowClickYcsx}
