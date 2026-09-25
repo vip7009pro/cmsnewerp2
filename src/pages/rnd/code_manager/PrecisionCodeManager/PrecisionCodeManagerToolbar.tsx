@@ -20,6 +20,7 @@ import {
 import { FiX } from "react-icons/fi";
 
 interface PrecisionCodeManagerToolbarProps {
+  isMobile?: boolean;
   codeCMS: string;
   setCodeCMS: (val: string) => void;
   activeOnly: boolean;
@@ -49,6 +50,7 @@ interface PrecisionCodeManagerToolbarProps {
 }
 
 const PrecisionCodeManagerToolbar: React.FC<PrecisionCodeManagerToolbarProps> = ({
+  isMobile,
   codeCMS,
   setCodeCMS,
   activeOnly,
@@ -83,7 +85,7 @@ const PrecisionCodeManagerToolbar: React.FC<PrecisionCodeManagerToolbarProps> = 
   };
 
   return (
-    <div className="precision-code-manager__toolbar">
+    <div className={`precision-code-manager__toolbar ${isMobile ? "is-mobile" : ""}`}>
       {/* ROW 1: SEARCH, FILTER & COMMON EXPORT */}
       <div className="toolbar-row1">
         <div className="search-group">
@@ -92,7 +94,7 @@ const PrecisionCodeManagerToolbar: React.FC<PrecisionCodeManagerToolbarProps> = 
             <span className="input-prefix">Code:</span>
             <input
               type="text"
-              placeholder="Nhập code (VD: 7A01..., GH68...)"
+              placeholder={isMobile ? "Nhập code..." : "Nhập code (VD: 7A01..., GH68...)"}
               value={codeCMS}
               onChange={(e) => setCodeCMS(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -108,6 +110,12 @@ const PrecisionCodeManagerToolbar: React.FC<PrecisionCodeManagerToolbarProps> = 
               </button>
             )}
           </div>
+
+          {/* Button Search */}
+          <button type="button" className="btn-search" onClick={onSearchCode} title="Tìm kiếm theo mã sản phẩm">
+            <MdSearch size={15} />
+            <span>Tìm Code</span>
+          </button>
 
           {/* Checkbox Active */}
           <label className={`checkbox-pill ${activeOnly ? "checkbox-pill--active" : ""}`}>
@@ -129,27 +137,23 @@ const PrecisionCodeManagerToolbar: React.FC<PrecisionCodeManagerToolbarProps> = 
             <span>CNDB</span>
           </label>
 
-          {/* Button Search */}
-          <button type="button" className="btn-search" onClick={onSearchCode}>
-            <MdSearch size={15} />
-            <span>Tìm Code</span>
-          </button>
-
-          {/* Filter Phân Loại Dropdown */}
-          <div className="filter-select-box">
-            <span>Loại:</span>
-            <select
-              value={selectedProdType}
-              onChange={(e) => onProdTypeChange(e.target.value)}
-            >
-              <option value="ALL">Tất cả ({prodTypeList.length})</option>
-              {prodTypeList.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Filter Phân Loại Dropdown (Ẩn trên mobile để tiết kiệm diện tích) */}
+          {!isMobile && (
+            <div className="filter-select-box">
+              <span>Loại:</span>
+              <select
+                value={selectedProdType}
+                onChange={(e) => onProdTypeChange(e.target.value)}
+              >
+                <option value="ALL">Tất cả ({prodTypeList.length})</option>
+                {prodTypeList.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
         {/* Cụm Export Buttons */}
@@ -161,7 +165,7 @@ const PrecisionCodeManagerToolbar: React.FC<PrecisionCodeManagerToolbarProps> = 
             title="Xuất bảng dữ liệu đang hiển thị ra Excel"
           >
             <MdTableChart size={14} />
-            <span>EX1 (Grid)</span>
+            <span>EX1</span>
           </button>
 
           <button
@@ -171,7 +175,7 @@ const PrecisionCodeManagerToolbar: React.FC<PrecisionCodeManagerToolbarProps> = 
             title="Xuất toàn bộ dữ liệu gốc ra Excel"
           >
             <MdFileDownload size={14} />
-            <span>EX2 (Raw)</span>
+            <span>EX2</span>
           </button>
 
           <button
@@ -184,23 +188,26 @@ const PrecisionCodeManagerToolbar: React.FC<PrecisionCodeManagerToolbarProps> = 
             <span>PIVOT</span>
           </button>
 
-          <span className="counter-pill">
-            Hiển thị: <strong>{filteredCount} / {totalCount}</strong>
-          </span>
+          {!isMobile && (
+            <span className="counter-pill">
+              Hiển thị: <strong>{filteredCount} / {totalCount}</strong>
+            </span>
+          )}
         </div>
       </div>
 
-      {/* ROW 2: SPECIALIZED ERP OPERATIONS (STRICTLY COLOR-CODED) */}
-      <div className="toolbar-row2">
-        <button
-          type="button"
-          className="btn-erp-action btn-erp-action--save"
-          onClick={onSaveExcel}
-          title="Lưu file dữ liệu ra Excel"
-        >
-          <MdSave />
-          <span>SAVE</span>
-        </button>
+      {/* ROW 2: SPECIALIZED ERP OPERATIONS (STRICTLY COLOR-CODED) - CHỈ RENDER TRÊN DESKTOP */}
+      {!isMobile && (
+        <div className="toolbar-row2">
+          <button
+            type="button"
+            className="btn-erp-action btn-erp-action--save"
+            onClick={onSaveExcel}
+            title="Lưu file dữ liệu ra Excel"
+          >
+            <MdSave />
+            <span>SAVE</span>
+          </button>
 
         <button
           type="button"
@@ -302,6 +309,7 @@ const PrecisionCodeManagerToolbar: React.FC<PrecisionCodeManagerToolbarProps> = 
 
         <span className="selected-chip">Đang chọn: {selectedCount} dòng</span>
       </div>
+      )}
     </div>
   );
 };

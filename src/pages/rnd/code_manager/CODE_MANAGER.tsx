@@ -36,6 +36,28 @@ const CODE_MANAGER: React.FC = () => {
     (state: RootState) => state.totalSlice.userData
   );
 
+  // Responsive viewport state
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+
+    setIsMobile(mediaQuery.matches);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
+
   // Filter states
   const [activeOnly, setActiveOnly] = useState(true);
   const [cndb, setCNDB] = useState(false);
@@ -206,15 +228,16 @@ const CODE_MANAGER: React.FC = () => {
   }, [showPivotModal, filteredRows]);
 
   return (
-    <div className="precision-code-manager">
-      {/* 1. SUB-HEADER BANNER */}
-      <PrecisionCodeManagerHeader onRefresh={handleCODEINFO} />
+    <div className={`precision-code-manager ${isMobile ? "is-mobile" : ""}`}>
+      {/* 1. SUB-HEADER BANNER (CHỈ RENDER TRÊN DESKTOP) */}
+      {!isMobile && <PrecisionCodeManagerHeader onRefresh={handleCODEINFO} />}
 
-      {/* 2. REALTIME KPI METRICS BAR (4 WIDGETS DỰA TRÊN THỰC TẾ DATA) */}
-      <PrecisionCodeManagerKpi data={rows} />
+      {/* 2. REALTIME KPI METRICS BAR (CHỈ RENDER TRÊN DESKTOP) */}
+      {!isMobile && <PrecisionCodeManagerKpi data={rows} />}
 
       {/* 3. COLOR-CODED ACTION TOOLBAR */}
       <PrecisionCodeManagerToolbar
+        isMobile={isMobile}
         codeCMS={codeCMS}
         setCodeCMS={setCodeCMS}
         activeOnly={activeOnly}

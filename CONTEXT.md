@@ -1,5 +1,17 @@
 # ERP Context & Status
 
+## Update - 2026-09-25 (R&D / CODE_MANAGER: Tối ưu giao diện Mobile bằng conditional rendering viewport)
+- **1. Conditional rendering theo Viewport ([CODE_MANAGER.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/code_manager/CODE_MANAGER.tsx))**:
+  * Tích hợp reactive listener `window.matchMedia("(max-width: 768px)")` cập nhật trạng thái `isMobile`.
+  * Trên mobile: tự động ẩn toàn bộ Sub-Header Banner (`PrecisionCodeManagerHeader`) và Realtime KPI bar (`PrecisionCodeManagerKpi`), giải phóng ~200px chiều cao màn hình cho không gian xem dữ liệu.
+- **2. Tinh gọn Toolbar bảng dữ liệu ([PrecisionCodeManagerToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/code_manager/PrecisionCodeManager/PrecisionCodeManagerToolbar.tsx))**:
+  * Nhận prop `isMobile`: chỉ hiển thị các thành phần thiết yếu gồm ô nhập Code, nút Tìm Code, checkbox `Active`, `CNDB` và bộ nút xuất `EX1`, `EX2`, `PIVOT`.
+  * Ẩn các thao tác chuyên sâu (Row 2: Save, Sửa, Ngoại quan, Bản vẽ, BEP, Loss...) và dropdown bộ lọc loại trên mobile.
+- **3. Trượt cuộn ngang 1 dòng duy nhất ([PrecisionCodeManager.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/code_manager/PrecisionCodeManager/PrecisionCodeManager.scss))**:
+  * Cấu hình `.toolbar-row1` trên mobile: `display: flex; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; gap: 6px;`.
+  * Các item co giãn hợp lý, không xuống dòng làm che bảng dữ liệu, có thanh cuộn ngang mảnh 3px mượt mà.
+- **4. Xác thực Build**: `npm run build` thành công 100% (exit code 0), bundle tối ưu không lỗi.
+
 ## Update - 2026-09-25 (YCSX: Sửa lỗi SweetAlert2 không hiển thị hoặc bị hủy khi tra cứu/thêm/sửa/xóa)
 - **1. Khắc phục lỗi Swal.close() tự hủy popup thông báo ([useYCSXLogic.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/useYCSXLogic.ts) & [kdUtils.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/utils/kdUtils.tsx))**:
   * **Root Cause 1**: Trong `handletraYCSX()`, ngay sau khi `await f_traYCSX(...)` trả về, dòng `Swal.close()` được thực thi ngay lập tức. Trong khi đó, `f_traYCSX` vừa mở popup `Swal.fire("Thông báo", "Đã load X dòng", "success")`, khiến popup vừa chớp lên trong chốc lát đã bị `Swal.close()` dập tắt ngay.

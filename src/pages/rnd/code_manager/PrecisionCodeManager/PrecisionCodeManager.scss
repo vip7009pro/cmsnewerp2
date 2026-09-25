@@ -14,6 +14,15 @@
   font-family: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   color: #0f172a;
 
+  &.is-mobile {
+    padding: 4px;
+    gap: 4px;
+  }
+  @media (max-width: 768px) {
+    padding: 4px;
+    gap: 4px;
+  }
+
   // Multi-Tab Full-Width & Full-Height Container
   .component_element & {
     width: 100% !important;
@@ -703,6 +712,80 @@
         margin-left: auto;
       }
     }
+
+    // TỐI ƯU GIAO DIỆN MOBILE: HIỂN THỊ TRÊN 1 DÒNG DUY NHẤT CUỘN NGANG
+    @mixin mobile-toolbar-scroll {
+      padding: 4px 6px;
+      gap: 0;
+
+      .toolbar-row1 {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        width: 100%;
+        gap: 6px;
+        padding-bottom: 2px;
+
+        &::-webkit-scrollbar {
+          height: 3px;
+        }
+        &::-webkit-scrollbar-track {
+          background: #f1f5f9;
+        }
+        &::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 3px;
+        }
+
+        .search-group {
+          display: flex;
+          align-items: center;
+          flex-wrap: nowrap;
+          flex: 0 0 auto;
+          gap: 6px;
+
+          .search-input-box {
+            width: 145px;
+            min-width: 130px;
+            flex-shrink: 0;
+            height: 27px;
+          }
+
+          .btn-search,
+          .checkbox-pill {
+            flex-shrink: 0;
+            white-space: nowrap;
+            height: 27px;
+          }
+        }
+
+        .export-group {
+          display: flex;
+          align-items: center;
+          flex-wrap: nowrap;
+          flex: 0 0 auto;
+          gap: 5px;
+
+          .toolbar-btn {
+            flex-shrink: 0;
+            white-space: nowrap;
+            height: 27px;
+          }
+        }
+      }
+    }
+
+    &.is-mobile {
+      @include mobile-toolbar-scroll;
+    }
+    @media (max-width: 768px) {
+      @include mobile-toolbar-scroll;
+    }
   }
 
   // ==========================================
@@ -717,6 +800,11 @@
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     display: flex;
+
+    @media (max-width: 768px) {
+      border-radius: 6px;
+      min-height: 0;
+    }
     flex-direction: column;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
