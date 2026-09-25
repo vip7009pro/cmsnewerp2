@@ -1381,32 +1381,50 @@ export const useYCSXLogic = () => {
 
   // Amazon Upload Logic
   const handle_findAmazonCodeInfo = async (prod_request_no: string) => {
-    await generalQuery("get_ycsxInfo2", { ycsxno: prod_request_no })
+    if (!prod_request_no || !prod_request_no.trim()) {
+      setCodeKD("");
+      setCodeCMS("");
+      setProd_Model("");
+      setAMZ_PL_HANG("TT");
+      setCavityAmazon(0);
+      return;
+    }
+    await generalQuery("get_ycsxInfo2", { ycsxno: prod_request_no.trim() })
       .then((response) => {
-        if (response.data.tk_status !== "NG") {
-          setCodeKD(response.data.data[0].G_NAME);
-          setCodeCMS(response.data.data[0].G_CODE);
-          setProd_Model(response.data.data[0].PROD_MODEL);
-          setAMZ_PL_HANG(response.data.data[0].PL_HANG);
+        if (response.data.tk_status !== "NG" && response.data.data && response.data.data.length > 0) {
+          const info = response.data.data[0];
+          setCodeKD(info.G_NAME || "");
+          setCodeCMS(info.G_CODE || "");
+          setProd_Model(info.PROD_MODEL || "");
+          setAMZ_PL_HANG(info.PL_HANG || "TT");
           generalQuery("get_cavityAmazon", {
-            g_code: response.data.data[0].G_CODE,
+            g_code: info.G_CODE,
           })
-            .then((response) => {
-              if (response.data.tk_status !== "NG") {
-                setCavityAmazon(response.data.data[0].CAVITY_PRINT);
+            .then((cavityRes) => {
+              if (cavityRes.data.tk_status !== "NG" && cavityRes.data.data && cavityRes.data.data.length > 0) {
+                setCavityAmazon(cavityRes.data.data[0].CAVITY_PRINT || 0);
               } else {
                 setCavityAmazon(0);
               }
             })
-            .catch(() => {});
+            .catch(() => {
+              setCavityAmazon(0);
+            });
         } else {
           setCodeKD("");
           setCodeCMS("");
           setProd_Model("");
           setAMZ_PL_HANG("TT");
+          setCavityAmazon(0);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        setCodeKD("");
+        setCodeCMS("");
+        setProd_Model("");
+        setAMZ_PL_HANG("TT");
+        setCavityAmazon(0);
+      });
   };
 
   // Đọc file AMZ từ File object (dùng chung cho input[type=file] và vùng kéo-thả).
@@ -1612,6 +1630,36 @@ export const useYCSXLogic = () => {
     }
   };
 
+  // Mở modal Thêm Dữ Liệu Amazon Hàng Loạt với YCSX được checked trên bảng
+  const handleOpenAddAmzModal = () => {
+    setUploadExcelJSon([]);
+    setID_CongViec("");
+    setProgressValue(0);
+
+    const selectedRows = ycsxdatatablefilter.current;
+    if (selectedRows && selectedRows.length === 1) {
+      const selected = selectedRows[0];
+      const prodReqNo = selected.PROD_REQUEST_NO || "";
+      setProdRequestNo(prodReqNo);
+      if (selected.G_NAME) setCodeKD(selected.G_NAME);
+      if (selected.G_CODE) setCodeCMS(selected.G_CODE);
+      if (prodReqNo) {
+        handle_findAmazonCodeInfo(prodReqNo);
+      }
+      setIsAmzAddModalOpen(true);
+    } else if (selectedRows && selectedRows.length > 1) {
+      Swal.fire({
+        title: "Thông báo",
+        text: "Chỉ chọn 1 YCSX để thêm dữ liệu Amazon",
+        icon: "warning",
+      });
+    } else {
+      setProdRequestNo("");
+      handle_findAmazonCodeInfo("");
+      setIsAmzAddModalOpen(true);
+    }
+  };
+
   return {
     userData,
     activeTab,
@@ -1713,6 +1761,7 @@ export const useYCSXLogic = () => {
     handlePrintYCSX,
     handlePrintBanVe,
     handleGoToAmazon,
+    handleOpenAddAmzModal,
     // Excel
     uploadExcelJson,
     setUploadExcelJSon,
@@ -1729,6 +1778,7 @@ export const useYCSXLogic = () => {
     prod_model,
     amz_PL_HANG,
     progressvalue,
+    setProgressValue,
     handle_findAmazonCodeInfo,
     readUploadFileAmazon,
     readUploadFileAmazonFromFile,

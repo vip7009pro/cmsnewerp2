@@ -241,7 +241,7 @@ const YCSXManager: React.FC = () => {
           ycsx.clearYCSXform();
           ycsx.setIsAddModalOpen(true);
         }}
-        onOpenAddAmzModal={() => ycsx.setIsAmzAddModalOpen(true)}
+        onOpenAddAmzModal={ycsx.handleOpenAddAmzModal}
         isCMS={isCMS}
         isMobile={isMobile}
       />
@@ -398,7 +398,7 @@ const YCSXManager: React.FC = () => {
           }}
         >
           <PrecisionAmzTab
-            onOpenAmzAddModal={() => ycsx.setIsAmzAddModalOpen(true)}
+            onOpenAmzAddModal={ycsx.handleOpenAddAmzModal}
           />
         </div>
       )}
