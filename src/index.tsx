@@ -12,7 +12,9 @@ import { SnackbarProvider } from 'notistack';
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const registration: ServiceWorkerRegistration = await navigator.serviceWorker.register('service-worker.js');
+      const registration: ServiceWorkerRegistration = await navigator.serviceWorker.register('/service-worker.js', {
+        scope: '/'
+      });
       console.log('Service Worker đăng ký thành công');
     } catch (error) {
       console.error('Lỗi đăng ký Service Worker:', error);

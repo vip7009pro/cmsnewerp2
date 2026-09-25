@@ -1,5 +1,7 @@
 # Roadmap - cmsnewerp2
 
+- [x] PWA/SERVICE-WORKER & MOBILE ICON: Sửa lỗi đăng ký Service Worker thất bại khi truy cập route con (`/sx`, `/kinhdoanh/`) do relative path bị tải nhầm `index.html` (MIME text/html) — chuyển sang absolute path `/service-worker.js` với `{ scope: '/' }`; đồng thời khắc phục triệt để lỗi icon PWA trên điện thoại bị mờ căm và vỡ hạt bằng bộ icon chất lượng cao siêu nét `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`, `logo192.png`, `logo512.png` cùng bộ adaptive `icon-maskable-192.png`, `icon-maskable-512.png` đạt chuẩn Safe Zone; cập nhật `manifest.json`, `index.html` và `service-worker.js`; production build thành công.
+
 - [x] AUTH/BOOTSTRAP: Sửa dứt điểm lỗi login thành công nhưng kẹt lại màn hình login kèm TypeError `Cannot read properties of undefined (reading 'JOB_NAME')` — chuẩn hóa case-insensitive status kiểm tra `tkStatus === "ok"` và guard an toàn `userData` trong `useAppBootstrap.ts` & `Api.ts`; production build thành công (1m 44s).
 
 - [x] AUTH/NETWORK: Khắc phục sự cố kẹt kết nối Load Data & đồng bộ Token/Cookie — cấu hình Axios timeout 45s chống treo vô hạn chiếm dụng 6 sockets của trình duyệt, thêm Response Interceptor bắt mã 401 & TOKEN_EXPIRED tự động cảnh báo và điều hướng logout sạch sẽ, chuẩn hóa options cookie token (sameSite/secure), tối ưu interval 30s chỉ chạy khi tab visible kèm visibilitychange listener tự làm mới token ngay sau khi máy tính thức dậy từ chế độ Sleep; production build thành công.
