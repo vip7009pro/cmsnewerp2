@@ -17,6 +17,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
+import SmartphoneIcon from "@mui/icons-material/Smartphone";
 import Swal from "sweetalert2";
 import { QRCodeSVG } from "qrcode.react";
 import { generalQuery } from "../../../api/Api";
@@ -177,6 +178,81 @@ export const PrecisionSettingMfaCard: React.FC<PrecisionSettingMfaCardProps> = (
     document.body.removeChild(element);
   };
 
+  const handleOpenOrInstallApp = () => {
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    const isAndroid = /android/i.test(userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+
+    if (isAndroid) {
+      // 1. Trên Android: Mở Intent với data là otpauth URI để Google Authenticator tự động thêm tài khoản
+      // Kèm fallback sang Google Play Store nếu máy chưa cài
+      const playStoreUrl = "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2";
+      const androidIntentUrl = `intent://#Intent;action=android.intent.action.VIEW;data=${encodeURIComponent(
+        otpauthUrl
+      )};package=com.google.android.apps.authenticator2;S.browser_fallback_url=${encodeURIComponent(
+        playStoreUrl
+      )};end`;
+
+      const link = document.createElement("a");
+      link.href = androidIntentUrl;
+      link.rel = "noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Dự phòng nếu intent không phản hồi sau 800ms
+      const start = Date.now();
+      setTimeout(() => {
+        if (Date.now() - start < 1800) {
+          window.location.href = playStoreUrl;
+        }
+      }, 800);
+    } else if (isIOS) {
+      // 2. Trên iOS: Mở bằng URI scheme otpauth://
+      const appStoreUrl = "https://apps.apple.com/app/google-authenticator/id388497605";
+      const start = Date.now();
+      if (otpauthUrl) {
+        window.location.href = otpauthUrl;
+      } else {
+        window.location.href = "googleauthenticator://";
+      }
+
+      // Nếu sau 1.2s chưa chuyển trang (chưa cài app), tự chuyển sang App Store
+      setTimeout(() => {
+        if (Date.now() - start < 2000) {
+          window.location.href = appStoreUrl;
+        }
+      }, 1200);
+    } else {
+      // 3. Trên Desktop:
+      Swal.fire({
+        icon: "info",
+        title: "Cài Đặt Google Authenticator",
+        html: `
+          <div style="font-size: 0.85rem; color: #475569; text-align: left; line-height: 1.6;">
+            <p style="margin-bottom: 8px;">
+              💻 Bạn đang thực hiện trên máy tính. Hãy dùng camera ứng dụng <b>Google Authenticator</b> trên điện thoại để quét mã QR ở trên.
+            </p>
+            <p style="margin-bottom: 8px;">
+              Nếu trên điện thoại của bạn chưa cài đặt ứng dụng:
+            </p>
+            <div style="display: flex; gap: 10px; margin-top: 10px; justify-content: center;">
+              <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; font-weight: 600;">
+                Tải Google Play (Android)
+              </a>
+              <span>•</span>
+              <a href="https://apps.apple.com/app/google-authenticator/id388497605" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; font-weight: 600;">
+                Tải App Store (iOS)
+              </a>
+            </div>
+          </div>
+        `,
+        confirmButtonText: "Đã hiểu",
+        confirmButtonColor: "#2563eb",
+      });
+    }
+  };
+
   return (
     <div className="precision-setting__card">
       <div className="precision-setting__card-header">
@@ -195,11 +271,10 @@ export const PrecisionSettingMfaCard: React.FC<PrecisionSettingMfaCardProps> = (
 
       <div className="precision-setting__card-body">
         <div
-          className={`precision-setting__mfa-status-box ${
-            mfaEnabled
+          className={`precision-setting__mfa-status-box ${mfaEnabled
               ? "precision-setting__mfa-status-box--enabled"
               : "precision-setting__mfa-status-box--disabled"
-          } ${isMobile ? "precision-setting__mfa-status-box--mobile" : ""}`}
+            } ${isMobile ? "precision-setting__mfa-status-box--mobile" : ""}`}
         >
           <div className="status-left">
             <div className={`status-icon-wrapper ${mfaEnabled ? "active" : "inactive"}`}>
@@ -306,6 +381,57 @@ export const PrecisionSettingMfaCard: React.FC<PrecisionSettingMfaCardProps> = (
                       <ContentCopyIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
+                </div>
+
+                {/* NÚT MỞ APP TRỰC TIẾP HOẶC TẢI VỀ APP */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "8px" }}>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    startIcon={<SmartphoneIcon />}
+                    onClick={handleOpenOrInstallApp}
+                    sx={{
+                      backgroundColor: "#2563eb",
+                      textTransform: "none",
+                      fontWeight: 600,
+                      fontSize: "0.82rem",
+                      minHeight: "38px",
+                      borderRadius: "8px",
+                      boxShadow: "0 1px 3px rgba(37, 99, 235, 0.2)",
+                    }}
+                  >
+                    Mở Google Authenticator
+                  </Button>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "8px",
+                      fontSize: "0.73rem",
+                      color: "#64748b",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <span>Chưa có ứng dụng?</span>
+                    <a
+                      href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: "#2563eb", textDecoration: "underline", fontWeight: 600 }}
+                    >
+                      Google Play
+                    </a>
+                    <span>•</span>
+                    <a
+                      href="https://apps.apple.com/app/google-authenticator/id388497605"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: "#2563eb", textDecoration: "underline", fontWeight: 600 }}
+                    >
+                      App Store
+                    </a>
+                  </div>
                 </div>
               </div>
             )}
