@@ -6,6 +6,7 @@ import { RootState } from "../../../redux/store";
 import { getCompany, getUserData } from "../../../api/Api";
 import LONGTERM_PLAN from "./LICHSUCHITHITABLE/LONGTERM_PLAN";
 import MyTabs from "../../../components/MyTab/MyTab";
+const PLAN_NHANH = lazy(() => import("./QUICKPLAN/PLAN_NHANH"));
 const PLAN_TABLE = lazy(() => import("./LICHSUCHITHITABLE/PLAN_TABLE"));
 const PLAN_VISUAL = lazy(() => import("./Machine/PLANVISUAL"));
 const BTP_AUTO = React.lazy(() => import("../../sx/BTP_AUTO/BTP_AUTO"));
@@ -19,7 +20,7 @@ const EQ_STATUS = React.lazy(() => import("./EQ_STATUS/EQ_STATUS"));
 const EQ_STATUS2 = React.lazy(() => import("./EQ_STATUS/EQ_STATUS2"));
 const KHOAO = React.lazy(() => import("./KHOAO/KHOAO"));
 const QUICKPLAN2 = React.lazy(() => import("./QUICKPLAN/QUICKPLAN2"));
-const QUICKPLAN2_OLD = React.lazy(() => import("./QUICKPLAN/QUICKPLAN2_backup"));
+
 const QLSXPLAN = () => {
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   useEffect(() => { }, []);
@@ -39,7 +40,7 @@ const QLSXPLAN = () => {
               {getCompany() === "CMS" && getUserData()?.EMPL_NO === "NHU1903z" ? (
                 <QUICKPLAN2 />
               ) : (
-                <QUICKPLAN2_OLD />
+                <PLAN_NHANH />
               )}
             </MyTabs.Tab>
           )}

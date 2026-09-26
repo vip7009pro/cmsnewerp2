@@ -32,7 +32,7 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-theme-quartz.css"; */
 import AGTable from "../../../../components/DataTable/AGTable";
 import QUICKPLAN2 from "../QUICKPLAN/QUICKPLAN2";
-import QUICKPLAN2_OLD from "../QUICKPLAN/QUICKPLAN2_backup";
+import QUICKPLAN2_OLD from "../QUICKPLAN/PLAN_NHANH";
 import { MACHINE_LIST, QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
 import { f_deleteChiThiMaterialLine, f_getMachineListData, f_handle_movePlan, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleResetChiThiTable, f_loadQLSXPLANDATA, f_saveChiThiMaterialTable, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, f_updatePlanOrder, renderChiThi, renderChiThi2 } from "../utils/khsxUtils";
 import { checkBP } from "../../../../api/services/permissionService";
@@ -162,11 +162,11 @@ const PLAN_DATATB_OLD = () => {
     qlsxplandatafilter.current = [];
   }, []);
   const clearSelectedMaterialRows = useCallback(() => {
-    if (gridMaterialRef.current) {  
+    if (gridMaterialRef.current) {
       gridMaterialRef.current!.api.deselectAll();
       qlsxchithidatafilter.current = [];
     }
-  }, []); 
+  }, []);
   const gridRef = useRef<AgGridReact<QLSXPLANDATA>>(null);
   const gridMaterialRef = useRef<AgGridReact<QLSXCHITHIDATA>>(null);
   const defaultColDef = useMemo(() => {
@@ -189,7 +189,7 @@ const PLAN_DATATB_OLD = () => {
   };
   const selectMaterialRow = async () => {
     const api = gridMaterialRef.current?.api; // Access the grid API   
-    api?.forEachNode((node: any) => {      
+    api?.forEachNode((node: any) => {
       if (node.data?.M_STOCK && node.data.M_STOCK > 0) {
         node.setSelected(true);
       } else {
@@ -197,7 +197,7 @@ const PLAN_DATATB_OLD = () => {
       }
     });
   };
-  
+
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
@@ -377,7 +377,7 @@ const PLAN_DATATB_OLD = () => {
           return <span>0</span>;
         }
       },
-    },    
+    },
     {
       field: "EQ_STATUS",
       headerName: "EQ_STATUS",
@@ -665,9 +665,10 @@ const PLAN_DATATB_OLD = () => {
         }
       }
     },
-    { field: "LOSS_KT", headerName: "LOSS_KT", width: 80, editable: false, cellRenderer: (params: any) => {
-      return (
-        <span style={{ color: "red" }}>{params.data.LOSS_KT.toLocaleString("en", "US", { maximumFractionDigits: 2, minimumFractionDigits: 2 })}%</span>
+    {
+      field: "LOSS_KT", headerName: "LOSS_KT", width: 80, editable: false, cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>{params.data.LOSS_KT.toLocaleString("en", "US", { maximumFractionDigits: 2, minimumFractionDigits: 2 })}%</span>
         );
       }
     },
@@ -734,7 +735,7 @@ const PLAN_DATATB_OLD = () => {
           );
         }
       }
-    },    
+    },
     {
       field: "PROD_REQUEST_NO",
       headerName: "YCSX NO",
@@ -921,7 +922,7 @@ const PLAN_DATATB_OLD = () => {
     { field: "EQ2", headerName: "EQ2", width: 40, editable: false },
     { field: "EQ3", headerName: "EQ3", width: 40, editable: false },
     { field: "EQ4", headerName: "EQ4", width: 40, editable: false },
-    
+
   ];
   const column_planmaterialtable = [
     {
@@ -1087,7 +1088,7 @@ const PLAN_DATATB_OLD = () => {
     setChiThiDataTable(kq);
   };
   const hanlde_SaveChiThi = async () => {
-    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
+    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, getCompany() === 'CMS' ? qlsxchithidatafilter.current : chithidatatable);
     if (err_code === "1") {
       Swal.fire(
         "Thông báo",
@@ -1100,12 +1101,12 @@ const PLAN_DATATB_OLD = () => {
     } else {
       Swal.fire("Thông báo", "Lưu Chỉ thị thành công", "success");
     }
-    
+
   };
   const handleDangKyXuatLieu = async () => {
     console.log(qlsxchithidatafilter.current);
     console.log(getCompany());
-    let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, factory, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
+    let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, factory, getCompany() === 'CMS' ? qlsxchithidatafilter.current : chithidatatable);
     if (err_code === '0') {
       Swal.fire("Thông báo", "Đăng ký xuất liệu thành công!", "success");
     }
@@ -1124,7 +1125,7 @@ const PLAN_DATATB_OLD = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn ĐK liệu!",
     }).then(async (result) => {
-      if (result.isConfirmed) {        
+      if (result.isConfirmed) {
         if (selectedPlan !== undefined) {
           Swal.fire({
             title: "Đang lưu chỉ thị",
@@ -1431,11 +1432,11 @@ const PLAN_DATATB_OLD = () => {
             className='buttonIcon'
             onClick={() => {
               selectMaterialRow();
-            }}            
+            }}
           >
             <AiOutlineCheck color='green' size={20} />
             Select
-          </IconButton> 
+          </IconButton>
           {/* <IconButton
             className='buttonIcon'
             onClick={() => {
@@ -1865,7 +1866,7 @@ const PLAN_DATATB_OLD = () => {
                               renderChiThi2(qlsxplandatafilter.current, myComponentRef)
                             );
                           }
-                          else {                            
+                          else {
                             setShowChiThi2(true);
                             setChiThiListRender2(
                               renderChiThi2(qlsxplandatafilter.current, myComponentRef)
@@ -1937,7 +1938,7 @@ const PLAN_DATATB_OLD = () => {
             <Button
               onClick={() => {
                 setShowHideM(false);
-                clearSelectedMaterialRows(); 
+                clearSelectedMaterialRows();
                 loadQLSXPlan(fromdate);
               }}
               size='small'

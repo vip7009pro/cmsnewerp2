@@ -14,6 +14,7 @@ import {
 import { MdOutlinePendingActions } from "react-icons/md";
 import { FaArrowRight } from "react-icons/fa";
 import { BiShow } from "react-icons/bi";
+import { FiFilter } from "react-icons/fi";
 import Swal from "sweetalert2";
 import { YCSXTableData } from "../../../../kinhdoanh/interfaces/kdInterface";
 import { SaveExcel } from "../../../../../api/services/excelService";
@@ -66,6 +67,8 @@ interface PrecisionQuickPlanYCSXSectionProps {
   renderBanVe: (ycsxlist: YCSXTableData[]) => any;
   handleYCSXSelectionforUpdate: (ids: GridRowSelectionModel) => void;
   handleUploadBanVe: (file: any, gCode: string) => Promise<void>;
+  isMobile?: boolean;
+  onOpenFilterDrawer?: () => void;
 }
 
 export const PrecisionQuickPlanYCSXSection: React.FC<PrecisionQuickPlanYCSXSectionProps> = ({
@@ -114,6 +117,8 @@ export const PrecisionQuickPlanYCSXSection: React.FC<PrecisionQuickPlanYCSXSecti
   renderBanVe,
   handleYCSXSelectionforUpdate,
   handleUploadBanVe,
+  isMobile = false,
+  onOpenFilterDrawer,
 }) => {
   const columns = React.useMemo(() => {
     return getColumnQuickPlanYCSXTable({
@@ -249,161 +254,245 @@ export const PrecisionQuickPlanYCSXSection: React.FC<PrecisionQuickPlanYCSXSecti
     );
   };
 
+  const activeFilterCount = React.useMemo(() => {
+    let count = 0;
+    if (codeKD) count++;
+    if (codeCMS) count++;
+    if (empl_name) count++;
+    if (cust_name) count++;
+    if (prod_type) count++;
+    if (prodrequestno) count++;
+    if (material) count++;
+    if (phanloai && phanloai !== "00") count++;
+    if (alltime) count++;
+    if (materialYES) count++;
+    if (ycsxpendingcheck) count++;
+    if (inspectInputcheck) count++;
+    return count;
+  }, [
+    codeKD,
+    codeCMS,
+    empl_name,
+    cust_name,
+    prod_type,
+    prodrequestno,
+    material,
+    phanloai,
+    alltime,
+    materialYES,
+    ycsxpendingcheck,
+    inspectInputcheck,
+  ]);
+
   return (
-    <div className="quickplan-ycsx-pane">
-      {/* Search Form Filter 3 Cột Compact */}
-      <div className="ycsx-filter-form">
-        {/* Hàng 1 */}
-        <div className="filter-field">
-          <label>Từ ngày:</label>
-          <input
-            type="date"
-            value={fromdate.slice(0, 10)}
-            onChange={(e) => setFromDate(e.target.value)}
-            onKeyDown={handleSearchCodeKeyDown}
-          />
-        </div>
-        <div className="filter-field">
-          <label>Tới ngày:</label>
-          <input
-            type="date"
-            value={todate.slice(0, 10)}
-            onChange={(e) => setToDate(e.target.value)}
-            onKeyDown={handleSearchCodeKeyDown}
-          />
-        </div>
-        <div className="filter-field">
-          <label>Code KD:</label>
-          <input
-            type="text"
-            placeholder="GH63-xxxxxx"
-            value={codeKD}
-            onChange={(e) => setCodeKD(e.target.value)}
-            onKeyDown={handleSearchCodeKeyDown}
-          />
-        </div>
-
-        {/* Hàng 2 */}
-        <div className="filter-field">
-          <label>Code ERP:</label>
-          <input
-            type="text"
-            placeholder="7C123xxx"
-            value={codeCMS}
-            onChange={(e) => setCodeCMS(e.target.value)}
-            onKeyDown={handleSearchCodeKeyDown}
-          />
-        </div>
-        <div className="filter-field">
-          <label>Nhân viên:</label>
-          <input
-            type="text"
-            placeholder="Tên PIC KD..."
-            value={empl_name}
-            onChange={(e) => setEmpl_Name(e.target.value)}
-            onKeyDown={handleSearchCodeKeyDown}
-          />
-        </div>
-        <div className="filter-field">
-          <label>Khách hàng:</label>
-          <input
-            type="text"
-            placeholder="SEVT, SDV..."
-            value={cust_name}
-            onChange={(e) => setCust_Name(e.target.value)}
-            onKeyDown={handleSearchCodeKeyDown}
-          />
-        </div>
-
-        {/* Hàng 3 */}
-        <div className="filter-field">
-          <label>Loại SP:</label>
-          <input
-            type="text"
-            placeholder="TSP, LABEL..."
-            value={prod_type}
-            onChange={(e) => setProdType(e.target.value)}
-            onKeyDown={handleSearchCodeKeyDown}
-          />
-        </div>
-        <div className="filter-field">
-          <label>Số YCSX:</label>
-          <input
-            type="text"
-            placeholder="Số YCSX..."
-            value={prodrequestno}
-            onChange={(e) => setProdRequestNo(e.target.value)}
-            onKeyDown={handleSearchCodeKeyDown}
-          />
-        </div>
-        <div className="filter-field">
-          <label>Vật liệu:</label>
-          <input
-            type="text"
-            placeholder="SJ-203020HC..."
-            value={material}
-            onChange={(e) => setMaterial(e.target.value)}
-            onKeyDown={handleSearchCodeKeyDown}
-          />
-        </div>
-
-        {/* Hàng actions & checkboxes */}
-        <div className="filter-actions-row">
-          <div className="chk-group">
-            <label>
-              <input
-                type="checkbox"
-                checked={ycsxpendingcheck}
-                onChange={(e) => setYCSXPendingCheck(e.target.checked)}
-              />
-              Pending
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={inspectInputcheck}
-                onChange={(e) => setInspectInputCheck(e.target.checked)}
-              />
-              Vào kiểm
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={materialYES}
-                onChange={(e) => setMaterialYES(e.target.checked)}
-              />
-              Mat YES
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={alltime}
-                onChange={(e) => setAllTime(e.target.checked)}
-              />
-              All Time
-            </label>
-            <select
-              value={phanloai}
-              onChange={(e) => setPhanLoai(e.target.value)}
-              style={{ height: 21, fontSize: 10 }}
-            >
-              <option value="00">Tất cả</option>
-              <option value="01">Thông thường</option>
-              <option value="02">SX gấp</option>
-            </select>
+    <div className={`quickplan-ycsx-pane ${isMobile ? "is-mobile" : ""}`}>
+      {isMobile ? (
+        /* Mobile Omnibar: Gọn nhẹ, thanh lịch, chuẩn mobile first */
+        <div className="quickplan-mobile-omnibar">
+          <div className="omnibar-input-wrap">
+            <AiOutlineSearch size={14} className="omnibar-icon" />
+            <input
+              type="text"
+              placeholder="Code KD / ERP / YCSX..."
+              value={codeKD || codeCMS}
+              onChange={(e) => {
+                setCodeKD(e.target.value);
+                setCodeCMS(e.target.value);
+              }}
+              onKeyDown={handleSearchCodeKeyDown}
+            />
+            {(codeKD || codeCMS) && (
+              <button
+                type="button"
+                className="omnibar-clear"
+                onClick={() => {
+                  setCodeKD("");
+                  setCodeCMS("");
+                }}
+              >
+                ×
+              </button>
+            )}
           </div>
 
           <button
             type="button"
-            className="btn-search-ycsx"
+            className={`btn-mobile-filter-trigger ${activeFilterCount > 0 ? "has-filter" : ""}`}
+            onClick={onOpenFilterDrawer}
+            title="Mở bộ lọc chi tiết YCSX"
+          >
+            <FiFilter size={13} />
+            <span>Lọc</span>
+            {activeFilterCount > 0 && (
+              <span className="filter-count-badge">{activeFilterCount}</span>
+            )}
+          </button>
+
+          <button
+            type="button"
+            className="btn-mobile-search-trigger"
             onClick={handletraYCSX}
             disabled={isLoading}
+            title="Thực hiện tìm kiếm YCSX"
           >
-            <AiOutlineSearch size={14} />
-            <span>{isLoading ? "Đang tải..." : "Tìm YCSX"}</span>
+            <span>{isLoading ? "..." : "Tìm"}</span>
           </button>
         </div>
-      </div>
+      ) : (
+        /* Desktop Search Form: Giữ nguyên 100% 3 cột compact */
+        <div className="ycsx-filter-form">
+          {/* Hàng 1 */}
+          <div className="filter-field">
+            <label>Từ ngày:</label>
+            <input
+              type="date"
+              value={fromdate.slice(0, 10)}
+              onChange={(e) => setFromDate(e.target.value)}
+              onKeyDown={handleSearchCodeKeyDown}
+            />
+          </div>
+          <div className="filter-field">
+            <label>Tới ngày:</label>
+            <input
+              type="date"
+              value={todate.slice(0, 10)}
+              onChange={(e) => setToDate(e.target.value)}
+              onKeyDown={handleSearchCodeKeyDown}
+            />
+          </div>
+          <div className="filter-field">
+            <label>Code KD:</label>
+            <input
+              type="text"
+              placeholder="GH63-xxxxxx"
+              value={codeKD}
+              onChange={(e) => setCodeKD(e.target.value)}
+              onKeyDown={handleSearchCodeKeyDown}
+            />
+          </div>
+
+          {/* Hàng 2 */}
+          <div className="filter-field">
+            <label>Code ERP:</label>
+            <input
+              type="text"
+              placeholder="7C123xxx"
+              value={codeCMS}
+              onChange={(e) => setCodeCMS(e.target.value)}
+              onKeyDown={handleSearchCodeKeyDown}
+            />
+          </div>
+          <div className="filter-field">
+            <label>Nhân viên:</label>
+            <input
+              type="text"
+              placeholder="Tên PIC KD..."
+              value={empl_name}
+              onChange={(e) => setEmpl_Name(e.target.value)}
+              onKeyDown={handleSearchCodeKeyDown}
+            />
+          </div>
+          <div className="filter-field">
+            <label>Khách hàng:</label>
+            <input
+              type="text"
+              placeholder="SEVT, SDV..."
+              value={cust_name}
+              onChange={(e) => setCust_Name(e.target.value)}
+              onKeyDown={handleSearchCodeKeyDown}
+            />
+          </div>
+
+          {/* Hàng 3 */}
+          <div className="filter-field">
+            <label>Loại SP:</label>
+            <input
+              type="text"
+              placeholder="TSP, LABEL..."
+              value={prod_type}
+              onChange={(e) => setProdType(e.target.value)}
+              onKeyDown={handleSearchCodeKeyDown}
+            />
+          </div>
+          <div className="filter-field">
+            <label>Số YCSX:</label>
+            <input
+              type="text"
+              placeholder="Số YCSX..."
+              value={prodrequestno}
+              onChange={(e) => setProdRequestNo(e.target.value)}
+              onKeyDown={handleSearchCodeKeyDown}
+            />
+          </div>
+          <div className="filter-field">
+            <label>Vật liệu:</label>
+            <input
+              type="text"
+              placeholder="SJ-203020HC..."
+              value={material}
+              onChange={(e) => setMaterial(e.target.value)}
+              onKeyDown={handleSearchCodeKeyDown}
+            />
+          </div>
+
+          {/* Hàng actions & checkboxes */}
+          <div className="filter-actions-row">
+            <div className="chk-group">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={ycsxpendingcheck}
+                  onChange={(e) => setYCSXPendingCheck(e.target.checked)}
+                />
+                Pending
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={inspectInputcheck}
+                  onChange={(e) => setInspectInputCheck(e.target.checked)}
+                />
+                Vào kiểm
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={materialYES}
+                  onChange={(e) => setMaterialYES(e.target.checked)}
+                />
+                Mat YES
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={alltime}
+                  onChange={(e) => setAllTime(e.target.checked)}
+                />
+                All Time
+              </label>
+              <select
+                value={phanloai}
+                onChange={(e) => setPhanLoai(e.target.value)}
+                style={{ height: 21, fontSize: 10 }}
+              >
+                <option value="00">Tất cả</option>
+                <option value="01">Thông thường</option>
+                <option value="02">SX gấp</option>
+              </select>
+            </div>
+
+            <button
+              type="button"
+              className="btn-search-ycsx"
+              onClick={handletraYCSX}
+              disabled={isLoading}
+            >
+              <AiOutlineSearch size={14} />
+              <span>{isLoading ? "Đang tải..." : "Tìm YCSX"}</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Bảng Dữ Liệu YCSX DataGrid */}
       <div className="ycsx-grid-container">

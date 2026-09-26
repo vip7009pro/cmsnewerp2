@@ -12,7 +12,7 @@ import PrecisionQuickPlanPrintModals from "./PrecisionQuickPlan/PrecisionQuickPl
  * Được tái cấu trúc theo chuẩn Google Stitch High-Density Enterprise.
  * Giữ nguyên 100% logic, bảo toàn đầy đủ các nút thao tác nghiệp vụ và tối ưu chống giật lag.
  */
-const QUICKPLAN2_OLD: React.FC = () => {
+const PLAN_NHANH: React.FC = () => {
   const {
     userData,
     recentDMData,
@@ -223,4 +223,4 @@ const QUICKPLAN2_OLD: React.FC = () => {
   );
 };
 
-export default QUICKPLAN2_OLD;
+export default PLAN_NHANH;

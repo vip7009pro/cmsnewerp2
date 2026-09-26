@@ -69,152 +69,154 @@ export const PrecisionQuickPlanDinhMuc: React.FC<PrecisionQuickPlanDinhMucProps>
 
   return (
     <div className="precision-quickplan__dinhmuc">
-      {/* 4 Hàng Định Mức Công Đoạn Thẳng Hàng Excel */}
-      {steps.map((item) => {
-        const recentLossSx = getRecentLossSX(item.step);
-        const recentLossSetting = getRecentLossSetting(item.step);
+      <div className="dinhmuc-scroll-wrapper">
+        {/* 4 Hàng Định Mức Công Đoạn Thẳng Hàng Excel */}
+        {steps.map((item) => {
+          const recentLossSx = getRecentLossSX(item.step);
+          const recentLossSetting = getRecentLossSetting(item.step);
 
-        return (
-          <div key={item.step} className="dm-row">
-            {/* Nhãn CĐ */}
-            <div className="dm-row__label">CĐ{item.step}</div>
+          return (
+            <div key={item.step} className="dm-row">
+              {/* Nhãn CĐ */}
+              <div className="dm-row__label">CĐ{item.step}</div>
 
-            {/* EQ */}
-            <div className="dm-row__field">
-              <label>EQ{item.step}:</label>
-              <select
-                value={(datadinhmuc[item.eqKey] as string) || ""}
-                onChange={(e) =>
-                  setDataDinhMuc({
-                    ...datadinhmuc,
-                    [item.eqKey]: e.target.value,
-                  })
-                }
-              >
-                <option value="">-- Máy --</option>
-                {machine_list.map((ele: MACHINE_LIST, idx: number) => (
-                  <option key={idx} value={ele.EQ_NAME}>
-                    {ele.EQ_NAME}
-                  </option>
-                ))}
-              </select>
+              {/* EQ */}
+              <div className="dm-row__field">
+                <label>EQ{item.step}:</label>
+                <select
+                  value={(datadinhmuc[item.eqKey] as string) || ""}
+                  onChange={(e) =>
+                    setDataDinhMuc({
+                      ...datadinhmuc,
+                      [item.eqKey]: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">-- Máy --</option>
+                  {machine_list.map((ele: MACHINE_LIST, idx: number) => (
+                    <option key={idx} value={ele.EQ_NAME}>
+                      {ele.EQ_NAME}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Setting (min) */}
+              <div className="dm-row__field">
+                <label>Set{item.step}(m):</label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={datadinhmuc[item.settingKey] ?? 0}
+                  onChange={(e) =>
+                    setDataDinhMuc({
+                      ...datadinhmuc,
+                      [item.settingKey]: Number(e.target.value),
+                    })
+                  }
+                />
+              </div>
+
+              {/* UPH */}
+              <div className="dm-row__field">
+                <label>UPH{item.step}:</label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={datadinhmuc[item.uphKey] ?? 0}
+                  onChange={(e) =>
+                    setDataDinhMuc({
+                      ...datadinhmuc,
+                      [item.uphKey]: Number(e.target.value),
+                    })
+                  }
+                />
+              </div>
+
+              {/* Step */}
+              <div className="dm-row__field">
+                <label>Step{item.step}:</label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={datadinhmuc[item.stepKey] ?? 0}
+                  onChange={(e) =>
+                    setDataDinhMuc({
+                      ...datadinhmuc,
+                      [item.stepKey]: Number(e.target.value),
+                    })
+                  }
+                />
+              </div>
+
+              {/* Loss SX */}
+              <div className="dm-row__field">
+                <label>
+                  LossSX{item.step}(%):
+                  {recentLossSx && <span className="ref-val">({recentLossSx})</span>}
+                </label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={datadinhmuc[item.lossSxKey] ?? 0}
+                  onChange={(e) =>
+                    setDataDinhMuc({
+                      ...datadinhmuc,
+                      [item.lossSxKey]: Number(e.target.value),
+                    })
+                  }
+                />
+              </div>
+
+              {/* Loss Setting */}
+              <div className="dm-row__field">
+                <label>
+                  LossSet{item.step}(m):
+                  {recentLossSetting && <span className="ref-val">({recentLossSetting})</span>}
+                </label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={datadinhmuc[item.lossSettingKey] ?? 0}
+                  onChange={(e) =>
+                    setDataDinhMuc({
+                      ...datadinhmuc,
+                      [item.lossSettingKey]: Number(e.target.value),
+                    })
+                  }
+                />
+              </div>
             </div>
+          );
+        })}
 
-            {/* Setting (min) */}
-            <div className="dm-row__field">
-              <label>Set{item.step}(m):</label>
-              <input
-                type="number"
-                placeholder="0"
-                value={datadinhmuc[item.settingKey] ?? 0}
-                onChange={(e) =>
-                  setDataDinhMuc({
-                    ...datadinhmuc,
-                    [item.settingKey]: Number(e.target.value),
-                  })
-                }
-              />
-            </div>
-
-            {/* UPH */}
-            <div className="dm-row__field">
-              <label>UPH{item.step}:</label>
-              <input
-                type="number"
-                placeholder="0"
-                value={datadinhmuc[item.uphKey] ?? 0}
-                onChange={(e) =>
-                  setDataDinhMuc({
-                    ...datadinhmuc,
-                    [item.uphKey]: Number(e.target.value),
-                  })
-                }
-              />
-            </div>
-
-            {/* Step */}
-            <div className="dm-row__field">
-              <label>Step{item.step}:</label>
-              <input
-                type="number"
-                placeholder="0"
-                value={datadinhmuc[item.stepKey] ?? 0}
-                onChange={(e) =>
-                  setDataDinhMuc({
-                    ...datadinhmuc,
-                    [item.stepKey]: Number(e.target.value),
-                  })
-                }
-              />
-            </div>
-
-            {/* Loss SX */}
-            <div className="dm-row__field">
-              <label>
-                LossSX{item.step}(%):
-                {recentLossSx && <span className="ref-val">({recentLossSx})</span>}
-              </label>
-              <input
-                type="number"
-                placeholder="0"
-                value={datadinhmuc[item.lossSxKey] ?? 0}
-                onChange={(e) =>
-                  setDataDinhMuc({
-                    ...datadinhmuc,
-                    [item.lossSxKey]: Number(e.target.value),
-                  })
-                }
-              />
-            </div>
-
-            {/* Loss Setting */}
-            <div className="dm-row__field">
-              <label>
-                LossSet{item.step}(m):
-                {recentLossSetting && <span className="ref-val">({recentLossSetting})</span>}
-              </label>
-              <input
-                type="number"
-                placeholder="0"
-                value={datadinhmuc[item.lossSettingKey] ?? 0}
-                onChange={(e) =>
-                  setDataDinhMuc({
-                    ...datadinhmuc,
-                    [item.lossSettingKey]: Number(e.target.value),
-                  })
-                }
-              />
-            </div>
+        {/* Hàng FACTORY & NOTE (QLSX) */}
+        <div className="factory-note-bar">
+          <div className="fn-item">
+            <span className="fn-label">FACTORY:</span>
+            <select
+              value={datadinhmuc.FACTORY || "NA"}
+              onChange={(e) =>
+                setDataDinhMuc({ ...datadinhmuc, FACTORY: e.target.value })
+              }
+            >
+              <option value="NA">NA</option>
+              <option value="NM1">NM1</option>
+              <option value="NM2">NM2</option>
+            </select>
           </div>
-        );
-      })}
 
-      {/* Hàng FACTORY & NOTE (QLSX) */}
-      <div className="factory-note-bar">
-        <div className="fn-item">
-          <span className="fn-label">FACTORY:</span>
-          <select
-            value={datadinhmuc.FACTORY || "NA"}
-            onChange={(e) =>
-              setDataDinhMuc({ ...datadinhmuc, FACTORY: e.target.value })
-            }
-          >
-            <option value="NA">NA</option>
-            <option value="NM1">NM1</option>
-            <option value="NM2">NM2</option>
-          </select>
-        </div>
-
-        <div className="fn-item" style={{ flex: 1, minWidth: 0 }}>
-          <span className="fn-label">NOTE (QLSX):</span>
-          <input
-            type="text"
-            placeholder="Ghi chú điều phối sản xuất..."
-            value={datadinhmuc.NOTE || ""}
-            onChange={(e) =>
-              setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
-            }
-          />
+          <div className="fn-item" style={{ flex: 1, minWidth: 0 }}>
+            <span className="fn-label">NOTE (QLSX):</span>
+            <input
+              type="text"
+              placeholder="Ghi chú điều phối sản xuất..."
+              value={datadinhmuc.NOTE || ""}
+              onChange={(e) =>
+                setDataDinhMuc({ ...datadinhmuc, NOTE: e.target.value })
+              }
+            />
+          </div>
         </div>
       </div>
     </div>

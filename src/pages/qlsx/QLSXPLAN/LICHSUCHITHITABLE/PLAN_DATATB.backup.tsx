@@ -35,7 +35,7 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-theme-quartz.css"; */
 import AGTable from "../../../../components/DataTable/AGTable";
 import QUICKPLAN2 from "../QUICKPLAN/QUICKPLAN2";
-import QUICKPLAN2_OLD from "../QUICKPLAN/QUICKPLAN2_backup";
+import QUICKPLAN2_OLD from "../QUICKPLAN/PLAN_NHANH";
 import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
 import { MACHINE_LIST, PROD_PROCESS_DATA, QLSXCHITHIDATA, QLSXPLANDATA } from "../interfaces/khsxInterface";
 import { f_deleteChiThiMaterialLine, f_getMachineListData, f_handle_movePlan, f_handle_xuatdao_sample, f_handle_xuatlieu_sample, f_handleDangKyXuatLieu, f_handleGetChiThiTable, f_handleGetChiThiTable_New, f_handleResetChiThiTable_New, f_loadProdProcessData, f_loadQLSXPLANDATA, f_loadQLSXPLANDATA2, f_saveChiThiMaterialTable, f_updateBatchPlan, f_updateLossKT_ZTB_DM_HISTORY, f_updatePlanOrder, renderChiThi, renderChiThi2 } from "../utils/khsxUtils";
@@ -164,11 +164,11 @@ const PLAN_DATATB = () => {
     qlsxplandatafilter.current = [];
   }, []);
   const clearSelectedMaterialRows = useCallback(() => {
-    if (gridMaterialRef.current) {  
+    if (gridMaterialRef.current) {
       gridMaterialRef.current!.api.deselectAll();
       qlsxchithidatafilter.current = [];
     }
-  }, []); 
+  }, []);
   const gridRef = useRef<AgGridReact<QLSXPLANDATA>>(null);
   const gridMaterialRef = useRef<AgGridReact<QLSXCHITHIDATA>>(null);
   const defaultColDef = useMemo(() => {
@@ -191,7 +191,7 @@ const PLAN_DATATB = () => {
   };
   const selectMaterialRow = async () => {
     const api = gridMaterialRef.current?.api; // Access the grid API   
-    api?.forEachNode((node: any) => {      
+    api?.forEachNode((node: any) => {
       if (node.data?.M_STOCK && node.data.M_STOCK > 0) {
         node.setSelected(true);
       } else {
@@ -199,7 +199,7 @@ const PLAN_DATATB = () => {
       }
     });
   };
-  
+
   const ycsxprintref = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => ycsxprintref.current,
@@ -379,7 +379,7 @@ const PLAN_DATATB = () => {
           return <span>0</span>;
         }
       },
-    },    
+    },
     {
       field: "EQ_STATUS",
       headerName: "EQ_STATUS",
@@ -667,9 +667,10 @@ const PLAN_DATATB = () => {
         }
       }
     },
-    { field: "LOSS_KT", headerName: "LOSS_KT", width: 80, editable: false, cellRenderer: (params: any) => {
-      return (
-        <span style={{ color: "red" }}>{params.data.LOSS_KT.toLocaleString("en", "US", { maximumFractionDigits: 2, minimumFractionDigits: 2 })}%</span>
+    {
+      field: "LOSS_KT", headerName: "LOSS_KT", width: 80, editable: false, cellRenderer: (params: any) => {
+        return (
+          <span style={{ color: "red" }}>{params.data.LOSS_KT.toLocaleString("en", "US", { maximumFractionDigits: 2, minimumFractionDigits: 2 })}%</span>
         );
       }
     },
@@ -736,7 +737,7 @@ const PLAN_DATATB = () => {
           );
         }
       }
-    },    
+    },
     {
       field: "PROD_REQUEST_NO",
       headerName: "YCSX NO",
@@ -923,7 +924,7 @@ const PLAN_DATATB = () => {
     { field: "EQ2", headerName: "EQ2", width: 40, editable: false },
     { field: "EQ3", headerName: "EQ3", width: 40, editable: false },
     { field: "EQ4", headerName: "EQ4", width: 40, editable: false },
-    
+
   ];
   const column_planmaterialtable = [
     {
@@ -1089,7 +1090,7 @@ const PLAN_DATATB = () => {
     setChiThiDataTable(kq);
   };
   const hanlde_SaveChiThi = async () => {
-    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
+    let err_code: string = await f_saveChiThiMaterialTable(selectedPlan, getCompany() === 'CMS' ? qlsxchithidatafilter.current : chithidatatable);
     if (err_code === "1") {
       Swal.fire(
         "Thông báo",
@@ -1102,12 +1103,12 @@ const PLAN_DATATB = () => {
     } else {
       Swal.fire("Thông báo", "Lưu Chỉ thị thành công", "success");
     }
-    
+
   };
   const handleDangKyXuatLieu = async () => {
     console.log(qlsxchithidatafilter.current);
     console.log(getCompany());
-    let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, factory, getCompany()==='CMS' ? qlsxchithidatafilter.current : chithidatatable);
+    let err_code: string = await f_handleDangKyXuatLieu(selectedPlan, factory, getCompany() === 'CMS' ? qlsxchithidatafilter.current : chithidatatable);
     if (err_code === '0') {
       Swal.fire("Thông báo", "Đăng ký xuất liệu thành công!", "success");
     }
@@ -1126,17 +1127,17 @@ const PLAN_DATATB = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Vẫn ĐK liệu!",
     }).then(async (result) => {
-      if (result.isConfirmed) {        
+      if (result.isConfirmed) {
         if (selectedPlan !== undefined) {
-         /*  Swal.fire({
-            title: "Đang lưu chỉ thị",
-            text: "Đang lưu chỉ thị, hay chờ cho tới khi hoàn thành",
-            icon: "info",
-            showCancelButton: false,
-            allowOutsideClick: false,
-            confirmButtonText: "OK",
-            showConfirmButton: false,
-          }); */
+          /*  Swal.fire({
+             title: "Đang lưu chỉ thị",
+             text: "Đang lưu chỉ thị, hay chờ cho tới khi hoàn thành",
+             icon: "info",
+             showCancelButton: false,
+             allowOutsideClick: false,
+             confirmButtonText: "OK",
+             showConfirmButton: false,
+           }); */
           await hanlde_SaveChiThi();
           /* Swal.fire({
             title: "Đang đăng ký xuất liệu",
@@ -1160,14 +1161,13 @@ const PLAN_DATATB = () => {
             INS_DATE: '2024-12-30',
             UPD_EMPL: 'NHU1903',
             UPD_DATE: '2024-12-30',
-          }  
-          if(await f_insert_Notification_Data(newNotification))
-          {
+          }
+          if (await f_insert_Notification_Data(newNotification)) {
             getSocket().emit("notification_panel", newNotification);
           }
 
           clearSelectedMaterialRows();
-          let thisProcessList: PROD_PROCESS_DATA[] = [];  
+          let thisProcessList: PROD_PROCESS_DATA[] = [];
           thisProcessList = await f_loadProdProcessData(selectedPlan.G_CODE);
           let selectedProcessData: PROD_PROCESS_DATA | undefined = thisProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === selectedPlan.G_CODE && element.PROCESS_NUMBER === selectedPlan.PROCESS_NUMBER);
           if (selectedProcessData) {
@@ -1300,9 +1300,8 @@ const PLAN_DATATB = () => {
         INS_DATE: '2024-12-30',
         UPD_EMPL: 'NHU1903',
         UPD_DATE: '2024-12-30',
-      }  
-      if(await f_insert_Notification_Data(newNotification))
-      {
+      }
+      if (await f_insert_Notification_Data(newNotification)) {
         getSocket().emit("notification_panel", newNotification);
       }
       Swal.fire('Thông báo', 'Move plan thành công', 'success');
@@ -1423,7 +1422,7 @@ const PLAN_DATATB = () => {
         let thisProcessList: PROD_PROCESS_DATA[] = [];
         thisProcessList = await f_loadProdProcessData(selectedPlan.G_CODE);
         let selectedProcessData: PROD_PROCESS_DATA | undefined = thisProcessList.find((element: PROD_PROCESS_DATA, index: number) => element.G_CODE === selectedPlan.G_CODE && element.PROCESS_NUMBER === selectedPlan.PROCESS_NUMBER);
-        if (selectedProcessData) {    
+        if (selectedProcessData) {
           setChiThiDataTable(await f_handleResetChiThiTable_New(selectedPlan, selectedProcessData));
         }
         else {
@@ -1484,11 +1483,11 @@ const PLAN_DATATB = () => {
             className='buttonIcon'
             onClick={() => {
               selectMaterialRow();
-            }}            
+            }}
           >
             <AiOutlineCheck color='green' size={20} />
             Select
-          </IconButton> 
+          </IconButton>
           {/* <IconButton
             className='buttonIcon'
             onClick={() => {
@@ -1988,7 +1987,7 @@ const PLAN_DATATB = () => {
             <Button
               onClick={() => {
                 setShowHideM(false);
-                clearSelectedMaterialRows(); 
+                clearSelectedMaterialRows();
                 loadQLSXPlan(fromdate);
               }}
               size='small'
