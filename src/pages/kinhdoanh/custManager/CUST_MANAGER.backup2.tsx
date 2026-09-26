@@ -15,8 +15,6 @@ import PrecisionCustToolbar, { CustFilterType } from "./PrecisionCustManager/Pre
 import { getPrecisionCustColumns } from "./PrecisionCustManager/PrecisionCustColumns";
 import PrecisionCustModal from "./PrecisionCustManager/PrecisionCustModal";
 import { lazyOpenable } from "../../../components/PivotChart/lazyOpenable";
-import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
-import PrecisionCustMobileActionDrawer from "./PrecisionCustManager/PrecisionCustMobileActionDrawer";
 // Pivot modal chỉ nạp ĐỘNG khi mở: module này kéo theo DevExtreme (~6,4 MB) — xem lazyOpenable.tsx.
 const PrecisionCustPivotModal = lazyOpenable(() =>
   import("./PrecisionCustManager/PrecisionCustPivotModal").then((m) => m.default),
@@ -55,8 +53,6 @@ const CUST_MANAGER: React.FC = () => {
   const [currentFilter, setCurrentFilter] = useState<CustFilterType>("ALL");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [showPivot, setShowPivot] = useState(false);
-  const isMobile = useIsMobile();
-  const [showActionDrawer, setShowActionDrawer] = useState(false);
   // Dòng đang được click trên lưới (độc lập với state form) để phục vụ nút "Sửa Đối Tác"
   const clickedRowRef = useRef<CUST_INFO | null>(null);
   // Đánh dấu user đã tự nhập mã, tránh bị ghi đè khi đổi phân loại
@@ -367,14 +363,14 @@ const CUST_MANAGER: React.FC = () => {
   }, [handleCUSTINFO]);
 
   return (
-    <div className={`precision-cust ${isMobile ? "is-mobile" : ""}`}>
-      {/* 1. Sub-Header (Chỉ render trên Desktop) */}
-      {!isMobile && <PrecisionCustHeader onRefresh={handleCUSTINFO} />}
+    <div className="precision-cust">
+      {/* 1. Sub-Header */}
+      <PrecisionCustHeader onRefresh={handleCUSTINFO} />
 
-      {/* 2. Realtime KPI Cards (Chỉ render trên Desktop) */}
-      {!isMobile && <PrecisionCustKpi custData={custinfodatatable} />}
+      {/* 2. Realtime KPI Cards */}
+      <PrecisionCustKpi custData={custinfodatatable} />
 
-      {/* 3. Action Toolbar (Tối ưu tự thích ứng Desktop / Mobile) */}
+      {/* 3. Action Toolbar */}
       <PrecisionCustToolbar
         currentFilter={currentFilter}
         onChangeFilter={setCurrentFilter}
@@ -387,9 +383,6 @@ const CUST_MANAGER: React.FC = () => {
         onExportEX2={handleExportEX2}
         onOpenPivot={() => setShowPivot(true)}
         counts={counts}
-        isMobile={isMobile}
-        onOpenActionDrawer={() => setShowActionDrawer(true)}
-        selectedCode={selectedRows?.CUST_CD}
       />
 
       {/* 4. AG-Grid Workspace */}
@@ -405,11 +398,9 @@ const CUST_MANAGER: React.FC = () => {
               </span>
             )}
           </div>
-          {!isMobile && (
-            <div className="meta-right">
-              <span>Dữ liệu máy chủ ERP chuẩn hóa</span>
-            </div>
-          )}
+          <div className="meta-right">
+            <span>Dữ liệu máy chủ ERP chuẩn hóa</span>
+          </div>
         </div>
 
         <div className="grid-body">
@@ -445,21 +436,6 @@ const CUST_MANAGER: React.FC = () => {
           isOpen={showPivot}
           onClose={() => setShowPivot(false)}
           dataSource={pivotDataSource}
-        />
-      )}
-
-      {/* 7. Action Drawer Bottom Sheet (Chỉ trên Mobile khi mở) */}
-      {isMobile && (
-        <PrecisionCustMobileActionDrawer
-          isOpen={showActionDrawer}
-          onClose={() => setShowActionDrawer(false)}
-          selectedCustomer={selectedRows}
-          onAddNew={handleOpenAddNew}
-          onEditSelected={handleOpenEditSelected}
-          onRefresh={handleCUSTINFO}
-          onExportEX1={handleExportEX1}
-          onExportEX2={handleExportEX2}
-          onOpenPivot={() => setShowPivot(true)}
         />
       )}
     </div>
