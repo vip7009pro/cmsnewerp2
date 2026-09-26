@@ -19,6 +19,7 @@ Khi người dùng tag `@mobile_interface_refactoring` kèm file cần refactor 
 - **Giữ nguyên 100% desktop**: Không làm thay đổi layout, khoảng cách, font chữ, hành vi hay component trên Desktop (> 768px).
 - **Sao lưu bắt buộc**: Luôn tạo bản sao lưu `[ComponentName].backup2.tsx` tại cùng thư mục trước khi sửa đổi bất kỳ dòng code nào.
 - **Bảo toàn 100% Logic & State**: Giữ nguyên toàn bộ React state, hooks, API queries, form inputs, validation, event handlers và tính năng xuất dữ liệu (Excel `EX1`, `EX2`, `PIVOT`...).
+- **Style đầy đủ**: Giao diện mobile được style đầy đủ, không được bỏ sót style nếu có tạo phần conditional code mới. Phải giữ style tương đồng với desktop nhất có thể.
 
 ### 2. PHƯƠNG THỨC: VIEWPORT CONDITIONAL RENDERING
 - Sử dụng hook nhận diện viewport chuẩn của dự án:
