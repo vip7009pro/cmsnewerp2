@@ -430,6 +430,8 @@ export const useDataSxData = () => {
     totalDailyYCSX,
     selectedYCSX,
     selectedDataSource,
+    setValue,
+    reset,
     handle_loaddatasx,
     handle_loaddatasxYCSX,
     handleRowClickChiThi,
