@@ -1372,6 +1372,7 @@ export const f_updateYCSX = async (YCSXDATA: any) => {
     PROD_REQUEST_QTY: YCSXDATA.PROD_REQUEST_QTY,
     EMPL_NO: YCSXDATA.EMPL_NO,
     DELIVERY_DT: YCSXDATA.DELIVERY_DT,
+    FL_YN: YCSXDATA.FL_YN,
   })
     .then((response) => {
       console.log(response.data.tk_status);

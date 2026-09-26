@@ -149,7 +149,8 @@ export const useYCSXLogic = () => {
     setPONOLIST(await f_loadPONOList(G_CODE, CUST_CD));
   };
 
-  const isG_CODE_FL = async (G_CODE: string) => {
+  const isG_CODE_FL = async (G_CODE?: string) => {
+    if (!G_CODE) return false;
     let isNewCode: boolean = false;
     await generalQuery("checkMassG_CODE", { G_CODE })
       .then((response) => {
@@ -161,6 +162,17 @@ export const useYCSXLogic = () => {
       })
       .catch(() => {});
     return isNewCode;
+  };
+
+  const checkAndSetFirstLot = async (gCode?: string, currentLoaiSX?: string) => {
+    const sxType = currentLoaiSX ?? loaisx;
+    if (sxType === "04" || !gCode) {
+      setIsFirstLot(false);
+      return false;
+    }
+    const isFL = await isG_CODE_FL(gCode);
+    setIsFirstLot(isFL);
+    return isFL;
   };
 
   // Tra cứu YCSX
@@ -241,6 +253,8 @@ export const useYCSXLogic = () => {
       setNewPhanLoai(selectedRow.PL_HANG ?? "TT");
       setLoaiSX(selectedRow.PHAN_LOAI);
       setLoaiXH(selectedRow.LOAIXH);
+      setIsFirstLot(selectedRow.FL_YN === "Y");
+      setIs_Tam_Thoi(selectedRow.IS_TAM_THOI || "N");
       // DELIVERY_DT trong DB là varchar(8) dạng YYYYMMDD, phải chuẩn hóa về YYYY-MM-DD cho input type="date"
       const rawDelivery = selectedRow.DELIVERY_DT ?? "";
       setNewDeliveryDate(
@@ -285,6 +299,7 @@ export const useYCSXLogic = () => {
           PROD_REQUEST_QTY: newycsxqty,
           EMPL_NO: userData?.EMPL_NO,
           DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
+          FL_YN: isFirstLOT ? "Y" : "N",
         });
         setIsEditModalOpen(false);
         if (kq === "OK") {
@@ -1735,6 +1750,8 @@ export const useYCSXLogic = () => {
     setLoaiXH,
     isFirstLOT,
     setIsFirstLot,
+    isG_CODE_FL,
+    checkAndSetFirstLot,
     is_tam_thoi,
     setIs_Tam_Thoi,
     selectedID,

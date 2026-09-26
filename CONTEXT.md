@@ -1,5 +1,14 @@
 # ERP Context & Status
 
+## Update - 2026-09-26 (KD / YCSXManager: Tự Động Kiểm Tra & Chọn FIRST LOT Cho Modal Thêm/Sửa YCSX)
+- **Vấn đề đã xử lý**: Khôi phục đầy đủ logic kiểm tra hàng FIRST LOT tự động từ bản gốc [YCSXManager.backup.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/YCSXManager.backup.tsx).
+- **Các thành phần được cập nhật**:
+  * [useYCSXLogic.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/useYCSXLogic.ts): Cập nhật hàm `isG_CODE_FL`, bổ sung helper `checkAndSetFirstLot`, nạp trường `FL_YN` khi click sửa dòng trong `handle_fillsuaform`, truyền `FL_YN` vào `f_updateYCSX` khi lưu cập nhật, và export `checkAndSetFirstLot`, `isG_CODE_FL`.
+  * [PrecisionYCSXAddModal.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/PrecisionYCSXAddModal.tsx): Tự động đặt lại `isFirstLot(false)` khi người dùng chuyển Loại SX sang SAMPLE ("04") cho cả Desktop và Mobile.
+  * [PrecisionYCSXEditModal.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/PrecisionYCSXEditModal.tsx): Bổ sung props `isFirstLOT`, `setIsFirstLot`, render ô chọn FIRST LOT chuẩn giao diện CMS và tự động reset khi chọn Loại SX SAMPLE ("04").
+  * [YCSXManager.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/YCSXManager.tsx): Khi chọn sản phẩm (`onSelectCode`) tại cả Modal Thêm và Modal Sửa, tự động gọi `checkAndSetFirstLot` để truy vấn DB (`checkMassG_CODE`) và tự động select First LOT (`Y`/`N`); đồng thời khi thay đổi Loại SX cũng tự động điều chỉnh.
+  * [kdUtils.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/utils/kdUtils.tsx): Cập nhật `f_updateYCSX` để truyền `FL_YN` lên backend khi lưu sửa YCSX.
+
 ## Update - 2026-09-26 (QLSX / EQ_STATUS2: Tối Ưu Toàn Diện Giao Diện Mobile Thiết Bị Sản Xuất Realtime)
 - **1. Sao Lưu An Toàn**: Đã tạo file sao lưu [EQ_STATUS2.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2.backup2.tsx) bảo toàn 100% mã nguồn ban đầu.
 - **2. Viewport Conditional Rendering**:

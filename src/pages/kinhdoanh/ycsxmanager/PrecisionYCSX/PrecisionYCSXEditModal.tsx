@@ -20,6 +20,8 @@ interface Props {
   setLoaiSX: (val: string) => void;
   loaixh: string;
   setLoaiXH: (val: string) => void;
+  isFirstLOT?: boolean;
+  setIsFirstLot?: (val: boolean) => void;
   deliverydate: string;
   setNewDeliveryDate: (val: string) => void;
   newycsxqty: number;
@@ -61,6 +63,8 @@ const PrecisionYCSXEditModal: React.FC<Props> = ({
   setLoaiSX,
   loaixh,
   setLoaiXH,
+  isFirstLOT = false,
+  setIsFirstLot,
   deliverydate,
   setNewDeliveryDate,
   newycsxqty,
@@ -227,12 +231,17 @@ const PrecisionYCSXEditModal: React.FC<Props> = ({
               </select>
             </div>
 
-            {/* Hàng 3: Loại SX, Loại XH, Ghi chú */}
+            {/* Hàng 3: Loại SX, Loại XH, FIRST LOT */}
             <div className="precision-ycsx__modalField">
               <label>Loại sản xuất (CODE_55):</label>
               <select
                 value={loaisx}
-                onChange={(e) => setLoaiSX(e.target.value)}
+                onChange={(e) => {
+                  setLoaiSX(e.target.value);
+                  if (e.target.value === "04") {
+                    setIsFirstLot?.(false);
+                  }
+                }}
               >
                 <option value="01">01 - Thông Thường</option>
                 <option value="02">02 - SDI</option>
@@ -257,7 +266,24 @@ const PrecisionYCSXEditModal: React.FC<Props> = ({
               </select>
             </div>
 
-            <div className="precision-ycsx__modalField">
+            {isCMS && (
+              <div className="precision-ycsx__modalField">
+                <label>FIRST LOT:</label>
+                <select
+                  value={isFirstLOT ? "Y" : "N"}
+                  onChange={(e) => setIsFirstLot?.(e.target.value === "Y")}
+                >
+                  <option value="N">Bình thường (Not First LOT)</option>
+                  <option value="Y">First LOT</option>
+                </select>
+              </div>
+            )}
+
+            {/* Hàng 4: Ghi chú */}
+            <div
+              className="precision-ycsx__modalField"
+              style={{ gridColumn: isCMS ? "span 3" : "span 1" }}
+            >
               <label>Ghi chú (REMARK):</label>
               <input
                 type="text"

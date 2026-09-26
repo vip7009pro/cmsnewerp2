@@ -416,14 +416,22 @@ const YCSXManager: React.FC = () => {
         }}
         codeList={ycsx.codeList}
         selectedCode={ycsx.selectedCode}
-        onSelectCode={(code) => {
+        onSelectCode={async (code) => {
           ycsx.setSelectedCode(code);
+          await ycsx.checkAndSetFirstLot(code?.G_CODE);
           ycsx.loadPONO(code?.G_CODE, ycsx.selectedCust_CD?.CUST_CD);
         }}
         newphanloai={ycsx.newphanloai}
         setNewPhanLoai={ycsx.setNewPhanLoai}
         loaisx={ycsx.loaisx}
-        setLoaiSX={ycsx.setLoaiSX}
+        setLoaiSX={(val) => {
+          ycsx.setLoaiSX(val);
+          if (val === "04") {
+            ycsx.setIsFirstLot(false);
+          } else if (ycsx.selectedCode?.G_CODE) {
+            ycsx.checkAndSetFirstLot(ycsx.selectedCode.G_CODE, val);
+          }
+        }}
         loaixh={ycsx.loaixh}
         setLoaiXH={ycsx.setLoaiXH}
         isFirstLOT={ycsx.isFirstLOT}
@@ -466,16 +474,26 @@ const YCSXManager: React.FC = () => {
         }}
         codeList={ycsx.codeList}
         selectedCode={ycsx.selectedCode}
-        onSelectCode={(code) => {
+        onSelectCode={async (code) => {
           ycsx.setSelectedCode(code);
+          await ycsx.checkAndSetFirstLot(code?.G_CODE);
           ycsx.loadPONO(code?.G_CODE, ycsx.selectedCust_CD?.CUST_CD);
         }}
         newphanloai={ycsx.newphanloai}
         setNewPhanLoai={ycsx.setNewPhanLoai}
         loaisx={ycsx.loaisx}
-        setLoaiSX={ycsx.setLoaiSX}
+        setLoaiSX={(val) => {
+          ycsx.setLoaiSX(val);
+          if (val === "04") {
+            ycsx.setIsFirstLot(false);
+          } else if (ycsx.selectedCode?.G_CODE) {
+            ycsx.checkAndSetFirstLot(ycsx.selectedCode.G_CODE, val);
+          }
+        }}
         loaixh={ycsx.loaixh}
         setLoaiXH={ycsx.setLoaiXH}
+        isFirstLOT={ycsx.isFirstLOT}
+        setIsFirstLot={ycsx.setIsFirstLot}
         deliverydate={ycsx.deliverydate}
         setNewDeliveryDate={ycsx.setNewDeliveryDate}
         newycsxqty={ycsx.newycsxqty}

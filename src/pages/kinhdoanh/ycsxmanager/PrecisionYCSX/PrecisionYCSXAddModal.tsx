@@ -396,7 +396,12 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                   <label>Loại SX (CODE_55):</label>
                   <select
                     value={loaisx}
-                    onChange={(e) => setLoaiSX(e.target.value)}
+                    onChange={(e) => {
+                      setLoaiSX(e.target.value);
+                      if (e.target.value === "04") {
+                        setIsFirstLot(false);
+                      }
+                    }}
                   >
                     <option value="01">01 - Thông Thường</option>
                     <option value="02">02 - SDI</option>
@@ -632,7 +637,12 @@ const PrecisionYCSXAddModal: React.FC<Props> = ({
                     <label style={{ fontSize: 10 }}>Loại SX (CODE_55):</label>
                     <select
                       value={loaisx}
-                      onChange={(e) => setLoaiSX(e.target.value)}
+                      onChange={(e) => {
+                        setLoaiSX(e.target.value);
+                        if (e.target.value === "04") {
+                          setIsFirstLot(false);
+                        }
+                      }}
                     >
                       <option value="01">01 - Thông Thường</option>
                       <option value="02">02 - SDI</option>
