@@ -1,20 +1,28 @@
 /* eslint-disable no-loop-func */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { getCompany, getUserData } from "../../../../api/Api";
-import MACHINE_COMPONENT3 from "../Machine/MACHINE_COMPONENT3";
-import EQ_SUMMARY from "./EQ_SUMMARY";
 import { IconButton, TextField } from "@mui/material";
 import "./EQ_STATUS2.scss";
 import { checkBP } from "../../../../api/services/permissionService";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
 import Swal from "sweetalert2";
-import { AiFillCloseCircle, AiFillDelete, AiFillFileAdd, AiFillPlusCircle, AiOutlineSetting } from "react-icons/ai";
+import { AiFillDelete, AiFillFileAdd, AiOutlineSetting } from "react-icons/ai";
 import AGTable from "../../../../components/DataTable/AGTable";
-import CustomDialog from "../../../../components/Dialog/CustomDialog";
-import { EQ_STT, MachineInterface2 } from "../interfaces/khsxInterface";
+import { EQ_STT } from "../interfaces/khsxInterface";
 import { f_addMachine, f_deleteMachine, f_handle_loadEQ_STATUS, f_handle_toggleMachineActiveStatus } from "../utils/khsxUtils";
+import useIsMobile from "../../../../components/Navbar/AccountInfo/useIsMobile";
+import PrecisionEqStatus2MobileHeader from "./PrecisionEqStatus2/PrecisionEqStatus2MobileHeader";
+import PrecisionEqStatus2MobileToolbar from "./PrecisionEqStatus2/PrecisionEqStatus2MobileToolbar";
+import PrecisionEqStatus2MobileKpi from "./PrecisionEqStatus2/PrecisionEqStatus2MobileKpi";
+import PrecisionEqStatus2MobileFilterDrawer from "./PrecisionEqStatus2/PrecisionEqStatus2MobileFilterDrawer";
+import PrecisionEqStatus2MobileContent from "./PrecisionEqStatus2/PrecisionEqStatus2MobileContent";
+import PrecisionEqStatus2DesktopPanel from "./PrecisionEqStatus2/PrecisionEqStatus2DesktopPanel";
+import PrecisionEqStatus2ManagerModal from "./PrecisionEqStatus2/PrecisionEqStatus2ManagerModal";
+import PrecisionEqStatus2AddMachineDialog from "./PrecisionEqStatus2/PrecisionEqStatus2AddMachineDialog";
+
 const EQ_STATUS2 = () => {
+  const isMobile = useIsMobile();
   const theme: any = useSelector((state: RootState) => state.totalSlice.theme);
   const [factory, setFactory] = useState("NM1");
   const [eqCode, setEqCode] = useState("");
@@ -25,85 +33,66 @@ const EQ_STATUS2 = () => {
   const [showAddMachineDialog, setShowAddMachineDialog] = useState(false);
   const selectedMachine = useRef<EQ_STT | null>(null);
 
+  // Mobile filter states
+  const [mobileFactoryFilter, setMobileFactoryFilter] = useState("ALL");
+  const [mobileStatusFilter, setMobileStatusFilter] = useState("ALL");
+  const [mobileActiveFilter, setMobileActiveFilter] = useState("ALL");
+  const [mobileSeriesFilter, setMobileSeriesFilter] = useState("ALL");
+  const [showMobileFilterDrawer, setShowMobileFilterDrawer] = useState(false);
+  const [showMobileKpi, setShowMobileKpi] = useState(true);
+  const [kpiSeries, setKpiSeries] = useState("ALL");
+
+  const [searchString, setSearchString] = useState("");
+  const [eq_status, setEQ_STATUS] = useState<EQ_STT[]>([]);
+  const [eq_status_manager_data, setEQ_STATUS_MANAGER_DATA] = useState<EQ_STT[]>([]);
+  const [eq_series, setEQ_SERIES] = useState<string[]>([]);
+
+  const handle_loadEQ_STATUS = async () => {
+    let eq_data = await f_handle_loadEQ_STATUS();
+    setEQ_STATUS(eq_data.EQ_STATUS);
+    setEQ_SERIES(eq_data.EQ_SERIES);
+  };
+
   const handleAddMachine = async () => {
     let kq = await f_addMachine({
       FACTORY: factory,
       EQ_CODE: eqCode,
       EQ_NAME: eqName,
       EQ_ACTIVE: eqActive,
-      EQ_OP: eqOp      
+      EQ_OP: eqOp,
     });
     if (kq) {
-      Swal.fire({
-        icon: "success",
-        title: "Add machine successfully",
-      });
+      Swal.fire({ icon: "success", title: "Add machine successfully" });
+      handle_loadEQ_STATUS();
     } else {
-      Swal.fire({
-        icon: "error",
-        title: "Add machine failed",
-      });
+      Swal.fire({ icon: "error", title: "Add machine failed" });
     }
-  }
+  };
+
   const handleDeleteMachine = async () => {
-    console.log(selectedMachine.current)
     if (selectedMachine.current) {
-    let kq = await f_deleteMachine({
-      EQ_CODE: selectedMachine.current?.EQ_CODE,
-    });
-    if (kq) {
-      Swal.fire({
-        icon: "success",
-        title: "Delete machine successfully",
-      });
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Delete machine failed",
-      });
+      let kq = await f_deleteMachine({ EQ_CODE: selectedMachine.current?.EQ_CODE });
+      if (kq) {
+        Swal.fire({ icon: "success", title: "Delete machine successfully" });
+        handle_loadEQ_STATUS();
+      } else {
+        Swal.fire({ icon: "error", title: "Delete machine failed" });
       }
     } else {
-      Swal.fire({
-        icon: "error",
-        title: "No machine selected",
-      });
+      Swal.fire({ icon: "error", title: "No machine selected" });
     }
-  }
-  const openDialogAddMachine = () => {
-    setShowAddMachineDialog(true);
-  }
-  const closeDialogAddMachine = () => {
-    setShowAddMachineDialog(false);
-  }
-  const openDialogEQManager = () => {
-    setShowHideEQManager(true);
-  }
-  const closeDialogEQManager = () => {
-    setShowHideEQManager(false);
-  }
-  const [searchString, setSearchString] = useState("");
-  const [eq_status, setEQ_STATUS] = useState<EQ_STT[]>([]);
-  const [eq_status_manager_data, setEQ_STATUS_MANAGER_DATA] = useState<EQ_STT[]>([]);
-  const [eq_series, setEQ_SERIES] = useState<string[]>([]);
-  const handle_loadEQ_STATUS = async () => {
-    let eq_data = await f_handle_loadEQ_STATUS();
-    setEQ_STATUS(eq_data.EQ_STATUS);
-    setEQ_SERIES(eq_data.EQ_SERIES);
   };
+
   const handleToggleMachineActiveStatus = async (EQ_CODE: string, EQ_ACTIVE: string) => {
     let kq = await f_handle_toggleMachineActiveStatus(EQ_CODE, EQ_ACTIVE);
     if (kq) {
-      Swal.fire({
-        icon: "success",
-        title: "Toggle machine active status successfully",
-      });
+      Swal.fire({ icon: "success", title: "Toggle machine active status successfully" });
+      handle_loadEQ_STATUS();
     } else {
-      Swal.fire({
-        icon: "error",
-        title: "Toggle machine active status failed",
-      });
+      Swal.fire({ icon: "error", title: "Toggle machine active status failed" });
     }
-  }
+  };
+
   const column_eq_status = [
     { field: "EQ_CODE", headerName: "EQ_CODE", width: 80, checkboxSelection: true, headerCheckboxSelection: true },
     { field: "FACTORY", headerName: "FACTORY", width: 80 },
@@ -111,15 +100,10 @@ const EQ_STATUS2 = () => {
     { field: "EQ_SERIES", headerName: "EQ_SERIES", width: 80 },
     {
       field: "EQ_ACTIVE", headerName: "EQ_ACTIVE", width: 80, cellStyle: (params: any) => {
-        if (params.data.EQ_ACTIVE === 'OK') {
-          return { backgroundColor: '#77da41', color: 'black' };
-        }
-        else if (params.data.EQ_ACTIVE === 'NG') {
-          return { backgroundColor: '#ff0000', color: 'white' };
-        }
-      }
+        if (params.data.EQ_ACTIVE === "OK") return { backgroundColor: "#77da41", color: "black" };
+        if (params.data.EQ_ACTIVE === "NG") return { backgroundColor: "#ff0000", color: "white" };
+      },
     },
-    
     { field: "EQ_OP", headerName: "EQ_OP", width: 80 },
     { field: "EQ_STATUS", headerName: "EQ_STATUS", width: 80 },
     { field: "CURR_PLAN_ID", headerName: "CURR_PLAN_ID", width: 80 },
@@ -128,7 +112,8 @@ const EQ_STATUS2 = () => {
     { field: "INS_DATE", headerName: "INS_DATE", width: 80 },
     { field: "UPD_EMPL", headerName: "UPD_EMPL", width: 80 },
     { field: "UPD_DATE", headerName: "UPD_DATE", width: 80 },
-  ]
+  ];
+
   const eq_data_table = useMemo(() => {
     return (
       <AGTable
@@ -139,35 +124,31 @@ const EQ_STATUS2 = () => {
               className="buttonIcon"
               onClick={() => {
                 checkBP(getUserData(), ["SX", "QLSX"], ["Leader", "Manager"], ["ALL"], async () => {
-                 
-                      openDialogAddMachine();
-                    
-                  
-                })
+                  setShowAddMachineDialog(true);
+                });
               }}
             >
               <AiFillFileAdd color="#3741d3" size={15} />
               Add
             </IconButton>
-
             <IconButton
               className="buttonIcon"
               onClick={() => {
                 checkBP(getUserData(), ["SX", "QLSX"], ["Leader", "Manager"], ["ALL"], async () => {
                   Swal.fire({
-                    title: 'Are you sure?',
+                    title: "Are you sure?",
                     text: "You won't be able to revert this!",
-                    icon: 'warning',
+                    icon: "warning",
                     showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!",
                   }).then((result) => {
                     if (result.isConfirmed) {
                       handleDeleteMachine();
                     }
-                  })
-                })
+                  });
+                });
               }}
             >
               <AiFillDelete color="#fb0000" size={15} />
@@ -177,101 +158,55 @@ const EQ_STATUS2 = () => {
         }
         data={eq_status_manager_data}
         columns={column_eq_status}
-        onSelectionChange={(e: any) => {
-          
-        }}  
+        onSelectionChange={() => {}}
         onRowClick={(e: any) => {
-          console.log(e)
           selectedMachine.current = e.data;
         }}
       />
-    )
-  }, [eq_status_manager_data])
-
-  const renderFactoryPanel = (factoryCode: string) => {
-    const eqDataByFactory = eq_status.filter(
-      (element: EQ_STT) => element.FACTORY === factoryCode,
     );
+  }, [eq_status_manager_data]);
 
-    return (
-      <section className="eqs_panel">
-        <div className="eqs_panel__header">
-          <div className="eqs_panel__title">
-            <span className="eqs_panel__factory">{factoryCode}</span>
-            <span className="eqs_panel__count">{eqDataByFactory.length} machines</span>
-          </div>
-          <div className="eqs_panel__summary">
-            <EQ_SUMMARY EQ_DATA={eqDataByFactory} />
-          </div>
-        </div>
+  const filteredMobileMachines = useMemo(() => {
+    return eq_status.filter((m) => {
+      if (mobileFactoryFilter !== "ALL" && m.FACTORY !== mobileFactoryFilter) return false;
+      if (mobileStatusFilter !== "ALL" && m.EQ_STATUS !== mobileStatusFilter) return false;
+      if (mobileActiveFilter !== "ALL" && m.EQ_ACTIVE !== mobileActiveFilter) return false;
+      if (mobileSeriesFilter !== "ALL" && m.EQ_NAME?.substring(0, 2) !== mobileSeriesFilter) return false;
+      if (searchString.trim() !== "") {
+        const kw = searchString.toLowerCase();
+        const matchName = m.EQ_NAME?.toLowerCase().includes(kw);
+        const matchCode = m.EQ_CODE?.toLowerCase().includes(kw);
+        const matchPlan = m.CURR_PLAN_ID?.toLowerCase().includes(kw);
+        const matchGName = m.G_NAME_KD?.toLowerCase().includes(kw);
+        if (!matchName && !matchCode && !matchPlan && !matchGName) return false;
+      }
+      return true;
+    });
+  }, [eq_status, mobileFactoryFilter, mobileStatusFilter, mobileActiveFilter, mobileSeriesFilter, searchString]);
 
-        <div className="eqs_panel__body">
-          {eq_series.map((ele_series: string, index: number) => {
-            const seriesMachines = eq_status.filter(
-              (element: EQ_STT) =>
-                element.FACTORY === factoryCode &&
-                element?.EQ_NAME?.substring(0, 2) === ele_series,
-            );
-            if (seriesMachines.length === 0) return null;
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (mobileFactoryFilter !== "ALL") count++;
+    if (mobileStatusFilter !== "ALL") count++;
+    if (mobileActiveFilter !== "ALL") count++;
+    if (mobileSeriesFilter !== "ALL") count++;
+    if (searchString.trim() !== "") count++;
+    return count;
+  }, [mobileFactoryFilter, mobileStatusFilter, mobileActiveFilter, mobileSeriesFilter, searchString]);
 
-            const runningCount = seriesMachines.filter(
-              (m) => m.EQ_STATUS === "MASS",
-            ).length;
-            const settingCount = seriesMachines.filter(
-              (m) => m.EQ_STATUS === "SETTING",
-            ).length;
-            const stopCount = seriesMachines.filter((m) => m.EQ_STATUS === "STOP").length;
+  const handleResetAllFilters = useCallback(() => {
+    setMobileFactoryFilter("ALL");
+    setMobileStatusFilter("ALL");
+    setMobileActiveFilter("ALL");
+    setMobileSeriesFilter("ALL");
+    setSearchString("");
+  }, []);
 
-            return (
-              <div className="eqs_series" key={factoryCode + ele_series + index}>
-                <div className="eqs_series__header">
-                  <div className="eqs_series__name">{ele_series}</div>
-                  <div className="eqs_series__meta">
-                    <span className="eqs_badge eqs_badge--success">RUN {runningCount}</span>
-                    <span className="eqs_badge eqs_badge--warning">SET {settingCount}</span>
-                    <span className="eqs_badge eqs_badge--danger">STOP {stopCount}</span>
-                  </div>
-                </div>
-                <div className="eqs_series__grid">
-                  {seriesMachines.map((element: EQ_STT, idx: number) => {
-                    return (
-                      <MACHINE_COMPONENT3
-                        search_string={searchString}
-                        key={element.EQ_CODE ?? idx}
-                        factory={element.FACTORY}
-                        machine_name={element.EQ_NAME}
-                        eq_status={element.EQ_STATUS}
-                        current_g_name={element.G_NAME_KD}
-                        current_plan_id={element.CURR_PLAN_ID}
-                        current_step={element.STEP}
-                        run_stop={element.EQ_ACTIVE === "OK" ? 1 : 0}
-                        upd_time={element.UPD_DATE}
-                        upd_empl={element.UPD_EMPL}
-                        machine_data={element}
-                        eq_active={element.EQ_ACTIVE}
-                        eq_code={element.EQ_CODE}
-                        onClick={() => { }}
-                        onMouseEnter={() => { }}
-                        onMouseLeave={() => { }}
-                        onDoubleClick={(e: any) => {
-                          console.log(e)
-                          if (e.eq_active === "OK") {
-                            handleToggleMachineActiveStatus(e.eq_code ?? "", "NG");
-                          }
-                          else {
-                            handleToggleMachineActiveStatus(e.eq_code ?? "", "OK");
-                          }
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-    );
+  const openDialogEQManager = () => {
+    checkBP(getUserData(), ["SX", "QLSX"], ["Leader", "Manager"], ["ALL"], async () => {
+      setEQ_STATUS_MANAGER_DATA(eq_status);
+      setShowHideEQManager(true);
+    });
   };
 
   useEffect(() => {
@@ -283,152 +218,147 @@ const EQ_STATUS2 = () => {
       window.clearInterval(intervalID);
     };
   }, []);
-  return (
-    <div className="eq_status2">
-      <div className="eqs_header">
-        <div className="eqs_header__left">
-          <div className="eqs_header__title">Equipment Status</div>
-          <div className="eqs_header__subtitle">Realtime overview (auto refresh 3s)</div>
-        </div>
-        <div className="eqs_header__right">
-          <TextField
-            size="small"
-            label="Search plan / G-name"
-            value={searchString}
-            onChange={(e: any) => {
-              setSearchString(e.target.value);
-            }}
-          />
-          {getUserData()?.EMPL_NO === "NHU1903" && (
-            <IconButton
-              className="buttonIcon"
-              onClick={() => {
-                checkBP(getUserData(), ["SX", "QLSX"], ["Leader", "Manager"], ["ALL"], async () => {
-                  setEQ_STATUS_MANAGER_DATA(eq_status);
-                  openDialogEQManager();
-                })
-              }}
-            >
-              <AiOutlineSetting color="#0b8a4a" size={15} />
-              EQ Manager
-            </IconButton>
-          )}
-        </div>
-      </div>
 
-      <div className="eqs_content">
-        {renderFactoryPanel("NM1")}
-        {getCompany() === "CMS" && renderFactoryPanel("NM2")}
-      </div>
-      {showHideEQManager &&
-        <div className="eq_manager_overlay" onMouseDown={closeDialogEQManager}>
-          <div className="eq_manager" onMouseDown={(e: any) => e.stopPropagation()}>
-            <div className="eq_manager_title">
-              <span>EQ Manager</span>
-              <IconButton
-                className="buttonIcon"
-                onClick={closeDialogEQManager}
-              >
-                <AiFillCloseCircle color="blue" size={15} />
-                Close
-              </IconButton>
+  const mobileVisibleFactories = useMemo(() => {
+    if (mobileFactoryFilter !== "ALL") return [mobileFactoryFilter];
+    return getCompany() === "CMS" ? ["NM1", "NM2"] : ["NM1"];
+  }, [mobileFactoryFilter]);
+
+  return (
+    <div className={`eq_status2 ${isMobile ? "is-mobile" : ""}`}>
+      {/* 1. GIAO DIỆN DESKTOP (BẢO TOÀN NGUYÊN VẸN 100%) */}
+      {!isMobile && (
+        <>
+          <div className="eqs_header">
+            <div className="eqs_header__left">
+              <div className="eqs_header__title">Equipment Status</div>
+              <div className="eqs_header__subtitle">Realtime overview (auto refresh 3s)</div>
             </div>
-            <div className="eq_manager_content">{eq_data_table}</div>
+            <div className="eqs_header__right">
+              <TextField
+                size="small"
+                label="Search plan / G-name"
+                value={searchString}
+                onChange={(e: any) => setSearchString(e.target.value)}
+              />
+              {getUserData()?.EMPL_NO === "NHU1903" && (
+                <IconButton className="buttonIcon" onClick={openDialogEQManager}>
+                  <AiOutlineSetting color="#0b8a4a" size={15} />
+                  EQ Manager
+                </IconButton>
+              )}
+            </div>
           </div>
-        </div>}
-      <CustomDialog
+
+          <div className="eqs_content">
+            <PrecisionEqStatus2DesktopPanel
+              factoryCode="NM1"
+              eq_status={eq_status}
+              eq_series={eq_series}
+              searchString={searchString}
+              onToggleStatus={handleToggleMachineActiveStatus}
+            />
+            {getCompany() === "CMS" && (
+              <PrecisionEqStatus2DesktopPanel
+                factoryCode="NM2"
+                eq_status={eq_status}
+                eq_series={eq_series}
+                searchString={searchString}
+                onToggleStatus={handleToggleMachineActiveStatus}
+              />
+            )}
+          </div>
+        </>
+      )}
+
+      {/* 2. GIAO DIỆN MOBILE TỐI ƯU CÔNG THÁI HỌC & ZERO BLUR */}
+      {isMobile && (
+        <>
+          <PrecisionEqStatus2MobileHeader
+            totalMachines={eq_status.length}
+            filteredCount={filteredMobileMachines.length}
+            showKpi={showMobileKpi}
+            onToggleKpi={() => setShowMobileKpi((prev) => !prev)}
+            canManage={getUserData()?.EMPL_NO === "NHU1903"}
+            onOpenEQManager={openDialogEQManager}
+          />
+
+          {showMobileKpi && (
+            <PrecisionEqStatus2MobileKpi
+              data={filteredMobileMachines}
+              seriesList={eq_series}
+              selectedSeries={kpiSeries}
+              onSelectSeries={setKpiSeries}
+            />
+          )}
+
+          <PrecisionEqStatus2MobileToolbar
+            searchString={searchString}
+            onSearchChange={setSearchString}
+            onClearSearch={() => setSearchString("")}
+            factoryFilter={mobileFactoryFilter}
+            onFactoryChange={setMobileFactoryFilter}
+            isCmsCompany={getCompany() === "CMS"}
+            statusFilter={mobileStatusFilter}
+            onStatusFilterChange={setMobileStatusFilter}
+            activeFilter={mobileActiveFilter}
+            onActiveFilterChange={setMobileActiveFilter}
+            activeFilterCount={activeFilterCount}
+            onOpenFilterDrawer={() => setShowMobileFilterDrawer(true)}
+            onResetAllFilters={handleResetAllFilters}
+          />
+
+          <PrecisionEqStatus2MobileContent
+            filteredMobileMachines={filteredMobileMachines}
+            mobileVisibleFactories={mobileVisibleFactories}
+            eq_series={eq_series}
+            searchString={searchString}
+            onToggleStatus={handleToggleMachineActiveStatus}
+          />
+
+          <PrecisionEqStatus2MobileFilterDrawer
+            isOpen={showMobileFilterDrawer}
+            onClose={() => setShowMobileFilterDrawer(false)}
+            factoryFilter={mobileFactoryFilter}
+            setFactoryFilter={setMobileFactoryFilter}
+            isCmsCompany={getCompany() === "CMS"}
+            seriesFilter={mobileSeriesFilter}
+            setSeriesFilter={setMobileSeriesFilter}
+            seriesList={eq_series}
+            statusFilter={mobileStatusFilter}
+            setStatusFilter={setMobileStatusFilter}
+            activeFilter={mobileActiveFilter}
+            setActiveFilter={setMobileActiveFilter}
+            onApply={() => {}}
+            onReset={handleResetAllFilters}
+          />
+        </>
+      )}
+
+      {/* 3. DIALOGS QUẢN LÝ (EQ MANAGER & ADD MACHINE) */}
+      <PrecisionEqStatus2ManagerModal
+        isOpen={showHideEQManager}
+        onClose={() => setShowHideEQManager(false)}
+        dataTable={eq_data_table}
+      />
+
+      <PrecisionEqStatus2AddMachineDialog
         isOpen={showAddMachineDialog}
-        onClose={closeDialogAddMachine}
-        title="Add machine"
-        content={<div>
-          <form style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <label htmlFor="factory" style={{ marginBottom: '5px' }}>Factory:</label>
-              <select
-                id="factory"
-                name="factory"
-                value={factory}
-                onChange={(e: any) => setFactory(e.target.value)}
-                style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
-              >
-                <option value="NM1">NM1</option>
-                <option value="NM2">NM2</option>
-              </select>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <label htmlFor="eq_code" style={{ marginBottom: '5px' }}>EQ Code:</label>
-              <input
-                type="text"
-                id="eq_code"
-                name="eq_code"
-                value={eqCode}
-                onChange={(e: any) => setEqCode(e.target.value)}
-                style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
-              />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <label htmlFor="eq_name" style={{ marginBottom: '5px' }}>EQ Name:</label>
-              <input
-                type="text"
-                id="eq_name"
-                name="eq_name"
-                value={eqName}
-                onChange={(e: any) => setEqName(e.target.value)}
-                style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
-              />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <label htmlFor="eq_op" style={{ marginBottom: '5px' }}>EQ OP:</label>
-              <input
-                type="text"
-                id="eq_op"
-                name="eq_op"
-                value={eqOp}
-                onChange={(e: any) => setEqOp(parseInt(e.target.value))}
-                style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
-              />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <label htmlFor="eq_active" style={{ marginBottom: '5px' }}>EQ Active:</label>
-              <select
-                id="eq_active"
-                name="eq_active"
-                value={eqActive}
-                onChange={(e: any) => setEqActive(e.target.value)}
-                style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
-              >
-                <option value="OK">OK</option>
-                <option value="NG">NG</option>
-              </select>
-            </div>
-          </form>
-        </div>}
-        actions={<>
-          <IconButton
-            className="buttonIcon"
-            onClick={()=> {
-              Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',    
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, add it!'
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  handleAddMachine();
-                  closeDialogAddMachine();
-                }
-              })
-            }}
-          >
-            <AiFillPlusCircle color="green" size={15} />
-            Add Machine
-          </IconButton>
-        </>}
+        onClose={() => setShowAddMachineDialog(false)}
+        factory={factory}
+        setFactory={setFactory}
+        eqCode={eqCode}
+        setEqCode={setEqCode}
+        eqName={eqName}
+        setEqName={setEqName}
+        eqOp={eqOp}
+        setEqOp={setEqOp}
+        eqActive={eqActive}
+        setEqActive={setEqActive}
+        onAddMachine={handleAddMachine}
       />
     </div>
   );
 };
+
 export default EQ_STATUS2;
