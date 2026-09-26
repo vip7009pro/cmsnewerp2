@@ -227,6 +227,11 @@ const CODE_MANAGER: React.FC = () => {
     };
   }, [showPivotModal, filteredRows]);
 
+  // 6.1 Định danh duy nhất cho từng dòng trong bảng theo mã G_CODE (chống nhầm dòng và stale DOM cell)
+  const getRowId = useCallback((params: any) => {
+    return params.data?.G_CODE ? String(params.data.G_CODE) : String(params.data?.id ?? params.node?.rowIndex);
+  }, []);
+
   return (
     <div className={`precision-code-manager ${isMobile ? "is-mobile" : ""}`}>
       {/* 1. SUB-HEADER BANNER (CHỈ RENDER TRÊN DESKTOP) */}
@@ -272,6 +277,7 @@ const CODE_MANAGER: React.FC = () => {
           columns={gridColumns}
           data={filteredRows}
           showFilter={true}
+          getRowId={getRowId}
           onSelectionChange={(params: any) => {
             setSelectedRows(params?.api?.getSelectedRows() || []);
           }}

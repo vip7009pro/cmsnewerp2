@@ -42,7 +42,7 @@ import { requestChangelogPopup } from "../../components/Changelog/changelogEvent
 // react-icons/md bị NavMenuCMS/NHATHAN/PVN dùng kèm `Object.keys()` (menuIconCatalog) nên
 // Rollup phải giữ TOÀN BỘ bộ icon => 1.943 KB. Thay bằng MUI icon (tree-shake đúng).
 import { Link } from "react-router-dom";
-export const current_ver: number = getCompany() === "CMS" ? 2810 : 438;
+export const current_ver: number = getCompany() === "CMS" ? 2811 : 438;
 interface ELE_ARRAY {
   REACT_ELE: any;
   ELE_NAME: string;

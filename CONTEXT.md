@@ -1,5 +1,14 @@
 # ERP Context & Status
 
+## Update - 2026-09-26 (R&D / CODE_MANAGER: Khắc Phục Lỗi Nhảy Sai Link Bản Vẽ & Chống Cache Trình Duyệt)
+- **Vấn đề đã xử lý**: Khi xem bản vẽ của sản phẩm A rồi bấm xem bản vẽ sản phẩm B, hệ thống bị giữ lại link của sản phẩm A do AG-Grid tái sử dụng row DOM (do API map `id: index` dẫn đến trùng ID `0` khi query riêng lẻ) và trình duyệt lưu cache file PDF cũ.
+- **Các thành phần được cập nhật**:
+  * [CODE_MANAGER.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/code_manager/CODE_MANAGER.tsx): Bổ sung `getRowId` gắn định danh duy nhất theo `G_CODE` cho từng dòng trên `AGTable`, loại bỏ hoàn toàn việc AG-Grid tái sử dụng DOM cell khi đổi mã sản phẩm.
+  * [PrecisionCodeManagerColumns.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/code_manager/PrecisionCodeManager/PrecisionCodeManagerColumns.tsx):
+    - Xây dựng component độc lập `BanVeCellRenderer`, `GCodeCellRenderer`, `AppSheetCellRenderer` quản lý state URL riêng biệt theo từng dòng và đồng bộ khi `G_CODE` thay đổi.
+    - Thêm helper `getBanVeUrl` và `getAppSheetUrl` tự động chèn tham số giả ngẫu nhiên `?v=${timestamp}_${randomSalt}` (`Date.now() + Math.random()`) vào mỗi lần render và mỗi lần click chuột.
+    - Hàm xử lý `onClick` mở tab mới bằng `window.open` với URL ngẫu nhiên tạo mới tức thì tại thời điểm click, đồng thời thẻ `<a>` vẫn có thuộc tính `href` chính xác, đảm bảo 100% không bị cache bởi trình duyệt hay proxy.
+
 ## Update - 2026-09-26 (KD / YCSXManager: Tự Động Kiểm Tra & Chọn FIRST LOT Cho Modal Thêm/Sửa YCSX)
 - **Vấn đề đã xử lý**: Khôi phục đầy đủ logic kiểm tra hàng FIRST LOT tự động từ bản gốc [YCSXManager.backup.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/YCSXManager.backup.tsx).
 - **Các thành phần được cập nhật**:

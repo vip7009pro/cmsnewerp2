@@ -1,6 +1,6 @@
 // PrecisionCodeManagerColumns.tsx - AG-Grid Column Definitions with Stitch Industrial Cell Renderers
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { FiDownload, FiFileText } from "react-icons/fi";
 import { CODE_FULL_INFO } from "../../interfaces/rndInterface";
@@ -10,6 +10,182 @@ interface GetColumnsParams {
   onUploadBanVe: (file: File, row: CODE_FULL_INFO) => void;
   onUploadAppSheet: (file: File, row: CODE_FULL_INFO) => void;
 }
+
+// Helper tạo URL bản vẽ với tham số giả ngẫu nhiên chống cache trình duyệt
+export const getBanVeUrl = (gCode: string) => {
+  if (!gCode) return "";
+  const timestamp = Date.now();
+  const randomSalt = Math.random().toString(36).substring(2, 8);
+  return `/banve/${encodeURIComponent(gCode)}.pdf?v=${timestamp}_${randomSalt}`;
+};
+
+// Helper tạo URL AppSheet với tham số giả ngẫu nhiên chống cache
+export const getAppSheetUrl = (gCode: string) => {
+  if (!gCode) return "";
+  const timestamp = Date.now();
+  const randomSalt = Math.random().toString(36).substring(2, 8);
+  return `/appsheet/Appsheet_${encodeURIComponent(gCode)}.docx?v=${timestamp}_${randomSalt}`;
+};
+
+// Cell Renderer chuyên dụng cho cột G_CODE (Link xem bản vẽ)
+const GCodeCellRenderer: React.FC<any> = (params: any) => {
+  const gCode = params.data?.G_CODE;
+  const [url, setUrl] = useState<string>(() => (gCode ? getBanVeUrl(gCode) : ""));
+
+  useEffect(() => {
+    if (gCode) {
+      setUrl(getBanVeUrl(gCode));
+    } else {
+      setUrl("");
+    }
+  }, [gCode]);
+
+  if (!gCode) return null;
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const freshUrl = getBanVeUrl(gCode);
+    setUrl(freshUrl);
+    window.open(freshUrl, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <a
+      className="cell-code-link"
+      href={url || getBanVeUrl(gCode)}
+      onClick={handleClick}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={`Xem bản vẽ ${gCode}`}
+    >
+      {gCode}
+    </a>
+  );
+};
+
+// Cell Renderer chuyên dụng cho cột BẢN VẼ (Nút xem/tải CAD và nút Upload)
+const BanVeCellRenderer: React.FC<any> = (params: any) => {
+  const row: CODE_FULL_INFO = params.data;
+  const gCode = row?.G_CODE;
+  const banVeStatus = row?.BANVE;
+  const onUploadBanVe = params.colDef?.cellRendererParams?.onUploadBanVe ?? params.onUploadBanVe;
+
+  const [banVeUrl, setBanVeUrl] = useState<string>(() => (gCode ? getBanVeUrl(gCode) : ""));
+
+  useEffect(() => {
+    if (gCode) {
+      setBanVeUrl(getBanVeUrl(gCode));
+    } else {
+      setBanVeUrl("");
+    }
+  }, [gCode, banVeStatus]);
+
+  if (!gCode) return null;
+
+  if (banVeStatus && banVeStatus !== "N") {
+    const handleOpen = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const freshUrl = getBanVeUrl(gCode);
+      setBanVeUrl(freshUrl);
+      window.open(freshUrl, "_blank", "noopener,noreferrer");
+    };
+
+    return (
+      <a
+        className="cell-btn-download"
+        href={banVeUrl || getBanVeUrl(gCode)}
+        onClick={handleOpen}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={`Xem / Tải bản vẽ CAD PDF của sản phẩm ${gCode}`}
+      >
+        <FiDownload size={11} />
+        <span>Tải CAD</span>
+      </a>
+    );
+  }
+
+  return (
+    <label className="cell-btn-upload" title={`Upload bản vẽ PDF cho ${gCode}`}>
+      <AiOutlineCloudUpload size={13} />
+      <span>Upload</span>
+      <input
+        type="file"
+        accept=".pdf"
+        style={{ display: "none" }}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          if (e.target.files?.[0] && onUploadBanVe) {
+            onUploadBanVe(e.target.files[0], row);
+          }
+        }}
+      />
+    </label>
+  );
+};
+
+// Cell Renderer chuyên dụng cho cột APPSHEET
+const AppSheetCellRenderer: React.FC<any> = (params: any) => {
+  const row: CODE_FULL_INFO = params.data;
+  const gCode = row?.G_CODE;
+  const appsheetStatus = row?.APPSHEET;
+  const onUploadAppSheet = params.colDef?.cellRendererParams?.onUploadAppSheet ?? params.onUploadAppSheet;
+
+  const [url, setUrl] = useState<string>(() => (gCode ? getAppSheetUrl(gCode) : ""));
+
+  useEffect(() => {
+    if (gCode) {
+      setUrl(getAppSheetUrl(gCode));
+    } else {
+      setUrl("");
+    }
+  }, [gCode, appsheetStatus]);
+
+  if (!gCode) return null;
+
+  if (appsheetStatus && appsheetStatus !== "N") {
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const freshUrl = getAppSheetUrl(gCode);
+      setUrl(freshUrl);
+      window.open(freshUrl, "_blank", "noopener,noreferrer");
+    };
+
+    return (
+      <a
+        className="cell-btn-download"
+        style={{ backgroundColor: "#f0fdf4", color: "#16a34a", borderColor: "#bbf7d0" }}
+        href={url || getAppSheetUrl(gCode)}
+        onClick={handleClick}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={`Tải tệp AppSheet docx của sản phẩm ${gCode}`}
+      >
+        <FiFileText size={11} />
+        <span>AppSheet</span>
+      </a>
+    );
+  }
+
+  return (
+    <label className="cell-btn-upload" title={`Upload tệp AppSheet docx cho ${gCode}`}>
+      <AiOutlineCloudUpload size={13} />
+      <span>Upload</span>
+      <input
+        type="file"
+        accept=".docx"
+        style={{ display: "none" }}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          if (e.target.files?.[0] && onUploadAppSheet) {
+            onUploadAppSheet(e.target.files[0], row);
+          }
+        }}
+      />
+    </label>
+  );
+};
 
 // Helper render cell trạng thái NG/Value
 const renderNgCell = (params: any, fieldName: string) => {
@@ -41,21 +217,7 @@ export const getCodeManagerColumns = ({
       width: 95,
       editable: enableEdit,
       pinned: "left",
-      cellRenderer: (params: any) => {
-        const gCode = params.data?.G_CODE;
-        if (!gCode) return null;
-        return (
-          <a
-            className="cell-code-link"
-            href={`/banve/${gCode}.pdf`}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={`Xem bản vẽ ${gCode}`}
-          >
-            {gCode}
-          </a>
-        );
-      },
+      cellRenderer: GCodeCellRenderer,
     },
     {
       field: "G_NAME",
@@ -174,79 +336,18 @@ export const getCodeManagerColumns = ({
       field: "BANVE",
       headerName: "BẢN VẼ",
       width: 125,
-      cellRenderer: (params: any) => {
-        const row = params.data;
-        if (row?.BANVE && row.BANVE !== "N") {
-          return (
-            <a
-              className="cell-btn-download"
-              href={`/banve/${row.G_CODE}.pdf`}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Tải bản vẽ CAD / PDF"
-            >
-              <FiDownload size={11} />
-              <span>Tải CAD</span>
-            </a>
-          );
-        }
-
-        return (
-          <label className="cell-btn-upload" title="Upload bản vẽ PDF">
-            <AiOutlineCloudUpload size={13} />
-            <span>Upload</span>
-            <input
-              type="file"
-              accept=".pdf"
-              style={{ display: "none" }}
-              onChange={(e: any) => {
-                if (e.target.files?.[0]) {
-                  onUploadBanVe(e.target.files[0], row);
-                }
-              }}
-            />
-          </label>
-        );
+      cellRenderer: BanVeCellRenderer,
+      cellRendererParams: {
+        onUploadBanVe,
       },
     },
     {
       field: "APPSHEET",
       headerName: "APPSHEET",
       width: 125,
-      cellRenderer: (params: any) => {
-        const row = params.data;
-        if (row?.APPSHEET && row.APPSHEET !== "N") {
-          return (
-            <a
-              className="cell-btn-download"
-              style={{ backgroundColor: "#f0fdf4", color: "#16a34a", borderColor: "#bbf7d0" }}
-              href={`/appsheet/Appsheet_${row.G_CODE}.docx`}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Tải tệp AppSheet docx"
-            >
-              <FiFileText size={11} />
-              <span>AppSheet</span>
-            </a>
-          );
-        }
-
-        return (
-          <label className="cell-btn-upload" title="Upload tệp AppSheet docx">
-            <AiOutlineCloudUpload size={13} />
-            <span>Upload</span>
-            <input
-              type="file"
-              accept=".docx"
-              style={{ display: "none" }}
-              onChange={(e: any) => {
-                if (e.target.files?.[0]) {
-                  onUploadAppSheet(e.target.files[0], row);
-                }
-              }}
-            />
-          </label>
-        );
+      cellRenderer: AppSheetCellRenderer,
+      cellRendererParams: {
+        onUploadAppSheet,
       },
     },
     {
