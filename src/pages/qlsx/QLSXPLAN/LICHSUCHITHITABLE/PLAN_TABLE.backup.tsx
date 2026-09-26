@@ -1,19 +1,15 @@
-import React, { useMemo, useCallback, useEffect, useState } from "react";
+import React, { useMemo, useCallback, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "./PrecisionPlanDataTb/PrecisionPlanDataTb.scss";
-import useIsMobile from "../../../../components/Navbar/AccountInfo/useIsMobile";
 import { usePlanDataTbOldData } from "./PrecisionPlanDataTb/usePlanDataTbOldData";
 import { getPlanDataTableColumns } from "./PrecisionPlanDataTb/PrecisionPlanDataTbColumns";
 import { PrecisionPlanDataTbHeader } from "./PrecisionPlanDataTb/PrecisionPlanDataTbHeader";
 import { PrecisionPlanDataTbToolbar } from "./PrecisionPlanDataTb/PrecisionPlanDataTbToolbar";
 import { PrecisionPlanDataTbDangKyLieuModal } from "./PrecisionPlanDataTb/PrecisionPlanDataTbDangKyLieuModal";
 import { PrecisionPlanDataTbPrintModals } from "./PrecisionPlanDataTb/PrecisionPlanDataTbPrintModals";
-import { PrecisionPlanDataTbMobileFilterDrawer } from "./PrecisionPlanDataTb/PrecisionPlanDataTbMobileFilterDrawer";
 
 const PLAN_TABLE = () => {
-  const isMobile = useIsMobile();
-  const [showMobileFilterDrawer, setShowMobileFilterDrawer] = useState<boolean>(false);
-  const [selectedRowCount, setSelectedRowCount] = useState<number>(0);
+  const [selectedRowCount, setSelectedRowCount] = React.useState(0);
   const {
     userData,
     myComponentRef,
@@ -123,7 +119,7 @@ const PLAN_TABLE = () => {
   }, [clearSelectedMaterialRows, setShowHideM, showhideM]);
 
   return (
-    <div className={`precision-plandatatb${actionLoading ? " is-action-loading" : ""}${isMobile ? " is-mobile" : ""}`}>
+    <div className={`precision-plandatatb${actionLoading ? " is-action-loading" : ""}`}>
       {actionLoading && (
         <div className="precision-plandatatb__action-overlay" role="status" aria-live="polite">
           <span className="precision-plandatatb__action-spinner" />
@@ -141,7 +137,6 @@ const PLAN_TABLE = () => {
         plandatatable={plandatatable}
         summarydata={summarydata}
         fromdate={fromdate}
-        isMobile={isMobile}
       />
 
       {/* 2. Filter & Action Toolbar */}
@@ -167,8 +162,6 @@ const PLAN_TABLE = () => {
         onPrintChiThi={handlePrintChiThi}
         onPrintChiThiCombo={handlePrintChiThiCombo}
         onPrintBanVe={handlePrintBanVe}
-        isMobile={isMobile}
-        onOpenFilterDrawer={() => setShowMobileFilterDrawer(true)}
       />
 
       {/* 3. Main Data Grid */}
@@ -258,25 +251,6 @@ const PLAN_TABLE = () => {
         setChiThiListRender2={setChiThiListRender2}
         setYCSXListRender={setYCSXListRender}
       />
-
-      {/* 6. Mobile Drawer Bottom Sheet: Lọc Nâng Cao & Move Plan */}
-      {isMobile && (
-        <PrecisionPlanDataTbMobileFilterDrawer
-          isOpen={showMobileFilterDrawer}
-          onClose={() => setShowMobileFilterDrawer(false)}
-          fromdate={fromdate}
-          setFromDate={setFromDate}
-          todate={todate}
-          setToDate={setToDate}
-          factory={factory}
-          setFactory={setFactory}
-          machine={machine}
-          setMachine={setMachine}
-          machine_list={machine_list}
-          onTraPlan={() => loadQLSXPlan(fromdate)}
-          onMovePlan={handleConfirmMovePlan}
-        />
-      )}
     </div>
   );
 };

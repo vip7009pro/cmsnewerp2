@@ -6,13 +6,48 @@ interface PrecisionPlanDataTbHeaderProps {
   plandatatable: QLSXPLANDATA[];
   summarydata: QLSXPLANDATA;
   fromdate: string;
+  isMobile?: boolean;
 }
 
 export const PrecisionPlanDataTbHeader: React.FC<PrecisionPlanDataTbHeaderProps> = ({
   plandatatable,
   summarydata,
   fromdate,
+  isMobile = false,
 }) => {
+  if (isMobile) {
+    return (
+      <div className="precision-plandatatb__header is-mobile">
+        <div className="header-mobile-brand">
+          <AiOutlineSchedule className="title-icon-sm" />
+          <span className="title-text-sm">CHỈ THỊ SX</span>
+          <span className="date-badge-sm">{fromdate.slice(0, 10)}</span>
+        </div>
+
+        <div className="kpi-mini-ticker">
+          <span className="kpi-pill">
+            <strong className="text-blue">{plandatatable.length}</strong> lệnh
+          </span>
+          <span className="kpi-pill">
+            Plan: <strong className="text-purple">{summarydata.PLAN_QTY?.toLocaleString("en-US")}</strong>
+          </span>
+          <span className="kpi-pill">
+            SX: <strong className="text-orange">{summarydata.KETQUASX?.toLocaleString("en-US")}</strong>
+          </span>
+          <span className="kpi-pill">
+            Đạt:{" "}
+            <strong className="text-green">
+              {(summarydata.ACHIVEMENT_RATE || 0).toLocaleString("en-US", {
+                maximumFractionDigits: 1,
+              })}
+              %
+            </strong>
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="precision-plandatatb__header">
       <div className="header-left">

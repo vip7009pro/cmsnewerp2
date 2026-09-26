@@ -242,84 +242,98 @@
       align-items: center;
       gap: 5px;
       flex-wrap: wrap;
+    }
 
-      .tb-btn {
-        height: 25px;
-        padding: 0 9px;
-        font-size: 11px;
-        font-weight: 700;
-        border-radius: 4px;
-        border: 1px solid transparent;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        transition: all 0.15s ease;
-        white-space: nowrap;
+    // BUTTON SYSTEM CHUẨN GOOGLE STITCH ENTERPRISE (DÙNG CHUNG CẢ DESKTOP & MOBILE)
+    .tb-btn {
+      height: 26px;
+      padding: 0 9px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
 
-        &--primary {
-          background: #2563eb;
-          color: #ffffff;
-          border-color: #1d4ed8;
-          &:hover { background: #1d4ed8; }
+      &:hover {
+        transform: translateY(-0.5px);
+        box-shadow: 0 2px 5px rgba(15, 23, 42, 0.15);
+      }
+      &:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+
+      &--primary {
+        background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%) !important;
+        color: #ffffff !important;
+        border-color: #1d4ed8 !important;
+        &:hover { background: #1d4ed8 !important; }
+      }
+
+      &--indigo {
+        background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%) !important;
+        color: #ffffff !important;
+        border-color: #4338ca !important;
+        &:hover { background: #4338ca !important; }
+      }
+
+      &--amber {
+        background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%) !important;
+        color: #ffffff !important;
+        border-color: #b45309 !important;
+        &:hover { background: #b45309 !important; }
+      }
+
+      &--danger {
+        background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%) !important;
+        color: #ffffff !important;
+        border-color: #b91c1c !important;
+        &:hover { background: #b91c1c !important; }
+      }
+
+      &--success {
+        background: linear-gradient(180deg, #10b981 0%, #059669 100%) !important;
+        color: #ffffff !important;
+        border-color: #047857 !important;
+        &:hover { background: #047857 !important; }
+      }
+
+      &--cyan {
+        background: linear-gradient(180deg, #06b6d4 0%, #0891b2 100%) !important;
+        color: #ffffff !important;
+        border-color: #0e7490 !important;
+        &:hover { background: #0e7490 !important; }
+      }
+
+      &--orange {
+        background: linear-gradient(180deg, #f97316 0%, #ea580c 100%) !important;
+        color: #ffffff !important;
+        border-color: #c2410c !important;
+        &:hover { background: #c2410c !important; }
+      }
+
+      &--ghost {
+        background: #ffffff !important;
+        color: #334155 !important;
+        border-color: #cbd5e1 !important;
+        &:hover {
+          background: #f1f5f9 !important;
+          border-color: #94a3b8 !important;
         }
+      }
 
-        &--indigo {
-          background: #4f46e5;
-          color: #ffffff;
-          border-color: #4338ca;
-          &:hover { background: #4338ca; }
-        }
-
-        &--amber {
-          background: #d97706;
-          color: #ffffff;
-          border-color: #b45309;
-          &:hover { background: #b45309; }
-        }
-
-        &--danger {
-          background: #ef4444;
-          color: #ffffff;
-          border-color: #dc2626;
-          &:hover { background: #dc2626; }
-        }
-
-        &--success {
-          background: #16a34a;
-          color: #ffffff;
-          border-color: #15803d;
-          &:hover { background: #15803d; }
-        }
-
-        &--cyan {
-          background: #0891b2;
-          color: #ffffff;
-          border-color: #0e7490;
-          &:hover { background: #0e7490; }
-        }
-
-        &--orange {
-          background: #ea580c;
-          color: #ffffff;
-          border-color: #c2410c;
-          &:hover { background: #c2410c; }
-        }
-
-        &--ghost {
-          background: #ffffff;
-          color: #334155;
-          border-color: #cbd5e1;
-          &:hover {
-            background: #f1f5f9;
-            border-color: #94a3b8;
-          }
-        }
-
-        &:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
+      &:disabled {
+        opacity: 0.5 !important;
+        cursor: not-allowed !important;
+        transform: none !important;
+        box-shadow: none !important;
       }
     }
   }
@@ -910,4 +924,467 @@
     min-height: 0;
     overflow: hidden;
   }
+}
+
+// =============================================================================
+// MOBILE OPTIMIZATIONS (VIEWPORT <= 768PX)
+// =============================================================================
+.precision-plandatatb.is-mobile {
+  padding: 4px;
+  gap: 4px;
+
+  // 1. Header Mini Ticker
+  .precision-plandatatb__header.is-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    gap: 8px;
+    flex-shrink: 0;
+    overflow: hidden;
+
+    .header-mobile-brand {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+
+      .title-icon-sm {
+        color: #2563eb;
+        font-size: 16px;
+      }
+
+      .title-text-sm {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        font-weight: 800;
+        color: #0f172a;
+        white-space: nowrap;
+      }
+
+      .date-badge-sm {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 1px 5px;
+        border-radius: 3px;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1d4ed8;
+      }
+    }
+
+    .kpi-mini-ticker {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+      &::-webkit-scrollbar { display: none; }
+
+      .kpi-pill {
+        font-size: 10px;
+        color: #64748b;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 3px;
+        padding: 1px 5px;
+        white-space: nowrap;
+
+        strong {
+          font-weight: 800;
+        }
+      }
+    }
+  }
+
+  // 2. Toolbar 3 Hàng Tối Ưu Công Thái Học Cho Mobile
+  .precision-plandatatb__toolbar.is-mobile {
+    display: flex;
+    flex-direction: column;
+    padding: 5px 6px;
+    gap: 5px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    flex-shrink: 0;
+
+    .toolbar-mobile-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      width: 100%;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      &::-webkit-scrollbar { display: none; }
+
+      .field-lbl {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        font-weight: 800;
+        color: #475569;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .mobile-input-date {
+        height: 28px;
+        font-size: 11.5px;
+        font-weight: 600;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        padding: 0 4px;
+        background: #f8fafc;
+        color: #0f172a;
+        outline: none;
+        box-sizing: border-box;
+
+        &:focus {
+          border-color: #2563eb;
+          background: #ffffff;
+          box-shadow: 0 0 0 1px #2563eb;
+        }
+      }
+
+      // HÀNG 1: SEARCH ROW
+      &--search {
+        .mobile-field-group--date {
+          display: flex;
+          align-items: center;
+          gap: 3px;
+          flex-shrink: 0;
+
+          .mobile-input-date {
+            width: 115px;
+          }
+        }
+
+        .mobile-field-group--machine {
+          flex: 1;
+          min-width: 85px;
+          max-width: 110px;
+          flex-shrink: 0;
+
+          .mobile-select-machine {
+            width: 100%;
+            height: 28px;
+            font-size: 10.5px;
+            font-weight: 700;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 0 3px;
+            background: #f8fafc;
+            color: #0f172a;
+            outline: none;
+            box-sizing: border-box;
+
+            &:focus {
+              border-color: #2563eb;
+              background: #ffffff;
+            }
+          }
+        }
+
+        .mobile-select-factory {
+          height: 28px;
+          width: 52px;
+          flex-shrink: 0;
+          font-size: 10.5px;
+          font-weight: 700;
+          border: 1px solid #cbd5e1;
+          border-radius: 4px;
+          padding: 0 2px;
+          background: #f8fafc;
+          color: #0f172a;
+          outline: none;
+
+          &:focus {
+            border-color: #2563eb;
+            background: #ffffff;
+          }
+        }
+
+        .btn-tra-plan {
+          height: 28px;
+          padding: 0 8px;
+          flex-shrink: 0;
+          font-size: 11px;
+          font-weight: 800;
+        }
+      }
+
+      // HÀNG 2: MOVE ROW
+      &--move {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 5px;
+        padding: 2px 4px;
+
+        .mobile-field-group--move {
+          display: flex;
+          align-items: center;
+          gap: 3px;
+          flex-shrink: 0;
+
+          .field-lbl {
+            color: #b45309;
+          }
+
+          .mobile-input-date {
+            width: 115px;
+            background: #fffbeb;
+            border-color: #fcd34d;
+          }
+        }
+
+        .btn-move-plan {
+          height: 26px;
+          padding: 0 8px;
+          font-size: 10.5px;
+          flex-shrink: 0;
+        }
+
+        .btn-quick-plan {
+          height: 26px;
+          padding: 0 8px;
+          font-size: 10.5px;
+          flex-shrink: 0;
+        }
+      }
+
+      // HÀNG 3: ACTIONS ROW (CUỘN NGANG)
+      &--actions {
+        padding-top: 1px;
+        padding-bottom: 2px;
+        scrollbar-width: thin;
+
+        .tb-btn {
+          height: 26px;
+          padding: 0 8px;
+          font-size: 10.5px;
+          flex-shrink: 0;
+        }
+      }
+    }
+  }
+
+  // 3. Grid Container chiếm trọn diện tích
+  .precision-plandatatb__grid-container {
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+}
+
+// =============================================================================
+// ZERO BLUR MOBILE DRAWER BOTTOM SHEET (PORTAL / STANDALONE)
+// =============================================================================
+.plandatatb-mobile-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  // Quy tắc Zero Blur: Nền tối đặc không blur, hiệu năng mượt trên mobile
+  background: rgba(15, 23, 42, 0.75);
+  z-index: 1300;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: plandataFadeIn 0.2s ease-out;
+
+  .plandatatb-mobile-drawer {
+    width: 100%;
+    max-width: 540px;
+    max-height: 85vh;
+    background: #ffffff;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.25);
+    animation: plandataSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid #e2e8f0;
+      background: #f8fafc;
+
+      .drawer-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.01em;
+      }
+
+      .drawer-close-btn {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: none;
+        background: #f1f5f9;
+        color: #64748b;
+        cursor: pointer;
+
+        &:hover {
+          background: #e2e8f0;
+          color: #0f172a;
+        }
+      }
+    }
+
+    .drawer-body {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      -webkit-overflow-scrolling: touch;
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .group-title {
+          font-size: 11.5px;
+          font-weight: 800;
+          color: #475569;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+        }
+
+        .grid-2col {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+        }
+
+        .field-item {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+
+          label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #334155;
+          }
+
+          input,
+          select {
+            height: 38px;
+            padding: 0 10px;
+            font-size: 14px; // Chống auto-zoom iOS Safari (≥ 14px)
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #ffffff;
+            color: #0f172a;
+            outline: none;
+            box-sizing: border-box;
+
+            &:focus {
+              border-color: #2563eb;
+              box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+            }
+          }
+        }
+
+        .btn-move-plan-drawer {
+          height: 38px;
+          padding: 0 12px;
+          border-radius: 6px;
+          background: #fef3c7;
+          border: 1px solid #f59e0b;
+          color: #b45309;
+          font-size: 12.5px;
+          font-weight: 700;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          cursor: pointer;
+          margin-top: 4px;
+          transition: all 0.15s ease;
+
+          &:hover {
+            background: #fde68a;
+          }
+        }
+      }
+    }
+
+    .drawer-footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-top: 1px solid #e2e8f0;
+      background: #f8fafc;
+
+      button {
+        height: 40px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border: none;
+        transition: all 0.15s ease;
+      }
+
+      .btn-drawer-reset {
+        flex: 1;
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        color: #475569;
+
+        &:hover {
+          background: #e2e8f0;
+          color: #0f172a;
+        }
+      }
+
+      .btn-drawer-apply {
+        flex: 2;
+        background: #2563eb;
+        color: #ffffff;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+
+        &:hover {
+          background: #1d4ed8;
+        }
+      }
+    }
+  }
+}
+
+@keyframes plandataFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes plandataSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
