@@ -1,27 +1,22 @@
 # ERP Context & Status
 
-## Update - 2026-09-26 (QLSX: Tối Ưu Toàn Diện Giao Diện Mobile Cửa Sổ Modal In Chỉ Thị Sản Xuất)
-- **1. Sao Lưu An Toàn**: Đã tạo các bản backup:
-  * [PrecisionPlanPrintModals.backup.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/Machine/PrecisionMachine/modal/PrecisionPlanPrintModals.backup.tsx) (Dành cho [PLANVISUAL.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/Machine/PLANVISUAL.tsx))
-  * [PrecisionPlanDataTbPrintModals.backup.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionPlanDataTb/PrecisionPlanDataTbPrintModals.backup.tsx) (Dành cho [PLAN_TABLE.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PLAN_TABLE.tsx))
-- **2. Full-Screen Native App Window Trên Mobile ([PrecisionMachinePlanModal.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/Machine/PrecisionMachine/PrecisionMachinePlanModal.scss), [PrecisionPlanDataTb.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionPlanDataTb/PrecisionPlanDataTb.scss))**:
-  * Backdrop chiếm trọn màn hình (`padding: 0; background: rgba(15, 23, 42, 0.88)` Zero Blur), modal window mở rộng `100vw x 100dvh`, border-radius 0 cho không gian xem tối đa.
-  * Hỗ trợ đóng nhanh khi chạm ngoài backdrop trên mobile (`onClick` backdrop + `stopPropagation` window).
-- **3. Header & Toolbar 2 Tầng Công Thái Học**:
-  * Header thu gọn thanh lịch, icon 26px, tiêu đề rút gọn ellipsis, nút X bo tròn dễ chạm.
-  * Tầng 1: Bộ điều khiển số dòng/trang (`max-lieu-control`) + nút Nạp lại bản in gọn gàng.
-  * Tầng 2: Nút **IN BẢN NÀY (PRINT)** toàn chiều ngang màu xanh ngọc lục bảo (Emerald gradient) cao 36px, chạm cực nhạy.
-- **4. Khắc Phục Triệt Để Lỗi Mất Nửa Trái Bản In A4 & Scroll Ngang Mượt Mà**:
-  * Chuyển layout canvas/body sang `display: block; text-align: left; overflow-x: auto; -webkit-overflow-scrolling: touch;`. Loại bỏ căn giữa làm lệch âm lề trái.
-  * Khổ giấy A4 210mm (`.print-paper-sheet`) giữ nguyên vẹn 100% kích thước chuẩn, cho phép pan/cuộn ngang ngón tay từ mép trái qua mép phải mà không bị co rúm méo mó.
-  * Bổ sung thanh banner hướng dẫn trực quan: `👉 Vuốt ngang để xem toàn bộ khổ in A4`.
-- **5. Đồng Bộ & Kiểm Tra**: Đồng bộ luôn cho [PrecisionQuickPlan.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/QUICKPLAN/PrecisionQuickPlan/PrecisionQuickPlan.scss); `yarn build` thành công 100% (exit code 0).
+## Update - 2026-09-26 (QLSX / LONGTERM_PLAN: Tối Ưu Toàn Diện Giao Diện Mobile Kế Hoạch Dài Hạn 16 Ngày)
+- **1. Sao Lưu An Toàn**: Đã tạo file sao lưu [LONGTERM_PLAN.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/LONGTERM_PLAN.backup2.tsx) bảo toàn 100% mã nguồn ban đầu.
+- **2. Viewport Conditional Rendering**:
+  * Sử dụng hook chuẩn `useIsMobile()` từ [useIsMobile.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Navbar/AccountInfo/useIsMobile.ts).
+  * Bảo toàn nguyên vẹn 100% giao diện và trải nghiệm Desktop (`!isMobile`): [PrecisionLongTermPlanHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionLongTermPlan/PrecisionLongTermPlanHeader.tsx), [PrecisionLongTermPlanToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionLongTermPlan/PrecisionLongTermPlanToolbar.tsx), [PrecisionLongTermCapaSection.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionLongTermPlan/PrecisionLongTermCapaSection.tsx) và thanh toolbar lọc bảng.
+- **3. Toolbar Thích Ứng Công Thái Học 2 Hàng Trên Mobile ([PrecisionLongTermPlanMobileToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionLongTermPlan/PrecisionLongTermPlanMobileToolbar.tsx))**:
+  * Hàng 1: Ô tìm kiếm thông minh (font 14px chống zoom iOS, nút [X] xóa nhanh, bấm Enter để tìm) + nút **Tra PLAN** (Primary Blue Gradient) + nút **Bộ Lọc** (`FiFilter`) kèm badge số điều kiện đang lọc.
+  * Hàng 2: Dải nút cuộn ngang 1 dòng (`overflow-x: auto; scrollbar-width: none`): Chip thống kê số lượng (`Hiện: X / Y lệnh`), nút **MOVE PLAN** (Amber gradient), nút **DELETE PLAN** (Red gradient), nút **Xuất Excel** (Green gradient), nút **Bỏ chọn** và nút toggle xem **Biểu Đồ Capa**.
+- **4. Zero-Blur GPU-Friendly Bottom Sheet Filter Drawer ([PrecisionLongTermPlanMobileFilterDrawer.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionLongTermPlan/PrecisionLongTermPlanMobileFilterDrawer.tsx))**:
+  * Backdrop tối đặc `rgba(15, 23, 42, 0.75)` tuân thủ triệt để quy tắc Zero Blur, bảo vệ GPU điện thoại.
+  * Cung cấp các trường lọc thân thiện cảm ứng (touch targets 40px, font 14px): PLAN DATE, FACTORY (NM1/NM2), MACHINE (tất cả máy) và MOVE TO DATE kèm nút thao tác Dời Kế Hoạch nhanh.
+  * Hỗ trợ nút "Mặc Định" đặt lại bộ lọc và "Áp Dụng & Tra Cứu".
+- **5. Tối Đa Hóa Diện Tích Bảng Dữ Liệu AGTable**: Container bảng chiếm trọn chiều cao còn lại (`flex: 1 1 auto; min-height: 0;`), cuộn mượt mà không kẹt touch.
+- **6. Kiểm Tra & Xác Nhận**: TypeScript check vượt qua với 0 lỗi phát sinh trên các module kế hoạch dài hạn.
+
+## Update - 2026-09-26 (QLSX: Tối Ưu Toàn Diện Mobile Modal In Chỉ Thị Sản Xuất)
+- Full-screen native app `100vw x 100dvh`, toolbar 2 tầng (Emerald print button), khắc phục lệch âm lề trái A4 210mm.
 
 ## Update - 2026-09-26 (QLSX / PLAN_TABLE: Toolbar 3 Hàng & Button Style Stitch Enterprise)
-- Hàng 1: Nút Tra PLAN cùng hàng với Ngày + Máy; Hàng 2: MOVE TO date + MOVE PLAN + QUICK PLAN; Hàng 3: Cuộn ngang dải action buttons màu gradient nổi bật có bóng đổ.
-
-## Update - 2026-09-26 (QLSX / PLAN_NHANH: Tối Ưu Mobile)
-- Switcher 2 tab `[📋 Kế Hoạch]` / `[🔍 Tra Cứu YCSX]`, pan ngang định mức `.dinhmuc-scroll-wrapper` 820px, Omnibar và drawer Zero Blur.
-
-## Update - 2026-09-26 (SKILL / MOBILE INTERFACE REFACTORING)
-- Skill chuẩn dự án [SKILL.md](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/.agents/skills/mobile_interface_refactoring/SKILL.md) tối ưu hóa giao diện di động ERP.
+- Hàng 1: Nút Tra PLAN cùng hàng với Ngày + Máy; Hàng 2: MOVE TO date + MOVE PLAN + QUICK PLAN; Hàng 3: Cuộn ngang dải action buttons gradient nổi bật.

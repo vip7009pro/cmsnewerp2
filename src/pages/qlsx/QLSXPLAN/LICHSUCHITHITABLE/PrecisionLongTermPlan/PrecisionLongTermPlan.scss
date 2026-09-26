@@ -679,6 +679,511 @@
       }
     }
   }
+
+  // =========================================================================
+  // GIAO DIỆN MOBILE TỐI ƯU CÔNG THÁI HỌC (SKILL: mobile_interface_refactoring)
+  // =========================================================================
+  &.is-mobile {
+    padding: 4px;
+    gap: 4px;
+    min-height: 0;
+    height: 100%;
+
+    // 1. Mobile Toolbar 2 Hàng
+    .precision-longterm-mobile-toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+      flex-shrink: 0;
+
+      .mobile-toolbar-row {
+        display: flex;
+        align-items: center;
+        width: 100%;
+
+        // HÀNG 1: SEARCH & FILTER TRIGGER
+        &--search {
+          gap: 6px;
+
+          .mobile-search-box {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            height: 36px;
+            padding: 0 8px;
+            gap: 6px;
+            transition: all 0.15s ease;
+
+            &:focus-within {
+              border-color: #2563eb;
+              background: #ffffff;
+              box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+            }
+
+            .mobile-search-icon {
+              color: #64748b;
+              flex-shrink: 0;
+            }
+
+            .mobile-search-input {
+              flex: 1;
+              min-width: 0;
+              border: none;
+              outline: none;
+              background: transparent;
+              font-size: 14px;
+              font-weight: 500;
+              color: #0f172a;
+
+              &::placeholder {
+                color: #94a3b8;
+                font-size: 13px;
+              }
+            }
+
+            .mobile-search-clear {
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              width: 22px;
+              height: 22px;
+              border-radius: 50%;
+              border: none;
+              background: #e2e8f0;
+              color: #475569;
+              cursor: pointer;
+              flex-shrink: 0;
+
+              &:hover {
+                background: #cbd5e1;
+                color: #0f172a;
+              }
+            }
+          }
+
+          .btn-tra-plan {
+            height: 36px;
+            padding: 0 12px;
+            font-size: 12.5px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            border: 1px solid #1e40af;
+            border-radius: 6px;
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+            white-space: nowrap;
+            cursor: pointer;
+
+            &:active {
+              transform: translateY(1px);
+            }
+
+            .spin-animation {
+              animation: longtermSpin 1s linear infinite;
+            }
+          }
+
+          .tb-btn--filter {
+            height: 36px;
+            padding: 0 10px;
+            font-size: 12.5px;
+            font-weight: 700;
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+            cursor: pointer;
+            position: relative;
+
+            &:active {
+              background: #dbeafe;
+            }
+
+            &-active {
+              background: #dbeafe;
+              border-color: #3b82f6;
+              color: #1e40af;
+            }
+
+            .filter-badge-count {
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              min-width: 17px;
+              height: 17px;
+              padding: 0 4px;
+              border-radius: 9999px;
+              background: #ef4444;
+              color: #ffffff;
+              font-size: 10px;
+              font-weight: 800;
+              font-family: 'JetBrains Mono', monospace;
+            }
+          }
+        }
+
+        // HÀNG 2: ACTIONS SCROLL BAR
+        &--actions {
+          gap: 6px;
+          overflow-x: auto;
+          flex-wrap: nowrap;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          padding-bottom: 2px;
+          &::-webkit-scrollbar { display: none; }
+
+          .mobile-stats-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            height: 28px;
+            padding: 0 8px;
+            border-radius: 4px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            font-size: 11px;
+            color: #475569;
+            flex-shrink: 0;
+            white-space: nowrap;
+
+            strong {
+              color: #0f172a;
+              font-family: 'JetBrains Mono', monospace;
+            }
+          }
+
+          .tb-btn {
+            height: 28px;
+            padding: 0 10px;
+            font-size: 11.5px;
+            font-weight: 700;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+
+            &--warning {
+              background: linear-gradient(135deg, #f59e0b, #d97706);
+              color: #ffffff;
+              border: 1px solid #b45309;
+              box-shadow: 0 1px 2px rgba(217, 119, 6, 0.2);
+              &:active { transform: translateY(1px); }
+            }
+
+            &--danger {
+              background: linear-gradient(135deg, #ef4444, #dc2626);
+              color: #ffffff;
+              border: 1px solid #b91c1c;
+              box-shadow: 0 1px 2px rgba(220, 38, 38, 0.2);
+              &:active { transform: translateY(1px); }
+            }
+
+            &--excel {
+              background: linear-gradient(135deg, #10b981, #059669);
+              color: #ffffff;
+              border: 1px solid #047857;
+              box-shadow: 0 1px 2px rgba(16, 185, 129, 0.2);
+              &:active { transform: translateY(1px); }
+            }
+
+            &--neutral {
+              background: #ffffff;
+              color: #334155;
+              border: 1px solid #cbd5e1;
+              &:active { background: #f1f5f9; }
+            }
+
+            &--capa {
+              background: #f5f3ff;
+              color: #7c3aed;
+              border: 1px solid #ddd6fe;
+
+              &-active {
+                background: linear-gradient(135deg, #7c3aed, #6d28d9);
+                color: #ffffff;
+                border-color: #5b21b6;
+                box-shadow: 0 1px 2px rgba(124, 58, 237, 0.25);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 2. Mobile Capa Chart Wrapper
+    .precision-longterm-mobile-capa-wrapper {
+      max-height: 290px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      flex-shrink: 0;
+    }
+
+    // 3. Grid Container chiếm trọn diện tích còn lại
+    .precision-longterm-grid-container.is-mobile {
+      flex: 1 1 auto;
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+
+      .precision-longterm-grid-body {
+        flex: 1 1 auto;
+        height: 100%;
+        min-height: 0;
+        width: 100%;
+        overflow: hidden;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// ZERO-BLUR GPU-FRIENDLY BOTTOM SHEET FILTER DRAWER CHO MOBILE
+// =============================================================================
+.precision-longterm-mobile-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  // Quy tắc Zero Blur: Nền tối đặc không blur, hiệu năng mượt trên mobile
+  background: rgba(15, 23, 42, 0.75);
+  z-index: 1300;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: longtermFadeIn 0.2s ease-out;
+
+  .precision-longterm-mobile-drawer {
+    width: 100%;
+    max-width: 520px;
+    max-height: 85vh;
+    background: #ffffff;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.25);
+    animation: longtermSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+    contain: layout style;
+    will-change: transform;
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid #e2e8f0;
+      background: #f8fafc;
+      flex-shrink: 0;
+
+      .drawer-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.01em;
+      }
+
+      .drawer-close-btn {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: none;
+        background: #f1f5f9;
+        color: #64748b;
+        cursor: pointer;
+
+        &:hover {
+          background: #e2e8f0;
+          color: #0f172a;
+        }
+      }
+    }
+
+    .drawer-body {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      -webkit-overflow-scrolling: touch;
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .group-title {
+          font-size: 11.5px;
+          font-weight: 800;
+          color: #475569;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .grid-2col {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+        }
+
+        .field-item {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+
+          label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #334155;
+            display: flex;
+            align-items: center;
+          }
+
+          .mobile-drawer-input,
+          .mobile-drawer-select {
+            height: 40px;
+            font-size: 14px; // Chống zoom iOS Safari
+            font-weight: 600;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 0 10px;
+            background: #f8fafc;
+            color: #0f172a;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+
+            &:focus {
+              border-color: #2563eb;
+              background: #ffffff;
+              box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+            }
+          }
+        }
+
+        .btn-drawer-move {
+          margin-top: 4px;
+          height: 38px;
+          border-radius: 6px;
+          background: linear-gradient(135deg, #f59e0b, #d97706);
+          color: #ffffff;
+          border: 1px solid #b45309;
+          font-size: 13px;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          box-shadow: 0 1px 2px rgba(217, 119, 6, 0.25);
+          cursor: pointer;
+
+          &:active {
+            transform: translateY(1px);
+          }
+        }
+      }
+    }
+
+    .drawer-footer {
+      padding: 10px 16px;
+      border-top: 1px solid #e2e8f0;
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+
+      .btn-drawer-reset {
+        height: 40px;
+        padding: 0 16px;
+        border-radius: 6px;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #475569;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        &:active {
+          background: #f1f5f9;
+        }
+      }
+
+      .btn-drawer-apply {
+        flex: 1;
+        height: 40px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: #ffffff;
+        border: 1px solid #1e40af;
+        font-size: 13.5px;
+        font-weight: 800;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+
+        &:active {
+          transform: translateY(1px);
+        }
+      }
+    }
+  }
+}
+
+@keyframes longtermFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes longtermSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes longtermSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes longtermPulse {
