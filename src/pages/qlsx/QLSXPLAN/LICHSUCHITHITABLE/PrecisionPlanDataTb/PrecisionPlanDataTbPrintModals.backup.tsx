@@ -71,14 +71,8 @@ export const PrecisionPlanDataTbPrintModals: React.FC<
       <>
         {/* 1. Modal Print Chỉ Thị Sản Xuất */}
         {showChiThi && (
-          <div
-            className="precision-print-modal-backdrop"
-            onClick={() => setShowChiThi(false)}
-          >
-            <div
-              className="precision-print-modal-window"
-              onClick={(e) => e.stopPropagation()}
-            >
+          <div className="precision-print-modal-backdrop">
+            <div className="precision-print-modal-window">
               <div className="precision-print-modal-window__header">
                 <div className="modal-title-group">
                   <div className="modal-icon-badge">
@@ -151,11 +145,6 @@ export const PrecisionPlanDataTbPrintModals: React.FC<
                 </div>
               </div>
 
-              {/* HINT BANNER MOBILE */}
-              <div className="mobile-scroll-hint-bar">
-                <span>👉 Vuốt ngang để xem toàn bộ khổ in A4</span>
-              </div>
-
               <div className="precision-print-modal-window__body">
                 <div className="print-paper-sheet" ref={ycsxprintref}>
                   {chithilistrender}
@@ -167,14 +156,8 @@ export const PrecisionPlanDataTbPrintModals: React.FC<
 
         {/* 2. Modal Print Chỉ Thị Combo */}
         {showChiThi2 && (
-          <div
-            className="precision-print-modal-backdrop"
-            onClick={() => setShowChiThi2(false)}
-          >
-            <div
-              className="precision-print-modal-window"
-              onClick={(e) => e.stopPropagation()}
-            >
+          <div className="precision-print-modal-backdrop">
+            <div className="precision-print-modal-window">
               <div className="precision-print-modal-window__header">
                 <div className="modal-title-group">
                   <div className="modal-icon-badge">
@@ -247,11 +230,6 @@ export const PrecisionPlanDataTbPrintModals: React.FC<
                 </div>
               </div>
 
-              {/* HINT BANNER MOBILE */}
-              <div className="mobile-scroll-hint-bar">
-                <span>👉 Vuốt ngang để xem toàn bộ khổ in A4</span>
-              </div>
-
               <div className="precision-print-modal-window__body">
                 <div className="print-paper-sheet" ref={ycsxprintref}>
                   {chithilistrender2}
@@ -263,14 +241,8 @@ export const PrecisionPlanDataTbPrintModals: React.FC<
 
         {/* 3. Modal Print Bản Vẽ Kỹ Thuật */}
         {showBV && (
-          <div
-            className="precision-print-modal-backdrop"
-            onClick={() => setShowBV(false)}
-          >
-            <div
-              className="precision-print-modal-window precision-print-modal-window--full"
-              onClick={(e) => e.stopPropagation()}
-            >
+          <div className="precision-print-modal-backdrop">
+            <div className="precision-print-modal-window precision-print-modal-window--full">
               <div className="precision-print-modal-window__header">
                 <div className="modal-title-group">
                   <div className="modal-icon-badge">
@@ -318,11 +290,6 @@ export const PrecisionPlanDataTbPrintModals: React.FC<
                 </div>
               </div>
 
-              {/* HINT BANNER MOBILE */}
-              <div className="mobile-scroll-hint-bar">
-                <span>👉 Vuốt ngang để xem toàn bộ bản vẽ</span>
-              </div>
-
               <div className="precision-print-modal-window__body">
                 <div className="print-paper-sheet" ref={ycsxprintref}>
                   {ycsxlistrender}
@@ -334,14 +301,8 @@ export const PrecisionPlanDataTbPrintModals: React.FC<
 
         {/* 4. Modal Kho Ảo Sản Xuất */}
         {showkhoao && (
-          <div
-            className="precision-print-modal-backdrop"
-            onClick={() => setShowKhoAo(false)}
-          >
-            <div
-              className="precision-print-modal-window precision-print-modal-window--full"
-              onClick={(e) => e.stopPropagation()}
-            >
+          <div className="precision-print-modal-backdrop">
+            <div className="precision-print-modal-window precision-print-modal-window--full">
               <div className="precision-print-modal-window__header">
                 <div className="modal-title-group">
                   <div className="modal-icon-badge">

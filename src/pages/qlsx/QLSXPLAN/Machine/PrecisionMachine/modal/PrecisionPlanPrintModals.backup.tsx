@@ -126,11 +126,6 @@ const PrintModalWrapper: React.FC<PrintModalWrapperProps> = ({
           </div>
         </div>
 
-        {/* 2.5 HINT BANNER MOBILE */}
-        <div className="mobile-scroll-hint-bar">
-          <span>👉 Vuốt ngang để xem toàn bộ khổ in A4</span>
-        </div>
-
         {/* 3. PREVIEW CANVAS (PAPER STAGE) */}
         <div className="precision-print-modal-window__canvas">
           <div className="print-paper-sheet" ref={printRef}>
