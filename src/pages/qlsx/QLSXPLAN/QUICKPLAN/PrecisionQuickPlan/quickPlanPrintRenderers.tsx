@@ -26,7 +26,7 @@ export const renderBanVe = (ycsxlist: YCSXTableData[]) => {
   return ycsxlist.map((element, index) =>
     element.BANVE === "Y" ? (
       <DrawComponent
-        key={index}
+        key={`${element.G_CODE}_${element.PROD_REQUEST_NO || index}_${index}`}
         G_CODE={element.G_CODE}
         PDBV={element.PDBV}
         PROD_REQUEST_NO={element.PROD_REQUEST_NO}

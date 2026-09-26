@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import "./DrawComponentTBG.scss";
 import { usePdf } from "@mikecousins/react-pdf";
 import moment from "moment";
@@ -24,10 +24,18 @@ const DrawComponentTBG = ({
   );
   const [page, setPage] = useState(1);
   const canvasRef = useRef(null);
-  let draw_path = "/banve/";
-  console.log(draw_path + G_CODE + ".pdf");
+  const draw_path = "/banve/";
+
+  // Cache-busting: sinh URL kèm timestamp + randomSalt ngẫu nhiên
+  const fileUrl = useMemo(() => {
+    if (!G_CODE) return "";
+    const timestamp = Date.now();
+    const randomSalt = Math.random().toString(36).substring(2, 7);
+    return `${draw_path}${encodeURIComponent(G_CODE)}.pdf?v=${timestamp}_${randomSalt}`;
+  }, [G_CODE]);
+
   const { pdfDocument, pdfPage } = usePdf({
-    file: draw_path + G_CODE + ".pdf",
+    file: fileUrl,
     page,
     scale: 3,
     canvasRef,

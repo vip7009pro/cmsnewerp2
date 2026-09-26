@@ -1,5 +1,13 @@
 # ERP Context & Status
 
+## Update - 2026-09-26 (KD / YCSXManager & QLSX / PLAN_TABLE: Nâng Cấp Toàn Diện Cache-Busting Modal Print Bản Vẽ Kỹ Thuật)
+- **Vấn đề đã xử lý**: Kiểm tra và hoàn thiện cơ chế tham số ngẫu nhiên chống cache cho toàn bộ modal in bản vẽ kỹ thuật trong YCSXManager và PLAN_TABLE, đề phòng trình duyệt và PDF viewer lưu cache file bản vẽ cũ.
+- **Các thành phần được cập nhật**:
+  * [DrawComponent.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/DrawComponent/DrawComponent.tsx): Chuyển `version` sang `useMemo([G_CODE])` sinh URL chuẩn kèm `?v=${timestamp}_${randomSalt}` (`Date.now() + Math.random()`), giữ URL ổn định trong suốt chu kỳ render canvas của `usePdf` (tránh loop) và luôn fetch file mới nhất khi đổi mã sản phẩm hoặc mở lại modal.
+  * [DrawComponentTBG.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/DrawComponent/DrawComponentTBG.tsx): Bổ sung `useMemo([G_CODE])` kèm tham số giả ngẫu nhiên chống cache.
+  * [khsxUtils.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/utils/khsxUtils.tsx) & [planDataTbPrintRenderers.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionPlanDataTb/planDataTbPrintRenderers.tsx) & [quickPlanPrintRenderers.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/QUICKPLAN/PrecisionQuickPlan/quickPlanPrintRenderers.tsx): Cố định `key={`${element.G_CODE}_...`}` độc nhất cho `DrawComponent`, ngăn chặn React tái sử dụng instance cũ khi đổi danh sách in.
+  * [PrecisionYCSXColumns.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/PrecisionYCSXColumns.tsx): Cập nhật link bản vẽ trên cột `BANVE` (cả 2 bảng chính và summary) bổ sung tham số ngẫu nhiên `?v=${Date.now()}_${randomSalt}`.
+
 ## Update - 2026-09-26 (R&D / CODE_MANAGER: Khắc Phục Lỗi Nhảy Sai Link Bản Vẽ & Chống Cache Trình Duyệt)
 - **Vấn đề đã xử lý**: Khi xem bản vẽ của sản phẩm A rồi bấm xem bản vẽ sản phẩm B, hệ thống bị giữ lại link của sản phẩm A do AG-Grid tái sử dụng row DOM (do API map `id: index` dẫn đến trùng ID `0` khi query riêng lẻ) và trình duyệt lưu cache file PDF cũ.
 - **Các thành phần được cập nhật**:

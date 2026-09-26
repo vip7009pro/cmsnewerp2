@@ -229,7 +229,10 @@ export const getYCSXColumns = (options: ColumnOptions): any[] => {
         headerName: "BANVE",
         width: 140,
         cellRenderer: (params: any) => {
-          const hreftlink = `/banve/${params.data?.G_CODE}.pdf?v=${Date.now()}`;
+          const gCode = params.data?.G_CODE;
+          const hreftlink = gCode
+            ? `/banve/${encodeURIComponent(gCode)}.pdf?v=${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
+            : "";
           if (params.data?.BANVE === "Y") {
             return (
               <div>
@@ -599,7 +602,10 @@ export const getYCSXColumns = (options: ColumnOptions): any[] => {
       headerName: "BANVE",
       width: 140,
       cellRenderer: (params: any) => {
-        const hreftlink = `/banve/${params.data?.G_CODE}.pdf`;
+        const gCode = params.data?.G_CODE;
+        const hreftlink = gCode
+          ? `/banve/${encodeURIComponent(gCode)}.pdf?v=${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
+          : "";
         if (params.data?.BANVE === "Y")
           return (
             <span style={{ color: "green" }}>

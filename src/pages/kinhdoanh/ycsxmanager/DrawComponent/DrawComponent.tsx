@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from "react";
+import { memo, useMemo, useRef, useState } from "react";
 import "./DrawComponent.scss";
 import { usePdf } from "@mikecousins/react-pdf";
 import moment from "moment";
@@ -24,12 +24,21 @@ const DrawComponent = ({
   );
   const [page] = useState(1);
   const canvasRef = useRef(null);
-  let draw_path = "/banve/";
-  // Cache-busting: cố định theo vòng đời component (trước đây có thêm setVersion
-  // không dùng tới, gây thêm 1 state thừa cho mỗi bản vẽ được render).
-  const [version] = useState(() => Date.now());
+  const draw_path = "/banve/";
+
+  // Cache-busting: Sinh URL ngẫu nhiên theo từng G_CODE và phiên render
+  // useMemo giữ URL ổn định trong suốt vòng đời render canvas của G_CODE đó,
+  // tránh trigger re-fetch vô tận trong usePdf, đồng thời đảm bảo mỗi khi G_CODE đổi
+  // hoặc mở lại modal sẽ luôn fetch file mới nhất từ server.
+  const fileUrl = useMemo(() => {
+    if (!G_CODE) return "";
+    const timestamp = Date.now();
+    const randomSalt = Math.random().toString(36).substring(2, 7);
+    return `${draw_path}${encodeURIComponent(G_CODE)}.pdf?v=${timestamp}_${randomSalt}`;
+  }, [G_CODE]);
+
   const { pdfDocument, pdfPage } = usePdf({
-    file: draw_path + G_CODE + ".pdf?v=" + version,
+    file: fileUrl,
     page,
     scale: 3,
     canvasRef,
