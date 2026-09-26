@@ -1,5 +1,14 @@
 # ERP Context & Status
 
+## Update - 2026-09-26 (R&D / BOM_MANAGER: Sửa Triệt Để Lỗi Mất Style Khối Code Banner & Spec Grid Trên Mobile)
+- **1. Khắc Phục Selector CSS Scope ([PrecisionBOMManager.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/bom_manager/PrecisionBOMManager/PrecisionBOMManager.scss))**:
+  * Nguyên nhân: Trước đó toàn bộ rule của `.code-banner`, `.spec-grid`, `.spec-card`, `.field-input`, `.process-panel` bị giới hạn trong selector cha `&__main` (chỉ tồn tại ở Desktop).
+  * Khắc phục: Mở rộng selector cha thành `&__main, &__spec-container, .precision-bom__spec-container, .mobile-spec-content` để áp dụng 100% style cho cả Desktop lẫn Mobile.
+- **2. Tối Ưu Hiển Thị Thông Số Trên Mobile (Responsive Specs)**:
+  * Tinh chỉnh `.code-banner` trên mobile: Giảm font size mã code (`20px`) và tên code (`15px`) cân đối, chống tràn viền.
+  * Tinh chỉnh `.spec-grid` trên mobile: Chuyển thành dạng 1 cột dọc (`grid-template-columns: 1fr`), padding card 8px 10px, tăng chiều cao hàng input đạt chuẩn touch di động (min-height 28px, font 12px-13px).
+- **3. Kiểm Tra Toàn Diện**: Vite production build thành công 100% (exit code 0).
+
 ## Update - 2026-09-26 (SKILL / MOBILE INTERFACE REFACTORING: Khởi Tạo Skill Tự Động Tối Ưu Mobile)
 - **1. Xây Dựng Skill Chuyên Biệt ([SKILL.md](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/.agents/skills/mobile_interface_refactoring/SKILL.md))**:
   * Tên skill: `mobile_interface_refactoring` (kèm file đồng bộ [mobile_interface_refactoring.md](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/.agents/skills/mobile_interface_refactoring.md)).

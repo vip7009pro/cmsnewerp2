@@ -17,7 +17,7 @@ Khi người dùng tag `@mobile_interface_refactoring` kèm file cần refactor 
 
 ### 1. BẢO TOÀN GIAO DIỆN DESKTOP & SAO LƯU ĐẦU TIÊN
 - **Giữ nguyên 100% desktop**: Không làm thay đổi layout, khoảng cách, font chữ, hành vi hay component trên Desktop (> 768px).
-- **Sao lưu bắt buộc**: Luôn tạo bản sao lưu `[ComponentName].backup.tsx` tại cùng thư mục trước khi sửa đổi bất kỳ dòng code nào.
+- **Sao lưu bắt buộc**: Luôn tạo bản sao lưu `[ComponentName].backup2.tsx` tại cùng thư mục trước khi sửa đổi bất kỳ dòng code nào.
 - **Bảo toàn 100% Logic & State**: Giữ nguyên toàn bộ React state, hooks, API queries, form inputs, validation, event handlers và tính năng xuất dữ liệu (Excel `EX1`, `EX2`, `PIVOT`...).
 
 ### 2. PHƯƠNG THỨC: VIEWPORT CONDITIONAL RENDERING

@@ -30,8 +30,11 @@ import {
   mapComponentListWithCodeInfo,
 } from "./PrecisionBOMManager/precisionBOMTemLotUtils";
 import { getUserData } from "../../../api/Api";
+import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
+import PrecisionBOMMobileView from "./PrecisionBOMManager/PrecisionBOMMobileView";
 
 const BOM_MANAGER: React.FC = () => {
+  const isMobile = useIsMobile();
   const company = useSelector((state: RootState) => state.totalSlice.company) || getCompany();
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [showHideDesignBom, setShowHideDesignBOM] = useState(false);
@@ -253,23 +256,88 @@ const BOM_MANAGER: React.FC = () => {
     };
   }, [showPivot, bomgiatable, bomsxtable]);
 
+  // 4. Khối thông số kỹ thuật sản phẩm
+  const specGridJSX = useMemo(
+    () => (
+      <PrecisionBOMSpecGrid
+        codeFullInfo={codefullinfo}
+        handleSetCodeInfo={handleSetCodeInfo}
+        enableform={!enableEdit}
+        customerList={customerList}
+        machineList={machineList}
+        masterMaterialList={masterMaterialList}
+        selectedMasterMaterial={selectedMasterMaterial}
+        setSelectedMasterMaterial={setSelectedMasterMaterial}
+        currentProcessList={currentProcessList}
+        tempSelectedMachine={tempSelectedMachine}
+        setTempSelectedMachine={setTempSelectedMachine}
+        tempSelectedProcess={tempSelectedProcess}
+        onAddProcess={handleAddProcess}
+        onDeleteProcess={handleDeleteProcess}
+        onSaveProcess={handleSaveProcess}
+        fscList={fscList}
+        company={company}
+        onUploadCAD={handleUploadCAD}
+        onUploadAppsheet={handleUploadAppsheet}
+        showHideTemLot={showHideTemLot}
+        onToggleTemLot={() => setShowHideTemLot((prev) => !prev)}
+        onPrintTemLot={handlePrint}
+        showProcessGrid={getUserData()?.EMPL_NO === "NHU1903"}
+      />
+    ),
+    [
+      codefullinfo,
+      handleSetCodeInfo,
+      enableEdit,
+      customerList,
+      machineList,
+      masterMaterialList,
+      selectedMasterMaterial,
+      setSelectedMasterMaterial,
+      currentProcessList,
+      tempSelectedMachine,
+      setTempSelectedMachine,
+      tempSelectedProcess,
+      handleAddProcess,
+      handleDeleteProcess,
+      handleSaveProcess,
+      fscList,
+      company,
+      handleUploadCAD,
+      handleUploadAppsheet,
+      showHideTemLot,
+      handlePrint,
+    ]
+  );
+
   return (
-    <div className="precision-bom">
-      {/* Main Workspace: Sidebar + Main Area (Header & KPI removed per user request to maximize vertical space) */}
-      <div className="precision-bom__workspace">
-        {/* Cột trái: Sidebar điều khiển & danh sách mã */}
-        <PrecisionBOMSidebar
+    <div className={`precision-bom ${isMobile ? "is-mobile" : ""}`}>
+      {isMobile ? (
+        <PrecisionBOMMobileView
           codeCMS={codeCMS}
           setCodeCMS={setCodeCMS}
-          cndb={cndb}
-          setCNDB={setCNDB}
           activeOnly={activeOnly}
           setActiveOnly={setActiveOnly}
-          isLoading={isLoading}
+          cndb={cndb}
+          setCNDB={setCNDB}
           onSearchCode={handleCODEINFO}
-          onSearchKeyDown={(e) => {
-            if (e.key === "Enter") handleCODEINFO();
-          }}
+          isLoading={isLoading}
+          isCodeDetailLoading={isCodeDetailLoading}
+          codefullinfo={codefullinfo}
+          codeTableJSX={codeTableJSX}
+          bomsxTableJSX={bomsxTableJSX}
+          bomgiaTableJSX={bomgiaTableJSX}
+          specGridJSX={specGridJSX}
+          codeCount={codeInfoDataTable.length}
+          bomsxCount={bomsxtable.length}
+          bomgiaCount={bomgiatable.length}
+          enableEdit={enableEdit}
+          onToggleEdit={() => setEnableEdit((prev) => !prev)}
+          pinBOM={pinBOM}
+          onTogglePin={() => setPinBOM((prev) => !prev)}
+          onExportEX1={() => {}}
+          onExportEX2={() => {}}
+          onOpenPivot={() => setShowPivot(true)}
           onNew={handleNewProduct}
           onAdd={confirmAddNewCode}
           onAddVer={confirmAddNewVer}
@@ -277,77 +345,90 @@ const BOM_MANAGER: React.FC = () => {
           onUpdate={confirmUpdateCode}
           onClear={handleClearInfo}
           onResetBanVe={confirmResetBanVe}
-          onToggleEdit={() => setEnableEdit((prev) => !prev)}
-          enableEdit={enableEdit}
-          pinBOM={pinBOM}
-          onTogglePin={() => setPinBOM((prev) => !prev)}
-          onExportEX1={() => {}}
-          onExportEX2={() => {}}
-          onOpenPivot={() => setShowPivot(true)}
-          codeTableJSX={codeTableJSX}
-          codeFullInfo={codefullinfo}
-          totalCodes={codeInfoDataTable.length}
+          onSaveBOMSX={confirmSaveBOMSX}
+          onAddRowBOMSX={handleAddRowBOMSX}
+          onDeleteRowBOMSX={handleDeleteRowBOMSX}
+          onSaveBOMGIA={confirmSaveBOMGIA}
+          onAddRowBOMGIA={handleAddRowBOMGIA}
+          onDeleteRowBOMGIA={handleDeleteRowBOMGIA}
+          onCloneBOMSX={handleCloneBOMSX}
+          onToggleDesignBom={() => setShowHideDesignBOM((prev) => !prev)}
+          onToggleTemLot={() => setShowHideTemLot((prev) => !prev)}
+          materialList={materialList}
+          selectedMaterial={selectedMaterial}
+          setSelectedMaterial={setSelectedMaterial}
         />
-
-        {/* Cột phải: Thông số mã hiện hành & 2 Bảng song song 50:50 */}
-        <main className={`precision-bom__main${isCodeDetailLoading ? " is-loading" : ""}`}>
-          {isCodeDetailLoading && (
-            <div className="loading-overlay loading-overlay--detail" role="status" aria-live="polite">
-              <span className="loading-spinner" />
-              <span>Đang tải thông tin mã và BOM...</span>
-            </div>
-          )}
-          <PrecisionBOMSpecGrid
-            codeFullInfo={codefullinfo}
-            handleSetCodeInfo={handleSetCodeInfo}
-            enableform={!enableEdit}
-            customerList={customerList}
-            machineList={machineList}
-            masterMaterialList={masterMaterialList}
-            selectedMasterMaterial={selectedMasterMaterial}
-            setSelectedMasterMaterial={setSelectedMasterMaterial}
-            currentProcessList={currentProcessList}
-            tempSelectedMachine={tempSelectedMachine}
-            setTempSelectedMachine={setTempSelectedMachine}
-            tempSelectedProcess={tempSelectedProcess}
-            onAddProcess={handleAddProcess}
-            onDeleteProcess={handleDeleteProcess}
-            onSaveProcess={handleSaveProcess}
-            fscList={fscList}
-            company={company}
-            onUploadCAD={handleUploadCAD}
-            onUploadAppsheet={handleUploadAppsheet}
-            showHideTemLot={showHideTemLot}
-            onToggleTemLot={() => setShowHideTemLot((prev) => !prev)}
-            onPrintTemLot={handlePrint}
-            showProcessGrid={getUserData()?.EMPL_NO === "NHU1903"}
-          />
-
-          <PrecisionBOMDualTables
-            bomsxTableJSX={bomsxTableJSX}
-            bomgiaTableJSX={bomgiaTableJSX}
-            onSaveBOMSX={confirmSaveBOMSX}
-            onAddRowBOMSX={handleAddRowBOMSX}
-            onDeleteRowBOMSX={handleDeleteRowBOMSX}
-            onSaveBOMGIA={confirmSaveBOMGIA}
-            onAddRowBOMGIA={handleAddRowBOMGIA}
-            onDeleteRowBOMGIA={handleDeleteRowBOMGIA}
-            onCloneBOMSX={handleCloneBOMSX}
-            onToggleDesignBom={() => setShowHideDesignBOM((prev) => !prev)}
+      ) : (
+        /* Main Workspace: Sidebar + Main Area (Header & KPI removed per user request to maximize vertical space) */
+        <div className="precision-bom__workspace">
+          {/* Cột trái: Sidebar điều khiển & danh sách mã */}
+          <PrecisionBOMSidebar
+            codeCMS={codeCMS}
+            setCodeCMS={setCodeCMS}
+            cndb={cndb}
+            setCNDB={setCNDB}
+            activeOnly={activeOnly}
+            setActiveOnly={setActiveOnly}
+            isLoading={isLoading}
+            onSearchCode={handleCODEINFO}
+            onSearchKeyDown={(e) => {
+              if (e.key === "Enter") handleCODEINFO();
+            }}
+            onNew={handleNewProduct}
+            onAdd={confirmAddNewCode}
+            onAddVer={confirmAddNewVer}
+            onOpenBulkUpload={() => setShowBulkModal(true)}
+            onUpdate={confirmUpdateCode}
+            onClear={handleClearInfo}
+            onResetBanVe={confirmResetBanVe}
             onToggleEdit={() => setEnableEdit((prev) => !prev)}
             enableEdit={enableEdit}
             pinBOM={pinBOM}
+            onTogglePin={() => setPinBOM((prev) => !prev)}
             onExportEX1={() => {}}
             onExportEX2={() => {}}
             onOpenPivot={() => setShowPivot(true)}
-            bomsxCount={bomsxtable.length}
-            bomgiaCount={bomgiatable.length}
-            materialList={materialList}
-            selectedMaterial={selectedMaterial}
-            setSelectedMaterial={setSelectedMaterial}
+            codeTableJSX={codeTableJSX}
+            codeFullInfo={codefullinfo}
+            totalCodes={codeInfoDataTable.length}
           />
-        </main>
-      </div>
+
+          {/* Cột phải: Thông số mã hiện hành & 2 Bảng song song 50:50 */}
+          <main className={`precision-bom__main${isCodeDetailLoading ? " is-loading" : ""}`}>
+            {isCodeDetailLoading && (
+              <div className="loading-overlay loading-overlay--detail" role="status" aria-live="polite">
+                <span className="loading-spinner" />
+                <span>Đang tải thông tin mã và BOM...</span>
+              </div>
+            )}
+            {specGridJSX}
+
+            <PrecisionBOMDualTables
+              bomsxTableJSX={bomsxTableJSX}
+              bomgiaTableJSX={bomgiaTableJSX}
+              onSaveBOMSX={confirmSaveBOMSX}
+              onAddRowBOMSX={handleAddRowBOMSX}
+              onDeleteRowBOMSX={handleDeleteRowBOMSX}
+              onSaveBOMGIA={confirmSaveBOMGIA}
+              onAddRowBOMGIA={handleAddRowBOMGIA}
+              onDeleteRowBOMGIA={handleDeleteRowBOMGIA}
+              onCloneBOMSX={handleCloneBOMSX}
+              onToggleDesignBom={() => setShowHideDesignBOM((prev) => !prev)}
+              onToggleEdit={() => setEnableEdit((prev) => !prev)}
+              enableEdit={enableEdit}
+              pinBOM={pinBOM}
+              onExportEX1={() => {}}
+              onExportEX2={() => {}}
+              onOpenPivot={() => setShowPivot(true)}
+              bomsxCount={bomsxtable.length}
+              bomgiaCount={bomgiatable.length}
+              materialList={materialList}
+              selectedMaterial={selectedMaterial}
+              setSelectedMaterial={setSelectedMaterial}
+            />
+          </main>
+        </div>
+      )}
 
       {/* Modal Upload Hàng Loạt */}
       <PrecisionBOMBulkModal
