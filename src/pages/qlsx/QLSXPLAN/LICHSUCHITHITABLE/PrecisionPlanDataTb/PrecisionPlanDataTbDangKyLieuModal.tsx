@@ -95,10 +95,8 @@ export const PrecisionPlanDataTbDangKyLieuModal: React.FC<
 
           <button
             className="tb-lieu-btn tb-lieu-btn--save"
-            onClick={() => {
-              checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], handleConfirmDKXL);
-            }}
-            title="Lưu chỉ thị và tiến hành đăng ký xuất kho"
+            onClick={handleConfirmDKXL}
+            title="Lưu chỉ thị và đăng ký xuất liệu (ĐKXL) tới Kho SX"
           >
             <AiOutlineBarcode size={14} />
             Lưu CT + ĐKXK

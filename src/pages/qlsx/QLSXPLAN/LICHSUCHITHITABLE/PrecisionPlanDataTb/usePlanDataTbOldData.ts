@@ -4,8 +4,10 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
 import { UserData } from "../../../../../api/GlobalInterface";
-import { generalQuery, getCompany, getUserData } from "../../../../../api/Api";
+import { generalQuery, getCompany, getSocket, getUserData } from "../../../../../api/Api";
 import { checkBP } from "../../../../../api/services/permissionService";
+import { f_insert_Notification_Data } from "../../../../../api/services/notificationService";
+import { NotificationElement } from "../../../../../components/NotificationPanel/Notification";
 import { useReactToPrint } from "react-to-print";
 import { AgGridReact } from "ag-grid-react";
 import {
@@ -23,6 +25,7 @@ import {
   f_handleGetChiThiTable,
   f_handleResetChiThiTable,
   f_loadQLSXPLANDATA,
+  f_luuChiThiVaDangKyXuatLieuFast,
   f_saveChiThiMaterialTable,
   f_updateBatchPlan,
   f_updateLossKT_ZTB_DM_HISTORY,
@@ -359,61 +362,98 @@ export const usePlanDataTbOldData = () => {
     await loadQLSXPlan(fromdate);
   };
 
-  const handleConfirmDKXL = () => {
-    Swal.fire({
-      title: "Chắc chắn muốn Đăng ký xuất liệu ?",
-      text: "Sẽ bắt đầu ĐK liệu",
+  // Lấy danh sách dòng vật tư cần lưu (theo dòng chọn nếu ở CMS, hoặc toàn bộ bảng)
+  const getMaterialRowsToSave = useCallback(() => {
+    return getCompany() === "CMS" ? qlsxchithidatafilter.current : chithidatatable;
+  }, [chithidatatable]);
+
+  // Đăng ký xuất liệu: BẢN NHANH - 1 request duy nhất cho cả "lưu chỉ thị" + "đăng ký O300/O301" (chuẩn PLANVISUAL)
+  const handleConfirmDKXL = useCallback(async () => {
+    if (!selectedPlan || selectedPlan.PLAN_ID === "XXX") {
+      Swal.fire("Thông báo", "Chọn ít nhất 1 chỉ thị để đăng ký xuất liệu", "error");
+      return;
+    }
+
+    const confirmResult = await Swal.fire({
+      title: "Chắc chắn muốn đăng ký xuất liệu?",
+      text: "Hệ thống sẽ lưu chỉ thị rồi đăng ký xuất liệu.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Vẫn ĐK liệu!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        if (selectedPlan && selectedPlan.PLAN_ID !== "XXX") {
-          /* Swal.fire({
-            title: "Đang lưu chỉ thị",
-            text: "Đang lưu chỉ thị, hãy chờ cho tới khi hoàn thành",
-            icon: "info",
-            showCancelButton: false,
-            allowOutsideClick: false,
-            showConfirmButton: false,
-          }); */
-          setActionLoading(true);
-          setActionProgress(15);
-          setActionLoadingLabel("Đang lưu chỉ thị vật liệu...");
-          try {
-            await hanlde_SaveChiThi();
-            /* Swal.fire({
-              title: "Đang đăng ký xuất liệu",
-              text: "Đang đăng ký xuất liệu, hãy chờ cho tới khi hoàn thành",
-              icon: "info",
-              showCancelButton: false,
-              allowOutsideClick: false,
-              showConfirmButton: false,
-            }); */
-            setActionProgress(55);
-            setActionLoadingLabel("Đang đăng ký xuất kho vật liệu...");
-            await handleDangKyXuatLieu();
+      confirmButtonText: "Vẫn đăng ký",
+      cancelButtonText: "Hủy",
+    });
+    if (!confirmResult.isConfirmed) return;
 
-            clearSelectedMaterialRows();
-            setActionProgress(80);
-            setActionLoadingLabel("Đang tải lại chỉ thị và PLAN...");
-            setChiThiDataTable(await f_handleGetChiThiTable(selectedPlan));
-            setPlanDataTable(await f_loadQLSXPLANDATA(fromdate, machine, factory));
-            setActionProgress(100);
-          } catch (error) {
-            console.error("Lỗi đăng ký xuất liệu:", error);
-            Swal.fire("Lỗi", "Không thể đăng ký xuất liệu", "error");
-          } finally {
-            setActionLoading(false);
-          }
-        } else {
-          Swal.fire("Thông báo", "Chọn ít nhất 1 chỉ thị để đăng ký xuất liệu", "error");
+    checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
+      setActionLoading(true);
+      setActionProgress(20);
+      setActionLoadingLabel("Đang lưu chỉ thị và đăng ký xuất liệu...");
+      try {
+        const rows = getMaterialRowsToSave();
+        if (!rows || rows.length === 0) {
+          Swal.fire("Thông báo", "Chọn ít nhất một liệu để đăng ký", "warning");
+          return;
         }
+
+        const actionResult = await f_luuChiThiVaDangKyXuatLieuFast(
+          selectedPlan,
+          factory,
+          rows
+        );
+
+        if (actionResult.errors) {
+          Swal.fire("Thông báo", actionResult.errors, "error");
+          return;
+        }
+
+        setActionProgress(70);
+        setActionLoadingLabel("Đang tải lại chỉ thị và kế hoạch...");
+        clearSelectedMaterialRows();
+        const updatedChiThi = await f_handleGetChiThiTable(selectedPlan);
+        setChiThiDataTable(updatedChiThi || []);
+
+        setActionProgress(90);
+        const updatedPlan = await f_loadQLSXPLANDATA(fromdate, machine, factory);
+        setPlanDataTable(updatedPlan);
+        setActionProgress(100);
+
+        const notification: NotificationElement = {
+          CTR_CD: "002",
+          NOTI_ID: -1,
+          NOTI_TYPE: "info",
+          TITLE: "Đăng ký xuất liệu cho chỉ thị",
+          CONTENT: `${getUserData()?.EMPL_NO} đã đăng ký xuất liệu cho chỉ thị: ${selectedPlan.PLAN_ID}: ${selectedPlan.PROD_REQUEST_NO}: ${selectedPlan.G_NAME}`,
+          SUBDEPTNAME: "KD,RND,SX_VP,QLSX,KHO_VP,MUA_VP",
+          MAINDEPTNAME: "KD,RND,SX,QLSX,KHO,MUA",
+          INS_EMPL: getUserData()?.EMPL_NO || "ADMIN",
+          INS_DATE: moment().format("YYYY-MM-DD"),
+          UPD_EMPL: getUserData()?.EMPL_NO || "ADMIN",
+          UPD_DATE: moment().format("YYYY-MM-DD"),
+        };
+        if (await f_insert_Notification_Data(notification)) {
+          getSocket().emit("notification_panel", notification);
+        }
+
+        Swal.fire("Thành công", "Đã đăng ký xuất liệu thành công", "success");
+      } catch (err) {
+        console.error("Lỗi đăng ký xuất liệu:", err);
+        Swal.fire("Lỗi", "Không thể đăng ký xuất liệu", "error");
+      } finally {
+        setActionLoading(false);
       }
     });
-  };
+  }, [
+    chithidatatable,
+    clearSelectedMaterialRows,
+    factory,
+    fromdate,
+    getMaterialRowsToSave,
+    machine,
+    selectedPlan,
+    userData,
+  ]);
 
   const handle_xuatdao_sample = async () => {
     let err_code: string = await f_handle_xuatdao_sample(selectedPlan);
