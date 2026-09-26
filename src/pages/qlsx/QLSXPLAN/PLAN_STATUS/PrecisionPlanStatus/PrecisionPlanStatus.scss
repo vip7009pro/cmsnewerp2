@@ -752,4 +752,689 @@
       border: 1px solid #fecaca;
     }
   }
+
+  /* ==========================================================================
+     7. IS-MOBILE VIEWPORT OPTIMIZATIONS
+     ========================================================================== */
+  &.is-mobile {
+    height: 100%;
+    min-height: 0;
+
+    .precision-plan-status-content {
+      padding: 4px;
+
+      .cards-view-scroll {
+        padding-right: 0;
+        gap: 6px;
+      }
+
+      .table-view-container {
+        border-radius: 4px;
+      }
+    }
+
+    .status-pipeline-card {
+      padding: 6px 8px;
+      gap: 6px;
+
+      .card-top-row {
+        gap: 4px;
+
+        .plan-meta-left {
+          gap: 4px;
+          flex-wrap: wrap;
+
+          .badge-index {
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+          }
+
+          .badge-plan-id {
+            font-size: 11px;
+            padding: 1px 6px;
+          }
+
+          .badge-prod-name {
+            font-size: 11px;
+          }
+
+          .meta-tag {
+            font-size: 9.5px;
+            padding: 1px 4px;
+          }
+        }
+
+        .plan-progress-right {
+          width: 100%;
+          justify-content: space-between;
+          padding-top: 2px;
+          border-top: 1px dashed #f1f5f9;
+
+          .qty-metrics {
+            font-size: 10.5px;
+
+            .qty-actual {
+              font-size: 12px;
+            }
+          }
+
+          .progress-bar-wrap {
+            width: 120px;
+          }
+        }
+      }
+
+      .card-stepper-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+
+        .step-item {
+          padding: 3px 6px;
+          font-size: 9.5px;
+          border-radius: 3px;
+
+          .step-icon {
+            font-size: 11px;
+          }
+        }
+      }
+    }
+  }
+
+  /* ==========================================================================
+     8. MOBILE TOOLBAR (2 HÀNG CÔNG THÁI HỌC)
+     ========================================================================== */
+  .precision-plan-status-mobile-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px 8px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+
+    .mobile-toolbar-row {
+      display: flex;
+      align-items: center;
+      width: 100%;
+
+      /* HÀNG 1: SEARCH + SWITCH + NÚT TRA CỨU + NÚT LỌC */
+      &--search {
+        gap: 6px;
+
+        .mobile-search-box {
+          flex: 1;
+          height: 38px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 0 10px;
+          background: #f8fafc;
+          border: 1px solid #cbd5e1;
+          border-radius: 6px;
+          box-sizing: border-box;
+          min-width: 0;
+
+          &:focus-within {
+            border-color: #0284c7;
+            background: #ffffff;
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+          }
+
+          .mobile-search-icon {
+            color: #64748b;
+            flex-shrink: 0;
+          }
+
+          .mobile-search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 14px; /* Chống iOS auto-zoom */
+            color: #1e293b;
+            min-width: 0;
+
+            &::placeholder {
+              color: #94a3b8;
+              font-size: 12.5px;
+            }
+          }
+
+          .mobile-search-clear {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border: none;
+            background: #e2e8f0;
+            color: #475569;
+            border-radius: 50%;
+            cursor: pointer;
+            flex-shrink: 0;
+            padding: 0;
+
+            &:active {
+              background: #cbd5e1;
+            }
+          }
+        }
+
+        .tb-btn {
+          height: 38px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          padding: 0 10px;
+          border-radius: 6px;
+          font-size: 12px;
+          font-weight: 600;
+          white-space: nowrap;
+          cursor: pointer;
+          flex-shrink: 0;
+          box-sizing: border-box;
+          transition: all 0.15s ease;
+
+          &:active {
+            transform: scale(0.97);
+          }
+
+          &--view-mode {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+
+            &:active {
+              background: #e2e8f0;
+            }
+          }
+
+          &--query {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #ffffff;
+            border: none;
+            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+
+            &:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
+          }
+
+          &--filter {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #0369a1;
+            position: relative;
+
+            &-active {
+              background: #0284c7;
+              border-color: #0284c7;
+              color: #ffffff;
+            }
+
+            .filter-badge-count {
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              min-width: 16px;
+              height: 16px;
+              padding: 0 4px;
+              border-radius: 10px;
+              background: #dc2626;
+              color: #ffffff;
+              font-size: 10px;
+              font-weight: 700;
+            }
+          }
+        }
+      }
+
+      /* HÀNG 2: DẢI NÚT CUỘN NGANG CÔNG THÁI HỌC */
+      &--actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 2px;
+        padding-top: 2px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+
+        .mobile-stats-chip {
+          display: flex;
+          align-items: center;
+          gap: 3px;
+          padding: 0 8px;
+          height: 28px;
+          background: #f1f5f9;
+          border: 1px solid #e2e8f0;
+          border-radius: 6px;
+          font-size: 11px;
+          color: #475569;
+          flex-shrink: 0;
+
+          strong {
+            color: #0284c7;
+            font-weight: 700;
+          }
+        }
+
+        .mobile-chip-toggle {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 0 8px;
+          height: 28px;
+          background: #f8fafc;
+          border: 1px solid #cbd5e1;
+          border-radius: 6px;
+          font-size: 11px;
+          font-weight: 600;
+          color: #475569;
+          cursor: pointer;
+          user-select: none;
+          flex-shrink: 0;
+          transition: all 0.15s ease;
+
+          input[type="checkbox"] {
+            width: 13px;
+            height: 13px;
+            accent-color: #0284c7;
+            cursor: pointer;
+            margin: 0;
+          }
+
+          &--active {
+            background: #eff6ff;
+            border-color: #93c5fd;
+            color: #0369a1;
+          }
+        }
+
+        .tb-btn {
+          height: 28px;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 0 8px;
+          border-radius: 6px;
+          font-size: 11px;
+          font-weight: 600;
+          white-space: nowrap;
+          cursor: pointer;
+          flex-shrink: 0;
+
+          &--summary {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #15803d;
+
+            &-active {
+              background: #dcfce7;
+              border-color: #22c55e;
+            }
+          }
+
+          &--excel {
+            background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+            color: #ffffff;
+            border: none;
+            box-shadow: 0 1px 3px rgba(22, 163, 74, 0.25);
+
+            &:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
+          }
+
+          &--neutral {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #475569;
+          }
+        }
+      }
+    }
+  }
+
+  /* ==========================================================================
+     9. MINI KPI BAR TRÊN MOBILE (CUỘN NGANG)
+     ========================================================================== */
+  .precision-plan-status-mobile-kpi-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 8px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    gap: 6px;
+    flex-shrink: 0;
+
+    .mobile-kpi-scroll {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      flex: 1;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .mobile-kpi-chip {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 7px;
+        height: 24px;
+        border-radius: 4px;
+        font-size: 10px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        box-sizing: border-box;
+
+        .kpi-icon {
+          font-size: 11px;
+        }
+
+        .kpi-label {
+          color: #64748b;
+          font-weight: 500;
+        }
+
+        strong {
+          font-weight: 700;
+        }
+
+        &.kpi-total {
+          background: #e0f2fe;
+          border: 1px solid #bae6fd;
+          color: #0369a1;
+        }
+
+        &.kpi-dao {
+          background: #fee2e2;
+          border: 1px solid #fecaca;
+          color: #b91c1c;
+        }
+
+        &.kpi-lieu {
+          background: #fef3c7;
+          border: 1px solid #fde68a;
+          color: #b45309;
+        }
+
+        &.kpi-setting {
+          background: #f3e8ff;
+          border: 1px solid #e9d5ff;
+          color: #7e22ce;
+        }
+
+        &.kpi-mass {
+          background: #ccfbf1;
+          border: 1px solid #99f6e4;
+          color: #0f766e;
+        }
+
+        &.kpi-done {
+          background: #dcfce7;
+          border: 1px solid #bbf7d0;
+          color: #15803d;
+        }
+      }
+    }
+
+    .mobile-kpi-close-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: #e2e8f0;
+      color: #64748b;
+      border-radius: 50%;
+      cursor: pointer;
+      flex-shrink: 0;
+
+      &:active {
+        background: #cbd5e1;
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   10. ZERO-BLUR GPU-FRIENDLY BOTTOM SHEET FILTER DRAWER
+   ========================================================================== */
+.precision-plan-status-mobile-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(15, 23, 42, 0.75); /* ZERO BLUR - Bảo vệ GPU điện thoại */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  .precision-plan-status-mobile-drawer {
+    background: #ffffff;
+    border-radius: 16px 16px 0 0;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+    animation: planStatusDrawerSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+    .drawer-header {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e2e8f0;
+      background: #f8fafc;
+      flex-shrink: 0;
+
+      .drawer-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: -0.01em;
+      }
+
+      .drawer-close-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: #e2e8f0;
+        color: #475569;
+        border-radius: 50%;
+        cursor: pointer;
+
+        &:active {
+          background: #cbd5e1;
+        }
+      }
+    }
+
+    .drawer-body {
+      padding: 12px 16px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .group-title {
+          font-size: 12px;
+          font-weight: 700;
+          color: #334155;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .grid-2col {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+
+        .field-item {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+
+          label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+          }
+
+          .mobile-drawer-input,
+          .mobile-drawer-select {
+            height: 40px;
+            font-size: 14px; /* Chống zoom tự động trên Safari iOS */
+            padding: 0 10px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            color: #1e293b;
+            width: 100%;
+            box-sizing: border-box;
+            outline: none;
+
+            &:focus {
+              border-color: #0284c7;
+              background: #ffffff;
+            }
+          }
+        }
+
+        .mobile-drawer-checkbox {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          user-select: none;
+          padding: 4px 0;
+
+          input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #0284c7;
+            cursor: pointer;
+          }
+
+          .checkbox-text {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #334155;
+          }
+        }
+      }
+    }
+
+    .drawer-footer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-top: 1px solid #e2e8f0;
+      background: #f8fafc;
+      flex-shrink: 0;
+
+      .btn-drawer-reset {
+        height: 42px;
+        padding: 0 14px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #475569;
+        font-weight: 600;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        flex-shrink: 0;
+
+        &:active {
+          background: #f1f5f9;
+        }
+      }
+
+      .btn-drawer-apply {
+        flex: 1;
+        height: 42px;
+        border-radius: 8px;
+        border: none;
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(2, 132, 199, 0.3);
+
+        &:active {
+          transform: scale(0.98);
+        }
+      }
+    }
+  }
+}
+
+@keyframes planStatusDrawerSlideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.spin-animation {
+  animation: spin 1s linear infinite;
+}
+
+.spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
