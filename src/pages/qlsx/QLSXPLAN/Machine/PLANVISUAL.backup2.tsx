@@ -7,8 +7,6 @@ import { PrecisionMachineToolbar } from "./PrecisionMachine/dashboard/PrecisionM
 import { PrecisionMachineKpi } from "./PrecisionMachine/dashboard/PrecisionMachineKpi";
 import { PrecisionMachineLineGroup } from "./PrecisionMachine/dashboard/PrecisionMachineLineGroup";
 import { PrecisionMachinePlanModal } from "./PrecisionMachine/modal/PrecisionMachinePlanModal";
-import { PrecisionMachineMobileActionDrawer } from "./PrecisionMachine/dashboard/PrecisionMachineMobileActionDrawer";
-import useIsMobile from "../../../../components/Navbar/AccountInfo/useIsMobile";
 
 const MACHINE_SHORTCUTS: Record<string, string> = {
   F1: "FR01",
@@ -35,9 +33,6 @@ for (let machineNumber = 1; machineNumber <= 38; machineNumber += 1) {
 }
 
 const PLAN_VISUAL: React.FC = () => {
-  const isMobile = useIsMobile();
-  const [showMobileActionDrawer, setShowMobileActionDrawer] = useState<boolean>(false);
-
   // 1. Hook Quản Lý Dữ Liệu Sàn Sản Xuất Chính
   const {
     factory,
@@ -195,8 +190,8 @@ const PLAN_VISUAL: React.FC = () => {
   }, [eq_series, selected_eq]);
 
   return (
-    <div className={`precision-machine ${isMobile ? "is-mobile" : ""}`}>
-      {/* 1. ACTION TOOLBAR & BỘ LỌC CÔNG THÁI HỌC (TỰ THÍCH ỨNG DESKTOP / MOBILE) */}
+    <div className="precision-machine">
+      {/* 1. ACTION TOOLBAR & BỘ LỌC CÔNG THÁI HỌC */}
       <PrecisionMachineToolbar
         factory={factory}
         onFactoryChange={setFactory}
@@ -209,58 +204,17 @@ const PLAN_VISUAL: React.FC = () => {
         onToggleEqSeries={handleToggleEqSeries}
         searchKeyword={searchKeyword}
         onSearchKeywordChange={setSearchKeyword}
-        isMobile={isMobile}
-        onOpenActionDrawer={() => setShowMobileActionDrawer(true)}
-        onExportExcel={handleExportExcel}
       />
 
-      {/* 2. MAIN WORKSHOP FLOORPLAN (CUỘN TRỰC QUAN SÀN SẢN XUẤT) */}
+      {/* 3. MAIN WORKSHOP FLOORPLAN (CUỘN TRỰC QUAN SÀN SẢN XUẤT) */}
       <main className="precision-machine__floorplan">
-        {/* THANH THẺ MICRO-KPIS: DESKTOP RENDER CARD ĐẦY ĐỦ, MOBILE RENDER BANNER 1 DÒNG GỌN GÀNG */}
-        {!isMobile ? (
-          <div className="flex items-center justify-between gap-3 flex-wrap shrink-0">
-            <PrecisionMachineKpi
-              kpiData={kpiData}
-              onExportExcel={handleExportExcel}
-            />
-          </div>
-        ) : (
-          <div
-            className="mobile-floor-ticker"
-            onClick={() => setShowMobileActionDrawer(true)}
-            title="Chạm để xem chi tiết tác vụ & KPIs sàn sản xuất"
-          >
-            <div className="ticker-left">
-              <span className="ticker-dot" />
-              <span className="ticker-text">
-                <strong>{kpiData.activeMachines}/{kpiData.totalMachines}</strong> Máy (
-                {kpiData.totalMachines > 0
-                  ? ((kpiData.activeMachines / kpiData.totalMachines) * 100).toFixed(0)
-                  : 0}
-                %)
-              </span>
-              <span className="ticker-divider">•</span>
-              <span className="ticker-text">
-                Tiến độ:{" "}
-                <strong>
-                  {kpiData.totalTargetQty > 0
-                    ? ((kpiData.completedQty / kpiData.totalTargetQty) * 100).toFixed(0)
-                    : 0}
-                  %
-                </strong>
-              </span>
-            </div>
-            <div className="ticker-right">
-              {kpiData.waitingMaterialCount > 0 ? (
-                <span className="ticker-alert">
-                  ⚠️ {kpiData.waitingMaterialCount} máy thiếu NVL
-                </span>
-              ) : (
-                <span className="ticker-action">⚡ Menu Tác Vụ</span>
-              )}
-            </div>
-          </div>
-        )}
+        {/* THANH THẺ MICRO-KPIS THỜI GIAN THỰC */}
+        <div className="flex items-center justify-between gap-3 flex-wrap shrink-0">
+          <PrecisionMachineKpi
+            kpiData={kpiData}
+            onExportExcel={handleExportExcel}
+          />
+        </div>
 
         {/* TỪNG PHÂN HỆ DÒNG MÁY (LINE SECTIONS) */}
         {activeSeries.map((series) => {
@@ -304,7 +258,6 @@ const PLAN_VISUAL: React.FC = () => {
               machines={lineMachines}
               plansByMachine={plansByMachine}
               onOpenPlanModal={openPlanModal}
-              isMobile={isMobile}
             />
           );
         })}
@@ -317,25 +270,6 @@ const PLAN_VISUAL: React.FC = () => {
           selectedFactory={selectedFactory}
           onClose={closePlanModal}
           modalController={modalController}
-        />
-      )}
-
-      {/* 4. MOBILE ACTION DRAWER BOTTOM SHEET (CHỈ RENDER KHI Ở MOBILE VÀ ĐƯỢC KÍCH HOẠT) */}
-      {isMobile && (
-        <PrecisionMachineMobileActionDrawer
-          isOpen={showMobileActionDrawer}
-          onClose={() => setShowMobileActionDrawer(false)}
-          factory={factory}
-          onFactoryChange={setFactory}
-          selectedPlanDate={selectedPlanDate}
-          onDateChange={setSelectedPlanDate}
-          eq_series={eq_series}
-          selected_eq={selected_eq}
-          onToggleEqSeries={handleToggleEqSeries}
-          onRefresh={refreshAll}
-          onAutoDispatch={handleAutoDispatch}
-          onExportExcel={handleExportExcel}
-          kpiData={kpiData}
         />
       )}
     </div>

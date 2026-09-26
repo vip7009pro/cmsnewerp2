@@ -6,10 +6,12 @@ interface MachineCardProps {
   machine: EQ_STT;
   plans: QLSXPLANDATA[];
   onDoubleClick: () => void;
+  onClick?: () => void;
+  isMobile?: boolean;
 }
 
 export const PrecisionMachineCard: React.FC<MachineCardProps> = React.memo(
-  ({ machine, plans, onDoubleClick }) => {
+  ({ machine, plans, onDoubleClick, onClick, isMobile = false }) => {
     const eqName = machine.EQ_NAME === "ED36" ? "ED36(SP01)" : machine.EQ_NAME || "NA";
     const eqStatus = machine.EQ_STATUS || "STOP";
     const isLive = eqStatus === "MASS";
@@ -36,9 +38,6 @@ export const PrecisionMachineCard: React.FC<MachineCardProps> = React.memo(
       statusLabel = "STOP";
     }
 
-    // Tốc độ giả lập hoặc thực tế
-    const speedText = machine.EQ_NAME?.startsWith("DC") ? "140 RPM" : "135 spm";
-
     const handleHoiKho = (e: React.MouseEvent) => {
       e.stopPropagation();
       Swal.fire({
@@ -54,9 +53,16 @@ export const PrecisionMachineCard: React.FC<MachineCardProps> = React.memo(
       <div
         className={`precision-machine__card ${
           isLive ? "precision-machine__card--live" : ""
-        } ${isWaitingMaterial ? "precision-machine__card--waiting" : ""}`}
+        } ${isWaitingMaterial ? "precision-machine__card--waiting" : ""} ${
+          isMobile ? "is-mobile-card" : ""
+        }`}
         onDoubleClick={onDoubleClick}
-        title={`Nhấp đúp để mở Kế hoạch chi tiết máy ${eqName}`}
+        onClick={isMobile ? onClick : undefined}
+        title={
+          isMobile
+            ? `Chạm để mở Kế hoạch chi tiết máy ${eqName}`
+            : `Nhấp đúp để mở Kế hoạch chi tiết máy ${eqName}`
+        }
       >
         <div>
           {/* Header Card */}
@@ -66,13 +72,11 @@ export const PrecisionMachineCard: React.FC<MachineCardProps> = React.memo(
               <span className="mini-dot"></span>
               {statusLabel}
             </span>
-             {/* Subcode mã hàng đang chạy */}
-          <div className="card-subcode" title={machine.G_NAME || "Chưa có mã hàng"}>
-            {machine.CURR_PLAN_ID ? `${machine.CURR_PLAN_ID}_${machine.G_NAME || ""}` : machine.G_NAME || "CHỜ KẾ HOẠCH"}
+            {/* Subcode mã hàng đang chạy */}
+            <div className="card-subcode" title={machine.G_NAME || "Chưa có mã hàng"}>
+              {machine.CURR_PLAN_ID ? `${machine.CURR_PLAN_ID}_${machine.G_NAME || ""}` : machine.G_NAME || "CHỜ KẾ HOẠCH"}
+            </div>
           </div>
-          </div>
-
-         
 
           {/* Danh sách Jobs (Có khả năng cuộn khi máy có nhiều lệnh dập) */}
           <div className="card-jobs card-jobs--scrollable">
@@ -118,7 +122,6 @@ export const PrecisionMachineCard: React.FC<MachineCardProps> = React.memo(
 
         {/* Footer Card */}
         <div className="card-footer">
-         {/*  <span>Tốc độ: {speedText}</span> */}
           {!isWaitingMaterial && machine.EQ_NAME === "DC07" ? (
             <div className="flex items-center gap-1.5">
               <span className="downtime-urgent">Downtime: 14m</span>
@@ -127,7 +130,22 @@ export const PrecisionMachineCard: React.FC<MachineCardProps> = React.memo(
               </button>
             </div>
           ) : (
-            <span className="waiting-count">{machinePlans.length} Lệnh</span>
+            <div className="flex items-center justify-between w-full">
+              <span className="waiting-count">{machinePlans.length} Lệnh</span>
+              {isMobile && (
+                <button
+                  type="button"
+                  className="mobile-view-plan-pill"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClick?.();
+                  }}
+                  title="Mở kế hoạch máy"
+                >
+                  Chi tiết ⚡
+                </button>
+              )}
+            </div>
           )}
         </div>
       </div>

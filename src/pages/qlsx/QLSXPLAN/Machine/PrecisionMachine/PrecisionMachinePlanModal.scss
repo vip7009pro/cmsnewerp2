@@ -703,6 +703,17 @@
     border-radius: 6px;
     padding: 4px 6px;
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+
+    .dinhmuc-scroll-wrapper {
+      min-width: 840px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      width: 100%;
+    }
   }
 
   .dm-row {
@@ -715,6 +726,7 @@
     border-radius: 4px;
     padding: 2px 6px;
     min-height: 25px;
+    min-width: 840px;
 
     &__label {
       font-family: "JetBrains Mono", monospace;
@@ -782,6 +794,7 @@
     border-radius: 4px;
     padding: 2px 6px;
     min-height: 25px;
+    min-width: 840px;
 
     .fn-item {
       display: flex;
@@ -1401,3 +1414,252 @@
     }
   }
 }
+
+// =============================================================================
+// PRECISION PLAN MODAL: MOBILE RESPONSIVE RULES (≤ 768px)
+// =============================================================================
+@media (max-width: 768px) {
+  .precision-plan-modal {
+    &__header {
+      padding: 6px 10px;
+      gap: 6px;
+
+      .header-left {
+        gap: 6px;
+
+        .machine-badge {
+          font-size: 13px;
+          padding: 2px 6px;
+        }
+
+        .modal-title {
+          font-size: 11.5px;
+          display: none;
+        }
+
+        .factory-tag {
+          font-size: 10px;
+          padding: 1px 4px;
+        }
+      }
+
+      .plan-identity {
+        order: 3;
+        flex-basis: 100%;
+        max-width: 100%;
+        padding-top: 2px;
+
+        &__line {
+          font-size: 13px;
+        }
+      }
+
+      .header-actions {
+        gap: 6px;
+
+        .btn-toggle-ycsx {
+          font-size: 10.5px;
+          padding: 4px 8px;
+        }
+
+        .btn-close-modal {
+          font-size: 11px;
+          padding: 4px 10px;
+        }
+      }
+    }
+
+    &__body {
+      padding: 6px 6px 40px 6px !important;
+      height: calc(100vh - 44px) !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      display: block !important;
+    }
+
+    &__splitContent {
+      display: flex !important;
+      flex-direction: column !important;
+      height: auto !important;
+      min-height: 0 !important;
+      overflow: visible !important;
+      gap: 8px !important;
+
+      &.with-ycsx {
+        display: flex !important;
+        flex-direction: column !important;
+      }
+    }
+
+    .ycsx-query-section {
+      height: 380px !important;
+      min-height: 380px !important;
+      flex: 0 0 380px !important;
+      width: 100% !important;
+    }
+
+    &__rightPane {
+      display: flex !important;
+      flex-direction: column !important;
+      height: auto !important;
+      min-height: 0 !important;
+      overflow: visible !important;
+      flex: 0 0 auto !important;
+      gap: 8px !important;
+    }
+
+    .machine-plan-container {
+      flex: 0 0 auto !important;
+      height: auto !important;
+      overflow: visible !important;
+
+      .plans-table-box {
+        height: 220px !important;
+        min-height: 220px !important;
+        flex: 0 0 220px !important;
+      }
+    }
+
+    &__detailContent {
+      display: flex !important;
+      flex-direction: column !important;
+      height: auto !important;
+      min-height: 0 !important;
+      overflow: visible !important;
+      flex: 0 0 auto !important;
+      gap: 8px !important;
+    }
+
+    .dinhmuc-rows-section {
+      width: 100% !important;
+      flex: 0 0 auto !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      scrollbar-width: thin !important;
+      padding: 4px !important;
+
+      .dinhmuc-scroll-wrapper {
+        min-width: 840px !important;
+        width: max-content !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+      }
+
+      .dm-row {
+        min-width: 840px !important;
+        width: 100% !important;
+        min-height: 30px !important;
+        gap: 6px !important;
+
+        &__label {
+          font-size: 11px !important;
+        }
+
+        &__field {
+          label {
+            font-size: 10px !important;
+          }
+          input, select {
+            height: 26px !important;
+            font-size: 11.5px !important;
+          }
+        }
+      }
+
+      .factory-note-bar {
+        min-width: 840px !important;
+        width: 100% !important;
+        min-height: 30px !important;
+
+        select, input[type="text"] {
+          height: 26px !important;
+          font-size: 11.5px !important;
+        }
+      }
+    }
+
+    .bottom-plan-material-row {
+      display: flex !important;
+      flex-direction: column !important;
+      height: auto !important;
+      min-height: 0 !important;
+      overflow: visible !important;
+      flex: 0 0 auto !important;
+      gap: 8px !important;
+    }
+
+    .selected-plan-card {
+      width: 100% !important;
+      min-width: 100% !important;
+      max-width: 100% !important;
+      height: auto !important;
+      flex: 0 0 auto !important;
+
+      &__form {
+        overflow-y: visible !important;
+        height: auto !important;
+        gap: 6px !important;
+
+        .form-row {
+          label {
+            font-size: 11px !important;
+            width: 90px !important;
+          }
+          input[type="text"], input[type="number"] {
+            height: 28px !important;
+            font-size: 12px !important;
+          }
+        }
+
+        .btn-save-plan {
+          height: 34px !important;
+          font-size: 12px !important;
+          margin-top: 6px !important;
+        }
+      }
+    }
+
+    .material-section-box {
+      width: 100% !important;
+      height: auto !important;
+      min-height: 360px !important;
+      overflow: visible !important;
+      flex: 0 0 auto !important;
+      margin-bottom: 20px !important;
+
+      .material-actions-toolbar {
+        .toolbar-btn-group {
+          display: flex !important;
+          align-items: center !important;
+          gap: 4px !important;
+          overflow-x: auto !important;
+          white-space: nowrap !important;
+          -webkit-overflow-scrolling: touch !important;
+          scrollbar-width: none !important;
+          padding-bottom: 3px !important;
+
+          &::-webkit-scrollbar {
+            display: none !important;
+          }
+
+          button {
+            height: 28px !important;
+            padding: 0 8px !important;
+            font-size: 11px !important;
+            flex-shrink: 0 !important;
+          }
+        }
+      }
+
+      .material-table-container {
+        height: 300px !important;
+        min-height: 300px !important;
+        flex: 0 0 300px !important;
+        width: 100% !important;
+        overflow: hidden !important;
+      }
+    }
+  }
+}
+

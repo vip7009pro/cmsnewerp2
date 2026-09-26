@@ -80,25 +80,27 @@ export const PrecisionPlanDinhMucSection: React.FC<DinhMucSectionProps> = React.
 
     return (
       <div className="dinhmuc-rows-section">
-        {/* 4 HÀNG NGANG ĐỊNH MỨC (GIỐNG BẢN GỐC) */}
-        <DinhMucRow cdIndex={1} eqVal={datadinhmuc.EQ1} settingVal={datadinhmuc.Setting1} uphVal={datadinhmuc.UPH1} stepVal={datadinhmuc.Step1} lossSxVal={datadinhmuc.LOSS_SX1} lossSettingVal={datadinhmuc.LOSS_SETTING1} recentLoss={getRecent(1)?.LOSS_SX} recentSetting={getRecent(1)?.TT_SETTING_MET} machine_list={machine_list} onDmChange={handleDmChange} eqField="EQ1" settingField="Setting1" uphField="UPH1" stepField="Step1" lossSxField="LOSS_SX1" lossSettingField="LOSS_SETTING1" />
-        <DinhMucRow cdIndex={2} eqVal={datadinhmuc.EQ2} settingVal={datadinhmuc.Setting2} uphVal={datadinhmuc.UPH2} stepVal={datadinhmuc.Step2} lossSxVal={datadinhmuc.LOSS_SX2} lossSettingVal={datadinhmuc.LOSS_SETTING2} recentLoss={getRecent(2)?.LOSS_SX} recentSetting={getRecent(2)?.TT_SETTING_MET} machine_list={machine_list} onDmChange={handleDmChange} eqField="EQ2" settingField="Setting2" uphField="UPH2" stepField="Step2" lossSxField="LOSS_SX2" lossSettingField="LOSS_SETTING2" />
-        <DinhMucRow cdIndex={3} eqVal={datadinhmuc.EQ3} settingVal={datadinhmuc.Setting3} uphVal={datadinhmuc.UPH3} stepVal={datadinhmuc.Step3} lossSxVal={datadinhmuc.LOSS_SX3} lossSettingVal={datadinhmuc.LOSS_SETTING3} recentLoss={getRecent(3)?.LOSS_SX} recentSetting={getRecent(3)?.TT_SETTING_MET} machine_list={machine_list} onDmChange={handleDmChange} eqField="EQ3" settingField="Setting3" uphField="UPH3" stepField="Step3" lossSxField="LOSS_SX3" lossSettingField="LOSS_SETTING3" />
-        <DinhMucRow cdIndex={4} eqVal={datadinhmuc.EQ4} settingVal={datadinhmuc.Setting4} uphVal={datadinhmuc.UPH4} stepVal={datadinhmuc.Step4} lossSxVal={datadinhmuc.LOSS_SX4} lossSettingVal={datadinhmuc.LOSS_SETTING4} recentLoss={getRecent(4)?.LOSS_SX} recentSetting={getRecent(4)?.TT_SETTING_MET} machine_list={machine_list} onDmChange={handleDmChange} eqField="EQ4" settingField="Setting4" uphField="UPH4" stepField="Step4" lossSxField="LOSS_SX4" lossSettingField="LOSS_SETTING4" />
+        <div className="dinhmuc-scroll-wrapper">
+          {/* 4 HÀNG NGANG ĐỊNH MỨC (GIỐNG BẢN GỐC) */}
+          <DinhMucRow cdIndex={1} eqVal={datadinhmuc.EQ1} settingVal={datadinhmuc.Setting1} uphVal={datadinhmuc.UPH1} stepVal={datadinhmuc.Step1} lossSxVal={datadinhmuc.LOSS_SX1} lossSettingVal={datadinhmuc.LOSS_SETTING1} recentLoss={getRecent(1)?.LOSS_SX} recentSetting={getRecent(1)?.TT_SETTING_MET} machine_list={machine_list} onDmChange={handleDmChange} eqField="EQ1" settingField="Setting1" uphField="UPH1" stepField="Step1" lossSxField="LOSS_SX1" lossSettingField="LOSS_SETTING1" />
+          <DinhMucRow cdIndex={2} eqVal={datadinhmuc.EQ2} settingVal={datadinhmuc.Setting2} uphVal={datadinhmuc.UPH2} stepVal={datadinhmuc.Step2} lossSxVal={datadinhmuc.LOSS_SX2} lossSettingVal={datadinhmuc.LOSS_SETTING2} recentLoss={getRecent(2)?.LOSS_SX} recentSetting={getRecent(2)?.TT_SETTING_MET} machine_list={machine_list} onDmChange={handleDmChange} eqField="EQ2" settingField="Setting2" uphField="UPH2" stepField="Step2" lossSxField="LOSS_SX2" lossSettingField="LOSS_SETTING2" />
+          <DinhMucRow cdIndex={3} eqVal={datadinhmuc.EQ3} settingVal={datadinhmuc.Setting3} uphVal={datadinhmuc.UPH3} stepVal={datadinhmuc.Step3} lossSxVal={datadinhmuc.LOSS_SX3} lossSettingVal={datadinhmuc.LOSS_SETTING3} recentLoss={getRecent(3)?.LOSS_SX} recentSetting={getRecent(3)?.TT_SETTING_MET} machine_list={machine_list} onDmChange={handleDmChange} eqField="EQ3" settingField="Setting3" uphField="UPH3" stepField="Step3" lossSxField="LOSS_SX3" lossSettingField="LOSS_SETTING3" />
+          <DinhMucRow cdIndex={4} eqVal={datadinhmuc.EQ4} settingVal={datadinhmuc.Setting4} uphVal={datadinhmuc.UPH4} stepVal={datadinhmuc.Step4} lossSxVal={datadinhmuc.LOSS_SX4} lossSettingVal={datadinhmuc.LOSS_SETTING4} recentLoss={getRecent(4)?.LOSS_SX} recentSetting={getRecent(4)?.TT_SETTING_MET} machine_list={machine_list} onDmChange={handleDmChange} eqField="EQ4" settingField="Setting4" uphField="UPH4" stepField="Step4" lossSxField="LOSS_SX4" lossSettingField="LOSS_SETTING4" />
 
-        {/* FACTORY & NOTE */}
-        <div className="factory-note-bar">
-          <div className="fn-item">
-            <label className="fn-label">FACTORY:</label>
-            <select value={datadinhmuc.FACTORY || "NA"} onChange={(e) => handleDmChange("FACTORY", e.target.value)}>
-              <option value="NA">NA</option>
-              <option value="NM1">NM1</option>
-              <option value="NM2">NM2</option>
-            </select>
-          </div>
-          <div className="fn-item flex-1">
-            <label className="fn-label">NOTE (QLSX):</label>
-            <input type="text" placeholder="Ghi chú kế hoạch sản xuất..." value={datadinhmuc.NOTE || ""} onChange={(e) => handleDmChange("NOTE", e.target.value)} />
+          {/* FACTORY & NOTE */}
+          <div className="factory-note-bar">
+            <div className="fn-item">
+              <label className="fn-label">FACTORY:</label>
+              <select value={datadinhmuc.FACTORY || "NA"} onChange={(e) => handleDmChange("FACTORY", e.target.value)}>
+                <option value="NA">NA</option>
+                <option value="NM1">NM1</option>
+                <option value="NM2">NM2</option>
+              </select>
+            </div>
+            <div className="fn-item flex-1">
+              <label className="fn-label">NOTE (QLSX):</label>
+              <input type="text" placeholder="Ghi chú kế hoạch sản xuất..." value={datadinhmuc.NOTE || ""} onChange={(e) => handleDmChange("NOTE", e.target.value)} />
+            </div>
           </div>
         </div>
       </div>

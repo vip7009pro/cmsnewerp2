@@ -11,10 +11,11 @@ interface LineGroupProps {
   /** Fallback cho màn hình cũ: danh sách plan dùng chung toàn sàn */
   plans?: QLSXPLANDATA[];
   onOpenPlanModal: (machineName: string, factory: string) => void;
+  isMobile?: boolean;
 }
 
 export const PrecisionMachineLineGroup: React.FC<LineGroupProps> = React.memo(
-  ({ series, factory, machines, plansByMachine, plans, onOpenPlanModal }) => {
+  ({ series, factory, machines, plansByMachine, plans, onOpenPlanModal, isMobile = false }) => {
     // Thông tin cấu hình theo từng loại Series Line
     let lineName = `CHUYỀN MÁY DẬP ${series}`;
     let lineDesc = `• ${machines.length} Cụm Máy Đang Quản Lý`;
@@ -78,6 +79,12 @@ export const PrecisionMachineLineGroup: React.FC<LineGroupProps> = React.memo(
                 machine={machine}
                 plans={machinePlanRows}
                 onDoubleClick={() => onOpenPlanModal(machine.EQ_NAME || "NA", machine.FACTORY || factory)}
+                onClick={
+                  isMobile
+                    ? () => onOpenPlanModal(machine.EQ_NAME || "NA", machine.FACTORY || factory)
+                    : undefined
+                }
+                isMobile={isMobile}
               />
             );
           })}
