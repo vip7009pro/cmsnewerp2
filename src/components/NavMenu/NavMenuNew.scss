@@ -19,7 +19,6 @@
 }
 
 /* Backdrop Overlay
-   - KHÔNG dùng backdrop-filter: blur() phủ toàn viewport nữa: blur toàn màn hình buộc
      browser lấy mẫu lại (re-sample) toàn bộ trang mỗi frame trong suốt animation slide-in
      ⇒ đây là nguyên nhân chính của "mở menu bị lag". Chỉ dùng lớp phủ màu đục hơn. */
 .navmenu-stitch-overlay {

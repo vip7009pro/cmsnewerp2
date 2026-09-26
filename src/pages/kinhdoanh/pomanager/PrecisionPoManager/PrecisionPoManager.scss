@@ -819,7 +819,6 @@
     inset: 0;
     z-index: 9999;
     background-color: rgba(15, 23, 42, 0.7);
-    backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1103,7 +1102,6 @@
   inset: 0;
   z-index: 9999;
   background-color: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;

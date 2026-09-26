@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo, useCallback } from "react";
 import {
   AiOutlineArrowRight,
   AiOutlineBarcode,
@@ -38,7 +38,7 @@ interface PrecisionPlanDataTbDangKyLieuModalProps {
 
 export const PrecisionPlanDataTbDangKyLieuModal: React.FC<
   PrecisionPlanDataTbDangKyLieuModalProps
-> = ({
+> = memo(({
   showhideM,
   onClose,
   selectedPlan,
@@ -57,6 +57,14 @@ export const PrecisionPlanDataTbDangKyLieuModal: React.FC<
   showkhoao,
   setShowKhoAo,
 }) => {
+  const handleRowClick = useCallback((params: any) => {
+    clickedRow.current = params.data;
+  }, [clickedRow]);
+
+  const handleSelectionChange = useCallback((params: any) => {
+    qlsxchithidatafilter.current = params!.api.getSelectedRows();
+  }, [qlsxchithidatafilter]);
+
   if (!showhideM) return null;
 
   return (
@@ -181,15 +189,11 @@ export const PrecisionPlanDataTbDangKyLieuModal: React.FC<
             ref={gridMaterialRef}
             columns={column_planmaterialtable}
             data={chithidatatable}
-            onRowClick={(params: any) => {
-              clickedRow.current = params.data;
-            }}
-            onSelectionChange={(params: any) => {
-              qlsxchithidatafilter.current = params!.api.getSelectedRows();
-            }}
+            onRowClick={handleRowClick}
+            onSelectionChange={handleSelectionChange}
           />
         </div>
       </div>
     </div>
   );
-};
+});

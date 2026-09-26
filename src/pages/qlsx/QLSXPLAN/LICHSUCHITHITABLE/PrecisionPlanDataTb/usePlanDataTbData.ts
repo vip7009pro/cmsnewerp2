@@ -477,8 +477,6 @@ export const usePlanDataTbData = () => {
 
     checkBP(userData, ["QLSX"], ["ALL"], ["ALL"], async () => {
       setisLoading(true);
-      setActionProgress(20);
-      setActionLoadingLabel("Đang lưu chỉ thị và đăng ký xuất liệu...");
       try {
         const rows = getMaterialRowsToSave();
         if (!rows || rows.length === 0) {
@@ -497,8 +495,6 @@ export const usePlanDataTbData = () => {
           return;
         }
 
-        setActionProgress(70);
-        setActionLoadingLabel("Đang tải lại chỉ thị và kế hoạch...");
         clearSelectedMaterialRows();
 
         let thisProcessList: PROD_PROCESS_DATA[] = await f_loadProdProcessData(selectedPlan.G_CODE);
@@ -513,10 +509,8 @@ export const usePlanDataTbData = () => {
           Swal.fire("Thông báo", "Chú ý, Chưa có Data định mức cho Code này, hãy nhập data định mức", "error");
         }
 
-        setActionProgress(90);
         const updatedPlan = await f_loadQLSXPLANDATA2(fromdate, machine, factory);
         setPlanDataTable(updatedPlan);
-        setActionProgress(100);
 
         let newNotification: NotificationElement = {
           CTR_CD: "002",
@@ -758,11 +752,5 @@ export const usePlanDataTbData = () => {
     handlePrintBanVe,
   };
 };
-function setActionProgress(arg0: number) {
-  throw new Error("Function not implemented.");
-}
 
-function setActionLoadingLabel(arg0: string) {
-  throw new Error("Function not implemented.");
-}
 
