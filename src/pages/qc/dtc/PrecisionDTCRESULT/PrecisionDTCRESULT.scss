@@ -823,3 +823,751 @@
     }
   }
 }
+
+// ==========================================================================
+// MOBILE RESPONSIVE OPTIMIZATION (mobile_interface_refactoring)
+//   - Desktop (> 768px) KHÔNG bị ảnh hưởng: mọi rule chỉ áp cho `.precision-dtcresult.is-mobile`
+//     (specificity 0,2,0 > base 0,1,0 nên không cần `!important` cho các class con).
+//   - `!important` bắt buộc ở ROOT vì `.component_element &` (SCSS này) và
+//     `.dtc .precision-dtcresult` (DTC.scss, media max-width 5000px) khóa cứng
+//     height:100% / flex:1 1 auto / min-height:0 ⇒ nội dung dài sẽ bị cắt cụt.
+//   - ZERO BLUR: không dùng backdrop-filter cho drawer theo chuẩn hiệu năng dự án.
+// ==========================================================================
+.precision-dtcresult.is-mobile {
+  // Root: để trang tự cuộn, không khóa overflow
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0;
+  flex: 0 0 auto !important;
+  overflow: visible !important;
+  box-sizing: border-box;
+
+  // ------------------------------------------------------------------
+  // 1. Mobile Header tinh gọn (brand + đếm dòng + KPI/Phiếu/Reload)
+  // ------------------------------------------------------------------
+  .precision-dtcresult__mobileHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 10px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    flex-shrink: 0;
+  }
+
+  .mobile-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .mobile-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #bfdbfe;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+
+      > span:first-child {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .brand-meta {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      color: #64748b;
+      margin-top: 1px;
+      white-space: nowrap;
+      min-width: 0;
+
+      .live-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        flex-shrink: 0;
+      }
+
+      .divider {
+        color: #cbd5e1;
+      }
+    }
+
+    .brand-mode-badge {
+      flex-shrink: 0;
+      font-size: 9px;
+      padding: 0 5px;
+      border-radius: 9999px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      max-width: 92px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .mobile-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+
+    .btn-header-action {
+      position: relative;
+      height: 38px;
+      min-width: 38px;
+      padding: 0 9px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #334155;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+
+      &:active {
+        transform: scale(0.94);
+      }
+
+      &.active {
+        background: #eff6ff;
+        border-color: #93c5fd;
+        color: #1d4ed8;
+      }
+
+      // Nút "Phiếu" là hành động chính trên mobile ⇒ tô accent xanh để dễ nhận biết
+      &--primary {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+        color: #1d4ed8;
+      }
+
+      // Viewport hẹp (320px): bỏ nhãn chữ, chỉ giữ icon để brand còn chỗ hiển thị
+      .btn-label {
+        display: inline;
+      }
+
+      @media (max-width: 350px) {
+        padding: 0;
+        width: 38px;
+
+        .btn-label {
+          display: none;
+        }
+      }
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // 2. KPI compact: 4 ô × 2 dòng (thay cho 4 card lớn của desktop)
+  // ------------------------------------------------------------------
+  .precision-dtcresult__kpis--compact {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .precision-dtcresult__kpiChip {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 4px 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left-width: 3px;
+    border-radius: 6px;
+    overflow: hidden;
+
+    &--blue { border-left-color: #2563eb; }
+    &--purple { border-left-color: #8b5cf6; }
+    &--emerald { border-left-color: #10b981; }
+    &--rose { border-left-color: #f43f5e; }
+
+    .chip-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chip-value {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #0f172a;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // 3. Mobile Toolbar công thái học (touch target >= 38px)
+  // ------------------------------------------------------------------
+  .precision-dtcresult__mobileToolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 6px 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    flex-shrink: 0;
+  }
+
+  .mobile-toolbar-search-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+
+    .search-input-box {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 40px;
+      padding: 0 10px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+
+      .search-icon {
+        color: #94a3b8;
+        flex-shrink: 0;
+      }
+
+      // font-size 16px để iOS Safari KHÔNG tự zoom khi focus
+      .input-field {
+        flex: 1 1 auto;
+        min-width: 0;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 16px;
+        color: #0f172a;
+      }
+
+      .clear-search-btn {
+        flex-shrink: 0;
+        width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background: transparent;
+        color: #94a3b8;
+        cursor: pointer;
+        padding: 0;
+        border-radius: 4px;
+
+        &:hover {
+          color: #0f172a;
+        }
+      }
+    }
+
+    .btn-toolbar-record {
+      flex-shrink: 0;
+      height: 40px;
+      padding: 0 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(16, 185, 129, 0.3);
+
+      &:active {
+        transform: scale(0.97);
+      }
+    }
+  }
+
+  .mobile-toolbar-actions-scroll {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .action-pill {
+      flex: 0 0 auto;
+      height: 38px;
+      padding: 0 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 9999px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:active {
+        transform: scale(0.96);
+      }
+
+      &.active {
+        background: #eff6ff;
+        border-color: #93c5fd;
+        color: #1d4ed8;
+      }
+
+      &--addSample {
+        color: #0369a1;
+        border-color: #bae6fd;
+        background: #f0f9ff;
+      }
+
+      &--excel {
+        color: #047857;
+        border-color: #a7f3d0;
+        background: #f0fdf4;
+      }
+
+      &--pivot {
+        color: #6d28d9;
+        border-color: #ddd6fe;
+        background: #f5f3ff;
+      }
+
+      &--reset {
+        color: #b45309;
+        border-color: #fde68a;
+        background: #fffbeb;
+      }
+    }
+
+    .pill-divider {
+      flex-shrink: 0;
+      width: 1px;
+      height: 18px;
+      background: #e2e8f0;
+      margin: 0 2px;
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // 4. Bảng dữ liệu: tối đa hoá không gian (chiều cao cố định để AG Grid có
+  //    containing block xác định — không dựa vào height:100% khi root auto)
+  // ------------------------------------------------------------------
+  .precision-dtcresult__gridContainer {
+    flex: 0 0 auto;
+    min-height: 320px;
+    height: 58vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    .precision-dtcresult__gridBody {
+      flex: 1 1 auto;
+      min-height: 320px;
+      height: 100%;
+      overflow: hidden;
+
+      .agtable {
+        min-height: 320px; // ghi đè min-height: 200px của base
+      }
+
+      // 16px để iOS Safari không tự phóng to khi focus ô lọc cột của AG Grid
+      .ag-theme-quartz {
+        .ag-floating-filter-input input,
+        .ag-floating-filter-input select {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
+
+// ==========================================================================
+// ZERO-BLUR MOBILE BOTTOM-SHEET — PHIẾU NHẬP KẾT QUẢ ĐO
+//   `height: 100dvh` (ưu tiên visual viewport) để footer không bị thanh URL che.
+// ==========================================================================
+.precision-dtcresult-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  height: 100vh;
+  height: 100dvh;
+  background: rgba(15, 23, 42, 0.75); // nền đặc, ZERO blur
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.precision-dtcresult-drawer {
+  width: 100%;
+  max-width: 560px;
+  max-height: 90dvh;
+  background: #ffffff;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.25);
+  animation: dtcResultSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+    flex-shrink: 0;
+  }
+
+  .drawer-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 0.01em;
+  }
+
+  .drawer-close-btn {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    border: none;
+    background: #f1f5f9;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+  }
+
+  // Body tự cuộn; footer `flex-shrink: 0` để nút LƯU luôn neo đáy sheet
+  .drawer-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .drawer-footer {
+    flex-shrink: 0;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid #e2e8f0;
+    background: #ffffff;
+  }
+
+  // ------------------------------------------------------------------
+  // Công thái học trong sheet: touch target >= 38px, font input >= 16px
+  // ------------------------------------------------------------------
+  .sheet-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .sheet-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .sheet-input {
+    width: 100%;
+    height: 42px;
+    padding: 0 10px;
+    font-size: 16px; // chống auto-zoom iOS Safari
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    background: #ffffff;
+    color: #0f172a;
+
+    &:focus {
+      border-color: #2563eb;
+    }
+  }
+
+  // Nút chuyển ID TEST / LOT NVL: full-width, touch target lớn
+  .precision-dtcresult__switchPill--sheet {
+    width: 100%;
+    height: 42px;
+    justify-content: center;
+    font-size: 12.5px;
+    border-radius: 8px;
+  }
+
+  // Ô nhập ID/LOT trong sheet: full-width + nút search lớn
+  .precision-dtcresult__inputBox--sheet {
+    width: 100%;
+
+    input {
+      width: 100%;
+      height: 42px;
+      padding: 0 46px 0 10px;
+      font-size: 16px;
+      border-radius: 8px;
+    }
+
+    .icon-action {
+      right: 2px;
+      width: 38px;
+      height: 38px;
+      border-radius: 6px;
+    }
+  }
+
+  // Thông tin vật liệu tra được
+  .sheet-context {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    .context-line {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 12.5px;
+      min-width: 0;
+    }
+
+    .context-label {
+      flex: 0 0 62px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    .context-value {
+      flex: 1 1 auto;
+      min-width: 0;
+      font-weight: 700;
+      color: #1d4ed8;
+      font-family: ui-monospace, monospace;
+      word-break: break-word;
+
+      &--vendor {
+        color: #7c3aed;
+      }
+    }
+  }
+
+  // Công cụ Excel XRF: 2 ô chia đều 1 hàng
+  .sheet-excelTools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 8px;
+    background: #fefce8;
+    border: 1px dashed #facc15;
+
+    .excel-upload-btn {
+      flex: 1 1 0;
+      min-width: 0;
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      height: 40px;
+      padding: 0 8px;
+      background: #ffffff;
+      border: 1px solid #eab308;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #a16207;
+      cursor: pointer;
+      white-space: nowrap;
+
+      input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+    }
+
+    .bulk-checkbox {
+      flex: 1 1 0;
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 40px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #854d0e;
+      cursor: pointer;
+      user-select: none;
+
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  // Hạng mục test: tái sử dụng pills desktop nhưng nới touch target
+  .sheet-pillsWrapper {
+    .precision-dtcresult__pillsSection {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      padding-top: 8px;
+    }
+
+    .precision-dtcresult__pillsLabel {
+      font-size: 11px;
+    }
+
+    .precision-dtcresult__pillsTrack {
+      width: 100%;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    .precision-dtcresult__pill {
+      height: 38px;
+      padding: 0 12px;
+      font-size: 12.5px;
+      flex: 0 0 auto;
+
+      .pill-dot {
+        width: 6px;
+        height: 6px;
+      }
+    }
+  }
+
+  .precision-dtcresult__btnSave--sheet {
+    width: 100%;
+    height: 46px;
+    justify-content: center;
+    font-size: 13.5px;
+    border-radius: 10px;
+  }
+}
+
+@keyframes dtcResultSlideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

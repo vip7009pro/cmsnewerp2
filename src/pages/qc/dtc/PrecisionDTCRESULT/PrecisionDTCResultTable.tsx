@@ -23,6 +23,10 @@ interface PrecisionDTCResultTableProps {
   onOpenPivot?: () => void;
   onAddSample: () => void;
   onCellValueChanged: (params: any) => void;
+  /** Biến thể mobile: chỉ giữ bảng dữ liệu, tối đa hoá không gian hiển thị */
+  isMobile?: boolean;
+  /** Bật/tắt hàng floating filter trên cột (AG Grid) */
+  showFilter?: boolean;
 }
 
 const PrecisionDTCResultTable: React.FC<PrecisionDTCResultTableProps> = ({
@@ -36,8 +40,29 @@ const PrecisionDTCResultTable: React.FC<PrecisionDTCResultTableProps> = ({
   onOpenPivot,
   onAddSample,
   onCellValueChanged,
+  isMobile,
+  showFilter,
 }) => {
   const columns = useMemo(() => getDTCResultColumns(), []);
+
+  // ===== NHÁNH MOBILE: chỉ giữ bảng dữ liệu, tối đa hoá không gian =====
+  // Ô tìm kiếm + số dòng đã có ở MobileToolbar / MobileHeader nên KHÔNG render lại
+  // toolbar của grid container (tránh lặp 2 ô search và tiết kiệm ~99px chiều cao).
+  if (isMobile) {
+    return (
+      <div className="precision-dtcresult__gridContainer">
+        <div className="precision-dtcresult__gridBody">
+          <AGTable
+            columns={columns}
+            data={data}
+            rowHeight={32}
+            showFilter={showFilter}
+            onCellValueChanged={onCellValueChanged}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="precision-dtcresult__gridContainer">

@@ -14,10 +14,42 @@ interface PrecisionDTCResultKpiProps {
     ngCount: number;
     okRate: number;
   };
+  /** Biến thể siêu nén cho mobile: 4 ô × 2 dòng, nhường chỗ cho bảng dữ liệu */
+  compact?: boolean;
 }
 
-const PrecisionDTCResultKpi: React.FC<PrecisionDTCResultKpiProps> = ({ kpis }) => {
+const PrecisionDTCResultKpi: React.FC<PrecisionDTCResultKpiProps> = ({ kpis, compact }) => {
   const evaluated = kpis.okCount + kpis.ngCount;
+
+  // Nhánh MOBILE: giữ nguyên 4 chỉ số nhưng chỉ 2 dòng/ô để tiết kiệm chiều cao
+  if (compact) {
+    const items = [
+      { label: "ĐIỂM ĐO", value: kpis.totalPoints.toLocaleString(), tone: "blue" },
+      { label: "MẪU ĐO", value: kpis.sampleCount.toLocaleString(), tone: "purple" },
+      {
+        label: "TỶ LỆ ĐẠT",
+        value: `${kpis.okRate}% (${kpis.okCount}/${evaluated})`,
+        tone: "emerald",
+      },
+      { label: "ĐIỂM LỖI", value: kpis.ngCount.toLocaleString(), tone: "rose" },
+    ];
+
+    return (
+      <div className="precision-dtcresult__kpis precision-dtcresult__kpis--compact">
+        {items.map((item) => (
+          <div
+            key={item.label}
+            className={`precision-dtcresult__kpiChip precision-dtcresult__kpiChip--${item.tone}`}
+          >
+            <span className="chip-label">{item.label}</span>
+            <span className="chip-value" title={item.value}>
+              {item.value}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="precision-dtcresult__kpis">
