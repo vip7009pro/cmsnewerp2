@@ -1,508 +1,224 @@
 import { IconButton } from "@mui/material";
-import { CustomCellRendererProps } from "ag-grid-react";
-import moment from "moment";
-import { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { MdRefresh } from "react-icons/md";
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import Swal from "sweetalert2";
 import AGTable from "../../../components/DataTable/AGTable";
-import {
-  DaoFilmReportBackData,
-  DaoFilmReportDetailData,
-  DaoFilmReportPieData,
-  DaoFilmReportQueryPayload,
-  DaoFilmReportWidgetData,
-  f_loadDaoFilmReportBackData,
-  f_loadDaoFilmReportDetailData,
-  f_loadDaoFilmReportExportPieData,
-  f_loadDaoFilmReportUsagePieData,
-  f_loadDaoFilmReportWidgetData,
-} from "../utils/daoFilmReportUtils";
+import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
+import { DaoFilmReportBackData } from "../utils/daoFilmReportUtils";
 import "./DAOFILM_REPORT.scss";
-
-const usageColors = ["#0ea5e9", "#22c55e", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"];
-const exportColors = ["#1d4ed8", "#059669", "#d97706", "#dc2626", "#7c3aed", "#0f766e"];
-
-const defaultWidgetData: DaoFilmReportWidgetData = {
-  Total_Knife: 0,
-  Total_OK_Knife: 0,
-  Total_NG_Knife: 0,
-};
+import PrecisionDaoFilmReportDesktopTop from "./PrecisionDaoFilmReport/PrecisionDaoFilmReportDesktopTop";
+import PrecisionDaoFilmReportMobileChartsModal from "./PrecisionDaoFilmReport/PrecisionDaoFilmReportMobileChartsModal";
+import PrecisionDaoFilmReportMobileFilterDrawer from "./PrecisionDaoFilmReport/PrecisionDaoFilmReportMobileFilterDrawer";
+import PrecisionDaoFilmReportMobileHeader from "./PrecisionDaoFilmReport/PrecisionDaoFilmReportMobileHeader";
+import PrecisionDaoFilmReportMobileKpi from "./PrecisionDaoFilmReport/PrecisionDaoFilmReportMobileKpi";
+import PrecisionDaoFilmReportMobileToolbar from "./PrecisionDaoFilmReport/PrecisionDaoFilmReportMobileToolbar";
+import { useDaoFilmReportColumns } from "./PrecisionDaoFilmReport/PrecisionDaoFilmReportColumns";
+import { useDaoFilmReportData } from "./PrecisionDaoFilmReport/useDaoFilmReportData";
+import "./PrecisionDaoFilmReport/PrecisionDaoFilmReport.scss";
 
 const DAOFILM_REPORT = () => {
-  const [fromDate, setFromDate] = useState<string>(moment().format("YYYY-MM-DD"));
-  const [toDate, setToDate] = useState<string>(moment().format("YYYY-MM-DD"));
-  const [useAllTime, setUseAllTime] = useState<boolean>(true);
+  const isMobile = useIsMobile();
+  const {
+    fromDate,
+    setFromDate,
+    toDate,
+    setToDate,
+    useAllTime,
+    setUseAllTime,
+    tableData,
+    filteredTableData,
+    detailTableData,
+    filteredDetailTableData,
+    selectedKnife,
+    setSelectedKnife,
+    widgetData,
+    usagePieData,
+    exportPieData,
+    totalUsagePie,
+    totalExportPie,
+    loading,
+    searchKeyword,
+    setSearchKeyword,
+    activeMobileTab,
+    setActiveMobileTab,
+    showKpi,
+    setShowKpi,
+    showChartsModal,
+    setShowChartsModal,
+    showFilterDrawer,
+    setShowFilterDrawer,
+    activeFilterCount,
+    loadData,
+    loadDetailDataByRow,
+    resetFilters,
+  } = useDaoFilmReportData();
 
-  const [tableData, setTableData] = useState<DaoFilmReportBackData[]>([]);
-  const [detailTableData, setDetailTableData] = useState<DaoFilmReportDetailData[]>([]);
-  const [selectedKnife, setSelectedKnife] = useState<{ MA_DAO: string; MA_DAO_KT: string } | null>(
-    null,
-  );
-  const [activePayload, setActivePayload] = useState<DaoFilmReportQueryPayload | null>(null);
-  const [widgetData, setWidgetData] = useState<DaoFilmReportWidgetData>(defaultWidgetData);
-  const [usagePieData, setUsagePieData] = useState<DaoFilmReportPieData[]>([]);
-  const [exportPieData, setExportPieData] = useState<DaoFilmReportPieData[]>([]);
+  const { colDefs, detailColDefs } = useDaoFilmReportColumns(isMobile);
 
-  const buildPayload = (): DaoFilmReportQueryPayload => {
-    const today = moment().format("YYYY-MM-DD");
-
-    if (useAllTime) {
-      return {
-        FROM_DATE: "2020-01-01",
-        TO_DATE: today,
-        USE_ALL_TIME: true,
-      };
-    }
-
-    return {
-      FROM_DATE: fromDate,
-      TO_DATE: toDate,
-      USE_ALL_TIME: false,
-    };
-  };
-
-  const loadData = async () => {
-    Swal.fire({
-      title: "Tra data",
-      text: "Dang tai Dao Film Report",
-      icon: "info",
-      showCancelButton: false,
-      allowOutsideClick: false,
-      showConfirmButton: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    });
-
-    try {
-      const payload = buildPayload();
-      setActivePayload(payload);
-      const [loadedTableData, loadedWidgetData, loadedUsagePieData, loadedExportPieData] =
-        await Promise.all([
-          f_loadDaoFilmReportBackData(payload),
-          f_loadDaoFilmReportWidgetData(payload),
-          f_loadDaoFilmReportUsagePieData(payload),
-          f_loadDaoFilmReportExportPieData(payload),
-        ]);
-
-      setTableData(loadedTableData);
-      setDetailTableData([]);
-      setSelectedKnife(null);
-      setWidgetData(loadedWidgetData);
-      setUsagePieData(loadedUsagePieData);
-      setExportPieData(loadedExportPieData);
-
-      Swal.fire("Thong bao", `Da load ${loadedTableData.length} dong`, "success");
-    } catch (error: any) {
-      setTableData([]);
-      setDetailTableData([]);
-      setSelectedKnife(null);
-      setActivePayload(null);
-      setWidgetData(defaultWidgetData);
-      setUsagePieData([]);
-      setExportPieData([]);
-      Swal.fire("Thong bao", `Loi: ${error?.message ?? error}`, "error");
-    }
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const totalUsagePie = useMemo(() => {
-    return usagePieData.reduce((sum, item) => sum + item.value, 0);
-  }, [usagePieData]);
-
-  const totalExportPie = useMemo(() => {
-    return exportPieData.reduce((sum, item) => sum + item.value, 0);
-  }, [exportPieData]);
-
-  const colDefs = useMemo(() => {
-    return [
-      {
-        field: "STT",
-        headerName: "STT",
-        width: 60,
-        resizable: true,
-        pinned: "left",
-      },
-      {
-        field: "MA_DAO",
-        headerName: "MA_DAO",
-        width: 130,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-      },
-      {
-        field: "MA_DAO_KT",
-        headerName: "MA_DAO_KT",
-        width: 140,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-      },
-      {
-        field: "StandardQty",
-        headerName: "STANDARD",
-        width: 110,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-        cellRenderer: (params: CustomCellRendererProps<DaoFilmReportBackData>) => (
-          <span style={{ color: "#1d4ed8", fontWeight: "bold" }}>
-            {(params.data?.StandardQty ?? 0).toLocaleString("en-US")}
-          </span>
-        ),
-      },
-      {
-        field: "TotalPress",
-        headerName: "TOTAL_PRESS",
-        width: 120,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-        cellRenderer: (params: CustomCellRendererProps<DaoFilmReportBackData>) => {
-          const overPress = (params.data?.TotalPress ?? 0) >= (params.data?.StandardQty ?? 0);
-          return (
-            <span style={{ color: overPress ? "#dc2626" : "#0f766e", fontWeight: "bold" }}>
-              {(params.data?.TotalPress ?? 0).toLocaleString("en-US")}
-            </span>
-          );
-        },
-      },
-      {
-        field: "ExportCount",
-        headerName: "EXPORT_COUNT",
-        width: 120,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-        cellRenderer: (params: CustomCellRendererProps<DaoFilmReportBackData>) => (
-          <span style={{ color: "#475569", fontWeight: "bold" }}>
-            {(params.data?.ExportCount ?? 0).toLocaleString("en-US")}
-          </span>
-        ),
-      },
-      {
-        field: "NGAY_BAN_GIAO",
-        headerName: "NGAY_BAN_GIAO",
-        width: 130,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-      },
-      {
-        field: "OVER_STATUS",
-        headerName: "OVER",
-        width: 90,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-        cellRenderer: (params: CustomCellRendererProps<DaoFilmReportBackData>) => {
-          const status = params.data?.OVER_STATUS ?? "";
-          return (
-            <span style={{ fontWeight: "bold", color: status === "OK" ? "#0f766e" : "#dc2626" }}>
-              {status}
-            </span>
-          );
-        },
-        cellStyle: (params: any) => {
-          if (params.data?.OVER_STATUS === "OK") {
-            return { backgroundColor: "#dcfce7" };
-          }
-          return { backgroundColor: "#fee2e2" };
-        },
-      },
-      {
-        field: "OVER_PERCENTAGE",
-        headerName: "OVER_%",
-        width: 100,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-        cellRenderer: (params: CustomCellRendererProps<DaoFilmReportBackData>) => {
-          const value = params.data?.OVER_PERCENTAGE ?? 0;
-          return (
-            <span style={{ color: value >= 100 ? "#dc2626" : "#1d4ed8", fontWeight: "bold" }}>
-              {value.toFixed(2)}%
-            </span>
-          );
-        },
-      },
-    ];
-  }, []);
-
-  const detailColDefs = useMemo(() => {
-    return [
-      {
-        field: "MA_DAO",
-        headerName: "MA_DAO",
-        width: 100,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-      },
-      {
-        field: "MA_DAO_KT",
-        headerName: "MA_DAO_KT",
-        width: 100,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-      },
-      {
-        field: "G_CODE",
-        headerName: "CODE",
-        width: 60,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-      },
-      {
-        field: "G_NAME",
-        headerName: "CODE_NAME",
-        width: 100,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-      },
-      {
-        field: "PD",
-        headerName: "PD",
-        width: 40,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-      },
-      {
-        field: "CAVITY",
-        headerName: "CAVITY",
-        width: 50,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-      },
-      {
-        field: "QTY",
-        headerName: "QTY",
-        width: 30,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-        cellRenderer: (params: CustomCellRendererProps<DaoFilmReportDetailData>) => (
-          <span style={{ color: "#1d4ed8", fontWeight: "bold" }}>
-            {(params.data?.QTY ?? 0).toLocaleString("en-US")}
-          </span>
-        ),
-      },
-      {
-        field: "PRESS_QTY",
-        headerName: "PRESS_QTY",
-        width: 60,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-        cellRenderer: (params: CustomCellRendererProps<DaoFilmReportDetailData>) => (
-          <span style={{ color: "#0f766e", fontWeight: "bold" }}>
-            {(params.data?.PRESS_QTY ?? 0).toLocaleString("en-US")}
-          </span>
-        ),
-      },
-      {
-        field: "EMPL_NO",
-        headerName: "EMPL_NO",
-        width: 50,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-      },
-      {
-        field: "SX_EMPL",
-        headerName: "SX_EMPL",
-        width: 50,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-      },
-      {
-        field: "SX_DATE",
-        headerName: "SX_DATE",
-        width: 50,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-      },
-      {
-        field: "PLAN_ID",
-        headerName: "PLAN_ID",
-        width: 50,
-        resizable: true,
-        floatingFilter: true,
-        filter: true,
-      },
-    ];
-  }, []);
-
-  const loadDetailDataByRow = async (row: DaoFilmReportBackData) => {
-    const selectedMA_DAO = row?.MA_DAO ?? "";
-    const selectedMA_DAO_KT = row?.MA_DAO_KT ?? "";
-
-    if (selectedMA_DAO === "" || selectedMA_DAO_KT === "") {
-      setSelectedKnife(null);
-      setDetailTableData([]);
-      return;
-    }
-
-    setSelectedKnife({ MA_DAO: selectedMA_DAO, MA_DAO_KT: selectedMA_DAO_KT });
-
-    try {
-      const payload = {
-        ...(activePayload ?? buildPayload()),
-        MA_DAO: selectedMA_DAO,
-        MA_DAO_KT: selectedMA_DAO_KT,
-      };
-      const loadedDetailData = await f_loadDaoFilmReportDetailData(payload);
-      setDetailTableData(loadedDetailData);
-    } catch (error: any) {
-      setDetailTableData([]);
-      Swal.fire("Thong bao", `Loi tai bang chi tiet: ${error?.message ?? error}`, "error");
-    }
-  };
-
-  const handleBackDataRowClick = (params: any) => {
+  const handleBackDataRowClickDesktop = (params: any) => {
     const clickedRow = params?.data as DaoFilmReportBackData | undefined;
     if (!clickedRow) {
       setSelectedKnife(null);
-      setDetailTableData([]);
       return;
     }
-    loadDetailDataByRow(clickedRow);
+    loadDetailDataByRow(clickedRow, false);
   };
 
-  const renderPieTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="daoFilmPieTooltip">
-          <p>{payload[0].name}</p>
-          <p>{`${Number(payload[0].value ?? 0).toLocaleString("en-US")} dao`}</p>
-        </div>
-      );
+  const handleBackDataRowClickMobile = (params: any) => {
+    const clickedRow = params?.data as DaoFilmReportBackData | undefined;
+    if (!clickedRow) {
+      setSelectedKnife(null);
+      return;
     }
-    return null;
+    loadDetailDataByRow(clickedRow, true);
   };
 
-  const renderPieLabel = (props: any) => {
-    const { cx, cy, midAngle, outerRadius, name, percent, value, fill } = props;
-    const RADIAN = Math.PI / 180;
-    const startX = cx + outerRadius * Math.cos(-midAngle * RADIAN);
-    const startY = cy + outerRadius * Math.sin(-midAngle * RADIAN);
-    const endX = cx + (outerRadius + 14) * Math.cos(-midAngle * RADIAN);
-    const endY = cy + (outerRadius + 14) * Math.sin(-midAngle * RADIAN);
-    const textX = cx + (outerRadius + 30) * Math.cos(-midAngle * RADIAN);
-    const textY = cy + (outerRadius + 30) * Math.sin(-midAngle * RADIAN);
-    const isRightSide = textX > cx;
-    const anchor = isRightSide ? "start" : "end";
-    const lineEndX = isRightSide ? textX - 6 : textX + 6;
+  const handleApplyMobileFilters = (
+    newFromDate: string,
+    newToDate: string,
+    newUseAllTime: boolean,
+  ) => {
+    setFromDate(newFromDate);
+    setToDate(newToDate);
+    setUseAllTime(newUseAllTime);
+    setTimeout(() => {
+      loadData();
+    }, 0);
+  };
 
-    const knifeCount = Number(value) || 0;
-    const ratio = ((Number(percent) || 0) * 100).toFixed(0);
-
+  // ==========================================
+  // 1. MOBILE INTERFACE (<= 768px)
+  // ==========================================
+  if (isMobile) {
     return (
-      <g>
-        <path
-          d={`M${startX},${startY}L${endX},${endY}L${lineEndX},${textY}`}
-          stroke={fill}
-          strokeWidth={1}
-          fill="none"
+      <div className="precision-dao-film-report is-mobile">
+        {/* Mobile Header Tinh Gọn */}
+        <PrecisionDaoFilmReportMobileHeader
+          totalRecords={tableData.length}
+          filteredRecords={filteredTableData.length}
+          widgetData={widgetData}
+          loading={loading}
+          showKpi={showKpi}
+          onToggleKpi={() => setShowKpi(!showKpi)}
+          showChartsModal={showChartsModal}
+          onToggleChartsModal={() => setShowChartsModal(!showChartsModal)}
+          onReload={loadData}
         />
-        <text
-          x={textX}
-          y={textY}
-          fill={fill}
-          textAnchor={anchor}
-          dominantBaseline="central"
-          fontSize="0.72rem"
-          fontWeight={700}
-        >
-          {`${name}: ${knifeCount.toLocaleString("en-US")} dao (${ratio}%)`}
-        </text>
-      </g>
-    );
-  };
 
+        {/* Micro-KPI Bar Cuộn Ngang (Có thể đóng nhanh để mở rộng diện tích) */}
+        {showKpi && (
+          <PrecisionDaoFilmReportMobileKpi
+            widgetData={widgetData}
+            selectedKnife={selectedKnife}
+            onClose={() => setShowKpi(false)}
+          />
+        )}
+
+        {/* Mobile Toolbar 3 Hàng Công Thái Học */}
+        <PrecisionDaoFilmReportMobileToolbar
+          activeTab={activeMobileTab}
+          onChangeTab={setActiveMobileTab}
+          totalBackRecords={tableData.length}
+          totalDetailRecords={detailTableData.length}
+          searchKeyword={searchKeyword}
+          onSearchChange={setSearchKeyword}
+          activeFilterCount={activeFilterCount}
+          onOpenFilterDrawer={() => setShowFilterDrawer(true)}
+          useAllTime={useAllTime}
+          onToggleUseAllTime={() => setUseAllTime(!useAllTime)}
+          selectedKnife={selectedKnife}
+          filteredCount={
+            activeMobileTab === "BACK_DATA"
+              ? filteredTableData.length
+              : filteredDetailTableData.length
+          }
+          totalCount={
+            activeMobileTab === "BACK_DATA" ? tableData.length : detailTableData.length
+          }
+        />
+
+        {/* Container Bảng Dữ Liệu Tối Đa Hóa Diện Tích Màn Hình */}
+        <div className="precision-dfr-grid-container">
+          {activeMobileTab === "BACK_DATA" ? (
+            <AGTable
+              showFilter={false}
+              columns={colDefs}
+              data={filteredTableData}
+              suppressRowClickSelection={false}
+              onRowClick={handleBackDataRowClickMobile}
+              onSelectionChange={() => {}}
+              onCellEditingStopped={() => {}}
+            />
+          ) : (
+            <>
+              <div className="precision-dfr-detail-banner">
+                <div className="banner-left">
+                  <span>
+                    Dao: <strong>{selectedKnife?.MA_DAO || "Chưa chọn dao"}</strong>
+                    {selectedKnife?.MA_DAO_KT ? ` (${selectedKnife.MA_DAO_KT})` : ""}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className="btn-back-overview"
+                  onClick={() => setActiveMobileTab("BACK_DATA")}
+                >
+                  ⬅ Báo Cáo Tổng Hợp
+                </button>
+              </div>
+              <AGTable
+                showFilter={false}
+                columns={detailColDefs}
+                data={filteredDetailTableData}
+                onSelectionChange={() => {}}
+                onCellEditingStopped={() => {}}
+              />
+            </>
+          )}
+        </div>
+
+        {/* Bottom Sheet Filter Drawer (Zero-Blur GPU-Friendly) */}
+        {showFilterDrawer && (
+          <PrecisionDaoFilmReportMobileFilterDrawer
+            isOpen={showFilterDrawer}
+            onClose={() => setShowFilterDrawer(false)}
+            fromDate={fromDate}
+            toDate={toDate}
+            useAllTime={useAllTime}
+            onApply={handleApplyMobileFilters}
+            onReset={resetFilters}
+          />
+        )}
+
+        {/* Biểu Đồ Modal (Zero-Blur GPU-Friendly) */}
+        {showChartsModal && (
+          <PrecisionDaoFilmReportMobileChartsModal
+            isOpen={showChartsModal}
+            onClose={() => setShowChartsModal(false)}
+            usagePieData={usagePieData}
+            exportPieData={exportPieData}
+            totalUsagePie={totalUsagePie}
+            totalExportPie={totalExportPie}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // ==========================================
+  // 2. DESKTOP INTERFACE (> 768px): GIỮ NGUYÊN 100%
+  // ==========================================
   return (
     <div className="daoFilmReport">
-      <div className="daoFilmReportTop">
-        <div className="daoFilmWidgetColumn">
-          <div className="daoFilmWidgetCard total">
-            <span className="widgetTitle">Tổng số dao / 총 칼 수량</span>
-            <span className="widgetValue">{widgetData.Total_Knife.toLocaleString("en-US")}</span>
-          </div>
+      {/* Top Panel: 3 Widget Cards + 2 Pie Charts */}
+      <PrecisionDaoFilmReportDesktopTop
+        widgetData={widgetData}
+        usagePieData={usagePieData}
+        exportPieData={exportPieData}
+        totalUsagePie={totalUsagePie}
+        totalExportPie={totalExportPie}
+      />
 
-          <div className="daoFilmWidgetCard ok">
-            <span className="widgetTitle">Số dao OK / OK 칼 수량</span>
-            <span className="widgetValue">{widgetData.Total_OK_Knife.toLocaleString("en-US")}</span>
-          </div>
-
-          <div className="daoFilmWidgetCard ng">
-            <span className="widgetTitle">Số dao NG (Over) / Over 칼 수량</span>
-            <span className="widgetValue">{widgetData.Total_NG_Knife.toLocaleString("en-US")}</span>
-          </div>
-        </div>
-
-        <div className="daoFilmPieCard">
-          <div className="daoFilmPieTitle">Tỉ trọng số dao theo % sử dụng / %사용 에 따른 칼 수량의 비중 </div>
-          <div className="daoFilmPieSummary">Tong: {totalUsagePie.toLocaleString("en-US")} dao</div>
-          <div className="daoFilmPieBody">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Tooltip content={renderPieTooltip} />
-                <Pie
-                  data={usagePieData}
-                  dataKey="value"
-                  nameKey="name"
-                  isAnimationActive={false}
-                  outerRadius={95}
-                  labelLine={false}
-                  label={renderPieLabel}
-                >
-                  {usagePieData.map((entry, index) => (
-                    <Cell key={`usage-${entry.name}-${index}`} fill={usageColors[index % usageColors.length]} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="daoFilmPieCard">
-          <div className="daoFilmPieTitle">Tỉ trọng số dao theo số lần xuất / 출고 횟수에 따른 비중</div>
-          <div className="daoFilmPieSummary">Tổng: {totalExportPie.toLocaleString("en-US")} dao</div>
-          <div className="daoFilmPieBody">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Tooltip content={renderPieTooltip} />
-                <Pie
-                  data={exportPieData}
-                  dataKey="value"
-                  nameKey="name"
-                  isAnimationActive={false}
-                  outerRadius={95}
-                  labelLine={false}
-                  label={renderPieLabel}
-                >
-                  {exportPieData.map((entry, index) => (
-                    <Cell key={`export-${entry.name}-${index}`} fill={exportColors[index % exportColors.length]} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
+      {/* Bottom Panel: BackData Table + Detail Table */}
       <div className="daoFilmReportBottom">
         <div className="daoFilmBackTablePanel">
           <AGTable
@@ -549,7 +265,7 @@ const DAOFILM_REPORT = () => {
             columns={colDefs}
             data={tableData}
             suppressRowClickSelection={false}
-            onRowClick={handleBackDataRowClick}
+            onRowClick={handleBackDataRowClickDesktop}
             onSelectionChange={() => {}}
             onCellEditingStopped={() => {}}
           />
