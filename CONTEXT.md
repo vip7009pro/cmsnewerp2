@@ -1,5 +1,11 @@
 # ERP Context & Status
 
+## Update - 2026-09-27 (QC / IQC / BLOCK: Tối Ưu Toàn Diện Giao Diện Mobile Quản Lý Lô Bị Khóa)
+- Tạo backup [BLOCK.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/BLOCK.backup2.tsx). Hook `useIsMobile()`, bảo toàn 100% desktop.
+- Mobile Toolbar 2 hàng [PrecisionBLOCKMobileToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/PrecisionBLOCK/PrecisionBLOCKMobileToolbar.tsx): search 14px chống zoom iOS + clear `[X]` + nút Tra Data + nút Bộ Lọc (badge đếm filter); dải chips cuộn ngang (Pending toggle / PASS / FAIL / NCR / Closed / Pending / EX1 / EX2 + counter).
+- Filter Drawer [PrecisionBLOCKMobileFilterDrawer.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/PrecisionBLOCK/PrecisionBLOCKMobileFilterDrawer.tsx): Bottom Sheet Zero-Blur chứa 7 trường (Phân loại, Vendor Lot, M_LOT_NO, Defect, Remark, NCR_ID, Only Pending) + footer Đặt Lại / Áp Dụng.
+- Ẩn Header, KPI Cards, Sidebar trên mobile (conditional rendering JSX). Bảng AG Grid chiếm trọn không gian. File chính [BLOCK.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/BLOCK.tsx).
+
 ## Update - 2026-09-27 (QC / TEST_TABLE: Tối Ưu Toàn Diện Giao Diện Mobile Quản Lý Hạng Mục ĐTC)
 - Tạo backup [TEST_TABLE.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/TEST_TABLE.backup2.tsx). Hook `useIsMobile()`, bảo toàn 100% desktop (`!isMobile`) – verify @1280: header 59px, 4 KPI card, 2 panel cạnh nhau (562px + 676px), 2 status bar, 0 khối mobile.
 - **Điểm khác biệt của màn này**: desktop là layout **MASTER–DETAIL 2 panel cạnh nhau** (Hạng mục ↔ Điểm đo). Trên mobile KHÔNG xếp dọc (sẽ thành 2 bảng cao 500px nối tiếp) mà chuyển thành **2 tab segmented** [PrecisionTestTableMobileTabs.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/PrecisionTESTTABLE/PrecisionTestTableMobileTabs.tsx) — mỗi lần chỉ render 1 panel ⇒ bảng được 510px thay vì ~250px.

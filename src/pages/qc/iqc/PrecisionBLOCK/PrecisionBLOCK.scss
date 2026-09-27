@@ -996,3 +996,432 @@
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(0.9); }
 }
+
+// =============================================================================
+// 12. MOBILE VIEW LAYOUT & COMPONENTS
+// =============================================================================
+
+// 12.1 Root mobile modifier
+.precision-blocking.is-mobile {
+  padding: 0;
+  gap: 0;
+  background: #f8fafc;
+
+  // Ẩn sidebar, header, kpi trên mobile (dùng conditional rendering JSX)
+  .precision-block-header,
+  .precision-block-kpi,
+  .precision-block-sidebar {
+    display: none !important;
+  }
+
+  // Grid container chiếm trọn phần diện tích còn lại
+  .precision-block-grid-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    border-radius: 0;
+
+    .precision-block-table-wrapper {
+      border-radius: 0;
+    }
+  }
+}
+
+// 12.2 Mobile Toolbar (2 hàng: Search + Chips cuộn ngang)
+.precision-block-mobile-toolbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+
+  .toolbar-search-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .search-input-wrapper {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      .search-icon {
+        position: absolute;
+        left: 10px;
+        color: #94a3b8;
+        pointer-events: none;
+      }
+
+      .search-input {
+        width: 100%;
+        height: 38px;
+        padding: 0 30px 0 32px;
+        font-size: 14px; // Chống tự động zoom Safari iOS
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background: #f8fafc;
+        outline: none;
+        color: #0f172a;
+        box-sizing: border-box;
+
+        &:focus {
+          border-color: #3b82f6;
+          background: #ffffff;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+        }
+      }
+
+      .btn-clear-search {
+        position: absolute;
+        right: 8px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #e2e8f0;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        cursor: pointer;
+
+        &:active {
+          background: #cbd5e1;
+        }
+      }
+    }
+
+    .btn-search-trigger {
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 6px;
+      background: #2563eb;
+      border: none;
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+
+      &:active {
+        background: #1d4ed8;
+      }
+    }
+
+    .btn-filter-trigger {
+      height: 38px;
+      padding: 0 10px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      position: relative;
+      white-space: nowrap;
+
+      &.has-filters {
+        background: #eff6ff;
+        border-color: #93c5fd;
+        color: #1d4ed8;
+      }
+
+      .filter-badge {
+        font-size: 9.5px;
+        font-weight: 800;
+        padding: 1px 5px;
+        border-radius: 9999px;
+        background: #ef4444;
+        color: #ffffff;
+        margin-left: 2px;
+      }
+    }
+  }
+
+  .toolbar-chips-scroll {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+
+    .chip-btn {
+      height: 30px;
+      padding: 0 9px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+
+      &:active {
+        transform: scale(0.97);
+      }
+
+      &--active-pending {
+        background: #eff6ff;
+        border-color: #3b82f6;
+        color: #1d4ed8;
+        font-weight: 700;
+      }
+
+      &--pass {
+        background: #f0fdf4;
+        border-color: #86efac;
+        color: #15803d;
+      }
+
+      &--fail {
+        background: #fef2f2;
+        border-color: #fca5a5;
+        color: #b91c1c;
+      }
+
+      &--ncr {
+        background: #fdf4ff;
+        border-color: #f0abfc;
+        color: #a21caf;
+      }
+
+      &--closed {
+        background: #ecfdf5;
+        border-color: #a7f3d0;
+        color: #047857;
+      }
+
+      &--pending {
+        background: #fffbeb;
+        border-color: #fde68a;
+        color: #d97706;
+      }
+
+      &--excel {
+        background: #ffffff;
+        border-color: #e2e8f0;
+        color: #475569;
+      }
+    }
+
+    .chip-counter {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      padding: 0 6px;
+      white-space: nowrap;
+
+      .selected-text {
+        color: #2563eb;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+// 12.3 Zero-Blur Filter Drawer (GPU-friendly, ZERO backdrop-filter)
+.precision-block-filter-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.75); // ZERO BLUR nền đặc chuẩn dự án
+  z-index: 99999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.precision-block-filter-drawer {
+  background: #ffffff;
+  width: 100%;
+  max-width: 600px;
+  max-height: 85vh;
+  border-radius: 14px 14px 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+  animation: pb-slide-up 0.25s ease-out;
+
+  .filter-drawer-header {
+    height: 48px;
+    padding: 0 14px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8fafc;
+    flex-shrink: 0;
+
+    .drawer-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+
+      .title-icon {
+        color: #2563eb;
+      }
+    }
+
+    .btn-close-drawer {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+
+      &:active {
+        background: #f1f5f9;
+      }
+    }
+  }
+
+  .filter-drawer-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .filter-label {
+        font-size: 11.5px;
+        font-weight: 700;
+        color: #475569;
+      }
+
+      .filter-select,
+      .filter-input {
+        width: 100%;
+        height: 40px;
+        padding: 0 10px;
+        font-size: 14px; // Chống zoom iOS
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #0f172a;
+        box-sizing: border-box;
+
+        &:focus {
+          border-color: #3b82f6;
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+        }
+      }
+    }
+
+    .filter-checkbox-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px;
+
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+
+        input[type="checkbox"] {
+          width: 18px;
+          height: 18px;
+          accent-color: #2563eb;
+        }
+
+        .checkbox-label {
+          font-size: 12px;
+          color: #334155;
+        }
+      }
+    }
+  }
+
+  .filter-drawer-footer {
+    height: 60px;
+    padding: 0 14px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f8fafc;
+    flex-shrink: 0;
+
+    .btn-drawer-reset {
+      height: 42px;
+      padding: 0 16px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #475569;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+
+      &:active {
+        background: #f1f5f9;
+      }
+    }
+
+    .btn-drawer-apply {
+      flex: 1;
+      height: 42px;
+      border-radius: 6px;
+      border: none;
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+
+      &:active {
+        background: #1d4ed8;
+      }
+    }
+  }
+}
+
+@keyframes pb-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
