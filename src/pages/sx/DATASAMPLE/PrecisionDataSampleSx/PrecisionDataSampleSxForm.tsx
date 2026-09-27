@@ -1,18 +1,20 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import {
   FiUser,
   FiFileText,
   FiCheckCircle,
   FiUploadCloud,
-  FiTrash2,
   FiSend,
   FiImage,
-  FiCamera,
+  FiX,
 } from "react-icons/fi";
 import { IoQrCodeOutline } from "react-icons/io5";
 import { UserData } from "../../../../api/GlobalInterface";
+import PrecisionDataSampleSxImagePreviewModal from "./PrecisionDataSampleSxImagePreviewModal";
+import PrecisionDataSampleSxImageUploadBox from "./PrecisionDataSampleSxImageUploadBox";
 
 interface PrecisionDataSampleSxFormProps {
+  isMobile?: boolean;
   planId: string;
   gName: string;
   gCode: string;
@@ -35,6 +37,7 @@ interface PrecisionDataSampleSxFormProps {
 }
 
 const PrecisionDataSampleSxForm: React.FC<PrecisionDataSampleSxFormProps> = ({
+  isMobile = false,
   planId,
   gName,
   gCode,
@@ -55,11 +58,23 @@ const PrecisionDataSampleSxForm: React.FC<PrecisionDataSampleSxFormProps> = ({
   onFile2Change,
   onSubmit,
 }) => {
-  const fileInputRef1 = useRef<HTMLInputElement | null>(null);
-  const fileInputRef2 = useRef<HTMLInputElement | null>(null);
+  // State xem to ảnh
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalUrl, setModalUrl] = useState<string | null>(null);
+  const [modalFileName, setModalFileName] = useState("");
+  const [modalFileSize, setModalFileSize] = useState<number | undefined>(undefined);
+
+  const openPreview = (title: string, url: string, name?: string, size?: number) => {
+    setModalTitle(title);
+    setModalUrl(url);
+    setModalFileName(name || "");
+    setModalFileSize(size);
+    setModalOpen(true);
+  };
 
   return (
-    <div className="precision-datasample__formWrapper">
+    <div className={`precision-datasample__formWrapper ${isMobile ? "is-mobile-form" : ""}`}>
       {/* KHỐI 1: NHẬP & QUÉT SỐ CHỈ THỊ (PLAN_ID) */}
       <div className="mobile-action-card">
         <div className="mobile-action-card__header">
@@ -72,20 +87,33 @@ const PrecisionDataSampleSxForm: React.FC<PrecisionDataSampleSxFormProps> = ({
 
         <div className="mobile-action-card__body">
           <div className="plan-input-group">
-            <input
-              ref={planInputRef}
-              type="text"
-              className="plan-text-input font-mono"
-              placeholder="Nhập hoặc quét mã chỉ thị..."
-              value={planId}
-              onChange={(e) => onPlanIdChange(e.target.value.toUpperCase())}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  emplInputRef.current?.focus();
-                }
-              }}
-            />
+            <div className="plan-input-wrap">
+              <input
+                ref={planInputRef}
+                type="text"
+                className="plan-text-input font-mono"
+                placeholder="Nhập hoặc quét mã chỉ thị..."
+                value={planId}
+                onChange={(e) => onPlanIdChange(e.target.value.toUpperCase())}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    emplInputRef.current?.focus();
+                  }
+                }}
+              />
+              {planId && (
+                <button
+                  type="button"
+                  className="btn-clear-input"
+                  onClick={() => onPlanIdChange("")}
+                  title="Xóa mã chỉ thị"
+                >
+                  <FiX size={14} />
+                </button>
+              )}
+            </div>
+
             <button
               type="button"
               className="btn-scan-qr"
@@ -119,7 +147,7 @@ const PrecisionDataSampleSxForm: React.FC<PrecisionDataSampleSxFormProps> = ({
         </div>
       </div>
 
-      {/* KHỐI 2: THÔNG TIN NHÂN VIÊN THAO TÁC (LINE QC / SX) */}
+      {/* KHỐI 2: THÔNG TIN NHÂN VIÊN THAO TÁC */}
       <div className="mobile-action-card">
         <div className="mobile-action-card__header">
           <div className="card-title">
@@ -142,6 +170,16 @@ const PrecisionDataSampleSxForm: React.FC<PrecisionDataSampleSxFormProps> = ({
                 disabled={userData?.EMPL_NO !== "NHU1903"}
                 onChange={(e) => onLineqcEmplChange(e.target.value.toUpperCase())}
               />
+              {lineqcEmpl && userData?.EMPL_NO === "NHU1903" && (
+                <button
+                  type="button"
+                  className="btn-clear-input"
+                  onClick={() => onLineqcEmplChange("")}
+                  title="Xóa mã nhân viên"
+                >
+                  <FiX size={14} />
+                </button>
+              )}
             </div>
             {emplName && (
               <div className="empl-name-tag">
@@ -153,7 +191,7 @@ const PrecisionDataSampleSxForm: React.FC<PrecisionDataSampleSxFormProps> = ({
         </div>
       </div>
 
-      {/* KHỐI 3: UPLOAD ẢNH HIỆN TRƯỜNG (BẢN VẼ & CHECKSHEET) */}
+      {/* KHỐI 3: UPLOAD ẢNH HIỆN TRƯỜNG */}
       <div className="mobile-action-card">
         <div className="mobile-action-card__header">
           <div className="card-title">
@@ -166,168 +204,65 @@ const PrecisionDataSampleSxForm: React.FC<PrecisionDataSampleSxFormProps> = ({
         <div className="mobile-action-card__body">
           <div className="image-upload-grid">
             {/* Ảnh 1: Bản vẽ sản xuất sample (PIC1) */}
-            <div className={`upload-box ${file1 ? "has-file" : ""}`}>
-              <div className="upload-box__header">
-                <div className="box-title">
-                  <FiImage size={13} color="#2563eb" />
-                  <span>1. Bản Vẽ Sản Xuất Sample (PIC1)</span>
-                </div>
-                {file1 && (
-                  <button
-                    type="button"
-                    className="btn-remove-file"
-                    onClick={() => {
-                      onFile1Change(null);
-                      if (fileInputRef1.current) fileInputRef1.current.value = "";
-                    }}
-                    title="Xóa ảnh này"
-                  >
-                    <FiTrash2 size={12} />
-                    <span>Xóa</span>
-                  </button>
-                )}
-              </div>
-
-              {preview1 ? (
-                <div className="upload-preview-area">
-                  <img src={preview1} alt="Bản vẽ sample preview" className="preview-img" />
-                  <div className="preview-meta">
-                    <span className="file-name">{file1?.name}</span>
-                    <span className="file-size font-mono">
-                      {((file1?.size ?? 0) / 1024).toFixed(0)} KB
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    className="btn-rechoose"
-                    onClick={() => fileInputRef1.current?.click()}
-                  >
-                    <FiCamera size={12} />
-                    <span>Chụp / Chọn lại</span>
-                  </button>
-                </div>
-              ) : (
-                <div
-                  className="upload-dropzone"
-                  onClick={() => fileInputRef1.current?.click()}
-                >
-                  <div className="dropzone-icon">
-                    <FiCamera size={24} />
-                  </div>
-                  <span className="dropzone-text">Chạm để chụp hoặc chọn ảnh bản vẽ</span>
-                  <span className="dropzone-sub">Định dạng JPG / JPEG</span>
-                </div>
-              )}
-
-              <input
-                ref={fileInputRef1}
-                type="file"
-                accept="image/jpeg,image/jpg"
-                capture="environment"
-                className="hidden-file-input"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    onFile1Change(e.target.files[0]);
-                  }
-                }}
-              />
-            </div>
+            <PrecisionDataSampleSxImageUploadBox
+              title="1. Bản Vẽ Sample (PIC1)"
+              icon={<FiImage size={13} color="#2563eb" />}
+              file={file1}
+              preview={preview1}
+              onFileChange={onFile1Change}
+              onOpenPreview={openPreview}
+            />
 
             {/* Ảnh 2: Checksheet điều kiện sản xuất (PIC2) */}
-            <div className={`upload-box ${file2 ? "has-file" : ""}`}>
-              <div className="upload-box__header">
-                <div className="box-title">
-                  <FiFileText size={13} color="#059669" />
-                  <span>2. Checksheet Điều Kiện SX (PIC2)</span>
-                </div>
-                {file2 && (
-                  <button
-                    type="button"
-                    className="btn-remove-file"
-                    onClick={() => {
-                      onFile2Change(null);
-                      if (fileInputRef2.current) fileInputRef2.current.value = "";
-                    }}
-                    title="Xóa ảnh này"
-                  >
-                    <FiTrash2 size={12} />
-                    <span>Xóa</span>
-                  </button>
-                )}
-              </div>
-
-              {preview2 ? (
-                <div className="upload-preview-area">
-                  <img src={preview2} alt="Checksheet SX preview" className="preview-img" />
-                  <div className="preview-meta">
-                    <span className="file-name">{file2?.name}</span>
-                    <span className="file-size font-mono">
-                      {((file2?.size ?? 0) / 1024).toFixed(0)} KB
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    className="btn-rechoose"
-                    onClick={() => fileInputRef2.current?.click()}
-                  >
-                    <FiCamera size={12} />
-                    <span>Chụp / Chọn lại</span>
-                  </button>
-                </div>
-              ) : (
-                <div
-                  className="upload-dropzone"
-                  onClick={() => fileInputRef2.current?.click()}
-                >
-                  <div className="dropzone-icon dropzone-icon--emerald">
-                    <FiCamera size={24} />
-                  </div>
-                  <span className="dropzone-text">Chạm để chụp hoặc chọn checksheet</span>
-                  <span className="dropzone-sub">Định dạng JPG / JPEG</span>
-                </div>
-              )}
-
-              <input
-                ref={fileInputRef2}
-                type="file"
-                accept="image/jpeg,image/jpg"
-                capture="environment"
-                className="hidden-file-input"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    onFile2Change(e.target.files[0]);
-                  }
-                }}
-              />
-            </div>
+            <PrecisionDataSampleSxImageUploadBox
+              title="2. Checksheet ĐK SX (PIC2)"
+              icon={<FiFileText size={13} color="#059669" />}
+              file={file2}
+              preview={preview2}
+              emeraldTheme={true}
+              onFileChange={onFile2Change}
+              onOpenPreview={openPreview}
+            />
           </div>
         </div>
       </div>
 
-      {/* KHỐI 4: NÚT BẤM HOÀN TẤT GỬI DỮ LIỆU CÔNG THÁI HỌC */}
-      <div className="mobile-action-card mobile-action-card--submit">
-        <button
-          type="button"
-          className={`btn-submit-sample ${isSubmitting ? "is-loading" : ""}`}
-          disabled={!gName || isSubmitting}
-          onClick={onSubmit}
-        >
-          {isSubmitting ? (
-            <>
-              <FiUploadCloud size={20} className="animate-spin" />
-              <span>Đang Lưu Dữ Liệu & Tải Ảnh Lên...</span>
-            </>
-          ) : (
-            <>
-              <FiSend size={20} />
-              <span>LƯU DỮ LIỆU & TẢI ẢNH SAMPLE</span>
-            </>
-          )}
-        </button>
-        <div className="submit-hint">
-          Sau khi bấm, ảnh sẽ tự động được gán theo mã chỉ thị và lưu trữ trên hệ thống máy chủ QA/SX
+      {/* KHỐI 4: NÚT SUBMIT CHO DESKTOP */}
+      {!isMobile && (
+        <div className="mobile-action-card mobile-action-card--submit">
+          <button
+            type="button"
+            className={`btn-submit-sample ${isSubmitting ? "is-loading" : ""}`}
+            disabled={!gName || isSubmitting}
+            onClick={onSubmit}
+          >
+            {isSubmitting ? (
+              <>
+                <FiUploadCloud size={20} className="animate-spin" />
+                <span>Đang Lưu Dữ Liệu & Tải Ảnh Lên...</span>
+              </>
+            ) : (
+              <>
+                <FiSend size={20} />
+                <span>LƯU DỮ LIỆU & TẢI ẢNH SAMPLE</span>
+              </>
+            )}
+          </button>
+          <div className="submit-hint">
+            Sau khi bấm, ảnh sẽ tự động được gán theo mã chỉ thị và lưu trữ trên hệ thống máy chủ QA/SX
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Modal phóng to xem ảnh chi tiết */}
+      <PrecisionDataSampleSxImagePreviewModal
+        open={modalOpen}
+        title={modalTitle}
+        imageUrl={modalUrl}
+        fileName={modalFileName}
+        fileSize={modalFileSize}
+        onClose={() => setModalOpen(false)}
+      />
     </div>
   );
 };
