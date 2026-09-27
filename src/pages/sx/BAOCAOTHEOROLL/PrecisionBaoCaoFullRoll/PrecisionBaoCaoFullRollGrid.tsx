@@ -11,6 +11,7 @@ interface PrecisionBaoCaoFullRollGridProps {
   onSearchKeywordChange: (kw: string) => void;
   onExportEX1: () => void;
   onExportEX2: () => void;
+  isMobile?: boolean;
 }
 
 const PrecisionBaoCaoFullRollGrid: React.FC<PrecisionBaoCaoFullRollGridProps> = ({
@@ -20,13 +21,15 @@ const PrecisionBaoCaoFullRollGrid: React.FC<PrecisionBaoCaoFullRollGridProps> = 
   onSearchKeywordChange,
   onExportEX1,
   onExportEX2,
+  isMobile = false,
 }) => {
   const columns = useMemo(() => getBaoCaoFullRollColumns(), []);
 
   return (
-    <div className="precision-bcfr-grid">
-      {/* Thanh công cụ bảng: Lọc nhanh + Xuất Excel */}
-      <div className="precision-bcfr-grid__toolbar">
+    <div className={`precision-bcfr-grid ${isMobile ? "is-mobile" : ""}`}>
+      {/* Thanh công cụ bảng: Lọc nhanh + Xuất Excel (chỉ hiện trên desktop để tránh trùng toolbar mobile) */}
+      {!isMobile && (
+        <div className="precision-bcfr-grid__toolbar">
         <div className="precision-bcfr-grid__toolbar-left">
           <div className="precision-bcfr-grid__search-box">
             <FiSearch size={12} color="#94a3b8" />
@@ -69,6 +72,7 @@ const PrecisionBaoCaoFullRollGrid: React.FC<PrecisionBaoCaoFullRollGridProps> = 
           </span>
         </div>
       </div>
+      )}
 
       {/* Bảng dữ liệu AGTable */}
       <div className="precision-bcfr-grid__body">

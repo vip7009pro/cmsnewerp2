@@ -314,6 +314,37 @@ export const useBaoCaoFullRollData = () => {
     SaveExcel(fullRollData, `BaoCaoFullRoll_All_${moment().format("YYYYMMDD_HHmmss")}`);
   }, [fullRollData]);
 
+  // 11. Active filter counter & reset
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (factory !== "ALL") count++;
+    if (machine !== "ALL") count++;
+    if (codeKd.trim()) count++;
+    if (codeCms.trim()) count++;
+    if (mName.trim()) count++;
+    if (mCode.trim()) count++;
+    if (prodRequestNo.trim()) count++;
+    if (planId.trim()) count++;
+    if (custNameKd.trim()) count++;
+    if (allTime) count++;
+    return count;
+  }, [factory, machine, codeKd, codeCms, mName, mCode, prodRequestNo, planId, custNameKd, allTime]);
+
+  const resetFilters = useCallback(() => {
+    setFromDate(moment().add(-8, "day").format("YYYY-MM-DD"));
+    setToDate(moment().format("YYYY-MM-DD"));
+    setFactory("ALL");
+    setMachine("ALL");
+    setAllTime(false);
+    setCodeKd("");
+    setCodeCms("");
+    setMName("");
+    setMCode("");
+    setProdRequestNo("");
+    setPlanId("");
+    setCustNameKd("");
+  }, []);
+
   return {
     // Filter props
     fromDate, setFromDate,
@@ -335,6 +366,8 @@ export const useBaoCaoFullRollData = () => {
     isLoading,
     searchKeyword, setSearchKeyword,
     viewMode, setViewMode,
+    activeFilterCount,
+    resetFilters,
     // Analytics
     kpiData,
     dailyTrendData,
