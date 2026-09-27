@@ -64,6 +64,38 @@ export const useLichSuTemLotSxData = () => {
     }));
   }, []);
 
+  // Đếm số điều kiện lọc đang kích hoạt
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    const today = moment().format("YYYY-MM-DD");
+    if (
+      (filterData.FROM_DATE && filterData.FROM_DATE.slice(0, 10) !== today) ||
+      (filterData.TO_DATE && filterData.TO_DATE.slice(0, 10) !== today)
+    ) {
+      count++;
+    }
+    if (filterData.PROCESS_LOT_NO?.trim()) count++;
+    if (filterData.CUST_NAME_KD?.trim()) count++;
+    if (filterData.G_CODE?.trim()) count++;
+    if (filterData.G_NAME?.trim()) count++;
+    if (filterData.PROD_REQUEST_NO?.trim()) count++;
+    return count;
+  }, [filterData]);
+
+  // Đặt lại bộ lọc về mặc định
+  const resetFilters = useCallback(() => {
+    const today = moment().format("YYYY-MM-DD");
+    setFilterData({
+      FROM_DATE: today,
+      TO_DATE: today,
+      PROCESS_LOT_NO: "",
+      CUST_NAME_KD: "",
+      G_CODE: "",
+      G_NAME: "",
+      PROD_REQUEST_NO: "",
+    });
+  }, []);
+
   // Tra cứu dữ liệu
   const load_lichsutemlot_data = useCallback(async () => {
     setIsLoading(true);
@@ -278,6 +310,8 @@ export const useLichSuTemLotSxData = () => {
     handlePrint,
     handleCancelLot,
     handleExportExcel,
+    activeFilterCount,
+    resetFilters,
   };
 };
 

@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import "./PrecisionLichSuTemLotSx/PrecisionLichSuTemLotSx.scss";
+import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
 import { useLichSuTemLotSxData } from "./PrecisionLichSuTemLotSx/useLichSuTemLotSxData";
 import { PrecisionLichSuTemLotSxHeader } from "./PrecisionLichSuTemLotSx/PrecisionLichSuTemLotSxHeader";
 import { PrecisionLichSuTemLotSxToolbar } from "./PrecisionLichSuTemLotSx/PrecisionLichSuTemLotSxToolbar";
@@ -7,8 +8,17 @@ import { PrecisionLichSuTemLotSxKpi } from "./PrecisionLichSuTemLotSx/PrecisionL
 import { PrecisionLichSuTemLotSxCharts } from "./PrecisionLichSuTemLotSx/PrecisionLichSuTemLotSxCharts";
 import { PrecisionLichSuTemLotSxGrid } from "./PrecisionLichSuTemLotSx/PrecisionLichSuTemLotSxGrid";
 import { PrecisionLichSuTemLotSxModal } from "./PrecisionLichSuTemLotSx/PrecisionLichSuTemLotSxModal";
+import PrecisionLichSuTemLotSxMobileHeader from "./PrecisionLichSuTemLotSx/PrecisionLichSuTemLotSxMobileHeader";
+import PrecisionLichSuTemLotSxMobileKpi from "./PrecisionLichSuTemLotSx/PrecisionLichSuTemLotSxMobileKpi";
+import PrecisionLichSuTemLotSxMobileToolbar from "./PrecisionLichSuTemLotSx/PrecisionLichSuTemLotSxMobileToolbar";
+import PrecisionLichSuTemLotSxMobileFilterDrawer from "./PrecisionLichSuTemLotSx/PrecisionLichSuTemLotSxMobileFilterDrawer";
 
 const LICHSUTEMLOTSX: React.FC = () => {
+  const isMobile = useIsMobile();
+  const [showMobileKpi, setShowMobileKpi] = useState<boolean>(false);
+  const [showMobileCharts, setShowMobileCharts] = useState<boolean>(false);
+  const [showFilterDrawer, setShowFilterDrawer] = useState<boolean>(false);
+
   const {
     lichsutemlotdata,
     filteredData,
@@ -32,6 +42,8 @@ const LICHSUTEMLOTSX: React.FC = () => {
     handlePrint,
     handleCancelLot,
     handleExportExcel,
+    activeFilterCount,
+    resetFilters,
   } = useLichSuTemLotSxData();
 
   // Tính tổng sản lượng EA
@@ -40,54 +52,143 @@ const LICHSUTEMLOTSX: React.FC = () => {
   }, [filteredData]);
 
   return (
-    <div className="precision-lichsutemlotsx">
-      {/* 1. Header Bar công nghiệp */}
-      <PrecisionLichSuTemLotSxHeader
-        totalCount={lichsutemlotdata.length}
-        filteredCount={filteredData.length}
-        totalQty={totalQty}
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
-        onRefresh={load_lichsutemlot_data}
-        isLoading={isLoading}
-      />
+    <div className={`precision-lichsutemlotsx ${isMobile ? "is-mobile" : ""}`}>
+      {/* ========================================================= */}
+      {/* 1. DESKTOP VIEW: BẢO TOÀN NGUYÊN VẸN 100% GIAO DIỆN GỐC  */}
+      {/* ========================================================= */}
+      {!isMobile && (
+        <>
+          {/* Header Bar công nghiệp */}
+          <PrecisionLichSuTemLotSxHeader
+            totalCount={lichsutemlotdata.length}
+            filteredCount={filteredData.length}
+            totalQty={totalQty}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            onRefresh={load_lichsutemlot_data}
+            isLoading={isLoading}
+          />
 
-      {/* 2. Bộ lọc Compact */}
-      <PrecisionLichSuTemLotSxToolbar
-        filterData={filterData}
-        onFilterChange={setFilterFormInfo}
-        onSearch={load_lichsutemlot_data}
-        isLoading={isLoading}
-      />
+          {/* Bộ lọc Compact */}
+          <PrecisionLichSuTemLotSxToolbar
+            filterData={filterData}
+            onFilterChange={setFilterFormInfo}
+            onSearch={load_lichsutemlot_data}
+            isLoading={isLoading}
+          />
 
-      {/* 3. Dashboard 6 Micro-Cards KPI Realtime */}
-      <PrecisionLichSuTemLotSxKpi data={filteredData} />
+          {/* Dashboard 6 Micro-Cards KPI Realtime */}
+          <PrecisionLichSuTemLotSxKpi data={filteredData} />
 
-      {/* 4. Executive Dashboard Biểu đồ Recharts */}
-      {(viewMode === "ALL" || viewMode === "CHARTS") && (
-        <PrecisionLichSuTemLotSxCharts
-          data={filteredData}
-          isCollapsed={isChartCollapsed && viewMode === "ALL"}
-          onToggleCollapse={() => setIsChartCollapsed(!isChartCollapsed)}
-        />
+          {/* Executive Dashboard Biểu đồ Recharts */}
+          {(viewMode === "ALL" || viewMode === "CHARTS") && (
+            <PrecisionLichSuTemLotSxCharts
+              data={filteredData}
+              isCollapsed={isChartCollapsed && viewMode === "ALL"}
+              onToggleCollapse={() => setIsChartCollapsed(!isChartCollapsed)}
+            />
+          )}
+
+          {/* Bảng Lưới AG Grid High-Density */}
+          {(viewMode === "ALL" || viewMode === "GRID") && (
+            <PrecisionLichSuTemLotSxGrid
+              data={filteredData}
+              totalCount={lichsutemlotdata.length}
+              searchKeyword={searchKeyword}
+              onSearchKeywordChange={setSearchKeyword}
+              onSelectRow={handleSelectRow}
+              onOpenPreview={handleOpenPreview}
+              onCancelLot={handleCancelLot}
+              onExportExcel={handleExportExcel}
+              selectedRow={selectedRow}
+              isMobile={false}
+            />
+          )}
+        </>
       )}
 
-      {/* 5. Bảng Lưới AG Grid High-Density */}
-      {(viewMode === "ALL" || viewMode === "GRID") && (
-        <PrecisionLichSuTemLotSxGrid
-          data={filteredData}
-          totalCount={lichsutemlotdata.length}
-          searchKeyword={searchKeyword}
-          onSearchKeywordChange={setSearchKeyword}
-          onSelectRow={handleSelectRow}
-          onOpenPreview={handleOpenPreview}
-          onCancelLot={handleCancelLot}
-          onExportExcel={handleExportExcel}
-          selectedRow={selectedRow}
-        />
+      {/* ========================================================= */}
+      {/* 2. MOBILE VIEW: CÔNG THÁI HỌC, SIÊU TINH GỌN & HIỆU NĂNG */}
+      {/* ========================================================= */}
+      {isMobile && (
+        <>
+          {/* Mobile Header Tinh Gọn */}
+          <PrecisionLichSuTemLotSxMobileHeader
+            totalCount={lichsutemlotdata.length}
+            filteredCount={filteredData.length}
+            totalQty={totalQty}
+            selectedLot={selectedRow?.PROCESS_LOT_NO}
+            showKpi={showMobileKpi}
+            onToggleKpi={() => setShowMobileKpi((prev) => !prev)}
+            showCharts={showMobileCharts}
+            onToggleCharts={() => setShowMobileCharts((prev) => !prev)}
+            onRefresh={load_lichsutemlot_data}
+            isLoading={isLoading}
+          />
+
+          {/* Micro-KPI Dải Cuộn Ngang (Chỉ hiện khi bật) */}
+          {showMobileKpi && (
+            <PrecisionLichSuTemLotSxMobileKpi
+              data={filteredData}
+              onClose={() => setShowMobileKpi(false)}
+            />
+          )}
+
+          {/* Biểu đồ xu hướng trên mobile (Chỉ hiện khi bật) */}
+          {showMobileCharts && (
+            <PrecisionLichSuTemLotSxCharts
+              data={filteredData}
+              isCollapsed={false}
+              onToggleCollapse={() => setShowMobileCharts(false)}
+            />
+          )}
+
+          {/* Mobile Toolbar 2 Hàng Công Thái Học */}
+          <PrecisionLichSuTemLotSxMobileToolbar
+            searchKeyword={searchKeyword}
+            onSearchKeywordChange={setSearchKeyword}
+            onOpenFilter={() => setShowFilterDrawer(true)}
+            activeFilterCount={activeFilterCount}
+            onOpenPreview={() => handleOpenPreview()}
+            onCancelLot={handleCancelLot}
+            onExportExcel={handleExportExcel}
+            dataCount={filteredData.length}
+            totalCount={lichsutemlotdata.length}
+            selectedLot={selectedRow?.PROCESS_LOT_NO}
+          />
+
+          {/* Bảng Dữ Liệu Chiếm Trọn Không Gian Còn Lại */}
+          <PrecisionLichSuTemLotSxGrid
+            data={filteredData}
+            totalCount={lichsutemlotdata.length}
+            searchKeyword={searchKeyword}
+            onSearchKeywordChange={setSearchKeyword}
+            onSelectRow={handleSelectRow}
+            onOpenPreview={handleOpenPreview}
+            onCancelLot={handleCancelLot}
+            onExportExcel={handleExportExcel}
+            selectedRow={selectedRow}
+            isMobile={true}
+          />
+
+          {/* Bottom Sheet Filter Drawer Zero-Blur */}
+          {showFilterDrawer && (
+            <PrecisionLichSuTemLotSxMobileFilterDrawer
+              isOpen={showFilterDrawer}
+              onClose={() => setShowFilterDrawer(false)}
+              filterData={filterData}
+              onFilterChange={setFilterFormInfo}
+              onSearch={load_lichsutemlot_data}
+              onReset={resetFilters}
+              isLoading={isLoading}
+            />
+          )}
+        </>
       )}
 
-      {/* 6. Modal Xem Trước & In Tem Lót Chuyên Nghiệp */}
+      {/* ========================================================= */}
+      {/* 3. MODAL XEM TRƯỚC & IN TEM LÓT (DÙNG CHUNG CẢ HAI CHẾ ĐỘ)*/}
+      {/* ========================================================= */}
       <PrecisionLichSuTemLotSxModal
         isOpen={showhideTemLot}
         onClose={() => setShowHideTemLot(false)}
@@ -100,4 +201,4 @@ const LICHSUTEMLOTSX: React.FC = () => {
   );
 };
 
-export default LICHSUTEMLOTSX;
+export default React.memo(LICHSUTEMLOTSX);

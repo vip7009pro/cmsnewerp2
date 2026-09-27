@@ -14,6 +14,7 @@ interface PrecisionLichSuTemLotSxGridProps {
   onCancelLot: () => void;
   onExportExcel: (type: "EX1" | "EX2") => void;
   selectedRow: TEMLOTSX_DATA | null;
+  isMobile?: boolean;
 }
 
 export const PrecisionLichSuTemLotSxGrid: React.FC<PrecisionLichSuTemLotSxGridProps> = ({
@@ -26,6 +27,7 @@ export const PrecisionLichSuTemLotSxGrid: React.FC<PrecisionLichSuTemLotSxGridPr
   onCancelLot,
   onExportExcel,
   selectedRow,
+  isMobile = false,
 }) => {
   const columns = useMemo(() => {
     return getLichSuTemLotColumns({
@@ -59,9 +61,10 @@ export const PrecisionLichSuTemLotSxGrid: React.FC<PrecisionLichSuTemLotSxGridPr
   }, [data]);
 
   return (
-    <div className="precision-lichsutemlotsx__gridContainer">
-      {/* Grid Toolbar */}
-      <div className="precision-lichsutemlotsx__gridToolbar">
+    <div className={`precision-lichsutemlotsx__gridContainer ${isMobile ? "is-mobile" : ""}`}>
+      {/* Grid Toolbar (Chỉ hiển thị trên Desktop để tránh trùng lặp) */}
+      {!isMobile && (
+        <div className="precision-lichsutemlotsx__gridToolbar">
         <div className="precision-lichsutemlotsx__gridToolbarLeft">
           {/* Quick Search */}
           <div className="precision-lichsutemlotsx__searchBox">
@@ -139,6 +142,7 @@ export const PrecisionLichSuTemLotSxGrid: React.FC<PrecisionLichSuTemLotSxGridPr
           )}
         </div>
       </div>
+      )}
 
       {/* Grid Table Body */}
       <div className="precision-lichsutemlotsx__gridBody">
