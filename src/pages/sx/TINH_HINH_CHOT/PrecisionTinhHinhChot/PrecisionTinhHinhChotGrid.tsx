@@ -13,6 +13,7 @@ interface PrecisionTinhHinhChotGridProps {
   onRefresh: () => void;
   onExportExcel: (factory: "NM1" | "NM2", mode: "EX1" | "EX2") => void;
   isLoading: boolean;
+  isMobile?: boolean;
 }
 
 const PrecisionTinhHinhChotGrid: React.FC<PrecisionTinhHinhChotGridProps> = ({
@@ -26,6 +27,7 @@ const PrecisionTinhHinhChotGrid: React.FC<PrecisionTinhHinhChotGridProps> = ({
   onRefresh,
   onExportExcel,
   isLoading,
+  isMobile = false,
 }) => {
   // Tính toán dòng tổng cộng ghim chân bảng
   const pinnedBottomRowData = useMemo(() => {
@@ -55,9 +57,10 @@ const PrecisionTinhHinhChotGrid: React.FC<PrecisionTinhHinhChotGridProps> = ({
   }, [data]);
 
   return (
-    <div className="precision-thc-grid-card">
-      {/* Thanh công cụ High-Density của Bảng */}
-      <div className="precision-thc-grid-card__toolbar">
+    <div className={`precision-thc-grid-card ${isMobile ? "is-mobile" : ""}`}>
+      {/* Thanh công cụ High-Density của Bảng (Ẩn trên mobile để dùng Mobile Toolbar ngoài) */}
+      {!isMobile && (
+        <div className="precision-thc-grid-card__toolbar">
         <div className="toolbar-left">
           <div className="factory-title-badge">
             <span className={`dot dot--${factory.toLowerCase()}`} />
@@ -127,6 +130,7 @@ const PrecisionTinhHinhChotGrid: React.FC<PrecisionTinhHinhChotGridProps> = ({
           </button>
         </div>
       </div>
+      )}
 
       {/* Thân bảng AGTable */}
       <div className="precision-thc-grid-card__body">

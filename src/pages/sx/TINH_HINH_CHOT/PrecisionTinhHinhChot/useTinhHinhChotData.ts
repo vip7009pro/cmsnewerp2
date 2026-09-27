@@ -22,10 +22,12 @@ export interface TinhHinhChotKpiStats {
   nm1Total: number;
   nm1DaChot: number;
   nm1ChuaChot: number;
+  nm1DaNhapHS: number;
   nm1RateChot: number;
   nm2Total: number;
   nm2DaChot: number;
   nm2ChuaChot: number;
+  nm2DaNhapHS: number;
   nm2RateChot: number;
 }
 
@@ -41,6 +43,8 @@ export interface DailyChartItem {
 }
 
 export type ViewMode = "SPLIT" | "NM1" | "NM2" | "CHARTS";
+export type StatusChotFilter = "ALL" | "CHUA_CHOT" | "DA_CHOT";
+export type StatusHSFilter = "ALL" | "CHUA_HS" | "DA_HS";
 
 export const useTinhHinhChotData = () => {
   const [isPending, startTransition] = useTransition();
@@ -53,6 +57,28 @@ export const useTinhHinhChotData = () => {
   const [showCharts, setShowCharts] = useState(true);
   const [chartFactoryFilter, setChartFactoryFilter] = useState<"ALL" | "NM1" | "NM2">("ALL");
   const [lastUpdated, setLastUpdated] = useState<string>("");
+
+  // Bộ lọc mở rộng cho Mobile & Drawer
+  const [statusChotFilter, setStatusChotFilter] = useState<StatusChotFilter>("ALL");
+  const [statusHSFilter, setStatusHSFilter] = useState<StatusHSFilter>("ALL");
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (statusChotFilter !== "ALL") count++;
+    if (statusHSFilter !== "ALL") count++;
+    if (dateFrom) count++;
+    if (dateTo) count++;
+    return count;
+  }, [statusChotFilter, statusHSFilter, dateFrom, dateTo]);
+
+  const resetFilters = useCallback(() => {
+    setStatusChotFilter("ALL");
+    setStatusHSFilter("ALL");
+    setDateFrom("");
+    setDateTo("");
+  }, []);
 
   const isLoading = loadingCount > 0;
 
@@ -109,37 +135,44 @@ export const useTinhHinhChotData = () => {
     loadAll();
   }, [loadAll]);
 
+  // Hàm lọc đa chiều (Search + Trạng thái chốt + Trạng thái HS + Khoảng ngày)
+  const matchesFilter = useCallback(
+    (item: ExtendedTinhHinhChot, query: string) => {
+      if (query) {
+        const q = query.toLowerCase().trim();
+        const matchText =
+          item.SX_DATE?.toLowerCase().includes(q) ||
+          String(item.TOTAL).includes(q) ||
+          String(item.DA_CHOT).includes(q) ||
+          String(item.CHUA_CHOT).includes(q) ||
+          String(item.DA_NHAP_HIEUSUAT).includes(q) ||
+          String(item.CHUA_NHAP_HIEUSUAT).includes(q);
+        if (!matchText) return false;
+      }
+
+      if (statusChotFilter === "CHUA_CHOT" && !(Number(item.CHUA_CHOT) > 0)) return false;
+      if (statusChotFilter === "DA_CHOT" && (Number(item.CHUA_CHOT) > 0 || Number(item.TOTAL) === 0)) return false;
+
+      if (statusHSFilter === "CHUA_HS" && !(Number(item.CHUA_NHAP_HIEUSUAT) > 0)) return false;
+      if (statusHSFilter === "DA_HS" && (Number(item.CHUA_NHAP_HIEUSUAT) > 0 || Number(item.TOTAL) === 0)) return false;
+
+      if (dateFrom && item.SX_DATE < dateFrom) return false;
+      if (dateTo && item.SX_DATE > dateTo) return false;
+
+      return true;
+    },
+    [statusChotFilter, statusHSFilter, dateFrom, dateTo]
+  );
+
   // Bộ lọc tìm kiếm nhanh cho NM1
   const filteredDataNM1 = useMemo(() => {
-    if (!searchNM1.trim()) return rawDataNM1;
-    const query = searchNM1.toLowerCase().trim();
-    return rawDataNM1.filter((item) => {
-      return (
-        item.SX_DATE?.toLowerCase().includes(query) ||
-        String(item.TOTAL).includes(query) ||
-        String(item.DA_CHOT).includes(query) ||
-        String(item.CHUA_CHOT).includes(query) ||
-        String(item.DA_NHAP_HIEUSUAT).includes(query) ||
-        String(item.CHUA_NHAP_HIEUSUAT).includes(query)
-      );
-    });
-  }, [rawDataNM1, searchNM1]);
+    return rawDataNM1.filter((item) => matchesFilter(item, searchNM1));
+  }, [rawDataNM1, searchNM1, matchesFilter]);
 
   // Bộ lọc tìm kiếm nhanh cho NM2
   const filteredDataNM2 = useMemo(() => {
-    if (!searchNM2.trim()) return rawDataNM2;
-    const query = searchNM2.toLowerCase().trim();
-    return rawDataNM2.filter((item) => {
-      return (
-        item.SX_DATE?.toLowerCase().includes(query) ||
-        String(item.TOTAL).includes(query) ||
-        String(item.DA_CHOT).includes(query) ||
-        String(item.CHUA_CHOT).includes(query) ||
-        String(item.DA_NHAP_HIEUSUAT).includes(query) ||
-        String(item.CHUA_NHAP_HIEUSUAT).includes(query)
-      );
-    });
-  }, [rawDataNM2, searchNM2]);
+    return rawDataNM2.filter((item) => matchesFilter(item, searchNM2));
+  }, [rawDataNM2, searchNM2, matchesFilter]);
 
   // Thống kê KPI tổng hợp
   const kpiStats = useMemo<TinhHinhChotKpiStats>(() => {
@@ -180,10 +213,12 @@ export const useTinhHinhChotData = () => {
       nm1Total,
       nm1DaChot,
       nm1ChuaChot,
+      nm1DaNhapHS,
       nm1RateChot,
       nm2Total,
       nm2DaChot,
       nm2ChuaChot,
+      nm2DaNhapHS,
       nm2RateChot,
     };
   }, [rawDataNM1, rawDataNM2]);
@@ -301,5 +336,15 @@ export const useTinhHinhChotData = () => {
     loadTinhHinhBaoCao,
     loadAll,
     handleExportExcel,
+    statusChotFilter,
+    setStatusChotFilter,
+    statusHSFilter,
+    setStatusHSFilter,
+    dateFrom,
+    setDateFrom,
+    dateTo,
+    setDateTo,
+    activeFilterCount,
+    resetFilters,
   };
 };

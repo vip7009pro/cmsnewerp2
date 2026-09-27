@@ -1,22 +1,26 @@
 # ERP Context & Status
 
-## Update - 2026-09-27 (SX / BTP_AUTO: Tối Ưu Toàn Diện Giao Diện Mobile Tra Cứu Bán Thành Phẩm Tự Động)
-- **1. Sao Lưu An Toàn**: Tạo file [BTP_AUTO.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/BTP_AUTO/BTP_AUTO.backup2.tsx) bảo toàn 100% mã nguồn ban đầu.
-- **2. Viewport Conditional Rendering**: Tích hợp hook `useIsMobile()` chuẩn từ [useIsMobile.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Navbar/AccountInfo/useIsMobile.ts), bảo toàn nguyên vẹn 100% giao diện và trải nghiệm Desktop (`!isMobile`) với header công nghiệp, 5 cards KPI lớn và toolbar grid.
-- **3. Mobile Header Tinh Gọn ([PrecisionBtpAutoMobileHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/BTP_AUTO/PrecisionBtpAuto/PrecisionBtpAutoMobileHeader.tsx))**:
-  * Brand badge "04. SX BTP", chấm Pulse Live xanh lá nhấp nháy 2s, tiêu đề "TRA CỨU BTP", chips telemetry (Chế độ Detail/Summary, Số dòng, Cập nhật).
-  * Nhóm nút thao tác: Nút bật/tắt Micro-KPI `📊 KPI`, Nút mở Quản lý giao nhận `📦 QLGN`, Nút làm mới dữ liệu `🔄`.
-- **4. Dải Micro-KPI Cuộn Ngang ([PrecisionBtpAutoMobileKpi.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/BTP_AUTO/PrecisionBtpAuto/PrecisionBtpAutoMobileKpi.tsx))**:
-  * Chuyển 5 cards KPI desktop thành dải chip cuộn ngang siêu mượt (Tổng BTP EA, Xưởng A EA & %, Xưởng B EA & %, Lot & Mã hàng, Phân bổ Nhà máy).
+## Update - 2026-09-27 (SX / TINH_HINH_CHOT: Tối Ưu Toàn Diện Giao Diện Mobile Tình Hình Chốt Báo Cáo SX)
+- **1. Sao Lưu An Toàn**: Tạo file [TINH_HINH_CHOT.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/TINH_HINH_CHOT/TINH_HINH_CHOT.backup2.tsx) bảo toàn 100% mã nguồn ban đầu.
+- **2. Viewport Conditional Rendering**: Tích hợp hook `useIsMobile()` chuẩn từ [useIsMobile.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Navbar/AccountInfo/useIsMobile.ts), bảo toàn nguyên vẹn 100% giao diện và trải nghiệm Desktop (`!isMobile`) với header công nghiệp, 6 cards KPI lớn, biểu đồ Recharts và chế độ split 2 cột song song.
+- **3. Mobile Header Tinh Gọn ([PrecisionTinhHinhChotMobileHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/TINH_HINH_CHOT/PrecisionTinhHinhChot/PrecisionTinhHinhChotMobileHeader.tsx))**:
+  * Brand badge "04. SX CHỐT BC", chấm Pulse Live xanh lá nhấp nháy, tiêu đề "TÌNH HÌNH CHỐT BC", telemetry chips (NM1 ngày, NM2 ngày, Tồn chưa chốt cảnh báo đỏ nếu > 0, Cập nhật).
+  * Nhóm nút thao tác: Nút bật/tắt Micro-KPI `📊 KPI`, Nút bật/tắt Biểu Đồ `📈 Biểu Đồ`, Nút làm mới dữ liệu `🔄`.
+- **4. Dải Micro-KPI Cuộn Ngang ([PrecisionTinhHinhChotMobileKpi.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/TINH_HINH_CHOT/PrecisionTinhHinhChot/PrecisionTinhHinhChotMobileKpi.tsx))**:
+  * 6 cards KPI dạng chip cuộn ngang siêu mượt (Tổng Lệnh NM1 & NM2, Tỷ lệ chốt %, Tỷ lệ nhập HS %, Tồn chưa chốt, Tồn chưa nhập HS, So sánh NM1 vs NM2).
   * Nút đóng nhanh `[X]` giải phóng 100% diện tích cho bảng dữ liệu AG-Grid.
-- **5. Mobile Toolbar 2 Hàng Công Thái Học ([PrecisionBtpAutoMobileToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/BTP_AUTO/PrecisionBtpAuto/PrecisionBtpAutoMobileToolbar.tsx))**:
-  * Hàng 1: Ô tìm kiếm thông minh 14px (chống zoom Safari iOS) kèm nút Clear `[X]` + nút `Bộ Lọc` (`FiFilter`) kèm badge đếm điều kiện + Segmented switch mini `Detail / Summary`.
-  * Hàng 2: Dải thao tác cuộn ngang (Chips chọn nhanh Xưởng Tất cả / Xưởng A / Xưởng B + Toggle Tồn > 0 + Xuất Excel EX1/EX2 + Mở QLGN + Bộ đếm dòng `filtered / total`).
-- **6. Zero-Blur GPU-Friendly Filter Drawer ([PrecisionBtpAutoMobileFilterDrawer.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/BTP_AUTO/PrecisionBtpAuto/PrecisionBtpAutoMobileFilterDrawer.tsx))**:
-  * Bottom Sheet trượt mượt mà, backdrop tối đặc `rgba(15, 23, 42, 0.75)` không dùng blur, 4 nhóm điều khiển (Chế độ dữ liệu, Phân xưởng, Nhà máy, Tình trạng tồn kho) kèm nút "Đặt lại" và "Áp dụng".
+- **5. Mobile Toolbar 2 Hàng Công Thái Học ([PrecisionTinhHinhChotMobileToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/TINH_HINH_CHOT/PrecisionTinhHinhChot/PrecisionTinhHinhChotMobileToolbar.tsx))**:
+  * Hàng 1: Ô tìm kiếm thông minh 14px (chống zoom Safari iOS) kèm nút Clear `[X]` + nút `Bộ Lọc` (`FiFilter`) kèm badge đếm điều kiện + Segmented switch mini `[NM1 | NM2 | 2 NM]`.
+  * Hàng 2: Dải thao tác cuộn ngang (Quick filter Tất cả / Chưa chốt / Chưa nhập HS + Xuất Excel EX1/EX2 + Nút Reload + Bộ đếm dòng `X / Y ngày`).
+- **6. Zero-Blur GPU-Friendly Filter Drawer ([PrecisionTinhHinhChotMobileFilterDrawer.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/TINH_HINH_CHOT/PrecisionTinhHinhChot/PrecisionTinhHinhChotMobileFilterDrawer.tsx))**:
+  * Bottom Sheet trượt mượt mà, backdrop tối đặc `rgba(15, 23, 42, 0.75)` không dùng blur, 4 nhóm điều khiển (Nhà máy, Tình trạng chốt BC, Tình trạng nhập HS, Khoảng ngày SX_DATE kèm quick dates) kèm nút "Đặt lại" và "Áp dụng".
 - **7. Clean Code & Tối Ưu Bảng Dữ Liệu**:
-  * Cập nhật [PrecisionBtpAutoGrid.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/BTP_AUTO/PrecisionBtpAuto/PrecisionBtpAutoGrid.tsx) ẩn GridToolbar desktop khi ở mobile, mở rộng [useBtpAutoData.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/BTP_AUTO/PrecisionBtpAuto/useBtpAutoData.ts) hỗ trợ lọc đa chiều.
-  * File chính [BTP_AUTO.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/BTP_AUTO/BTP_AUTO.tsx) chỉ 142 dòng, styling tối ưu trong [PrecisionBtpAuto.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/BTP_AUTO/PrecisionBtpAuto/PrecisionBtpAuto.scss).
+  * Cập nhật [PrecisionTinhHinhChotGrid.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/TINH_HINH_CHOT/PrecisionTinhHinhChot/PrecisionTinhHinhChotGrid.tsx) ẩn toolbar trong bảng khi ở mobile, mở rộng [useTinhHinhChotData.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/TINH_HINH_CHOT/PrecisionTinhHinhChot/useTinhHinhChotData.ts) hỗ trợ lọc đa chiều và expose đầy đủ chỉ số thống kê.
+  * File chính [TINH_HINH_CHOT.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/TINH_HINH_CHOT/TINH_HINH_CHOT.tsx) chỉ 267 dòng, styling tối ưu trong [PrecisionTinhHinhChot.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/TINH_HINH_CHOT/PrecisionTinhHinhChot/PrecisionTinhHinhChot.scss).
+
+## Update - 2026-09-27 (SX / BTP_AUTO: Tối Ưu Toàn Diện Giao Diện Mobile Tra Cứu Bán Thành Phẩm Tự Động)
+- **1. Sao Lưu An Toàn**: Tạo file [BTP_AUTO.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/BTP_AUTO/BTP_AUTO.backup2.tsx).
+- **2. Viewport Conditional Rendering**: Hook `useIsMobile()`, bảo toàn 100% desktop (`!isMobile`), mobile header tinh gọn nhấp nháy Live; Micro-KPI bar cuộn ngang; Toolbar 2 hàng; Filter Drawer Zero-Blur 4 nhóm. File chính [BTP_AUTO.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/BTP_AUTO/BTP_AUTO.tsx) chỉ 142 dòng.
 
 ## Update - 2026-09-27 (QLSX / ACHIVEMENTTB: Tối Ưu Toàn Diện Giao Diện Mobile Bảng Tỷ Lệ Đạt Kế Hoạch Sản Xuất)
 - **1. Sao Lưu An Toàn**: Tạo file [ACHIVEMENTTB.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/ACHIVEMENTTB/ACHIVEMENTTB.backup2.tsx).
@@ -24,9 +28,4 @@
 
 ## Update - 2026-09-27 (QLSX / KHOAO: Tối Ưu Toàn Diện Giao Diện Mobile Kho SX Main - Kho Ảo)
 - **1. Sao Lưu An Toàn**: Tạo file [KHOAO.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/KHOAO/KHOAO.backup2.tsx).
-- **2. Viewport Conditional Rendering**: Dùng hook `useIsMobile()`, bảo toàn 100% desktop (`!isMobile`), header mobile nhấp nháy Live; Toolbar 2 hàng; Filter Drawer Zero-Blur 4 nhóm. File chính [KHOAO.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/KHOAO/KHOAO.tsx) chỉ 218 dòng.
-
-## Update - 2026-09-27 (KD & QLSX: Cache-Busting Toàn Diện Cho Modal In Bản Vẽ Kỹ Thuật)
-- Cập nhật [DrawComponent.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/DrawComponent/DrawComponent.tsx), [DrawComponentTBG.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/DrawComponent/DrawComponentTBG.tsx) sang `useMemo` với `?v=${timestamp}_${randomSalt}`.
-- Cố định key độc nhất `key={`${element.G_CODE}_...`}` trong [khsxUtils.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/utils/khsxUtils.tsx), [planDataTbPrintRenderers.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionPlanDataTb/planDataTbPrintRenderers.tsx), [quickPlanPrintRenderers.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/QUICKPLAN/PrecisionQuickPlan/quickPlanPrintRenderers.tsx).
-- Bổ sung tham số ngẫu nhiên cho link bản vẽ trong [PrecisionYCSXColumns.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/PrecisionYCSXColumns.tsx).
+- **2. Viewport Conditional Rendering**: Hook `useIsMobile()`, bảo toàn 100% desktop (`!isMobile`), header mobile nhấp nháy Live; Toolbar 2 hàng; Filter Drawer Zero-Blur 4 nhóm. File chính [KHOAO.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/KHOAO/KHOAO.tsx) chỉ 218 dòng.
