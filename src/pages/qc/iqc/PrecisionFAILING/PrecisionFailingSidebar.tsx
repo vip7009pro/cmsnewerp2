@@ -11,6 +11,7 @@ import {
 import { CustomerListData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { PrecisionFailingFormIn } from "./PrecisionFailingFormIn";
 import { PrecisionFailingFormOut } from "./PrecisionFailingFormOut";
+import { VendorAutocomplete } from "./VendorAutocomplete";
 
 interface PrecisionFailingSidebarProps {
   sidebarMode: "IN" | "OUT" | "FILTER";
@@ -114,18 +115,12 @@ export const PrecisionFailingSidebar: React.FC<PrecisionFailingSidebarProps> = (
         {/* COMMON: Vendor & CMSV Checkbox */}
         <div className="form-group">
           <label>Nhà Cung Cấp</label>
-          <select
-            className="input-control"
+          <VendorAutocomplete
+            customerList={customerList}
+            cust_cd={cust_cd}
+            setCust_Cd={setCust_Cd}
             disabled={cmsvcheck}
-            value={cust_cd}
-            onChange={(e) => setCust_Cd(e.target.value)}
-          >
-            {customerList.map((item, idx) => (
-              <option key={idx} value={item.CUST_CD}>
-                {item.CUST_NAME_KD}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         <div className="checkbox-row">

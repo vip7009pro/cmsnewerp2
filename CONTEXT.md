@@ -1,5 +1,21 @@
 # ERP Context & Status
 
+## Update - 2026-09-27 (QC / IQC / FAILING: Tối Ưu Toàn Diện Giao Diện Mobile Quản Lý Lô Lỗi QC)
+- **1. Sao Lưu An Toàn**: Tạo file [FAILING.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/FAILING.backup2.tsx) bảo toàn 100% mã nguồn ban đầu.
+- **2. Viewport Conditional Rendering**: Tích hợp hook `useIsMobile()`, bảo toàn nguyên vẹn 100% giao diện và trải nghiệm Desktop (`!isMobile`) với sub-header, 4 KPI cards lớn, sidebar 280px 3-in-1 (IN/OUT/FILTER) và toolbar đầy đủ.
+- **3. Mobile Header Tinh Gọn ([PrecisionFailingMobileHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/PrecisionFAILING/PrecisionFailingMobileHeader.tsx))**: Brand badge "QC • IQC", chấm Pulse Live xanh lá nhấp nháy, tiêu đề "QUẢN LÝ LÔ LỖI", telemetry chips (`Dòng: X/Y`, `Pending: N (%)`, `Pass: N (%)`, `Tồn: N`), nhóm nút điều khiển: Bật/tắt Micro-KPI `📊 KPI`, Mở Drawer Thao Tác `⚡ Thao Tác`, Làm mới dữ liệu `🔄`.
+- **4. Dải Micro-KPI Cuộn Ngang ([PrecisionFailingMobileKpi.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/PrecisionFAILING/PrecisionFailingMobileKpi.tsx))**: 4 thẻ micro cuộn ngang (Tổng lô failing, Đã tái kiểm PASS, Chờ xử lý Pending, Tồn kho liệu failing) kèm nút đóng nhanh `[X]` giải phóng 100% không gian.
+- **5. Mobile Toolbar 2 Hàng Công Thái Học ([PrecisionFailingMobileToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/PrecisionFAILING/PrecisionFailingMobileToolbar.tsx))**:
+  * Hàng 1: Ô tìm kiếm thông minh 14px (chống zoom Safari iOS) kèm nút Clear `[X]`, nút Tra Data và nút Bộ Lọc `FiFilter` kèm badge đếm điều kiện lọc active.
+  * Hàng 2: Dải chips cuộn ngang (Toggle lọc Lô Pending, Mở form Nhập IN, Mở form Xuất OUT, Tạo mới New Failing, SET PASS, SET FAIL, IQC Confirm, UPDATE NCR ID, SET CLOSED, SET PENDING, Excel EX1, EX2, Bộ đếm dòng).
+- **6. Zero-Blur GPU-Friendly Filter Drawer & Action Drawer**:
+  * Filter Drawer ([PrecisionFailingMobileFilterDrawer.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/PrecisionFAILING/PrecisionFailingMobileFilterDrawer.tsx)): Backdrop đặc `rgba(15, 23, 42, 0.75)`, bộ lọc Nhà Cung Cấp tích hợp [VendorAutocomplete.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/PrecisionFAILING/VendorAutocomplete.tsx) cho phép gõ typing tìm kiếm mã/tên NCC tức thì với autoHighlight, tùy chọn CMSV mặc định, toggle lọc lô PENDING, NCR ID, nút "Đặt lại" và "Áp dụng lọc".
+  * Action Drawer ([PrecisionFailingMobileActionDrawer.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/PrecisionFAILING/PrecisionFailingMobileActionDrawer.tsx)): 3 tabs mượt mà gồm Tab Form Nhập Lô (IN) kèm nút ADD & SAVE, Tab Form Xuất Kho Liệu (OUT) kèm nút XUẤT KHO, Tab Thao Tác Nhanh hàng loạt cho các dòng đã chọn.
+- **7. Clean Code & Tối Ưu Bảng Dữ Liệu**:
+  * Nâng cấp cả Desktop Sidebar ([PrecisionFailingSidebar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/PrecisionFAILING/PrecisionFailingSidebar.tsx)) và Mobile Drawer sang component dùng chung [VendorAutocomplete.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/PrecisionFAILING/VendorAutocomplete.tsx), popper z-index nổi mượt mà trên modal/drawer.
+  * Bảng dữ liệu AGTable tự động co giãn chiếm trọn 100% chiều cao màn hình còn lại.
+  * File chính [FAILING.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/FAILING.tsx) chỉ 208 dòng, tất cả các subcomponents đều dưới 275 dòng, hoàn toàn sạch sẽ.
+
 ## Update - 2026-09-27 (SX / DAOFILM_REPORT: Tối Ưu Toàn Diện Giao Diện Mobile Báo Cáo Dao Film)
 - **1. Sao Lưu An Toàn**: Tạo file [DAOFILM_REPORT.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/DAOFILM_REPORT/DAOFILM_REPORT.backup2.tsx) bảo toàn 100% mã nguồn ban đầu.
 - **2. Viewport Conditional Rendering**: Tích hợp hook `useIsMobile()`, bảo toàn nguyên vẹn 100% giao diện và trải nghiệm Desktop (`!isMobile`) với 3 thẻ widget chỉ số lớn, 2 biểu đồ Recharts tròn và 2 bảng AG-Grid song song (BackData & DetailData).
