@@ -337,6 +337,43 @@ export const useCuonLieuData = () => {
     }
   }, []);
 
+  // Đếm số lượng điều kiện lọc đang kích hoạt
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    const today = moment().format("YYYY-MM-DD");
+    if (filters.fromdate !== today || filters.todate !== today) count++;
+    if (filters.alltime) count++;
+    if (filters.factory !== "ALL") count++;
+    if (filters.machine !== "ALL") count++;
+    if (filters.codekd.trim()) count++;
+    if (filters.codecms.trim()) count++;
+    if (filters.m_name.trim()) count++;
+    if (filters.m_code.trim()) count++;
+    if (filters.prodrequestno.trim()) count++;
+    if (filters.plan_id.trim()) count++;
+    if (filters.cust_name_kd.trim()) count++;
+    return count;
+  }, [filters]);
+
+  // Đặt lại toàn bộ bộ lọc về trạng thái mặc định
+  const resetFilters = useCallback(() => {
+    const today = moment().format("YYYY-MM-DD");
+    setFilters({
+      fromdate: today,
+      todate: today,
+      codekd: "",
+      codecms: "",
+      machine: "ALL",
+      factory: "ALL",
+      prodrequestno: "",
+      plan_id: "",
+      alltime: false,
+      m_name: "",
+      m_code: "",
+      cust_name_kd: "",
+    });
+  }, []);
+
   return {
     filters,
     handleFilterChange,
@@ -360,5 +397,7 @@ export const useCuonLieuData = () => {
     handleLoadData,
     handleExportEX1,
     handleExportEX2,
+    activeFilterCount,
+    resetFilters,
   };
 };

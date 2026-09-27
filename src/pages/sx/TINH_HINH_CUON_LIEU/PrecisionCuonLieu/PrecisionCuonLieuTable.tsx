@@ -6,14 +6,16 @@ import { ColDef } from "ag-grid-community";
 interface PrecisionCuonLieuTableProps {
   columns: ColDef[];
   data: MATERIAL_STATUS[];
+  isMobile?: boolean;
 }
 
 export const PrecisionCuonLieuTable: React.FC<PrecisionCuonLieuTableProps> = ({
   columns,
   data,
+  isMobile = false,
 }) => {
   return (
-    <div className="precision-cuonlieu__gridContainer">
+    <div className={`precision-cuonlieu__gridContainer ${isMobile ? "is-mobile" : ""}`}>
       <AGTable
         suppressRowClickSelection={true}
         showFilter={true}
