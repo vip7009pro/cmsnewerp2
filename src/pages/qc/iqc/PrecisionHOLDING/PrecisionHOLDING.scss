@@ -939,3 +939,495 @@
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(0.9); }
 }
+
+// =============================================================================
+// 11. MOBILE RESPONSIVE — Viewport Conditional Rendering SCSS
+// =============================================================================
+
+// Root overrides for Mobile mode
+.precision-holding.is-mobile {
+  height: auto !important;
+  max-height: none !important;
+  flex: 0 0 auto !important;
+  overflow: visible !important;
+  padding: 0;
+  gap: 0;
+
+  // Override Multi-Tab ERP container locks
+  .component_element & {
+    height: auto !important;
+    max-height: none !important;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+  }
+}
+
+// Mobile Grid Container — chiếm trọn không gian
+.precision-holding-mobile-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: calc(100vh - 140px); // Toolbar ~90px + browser chrome
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+
+  .precision-holding-table-container {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+}
+
+// Mobile Toolbar — 2 hàng công thái học
+.precision-holding-mobile-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 8px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+
+  // ─── Hàng 1: Search + Tra Data + Bộ Lọc ───
+  .toolbar-search-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+
+    .search-input-wrapper {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      .search-icon {
+        position: absolute;
+        left: 10px;
+        color: #64748b;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .search-input {
+        width: 100%;
+        height: 38px;
+        padding: 0 32px 0 32px;
+        font-size: 14px; // Chống zoom iOS Safari
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background: #f8fafc;
+        color: #0f172a;
+        outline: none;
+        transition: border-color 0.15s ease;
+
+        &:focus {
+          border-color: #2563eb;
+          box-shadow: 0 0 0 1px #2563eb;
+          background: #ffffff;
+        }
+
+        &::placeholder {
+          color: #94a3b8;
+          font-size: 13px;
+        }
+      }
+
+      .btn-clear-search {
+        position: absolute;
+        right: 6px;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background: #e2e8f0;
+        border-radius: 50%;
+        color: #475569;
+        cursor: pointer;
+        z-index: 1;
+
+        &:active {
+          background: #cbd5e1;
+        }
+      }
+    }
+
+    .btn-search-trigger {
+      height: 38px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border: none;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.2);
+
+      &:active {
+        transform: scale(0.97);
+      }
+    }
+
+    .btn-filter-trigger {
+      height: 38px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 6px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+
+      &.has-filters {
+        background: #dbeafe;
+        border-color: #93c5fd;
+      }
+
+      &:active {
+        transform: scale(0.97);
+      }
+
+      .filter-badge {
+        min-width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9999px;
+        background: #dc2626;
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1;
+      }
+    }
+  }
+
+  // ─── Hàng 2: Chips cuộn ngang ───
+  .toolbar-chips-scroll {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+
+    .chip-btn {
+      height: 30px;
+      padding: 0 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      &--pass {
+        background: #ecfdf5;
+        border-color: #a7f3d0;
+        color: #047857;
+        &:active { background: #d1fae5; }
+      }
+
+      &--fail {
+        background: #fff1f2;
+        border-color: #fecdd3;
+        color: #be123c;
+        &:active { background: #ffe4e6; }
+      }
+
+      &--ncr {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+        color: #1d4ed8;
+        &:active { background: #dbeafe; }
+      }
+
+      &--reason {
+        background: #fffbeb;
+        border-color: #fde68a;
+        color: #b45309;
+        &:active { background: #fef3c7; }
+      }
+
+      &--excel {
+        background: #ecfdf5;
+        border-color: #6ee7b7;
+        color: #047857;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        font-weight: 700;
+        &:active { background: #d1fae5; }
+      }
+    }
+
+    .chip-counter {
+      height: 28px;
+      padding: 0 10px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 9999px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #475569;
+      white-space: nowrap;
+      flex-shrink: 0;
+
+      .selected-text {
+        color: #2563eb;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// 12. FLOATING FILTER DRAWER / BOTTOM SHEET (MOBILE — ZERO BLUR)
+// =============================================================================
+.holding-filter-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  height: 100vh; // fallback
+  background: rgba(15, 23, 42, 0.75); // ZERO BLUR — nền tối đặc
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: holdingFadeIn 0.15s ease;
+}
+
+.holding-filter-drawer {
+  width: 100%;
+  max-height: 88dvh;
+  max-height: 88vh; // fallback
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 14px 14px 0 0;
+  box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.15);
+  animation: holdingSlideUp 0.2s ease;
+  overflow: hidden;
+
+  .filter-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+    flex-shrink: 0;
+
+    .drawer-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+
+      .title-icon {
+        color: #2563eb;
+      }
+    }
+
+    .btn-close-drawer {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: #e2e8f0;
+      border-radius: 50%;
+      color: #475569;
+      cursor: pointer;
+
+      &:active {
+        background: #cbd5e1;
+      }
+    }
+  }
+
+  .filter-drawer-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    -webkit-overflow-scrolling: touch;
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .filter-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #475569;
+        letter-spacing: 0.03em;
+      }
+
+      .filter-input,
+      .filter-select {
+        height: 40px;
+        padding: 0 12px;
+        font-size: 14px; // Chống zoom iOS
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #0f172a;
+        outline: none;
+        transition: border-color 0.15s ease;
+
+        &:focus {
+          border-color: #2563eb;
+          box-shadow: 0 0 0 1px #2563eb;
+        }
+
+        &::placeholder {
+          color: #94a3b8;
+          font-size: 13px;
+        }
+
+        &:disabled {
+          background: #f1f5f9;
+          color: #94a3b8;
+          cursor: not-allowed;
+        }
+      }
+
+      .filter-select {
+        cursor: pointer;
+        padding-right: 24px;
+      }
+
+      .font-mono {
+        font-family: 'JetBrains Mono', monospace;
+      }
+    }
+
+    .filter-checkbox-card {
+      padding: 10px 12px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+
+        input[type="checkbox"] {
+          width: 18px;
+          height: 18px;
+          accent-color: #2563eb;
+          cursor: pointer;
+        }
+
+        .checkbox-label {
+          font-size: 13px;
+          color: #1e3a8a;
+          line-height: 1.3;
+
+          strong {
+            font-weight: 700;
+          }
+        }
+      }
+    }
+  }
+
+  .filter-drawer-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+    flex-shrink: 0;
+
+    .btn-drawer-reset {
+      flex: 1;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #475569;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+
+      &:active {
+        background: #f1f5f9;
+      }
+    }
+
+    .btn-drawer-apply {
+      flex: 2;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+  }
+}
+
+@keyframes holdingFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes holdingSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
