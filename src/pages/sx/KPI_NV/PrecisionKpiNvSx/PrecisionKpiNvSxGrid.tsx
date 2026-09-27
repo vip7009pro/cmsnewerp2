@@ -12,6 +12,7 @@ interface PrecisionKpiNvSxGridProps {
   onSearchChange: (val: string) => void;
   onExportEX1: () => void;
   onExportEX2: () => void;
+  isMobile?: boolean;
 }
 
 const PrecisionKpiNvSxGrid: React.FC<PrecisionKpiNvSxGridProps> = ({
@@ -22,11 +23,13 @@ const PrecisionKpiNvSxGrid: React.FC<PrecisionKpiNvSxGridProps> = ({
   onSearchChange,
   onExportEX1,
   onExportEX2,
+  isMobile = false,
 }) => {
   return (
-    <div className="precision-kpinvsx__gridContainer">
-      {/* Thanh lọc nhanh & hành động xuất file */}
-      <div className="precision-kpinvsx__gridToolbar">
+    <div className={`precision-kpinvsx__gridContainer ${isMobile ? "is-mobile-grid" : ""}`}>
+      {/* Thanh lọc nhanh & hành động xuất file (chỉ hiển thị trên Desktop) */}
+      {!isMobile && (
+        <div className="precision-kpinvsx__gridToolbar">
         <div className="precision-kpinvsx__gridToolbarLeft">
           <div className="precision-kpinvsx__searchBox">
             <FiSearch size={13} color="#64748b" />
@@ -77,6 +80,7 @@ const PrecisionKpiNvSxGrid: React.FC<PrecisionKpiNvSxGridProps> = ({
           </span>
         </div>
       </div>
+      )}
 
       {/* Thân bảng AG Grid bọc Flexbox full height */}
       <div className="precision-kpinvsx__gridBody">
