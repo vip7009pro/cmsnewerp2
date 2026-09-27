@@ -12,7 +12,6 @@ import { SaveExcel } from "../../../api/services/excelService";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { FSC_LIST_DATA, MATERIAL_TABLE_DATA } from "../interfaces/muaInterface";
 import { CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
-import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
 
 // Precision Google Stitch Subcomponents
 import "./PrecisionQLVL/PrecisionQLVL.scss";
@@ -22,13 +21,6 @@ import PrecisionQLVLToolbar from "./PrecisionQLVL/PrecisionQLVLToolbar";
 import { buildQLVLColumns } from "./PrecisionQLVL/PrecisionQLVLColumns";
 import PrecisionQLVLAddModal from "./PrecisionQLVL/PrecisionQLVLAddModal";
 import { lazyOpenable } from "../../../components/PivotChart/lazyOpenable";
-
-// Mobile Subcomponents
-import PrecisionQLVLMobileHeader from "./PrecisionQLVL/PrecisionQLVLMobileHeader";
-import PrecisionQLVLMobileKpi from "./PrecisionQLVL/PrecisionQLVLMobileKpi";
-import PrecisionQLVLMobileToolbar from "./PrecisionQLVL/PrecisionQLVLMobileToolbar";
-import PrecisionQLVLMobileFilterDrawer from "./PrecisionQLVL/PrecisionQLVLMobileFilterDrawer";
-
 // Pivot modal chỉ nạp ĐỘNG khi mở (module kéo theo DevExtreme) — xem lazyOpenable.tsx.
 const PrecisionQLVLPivotModal = lazyOpenable(() =>
   import("./PrecisionQLVL/PrecisionQLVLPivotModal").then((m) => m.default),
@@ -63,24 +55,12 @@ const initialClickedRow: MATERIAL_TABLE_DATA = {
 
 const QLVL: React.FC = () => {
   const company = getCompany();
-  const isMobile = useIsMobile();
 
-  // State dữ liệu & danh mục
+  // State dữ liệu & bộ lọc
   const [data, setData] = useState<MATERIAL_TABLE_DATA[]>([]);
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [customerList, setCustomerList] = useState<CustomerListData[]>([]);
   const [fscList, setFSCList] = useState<FSC_LIST_DATA[]>([]);
-
-  // State bộ lọc đa chiều
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [filterUseYn, setFilterUseYn] = useState<"ALL" | "Y" | "N">("ALL");
-  const [filterFsc, setFilterFsc] = useState<"ALL" | "Y" | "N">("ALL");
-  const [filterFscCode, setFilterFscCode] = useState<string>("");
-  const [filterDocs, setFilterDocs] = useState<"ALL" | "HAS_DOCS" | "NO_DOCS">("ALL");
-  const [filterVendor, setFilterVendor] = useState<string>("");
-
-  // State giao diện Mobile
-  const [showMobileKpi, setShowMobileKpi] = useState<boolean>(false);
-  const [showMobileFilter, setShowMobileFilter] = useState<boolean>(false);
 
   // State tương tác dòng & Modals
   const [clickedRows, setClickedRows] = useState<MATERIAL_TABLE_DATA>(initialClickedRow);
@@ -234,6 +214,8 @@ const QLVL: React.FC = () => {
         try {
           await generalQuery("updateM090FSC", payload);
         } catch (fscErr) {
+          // updateMaterial đã thành công; lỗi đồng bộ bảng FSC chỉ ghi log,
+          // không được báo sai thành "không thể cập nhật vật liệu".
           console.error("updateM090FSC failed:", fscErr);
         }
         const userData = getUserData();
@@ -315,85 +297,26 @@ const QLVL: React.FC = () => {
     setShowDialog(true);
   }, []);
 
-  // Đếm số điều kiện lọc nâng cao đang kích hoạt
-  const activeFilterCount = useMemo(() => {
-    let count = 0;
-    if (filterUseYn !== "ALL") count++;
-    if (filterFsc !== "ALL") count++;
-    if (filterFscCode !== "") count++;
-    if (filterDocs !== "ALL") count++;
-    if (filterVendor !== "") count++;
-    return count;
-  }, [filterUseYn, filterFsc, filterFscCode, filterDocs, filterVendor]);
-
-  // Đặt lại toàn bộ bộ lọc
-  const handleResetFilters = useCallback(() => {
-    setSearchKeyword("");
-    setFilterUseYn("ALL");
-    setFilterFsc("ALL");
-    setFilterFscCode("");
-    setFilterDocs("ALL");
-    setFilterVendor("");
-  }, []);
-
-  // Lọc dữ liệu đa chiều thông minh
+  // Lọc dữ liệu nhanh theo searchKeyword
   const filteredData = useMemo(() => {
-    let result = data;
-
-    // Lọc theo từ khóa tìm kiếm
-    if (searchKeyword.trim()) {
-      const kw = searchKeyword.toLowerCase().trim();
-      result = result.filter(
-        (item) =>
-          item.M_NAME?.toLowerCase().includes(kw) ||
-          item.DESCR?.toLowerCase().includes(kw) ||
-          item.CUST_CD?.toLowerCase().includes(kw) ||
-          item.CUST_NAME_KD?.toLowerCase().includes(kw) ||
-          item.FSC_NAME?.toLowerCase().includes(kw) ||
-          item.FSC_CODE?.toLowerCase().includes(kw)
-      );
-    }
-
-    // Lọc theo USE_YN
-    if (filterUseYn !== "ALL") {
-      result = result.filter((item) => item.USE_YN === filterUseYn);
-    }
-
-    // Lọc theo FSC
-    if (filterFsc !== "ALL") {
-      result = result.filter((item) => item.FSC === filterFsc);
-    }
-
-    // Lọc theo FSC_CODE
-    if (filterFscCode !== "") {
-      result = result.filter((item) => item.FSC_CODE === filterFscCode);
-    }
-
-    // Lọc theo Hồ Sơ Kỹ Thuật (MSDS / TDS / SGS)
-    if (filterDocs !== "ALL") {
-      result = result.filter((item) => {
-        const hasDoc =
-          (item.TDS_VER && item.TDS_VER > 0) ||
-          (item.SGS_VER && item.SGS_VER > 0) ||
-          (item.MSDS_VER && item.MSDS_VER > 0) ||
-          item.TDS === "Y";
-        return filterDocs === "HAS_DOCS" ? hasDoc : !hasDoc;
-      });
-    }
-
-    // Lọc theo Nhà Cung Cấp
-    if (filterVendor !== "") {
-      result = result.filter((item) => item.CUST_CD === filterVendor);
-    }
-
-    return result;
-  }, [data, searchKeyword, filterUseYn, filterFsc, filterFscCode, filterDocs, filterVendor]);
+    if (!searchKeyword.trim()) return data;
+    const kw = searchKeyword.toLowerCase().trim();
+    return data.filter(
+      (item) =>
+        item.M_NAME?.toLowerCase().includes(kw) ||
+        item.DESCR?.toLowerCase().includes(kw) ||
+        item.CUST_CD?.toLowerCase().includes(kw) ||
+        item.CUST_NAME_KD?.toLowerCase().includes(kw) ||
+        item.FSC_NAME?.toLowerCase().includes(kw) ||
+        item.FSC_CODE?.toLowerCase().includes(kw)
+    );
+  }, [data, searchKeyword]);
 
   // DataSource cho Pivot Table
-  // DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts).
+  // ⚠️ DevExtreme chỉ được nạp khi user mở pivot (xem components/PivotChart/lazyPivot.ts).
   const [pivotDataSource, setPivotDataSource] = useState<any>(null);
   useEffect(() => {
-    if (!showPivotModal) return;
+    if (!showPivotModal) return; // chưa mở pivot -> không tải DevExtreme
     let cancelled = false;
     void createQLVLPivotDataSource(data).then((ds) => {
       if (!cancelled) setPivotDataSource(ds);
@@ -420,84 +343,41 @@ const QLVL: React.FC = () => {
   }, [load_material_table, getcustomerlist, getFSCList]);
 
   return (
-    <div className={`precision-qlvl ${isMobile ? "is-mobile" : ""}`}>
-      {/* 1. Header: Phân biệt Desktop vs Mobile */}
-      {!isMobile ? (
-        <PrecisionQLVLHeader totalCount={data.length} />
-      ) : (
-        <PrecisionQLVLMobileHeader
-          totalCount={data.length}
-          filteredCount={filteredData.length}
-          showKpi={showMobileKpi}
-          onToggleKpi={() => setShowMobileKpi((prev) => !prev)}
-          onOpenFilterDrawer={() => setShowMobileFilter(true)}
-          onReload={load_material_table}
-          activeFilterCount={activeFilterCount}
-        />
-      )}
+    <div className="precision-qlvl">
+      {/* 1. Sub-Header */}
+      <PrecisionQLVLHeader totalCount={data.length} />
 
-      {/* 2. Realtime KPI Cards: Desktop luôn hiện, Mobile hiện khi bật showMobileKpi */}
-      {!isMobile && <PrecisionQLVLKpi data={data} />}
-      {isMobile && showMobileKpi && <PrecisionQLVLMobileKpi data={data} />}
+      {/* 2. Realtime KPI Cards (Theo Thực Tế Dữ Liệu) */}
+      <PrecisionQLVLKpi data={data} />
 
-      {/* 3. Action Toolbar: Desktop đầy đủ vs Mobile tinh gọn 3 hàng công thái học */}
-      {!isMobile ? (
-        <PrecisionQLVLToolbar
-          onAddMaterial={() => {
-            setClickedRows(initialClickedRow);
-            setShowDialog(true);
-          }}
-          onUpdateMaterial={handleOpenUpdateModal}
-          selectedMName={clickedRows?.M_NAME}
-          onReload={load_material_table}
-          onOpenDocs={() => {
-            setSelected_M_ID(clickedRows?.M_ID || 0);
-            setSelected_M_NAME(clickedRows?.M_NAME || "");
-            setOpenDocDialog(true);
-          }}
-          onExportEX1={() => SaveExcel(filteredData, "DS_VatLieu_DangLoc")}
-          onExportEX2={() => SaveExcel(data, "DS_VatLieu_ToanBo")}
-          onOpenPivot={() => setShowPivotModal(true)}
-          searchKeyword={searchKeyword}
-          onSearchChange={setSearchKeyword}
-          totalCount={data.length}
-          filteredCount={filteredData.length}
-        />
-      ) : (
-        <PrecisionQLVLMobileToolbar
-          onAddMaterial={() => {
-            setClickedRows(initialClickedRow);
-            setShowDialog(true);
-          }}
-          onUpdateMaterial={handleOpenUpdateModal}
-          selectedMName={clickedRows?.M_NAME}
-          onReload={load_material_table}
-          onOpenDocs={() => {
-            setSelected_M_ID(clickedRows?.M_ID || 0);
-            setSelected_M_NAME(clickedRows?.M_NAME || "");
-            setOpenDocDialog(true);
-          }}
-          onExportEX1={() => SaveExcel(filteredData, "DS_VatLieu_DangLoc")}
-          onExportEX2={() => SaveExcel(data, "DS_VatLieu_ToanBo")}
-          onOpenPivot={() => setShowPivotModal(true)}
-          searchKeyword={searchKeyword}
-          onSearchChange={setSearchKeyword}
-          activeFilterCount={activeFilterCount}
-          onOpenFilterDrawer={() => setShowMobileFilter(true)}
-          filterUseYn={filterUseYn}
-          onFilterUseYnChange={setFilterUseYn}
-          filterFsc={filterFsc}
-          onFilterFscChange={setFilterFsc}
-          filterDocs={filterDocs}
-          onFilterDocsChange={setFilterDocs}
-        />
-      )}
+      {/* 3. Action Toolbar (Bao gồm Thêm Mới, Cập Nhật, EX1, EX2, PIVOT, Tìm kiếm) */}
+      <PrecisionQLVLToolbar
+        onAddMaterial={() => {
+          setClickedRows(initialClickedRow);
+          setShowDialog(true);
+        }}
+        onUpdateMaterial={handleOpenUpdateModal}
+        selectedMName={clickedRows?.M_NAME}
+        onReload={load_material_table}
+        onOpenDocs={() => {
+          setSelected_M_ID(clickedRows?.M_ID || 0);
+          setSelected_M_NAME(clickedRows?.M_NAME || "");
+          setOpenDocDialog(true);
+        }}
+        onExportEX1={() => SaveExcel(filteredData, "DS_VatLieu_DangLoc")}
+        onExportEX2={() => SaveExcel(data, "DS_VatLieu_ToanBo")}
+        onOpenPivot={() => setShowPivotModal(true)}
+        searchKeyword={searchKeyword}
+        onSearchChange={setSearchKeyword}
+        totalCount={data.length}
+        filteredCount={filteredData.length}
+      />
 
-      {/* 4. Khung Bảng AGTable (Đạt Full Height & Full Width, Tối Ưu Cho Cả Desktop & Mobile) */}
+      {/* 4. Khung Bảng AGTable (Đạt Full Height & Full Width, Hỗ Trợ Double Click Cập Nhật) */}
       <div className="precision-qlvl__gridContainer">
         <div className="precision-qlvl__gridBody">
           <AGTable
-            rowHeight={isMobile ? 34 : 32}
+            rowHeight={32}
             columns={columns}
             data={filteredData}
             onCellClick={(params: any) => {
@@ -510,37 +390,12 @@ const QLVL: React.FC = () => {
               }
             }}
             suppressRowClickSelection={false}
-            showFilter={!isMobile}
+            showFilter={true}
           />
         </div>
       </div>
 
-      {/* 5. Mobile Filter Drawer (Chỉ mở trên Mobile khi chạm nút Lọc) */}
-      {isMobile && (
-        <PrecisionQLVLMobileFilterDrawer
-          isOpen={showMobileFilter}
-          onClose={() => setShowMobileFilter(false)}
-          searchKeyword={searchKeyword}
-          filterUseYn={filterUseYn}
-          filterFsc={filterFsc}
-          filterFscCode={filterFscCode}
-          filterDocs={filterDocs}
-          filterVendor={filterVendor}
-          customerList={customerList}
-          fscList={fscList}
-          onApply={(filters) => {
-            setSearchKeyword(filters.searchKeyword);
-            setFilterUseYn(filters.filterUseYn);
-            setFilterFsc(filters.filterFsc);
-            setFilterFscCode(filters.filterFscCode);
-            setFilterDocs(filters.filterDocs);
-            setFilterVendor(filters.filterVendor);
-          }}
-          onReset={handleResetFilters}
-        />
-      )}
-
-      {/* 6. Modal Thêm Mới / Cập Nhật Vật Liệu */}
+      {/* 5. Modal Thêm Mới / Cập Nhật Vật Liệu */}
       <PrecisionQLVLAddModal
         isOpen={showdialog}
         onClose={() => setShowDialog(false)}
@@ -553,7 +408,7 @@ const QLVL: React.FC = () => {
         company={company}
       />
 
-      {/* 7. Modal Tra Cứu Tài Liệu Kỹ Thuật (VLDOC) */}
+      {/* 6. Modal Tra Cứu Tài Liệu Kỹ Thuật (VLDOC) */}
       <CustomDialog
         isOpen={openDocDialog}
         onClose={() => setOpenDocDialog(false)}
@@ -578,7 +433,7 @@ const QLVL: React.FC = () => {
         actions={<></>}
       />
 
-      {/* 8. Modal Báo Cáo Phân Tích Pivot */}
+      {/* 7. Modal Báo Cáo Phân Tích Pivot */}
       <PrecisionQLVLPivotModal
         isOpen={showPivotModal}
         onClose={() => setShowPivotModal(false)}

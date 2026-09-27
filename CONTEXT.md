@@ -1,17 +1,19 @@
 # ERP Context & Status
 
+## Update - 2026-09-27 (MUA HANG / QLVL: Tối Ưu Toàn Diện Giao Diện Mobile Quản Lý Danh Mục Vật Liệu)
+- Tạo [QLVL.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/muahang/quanlyvatlieu/QLVL.backup2.tsx). Hook `useIsMobile()`, bảo toàn 100% desktop (`!isMobile`).
+- Mobile Header tinh gọn [PrecisionQLVLMobileHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/muahang/quanlyvatlieu/PrecisionQLVL/PrecisionQLVLMobileHeader.tsx) với live pulse, telemetry badge và nút toggle Micro-KPI / Filter.
+- Micro-KPI bar cuộn ngang [PrecisionQLVLMobileKpi.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/muahang/quanlyvatlieu/PrecisionQLVL/PrecisionQLVLMobileKpi.tsx) tóm tắt nhanh: Tổng mã, Đang dùng, Chuẩn FSC, Hồ sơ kỹ thuật TDS/MSDS và Đơn giá TB.
+- Mobile Toolbar 3 hàng công thái học [PrecisionQLVLMobileToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/muahang/quanlyvatlieu/PrecisionQLVL/PrecisionQLVLMobileToolbar.tsx): Search input chống zoom iOS (14px) kèm nút clear `[X]`, Touch targets >= 38px, dải pills lọc nhanh (USE_YN, FSC, Docs) và nút xuất EX1/EX2/PIVOT.
+- Bottom-Sheet Filter Drawer Zero-Blur [PrecisionQLVLMobileFilterDrawer.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/muahang/quanlyvatlieu/PrecisionQLVL/PrecisionQLVLMobileFilterDrawer.tsx) lọc theo từ khóa, Vendor, USE_YN, FSC và Hồ sơ kỹ thuật.
+- Bảng AGTable chiếm trọn không gian còn lại (`flex: 1 1 0; min-height: 0; height: 100%`). File chính [QLVL.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/muahang/quanlyvatlieu/QLVL.tsx) 390 dòng.
+
 ## Update - 2026-09-27 (SHARED / SCANNER: Tối Ưu Toàn Diện Giao Diện Cyberpunk High-Density SCSS)
-- **1. Khắc Phục Lỗi Giao Diện**: Do Tailwind CSS bị vô hiệu hóa trong dự án, các nút và thanh điều khiển trước đó bị vỡ layout và hiển thị thô. Đã chuyển toàn bộ sang hệ thống SCSS độc lập [UniversalScanner.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Scanner/UniversalScanner.scss) và [Scanner.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Scanner/Scanner.scss).
-- **2. Thiết Kế Viewfinder HUD Hiện Đại**:
-  * Khung ngắm Viewfinder bo góc 18px với hiệu ứng viền tối (vignette dark mask) làm nổi bật mã cần quét.
-  * 4 góc ngắm Neon Cyan sắc nét ([UniversalScannerHUD.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Scanner/UniversalScannerHUD.tsx)), tia laser quét chuyển động mượt mà, chuyển xanh ngọc khi bắt mã thành công.
-  * Cụm nút Glassmorphism phía trên: Nút Flash sáng vàng khi bật, nút Lật camera và Dropdown chọn camera nền tối mờ.
-  * Thanh Zoom phía dưới: Cụm pill segmented bo tròn `1x`, `2x`, `3x` cùng 2 nút `-` và `+` tinh chỉnh mượt mà.
-- **3. Tinh Chỉnh Header Modal ([UniversalScannerModal.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Scanner/UniversalScannerModal.tsx))**:
-  * Header tối giản với icon QR badge xanh dương, tiêu đề 13px bold, subtitle 11px gọn gàng chống vỡ dòng.
-  * Hộp thoại Dialog bo cong 16px, viền mờ 1px và đổ bóng chiều sâu 25px cao cấp.
-- **4. Nâng Cấp Trang Quét Độc Lập**:
-  * [Scanner.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Scanner/Scanner.tsx) & [CAMERASCANNER.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/SCANBARCODE/CAMERASCANNER.tsx) hoàn toàn sử dụng SCSS, hiển thị kết quả thẻ card công nghiệp kèm nút sao chép tiện lợi.
+- Chuyển toàn bộ sang SCSS độc lập [UniversalScanner.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Scanner/UniversalScanner.scss) và [Scanner.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Scanner/Scanner.scss).
+- Viewfinder HUD bo góc 18px viền tối, 4 góc ngắm Neon Cyan [UniversalScannerHUD.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Scanner/UniversalScannerHUD.tsx), tia laser quét mượt mà.
+- Cụm nút Flash, Lật camera, Dropdown camera và thanh Zoom `1x`, `2x`, `3x` cùng slider.
+- Dialog [UniversalScannerModal.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Scanner/UniversalScannerModal.tsx) bo cong 16px, đổ bóng chiều sâu 25px.
+- [Scanner.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Scanner/Scanner.tsx) & [CAMERASCANNER.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/SCANBARCODE/CAMERASCANNER.tsx) hoàn toàn sử dụng SCSS, hiển thị kết quả thẻ card công nghiệp.
 
 ## Update - 2026-09-27 (SX / DATASAMPLESX: Tối Ưu Toàn Diện Giao Diện Mobile Khai Báo & Chụp Ảnh Sample SX)
 - Tạo [DATASAMPLESX.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/DATASAMPLE/DATASAMPLESX.backup2.tsx). Hook `useIsMobile()`, bảo toàn 100% Desktop (`!isMobile`).
