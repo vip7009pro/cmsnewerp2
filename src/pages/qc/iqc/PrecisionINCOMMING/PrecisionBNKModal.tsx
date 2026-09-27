@@ -12,6 +12,8 @@ interface PrecisionBNKModalProps {
   clickedRow: IQC_INCOMMING_DATA | null;
   dtcData: DTC_DATA[];
   onDataChange: (updatedFields: Partial<IQC_INCOMMING_DATA>) => void;
+  /** Mobile: rút gọn tiêu đề + nhãn nút để header không bị vỡ trên màn hẹp */
+  isMobile?: boolean;
 }
 
 export const PrecisionBNKModal: React.FC<PrecisionBNKModalProps> = ({
@@ -22,18 +24,24 @@ export const PrecisionBNKModal: React.FC<PrecisionBNKModalProps> = ({
   clickedRow,
   dtcData,
   onDataChange,
+  isMobile = false,
 }) => {
   if (!show) return null;
 
   return (
-    <div className="precision-bnk-modal">
+    <div className={`precision-bnk-modal ${isMobile ? "is-mobile" : ""}`}>
       {/* SaaS Modern Glassmorphism Modal Header */}
       <div className="precision-bnk-modal__header">
         <div className="header-title-group">
-          <span className="title">📄 BIÊN BẢN NGHIỆM THU & CHECKSHEET KIỂM TRA INCOMING (CHUẨN A4)</span>
+          <span className="title">
+            {isMobile
+              ? "📄 BIÊN BẢN NGHIỆM THU (A4)"
+              : "📄 BIÊN BẢN NGHIỆM THU & CHECKSHEET KIỂM TRA INCOMING (CHUẨN A4)"}
+          </span>
           {clickedRow && (
             <span className="lot-pill">
-              LÔ: <strong>{clickedRow.M_LOT_NO}</strong> ({clickedRow.M_NAME})
+              LÔ: <strong>{clickedRow.M_LOT_NO}</strong>
+              {!isMobile && <> ({clickedRow.M_NAME})</>}
             </span>
           )}
         </div>
@@ -47,7 +55,7 @@ export const PrecisionBNKModal: React.FC<PrecisionBNKModalProps> = ({
             title={!clickedRow ? "Vui lòng chọn lô kiểm tra trước khi in" : "In trực tiếp ra máy in khổ A4 (Print to A4)"}
           >
             <FiPrinter size={15} />
-            <span>IN CHECKSHEET (A4)</span>
+            <span>{isMobile ? "IN A4" : "IN CHECKSHEET (A4)"}</span>
           </button>
 
           <button

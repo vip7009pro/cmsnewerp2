@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import Swal from "sweetalert2";
 import { useIncomingData } from "./PrecisionINCOMMING/useIncomingData";
@@ -9,11 +9,28 @@ import { PrecisionIncomingGridToolbar } from "./PrecisionINCOMMING/PrecisionInco
 import { PrecisionIncomingTable } from "./PrecisionINCOMMING/PrecisionIncomingTable";
 import { PrecisionIncomingDtcPanel } from "./PrecisionINCOMMING/PrecisionIncomingDtcPanel";
 import { PrecisionBNKModal } from "./PrecisionINCOMMING/PrecisionBNKModal";
+import { PrecisionIncomingMobileHeader } from "./PrecisionINCOMMING/PrecisionIncomingMobileHeader";
+import { PrecisionIncomingMobileKpi } from "./PrecisionINCOMMING/PrecisionIncomingMobileKpi";
+import { PrecisionIncomingMobileToolbar } from "./PrecisionINCOMMING/PrecisionIncomingMobileToolbar";
+import { PrecisionIncomingMobileSidebarSheet } from "./PrecisionINCOMMING/PrecisionIncomingMobileSidebarSheet";
+import { PrecisionIncomingMobileDtcSheet } from "./PrecisionINCOMMING/PrecisionIncomingMobileDtcSheet";
+import { filterIncomingRows } from "./PrecisionINCOMMING/incomingMobileFilter";
 import "./PrecisionINCOMMING/PrecisionINCOMMING.scss";
 import { IQC_INCOMMING_DATA } from "../interfaces/qcInterface";
+import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
 
 const INCOMMING: React.FC = () => {
+  const isMobile = useIsMobile();
   const incoming = useIncomingData();
+
+  // Mobile-only UI state (không ảnh hưởng desktop)
+  const [showMobileKpi, setShowMobileKpi] = useState(false);
+  const [showSidebarSheet, setShowSidebarSheet] = useState(false);
+  const [showDtcSheet, setShowDtcSheet] = useState(false);
+  const [quickSearch, setQuickSearch] = useState("");
+  const [onlyPending, setOnlyPending] = useState(false);
+  // Ref (selectedRowsData.current) không trigger re-render ⇒ cần state đếm cho chip counter trên mobile
+  const [selectedCount, setSelectedCount] = useState(0);
 
   // Print Checksheet Ref with optimized A4 pageStyle
   const printRef = useRef<HTMLDivElement>(null);
@@ -60,6 +77,7 @@ const INCOMMING: React.FC = () => {
 
   const handleSelectionChange = (rows: IQC_INCOMMING_DATA[]) => {
     incoming.selectedRowsData.current = rows;
+    setSelectedCount(rows.length);
   };
 
   const handleToggleField = (
@@ -106,6 +124,148 @@ const INCOMMING: React.FC = () => {
       incoming.setShowBNK(false);
     }
   };
+
+  // ==========================================================
+  // MOBILE SỐ LIỆU PHÁI SINH (chỉ dùng ở nhánh mobile)
+  // ==========================================================
+  const mobileRows = useMemo(
+    () => (isMobile ? filterIncomingRows(incoming.iqc1datatable, quickSearch, onlyPending) : incoming.iqc1datatable),
+    [isMobile, incoming.iqc1datatable, quickSearch, onlyPending]
+  );
+
+  // Số điều kiện lọc đang bật (hiển thị badge trên nút "Lọc")
+  const activeFilterCount = useMemo(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    let count = 0;
+    if (incoming.fromdate !== today) count++;
+    if (incoming.todate !== today) count++;
+    if (incoming.m_name.trim()) count++;
+    if (incoming.m_code.trim()) count++;
+    if (incoming.vendor.trim()) count++;
+    if (incoming.vendorLot.trim()) count++;
+    if (incoming.showAllIncoming) count++;
+    if (onlyPending) count++;
+    return count;
+  }, [
+    incoming.fromdate,
+    incoming.todate,
+    incoming.m_name,
+    incoming.m_code,
+    incoming.vendor,
+    incoming.vendorLot,
+    incoming.showAllIncoming,
+    onlyPending,
+  ]);
+
+  // Nút "Nhập" trên mobile: mở sheet và tự chuyển sang tab phiếu đăng ký
+  const handleOpenInputSheet = () => {
+    incoming.setActiveLeftTab("newInput");
+    setShowSidebarSheet(true);
+  };
+
+  // Filter sheet đóng ngay sau khi tìm kiếm để thấy kết quả trên bảng
+  const handleSearchFromSheet = () => {
+    setShowSidebarSheet(false);
+    incoming.handletraIQC1Data();
+  };
+
+  // ==========================================================
+  // MOBILE VIEW (Viewport <= 768px): Tối đa không gian bảng dữ liệu
+  // ==========================================================
+  if (isMobile) {
+    return (
+      <div className="precision-incoming is-mobile">
+        <PrecisionIncomingMobileHeader
+          userData={incoming.userData}
+          filteredCount={mobileRows.length}
+          totalCount={incoming.iqc1datatable.length}
+          passRate={incoming.kpis.passRate}
+          dtcTestCount={incoming.kpis.dtcTestCount}
+          holdingCount={incoming.kpis.holdingCount}
+          showKpi={showMobileKpi}
+          onToggleKpi={() => setShowMobileKpi((prev) => !prev)}
+          onOpenInputSheet={handleOpenInputSheet}
+          onRefresh={incoming.handletraIQC1Data}
+        />
+
+        {showMobileKpi && (
+          <PrecisionIncomingMobileKpi
+            totalLots={incoming.kpis.totalLots}
+            passRate={incoming.kpis.passRate}
+            dtcTestCount={incoming.kpis.dtcTestCount}
+            holdingCount={incoming.kpis.holdingCount}
+            onClose={() => setShowMobileKpi(false)}
+          />
+        )}
+
+        <PrecisionIncomingMobileToolbar
+          searchTerm={quickSearch}
+          setSearchTerm={setQuickSearch}
+          onSearch={incoming.handletraIQC1Data}
+          onOpenFilterSheet={() => setShowSidebarSheet(true)}
+          activeFilterCount={activeFilterCount}
+          onlyPending={onlyPending}
+          onToggleOnlyPending={() => setOnlyPending((prev) => !prev)}
+          onOpenInputSheet={handleOpenInputSheet}
+          onSetPass={() => incoming.setQCPASS("Y")}
+          onSetFail={() => incoming.setQCPASS("N")}
+          onUpdateSelected={incoming.updateIncomingData}
+          onToggleBNK={handleToggleBNK}
+          onOpenDtcSheet={() => setShowDtcSheet(true)}
+          dtcCount={incoming.dtcDataTable.length}
+          onExportExcel={incoming.handleExportExcel}
+          selectedCount={selectedCount}
+          filteredCount={mobileRows.length}
+          totalCount={incoming.iqc1datatable.length}
+        />
+
+        <PrecisionIncomingTable
+          data={incoming.iqc1datatable}
+          isWorker={isWorker}
+          clickedRow={incoming.clickedRow}
+          onRowClick={handleRowClick}
+          onSelectionChange={handleSelectionChange}
+          onUpdateRow={incoming.updateIQC_INLINE}
+          onUploadChecksheet={incoming.uploadChecksheet}
+          onToggleField={handleToggleField}
+          isMobile
+          quickFilterText={quickSearch}
+          onlyPending={onlyPending}
+        />
+
+        {showSidebarSheet && (
+          <PrecisionIncomingMobileSidebarSheet
+            hook={incoming}
+            onClose={() => setShowSidebarSheet(false)}
+            onSearch={handleSearchFromSheet}
+          />
+        )}
+
+        {showDtcSheet && (
+          <PrecisionIncomingMobileDtcSheet
+            dtcData={incoming.dtcDataTable}
+            clickedRow={incoming.clickedRow}
+            onExportDtcExcel={incoming.handleExportDtcExcel}
+            ncrIdInput={incoming.ncrIdInput}
+            setNcrIdInput={incoming.setNcrIdInput}
+            onUpdateNcrId={incoming.handleUpdateNcrId}
+            onClose={() => setShowDtcSheet(false)}
+          />
+        )}
+
+        <PrecisionBNKModal
+          show={incoming.showBNK}
+          onClose={() => incoming.setShowBNK(false)}
+          printRef={printRef}
+          onPrint={handlePrint}
+          clickedRow={incoming.clickedRow}
+          dtcData={incoming.dtcDataTable}
+          onDataChange={handleBNKDataChange}
+          isMobile
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={`precision-incoming ${incoming.isFullscreen ? "precision-incoming--fullscreen" : ""}`}>

@@ -1,5 +1,43 @@
 # ACTIVE_STATE
 
+## Đợt 18 — Mobile INCOMMING (IQC Kiểm tra NVL đầu vào) (2026-09-27)
+Task hiện tại: refactor giao diện mobile cho `src/pages/qc/iqc/INCOMMING.tsx` + `.agents/skills/mobile_interface_refactoring`.
+Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 1m 34s`), `get_errors` 0 lỗi, verify trên dev 3001 (@320 / @393 / @1440).
+
+### Quyết định thiết kế
+- Desktop là layout **3 panel** (Sidebar 270px + Grid + DTC panel 320px) ⇒ trên mobile dùng **2 Bottom Sheet** thay vì xếp dọc:
+  1. `PrecisionIncomingMobileSidebarSheet` — bọc **nguyên** `PrecisionIncomingSidebar` (form lọc 7 trường + form đăng ký 6 trường) ⇒ giữ 100% logic/validation/quét mã.
+  2. `PrecisionIncomingMobileDtcSheet` — bọc **nguyên** `PrecisionIncomingDtcPanel` + ô cập nhật NCR_ID (thay ô NCR trên toolbar desktop).
+- Tab "Tra Data"/"New Input" chuyển sang nút mở sheet tương ứng: nút **Lọc** (badge số điều kiện) mở tab Tra Data, nút **Nhập** (header + chip) mở tab New Input.
+- Ô search mobile lọc **client-side theo 11 cột** (`incomingMobileFilter.ts`) + chip **"Chờ KQ"** (TOTAL_RESULT rỗng/PD) ⇒ không gọi lại API.
+- **Nút TRA DATA trong sidebar desktop nằm ở đáy form (~785px trên sheet 750px)** ⇒ thêm `.drawer-footer` dính đáy (44px, `flex-shrink:0`) với 2 nút "Đóng" + "TRA DATA INCOMING" (nhánh New Input là "+ ADD" + "LƯU SAVE"), và **ẩn `.precision-incoming__sidebar-actions` trong sheet** để không lặp nút.
+
+### Kết quả đo
+- @393×850: mobileHeader **71px**, mobileToolbar **89px**, gridContainer **576px** (`ag-root-wrapper 550px`). `bodyOverflowX = 0`.
+- KPI strip (toggle, mặc định TẮT): 53px, 4 chip cuộn ngang (`434 vs 347`), mở → grid co còn 523px. Bấm đóng → về 576px.
+- @320×700: `searchRowOverflow = 0`, input 173px, chips cuộn ngang (431), header không tràn; **fix tiêu đề bị cắt**: block `@media (max-width:350px)` phải lặp đủ 4 cấp `.precision-incoming-mobile-header .mobile-header-top .header-actions .btn-*` (base = 0,4,0 mới thắng).
+- Bottom Sheet: drawer 695px / footer nút bottom **840 < 850** (không bị thanh URL che); sidebar bị ép `width:100%; border-right:none`; input/textarea 40/68px font **14px** (chống auto-zoom iOS); checkbox 18×18; nút footer 44px.
+- Sheet ĐTC: drawer 544px, panel full width (`border-left: 0`), bảng 267px, 5 dòng, NCR input/btn 38px.
+- BNK modal mobile: header 48→**52px**, title 1 dòng ellipsis, nút IN A4 38×71 + nút X 38×38, lot-pill ẩn, viewport `overflow: auto` (tờ A4 794px cuộn ngang, không tràn trang).
+- Desktop @1440: `.precision-incoming` **không** `is-mobile`, header 40px, KPI banner 65px, sidebar 270px, toolbar 63px, DTC panel 320px, statusBar còn ⇒ **không đổi**.
+
+### File đã chỉnh sửa (đợt 18)
+- `src/pages/qc/iqc/INCOMMING.tsx` — thêm `useIsMobile`; 2 nhánh conditional rendering; state `showMobileKpi` / `showSidebarSheet` / `showDtcSheet` / `quickSearch` / `onlyPending` / `selectedCount` (ref không trigger re-render); `handleSearchFromSheet`.
+- `PrecisionINCOMMING/PrecisionIncomingMobileHeader.tsx` — **(mới)** brand + pulse + count/Pass/ĐTC/Hold chips + 3 nút (toggle KPI, Nhập, Refresh).
+- `PrecisionINCOMMING/PrecisionIncomingMobileKpi.tsx` — **(mới)** 4 chip KPI 2 dòng cuộn ngang + nút đóng.
+- `PrecisionINCOMMING/PrecisionIncomingMobileToolbar.tsx` — **(mới)** hàng 1 search + Tra + Lọc(badge); hàng 2 pills Chờ KQ/Nhập/SET PASS/SET FAIL/Update/ĐTC(n)/BNK/EX1/EX2 + counter.
+- `PrecisionINCOMMING/PrecisionIncomingMobileSidebarSheet.tsx` — **(mới)** Bottom Sheet Zero-Blur + `.drawer-footer`.
+- `PrecisionINCOMMING/PrecisionIncomingMobileDtcSheet.tsx` — **(mới)** Bottom Sheet chứa DTC panel + NCR updater.
+- `PrecisionINCOMMING/incomingMobileFilter.ts` — **(mới)** `isPendingLot` / `matchesIncomingSearch` / `filterIncomingRows`.
+- `PrecisionINCOMMING/PrecisionIncomingTable.tsx` — thêm prop `isMobile` / `quickFilterText` / `onlyPending`; nhánh mobile lọc client-side + ẩn statusBar.
+- `PrecisionINCOMMING/PrecisionBNKModal.tsx` — thêm prop `isMobile` (rút gọn tiêu đề + nhãn "IN A4" + ẩn lot-pill).
+- `PrecisionINCOMMING/PrecisionINCOMMING.scss` — thêm **§10.5** (~500 dòng): `.is-mobile` root (giữ `height:100%!important; flex:1 1 auto!important; min-height:0!important` do `IQC.scss` ép `flex:1 1 auto` cho `.precision-incoming`), AG grid row/header 34px, `+ §10.5.2b @media (max-width:350px)`, `+ §10.5.5` bottom sheet + footer + `@keyframes incomingSlideUp/incomingFadeIn`, BNK `&.is-mobile`.
+- Backup: `INCOMMING.backup2.tsx`, `PrecisionINCOMMING.backup2.scss`, `PrecisionIncomingSidebar.backup2.tsx`, `PrecisionIncomingTable.backup2.tsx`, `PrecisionIncomingDtcPanel.backup2.tsx`.
+
+### Ghi chú kỹ thuật
+- `checkLotNVL` (hook) điền `m_name` dùng chung cho **cả** ô filter "Tên Liệu" (desktop) và hint trong phiếu đăng ký ⇒ khi mở sheet tab New Input có thể thấy hint của lần quét trước; đây là hành vi sẵn có, không sửa.
+- Tab ĐTC trong sheet render ĐTC của `clickedRow` hiện tại (kế thừa hành vi desktop: bấm dòng ⇒ nạp ĐTC).
+
 ## Đợt 17 — Mobile DKDTC (Đăng Ký Test ĐTC) (2026-09-27)
 Task hiện tại: refactor giao diện mobile cho `src/pages/qc/dtc/DKDTC.tsx` + `.agents/skills/mobile_interface_refactoring`.
 Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 1m 37s`), `get_errors` 0 lỗi, verify trên dev 3001 (@320 / @393 / @1440).

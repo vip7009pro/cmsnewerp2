@@ -3,7 +3,6 @@ import React, { useMemo } from "react";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { IQC_INCOMMING_DATA } from "../../interfaces/qcInterface";
 import { getIncomingColumns } from "./PrecisionIncomingColumns";
-import { filterIncomingRows } from "./incomingMobileFilter";
 
 interface PrecisionIncomingTableProps {
   data: IQC_INCOMMING_DATA[];
@@ -14,10 +13,6 @@ interface PrecisionIncomingTableProps {
   onUpdateRow: (row: IQC_INCOMMING_DATA) => void;
   onUploadChecksheet: (file: File, iqc1Id: number) => void;
   onToggleField: (row: IQC_INCOMMING_DATA, field: keyof IQC_INCOMMING_DATA, checked: boolean) => void;
-  /** Nhánh mobile: ẩn status-bar desktop và lọc nhanh ngay trong bảng (Zero-Blur GPU-friendly) */
-  isMobile?: boolean;
-  quickFilterText?: string;
-  onlyPending?: boolean;
 }
 
 export const PrecisionIncomingTable: React.FC<PrecisionIncomingTableProps> = ({
@@ -29,21 +24,12 @@ export const PrecisionIncomingTable: React.FC<PrecisionIncomingTableProps> = ({
   onUpdateRow,
   onUploadChecksheet,
   onToggleField,
-  isMobile = false,
-  quickFilterText = "",
-  onlyPending = false,
 }) => {
   // Extract dynamic sample keys KQ1, KQ2...
   const sampleKeys = useMemo(() => {
     if (data.length === 0) return [];
     return Object.keys(data[0]).filter((k) => k.startsWith("KQ"));
   }, [data]);
-
-  // Lọc realtime theo ô search + chip "Chờ KQ" trên mobile (không gọi lại API)
-  const filteredData = useMemo(
-    () => filterIncomingRows(data, quickFilterText, onlyPending),
-    [data, quickFilterText, onlyPending]
-  );
 
   const columns = useMemo(
     () =>
@@ -62,14 +48,13 @@ export const PrecisionIncomingTable: React.FC<PrecisionIncomingTableProps> = ({
       <div className="precision-incoming__grid-container">
         <AGTable
           columns={columns}
-          data={isMobile ? filteredData : data}
+          data={data}
           suppressRowClickSelection={false}
           onRowClick={(params: any) => onRowClick(params.data)}
           onSelectionChange={(params: any) => onSelectionChange(params.api.getSelectedRows())}
         />
       </div>
 
-      {!isMobile && (
       <div className="precision-incoming__status-bar">
         <div className="status-left">
           <span>
@@ -91,7 +76,6 @@ export const PrecisionIncomingTable: React.FC<PrecisionIncomingTableProps> = ({
           <span style={{ color: "#059669", fontWeight: 700 }}>SYNC OK</span>
         </div>
       </div>
-      )}
     </div>
   );
 };
