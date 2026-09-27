@@ -579,4 +579,786 @@
       border: 1px solid #cbd5e1;
     }
   }
+
+  // --------------------------------------------------------------------------
+  // 6. GIAO DIỆN MOBILE CHUYÊN BIỆT (is-mobile)
+  // --------------------------------------------------------------------------
+  &.is-mobile {
+    padding: 4px;
+    gap: 4px;
+
+    .precision-achivementtb__gridContainer {
+      flex: 1 1 auto;
+      min-height: 0;
+      height: 100%;
+    }
+  }
+
+  // 6.1. Mobile Header
+  &__mobileHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    flex-shrink: 0;
+
+    .mobileHeader-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+
+      .brand-badge {
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: #0f172a;
+        color: #38bdf8;
+        border: 1px solid #334155;
+        white-space: nowrap;
+      }
+
+      .pulse-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+        flex-shrink: 0;
+        animation: pulseAnimation 2s infinite;
+      }
+
+      .mobileHeader-title {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+
+        .title-text {
+          font-size: 12.5px;
+          font-weight: 800;
+          color: #0f172a;
+          white-space: nowrap;
+        }
+
+        .sub-info-tags {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          overflow: hidden;
+
+          .info-chip {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 4px;
+            white-space: nowrap;
+
+            &--factory {
+              background: #eff6ff;
+              color: #1d4ed8;
+              border: 1px solid #bfdbfe;
+            }
+
+            &--machine {
+              background: #f0fdf4;
+              color: #15803d;
+              border: 1px solid #bbf7d0;
+              font-family: 'JetBrains Mono', monospace;
+              max-width: 90px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+
+            &--date {
+              background: #f1f5f9;
+              color: #475569;
+              border: 1px solid #cbd5e1;
+              font-family: 'JetBrains Mono', monospace;
+            }
+          }
+        }
+      }
+    }
+
+    .mobileHeader-right {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+
+      .mobile-header-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        height: 32px;
+        padding: 0 8px;
+        border-radius: 5px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        color: #475569;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s ease;
+
+        &:active {
+          transform: scale(0.96);
+          background: #e2e8f0;
+        }
+
+        &.active {
+          background: #eff6ff;
+          border-color: #3b82f6;
+          color: #1d4ed8;
+        }
+
+        &.spinning svg {
+          animation: spin 1s linear infinite;
+        }
+
+        .btn-label {
+          font-size: 10.5px;
+        }
+      }
+    }
+  }
+
+  // 6.2. Mobile Micro-KPI Bar (Horizontal Scroll)
+  &__mobileKpi {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 5px 6px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    flex-shrink: 0;
+    gap: 6px;
+
+    .mobileKpi-scroll {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      flex: 1;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .kpi-mini-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 2px;
+        padding: 4px 8px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 5px;
+        flex-shrink: 0;
+        min-width: 105px;
+
+        &--total {
+          border-color: #bfdbfe;
+          background: #eff6ff;
+        }
+
+        .kpi-mini-header {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+
+          .dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            flex-shrink: 0;
+
+            &--primary { background: #0284c7; }
+            &--success { background: #16a34a; }
+            &--indigo { background: #4f46e5; }
+            &--amber { background: #d97706; }
+            &--purple { background: #9333ea; }
+            &--rose { background: #dc2626; }
+          }
+
+          .label {
+            font-size: 9px;
+            font-weight: 700;
+            color: #64748b;
+            letter-spacing: 0.3px;
+          }
+        }
+
+        .kpi-mini-body {
+          display: flex;
+          align-items: baseline;
+          gap: 4px;
+
+          .rate-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1;
+
+            &.val--green { color: #16a34a; }
+            &.val--amber { color: #d97706; }
+            &.val--red { color: #dc2626; }
+            &.val--blue { color: #0284c7; }
+          }
+
+          .count-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9.5px;
+            color: #64748b;
+            white-space: nowrap;
+          }
+
+          .delta-mini {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 0 3px;
+            border-radius: 2px;
+
+            &.delta--plus {
+              background: #dcfce7;
+              color: #15803d;
+            }
+            &.delta--minus {
+              background: #fee2e2;
+              color: #b91c1c;
+            }
+          }
+        }
+      }
+    }
+
+    .kpi-close-btn {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      background: #f1f5f9;
+      color: #64748b;
+      cursor: pointer;
+      flex-shrink: 0;
+
+      &:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+    }
+  }
+
+  // 6.3. Mobile Toolbar 2 Hàng Công Thái Học
+  &__mobileToolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 6px 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    flex-shrink: 0;
+
+    .toolbar-row-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+
+      .mobile-search-box {
+        position: relative;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        height: 38px;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 0 8px;
+        gap: 6px;
+
+        .search-icon {
+          color: #94a3b8;
+          flex-shrink: 0;
+        }
+
+        .search-input {
+          flex: 1;
+          border: none;
+          outline: none;
+          background: transparent;
+          font-size: 14px; // Chống auto-zoom trên iOS Safari
+          color: #0f172a;
+          min-width: 0;
+
+          &::placeholder {
+            color: #94a3b8;
+            font-size: 12.5px;
+          }
+        }
+
+        .clear-search-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 22px;
+          height: 22px;
+          border: none;
+          border-radius: 50%;
+          background: #e2e8f0;
+          color: #64748b;
+          cursor: pointer;
+          flex-shrink: 0;
+
+          &:active {
+            background: #cbd5e1;
+          }
+        }
+      }
+
+      .btn-mobile-filter {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 38px;
+        padding: 0 10px;
+        border-radius: 6px;
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
+
+        &:active {
+          transform: scale(0.96);
+        }
+
+        &.has-filters {
+          background: #eff6ff;
+          border-color: #93c5fd;
+          color: #1d4ed8;
+        }
+
+        .filter-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 17px;
+          height: 17px;
+          padding: 0 4px;
+          border-radius: 9px;
+          background: #ef4444;
+          color: #ffffff;
+          font-size: 10px;
+          font-weight: 800;
+          font-family: 'JetBrains Mono', monospace;
+        }
+      }
+
+      .btn-mobile-search {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 38px;
+        padding: 0 12px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        border: 1px solid #0284c7;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
+        box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);
+
+        &:active {
+          transform: scale(0.96);
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .toolbar-row-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 1px;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .quick-date-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+
+        .date-chip {
+          height: 26px;
+          padding: 0 8px;
+          font-size: 11px;
+          font-weight: 600;
+          color: #475569;
+          background: #f1f5f9;
+          border: 1px solid #cbd5e1;
+          border-radius: 4px;
+          cursor: pointer;
+          white-space: nowrap;
+          transition: all 0.15s ease;
+
+          &:active {
+            transform: scale(0.95);
+          }
+
+          &.active {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #0284c7;
+            font-weight: 700;
+          }
+        }
+      }
+
+      .action-divider {
+        width: 1px;
+        height: 18px;
+        background: #cbd5e1;
+        flex-shrink: 0;
+      }
+
+      .export-btn-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+
+        .btn-export {
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
+          height: 26px;
+          padding: 0 8px;
+          border-radius: 4px;
+          font-size: 11px;
+          font-weight: 700;
+          cursor: pointer;
+          white-space: nowrap;
+
+          &--ex1 {
+            color: #065f46;
+            background: #f0fdf4;
+            border: 1px solid #a7f3d0;
+
+            &:active {
+              background: #dcfce7;
+            }
+          }
+
+          &--ex2 {
+            color: #1e40af;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+
+            &:active {
+              background: #dbeafe;
+            }
+          }
+        }
+      }
+
+      .row-counter {
+        margin-left: auto;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #64748b;
+        white-space: nowrap;
+        padding-left: 6px;
+      }
+    }
+  }
 }
+
+// ----------------------------------------------------------------------------
+// 7. BOTTOM SHEET FILTER DRAWER (ZERO BLUR GPU-FRIENDLY)
+// ----------------------------------------------------------------------------
+.precision-mobile-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.75); // Không dùng backdrop-filter: blur!
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: fadeIn 0.15s ease-out;
+
+  .precision-mobile-drawer {
+    width: 100%;
+    max-height: 85vh;
+    background: #ffffff;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+    .drawer-handle-bar {
+      width: 36px;
+      height: 4px;
+      background: #cbd5e1;
+      border-radius: 2px;
+      margin: 8px auto 2px auto;
+      flex-shrink: 0;
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px 10px 16px;
+      border-bottom: 1px solid #e2e8f0;
+      flex-shrink: 0;
+
+      .drawer-title-group {
+        display: flex;
+        flex-direction: column;
+
+        .drawer-title {
+          font-size: 14px;
+          font-weight: 800;
+          color: #0f172a;
+          letter-spacing: 0.3px;
+        }
+
+        .drawer-subtitle {
+          font-size: 11px;
+          color: #64748b;
+        }
+      }
+
+      .drawer-close-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: none;
+        background: #f1f5f9;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:active {
+          background: #e2e8f0;
+        }
+      }
+    }
+
+    .drawer-body {
+      padding: 12px 16px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        .filter-group-label {
+          font-size: 11.5px;
+          font-weight: 700;
+          color: #334155;
+          letter-spacing: 0.2px;
+        }
+
+        .filter-date-input,
+        .filter-select-input {
+          height: 40px;
+          padding: 0 10px;
+          font-size: 14px; // Chống auto-zoom trên iOS Safari
+          font-weight: 600;
+          color: #1e293b;
+          border: 1px solid #cbd5e1;
+          border-radius: 6px;
+          background: #ffffff;
+          outline: none;
+
+          &:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+          }
+        }
+
+        .quick-date-pills {
+          display: flex;
+          gap: 6px;
+          margin-top: 2px;
+
+          .date-pill {
+            flex: 1;
+            height: 32px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &:active {
+              transform: scale(0.97);
+            }
+
+            &.active {
+              background: #0284c7;
+              color: #ffffff;
+              border-color: #0284c7;
+              font-weight: 700;
+            }
+          }
+        }
+
+        .segmented-selector {
+          display: flex;
+          gap: 6px;
+
+          .segment-btn {
+            flex: 1;
+            height: 38px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #475569;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+
+            &:active {
+              transform: scale(0.97);
+            }
+
+            &.active {
+              background: #eff6ff;
+              color: #1d4ed8;
+              border-color: #3b82f6;
+              box-shadow: 0 1px 3px rgba(59, 130, 246, 0.15);
+            }
+          }
+        }
+      }
+    }
+
+    .drawer-footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-top: 1px solid #e2e8f0;
+      background: #f8fafc;
+      flex-shrink: 0;
+
+      .drawer-btn {
+        flex: 1;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s ease;
+
+        &:active {
+          transform: scale(0.97);
+        }
+
+        &--reset {
+          background: #ffffff;
+          border: 1px solid #cbd5e1;
+          color: #475569;
+
+          &:hover {
+            background: #f1f5f9;
+          }
+        }
+
+        &--apply {
+          background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+          border: 1px solid #0284c7;
+          color: #ffffff;
+          box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+
+          &:hover {
+            background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+          }
+        }
+      }
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 8. KEYFRAME ANIMATIONS
+// ----------------------------------------------------------------------------
+@keyframes pulseAnimation {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+

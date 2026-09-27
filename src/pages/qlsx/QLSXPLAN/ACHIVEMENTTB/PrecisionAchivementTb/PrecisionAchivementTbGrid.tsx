@@ -8,12 +8,27 @@ interface PrecisionAchivementTbGridProps {
   data: SX_ACHIVE_DATE[];
   onExportEX1: (rows: SX_ACHIVE_DATE[]) => void;
   onExportEX2: (rows: SX_ACHIVE_DATE[]) => void;
+  isMobile?: boolean;
+  searchTerm?: string;
+  setSearchTerm?: (val: string) => void;
 }
 
 export const PrecisionAchivementTbGrid: React.FC<
   PrecisionAchivementTbGridProps
-> = ({ data, onExportEX1, onExportEX2 }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+> = ({
+  data,
+  onExportEX1,
+  onExportEX2,
+  isMobile = false,
+  searchTerm: propSearchTerm,
+  setSearchTerm: propSetSearchTerm,
+}) => {
+  const [internalSearchTerm, setInternalSearchTerm] = useState("");
+
+  const searchTerm =
+    propSearchTerm !== undefined ? propSearchTerm : internalSearchTerm;
+  const setSearchTerm =
+    propSetSearchTerm !== undefined ? propSetSearchTerm : setInternalSearchTerm;
 
   const columns = useMemo(() => getColumnAchivementTb(), []);
 
@@ -34,57 +49,60 @@ export const PrecisionAchivementTbGrid: React.FC<
 
   return (
     <div className="precision-achivementtb__gridContainer">
-      <div className="precision-achivementtb__gridToolbar">
-        <div className="gridToolbar-left">
-          <span className="table-title">
-            BẢNG TIẾN ĐỘ SẢN LƯỢNG THEO THIẾT BỊ &amp; CA LÀM VIỆC
-          </span>
+      {/* Ẩn Toolbar của Desktop khi ở Mobile để tối đa hóa diện tích bảng */}
+      {!isMobile && (
+        <div className="precision-achivementtb__gridToolbar">
+          <div className="gridToolbar-left">
+            <span className="table-title">
+              BẢNG TIẾN ĐỘ SẢN LƯỢNG THEO THIẾT BỊ &amp; CA LÀM VIỆC
+            </span>
 
-          <div className="search-box">
-            <AiOutlineSearch className="search-icon" />
-            <input
-              type="text"
-              placeholder="Tìm nhanh máy, YCSX, Code KD..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <div className="search-box">
+              <AiOutlineSearch className="search-icon" />
+              <input
+                type="text"
+                placeholder="Tìm nhanh máy, YCSX, Code KD..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+
+            <div className="grid-actions">
+              <button
+                type="button"
+                className="grid-btn grid-btn--excel"
+                onClick={() => onExportEX1(filteredData)}
+                title="Xuất dữ liệu đang lọc ra file Excel"
+              >
+                <AiOutlineDownload size={13} />
+                <span>EX1</span>
+                <span className="badge">Đang lọc</span>
+              </button>
+
+              <button
+                type="button"
+                className="grid-btn grid-btn--excel"
+                onClick={() => onExportEX2(data)}
+                title="Xuất toàn bộ dữ liệu ra file Excel"
+              >
+                <AiOutlineDownload size={13} />
+                <span>EX2</span>
+                <span className="badge">Tất cả</span>
+              </button>
+            </div>
           </div>
 
-          <div className="grid-actions">
-            <button
-              type="button"
-              className="grid-btn grid-btn--excel"
-              onClick={() => onExportEX1(filteredData)}
-              title="Xuất dữ liệu đang lọc ra file Excel"
-            >
-              <AiOutlineDownload size={13} />
-              <span>EX1</span>
-              <span className="badge">Đang lọc</span>
-            </button>
-
-            <button
-              type="button"
-              className="grid-btn grid-btn--excel"
-              onClick={() => onExportEX2(data)}
-              title="Xuất toàn bộ dữ liệu ra file Excel"
-            >
-              <AiOutlineDownload size={13} />
-              <span>EX2</span>
-              <span className="badge">Tất cả</span>
-            </button>
+          <div className="gridToolbar-right">
+            <span>
+              Tổng số lệnh: <strong>{data.length > 0 ? data.length - 1 : 0}</strong>
+            </span>
+            <span>•</span>
+            <span>
+              Hiển thị: <strong>{filteredData.length}</strong> dòng
+            </span>
           </div>
         </div>
-
-        <div className="gridToolbar-right">
-          <span>
-            Tổng số lệnh: <strong>{data.length > 0 ? data.length - 1 : 0}</strong>
-          </span>
-          <span>•</span>
-          <span>
-            Hiển thị: <strong>{filteredData.length}</strong> dòng
-          </span>
-        </div>
-      </div>
+      )}
 
       <div className="precision-achivementtb__gridBody">
         <AGTable

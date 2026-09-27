@@ -1,65 +1,35 @@
 # ERP Context & Status
 
+## Update - 2026-09-27 (QLSX / ACHIVEMENTTB: Tối Ưu Toàn Diện Giao Diện Mobile Bảng Tỷ Lệ Đạt Kế Hoạch Sản Xuất)
+- **1. Sao Lưu An Toàn**: Tạo file [ACHIVEMENTTB.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/ACHIVEMENTTB/ACHIVEMENTTB.backup2.tsx) bảo toàn 100% mã nguồn ban đầu.
+- **2. Viewport Conditional Rendering**: Dùng hook `useIsMobile()` chuẩn từ [useIsMobile.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Navbar/AccountInfo/useIsMobile.ts), bảo toàn 100% Desktop (`!isMobile`) với header công nghiệp, toolbar lọc và grid 6 cards KPI realtime.
+- **3. Mobile Header Tinh Gọn ([PrecisionAchivementTbMobileHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/ACHIVEMENTTB/PrecisionAchivementTb/PrecisionAchivementTbMobileHeader.tsx))**:
+  * Brand badge "03. QLSX", Live pulse indicator xanh lá nhấp nháy 2s, tiêu đề "TỶ LỆ ĐẠT KH", các micro chip (Xưởng, Máy, Ngày).
+  * Nút toggle bật/tắt dải Micro-KPI nhanh và nút Làm Mới dữ liệu.
+- **4. Dải Micro KPI Cuộn Ngang ([PrecisionAchivementTbMobileKpi.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/ACHIVEMENTTB/PrecisionAchivementTb/PrecisionAchivementTbMobileKpi.tsx))**:
+  * Chuyển đổi grid 6 cards chiếm diện tích sang dải chip cuộn ngang siêu mượt (Toàn ngày % Đạt & Delta, Ca ngày, Ca đêm, Quy mô Lệnh/Máy, Tình trạng Định mức, Tỷ lệ Lệnh đạt).
+  * Nút đóng nhanh `[X]` giải phóng 100% không gian hiển thị cho bảng dữ liệu AG-Grid.
+- **5. Mobile Toolbar 2 Hàng Công Thái Học ([PrecisionAchivementTbMobileToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/ACHIVEMENTTB/PrecisionAchivementTb/PrecisionAchivementTbMobileToolbar.tsx))**:
+  * Hàng 1: Ô tìm kiếm nhanh thông minh (font 14px chống Safari auto-zoom) kèm nút Clear `[X]` + nút `Bộ Lọc` (`FiFilter`) kèm badge số điều kiện active + nút `Tra Plan`.
+  * Hàng 2: Chips chọn ngày nhanh (Hôm nay / Hôm qua / Hôm kia) + Nút xuất Excel EX1 (Đang lọc), EX2 (Tất cả) + Bộ đếm số lệnh Mono.
+- **6. Zero-Blur GPU-Friendly Filter Drawer ([PrecisionAchivementTbMobileFilterDrawer.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/ACHIVEMENTTB/PrecisionAchivementTb/PrecisionAchivementTbMobileFilterDrawer.tsx))**:
+  * Backdrop tối đặc `rgba(15, 23, 42, 0.75)` không dùng blur, 3 nhóm điều khiển (Ngày kế hoạch + Quick chips, Phân xưởng NM1/NM2, Thiết bị máy dập) kèm nút "Đặt lại" và "Áp dụng".
+- **7. Clean Code & Tối Ưu Bảng Dữ Liệu**:
+  * Cập nhật [PrecisionAchivementTbGrid.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/ACHIVEMENTTB/PrecisionAchivementTb/PrecisionAchivementTbGrid.tsx) ẩn GridToolbar desktop khi ở mobile, tối đa hóa diện tích AGTable.
+  * File chính [ACHIVEMENTTB.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/ACHIVEMENTTB/ACHIVEMENTTB.tsx) chỉ 164 dòng, styling tối ưu trong [PrecisionAchivementTb.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/ACHIVEMENTTB/PrecisionAchivementTb/PrecisionAchivementTb.scss).
+
 ## Update - 2026-09-27 (QLSX / KHOAO: Tối Ưu Toàn Diện Giao Diện Mobile Kho SX Main - Kho Ảo)
 - **1. Sao Lưu An Toàn**: Tạo file [KHOAO.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/KHOAO/KHOAO.backup2.tsx) bảo toàn 100% mã nguồn ban đầu.
-- **2. Viewport Conditional Rendering**: Dùng hook `useIsMobile()` chuẩn từ [useIsMobile.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Navbar/AccountInfo/useIsMobile.ts), bảo toàn 100% desktop (`!isMobile`) với header công nghiệp, toolbar 2 tầng và KPI cards.
-- **3. Mobile Header Tinh Gọn ([PrecisionKhoAoMobileHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/KHOAO/PrecisionKhoAo/PrecisionKhoAoMobileHeader.tsx))**: Brand badge CMS QLSX, Live pulse dot, chip tab hiện tại (Tồn Kho Main / Lịch Sử Nhập / Lịch Sử Xuất), badge số cuộn liệu, nút bật/tắt KPI bar và nút làm mới dữ liệu.
-- **4. Dải Micro KPI Cuộn Ngang ([PrecisionKhoAoMobileKpi.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/KHOAO/PrecisionKhoAo/PrecisionKhoAoMobileKpi.tsx))**: Tích hợp các chỉ số tức thời theo từng tab (Tổng Cuộn Tồn, Lượng Mét Tồn, Cuộn Quá Hạn >1 Ngày, Chủng Loại Liệu, Chuẩn FSC, Tổng Lượt Nhập/Xuất...) dưới dạng horizontal chip scroll siêu mượt có nút đóng nhanh.
-- **5. Mobile Toolbar 2 Hàng Công Thái Học ([PrecisionKhoAoMobileToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/KHOAO/PrecisionKhoAo/PrecisionKhoAoMobileToolbar.tsx))**:
-  * Hàng 1: Ô tìm kiếm nhanh thông minh (font 14px chống zoom iOS) kèm nút clear `[X]` + Nút `Bộ Lọc` (`FiFilter`) kèm badge số điều kiện active + Nút reload.
-  * Hàng 2: Segmented tab switch `[TỒN MAIN] [NHẬP (IN)] [XUẤT (OUT)]` + Dải action scroll chứa input mini Next Plan & nút `XUẤT NEXT`, nút `Xóa Rác`, `Ẩn Rác` và nút xuất Excel `EX1`, `EX2`.
-- **6. Zero-Blur GPU-Friendly Filter Drawer ([PrecisionKhoAoMobileFilterDrawer.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/KHOAO/PrecisionKhoAo/PrecisionKhoAoMobileFilterDrawer.tsx))**: Backdrop đặc `rgba(15, 23, 42, 0.75)` không blur, lọc 4 nhóm (Chế độ Tab, Nhà máy ALL/NM1/NM2, Khoảng ngày, Chỉ thị Next Plan) có nút "Đặt lại" và "Áp dụng".
-- **7. Clean Code & Tối Ưu Bảng Dữ Liệu**: File chính [KHOAO.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/KHOAO/KHOAO.tsx) chỉ 218 dòng, styling tối ưu trong [PrecisionKhoAo.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/KHOAO/PrecisionKhoAo/PrecisionKhoAo.scss).
-- **8. Khắc Phục Lỗi SCSS 500 Runtime**: Đã loại bỏ dấu ngoặc nhọn `}` thừa ở cuối file [PrecisionKhoAo.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/KHOAO/PrecisionKhoAo/PrecisionKhoAo.scss), khôi phục số lượng cặp ngoặc cân bằng (210/210), biên dịch SASS thành công 100% không còn lỗi 500.
-- **Vấn đề đã xử lý**: Kiểm tra và hoàn thiện cơ chế tham số ngẫu nhiên chống cache cho toàn bộ modal in bản vẽ kỹ thuật trong YCSXManager và PLAN_TABLE, đề phòng trình duyệt và PDF viewer lưu cache file bản vẽ cũ.
-- **Các thành phần được cập nhật**:
-  * [DrawComponent.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/DrawComponent/DrawComponent.tsx): Chuyển `version` sang `useMemo([G_CODE])` sinh URL chuẩn kèm `?v=${timestamp}_${randomSalt}` (`Date.now() + Math.random()`), giữ URL ổn định trong suốt chu kỳ render canvas của `usePdf` (tránh loop) và luôn fetch file mới nhất khi đổi mã sản phẩm hoặc mở lại modal.
-  * [DrawComponentTBG.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/DrawComponent/DrawComponentTBG.tsx): Bổ sung `useMemo([G_CODE])` kèm tham số giả ngẫu nhiên chống cache.
-  * [khsxUtils.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/utils/khsxUtils.tsx) & [planDataTbPrintRenderers.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionPlanDataTb/planDataTbPrintRenderers.tsx) & [quickPlanPrintRenderers.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/QUICKPLAN/PrecisionQuickPlan/quickPlanPrintRenderers.tsx): Cố định `key={`${element.G_CODE}_...`}` độc nhất cho `DrawComponent`, ngăn chặn React tái sử dụng instance cũ khi đổi danh sách in.
-  * [PrecisionYCSXColumns.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/PrecisionYCSXColumns.tsx): Cập nhật link bản vẽ trên cột `BANVE` (cả 2 bảng chính và summary) bổ sung tham số ngẫu nhiên `?v=${Date.now()}_${randomSalt}`.
+- **2. Viewport Conditional Rendering**: Dùng hook `useIsMobile()` chuẩn từ [useIsMobile.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Navbar/AccountInfo/useIsMobile.ts), bảo toàn 100% desktop (`!isMobile`).
+- **3. Mobile Header & Micro KPI Bar**: Header siêu tinh gọn nhấp nháy Live; Micro KPI bar cuộn ngang có nút đóng nhanh.
+- **4. Mobile Toolbar 2 Hàng & Filter Drawer Zero-Blur**: Hàng 1 tìm kiếm 14px chống zoom + Nút lọc badge; Hàng 2 segmented switch tabs + mini Next Plan + EX1/EX2; Bottom Sheet Filter Drawer 4 nhóm. File chính [KHOAO.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/KHOAO/KHOAO.tsx) chỉ 218 dòng.
 
-## Update - 2026-09-26 (R&D / CODE_MANAGER: Khắc Phục Lỗi Nhảy Sai Link Bản Vẽ & Chống Cache Trình Duyệt)
-- **Vấn đề đã xử lý**: Khi xem bản vẽ của sản phẩm A rồi bấm xem bản vẽ sản phẩm B, hệ thống bị giữ lại link của sản phẩm A do AG-Grid tái sử dụng row DOM (do API map `id: index` dẫn đến trùng ID `0` khi query riêng lẻ) và trình duyệt lưu cache file PDF cũ.
-- **Các thành phần được cập nhật**:
-  * [CODE_MANAGER.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/code_manager/CODE_MANAGER.tsx): Bổ sung `getRowId` gắn định danh duy nhất theo `G_CODE` cho từng dòng trên `AGTable`, loại bỏ hoàn toàn việc AG-Grid tái sử dụng DOM cell khi đổi mã sản phẩm.
-  * [PrecisionCodeManagerColumns.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/code_manager/PrecisionCodeManager/PrecisionCodeManagerColumns.tsx):
-    - Xây dựng component độc lập `BanVeCellRenderer`, `GCodeCellRenderer`, `AppSheetCellRenderer` quản lý state URL riêng biệt theo từng dòng và đồng bộ khi `G_CODE` thay đổi.
-    - Thêm helper `getBanVeUrl` và `getAppSheetUrl` tự động chèn tham số giả ngẫu nhiên `?v=${timestamp}_${randomSalt}` (`Date.now() + Math.random()`) vào mỗi lần render và mỗi lần click chuột.
-    - Hàm xử lý `onClick` mở tab mới bằng `window.open` với URL ngẫu nhiên tạo mới tức thì tại thời điểm click, đồng thời thẻ `<a>` vẫn có thuộc tính `href` chính xác, đảm bảo 100% không bị cache bởi trình duyệt hay proxy.
+## Update - 2026-09-27 (KD & QLSX: Cache-Busting Toàn Diện Cho Modal In Bản Vẽ Kỹ Thuật)
+- Cập nhật [DrawComponent.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/DrawComponent/DrawComponent.tsx), [DrawComponentTBG.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/DrawComponent/DrawComponentTBG.tsx) sang `useMemo` với `?v=${timestamp}_${randomSalt}`.
+- Cố định key độc nhất `key={`${element.G_CODE}_...`}` trong [khsxUtils.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/utils/khsxUtils.tsx), [planDataTbPrintRenderers.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionPlanDataTb/planDataTbPrintRenderers.tsx), [quickPlanPrintRenderers.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/QUICKPLAN/PrecisionQuickPlan/quickPlanPrintRenderers.tsx).
+- Bổ sung tham số ngẫu nhiên cho link bản vẽ trong [PrecisionYCSXColumns.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/PrecisionYCSXColumns.tsx).
 
-## Update - 2026-09-26 (KD / YCSXManager: Tự Động Kiểm Tra & Chọn FIRST LOT Cho Modal Thêm/Sửa YCSX)
-- **Vấn đề đã xử lý**: Khôi phục đầy đủ logic kiểm tra hàng FIRST LOT tự động từ bản gốc [YCSXManager.backup.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/YCSXManager.backup.tsx).
-- **Các thành phần được cập nhật**:
-  * [useYCSXLogic.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/useYCSXLogic.ts): Cập nhật hàm `isG_CODE_FL`, bổ sung helper `checkAndSetFirstLot`, nạp trường `FL_YN` khi click sửa dòng trong `handle_fillsuaform`, truyền `FL_YN` vào `f_updateYCSX` khi lưu cập nhật, và export `checkAndSetFirstLot`, `isG_CODE_FL`.
-  * [PrecisionYCSXAddModal.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/PrecisionYCSXAddModal.tsx): Tự động đặt lại `isFirstLot(false)` khi người dùng chuyển Loại SX sang SAMPLE ("04") cho cả Desktop và Mobile.
-  * [PrecisionYCSXEditModal.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/PrecisionYCSXEditModal.tsx): Bổ sung props `isFirstLOT`, `setIsFirstLot`, render ô chọn FIRST LOT chuẩn giao diện CMS và tự động reset khi chọn Loại SX SAMPLE ("04").
-  * [YCSXManager.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/YCSXManager.tsx): Khi chọn sản phẩm (`onSelectCode`) tại cả Modal Thêm và Modal Sửa, tự động gọi `checkAndSetFirstLot` để truy vấn DB (`checkMassG_CODE`) và tự động select First LOT (`Y`/`N`); đồng thời khi thay đổi Loại SX cũng tự động điều chỉnh.
-  * [kdUtils.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/utils/kdUtils.tsx): Cập nhật `f_updateYCSX` để truyền `FL_YN` lên backend khi lưu sửa YCSX.
-
-## Update - 2026-09-26 (QLSX / EQ_STATUS2: Tối Ưu Toàn Diện Giao Diện Mobile Thiết Bị Sản Xuất Realtime)
-- **1. Sao Lưu An Toàn**: Đã tạo file sao lưu [EQ_STATUS2.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2.backup2.tsx) bảo toàn 100% mã nguồn ban đầu.
-- **2. Viewport Conditional Rendering**:
-  * Sử dụng hook chuẩn `useIsMobile()` từ [useIsMobile.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Navbar/AccountInfo/useIsMobile.ts).
-  * Bảo toàn nguyên vẹn 100% giao diện và trải nghiệm Desktop (`!isMobile`): [PrecisionEqStatus2DesktopPanel.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/EQ_STATUS/PrecisionEqStatus2/PrecisionEqStatus2DesktopPanel.tsx), header tìm kiếm và panel NM1/NM2.
-- **3. Mobile Header Tinh Gọn ([PrecisionEqStatus2MobileHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/EQ_STATUS/PrecisionEqStatus2/PrecisionEqStatus2MobileHeader.tsx))**:
-  * Brand icon thiết bị, Live pulse indicator (3s nhấp nháy), thống kê số máy realtime, nút gập mở KPI và nút mở EQ Manager.
-- **4. Dải Micro KPI Cuộn Ngang ([PrecisionEqStatus2MobileKpi.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/EQ_STATUS/PrecisionEqStatus2/PrecisionEqStatus2MobileKpi.tsx))**:
-  * Thay thế bảng table 6 cột `EQ_SUMMARY` cồng kềnh trên mobile bằng thanh KPI cuộn ngang (Tổng máy, Vận hành %, Đang chạy, Setting, Tạm dừng, Máy NG).
-  * Hỗ trợ chip lọc theo từng series máy (FR, SR, DC, ED...).
-- **5. Mobile Toolbar 2 Hàng Công Thái Học ([PrecisionEqStatus2MobileToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/EQ_STATUS/PrecisionEqStatus2/PrecisionEqStatus2MobileToolbar.tsx))**:
-  * Hàng 1: Ô tìm kiếm thông minh 14px chống zoom iOS kèm nút xóa nhanh `[X]` + nút `Bộ Lọc` (`FiFilter`) kèm badge số điều kiện đang lọc.
-  * Hàng 2: Segmented Switcher xưởng (Tất cả / NM1 / NM2) + chip trạng thái nhanh (Tất cả / Chạy / Setting / Dừng / OK / NG) + nút Reset.
-- **6. Zero-Blur GPU-Friendly Filter Drawer ([PrecisionEqStatus2MobileFilterDrawer.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/EQ_STATUS/PrecisionEqStatus2/PrecisionEqStatus2MobileFilterDrawer.tsx))**:
-  * Backdrop tối đặc `rgba(15, 23, 42, 0.75)` không dùng blur, 4 nhóm chọn: Nhà máy, Nhóm máy (Series), Trạng thái vận hành, Tình trạng thiết bị.
-- **7. Lưới Thẻ Máy Mobile Linh Hoạt ([PrecisionEqStatus2MobileContent.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/EQ_STATUS/PrecisionEqStatus2/PrecisionEqStatus2MobileContent.tsx))**:
-  * Phân nhóm theo phân xưởng và dòng máy, thẻ máy `MACHINE_COMPONENT3` co giãn không bị cắt cụt, giữ nguyên tương tác double click toggle trạng thái.
-- **8. Phân Rã Clean Code Dưới 300 Dòng**:
-  * [EQ_STATUS2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2.tsx) chỉ còn 290 dòng; tách rời [PrecisionEqStatus2ManagerModal.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/EQ_STATUS/PrecisionEqStatus2/PrecisionEqStatus2ManagerModal.tsx) và [PrecisionEqStatus2AddMachineDialog.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/EQ_STATUS/PrecisionEqStatus2/PrecisionEqStatus2AddMachineDialog.tsx).
-
-## Update - 2026-09-26 (QLSX / EQ_STATUS: Tối Ưu Toàn Diện Giao Diện Mobile Andon Giám Sát Máy)
-- Sao lưu [EQ_STATUS.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS.backup2.tsx); bảo toàn 100% desktop.
-- Header Andon TV mobile siêu gọn + Micro KPI bar + Toolbar 2 hàng + Filter Drawer Zero-Blur.
-
-## Update - 2026-09-26 (QLSX / PLAN_STATUS: Tối Ưu Toàn Diện Giao Diện Mobile Trạng Thái Tiến Độ Chỉ Thị)
-- Sao lưu [PLAN_STATUS.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS.backup2.tsx); bảo toàn 100% Desktop.
-- Mobile Toolbar 2 hàng + Bottom Sheet Filter Drawer Zero Blur + Mini KPI Bar cuộn ngang.
+## Update - 2026-09-26 (R&D / CODE_MANAGER: Chống Cache Bản Vẽ & Phục Hồi First Lot YCSX)
+- [CODE_MANAGER.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/code_manager/CODE_MANAGER.tsx): Gán `getRowId` theo `G_CODE` trên AGTable, xử lý click mở tab mới chống cache.
+- [YCSXManager.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/YCSXManager.tsx): Tự động kiểm tra và chọn First LOT (`Y`/`N`) cho modal Thêm/Sửa YCSX.
+- [EQ_STATUS2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS2.tsx) & [EQ_STATUS.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/EQ_STATUS/EQ_STATUS.tsx) & [PLAN_STATUS.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/PLAN_STATUS/PLAN_STATUS.tsx): Tối ưu toàn diện mobile theo chuẩn `mobile_interface_refactoring`.
