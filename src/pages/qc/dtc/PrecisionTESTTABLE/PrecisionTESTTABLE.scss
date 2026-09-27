@@ -1000,6 +1000,541 @@
   }
 }
 
+// ==========================================================================
+// 7. MOBILE RESPONSIVE OPTIMIZATION (mobile_interface_refactoring)
+//    - Desktop (> 768px) KHÔNG bị ảnh hưởng: mọi rule ở đây chỉ áp dụng cho
+//      `.precision-testtable.is-mobile` (specificity 0,2,0 > base 0,1,0).
+//    - `!important` bắt buộc ở root vì `.component_element &` (file này) và
+//      `.dtc .precision-testtable` (DTC.scss) khóa cứng height/flex/overflow
+//      bằng !important.
+//    - ZERO BLUR: không dùng backdrop-filter (chuẩn hiệu năng GPU mobile).
+// ==========================================================================
+.precision-testtable.is-mobile {
+  // Root: để trang tự cuộn, KHÔNG khóa overflow (tránh bị cắt cụt nội dung)
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0;
+  flex: 0 0 auto !important;
+  overflow: visible !important;
+  box-sizing: border-box;
+
+  // ------------------------------------------------------------------
+  // 7.1 Mobile Header tinh gọn
+  // ------------------------------------------------------------------
+  .precision-testtable__mobileHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 10px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    flex-shrink: 0;
+  }
+
+  .mobile-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: #e0f2fe;
+      color: #0284c7;
+      border: 1px solid #bae6fd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    // PITFALL: title nằm 1 DÒNG RIÊNG, badge đẩy xuống dòng meta; nếu để
+    // title + badge + meta chung 1 dòng thì min-content của meta chặn co
+    // khiến title bị cắt ở viewport 320-360px.
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+
+      > span:first-child {
+        min-width: 0;
+        // PITFALL: `overflow:hidden` hạ automatic min-size về 0 ⇒ nếu thiếu
+        // `white-space: nowrap` thì flex item co còn 0px và text vỡ 1 ký tự/dòng.
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .brand-badge {
+        font-size: 9.5px;
+        padding: 0 4px;
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+        border-radius: 3px;
+        font-family: ui-monospace, monospace;
+        flex-shrink: 0;
+      }
+
+      .brand-mode-badge {
+        font-size: 9px;
+        padding: 0 5px;
+        border-radius: 9999px;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+        background: #e0f2fe;
+        color: #0369a1;
+        border: 1px solid #bae6fd;
+        flex-shrink: 0;
+      }
+    }
+
+    .brand-meta {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      color: #64748b;
+      margin-top: 1px;
+      min-width: 0;
+      width: 100%;
+      overflow: hidden;
+
+      > span {
+        white-space: nowrap;
+      }
+
+      .live-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        flex-shrink: 0;
+      }
+
+      .divider {
+        color: #cbd5e1;
+      }
+    }
+  }
+
+  .mobile-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+
+    .btn-header-action {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #334155;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+
+      &:active {
+        transform: scale(0.94);
+      }
+
+      &.active {
+        background: #e0f2fe;
+        border-color: #7dd3fc;
+        color: #0284c7;
+      }
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // 7.2 KPI compact: 4 chip nén 2 cột (thay cho 4 card lớn của desktop)
+  // ------------------------------------------------------------------
+  .precision-testtable__kpis--compact {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .precision-testtable__kpiChip {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 4px 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left-width: 3px;
+    border-radius: 6px;
+    overflow: hidden;
+
+    &--blue { border-left-color: #0284c7; }
+    &--purple { border-left-color: #8b5cf6; }
+    &--emerald { border-left-color: #10b981; }
+    &--amber { border-left-color: #f59e0b; }
+
+    .chip-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chip-value {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #0f172a;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // 7.3 Segmented switcher: Hạng mục ↔ Điểm đo
+  // ------------------------------------------------------------------
+  .precision-testtable__mobileTabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    flex-shrink: 0;
+
+    .mobile-tab {
+      flex: 1 1 0;
+      min-width: 0;
+      height: 38px;
+      padding: 0 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: #f8fafc;
+      color: #475569;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+
+      &:active {
+        transform: scale(0.98);
+      }
+
+      > span:not(.mobile-tab__badge) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .mobile-tab__badge {
+        flex-shrink: 0;
+        min-width: 20px;
+        padding: 0 5px;
+        border-radius: 9999px;
+        background: #e2e8f0;
+        color: #475569;
+        font-size: 10px;
+        font-weight: 800;
+        text-align: center;
+        font-family: ui-monospace, monospace;
+      }
+
+      &--active {
+        background: #ecfdf5;
+        border-color: #a7f3d0;
+        color: #047857;
+
+        .mobile-tab__badge {
+          background: #a7f3d0;
+          color: #065f46;
+        }
+      }
+
+      &--indigo.mobile-tab--active {
+        background: #eef2ff;
+        border-color: #c7d2fe;
+        color: #4338ca;
+
+        .mobile-tab__badge {
+          background: #c7d2fe;
+          color: #3730a3;
+        }
+      }
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // 7.4 Mobile Toolbar công thái học (touch target >= 38px)
+  // ------------------------------------------------------------------
+  .precision-testtable__mobileToolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 6px 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    flex-shrink: 0;
+  }
+
+  .mobile-toolbar-search-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+
+    .search-input-box {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 40px;
+      padding: 0 10px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+
+      .search-icon {
+        color: #94a3b8;
+        flex-shrink: 0;
+      }
+
+      // font-size 16px để iOS Safari KHÔNG tự zoom khi focus
+      .input-field {
+        flex: 1 1 auto;
+        min-width: 0;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 16px;
+        color: #0f172a;
+      }
+
+      .clear-search-btn {
+        flex-shrink: 0;
+        width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background: transparent;
+        color: #94a3b8;
+        cursor: pointer;
+        padding: 0;
+        border-radius: 4px;
+
+        &:hover {
+          color: #0f172a;
+        }
+      }
+    }
+
+    .btn-toolbar-primary {
+      flex-shrink: 0;
+      height: 40px;
+      padding: 0 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: none;
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+
+      &:active:not(:disabled) {
+        transform: scale(0.97);
+      }
+
+      &--emerald {
+        background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        box-shadow: 0 1px 3px rgba(16, 185, 129, 0.3);
+      }
+
+      &--indigo {
+        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+        box-shadow: 0 1px 3px rgba(99, 102, 241, 0.3);
+      }
+
+      &:disabled {
+        background: #e2e8f0;
+        color: #94a3b8;
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .mobile-toolbar-actions-scroll {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .action-pill {
+      flex: 0 0 auto;
+      height: 38px;
+      padding: 0 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 9999px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:active {
+        transform: scale(0.96);
+      }
+
+      &.active {
+        background: #e0f2fe;
+        border-color: #7dd3fc;
+        color: #0284c7;
+      }
+
+      &--excel {
+        color: #047857;
+        border-color: #a7f3d0;
+        background: #f0fdf4;
+      }
+
+      &--reload {
+        color: #1d4ed8;
+        border-color: #bfdbfe;
+        background: #eff6ff;
+      }
+
+      &--reset {
+        color: #b45309;
+        border-color: #fde68a;
+        background: #fffbeb;
+      }
+    }
+
+    .pill-divider {
+      flex-shrink: 0;
+      width: 1px;
+      height: 18px;
+      background: #e2e8f0;
+      margin: 0 2px;
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // 7.5 Bảng dữ liệu: tối đa hoá không gian (1 panel mỗi lần)
+  // ------------------------------------------------------------------
+  .precision-testtable__mobilePane {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  // Panel master-detail: bỏ min-width cứng (320/360px) gây tràn ngang
+  .precision-testtable__panel--mobile {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  // Chiều cao cố định để AG Grid có container xác định (không dựa height:100%)
+  .precision-testtable__tableContainer {
+    flex: 1 1 auto;
+    min-height: 320px;
+    height: 60vh;
+    overflow: hidden;
+
+    .agtable {
+      min-height: 320px; // ghi đè min-height: 260px của base mobile
+
+      // Ẩn toolbar EX1/EX2/PIVOT của AGTable: MobileToolbar đã có nút Excel
+      .toolbar {
+        display: none !important;
+      }
+
+      .ag-theme-quartz {
+        min-height: 320px;
+      }
+    }
+  }
+
+  // Nút/label trong toolbar mobile luôn đủ lớn để chạm
+  .precision-testtable__btnAction {
+    min-height: 34px;
+  }
+}
+
+@media (max-width: 350px) {
+  .precision-testtable.is-mobile {
+    .mobile-header-brand .brand-title .brand-mode-badge {
+      display: none;
+    }
+
+    .mobile-toolbar-search-row .btn-toolbar-primary > span {
+      display: none;
+    }
+  }
+}
+
 // Animations
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }

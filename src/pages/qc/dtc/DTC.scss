@@ -56,6 +56,37 @@
 }
 
 @media only screen and (max-width: 768px) {
+  // Mobile: MỞ KHÓA chuỗi flex/overflow của trang DTC để nội dung dài không bị
+  // cắt cụt. Trước đây `.dtc > .tabs-container > .tab-content > .tab-pane` bị
+  // khóa `height:100% + overflow:hidden` bằng !important (block @media 5000px ở
+  // trên) ⇒ mọi module con đặt `height:auto` vẫn bị tổ tiên cắt.
+  // Đây đúng là ý định sẵn có của MyTab.scss (mobile: `min-height:100vh;
+  // overflow:visible`) nên khôi phục lại thay vì thêm hành vi mới.
+  .dtc {
+    height: auto !important;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+
+    > .tabs-container {
+      height: auto !important;
+      flex: 0 0 auto !important;
+      overflow: visible !important;
+
+      > .tab-content {
+        height: auto !important;
+        max-height: none !important;
+        flex: 0 0 auto !important;
+        overflow: visible !important;
+
+        > .tab-pane {
+          height: auto !important;
+          max-height: none !important;
+          flex: 0 0 auto !important;
+          overflow: visible !important;
+        }
+      }
+    }
+  }
 }
 @media only screen and (max-width: 320px) {
 }

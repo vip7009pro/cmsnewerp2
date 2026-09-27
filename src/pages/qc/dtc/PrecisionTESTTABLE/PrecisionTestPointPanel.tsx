@@ -21,6 +21,10 @@ interface PrecisionTestPointPanelProps {
   onOpenAddModal: () => void;
   onExport: () => void;
   onRefresh: () => void;
+  /** Biến thể mobile: chỉ giữ bảng dữ liệu (ô search + nút đã nằm ở MobileToolbar) */
+  isMobile?: boolean;
+  /** Bật/tắt hàng floating filter trên cột (AG Grid) */
+  showFilter?: boolean;
 }
 
 const PrecisionTestPointPanel: React.FC<PrecisionTestPointPanelProps> = ({
@@ -32,8 +36,41 @@ const PrecisionTestPointPanel: React.FC<PrecisionTestPointPanelProps> = ({
   onOpenAddModal,
   onExport,
   onRefresh,
+  isMobile,
+  showFilter,
 }) => {
   const columns = useMemo(() => getTestPointColumns(), []);
+
+  // ===== NHÁNH MOBILE: tối đa hoá không gian bảng dữ liệu =====
+  // Panel header (title + nút thêm + context banner + ô search) và status bar
+  // đã được thay thế bằng MobileTabs/MobileHeader/MobileToolbar ở cấp trang.
+  if (isMobile) {
+    return (
+      <div className="precision-testtable__panel--right precision-testtable__panel--mobile">
+        <div className="precision-testtable__tableContainer">
+          {selectedItem ? (
+            <AGTable
+              data={data}
+              columns={columns}
+              onRowClick={() => {}}
+              onSelectionChange={() => {}}
+              rowHeight={32}
+              showFilter={showFilter}
+            />
+          ) : (
+            <div className="precision-testtable__emptyState">
+              <IoInformationCircleOutline className="icon" />
+              <div className="title">Chưa chọn Hạng Mục Test</div>
+              <div className="desc">
+                Vui lòng sang tab “Hạng mục”, chạm vào một dòng để hiển thị danh sách
+                các điểm đo tương ứng.
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="precision-testtable__panel--right">

@@ -13,9 +13,59 @@ interface PrecisionTestTableKpiProps {
     selectedItemCode: number | null;
     totalPoints: number;
   };
+  /** Biến thể mobile: 4 ô nén 2 cột × 2 dòng thay cho 4 card lớn */
+  compact?: boolean;
 }
 
-const PrecisionTestTableKpi: React.FC<PrecisionTestTableKpiProps> = ({ kpis }) => {
+const PrecisionTestTableKpi: React.FC<PrecisionTestTableKpiProps> = ({ kpis, compact }) => {
+  // ===== NHÁNH MOBILE: lưới 4 chip nén (2 cột), không icon, không dòng phụ =====
+  if (compact) {
+    const chips = [
+      {
+        label: "Tổng hạng mục",
+        value: kpis.totalItems.toLocaleString("vi-VN"),
+        tone: "blue",
+      },
+      {
+        label: "Hạng mục đang chọn",
+        value:
+          kpis.selectedItemCode !== null
+            ? `[${kpis.selectedItemCode}]`
+            : "—",
+        tone: "purple",
+      },
+      {
+        label: "Điểm đo hiện tại",
+        value: kpis.totalPoints.toLocaleString("vi-VN"),
+        tone: "emerald",
+      },
+      {
+        label: "Cơ sở dữ liệu",
+        value: "ONLINE",
+        tone: "amber",
+      },
+    ];
+
+    return (
+      <div className="precision-testtable__kpis precision-testtable__kpis--compact">
+        {chips.map((chip) => (
+          <div
+            key={chip.label}
+            className={`precision-testtable__kpiChip precision-testtable__kpiChip--${chip.tone}`}
+            title={
+              chip.tone === "purple" && kpis.selectedItemName
+                ? kpis.selectedItemName
+                : undefined
+            }
+          >
+            <span className="chip-label">{chip.label}</span>
+            <span className="chip-value">{chip.value}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="precision-testtable__kpis">
       {/* Card 1: Tổng Hạng Mục Test */}

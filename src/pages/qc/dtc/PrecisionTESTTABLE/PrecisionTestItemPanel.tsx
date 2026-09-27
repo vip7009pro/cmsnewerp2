@@ -21,6 +21,10 @@ interface PrecisionTestItemPanelProps {
   onOpenAddModal: () => void;
   onExport: () => void;
   onRefresh: () => void;
+  /** Biến thể mobile: chỉ giữ bảng dữ liệu (ô search + nút đã nằm ở MobileToolbar) */
+  isMobile?: boolean;
+  /** Bật/tắt hàng floating filter trên cột (AG Grid) */
+  showFilter?: boolean;
 }
 
 const PrecisionTestItemPanel: React.FC<PrecisionTestItemPanelProps> = ({
@@ -33,6 +37,8 @@ const PrecisionTestItemPanel: React.FC<PrecisionTestItemPanelProps> = ({
   onOpenAddModal,
   onExport,
   onRefresh,
+  isMobile,
+  showFilter,
 }) => {
   const columns = useMemo(() => getTestItemColumns(), []);
 
@@ -41,6 +47,26 @@ const PrecisionTestItemPanel: React.FC<PrecisionTestItemPanelProps> = ({
       onSelectItem(params.data);
     }
   };
+
+  // ===== NHÁNH MOBILE: tối đa hoá không gian bảng dữ liệu =====
+  // Panel header (title + nút thêm + ô search) và status bar đã được thay thế
+  // bằng MobileTabs/MobileHeader/MobileToolbar ở cấp trang -> KHÔNG render lại.
+  if (isMobile) {
+    return (
+      <div className="precision-testtable__panel--left precision-testtable__panel--mobile">
+        <div className="precision-testtable__tableContainer">
+          <AGTable
+            data={data}
+            columns={columns}
+            onRowClick={handleRowClick}
+            onSelectionChange={() => {}}
+            rowHeight={32}
+            showFilter={showFilter}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="precision-testtable__panel--left">
