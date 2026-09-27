@@ -1,5 +1,13 @@
 # ERP Context & Status
 
+## Update - 2026-09-27 (MUA HANG / TINHLIEU: Tối Ưu Toàn Diện Giao Diện Mobile Tính Liệu MRP)
+- Tạo [TINHLIEU.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/muahang/tinhlieu/TINHLIEU.backup2.tsx). Hook `useIsMobile()`, bảo toàn 100% desktop (`!isMobile`).
+- Mobile Header tinh gọn [PrecisionTinhLieuMobileHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/muahang/tinhlieu/PrecisionTinhLieu/PrecisionTinhLieuMobileHeader.tsx) với live pulse, telemetry badge và nút toggle Micro-KPI / Filter.
+- Micro-KPI bar cuộn ngang [PrecisionTinhLieuMobileKpi.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/muahang/tinhlieu/PrecisionTinhLieu/PrecisionTinhLieuMobileKpi.tsx) tóm tắt nhanh: Tổng bản ghi, Mã VL unique, Nhu cầu cấp liệu / tồn sẵn có, Thiếu hụt liệu và Tỷ lệ mở liệu YCSX.
+- Mobile Toolbar 3 hàng công thái học [PrecisionTinhLieuMobileToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/muahang/tinhlieu/PrecisionTinhLieu/PrecisionTinhLieuMobileToolbar.tsx): Search input chống zoom iOS (14px) kèm nút clear `[X]`, Touch targets >= 38px, Chuyển mode segmented (Chi tiết / Tổng hợp / Kế hoạch), dải pills lọc nhanh (SHORTAGE_ONLY, NEWPO, ALLTIME), Cụm Khóa/Mở Liệu YCSX và nút xuất EX1/EX2.
+- Bottom-Sheet Filter Drawer Zero-Blur [PrecisionTinhLieuMobileFilterDrawer.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/muahang/tinhlieu/PrecisionTinhLieu/PrecisionTinhLieuMobileFilterDrawer.tsx) lọc theo từ khóa, khoảng ngày (hoặc All Time), Liệu thiếu và PO mới.
+- Bảng AGTable chiếm trọn không gian còn lại (`flex: 1 1 0; min-height: 0; height: 100%`). File chính [TINHLIEU.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/muahang/tinhlieu/TINHLIEU.tsx) 336 dòng.
+
 ## Update - 2026-09-27 (MUA HANG / QLVL: Tối Ưu Toàn Diện Giao Diện Mobile Quản Lý Danh Mục Vật Liệu)
 - Tạo [QLVL.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/muahang/quanlyvatlieu/QLVL.backup2.tsx). Hook `useIsMobile()`, bảo toàn 100% desktop (`!isMobile`).
 - Mobile Header tinh gọn [PrecisionQLVLMobileHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/muahang/quanlyvatlieu/PrecisionQLVL/PrecisionQLVLMobileHeader.tsx) với live pulse, telemetry badge và nút toggle Micro-KPI / Filter.

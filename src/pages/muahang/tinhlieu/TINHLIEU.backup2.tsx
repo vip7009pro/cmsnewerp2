@@ -6,16 +6,11 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { MaterialPOData, MaterialPOSumData, MRPDATA } from "../interfaces/muaInterface";
 import { f_loadMRPPlan } from "../utils/muaUtils";
 import { SaveExcel } from "../../../api/services/excelService";
-import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
 
 import "./PrecisionTinhLieu/PrecisionTinhLieu.scss";
 import PrecisionTinhLieuHeader from "./PrecisionTinhLieu/PrecisionTinhLieuHeader";
 import PrecisionTinhLieuKpi from "./PrecisionTinhLieu/PrecisionTinhLieuKpi";
 import PrecisionTinhLieuToolbar from "./PrecisionTinhLieu/PrecisionTinhLieuToolbar";
-import PrecisionTinhLieuMobileHeader from "./PrecisionTinhLieu/PrecisionTinhLieuMobileHeader";
-import PrecisionTinhLieuMobileKpi from "./PrecisionTinhLieu/PrecisionTinhLieuMobileKpi";
-import PrecisionTinhLieuMobileToolbar from "./PrecisionTinhLieu/PrecisionTinhLieuMobileToolbar";
-import PrecisionTinhLieuMobileFilterDrawer from "./PrecisionTinhLieu/PrecisionTinhLieuMobileFilterDrawer";
 import {
   buildMRPTableCMS,
   buildMRPTablePVN,
@@ -25,17 +20,12 @@ import {
 
 const TINHLIEU = () => {
   const company = getCompany();
-  const isMobile = useIsMobile();
 
   // 1. Quản lý trạng thái dữ liệu & chế độ tra cứu
   const [currentTable, setCurrentTable] = useState<Array<any>>([]);
   const [currentMode, setCurrentMode] = useState<"DETAIL" | "SUMMARY" | "PLAN">("DETAIL");
   const [selectedYCSX, setSelectedYCSX] = useState<Array<any>>([]);
   const ycsxdatatablefilter = useRef<Array<any>>([]);
-
-  // Mobile specific UI toggles
-  const [showMobileKpi, setShowMobileKpi] = useState<boolean>(false);
-  const [showFilterDrawer, setShowFilterDrawer] = useState<boolean>(false);
 
   // 2. Bộ lọc Form Data
   const [formdata, setFormData] = useState({
@@ -56,18 +46,6 @@ const TINHLIEU = () => {
       [keyname]: value,
     }));
   }, []);
-
-  // Đếm số điều kiện lọc đang kích hoạt
-  const activeFilterCount = useMemo(() => {
-    let count = 0;
-    if (formdata.SHORTAGE_ONLY) count++;
-    if (formdata.NEWPO) count++;
-    if (formdata.ALLTIME) count++;
-    if (searchKeyword.trim()) count++;
-    const today = moment().format("YYYY-MM-DD");
-    if (!formdata.ALLTIME && (formdata.FROM_DATE !== today || formdata.TO_DATE !== today)) count++;
-    return count;
-  }, [formdata, searchKeyword]);
 
   // 3. Khóa & Mở Liệu YCSX hàng loạt
   const setLockMaterial = async (material_value: string) => {
@@ -254,95 +232,36 @@ const TINHLIEU = () => {
     );
   }, [currentTable, searchKeyword]);
 
-  // Xử lý áp dụng bộ lọc từ Mobile Drawer
-  const handleApplyMobileFilters = useCallback(
-    (filters: { formData: typeof formdata; searchKeyword: string }) => {
-      setFormData(filters.formData);
-      setSearchKeyword(filters.searchKeyword);
-    },
-    []
-  );
-
-  const handleResetMobileFilters = useCallback(() => {
-    const today = moment().format("YYYY-MM-DD");
-    setFormData({
-      CUST_NAME_KD: "",
-      M_NAME: "",
-      SHORTAGE_ONLY: false,
-      NEWPO: false,
-      FROM_DATE: today,
-      TO_DATE: today,
-      ALLTIME: false,
-    });
-    setSearchKeyword("");
-  }, []);
-
   // Nạp dữ liệu ban đầu
   useEffect(() => {
     load_material_table("DETAIL");
   }, []);
 
   return (
-    <div className={`precision-tinhlieu ${isMobile ? "is-mobile" : ""}`}>
+    <div className="precision-tinhlieu">
       {/* 1. Sub-Header Phân Hệ & Telemetry */}
-      {isMobile ? (
-        <PrecisionTinhLieuMobileHeader
-          currentMode={currentMode}
-          totalCount={currentTable.length}
-          filteredCount={filteredData.length}
-          showKpi={showMobileKpi}
-          onToggleKpi={() => setShowMobileKpi((prev) => !prev)}
-          onOpenFilterDrawer={() => setShowFilterDrawer(true)}
-          onReload={() => load_material_table(currentMode)}
-          activeFilterCount={activeFilterCount}
-        />
-      ) : (
-        <PrecisionTinhLieuHeader currentMode={currentMode} totalCount={currentTable.length} />
-      )}
+      <PrecisionTinhLieuHeader currentMode={currentMode} totalCount={currentTable.length} />
 
       {/* 2. Micro-cards KPI Realtime */}
-      {isMobile ? (
-        showMobileKpi && <PrecisionTinhLieuMobileKpi data={filteredData} currentMode={currentMode} />
-      ) : (
-        <PrecisionTinhLieuKpi data={filteredData} currentMode={currentMode} />
-      )}
+      <PrecisionTinhLieuKpi data={filteredData} currentMode={currentMode} />
 
       {/* 3. Action & Filter Toolbar SaaS */}
-      {isMobile ? (
-        <PrecisionTinhLieuMobileToolbar
-          formData={formdata}
-          onFormChange={setFormInfo}
-          currentMode={currentMode}
-          onLoadMRP={load_material_table}
-          onLockMaterial={handleConfirmLockMaterial}
-          onUnLockMaterial={handleConfirmUnLockMaterial}
-          selectedYCSXCount={selectedYCSX.length}
-          company={company}
-          searchKeyword={searchKeyword}
-          onSearchChange={setSearchKeyword}
-          onExportEX1={() => SaveExcel(filteredData, `MRP_${currentMode}_DangLoc`)}
-          onExportEX2={() => SaveExcel(currentTable, `MRP_${currentMode}_ToanBo`)}
-          activeFilterCount={activeFilterCount}
-          onOpenFilterDrawer={() => setShowFilterDrawer(true)}
-        />
-      ) : (
-        <PrecisionTinhLieuToolbar
-          formData={formdata}
-          onFormChange={setFormInfo}
-          currentMode={currentMode}
-          onLoadMRP={load_material_table}
-          onLockMaterial={handleConfirmLockMaterial}
-          onUnLockMaterial={handleConfirmUnLockMaterial}
-          selectedYCSXCount={selectedYCSX.length}
-          company={company}
-          searchKeyword={searchKeyword}
-          onSearchChange={setSearchKeyword}
-          onExportEX1={() => SaveExcel(filteredData, `MRP_${currentMode}_DangLoc`)}
-          onExportEX2={() => SaveExcel(currentTable, `MRP_${currentMode}_ToanBo`)}
-          totalCount={currentTable.length}
-          filteredCount={filteredData.length}
-        />
-      )}
+      <PrecisionTinhLieuToolbar
+        formData={formdata}
+        onFormChange={setFormInfo}
+        currentMode={currentMode}
+        onLoadMRP={load_material_table}
+        onLockMaterial={handleConfirmLockMaterial}
+        onUnLockMaterial={handleConfirmUnLockMaterial}
+        selectedYCSXCount={selectedYCSX.length}
+        company={company}
+        searchKeyword={searchKeyword}
+        onSearchChange={setSearchKeyword}
+        onExportEX1={() => SaveExcel(filteredData, `MRP_${currentMode}_DangLoc`)}
+        onExportEX2={() => SaveExcel(currentTable, `MRP_${currentMode}_ToanBo`)}
+        totalCount={currentTable.length}
+        filteredCount={filteredData.length}
+      />
 
       {/* 4. Khung Bảng AGTable Chiếm Trọn Chiều Cao (Full-Height) */}
       <div className="precision-tinhlieu__gridContainer">
@@ -361,18 +280,6 @@ const TINHLIEU = () => {
           />
         </div>
       </div>
-
-      {/* 5. Mobile Filter Drawer (Zero Blur Standard) */}
-      {isMobile && (
-        <PrecisionTinhLieuMobileFilterDrawer
-          isOpen={showFilterDrawer}
-          onClose={() => setShowFilterDrawer(false)}
-          formData={formdata}
-          searchKeyword={searchKeyword}
-          onApply={handleApplyMobileFilters}
-          onReset={handleResetMobileFilters}
-        />
-      )}
     </div>
   );
 };
