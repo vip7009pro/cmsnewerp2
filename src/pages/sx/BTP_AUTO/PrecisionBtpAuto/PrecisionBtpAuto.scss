@@ -482,52 +482,795 @@
   }
 }
 
-// ====================== RESPONSIVE ======================
+// ====================== KEYFRAME ANIMATIONS ======================
+@keyframes pulseDot {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+@keyframes drawerFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes drawerSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes refreshSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// ====================== GIAO DIỆN MOBILE CHUYÊN BIỆT (is-mobile) ======================
+.precision-btpauto.is-mobile {
+  padding: 4px;
+  gap: 4px;
+
+  // 1. MOBILE HEADER
+  .precision-btpauto__mobileHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 6px 10px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    flex-shrink: 0;
+
+    .mobile-header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+
+      .brand-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+
+        .brand-badge {
+          font-size: 9px;
+          font-weight: 800;
+          letter-spacing: 0.5px;
+          padding: 2px 6px;
+          border-radius: 4px;
+          background: #0f172a;
+          color: #38bdf8;
+          border: 1px solid #334155;
+          white-space: nowrap;
+        }
+
+        .title-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+
+          .page-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0f172a;
+            white-space: nowrap;
+            letter-spacing: 0.2px;
+          }
+
+          .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 9px;
+            font-weight: 800;
+            color: #16a34a;
+            letter-spacing: 0.5px;
+
+            .pulse-dot {
+              width: 6px;
+              height: 6px;
+              border-radius: 50%;
+              background: #10b981;
+              animation: pulseDot 2s infinite;
+            }
+          }
+        }
+      }
+
+      .action-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+
+        .btn-action-icon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 3px;
+          height: 32px;
+          padding: 0 8px;
+          border-radius: 6px;
+          border: 1px solid #cbd5e1;
+          background: #f8fafc;
+          color: #475569;
+          font-size: 11px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.15s ease;
+
+          &:active {
+            transform: scale(0.96);
+          }
+
+          &.active {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #1d4ed8;
+          }
+
+          &--gn {
+            color: #0d9488;
+            border-color: #99f6e4;
+            background: #f0fdfa;
+            &:active { background: #ccfbf1; }
+          }
+
+          &--refresh {
+            width: 32px;
+            padding: 0;
+            &.is-loading svg {
+              animation: refreshSpin 1s linear infinite;
+            }
+          }
+        }
+      }
+    }
+
+    .mobile-header-chips {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      &::-webkit-scrollbar { display: none; }
+
+      .telemetry-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        color: #475569;
+        white-space: nowrap;
+
+        strong {
+          color: #0f172a;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 10.5px;
+        }
+
+        &.loading-chip {
+          background: #fffbeb;
+          border-color: #fde68a;
+          color: #b45309;
+        }
+      }
+    }
+  }
+
+  // 2. MOBILE MICRO-KPI BAR
+  .precision-btpauto__mobileKpi {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 5px 6px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    flex-shrink: 0;
+    gap: 6px;
+
+    .mobile-kpi-scroll {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      flex: 1;
+      &::-webkit-scrollbar { display: none; }
+
+      .micro-kpi-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 2px;
+        padding: 4px 8px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        flex-shrink: 0;
+        min-width: 110px;
+
+        &.card--blue {
+          border-left: 3px solid #3b82f6;
+          background: #eff6ff;
+        }
+        &.card--green {
+          border-left: 3px solid #10b981;
+          background: #f0fdf4;
+        }
+        &.card--amber {
+          border-left: 3px solid #f59e0b;
+          background: #fffbeb;
+        }
+        &.card--purple {
+          border-left: 3px solid #8b5cf6;
+          background: #f5f3ff;
+        }
+        &.card--rose {
+          border-left: 3px solid #f43f5e;
+          background: #fff1f2;
+        }
+
+        .micro-kpi-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 4px;
+
+          .micro-kpi-title {
+            font-size: 9px;
+            font-weight: 800;
+            color: #64748b;
+            letter-spacing: 0.3px;
+          }
+          .micro-kpi-icon {
+            font-size: 11px;
+          }
+        }
+
+        .micro-kpi-value {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 13.5px;
+          font-weight: 800;
+          color: #0f172a;
+          line-height: 1.1;
+        }
+
+        .micro-kpi-sub {
+          font-size: 9.5px;
+          color: #64748b;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .btn-kpi-close {
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      background: #f1f5f9;
+      color: #64748b;
+      cursor: pointer;
+      flex-shrink: 0;
+
+      &:active {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+    }
+  }
+
+  // 3. MOBILE TOOLBAR 2 HÀNG CÔNG THÁI HỌC
+  .precision-btpauto__mobileToolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 6px 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    flex-shrink: 0;
+
+    .mobile-toolbar-row-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+
+      .mobile-search-box {
+        position: relative;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        height: 38px;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 0 8px;
+        gap: 6px;
+
+        &:focus-within {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+        }
+
+        .search-icon {
+          color: #94a3b8;
+          flex-shrink: 0;
+        }
+
+        .search-input {
+          flex: 1;
+          border: none;
+          outline: none;
+          background: transparent;
+          font-size: 14px; // Chống auto-zoom Safari iOS
+          color: #0f172a;
+          min-width: 0;
+
+          &::placeholder {
+            color: #94a3b8;
+            font-size: 12.5px;
+          }
+        }
+
+        .clear-search-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 22px;
+          height: 22px;
+          border: none;
+          border-radius: 50%;
+          background: #e2e8f0;
+          color: #64748b;
+          cursor: pointer;
+          flex-shrink: 0;
+
+          &:active {
+            background: #cbd5e1;
+          }
+        }
+      }
+
+      .btn-mobile-filter {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 38px;
+        padding: 0 10px;
+        border-radius: 6px;
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
+
+        &:active {
+          transform: scale(0.96);
+        }
+
+        &.has-filters {
+          background: #eff6ff;
+          border-color: #93c5fd;
+          color: #1d4ed8;
+        }
+
+        .filter-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 17px;
+          height: 17px;
+          padding: 0 4px;
+          border-radius: 9px;
+          background: #ef4444;
+          color: #ffffff;
+          font-size: 10px;
+          font-weight: 800;
+          font-family: 'JetBrains Mono', monospace;
+        }
+      }
+
+      .mini-segmented-switch {
+        display: inline-flex;
+        align-items: center;
+        height: 38px;
+        background: #e2e8f0;
+        border-radius: 6px;
+        padding: 2px;
+        gap: 2px;
+        flex-shrink: 0;
+
+        .mini-seg-btn {
+          height: 34px;
+          padding: 0 10px;
+          border-radius: 4px;
+          border: none;
+          background: transparent;
+          color: #64748b;
+          font-size: 11.5px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          white-space: nowrap;
+
+          &:active {
+            transform: scale(0.96);
+          }
+
+          &.active {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+          }
+        }
+      }
+    }
+
+    .mobile-toolbar-row-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 1px;
+      &::-webkit-scrollbar { display: none; }
+
+      .action-chip-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+
+      .quick-chip {
+        height: 26px;
+        padding: 0 8px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #475569;
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.15s ease;
+
+        &:active {
+          transform: scale(0.95);
+        }
+
+        &.active {
+          background: #0284c7;
+          color: #ffffff;
+          border-color: #0284c7;
+          font-weight: 700;
+        }
+
+        &--stock {
+          &.active {
+            background: #16a34a;
+            border-color: #16a34a;
+          }
+        }
+      }
+
+      .action-sep {
+        width: 1px;
+        height: 18px;
+        background: #cbd5e1;
+        flex-shrink: 0;
+      }
+
+      .action-excel-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+
+        .btn-mini-export {
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
+          height: 26px;
+          padding: 0 8px;
+          border-radius: 4px;
+          font-size: 11px;
+          font-weight: 700;
+          cursor: pointer;
+          white-space: nowrap;
+
+          &--ex1 {
+            color: #065f46;
+            background: #f0fdf4;
+            border: 1px solid #a7f3d0;
+            &:active { background: #dcfce7; }
+          }
+
+          &--ex2 {
+            color: #1e40af;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            &:active { background: #dbeafe; }
+          }
+        }
+      }
+
+      .btn-mini-gn {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        height: 26px;
+        padding: 0 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #0f766e;
+        background: #f0fdfa;
+        border: 1px solid #99f6e4;
+        cursor: pointer;
+        white-space: nowrap;
+
+        &:active { background: #ccfbf1; }
+      }
+
+      .mobile-row-counter {
+        margin-left: auto;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        color: #64748b;
+        white-space: nowrap;
+        padding-left: 6px;
+
+        strong {
+          color: #0f172a;
+          font-weight: 800;
+        }
+      }
+    }
+  }
+
+  // 4. GRID CONTAINER TỐI ĐA HÓA TRÊN MOBILE
+  .precision-btpauto__gridContainer {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    border-radius: 8px;
+  }
+}
+
+// ====================== BOTTOM SHEET FILTER DRAWER (ZERO BLUR) ======================
+.precision-btpauto__filterDrawerOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.75); // ZERO BLUR GPU-FRIENDLY
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: drawerFadeIn 0.15s ease-out;
+
+  .precision-btpauto__filterDrawerSheet {
+    width: 100%;
+    max-height: 85vh;
+    background: #ffffff;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: drawerSlideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid #e2e8f0;
+      flex-shrink: 0;
+
+      .drawer-header-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .drawer-icon-wrap {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          background: #eff6ff;
+          color: #2563eb;
+          border: 1px solid #bfdbfe;
+        }
+
+        .drawer-title-group {
+          display: flex;
+          flex-direction: column;
+
+          .drawer-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #0f172a;
+          }
+
+          .drawer-subtitle {
+            font-size: 11px;
+            color: #64748b;
+          }
+        }
+      }
+
+      .drawer-close-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: none;
+        background: #f1f5f9;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:active {
+          background: #e2e8f0;
+        }
+      }
+    }
+
+    .drawer-body {
+      padding: 14px 16px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        .filter-label {
+          font-size: 12px;
+          font-weight: 700;
+          color: #334155;
+        }
+
+        .filter-options-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 6px;
+
+          &--3 {
+            grid-template-columns: repeat(3, 1fr);
+          }
+
+          .filter-option-btn {
+            height: 38px;
+            padding: 0 10px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #475569;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+
+            &:active {
+              transform: scale(0.97);
+            }
+
+            &.active {
+              background: #eff6ff;
+              color: #1d4ed8;
+              border-color: #3b82f6;
+              box-shadow: 0 1px 3px rgba(59, 130, 246, 0.15);
+            }
+          }
+        }
+
+        .filter-select-wrapper {
+          position: relative;
+
+          .filter-select {
+            width: 100%;
+            height: 40px;
+            padding: 0 10px;
+            font-size: 14px; // Chống auto-zoom iOS
+            font-weight: 600;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #ffffff;
+            outline: none;
+
+            &:focus {
+              border-color: #3b82f6;
+              box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+            }
+          }
+        }
+      }
+    }
+
+    .drawer-footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-top: 1px solid #e2e8f0;
+      background: #f8fafc;
+      flex-shrink: 0;
+
+      .drawer-btn {
+        flex: 1;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s ease;
+
+        &:active {
+          transform: scale(0.97);
+        }
+
+        &--reset {
+          background: #ffffff;
+          border: 1px solid #cbd5e1;
+          color: #475569;
+          &:active { background: #f1f5f9; }
+        }
+
+        &--apply {
+          background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+          border: 1px solid #0284c7;
+          color: #ffffff;
+          box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+          &:active { opacity: 0.9; }
+        }
+      }
+    }
+  }
+}
+
+// ====================== RESPONSIVE CHO DESKTOP NHỎ ======================
 @media (max-width: 1024px) {
-  .precision-btpauto {
-    &__kpiRow {
+  .precision-btpauto:not(.is-mobile) {
+    .precision-btpauto__kpiRow {
       grid-template-columns: repeat(3, 1fr);
     }
   }
 }
 
-@media (max-width: 768px) {
-  .precision-btpauto {
-    padding: 6px 8px;
-    gap: 6px;
-
-    &__header {
-      padding: 5px 8px;
-    }
-
-    &__kpiRow {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    &__gridToolbar {
-      padding: 5px 8px;
-    }
-
-    &__segmentedTabs {
-      width: 100%;
-      justify-content: center;
-    }
-
-    &__searchBox {
-      width: 100%;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .precision-btpauto {
-    &__kpiRow {
-      grid-template-columns: 1fr;
-    }
-
-    &__headerLeft {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
-}

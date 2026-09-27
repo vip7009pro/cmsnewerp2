@@ -7,6 +7,7 @@ import { f_updateBTP_M100 } from "../../../../api/services/inventoryService";
 import { SaveExcel } from "../../../../api/services/excelService";
 
 export type ViewMode = "detail" | "summary";
+export type XuongFilter = "ALL" | "A" | "B";
 
 export interface BtpKpiData {
   totalBtp: number;
@@ -25,6 +26,11 @@ export const useBtpAutoData = () => {
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [showGiaoNhan, setShowGiaoNhan] = useState(false);
 
+  // Bộ lọc mở rộng cho cả Desktop & Mobile
+  const [filterXuong, setFilterXuong] = useState<XuongFilter>("ALL");
+  const [filterFactory, setFilterFactory] = useState<string>("ALL");
+  const [onlyPositive, setOnlyPositive] = useState<boolean>(false);
+
   // ===== API: Load Detail Data =====
   const handleLoadDetail = useCallback(async () => {
     setIsLoading(true);
@@ -34,9 +40,10 @@ export const useBtpAutoData = () => {
       setBTPData(
         kq.map((ele: BTP_AUTO_DATA2, index: number) => ({
           ...ele,
-          INS_DATE: ele.INS_DATE !== null
-            ? moment.utc(ele.INS_DATE).format("YYYY-MM-DD HH:mm:ss")
-            : "",
+          INS_DATE:
+            ele.INS_DATE !== null
+              ? moment.utc(ele.INS_DATE).format("YYYY-MM-DD HH:mm:ss")
+              : "",
           id: index,
         }))
       );
@@ -73,32 +80,110 @@ export const useBtpAutoData = () => {
   }, []);
 
   // ===== Switch View Mode =====
-  const handleSwitchMode = useCallback(async (mode: ViewMode) => {
-    setViewMode(mode);
-    setSearchKeyword("");
-    setBTPData([]);
-    if (mode === "detail") {
-      await handleLoadDetail();
-    } else {
-      await handleLoadSummary();
-    }
-  }, [handleLoadDetail, handleLoadSummary]);
+  const handleSwitchMode = useCallback(
+    async (mode: ViewMode) => {
+      setViewMode(mode);
+      setSearchKeyword("");
+      setBTPData([]);
+      if (mode === "detail") {
+        await handleLoadDetail();
+      } else {
+        await handleLoadSummary();
+      }
+    },
+    [handleLoadDetail, handleLoadSummary]
+  );
 
-  // ===== Quick Search Filter =====
+  // ===== Danh Sách Nhà Máy Động =====
+  const factoryList = useMemo(() => {
+    const set = new Set<string>();
+    btpData.forEach((row) => {
+      const f = row.FACTORY || row.FINAL_FACTORY;
+      if (f) set.add(String(f).trim());
+    });
+    return ["ALL", ...Array.from(set).sort()];
+  }, [btpData]);
+
+  // ===== Bộ Lọc Dữ Liệu Đa Chiều =====
   const filteredData = useMemo(() => {
-    if (!searchKeyword.trim()) return btpData;
-    const kw = searchKeyword.toLowerCase().trim();
-    return btpData.filter((row) =>
-      Object.values(row).some(
-        (val) => val != null && String(val).toLowerCase().includes(kw)
-      )
-    );
-  }, [btpData, searchKeyword]);
+    let list = btpData;
+
+    // 1. Lọc theo từ khóa tìm kiếm
+    if (searchKeyword.trim()) {
+      const kw = searchKeyword.toLowerCase().trim();
+      list = list.filter((row) =>
+        Object.values(row).some(
+          (val) => val != null && String(val).toLowerCase().includes(kw)
+        )
+      );
+    }
+
+    // 2. Lọc theo Xưởng (A / B)
+    if (filterXuong !== "ALL") {
+      if (viewMode === "detail") {
+        list = list.filter((row) => {
+          const xuong = String(row.XUONG || row.FINAL_XUONG || "").toUpperCase();
+          if (filterXuong === "A") return xuong.includes("A") || xuong === "XA";
+          if (filterXuong === "B") return xuong.includes("B") || xuong === "XB";
+          return true;
+        });
+      } else {
+        // Summary mode
+        list = list.filter((row) => {
+          if (filterXuong === "A") return Number(row.XA) > 0;
+          if (filterXuong === "B") return Number(row.XB) > 0;
+          return true;
+        });
+      }
+    }
+
+    // 3. Lọc theo Nhà máy
+    if (filterFactory !== "ALL") {
+      list = list.filter((row) => {
+        const f = String(row.FACTORY || row.FINAL_FACTORY || "").trim();
+        return f === filterFactory;
+      });
+    }
+
+    // 4. Lọc chỉ lấy dòng có tồn > 0
+    if (onlyPositive) {
+      if (viewMode === "detail") {
+        list = list.filter(
+          (row) =>
+            (Number(row.TEMP_QTY_EA) || 0) > 0 ||
+            (Number(row.REMAIN_QTY_M) || 0) > 0
+        );
+      } else {
+        list = list.filter((row) => (Number(row.TOTAL_BTP) || 0) > 0);
+      }
+    }
+
+    return list;
+  }, [btpData, searchKeyword, filterXuong, filterFactory, onlyPositive, viewMode]);
+
+  // ===== Đếm Số Lượng Bộ Lọc Đang Hoạt Động =====
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (filterXuong !== "ALL") count++;
+    if (filterFactory !== "ALL") count++;
+    if (onlyPositive) count++;
+    return count;
+  }, [filterXuong, filterFactory, onlyPositive]);
+
+  // ===== Reset Bộ Lọc =====
+  const resetFilters = useCallback(() => {
+    setFilterXuong("ALL");
+    setFilterFactory("ALL");
+    setOnlyPositive(false);
+    setSearchKeyword("");
+  }, []);
 
   // ===== KPI Calculation =====
   const kpiData = useMemo<BtpKpiData>(() => {
     if (viewMode === "summary") {
-      let totalXA = 0, totalXB = 0, totalBtp = 0;
+      let totalXA = 0,
+        totalXB = 0,
+        totalBtp = 0;
       btpData.forEach((row) => {
         totalXA += Number(row.XA) || 0;
         totalXB += Number(row.XB) || 0;
@@ -173,6 +258,15 @@ export const useBtpAutoData = () => {
     showGiaoNhan,
     setShowGiaoNhan,
     kpiData,
+    filterXuong,
+    setFilterXuong,
+    filterFactory,
+    setFilterFactory,
+    onlyPositive,
+    setOnlyPositive,
+    activeFilterCount,
+    factoryList,
+    resetFilters,
     handleSwitchMode,
     handleLoadDetail,
     handleLoadSummary,
