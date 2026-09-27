@@ -204,6 +204,33 @@ export const useDaoFilmData = () => {
     SaveExcel(rawData, `DaoFilm_${mode}_All`);
   }, [rawData, mode]);
 
+  // Active Filter Count for Mobile Drawer badge
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (codeKD?.trim()) count++;
+    if (codeCMS?.trim()) count++;
+    if (knifeType && knifeType !== "All") count++;
+    if (factory && factory !== "All") count++;
+    if (planId?.trim()) count++;
+    if (id?.trim()) count++;
+    if (allTime) count++;
+    return count;
+  }, [codeKD, codeCMS, knifeType, factory, planId, id, allTime]);
+
+  // Reset Filters
+  const resetFilters = useCallback(() => {
+    setFromDate(moment().format("YYYY-MM-DD"));
+    setToDate(moment().format("YYYY-MM-DD"));
+    setAllTime(false);
+    setCodeKD("");
+    setCodeCMS("");
+    setKnifeType("All");
+    setFactory("All");
+    setPlanId("");
+    setId("");
+    setSearchKeyword("");
+  }, []);
+
   return {
     mode,
     setMode,
@@ -239,6 +266,8 @@ export const useDaoFilmData = () => {
     topPressData,
     dailyTrendData,
     factoryStatusData,
+    activeFilterCount,
+    resetFilters,
     fetchGiaoNhan,
     fetchQuanLy,
     fetchLichSuXuat,

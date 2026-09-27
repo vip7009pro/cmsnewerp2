@@ -21,6 +21,7 @@ interface PrecisionDaoFilmDataGridProps {
   onOpenGiaoNhan: () => void;
   onGanCode?: () => void;
   onXuatDaoFilm?: () => void;
+  isMobile?: boolean;
 }
 
 export const PrecisionDaoFilmDataGrid: React.FC<PrecisionDaoFilmDataGridProps> = React.memo(
@@ -36,11 +37,13 @@ export const PrecisionDaoFilmDataGrid: React.FC<PrecisionDaoFilmDataGridProps> =
     onOpenGiaoNhan,
     onGanCode,
     onXuatDaoFilm,
+    isMobile = false,
   }) => {
     return (
-      <div className="precision-df-grid">
-        {/* Top Quick Search & Actions Toolbar */}
-        <div className="precision-df-grid__toolbar">
+      <div className={`precision-df-grid ${isMobile ? "is-mobile" : ""}`}>
+        {/* Top Quick Search & Actions Toolbar (Chỉ hiển thị trên desktop) */}
+        {!isMobile && (
+          <div className="precision-df-grid__toolbar">
           <div className="precision-df-grid__toolbar-left">
             {/* Search Box */}
             <div className="precision-df-grid__search-box">
@@ -122,6 +125,7 @@ export const PrecisionDaoFilmDataGrid: React.FC<PrecisionDaoFilmDataGridProps> =
             </span>
           </div>
         </div>
+      )}
 
         {/* AGTable Grid Body */}
         <div className="precision-df-grid__body">

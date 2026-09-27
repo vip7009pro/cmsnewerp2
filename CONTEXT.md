@@ -1,5 +1,23 @@
 # ERP Context & Status
 
+## Update - 2026-09-27 (SX / LICHSUDAOFILM: Tối Ưu Toàn Diện Giao Diện Mobile Quản Lý & Lịch Sử Dao Film)
+- **1. Sao Lưu An Toàn**: Tạo file [DAOFILMDATA.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/LICHSUDAOFILM/DAOFILMDATA.backup2.tsx) bảo toàn 100% mã nguồn ban đầu.
+- **2. Viewport Conditional Rendering**: Tích hợp hook `useIsMobile()` chuẩn từ [useIsMobile.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Navbar/AccountInfo/useIsMobile.ts), bảo toàn nguyên vẹn 100% giao diện và trải nghiệm Desktop (`!isMobile`) với header công nghiệp, toolbar điều hành đa trường, KPI micro-cards, hệ thống biểu đồ Recharts và AG-Grid.
+- **3. Mobile Header Tinh Gọn ([PrecisionDaoFilmDataMobileHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/LICHSUDAOFILM/PrecisionDaoFilmData/PrecisionDaoFilmDataMobileHeader.tsx))**:
+  * Brand badge biến thiên theo mode (01. GIAO NHẬN / 02. QL DAO FILM / 03. XUẤT DF), chấm Pulse Live xanh lá nhấp nháy, tiêu đề "QUẢN LÝ DAO FILM", telemetry chips (Dòng `X / Y`, Dao / Film, Tỷ lệ Đạt `OK: ...%`, Vượt ĐM, Tổng lượt dập `Press: ...`).
+  * Nhóm nút điều khiển: Bật/tắt Micro-KPI `📊 KPI`, Bật/tắt Biểu Đồ `📈 Biểu Đồ`, Làm mới `🔄`.
+- **4. Dải Micro-KPI Cuộn Ngang ([PrecisionDaoFilmDataMobileKpi.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/LICHSUDAOFILM/PrecisionDaoFilmData/PrecisionDaoFilmDataMobileKpi.tsx))**:
+  * 6 cards KPI cuộn ngang (Tổng bản ghi, Phân loại Dao/Film/TL, Tỷ lệ đạt OK/NG, Cảnh báo vượt định mức dập, Lượt dập Press, Cơ cấu NM1/NM2) kèm nút đóng nhanh `[X]` giải phóng 100% không gian.
+- **5. Mobile Toolbar 3 Hàng Công Thái Học ([PrecisionDaoFilmDataMobileToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/LICHSUDAOFILM/PrecisionDaoFilmData/PrecisionDaoFilmDataMobileToolbar.tsx))**:
+  * Hàng 1: 3 Mode Tabs (GIAO NHẬN, QL DAO FILM, XUẤT DF) kèm badge số lượng bản ghi.
+  * Hàng 2: Ô tìm kiếm thông minh 14px (chống zoom Safari iOS) kèm nút Clear `[X]` + nút `Bộ Lọc` (`FiFilter`) kèm badge đếm điều kiện lọc active.
+  * Hàng 3: Dải nút thao tác cuộn ngang (Xuất Excel EX1 lọc, EX2 tất cả, Thêm GN, Gán Code / Xuất Dao Film, Bộ đếm dòng `X / Y dòng`).
+- **6. Zero-Blur GPU-Friendly Filter Drawer ([PrecisionDaoFilmDataMobileFilterDrawer.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/LICHSUDAOFILM/PrecisionDaoFilmData/PrecisionDaoFilmDataMobileFilterDrawer.tsx))**:
+  * Bottom Sheet trượt mượt mà, backdrop đặc `rgba(15, 23, 42, 0.75)`, 4 nhóm điều khiển (Khoảng ngày kèm quick dates hôm nay/3/7/30 ngày & All Time, Nhà máy & Loại dao, Code KD & Code ERP, Plan ID) kèm nút "Đặt lại" và "Áp dụng".
+- **7. Clean Code & Tối Ưu Bảng Dữ Liệu**:
+  * Bổ sung `isMobile` prop vào [PrecisionDaoFilmDataGrid.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/LICHSUDAOFILM/PrecisionDaoFilmData/PrecisionDaoFilmDataGrid.tsx), mở rộng [useDaoFilmData.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/LICHSUDAOFILM/PrecisionDaoFilmData/useDaoFilmData.ts) bổ sung `activeFilterCount` và `resetFilters`.
+  * File chính [DAOFILMDATA.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/LICHSUDAOFILM/DAOFILMDATA.tsx) chỉ 253 dòng, styling SCSS tối ưu trong [PrecisionDaoFilmData.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/LICHSUDAOFILM/PrecisionDaoFilmData/PrecisionDaoFilmData.scss).
+
 ## Update - 2026-09-27 (SX / BAOCAOFULLROLL: Tối Ưu Toàn Diện Giao Diện Mobile Báo Cáo Full Roll Sản Xuất)
 - **1. Sao Lưu An Toàn**: Tạo file [BAOCAOFULLROLL.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/sx/BAOCAOTHEOROLL/BAOCAOFULLROLL.backup2.tsx) bảo toàn 100% mã nguồn ban đầu.
 - **2. Viewport Conditional Rendering**: Tích hợp hook `useIsMobile()` chuẩn từ [useIsMobile.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Navbar/AccountInfo/useIsMobile.ts), bảo toàn nguyên vẹn 100% giao diện và trải nghiệm Desktop (`!isMobile`) với header công nghiệp, toolbar đa trường lọc & segmented switch, KPI cards lớn, biểu đồ Recharts, summary metric 3 hệ đơn vị và AG-Grid.
