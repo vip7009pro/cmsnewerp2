@@ -1,4 +1,5 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback } from "react";
+import moment from "moment";
 import "./PrecisionMainDefects/PrecisionMainDefects.scss";
 import { useMainDefectsData, ModalImageData } from "./PrecisionMainDefects/useMainDefectsData";
 import { createMainDefectsColumns } from "./PrecisionMainDefects/PrecisionMainDefectsColumns";
@@ -8,8 +9,19 @@ import PrecisionMainDefectsKpi from "./PrecisionMainDefects/PrecisionMainDefects
 import PrecisionMainDefectsCharts from "./PrecisionMainDefects/PrecisionMainDefectsCharts";
 import PrecisionMainDefectsGrid from "./PrecisionMainDefects/PrecisionMainDefectsGrid";
 import PrecisionMainDefectsModal from "./PrecisionMainDefects/PrecisionMainDefectsModal";
+import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
+import PrecisionMainDefectsMobileHeader from "./PrecisionMainDefects/PrecisionMainDefectsMobileHeader";
+import PrecisionMainDefectsMobileKpi from "./PrecisionMainDefects/PrecisionMainDefectsMobileKpi";
+import PrecisionMainDefectsMobileToolbar from "./PrecisionMainDefects/PrecisionMainDefectsMobileToolbar";
+import PrecisionMainDefectsMobileFilterDrawer from "./PrecisionMainDefects/PrecisionMainDefectsMobileFilterDrawer";
 
 const MAINDEFECTS: React.FC = () => {
+  const isMobile = useIsMobile();
+
+  // Mobile specific UI states
+  const [showMobileKpi, setShowMobileKpi] = useState<boolean>(false);
+  const [showMobileFilter, setShowMobileFilter] = useState<boolean>(false);
+
   const {
     rawData,
     filteredData,
@@ -63,50 +75,118 @@ const MAINDEFECTS: React.FC = () => {
     });
   }, [handleOpenImageModal]);
 
+  // Đếm số điều kiện lọc đang active
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (!allTime) count++;
+    if (codeKD.trim() !== "") count++;
+    if (codeCMS.trim() !== "") count++;
+    if (prodModel.trim() !== "") count++;
+    if (processNumber !== "All") count++;
+    if (useYn !== "All") count++;
+    if (imageYn !== "All") count++;
+    return count;
+  }, [allTime, codeKD, codeCMS, prodModel, processNumber, useYn, imageYn]);
+
+  // Đặt lại bộ lọc về mặc định
+  const handleResetFilter = useCallback(() => {
+    setAllTime(true);
+    setFromDate(moment().subtract(90, "days").format("YYYY-MM-DD"));
+    setToDate(moment().format("YYYY-MM-DD"));
+    setCodeKD("");
+    setCodeCMS("");
+    setProdModel("");
+    setProcessNumber("All");
+    setUseYn("All");
+    setImageYn("All");
+  }, [setAllTime, setFromDate, setToDate, setCodeKD, setCodeCMS, setProdModel, setProcessNumber, setUseYn, setImageYn]);
+
   const showKpiAndCharts = activeTab === "all" || activeTab === "charts";
   const showGrid = activeTab === "all" || activeTab === "grid";
 
   return (
-    <div className="precision-maindefects">
-      {/* 1. Header Bar công nghiệp */}
-      <PrecisionMainDefectsHeader
-        totalCount={rawData.length}
-        filteredCount={filteredData.length}
-        uniqueProducts={kpiSummary.uniqueProducts}
-        loading={loading}
-        onReload={handleLoadData}
-      />
+    <div className={`precision-maindefects ${isMobile ? "is-mobile" : ""}`}>
+      {/* 1. Header Bar: Phân biệt Desktop vs Mobile */}
+      {!isMobile ? (
+        <PrecisionMainDefectsHeader
+          totalCount={rawData.length}
+          filteredCount={filteredData.length}
+          uniqueProducts={kpiSummary.uniqueProducts}
+          loading={loading}
+          onReload={handleLoadData}
+        />
+      ) : (
+        <PrecisionMainDefectsMobileHeader
+          totalCount={rawData.length}
+          filteredCount={filteredData.length}
+          uniqueProducts={kpiSummary.uniqueProducts}
+          loading={loading}
+          showKpi={showMobileKpi}
+          onToggleKpi={() => setShowMobileKpi((prev) => !prev)}
+          onOpenFilterDrawer={() => setShowMobileFilter(true)}
+          onReload={handleLoadData}
+          activeFilterCount={activeFilterCount}
+        />
+      )}
 
-      {/* 2. Action Toolbar compact 2 hàng */}
-      <PrecisionMainDefectsToolbar
-        fromDate={fromDate}
-        toDate={toDate}
-        allTime={allTime}
-        codeKD={codeKD}
-        codeCMS={codeCMS}
-        prodModel={prodModel}
-        processNumber={processNumber}
-        processOptions={processOptions}
-        useYn={useYn}
-        imageYn={imageYn}
-        activeTab={activeTab}
-        onFromDateChange={setFromDate}
-        onToDateChange={setToDate}
-        onAllTimeChange={setAllTime}
-        onCodeKDChange={setCodeKD}
-        onCodeCMSChange={setCodeCMS}
-        onProdModelChange={setProdModel}
-        onProcessNumberChange={setProcessNumber}
-        onUseYnChange={setUseYn}
-        onImageYnChange={setImageYn}
-        onTabChange={setActiveTab}
-        onSearch={handleLoadData}
-      />
+      {/* 2. Dải Micro-KPI cuộn ngang (Mobile Only khi bật) */}
+      {isMobile && showMobileKpi && (
+        <PrecisionMainDefectsMobileKpi
+          summary={kpiSummary}
+          onClose={() => setShowMobileKpi(false)}
+        />
+      )}
 
-      {/* 3. Dashboard Scrollable Body */}
+      {/* 3. Action Toolbar: Phân biệt Desktop vs Mobile */}
+      {!isMobile ? (
+        <PrecisionMainDefectsToolbar
+          fromDate={fromDate}
+          toDate={toDate}
+          allTime={allTime}
+          codeKD={codeKD}
+          codeCMS={codeCMS}
+          prodModel={prodModel}
+          processNumber={processNumber}
+          processOptions={processOptions}
+          useYn={useYn}
+          imageYn={imageYn}
+          activeTab={activeTab}
+          onFromDateChange={setFromDate}
+          onToDateChange={setToDate}
+          onAllTimeChange={setAllTime}
+          onCodeKDChange={setCodeKD}
+          onCodeCMSChange={setCodeCMS}
+          onProdModelChange={setProdModel}
+          onProcessNumberChange={setProcessNumber}
+          onUseYnChange={setUseYn}
+          onImageYnChange={setImageYn}
+          onTabChange={setActiveTab}
+          onSearch={handleLoadData}
+        />
+      ) : (
+        <PrecisionMainDefectsMobileToolbar
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          quickSearch={quickSearch}
+          onQuickSearchChange={setQuickSearch}
+          imageYn={imageYn}
+          onImageYnChange={setImageYn}
+          useYn={useYn}
+          onUseYnChange={setUseYn}
+          onExportEX1={handleExportEX1}
+          onExportEX2={handleExportEX2}
+          onOpenFilterDrawer={() => setShowMobileFilter(true)}
+          onSearch={handleLoadData}
+          activeFilterCount={activeFilterCount}
+          filteredCount={filteredData.length}
+          totalCount={rawData.length}
+        />
+      )}
+
+      {/* 4. Dashboard Scrollable Body */}
       <div className="precision-maindefects__body">
-        {/* Phân hệ 1: KPI & Biểu đồ Recharts Executive Dashboard */}
-        {showKpiAndCharts && (
+        {/* Phân hệ Desktop: KPI & Biểu đồ Recharts Executive Dashboard */}
+        {!isMobile && showKpiAndCharts && (
           <>
             <PrecisionMainDefectsKpi summary={kpiSummary} />
             <PrecisionMainDefectsCharts
@@ -118,7 +198,17 @@ const MAINDEFECTS: React.FC = () => {
           </>
         )}
 
-        {/* Phân hệ 2: Bảng Dữ Liệu AGTable High-Density */}
+        {/* Phân hệ Mobile: Chỉ render Charts khi activeTab là charts hoặc all */}
+        {isMobile && showKpiAndCharts && (
+          <PrecisionMainDefectsCharts
+            top10Defects={top10Defects}
+            processDistribution={processDistribution}
+            creationTrend={creationTrend}
+            top10Models={top10Models}
+          />
+        )}
+
+        {/* Phân hệ Bảng Dữ Liệu AGTable High-Density */}
         {showGrid && (
           <PrecisionMainDefectsGrid
             columns={columns}
@@ -128,17 +218,47 @@ const MAINDEFECTS: React.FC = () => {
             onSearchChange={setQuickSearch}
             onExportEX1={handleExportEX1}
             onExportEX2={handleExportEX2}
+            isMobile={isMobile}
           />
         )}
       </div>
 
-      {/* 4. Enterprise Modal xem ảnh lớn chất lượng cao */}
+      {/* 5. Enterprise Modal xem ảnh lớn chất lượng cao */}
       <PrecisionMainDefectsModal
         modalData={selectedImage}
         onClose={handleCloseImageModal}
       />
+
+      {/* 6. Mobile Bottom Sheet Filter Drawer */}
+      {isMobile && (
+        <PrecisionMainDefectsMobileFilterDrawer
+          isOpen={showMobileFilter}
+          onClose={() => setShowMobileFilter(false)}
+          fromDate={fromDate}
+          toDate={toDate}
+          allTime={allTime}
+          codeKD={codeKD}
+          codeCMS={codeCMS}
+          prodModel={prodModel}
+          processNumber={processNumber}
+          processOptions={processOptions}
+          useYn={useYn}
+          imageYn={imageYn}
+          onFromDateChange={setFromDate}
+          onToDateChange={setToDate}
+          onAllTimeChange={setAllTime}
+          onCodeKDChange={setCodeKD}
+          onCodeCMSChange={setCodeCMS}
+          onProdModelChange={setProdModel}
+          onProcessNumberChange={setProcessNumber}
+          onUseYnChange={setUseYn}
+          onImageYnChange={setImageYn}
+          onApply={handleLoadData}
+          onReset={handleResetFilter}
+        />
+      )}
     </div>
   );
 };
 
-export default MAINDEFECTS;
+export default React.memo(MAINDEFECTS);
