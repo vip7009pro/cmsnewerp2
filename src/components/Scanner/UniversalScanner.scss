@@ -1,0 +1,671 @@
+// UniversalScanner.scss - Enterprise High-Density Cyberpunk Barcode & QR Scanner Stylesheet
+
+.universal-scanner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #030712;
+  color: #f8fafc;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  user-select: none;
+  box-sizing: border-box;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  // ========================================================
+  // 1. TOP TAB SWITCHER BAR
+  // ========================================================
+  &__tabs {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0b0f19;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 10px;
+    z-index: 25;
+  }
+
+  &__tab-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  &__tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+
+    &:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    &.is-active {
+      color: #ffffff;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+    }
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  &__telemetry {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: #64748b;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulseLive 1.8s infinite;
+    }
+  }
+
+  // ========================================================
+  // 2. CAMERA VIEWPORT & VIDEO CONTAINER
+  // ========================================================
+  &__viewport {
+    position: relative;
+    width: 100%;
+    background: #000000;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    // Direct video element styling
+    video {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      display: block;
+    }
+  }
+
+  // Container created by html5-qrcode
+  &__reader-box {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    overflow: hidden;
+
+    video {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+    }
+
+    // Hide internal ugly elements if any created
+    canvas {
+      display: none;
+    }
+  }
+
+  // ========================================================
+  // 3. HUD OVERLAY
+  // ========================================================
+  &__hud {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+    z-index: 20;
+    box-sizing: border-box;
+  }
+
+  // Top Controls
+  &__hud-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    pointer-events: auto;
+  }
+
+  &__hud-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  // Floating Glass Button
+  &__hud-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 10px;
+    min-height: 32px;
+    border-radius: 8px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #e2e8f0;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+
+    &:hover {
+      background: rgba(30, 41, 59, 0.9);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &.is-torch-active {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.9) 0%, rgba(217, 119, 6, 0.95) 100%);
+      color: #020617;
+      border-color: #fde68a;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.6);
+    }
+
+    &.is-disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      pointer-events: none;
+      filter: grayscale(1);
+    }
+
+    &.is-sound-on {
+      color: #34d399;
+      border-color: rgba(52, 211, 153, 0.3);
+    }
+  }
+
+  &__camera-select {
+    padding: 5px 8px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #f8fafc;
+    font-size: 11px;
+    font-weight: 500;
+    outline: none;
+    max-width: 140px;
+    cursor: pointer;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+
+    option {
+      background: #0f172a;
+      color: #ffffff;
+    }
+  }
+
+  // ========================================================
+  // 4. RETICLE / VIEWFINDER FRAMING & LASER
+  // ========================================================
+  &__hud-center {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    margin: 8px 0;
+  }
+
+  &__reticle {
+    position: relative;
+    width: 82%;
+    max-width: 340px;
+    height: 60%;
+    max-height: 220px;
+    min-height: 150px;
+    border-radius: 18px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55); // Dark vignette surrounding viewfinder
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.has-success {
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55), 0 0 35px rgba(16, 185, 129, 0.7);
+      transform: scale(1.02);
+    }
+  }
+
+  // 4 Corner Brackets
+  &__corner {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-color: #38bdf8;
+    transition: border-color 0.2s ease;
+
+    &--tl {
+      top: -2px;
+      left: -2px;
+      border-top: 3.5px solid #38bdf8;
+      border-left: 3.5px solid #38bdf8;
+      border-top-left-radius: 12px;
+    }
+
+    &--tr {
+      top: -2px;
+      right: -2px;
+      border-top: 3.5px solid #38bdf8;
+      border-right: 3.5px solid #38bdf8;
+      border-top-right-radius: 12px;
+    }
+
+    &--bl {
+      bottom: -2px;
+      left: -2px;
+      border-bottom: 3.5px solid #38bdf8;
+      border-left: 3.5px solid #38bdf8;
+      border-bottom-left-radius: 12px;
+    }
+
+    &--br {
+      bottom: -2px;
+      right: -2px;
+      border-bottom: 3.5px solid #38bdf8;
+      border-right: 3.5px solid #38bdf8;
+      border-bottom-right-radius: 12px;
+    }
+
+    .has-success & {
+      border-color: #10b981 !important;
+    }
+  }
+
+  // Laser Scanline Animation
+  &__laser {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    top: 4px;
+    height: 2.5px;
+    background: linear-gradient(90deg, transparent 0%, #38bdf8 30%, #00f0ff 50%, #38bdf8 70%, transparent 100%);
+    box-shadow: 0 0 14px #00f0ff, 0 0 24px rgba(56, 189, 248, 0.8);
+    animation: scannerSweep 2s ease-in-out infinite;
+  }
+
+  // Success Highlight Banner
+  &__success-pill {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(16, 185, 129, 0.15);
+    border-radius: 18px;
+    animation: successPulse 0.5s ease-in-out;
+
+    span {
+      padding: 6px 14px;
+      background: #10b981;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      border-radius: 20px;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.5);
+    }
+  }
+
+  // ========================================================
+  // 5. HUD BOTTOM: ZOOM & INSTRUCTION
+  // ========================================================
+  &__hud-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    pointer-events: auto;
+  }
+
+  // Modern Zoom Segmented Container
+  &__zoom-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 6px;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 30px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  &__zoom-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+
+  &__zoom-pills {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  &__zoom-pill {
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #cbd5e1;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    &.is-active {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(14, 165, 233, 0.4);
+      transform: scale(1.05);
+    }
+  }
+
+  &__guide-badge {
+    padding: 4px 12px;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    font-size: 11px;
+    color: #cbd5e1;
+    font-weight: 500;
+    text-align: center;
+    max-width: 90%;
+  }
+
+  // ========================================================
+  // 6. ALTERNATIVE TABS: FILE UPLOAD & MANUAL
+  // ========================================================
+  &__tab-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    min-height: 320px;
+    text-align: center;
+    background: #090d16;
+  }
+
+  &__tab-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+
+    &--file {
+      background: rgba(37, 99, 235, 0.12);
+      color: #60a5fa;
+      border: 1px solid rgba(37, 99, 235, 0.25);
+    }
+
+    &--manual {
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+  }
+
+  &__tab-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+
+  &__tab-desc {
+    font-size: 11px;
+    color: #94a3b8;
+    max-width: 260px;
+    line-height: 1.4;
+    margin-bottom: 16px;
+  }
+
+  &__file-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: scale(0.96);
+    }
+
+    input {
+      display: none;
+    }
+  }
+
+  &__manual-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  &__manual-input {
+    flex: 1;
+    padding: 8px 12px;
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 13px;
+    font-family: ui-monospace, monospace;
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    &::placeholder {
+      color: #475569;
+    }
+  }
+
+  &__manual-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: #10b981;
+    border: none;
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #059669;
+    }
+
+    &:disabled {
+      background: #1e293b;
+      color: #475569;
+      cursor: not-allowed;
+    }
+  }
+
+  // Continuous Scan Tray
+  &__history-tray {
+    background: #090d16;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 8px 12px;
+  }
+
+  &__history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 6px;
+
+    button {
+      background: none;
+      border: none;
+      color: #f43f5e;
+      cursor: pointer;
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 4px;
+      border-radius: 4px;
+
+      &:hover {
+        background: rgba(244, 63, 94, 0.1);
+      }
+    }
+  }
+
+  &__history-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    max-height: 80px;
+    overflow-y: auto;
+  }
+
+  &__history-chip {
+    padding: 3px 8px;
+    background: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    font-family: ui-monospace, monospace;
+    font-size: 11px;
+    color: #e2e8f0;
+  }
+}
+
+// ========================================================
+// KEYFRAME ANIMATIONS
+// ========================================================
+@keyframes scannerSweep {
+  0% {
+    top: 6px;
+    opacity: 0.8;
+  }
+  50% {
+    top: calc(100% - 8px);
+    opacity: 1;
+  }
+  100% {
+    top: 6px;
+    opacity: 0.8;
+  }
+}
+
+@keyframes pulseLive {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes successPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
