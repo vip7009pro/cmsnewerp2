@@ -13,6 +13,7 @@ export const UniversalScannerModal: React.FC<UniversalScannerModalProps> = ({
   mode = "single",
   allowManualInput = true,
   allowFileUpload = true,
+  zIndex,
 }) => {
   const handleScanSuccess = (decodedText: string) => {
     onScanSuccess(decodedText);
@@ -27,6 +28,7 @@ export const UniversalScannerModal: React.FC<UniversalScannerModalProps> = ({
       onClose={onClose}
       maxWidth="xs"
       fullWidth
+      slotProps={zIndex ? { root: { sx: { zIndex } } } : undefined}
       PaperProps={{
         sx: {
           borderRadius: "16px",

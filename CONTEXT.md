@@ -1,5 +1,20 @@
 # ERP Context & Status
 
+## Update - 2026-09-27 (QC / DKDTC: Fix modal Quét Mã bị Bottom-Sheet che)
+- Triệu chứng: trong Phiếu Đăng Ký (mobile bottom-sheet), bấm nút quét mã (LOT NVL / LOT NCC) thì modal quét nằm **phía dưới** sheet ⇒ không quét được.
+- **Nguyên nhân**: `UniversalScannerModal` là MUI `Dialog` (dùng portal) với z-index mặc định của MUI = **1300**, trong khi `.precision-dkdtc-drawer-overlay` đặt **z-index: 10000** ⇒ sheet luôn thắng. Lưu ý đây KHÔNG phải lỗi DOM order (portal render ra `body` sau `#root`) mà là so sánh z-index giữa 2 stacking context cùng cấp.
+- **Fix**: thêm prop tuỳ chọn `zIndex` vào `UniversalScannerModal` (truyền `slotProps.root.sx.zIndex`, API MUI v7) — mặc định bỏ trống thì giữ nguyên 1300. `PrecisionDKDTCScannerModal` truyền `zIndex={13000}` (lớn hơn 10000 của drawer).
+- Verify @393: `elementFromPoint` tại tâm màn hình trả về `.universal-scanner__reader-box`, `modalRootZ = 13000`, `scannerOnTop = true`; đóng scanner thì sheet vẫn mở nguyên. Build PASS.
+- ⚠️ Chỉ `DKDTC` gọi scanner từ **trong** drawer ⇒ 2 caller khác (`PrecisionLineQc`, `PrecisionDataSampleSx`) render scanner ở cấp trang nên không bị. Nếu sau này có module khác mở scanner từ drawer/bottom-sheet thì dùng lại prop `zIndex` này.
+
+## Update - 2026-09-27 (QC / DKDTC: Tối Ưu Toàn Diện Giao Diện Mobile Đăng Ký Test ĐTC)
+- Tạo backup `DKDTC.backup2.tsx` + `PrecisionDKDTC.backup2.scss`. Hook `useIsMobile()`, bảo toàn 100% desktop (`!isMobile`).
+- Mobile Header [PrecisionDKDTCMobileHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/PrecisionDKDTC/PrecisionDKDTCMobileHeader.tsx): brand + badge IQC/PQC + count dòng + toggle KPI + nạp lại.
+- Micro-KPI compact [PrecisionDKDTCKpi.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/PrecisionDKDTC/PrecisionDKDTCKpi.tsx): prop `compact` → 4 ô 2 dòng (mặc định ẩn để nhường chỗ bảng).
+- Mobile Toolbar [PrecisionDKDTCMobileToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/PrecisionDKDTC/PrecisionDKDTCMobileToolbar.tsx): search 16px chống zoom iOS + clear; pills cuộn ngang EX1/EX2/PIVOT/Lọc cột/Nạp lại/Đặt lại; nút mở Phiếu ĐK.
+- **Bottom-Sheet Phiếu Đăng Ký** [PrecisionDKDTCRegisterSheet.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/PrecisionDKDTC/PrecisionDKDTCRegisterSheet.tsx): Zero-Blur, **tái sử dụng nguyên `PrecisionDKDTCSidebar`** (form 8 trường + quét mã) ⇒ nút ĐĂNG KÝ neo đáy (verify @393: bottom 842 < 850, không bị thanh URL che).
+- Bảng mobile bỏ hẳn `__gridToolbar` (search đã ở MobileToolbar) ⇒ AG grid 484px. File chính [DKDTC.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/DKDTC.tsx).
+
 ## Update - 2026-09-27 (QC / ADDSPECDTC: Fix nút đáy Bottom-Sheet Config bị "chìm")
 - Triệu chứng: sau khi refactor mobile, bấm nút Config thì hàng nút dưới cùng của bottom sheet (`Đóng` / `LOAD & Đóng`) bị thanh địa chỉ trình duyệt mobile che mất.
 - **Nguyên nhân 1**: `.addspecdtc-drawer-overlay` dùng `position: fixed; inset: 0` ⇒ neo theo **layout viewport** (đáy nằm sau thanh URL). Fix: `height: 100vh` → `height: 100dvh` (dòng `vh` làm fallback) để neo theo **visual viewport**.

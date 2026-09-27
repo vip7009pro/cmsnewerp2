@@ -20,6 +20,10 @@ interface PrecisionDKDTCTableProps {
   onExportEX1: () => void;
   onExportEX2: () => void;
   onOpenPivot?: () => void;
+  /** Biến thể mobile: chỉ giữ ô search + bảng dữ liệu */
+  isMobile?: boolean;
+  /** Bật/tắt hàng floating filter trên cột (AG Grid) */
+  showFilter?: boolean;
 }
 
 const PrecisionDKDTCTable: React.FC<PrecisionDKDTCTableProps> = ({
@@ -31,8 +35,52 @@ const PrecisionDKDTCTable: React.FC<PrecisionDKDTCTableProps> = ({
   onExportEX1,
   onExportEX2,
   onOpenPivot,
+  isMobile,
+  showFilter,
 }) => {
   const columns = useMemo(() => getDKDTCColumnDefs(), []);
+
+  // Ô tìm kiếm dùng chung cho cả 2 viewport (tránh nhân đôi markup)
+  const searchBoxNode = (
+    <div className="precision-dkdtc__searchBox">
+      <IoSearchOutline className="icon" />
+      <input
+        type="text"
+        placeholder="Lọc ID, mã YCSX, sản phẩm, vật liệu, NV..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      {searchTerm && (
+        <button
+          type="button"
+          className="clear-search"
+          onClick={() => setSearchTerm("")}
+          title="Xóa bộ lọc tìm kiếm"
+        >
+          <IoCloseOutline size={14} />
+        </button>
+      )}
+    </div>
+  );
+
+  // ===== NHÁNH MOBILE: chỉ giữ bảng dữ liệu, tối đa hoá không gian =====
+  // Ô tìm kiếm + số dòng đã có ở MobileToolbar / MobileHeader nên KHÔNG render lại
+  // toolbar của grid container (tránh lặp 2 ô search và tiết kiệm ~51px chiều cao).
+  if (isMobile) {
+    return (
+      <div className="precision-dkdtc__gridContainer">
+        {/* Main AG-Grid Table Body */}
+        <div className="precision-dkdtc__gridBody">
+          <AGTable
+            columns={columns}
+            data={data}
+            rowHeight={32}
+            showFilter={showFilter}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="precision-dkdtc__gridContainer">
@@ -40,25 +88,7 @@ const PrecisionDKDTCTable: React.FC<PrecisionDKDTCTableProps> = ({
       <div className="precision-dkdtc__gridToolbar">
         <div className="precision-dkdtc__gridToolbarLeft">
           {/* Omnibar Quick Search */}
-          <div className="precision-dkdtc__searchBox">
-            <IoSearchOutline className="icon" />
-            <input
-              type="text"
-              placeholder="Lọc ID, mã YCSX, sản phẩm, vật liệu, NV..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            {searchTerm && (
-              <button
-                type="button"
-                className="clear-search"
-                onClick={() => setSearchTerm("")}
-                title="Xóa bộ lọc tìm kiếm"
-              >
-                <IoCloseOutline size={14} />
-              </button>
-            )}
-          </div>
+          {searchBoxNode}
 
           {/* Action Export & Pivot Buttons */}
           <div className="precision-dkdtc__gridActions">

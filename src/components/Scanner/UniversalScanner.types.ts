@@ -64,4 +64,12 @@ export interface UniversalScannerModalProps {
   allowManualInput?: boolean;
   /** Cho phép tải ảnh từ máy */
   allowFileUpload?: boolean;
+  /**
+   * z-index của MUI Dialog (truyền vào `sx.zIndex`).
+   * Cần thiết khi scanner được mở TỪ TRÊN một mobile bottom-sheet/drawer
+   * (các drawer này dùng `z-index: 10000` ⇒ phải truyền giá trị lớn hơn,
+   * ví dụ 13000, nếu không modal quét sẽ bị drawer che).
+   * Mặc định: bỏ trống ⇒ dùng z-index gốc của MUI (1300).
+   */
+  zIndex?: number;
 }

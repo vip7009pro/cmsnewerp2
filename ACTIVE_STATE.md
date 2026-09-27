@@ -1,5 +1,36 @@
 # ACTIVE_STATE
 
+## Đợt 17 — Mobile DKDTC (Đăng Ký Test ĐTC) (2026-09-27)
+Task hiện tại: refactor giao diện mobile cho `src/pages/qc/dtc/DKDTC.tsx` + `.agents/skills/mobile_interface_refactoring`.
+Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 1m 37s`), `get_errors` 0 lỗi, verify trên dev 3001 (@320 / @393 / @1440).
+
+### Quyết định thiết kế
+- **Không dùng filter drawer** (như SPECDTC/KQDTC): màn này không có bộ lọc nhiều trường — chỉ 1 ô tìm kiếm. Thay vào đó dùng **Bottom Sheet "Phiếu Đăng Ký"** để chứa form 8 trường của sidebar desktop.
+- **Tái sử dụng 100% `PrecisionDKDTCSidebar`** trong Bottom Sheet (`PrecisionDKDTCRegisterSheet`) thay vì dựng lại form → giữ nguyên logic/state/validation/scan, chỉ ép CSS full-width trong sheet.
+- Ô search **chỉ render 1 lần** (ở MobileToolbar), nhánh mobile của `PrecisionDKDTCTable` bỏ hẳn `__gridToolbar` ⇒ tiết kiệm 51px chiều cao.
+
+### Kết quả đo
+- @393×850: mobileHeader 51px, mobileToolbar 96px, gridContainer 511px (`gridBody` 510px → `ag-root-wrapper` **484px**). `bodyOverflowX = 0`.
+- @320: search row vừa khít (`scrollW 295 = clientW 295`), pills cuộn ngang (`500 vs 295`), 0 tràn trang.
+- Bottom Sheet: `sheet 765px`, submit ĐĂNG KÝ bottom **842** < 850 ⇒ không bị thanh URL che; `sidebarBody` tự cuộn (607px), footer `flex-shrink:0` neo đáy; checkbox 18×18, input 16px (chống auto-zoom iOS).
+- Desktop @1440: `.precision-dkdtc` (không `is-mobile`), sidebar 320px, 4 KPI card, toolbar 4 nút (EX1/EX2/PIVOT/Làm mới), statusBar, AG grid 560px — **không đổi**.
+
+### File đã chỉnh sửa (đợt 17)
+- `src/pages/qc/dtc/DKDTC.tsx` — thêm `useIsMobile`; 2 nhánh conditional rendering; state `showMobileKpi` / `showRegisterSheet` / `showTableFilter`; `sidebarProps` dùng chung cho Sidebar & RegisterSheet.- `PrecisionDKDTC/PrecisionDKDTCMobileHeader.tsx` — **(mới)** brand + badge mode IQC/PQC + count dòng + 2 nút (toggle KPI, nạp lại).
+- `PrecisionDKDTC/PrecisionDKDTCMobileToolbar.tsx` — **(mới)** hàng 1 search + nút "Phiếu ĐK" (badge số hạng mục đã chọn); hàng 2 pills EX1/EX2/PIVOT/Lọc cột/Nạp lại/Đặt lại cuộn ngang.
+- `PrecisionDKDTC/PrecisionDKDTCRegisterSheet.tsx` — **(mới)** Bottom Sheet Zero-Blur chứa `PrecisionDKDTCSidebar`; đóng sheet trước khi gọi `onRegister()` để thấy Swal.
+- `PrecisionDKDTC/PrecisionDKDTCTable.tsx` — thêm prop `isMobile` / `showFilter`; tách `searchBoxNode` dùng chung; nhánh mobile chỉ render `__gridBody`.
+- `PrecisionDKDTC/PrecisionDKDTCKpi.tsx` — thêm prop `compact` → 4 ô `__kpiChip` (2 dòng/ô) thay cho 4 card lớn.
+- `PrecisionDKDTC/PrecisionDKDTC.scss` — thống khối **§7 mobile** (`&.is-mobile`, specificity 0,2,0 nên thắng base 0,1,0) + **§8 bottom-sheet** (overlay `100dvh`, drawer `90dvh`, `flex-shrink:0` footer) + `@keyframes dkdtcSlideUp`.
+- Backup: `DKDTC.backup2.tsx`, `PrecisionDKDTC.backup2.scss`.
+
+### Fix sau verify (đợt 17) — Modal Quét Mã bị Bottom-Sheet che
+- Triệu chứng: bấm nút quét mã (LOT NVL / LOT NCC) trong Phiếu Đăng Ký thì modal quét nằm **dưới** sheet.
+- Nguyên nhân: `UniversalScannerModal` là MUI `Dialog` (portal) z-index mặc định **1300**; `.precision-dkdtc-drawer-overlay` đặt **10000** ⇒ sheet che. (Không phải lỗi DOM order.)
+- Fix: thêm prop tuỳ chọn `zIndex?: number` cho `UniversalScannerModal` → `slotProps={{ root: { sx: { zIndex } } }}` (MUI v7); bỏ trống giữ nguyên 1300. `PrecisionDKDTCScannerModal` truyền `zIndex={13000}`.
+- Verify @393: `elementFromPoint` tâm màn hình = `.universal-scanner__reader-box`, `modalRootZ 13000`; đóng scanner → sheet vẫn mở. Build OK (`✓ built in 2m 25s`).
+- Chỉ `DKDTC` mở scanner từ trong drawer; `PrecisionLineQc` / `PrecisionDataSampleSx` render ở cấp trang nên không bị.
+
 ## Đợt 16 — Fix màn hình trắng khi Logout + chắc hoá login/logout (2026-09-22)
 `src/App.tsx` + `src/components/ErrorBoundary/ErrorBoundary.tsx` + `src/api/Api.ts` + `src/pages/home/Home.tsx`.
 - **Root cause**: `Login` là `React.lazy` nhưng `App.tsx` render trần `{!globalLoginState && <Login />}` — không Suspense/ErrorBoundary. User vào thẳng app bằng token còn hạn ⇒ chunk Login chưa tải ⇒ bấm Logout thì lazy suspend không boundary ⇒ React 18 unmount root ⇒ trắng màn hình, phải F5 (nên lỗi chỉ "đôi khi": phụ thuộc chunk đã cache trong phiên hay chưa).
