@@ -1,12 +1,21 @@
 # ERP Context & Status
 
+## Update - 2026-09-27 (QC / ADDSPECDTC: Fix nút đáy Bottom-Sheet Config bị "chìm")
+- Triệu chứng: sau khi refactor mobile, bấm nút Config thì hàng nút dưới cùng của bottom sheet (`Đóng` / `LOAD & Đóng`) bị thanh địa chỉ trình duyệt mobile che mất.
+- **Nguyên nhân 1**: `.addspecdtc-drawer-overlay` dùng `position: fixed; inset: 0` ⇒ neo theo **layout viewport** (đáy nằm sau thanh URL). Fix: `height: 100vh` → `height: 100dvh` (dòng `vh` làm fallback) để neo theo **visual viewport**.
+- **Nguyên nhân 2**: `.addspecdtc-drawer` là flex-column + `overflow: hidden` nhưng `.drawer-header` mất `flex-shrink: 0`, nên khi body dài header bị bóp và đẩy footer khỏi sheet. Fix: `flex-shrink: 0` cho `.drawer-header` và `.drawer-footer`, `flex: 1 1 auto; min-height: 0; overscroll-behavior: contain` cho `.drawer-body`.
+- Phụ: `.drawer` dùng `max-height: 88dvh`; `.drawer-footer` thêm `padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px))` né thanh home iOS.
+- Verify 380/430/520/640/740/850px: nút Đóng & LOAD đều nằm trọn trong viewport (`pxBelowViewport = 0`). Build production PASS. File [PrecisionADDSPECDTC.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/PrecisionADDSPECDTC/PrecisionADDSPECDTC.scss).
+- ⚠️ Cùng pattern overlay `inset: 0` + `.drawer-body { flex: 1 }` còn lặp ở ~40 drawer mobile khác (`PrecisionSPECDTC`, `PrecisionKQDTC`, `PrecisionKHOLIEU`, `PrecisionQLVL`, `PrecisionTinhLieu`, `PrecisionPOandStockFull`…) — nếu gặp lỗi tương tự thì áp cùng 2 fix.
+
+## Update - 2026-09-27 (QC / ADDSPECDTC: Tối Ưu Toàn Diện Giao Diện Mobile Thêm SPEC ĐTC)
+- Tạo [ADDSPECDTC.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/ADDSPECDTC.backup2.tsx). Hook `useIsMobile()`, bảo toàn 100% desktop (`!isMobile`).
+- Mobile Toolbar 3 hàng [PrecisionADDSPECDTCMobileToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/PrecisionADDSPECDTC/PrecisionADDSPECDTCMobileToolbar.tsx): Search chống zoom iOS (14px), nút clear `[X]`, Config trigger, NVL/SP toggle, Save, cuộn ngang (EX1/EX2/PIVOT/+Điểm Đo/Xóa).
+- Bottom-Sheet Config Drawer Zero-Blur [PrecisionADDSPECDTCMobileConfigDrawer.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/PrecisionADDSPECDTC/PrecisionADDSPECDTCMobileConfigDrawer.tsx): Chứa toàn bộ Sidebar (Autocomplete code/NVL, Test select, Load/Add/Update, Copy XRF, Matrix checklist).
+- AGTable chiếm trọn không gian còn lại (`flex: 1 1 0; min-height: 0`). Mobile Status Bar. File chính [ADDSPECDTC.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/ADDSPECDTC.tsx).
+
 ## Update - 2026-09-27 (QC / SPECDTC: Tối Ưu Toàn Diện Giao Diện Mobile Tiêu Chuẩn Kỹ Thuật ĐTC)
-- Tạo [SPECDTC.backup2.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/SPECDTC.backup2.tsx). Hook `useIsMobile()`, bảo toàn 100% desktop (`!isMobile`).
-- Mobile Header tinh gọn [PrecisionSPECDTCMobileHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/PrecisionSPECDTC/PrecisionSPECDTCMobileHeader.tsx) với live pulse, badge SPEC, nút toggle KPI / Filter Drawer / Reload.
-- Micro-KPI bar cuộn ngang [PrecisionSPECDTCMobileKpi.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/PrecisionSPECDTC/PrecisionSPECDTCMobileKpi.tsx) tóm tắt: Tổng SPEC, Test chủ lực, Dung sai TB, Top Khách hàng.
-- Mobile Toolbar 3 hàng công thái học [PrecisionSPECDTCMobileToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/PrecisionSPECDTC/PrecisionSPECDTCMobileToolbar.tsx): Search input chống zoom iOS (14px) kèm nút clear `[X]`, Touch targets >= 38px, quick pills (All Time, Tra cứu SPEC), dải cuộn ngang tiện ích (EX1, EX2, Lọc cột, Đặt lại).
-- Bottom-Sheet Filter Drawer Zero-Blur [PrecisionSPECDTCMobileFilterDrawer.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/PrecisionSPECDTC/PrecisionSPECDTCMobileFilterDrawer.tsx) lọc theo Code KD, Code CMS, Tên Liệu, Mã Liệu, Hạng mục Test, Số YCSX, All Time.
-- Bảng AGTable chiếm trọn không gian còn lại (`flex: 1 1 0; min-height: 0; height: 100%`). File chính [SPECDTC.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/SPECDTC.tsx).
+- Mobile Header, Micro-KPI, Toolbar 3 hàng, Filter Drawer. File chính [SPECDTC.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/SPECDTC.tsx).
 
 ## Update - 2026-09-27 (QC / KQDTC: Tối Ưu Toàn Diện Giao Diện Mobile Kiểm Tra Độ Tin Cậy & Biểu Đồ SPC)
 - Mobile Header, Micro-KPI, Toolbar 3 hàng, Filter Drawer, SPC Charts Modal. File chính [KQDTC.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/dtc/KQDTC.tsx).
