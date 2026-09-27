@@ -1,14 +1,44 @@
-import React, { useMemo, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import "./PrecisionPATROL/PrecisionPATROL.scss";
-import { usePatrolData } from "./PrecisionPATROL/usePatrolData";
+import { usePatrolData, PatrolFilterLane } from "./PrecisionPATROL/usePatrolData";
+import { usePatrolCards } from "./PrecisionPATROL/usePatrolCards";
 import PrecisionPatrolHeader from "./PrecisionPATROL/PrecisionPatrolHeader";
 import PrecisionPatrolToolbar from "./PrecisionPATROL/PrecisionPatrolToolbar";
 import PrecisionPatrolLane from "./PrecisionPATROL/PrecisionPatrolLane";
 import PrecisionPatrolCard, { PatrolCardData } from "./PrecisionPATROL/PrecisionPatrolCard";
 import PrecisionPatrolModal from "./PrecisionPATROL/PrecisionPatrolModal";
+import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
+import PrecisionPatrolMobileHeader from "./PrecisionPATROL/PrecisionPatrolMobileHeader";
+import PrecisionPatrolMobileKpi from "./PrecisionPATROL/PrecisionPatrolMobileKpi";
+import PrecisionPatrolMobileToolbar from "./PrecisionPATROL/PrecisionPatrolMobileToolbar";
+import PrecisionPatrolMobileFilterDrawer from "./PrecisionPATROL/PrecisionPatrolMobileFilterDrawer";
 
 const PATROL: React.FC = () => {
+  const isMobile = useIsMobile();
   const patrol = usePatrolData();
+
+  // Mobile specific UI states
+  const [mobileSearchText, setMobileSearchText] = useState<string>("");
+  const [showMobileKpi, setShowMobileKpi] = useState<boolean>(false);
+  const [showMobileFilter, setShowMobileFilter] = useState<boolean>(false);
+
+  // Hook xử lý chuẩn hóa thẻ & tìm kiếm realtime
+  const {
+    pqcCardItems,
+    dtcCardItems,
+    insCardItems,
+    displayPqcItems,
+    displayDtcItems,
+    displayInsItems,
+    displayAllItems,
+  } = usePatrolCards({
+    pqcdatatable: patrol.pqcdatatable,
+    dtcPatrolTable: patrol.dtcPatrolTable,
+    filteredInsData: patrol.filteredInsData,
+    filterLane: patrol.filterLane,
+    mobileSearchText,
+    isMobile,
+  });
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -55,98 +85,110 @@ const PATROL: React.FC = () => {
     });
   }, [patrol]);
 
-  // Chuẩn hóa dữ liệu thẻ PQC3
-  const pqcCardItems: PatrolCardData[] = useMemo(() => {
-    return patrol.pqcdatatable.map((ele) => ({
-      CATEGORY: "PQC3" as const,
-      CUST_NAME_KD: ele.CUST_NAME_KD,
-      DEFECT: `${ele.ERR_CODE}: ${ele.DEFECT_PHENOMENON}`,
-      EQ: ele.LINE_NO,
-      FACTORY: ele.FACTORY,
-      G_NAME_KD: ele.G_NAME_KD,
-      INSPECT_QTY: ele.INSPECT_QTY,
-      INSPECT_NG: ele.DEFECT_QTY,
-      LINK: `/pqc/PQC3_${ele.PQC3_ID + 1}.png`,
-      TIME: ele.OCCURR_TIME,
-      EMPL_NO: ele.LINEQC_PIC,
-    }));
-  }, [patrol.pqcdatatable]);
+  // Đếm số điều kiện lọc active trên Mobile
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (!patrol.isLive) count++;
+    if (patrol.filterLane !== "ALL") count++;
+    return count;
+  }, [patrol.isLive, patrol.filterLane]);
 
-  // Chuẩn hóa dữ liệu thẻ DTC
-  const dtcCardItems: PatrolCardData[] = useMemo(() => {
-    return patrol.dtcPatrolTable.map((ele) => ({
-      CATEGORY: "DTC" as const,
-      CUST_NAME_KD: ele.M_CODE !== "B0000035" ? ele.VENDOR : ele.CUST_NAME_KD,
-      DEFECT: ele.DEFECT_PHENOMENON,
-      EQ: ele.TEST_NAME,
-      FACTORY: ele.M_CODE !== "B0000035" ? ele.M_FACTORY : ele.FACTORY,
-      G_NAME_KD: ele.M_CODE !== "B0000035" ? `${ele.M_NAME}|${ele.WIDTH_CD}` : ele.G_NAME_KD,
-      INSPECT_QTY: 5,
-      INSPECT_NG: 5,
-      LINK: `/DTC_PATROL/${ele.DTC_ID}_${ele.TEST_CODE}${ele.FILE_}`,
-      TIME: ele.INS_DATE,
-      EMPL_NO: ele.INS_EMPL,
-    }));
-  }, [patrol.dtcPatrolTable]);
+  // Xử lý áp dụng lọc từ Bottom Sheet Drawer
+  const handleApplyMobileFilter = useCallback(
+    (params: {
+      isLive: boolean;
+      fromDate: string;
+      toDate: string;
+      filterLane: PatrolFilterLane;
+      autoRefresh: boolean;
+    }) => {
+      patrol.setIsLive(params.isLive);
+      patrol.setFromDate(params.fromDate);
+      patrol.setToDate(params.toDate);
+      patrol.setFilterLane(params.filterLane);
+      patrol.setAutoRefresh(params.autoRefresh);
+      patrol.refreshAll();
+    },
+    [patrol]
+  );
 
-  // Chuẩn hóa dữ liệu thẻ INS Patrol
-  const insCardItems: PatrolCardData[] = useMemo(() => {
-    return patrol.filteredInsData.map((ele) => ({
-      CATEGORY: "INS" as const,
-      CUST_NAME_KD: ele.CUST_NAME_KD,
-      DEFECT: `${ele.ERR_CODE}: ${ele.DEFECT_PHENOMENON}`,
-      EQ: ele.EQUIPMENT_CD,
-      FACTORY: ele.FACTORY,
-      G_NAME_KD: ele.G_NAME_KD,
-      INSPECT_QTY: ele.INSPECT_QTY,
-      INSPECT_NG: ele.DEFECT_QTY,
-      LINK: `/INS_PATROL/INS_PATROL_${ele.INS_PATROL_ID}.png`,
-      TIME: ele.OCCURR_TIME,
-      EMPL_NO: ele.INSP_PIC,
-    }));
-  }, [patrol.filteredInsData]);
-
-  // Tổng hợp dữ liệu cho chế độ xem Grid
-  const allCardItems: PatrolCardData[] = useMemo(() => {
-    let result: PatrolCardData[] = [];
-    if (patrol.filterLane === "ALL" || patrol.filterLane === "PQC3") {
-      result = result.concat(pqcCardItems);
-    }
-    if (patrol.filterLane === "ALL" || patrol.filterLane === "DTC") {
-      result = result.concat(dtcCardItems);
-    }
-    if (patrol.filterLane === "ALL" || patrol.filterLane === "INS") {
-      result = result.concat(insCardItems);
-    }
-    return result;
-  }, [patrol.filterLane, pqcCardItems, dtcCardItems, insCardItems]);
+  const handleResetMobileFilter = useCallback(() => {
+    patrol.setIsLive(true);
+    patrol.setFilterLane("ALL");
+    patrol.setAutoRefresh(true);
+    patrol.refreshAll();
+  }, [patrol]);
 
   return (
-    <div className={`precision-patrol ${patrol.isFullScreen ? "fullscreen" : ""}`}>
-      {/* 1. Sub-Header Stitch & TV Telemetry */}
-      <PrecisionPatrolHeader
-        isLive={patrol.isLive}
-        fromDate={patrol.fromDate}
-        setFromDate={patrol.setFromDate}
-        toDate={patrol.toDate}
-        setToDate={patrol.setToDate}
-        isFullScreen={patrol.isFullScreen}
-        onToggleFullScreen={handleToggleFullScreen}
-        autoRefresh={patrol.autoRefresh}
-        onToggleAutoRefresh={() => patrol.setAutoRefresh((prev) => !prev)}
-        countdown={patrol.countdown}
-        onReload={patrol.refreshAll}
-        onToggleLive={patrol.handleToggleLive}
-      />
+    <div
+      className={`precision-patrol ${patrol.isFullScreen ? "fullscreen" : ""} ${
+        isMobile ? "is-mobile" : ""
+      }`}
+    >
+      {/* 1. Header: Phân biệt Desktop vs Mobile */}
+      {!isMobile ? (
+        <PrecisionPatrolHeader
+          isLive={patrol.isLive}
+          fromDate={patrol.fromDate}
+          setFromDate={patrol.setFromDate}
+          toDate={patrol.toDate}
+          setToDate={patrol.setToDate}
+          isFullScreen={patrol.isFullScreen}
+          onToggleFullScreen={handleToggleFullScreen}
+          autoRefresh={patrol.autoRefresh}
+          onToggleAutoRefresh={() => patrol.setAutoRefresh((prev) => !prev)}
+          countdown={patrol.countdown}
+          onReload={patrol.refreshAll}
+          onToggleLive={patrol.handleToggleLive}
+        />
+      ) : (
+        <PrecisionPatrolMobileHeader
+          isLive={patrol.isLive}
+          countdown={patrol.countdown}
+          autoRefresh={patrol.autoRefresh}
+          onToggleAutoRefresh={() => patrol.setAutoRefresh((prev) => !prev)}
+          totalIncidents={patrol.kpis.totalIncidents}
+          showKpi={showMobileKpi}
+          onToggleKpi={() => setShowMobileKpi((prev) => !prev)}
+          onOpenFilterDrawer={() => setShowMobileFilter(true)}
+          onReload={patrol.refreshAll}
+          onToggleLive={patrol.handleToggleLive}
+        />
+      )}
 
-      {/* 2. Action Toolbar & View Controller */}
-      <PrecisionPatrolToolbar
-        layoutView={patrol.layoutView}
-        onLayoutChange={patrol.setLayoutView}
-        filterLane={patrol.filterLane}
-        onFilterLaneChange={patrol.setFilterLane}
-        kpis={patrol.kpis}
-      />
+      {/* 2. Dải Micro-KPI cuộn ngang (Chỉ mở khi bấm nút KPI trên mobile) */}
+      {isMobile && showMobileKpi && (
+        <PrecisionPatrolMobileKpi
+          kpis={patrol.kpis}
+          currentFilterLane={patrol.filterLane}
+          onSelectLane={patrol.setFilterLane}
+          onClose={() => setShowMobileKpi(false)}
+        />
+      )}
+
+      {/* 3. Toolbar: Phân biệt Desktop vs Mobile */}
+      {!isMobile ? (
+        <PrecisionPatrolToolbar
+          layoutView={patrol.layoutView}
+          onLayoutChange={patrol.setLayoutView}
+          filterLane={patrol.filterLane}
+          onFilterLaneChange={patrol.setFilterLane}
+          kpis={patrol.kpis}
+        />
+      ) : (
+        <PrecisionPatrolMobileToolbar
+          searchText={mobileSearchText}
+          onSearchChange={setMobileSearchText}
+          filterLane={patrol.filterLane}
+          onFilterLaneChange={patrol.setFilterLane}
+          layoutView={patrol.layoutView}
+          onLayoutChange={patrol.setLayoutView}
+          kpis={patrol.kpis}
+          filteredCount={displayAllItems.length}
+          activeFilterCount={activeFilterCount}
+          onOpenFilterDrawer={() => setShowMobileFilter(true)}
+        />
+      )}
 
       {/* 4. Content Workspace: Chế độ Lanes hoặc Lưới Grid */}
       <div
@@ -161,7 +203,7 @@ const PATROL: React.FC = () => {
                 category="PQC3"
                 title="Sự Cố Lỗi Công Đoạn (PQC3)"
                 subtitle={patrol.isLive ? "Hôm nay" : `${patrol.fromDate} → ${patrol.toDate}`}
-                items={pqcCardItems}
+                items={isMobile ? displayPqcItems : pqcCardItems}
                 onOpenModal={handleOpenModal}
               />
             )}
@@ -171,7 +213,7 @@ const PATROL: React.FC = () => {
                 category="DTC"
                 title="Thử Nghiệm Độ Tin Cậy (DTC)"
                 subtitle={patrol.isLive ? "Hôm nay" : `${patrol.fromDate} → ${patrol.toDate}`}
-                items={dtcCardItems}
+                items={isMobile ? displayDtcItems : dtcCardItems}
                 onOpenModal={handleOpenModal}
               />
             )}
@@ -181,13 +223,13 @@ const PATROL: React.FC = () => {
                 category="INS"
                 title="Kiểm Tra Ngoại Quan (INS Patrol)"
                 subtitle="Nguyên liệu (NL) & Phụ kiện (PK)"
-                items={insCardItems}
+                items={isMobile ? displayInsItems : insCardItems}
                 onOpenModal={handleOpenModal}
               />
             )}
           </>
         ) : (
-          allCardItems.map((item, idx) => (
+          displayAllItems.map((item, idx) => (
             <PrecisionPatrolCard
               key={`grid_${item.CATEGORY}_${idx}`}
               data={item}
@@ -208,6 +250,21 @@ const PATROL: React.FC = () => {
           })
         }
       />
+
+      {/* 6. Bottom Sheet Filter Drawer (Mobile Only) */}
+      {isMobile && showMobileFilter && (
+        <PrecisionPatrolMobileFilterDrawer
+          isOpen={showMobileFilter}
+          onClose={() => setShowMobileFilter(false)}
+          isLive={patrol.isLive}
+          fromDate={patrol.fromDate}
+          toDate={patrol.toDate}
+          filterLane={patrol.filterLane}
+          autoRefresh={patrol.autoRefresh}
+          onApply={handleApplyMobileFilter}
+          onReset={handleResetMobileFilter}
+        />
+      )}
     </div>
   );
 };
