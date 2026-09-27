@@ -14,6 +14,7 @@ interface Props {
   onExportEX1?: () => void;
   onExportEX2?: () => void;
   onOpenPivot?: () => void;
+  isMobile?: boolean;
 }
 
 const PrecisionBaoCaoRollGrid: React.FC<Props> = ({
@@ -27,6 +28,7 @@ const PrecisionBaoCaoRollGrid: React.FC<Props> = ({
   onExportEX1,
   onExportEX2,
   onOpenPivot,
+  isMobile = false,
 }) => {
   const columns = useMemo(() => getBaoCaoRollColumns(), []);
   const displayData = filteredData ?? plandatatable ?? [];
@@ -35,35 +37,37 @@ const PrecisionBaoCaoRollGrid: React.FC<Props> = ({
   const total = totalCount ?? plandatatable?.length ?? displayData.length;
 
   return (
-    <div className="precision-bcr-gridContainer">
-      {/* Grid Toolbar */}
-      <div className="precision-bcr-gridToolbar">
-        <div className="precision-bcr-gridToolbarLeft">
-          <div className="precision-bcr-searchBox">
-            <span className="material-symbols-outlined" style={{ fontSize: 14, color: "#94a3b8" }}>search</span>
-            <input
-              type="text"
-              value={keyword}
-              onChange={(e) => handleKeywordChange(e.target.value)}
-              placeholder="Lọc nhanh dữ liệu..."
-            />
+    <div className={`precision-bcr-gridContainer ${isMobile ? "is-mobile" : ""}`}>
+      {/* Grid Toolbar - Chỉ render trên desktop để tránh trùng với Mobile Toolbar */}
+      {!isMobile && (
+        <div className="precision-bcr-gridToolbar">
+          <div className="precision-bcr-gridToolbarLeft">
+            <div className="precision-bcr-searchBox">
+              <span className="material-symbols-outlined" style={{ fontSize: 14, color: "#94a3b8" }}>search</span>
+              <input
+                type="text"
+                value={keyword}
+                onChange={(e) => handleKeywordChange(e.target.value)}
+                placeholder="Lọc nhanh dữ liệu..."
+              />
+            </div>
+            <div className="precision-bcr-gridActions">
+              <button type="button" className="precision-bcr-gridBtn precision-bcr-gridBtn--excel" onClick={onExportEX1} title="Xuất dữ liệu đang lọc">
+                <span style={{ fontSize: 12 }}>📄</span><span>EX1</span>
+              </button>
+              <button type="button" className="precision-bcr-gridBtn precision-bcr-gridBtn--excel" onClick={onExportEX2} title="Xuất toàn bộ dữ liệu">
+                <span style={{ fontSize: 12 }}>📥</span><span>EX2</span>
+              </button>
+              <button type="button" className="precision-bcr-gridBtn precision-bcr-gridBtn--pivot" onClick={onOpenPivot} title="Mở bảng phân tích Pivot đa chiều">
+                <span style={{ fontSize: 12 }}>📊</span><span>PIVOT</span>
+              </button>
+            </div>
           </div>
-          <div className="precision-bcr-gridActions">
-            <button type="button" className="precision-bcr-gridBtn precision-bcr-gridBtn--excel" onClick={onExportEX1} title="Xuất dữ liệu đang lọc">
-              <span style={{ fontSize: 12 }}>📄</span><span>EX1</span>
-            </button>
-            <button type="button" className="precision-bcr-gridBtn precision-bcr-gridBtn--excel" onClick={onExportEX2} title="Xuất toàn bộ dữ liệu">
-              <span style={{ fontSize: 12 }}>📥</span><span>EX2</span>
-            </button>
-            <button type="button" className="precision-bcr-gridBtn precision-bcr-gridBtn--pivot" onClick={onOpenPivot} title="Mở bảng phân tích Pivot đa chiều">
-              <span style={{ fontSize: 12 }}>📊</span><span>PIVOT</span>
-            </button>
+          <div className="precision-bcr-gridMeta">
+            <span>Hiển thị: <strong>{(displayData?.length ?? 0).toLocaleString("en-US")} / {(total ?? 0).toLocaleString("en-US")}</strong> dòng</span>
           </div>
         </div>
-        <div className="precision-bcr-gridMeta">
-          <span>Hiển thị: <strong>{(displayData?.length ?? 0).toLocaleString("en-US")} / {(total ?? 0).toLocaleString("en-US")}</strong> dòng</span>
-        </div>
-      </div>
+      )}
 
       {/* Grid Body */}
       <div className="precision-bcr-gridBody">

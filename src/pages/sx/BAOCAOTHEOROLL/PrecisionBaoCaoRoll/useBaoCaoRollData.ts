@@ -197,6 +197,25 @@ export const useBaoCaoRollData = () => {
     SaveExcel(plandatatable, "BAOCAOROLL_All");
   }, [plandatatable]);
 
+  const defaultFromDate = useMemo(() => moment().add(-8, "day").format("YYYY-MM-DD"), []);
+  const defaultToDate = useMemo(() => moment().format("YYYY-MM-DD"), []);
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (fromdate !== defaultFromDate || todate !== defaultToDate) count++;
+    if (factory !== "ALL") count++;
+    if (machine !== "ALL") count++;
+    return count;
+  }, [fromdate, todate, factory, machine, defaultFromDate, defaultToDate]);
+
+  const resetFilters = useCallback(() => {
+    setFromDate(moment().add(-8, "day").format("YYYY-MM-DD"));
+    setToDate(moment().format("YYYY-MM-DD"));
+    setFactory("ALL");
+    setMachine("ALL");
+    setSearchKeyword("");
+  }, []);
+
   useEffect(() => {
     getMachineList();
   }, [getMachineList]);
@@ -212,7 +231,8 @@ export const useBaoCaoRollData = () => {
     activeTab, setActiveTab,
     searchKeyword, setSearchKeyword,
     filteredData, datatbTotalRow,
+    activeFilterCount,
     // Actions
-    initFunction, handleExportEX1, handleExportEX2,
+    initFunction, handleExportEX1, handleExportEX2, resetFilters,
   };
 };
