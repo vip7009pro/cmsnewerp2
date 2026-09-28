@@ -9,6 +9,7 @@ import {
   f_loadDTC_TestPointList,
 } from "../../utils/qcUtils";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 
 export const useTestTableData = () => {
   const [testList, setTestList] = useState<TestListTable[]>([]);
@@ -178,27 +179,29 @@ export const useTestTableData = () => {
     [selectedTestItem, loadTestPointList]
   );
 
-  // Xuất Excel Test Items
+  // Xuất Excel Test Items (đọc đúng các dòng đang hiển thị trên lưới)
   const handleExportItems = useCallback(() => {
-    if (filteredItems.length === 0) {
+    const dataToExport = getDisplayedGridRows(undefined, filteredItems);
+    if (dataToExport.length === 0) {
       Swal.fire("Không có dữ liệu", "Danh sách hạng mục hiện tại rỗng", "info");
       return;
     }
     SaveExcel(
-      filteredItems,
+      dataToExport,
       `DTC_TEST_ITEMS_${moment().format("YYYYMMDD_HHmm")}`
     );
   }, [filteredItems]);
 
-  // Xuất Excel Test Points
+  // Xuất Excel Test Points (đọc đúng các dòng đang hiển thị trên lưới)
   const handleExportPoints = useCallback(() => {
-    if (filteredPoints.length === 0) {
+    const dataToExport = getDisplayedGridRows(undefined, filteredPoints);
+    if (dataToExport.length === 0) {
       Swal.fire("Không có dữ liệu", "Danh sách điểm đo hiện tại rỗng", "info");
       return;
     }
     const testCodePrefix = selectedTestItem ? `TEST_${selectedTestItem.TEST_CODE}_` : "";
     SaveExcel(
-      filteredPoints,
+      dataToExport,
       `DTC_TEST_POINTS_${testCodePrefix}${moment().format("YYYYMMDD_HHmm")}`
     );
   }, [filteredPoints, selectedTestItem]);

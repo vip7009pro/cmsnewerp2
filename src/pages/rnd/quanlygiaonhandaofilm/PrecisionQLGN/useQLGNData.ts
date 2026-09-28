@@ -5,6 +5,7 @@ import { generalQuery, getAuditMode, getUserData } from "../../../../api/Api";
 import { HANDOVER_DATA } from "../../interfaces/rndInterface";
 import { CodeListData, CustomerListData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 
 export const useQLGNData = () => {
   const [customerList, setCustomerList] = useState<CustomerListData[]>([
@@ -231,16 +232,11 @@ export const useQLGNData = () => {
   }, [quickFilterText]);
 
   const exportExcelFiltered = () => {
-    const api = gridRef.current?.api;
-    if (!api) {
-      SaveExcel(handoverdatatable, `QLGN_ALL_${moment().format("YYYYMMDD_HHmmss")}`);
-      return;
-    }
-    const filteredData: any[] = [];
-    api.forEachNodeAfterFilterAndSort((node: any) => {
-      if (node.data) filteredData.push(node.data);
-    });
-    SaveExcel(filteredData.length > 0 ? filteredData : handoverdatatable, `QLGN_FILTERED_${moment().format("YYYYMMDD_HHmmss")}`);
+    // Đọc trực tiếp các dòng đang hiển thị trên lưới (floating filter + quick filter + sort).
+    SaveExcel(
+      getDisplayedGridRows(gridRef.current?.api, handoverdatatable),
+      `QLGN_FILTERED_${moment().format("YYYYMMDD_HHmmss")}`
+    );
   };
 
   const exportExcelAll = () => {

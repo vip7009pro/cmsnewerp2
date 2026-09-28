@@ -8,6 +8,7 @@ import { UserData } from "../../../../api/GlobalInterface";
 import { HOLDING_DATA } from "../../interfaces/qcInterface";
 import { f_updateNCRIDForHolding } from "../../utils/qcUtils";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 
 export const useHoldingData = () => {
   const theme = useSelector((state: RootState) => state.totalSlice.theme);
@@ -257,8 +258,10 @@ export const useHoldingData = () => {
         return;
       }
       const dataToExport =
-        type === "EX1" && selectedRowsData.current.length > 0
-          ? selectedRowsData.current
+        type === "EX1"
+          ? selectedRowsData.current.length > 0
+            ? selectedRowsData.current
+            : getDisplayedGridRows(undefined, holdingdatatable)
           : holdingdatatable;
 
       const formatted = dataToExport.map((row) => ({

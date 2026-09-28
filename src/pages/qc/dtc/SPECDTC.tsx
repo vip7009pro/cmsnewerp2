@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { FiSearch, FiRefreshCw, FiDownload, FiPieChart } from "react-icons/fi";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import AGTable from "../../../components/DataTable/AGTable";
 import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
 import { DTC_SPEC_DATA, TestListTable } from "../interfaces/qcInterface";
@@ -148,7 +149,10 @@ const SPECDTC: React.FC = () => {
       Swal.fire("Cảnh báo", "Không có dữ liệu để xuất Excel", "warning");
       return;
     }
-    SaveExcel(filteredData, `DTC_SPEC_FILTERED_${moment().format("YYYYMMDD_HHmm")}`);
+    SaveExcel(
+      getDisplayedGridRows(undefined, filteredData),
+      `DTC_SPEC_FILTERED_${moment().format("YYYYMMDD_HHmm")}`
+    );
   }, [filteredData]);
 
   // Xuất Excel EX2: Toàn bộ dữ liệu

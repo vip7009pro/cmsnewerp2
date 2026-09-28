@@ -34,6 +34,7 @@ const PrecisionTrapqcTable: React.FC<PrecisionTrapqcTableProps> = ({
         toolbar={null}
         columns={columns}
         data={filteredData}
+        dataAlias={data}
         onRowClick={onRowClick}
         onSelectionChange={onSelectionChange}
       />

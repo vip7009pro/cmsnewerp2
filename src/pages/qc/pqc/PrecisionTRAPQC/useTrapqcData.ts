@@ -9,6 +9,7 @@ import {
   TRA_PQC1_DATA,
 } from '../../interfaces/qcInterface';
 import { SaveExcel } from '../../../../api/services/excelService';
+import { getDisplayedGridRows } from '../../../../components/DataTable/gridExportUtils';
 
 export type TrapqcMode = 'SETTING' | 'DEFECT' | 'DAOFILM' | 'CNDB';
 
@@ -355,7 +356,9 @@ export const useTrapqcData = () => {
         return;
       }
       const filename = `TRAPQC_${activeMode}_${moment().format('YYYYMMDD_HHmmss')}`;
-      SaveExcel(pqcdatatable, filename);
+      const dataToExport =
+        type === 'EX1' ? getDisplayedGridRows(undefined, pqcdatatable) : pqcdatatable;
+      SaveExcel(dataToExport, filename);
     },
     [pqcdatatable, activeMode]
   );

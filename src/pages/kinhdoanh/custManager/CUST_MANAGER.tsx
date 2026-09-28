@@ -4,6 +4,7 @@ import moment from "moment";
 import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
 import { generalQuery, getSocket, getUserData } from "../../../api/Api";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import { f_insert_Notification_Data } from "../../../api/services/notificationService";
 import { zeroPad } from "../../../api/services/utilService";
 import AGTable from "../../../components/DataTable/AGTable";
@@ -328,7 +329,8 @@ const CUST_MANAGER: React.FC = () => {
 
   // Xuất Excel
   const handleExportEX1 = useCallback(() => {
-    SaveExcel(filteredData, "DANH_SACH_DOI_TAC_LOC");
+    // EX1 = các dòng ĐANG HIỂN THỊ trên lưới (đã áp floating filter + search).
+    SaveExcel(getDisplayedGridRows(undefined, filteredData), "DANH_SACH_DOI_TAC_LOC");
   }, [filteredData]);
 
   const handleExportEX2 = useCallback(() => {

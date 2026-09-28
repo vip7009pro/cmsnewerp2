@@ -8,6 +8,7 @@ import { generalQuery } from "../../../../api/Api";
 import { PQC1_DATA } from "../../interfaces/qcInterface";
 import { SX_DATA } from "../../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 
 export interface PQC1_ITEM extends PQC1_DATA {
   PQC3_ID?: string;
@@ -415,8 +416,10 @@ export const usePQC1Data = () => {
       Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel", "info");
       return;
     }
-    const dataToExport = isFiltered && selectedRowsDataA.current.length > 0
-      ? selectedRowsDataA.current
+    const dataToExport = isFiltered
+      ? selectedRowsDataA.current.length > 0
+        ? selectedRowsDataA.current
+        : getDisplayedGridRows(undefined, pqc1datatable)
       : pqc1datatable;
 
     SaveExcel(dataToExport, `PQC1_SETTING_${moment().format("YYYYMMDD_HHmmss")}`);

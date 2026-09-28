@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { generalQuery, getCtrCd, getUserData, uploadQuery } from "../../../../../api/Api";
 import { checkBP } from "../../../../../api/services/permissionService";
 import { SaveExcel } from "../../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../../components/DataTable/gridExportUtils";
 import { f_autoUpdateDocUSE_YN, f_updateMaterialDocData } from "../../../../muahang/utils/muaUtils";
 import {
   DOCUMENT_DATA,
@@ -338,11 +339,13 @@ export const useAllDocData = () => {
 
   // Excel Export
   const handleExportExcel = () => {
-    if (filteredDocData.length === 0) {
+    // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick filter + floating filter + sort).
+    const rowsToExport = getDisplayedGridRows(undefined, filteredDocData);
+    if (rowsToExport.length === 0) {
       Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel!", "info");
       return;
     }
-    SaveExcel(filteredDocData, `ISO_Documents_${moment().format("YYYYMMDD_HHmmss")}`);
+    SaveExcel(rowsToExport, `ISO_Documents_${moment().format("YYYYMMDD_HHmmss")}`);
   };
 
   const toggleFullscreen = () => {

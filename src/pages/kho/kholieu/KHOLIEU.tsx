@@ -8,6 +8,7 @@ import { MdInput, MdOutput } from "react-icons/md";
 import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
 import PivotTable from "../../../components/PivotChart/LazyPivotTable";
 import AGTable from "../../../components/DataTable/AGTable";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
 import { checkBP } from "../../../api/services/permissionService";
 import { SaveExcel } from "../../../api/services/excelService";
@@ -400,13 +401,14 @@ const KHOLIEU: React.FC = () => {
 
   // Xuất Excel EX1 & EX2
   const handleExportEX1 = useCallback(() => {
-    const dataToExport = isMobile ? displayData : whdatatable;
+    // EX1 = các dòng ĐANG HIỂN THỊ trên lưới (đã áp floating filter + search + sort).
+    const dataToExport = getDisplayedGridRows(undefined, displayData);
     if (dataToExport.length > 0) {
       SaveExcel(dataToExport, `KHOLIEU_${mode}_FILTERED`);
     } else {
       Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel", "warning");
     }
-  }, [isMobile, displayData, whdatatable, mode]);
+  }, [displayData, mode]);
 
   const handleExportEX2 = useCallback(() => {
     if (whdatatable.length > 0) {

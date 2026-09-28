@@ -10,6 +10,7 @@ import { CustomerListData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { f_updateStockM090 } from "../../../../api/services/inventoryService";
 import { f_updateNCRIDForFailing, f_updateNCRIDForHolding } from "../../utils/qcUtils";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 
 export const useBlockData = () => {
   const theme = useSelector((state: RootState) => state.totalSlice.theme);
@@ -310,8 +311,10 @@ export const useBlockData = () => {
         return;
       }
       const dataToExport =
-        type === "EX1" && selectedRowsDataA.current.length > 0
-          ? selectedRowsDataA.current
+        type === "EX1"
+          ? selectedRowsDataA.current.length > 0
+            ? selectedRowsDataA.current
+            : getDisplayedGridRows(undefined, blockingdatatable)
           : blockingdatatable;
 
       const formatted = dataToExport.map((row) => ({

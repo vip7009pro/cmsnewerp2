@@ -10,6 +10,7 @@ import AGTable from "../../../components/DataTable/AGTable";
 import PivotTable from "../../../components/PivotChart/LazyPivotTable";
 import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import { FCSTTableData } from "../interfaces/kdInterface";
 import PrecisionFCSTFilterPanel from "./PrecisionFCST/PrecisionFCSTFilterPanel";
 import { getFCSTManageColumns } from "./PrecisionFCST/PrecisionFCSTColumns";
@@ -195,15 +196,8 @@ const FCSTManagerManageTab = () => {
 
   /* ── Export EX1 (filtered / displayed) & EX2 (raw) ── */
   const handleExportEX1 = useCallback(() => {
-    let rowsToExport = fcstdatatable;
-    if (gridRef.current?.api) {
-      const filtered: any[] = [];
-      gridRef.current.api.forEachNodeAfterFilterAndSort((node: any) => {
-        if (node.data) filtered.push(node.data);
-      });
-      if (filtered.length > 0) rowsToExport = filtered;
-    }
-    SaveExcel(rowsToExport, "FCST_Data");
+    // Đọc trực tiếp các dòng đang hiển thị trên lưới (floating filter + quick filter + sort).
+    SaveExcel(getDisplayedGridRows(gridRef.current?.api, fcstdatatable), "FCST_Data");
   }, [fcstdatatable]);
 
   const handleExportEX2 = useCallback(() => {

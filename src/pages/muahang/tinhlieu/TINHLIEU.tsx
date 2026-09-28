@@ -6,6 +6,7 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { MaterialPOData, MaterialPOSumData, MRPDATA } from "../interfaces/muaInterface";
 import { f_loadMRPPlan } from "../utils/muaUtils";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
 
 import "./PrecisionTinhLieu/PrecisionTinhLieu.scss";
@@ -320,7 +321,9 @@ const TINHLIEU = () => {
           company={company}
           searchKeyword={searchKeyword}
           onSearchChange={setSearchKeyword}
-          onExportEX1={() => SaveExcel(filteredData, `MRP_${currentMode}_DangLoc`)}
+          onExportEX1={() =>
+            SaveExcel(getDisplayedGridRows(undefined, filteredData), `MRP_${currentMode}_DangLoc`)
+          }
           onExportEX2={() => SaveExcel(currentTable, `MRP_${currentMode}_ToanBo`)}
           activeFilterCount={activeFilterCount}
           onOpenFilterDrawer={() => setShowFilterDrawer(true)}
@@ -337,7 +340,9 @@ const TINHLIEU = () => {
           company={company}
           searchKeyword={searchKeyword}
           onSearchChange={setSearchKeyword}
-          onExportEX1={() => SaveExcel(filteredData, `MRP_${currentMode}_DangLoc`)}
+          onExportEX1={() =>
+            SaveExcel(getDisplayedGridRows(undefined, filteredData), `MRP_${currentMode}_DangLoc`)
+          }
           onExportEX2={() => SaveExcel(currentTable, `MRP_${currentMode}_ToanBo`)}
           totalCount={currentTable.length}
           filteredCount={filteredData.length}

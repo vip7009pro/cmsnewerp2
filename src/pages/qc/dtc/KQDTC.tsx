@@ -5,6 +5,7 @@ import { FiDownload, FiSearch } from "react-icons/fi";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import AGTable from "../../../components/DataTable/AGTable";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
 import { CPK_DATA, DTC_DATA, HISTOGRAM_DATA, TestListTable, XBAR_DATA } from "../interfaces/qcInterface";
 import { f_loadDTC_TestList } from "../utils/qcUtils";
@@ -447,7 +448,12 @@ const KQDTC = () => {
                     <button
                       type="button"
                       className="precision-kqdtc__btnAction precision-kqdtc__btnAction--ex1"
-                      onClick={() => SaveExcel(filteredData, "DTC_Data_DangLoc")}
+                      onClick={() =>
+                        SaveExcel(
+                          getDisplayedGridRows(undefined, filteredData),
+                          "DTC_Data_DangLoc"
+                        )
+                      }
                     >
                       <FiDownload size={13} />
                       <span>EX1 (Lọc)</span>
@@ -537,7 +543,9 @@ const KQDTC = () => {
             onOpenChartsModal={() => setShowMobileCharts(true)}
             hasSelectedData={Boolean(selectedData)}
             selectedTestName={selectedData?.TEST_NAME}
-            onExportEX1={() => SaveExcel(filteredData, "DTC_Data_DangLoc")}
+            onExportEX1={() =>
+              SaveExcel(getDisplayedGridRows(undefined, filteredData), "DTC_Data_DangLoc")
+            }
             onExportEX2={() => SaveExcel(inspectiondatatable, "DTC_Data_ToanBo")}
             showTableFilter={showTableFilter}
             onToggleTableFilter={() => setShowTableFilter(!showTableFilter)}

@@ -35,6 +35,7 @@ export const PrecisionPQC1Table: React.FC<PrecisionPQC1TableProps> = ({
         showFilter={true}
         columns={columns}
         data={filteredData}
+        dataAlias={data}
         onSelectionChange={onSelectionChange}
         onCellEditingStopped={onCellEditingStopped}
       />

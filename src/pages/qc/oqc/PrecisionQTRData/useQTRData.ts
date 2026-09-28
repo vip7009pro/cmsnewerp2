@@ -3,6 +3,7 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import { f_loadQTRData } from "../../utils/qcUtils";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import { QTR_DATA } from "../QTR_DATA";
 
 export const useQTRData = () => {
@@ -162,11 +163,13 @@ export const useQTRData = () => {
 
   // Xuất file Excel
   const exportExcelFiltered = useCallback(() => {
-    if (filteredData.length === 0) {
+    // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick search + floating filter + sort).
+    const rowsToExport = getDisplayedGridRows(undefined, filteredData);
+    if (rowsToExport.length === 0) {
       Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel", "warning");
       return;
     }
-    SaveExcel(filteredData, `QTR_DATA_Filtered_${fromdate}_${todate}`);
+    SaveExcel(rowsToExport, `QTR_DATA_Filtered_${fromdate}_${todate}`);
   }, [filteredData, fromdate, todate]);
 
   const exportExcelAll = useCallback(() => {

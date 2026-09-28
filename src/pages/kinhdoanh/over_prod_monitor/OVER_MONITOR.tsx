@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import Swal from "sweetalert2";
 import AGTable from "../../../components/DataTable/AGTable";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import { getSocket, getUserData } from "../../../api/Api";
 import { f_insert_Notification_Data } from "../../../api/services/notificationService";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
@@ -247,7 +248,12 @@ const OVER_MONITOR: React.FC = () => {
             onHuyHangLoat={() => handleNhapHuyHangLoat("N")}
             searchText={searchText}
             onSearchChange={setSearchText}
-            onExportEX1={() => SaveExcel(filteredTableData, "PRODUCTION_OVER_MONITOR_EX1")}
+            onExportEX1={() =>
+              SaveExcel(
+                getDisplayedGridRows(undefined, filteredTableData),
+                "PRODUCTION_OVER_MONITOR_EX1"
+              )
+            }
             onExportEX2={() => SaveExcel(tableData, "PRODUCTION_OVER_MONITOR_EX2_FULL")}
             onOpenPivot={() => setShowHidePivotTable(true)}
             selectedCount={selectedCount}

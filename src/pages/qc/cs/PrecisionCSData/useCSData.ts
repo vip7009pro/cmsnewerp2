@@ -9,6 +9,7 @@ import {
   CSCONFIRM_DATA,
 } from "../../interfaces/qcInterface";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 
 export type CSOptionType =
   | "dataconfirm"
@@ -399,9 +400,10 @@ export const useCSData = () => {
     return { mode: "unknown", totalCount: 0 };
   }, [csData, option]);
 
-  // Xuất Excel EX1 (dữ liệu lọc)
+  // Xuất Excel EX1 (dữ liệu đang hiển thị trên lưới)
   const handleExportEX1 = useCallback(() => {
-    const target = filteredData.length > 0 ? filteredData : csData;
+    // Đọc đúng các dòng ĐANG HIỂN THỊ (quick search + floating filter + sort).
+    const target = getDisplayedGridRows(undefined, filteredData);
     if (target.length === 0) {
       Swal.fire("Thông Báo", "Không có dữ liệu để xuất Excel!", "warning");
       return;

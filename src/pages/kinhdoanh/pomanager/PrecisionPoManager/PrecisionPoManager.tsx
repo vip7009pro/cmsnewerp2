@@ -11,6 +11,7 @@ import { checkBP } from "../../../../api/services/permissionService";
 import { f_insert_Notification_Data } from "../../../../api/services/notificationService";
 import { NotificationElement } from "../../../../components/NotificationPanel/Notification";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import { autoGetProdPrice } from "../../../../api/services/utilService";
 
 import {
@@ -905,7 +906,9 @@ const PrecisionPoManager: React.FC = () => {
               })
             }
             onTogglePivot={() => setShowPivot(!showPivot)}
-            onExportExcel={() => SaveExcel(displayData, "Danh_Sach_PO")}
+            onExportExcel={() =>
+              SaveExcel(getDisplayedGridRows(undefined, displayData), "Danh_Sach_PO")
+            }
             isMobile={isMobile}
           />
 

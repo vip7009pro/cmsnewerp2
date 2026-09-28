@@ -7,6 +7,7 @@ import { getSocket, getUserData } from "../../../api/Api";
 import { checkBP } from "../../../api/services/permissionService";
 import { f_insert_Notification_Data } from "../../../api/services/notificationService";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { UserData } from "../../../api/GlobalInterface";
 import PivotTable from "../../../components/PivotChart/LazyPivotTable";
@@ -412,7 +413,7 @@ const InvoiceManager: React.FC = () => {
 
   // ── Export ──
   const handleExport = useCallback(() => {
-    SaveExcel(invoicedatatable, "Invoice Table");
+    SaveExcel(getDisplayedGridRows(undefined, invoicedatatable), "Invoice Table");
   }, [invoicedatatable]);
 
   return (

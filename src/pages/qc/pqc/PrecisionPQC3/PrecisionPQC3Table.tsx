@@ -68,6 +68,7 @@ export const PrecisionPQC3Table: React.FC<PrecisionPQC3TableProps> = ({
               showFilter={true}
               columns={pqc3Columns}
               data={filteredPqc3Data}
+              dataAlias={pqc3Data}
               onRowClick={(params: any) => onPqc3RowClick(params.data)}
             />
           </div>
@@ -90,6 +91,7 @@ export const PrecisionPQC3Table: React.FC<PrecisionPQC3TableProps> = ({
               showFilter={true}
               columns={pqc1Columns}
               data={filteredPqc1Data}
+              dataAlias={pqc1Data}
               onRowClick={(params: any) => onPqc1RowClick(params.data)}
             />
           </div>

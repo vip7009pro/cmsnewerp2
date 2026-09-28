@@ -4,6 +4,7 @@ import moment from "moment";
 import { generalQuery, getUserData } from "../../../../api/Api";
 import { checkBP } from "../../../../api/services/permissionService";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import { FullBOM } from "../../../kinhdoanh/interfaces/kdInterface";
 import {
   ExtendedSampleData,
@@ -453,7 +454,9 @@ export const useSampleMonitorData = (): UseSampleMonitorDataReturn => {
   // 9. Xuất file Excel
   const handleExportExcel = useCallback(
     (type: "current" | "all") => {
-      const exportList = type === "current" ? filteredData : data;
+      // "current" = các dòng đang hiển thị trên lưới (quick filter + floating filter + sort).
+      const exportList =
+        type === "current" ? getDisplayedGridRows(undefined, filteredData) : data;
       if (exportList.length === 0) {
         Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel!", "info");
         return;

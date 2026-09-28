@@ -7,6 +7,7 @@ import { UserData } from "../../../api/GlobalInterface";
 import { generalQuery } from "../../../api/Api";
 import { weekdayarray } from "../../../api/services/utilService";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import { calcMinutesByRate, calculatePersonalIncomeTax } from "../BangChamCong/OverTimeUtils3";
 import { DiemDanhLichSuData } from "../interfaces/nhansuInterface";
 import { PhieuLuong } from "../BangChamCong/PhieuLuong";
@@ -272,7 +273,12 @@ const LichSu_New: React.FC = () => {
             fetchAttendanceTimeline(fromDate, toDate);
           }
         }}
-        onExportEx1={() => SaveExcel(filteredData, "LichSuDiLam_DangLoc")}
+        onExportEx1={() =>
+          SaveExcel(
+            getDisplayedGridRows(undefined, filteredData),
+            "LichSuDiLam_DangLoc"
+          )
+        }
         onExportEx2={() => SaveExcel(diemdanhnhomtable, "LichSuDiLam_TatCa")}
         onOpenPivot={() => setShowPivotModal(true)}
         isMobile={isMobile}

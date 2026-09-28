@@ -12,6 +12,7 @@ import {
 import { f_getcustomerlist } from "../../../../kinhdoanh/utils/kdUtils";
 import { getCtrCd, uploadQuery } from "../../../../../api/Api";
 import { SaveExcel } from "../../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../../components/DataTable/gridExportUtils";
 import {
   AuditHistoryKpiData,
   CustomerOption,
@@ -369,12 +370,14 @@ export const useAUDITHistoryData = () => {
 
   // Excel Export
   const handleExportExcel = () => {
-    if (filteredData.length === 0) {
+    // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick filter + floating filter + sort).
+    const rowsToExport = getDisplayedGridRows(undefined, filteredData);
+    if (rowsToExport.length === 0) {
       Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel!", "info");
       return;
     }
     SaveExcel(
-      filteredData,
+      rowsToExport,
       `Audit_History_${moment().format("YYYYMMDD_HHmmss")}`
     );
   };

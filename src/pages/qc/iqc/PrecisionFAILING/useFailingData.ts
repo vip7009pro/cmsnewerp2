@@ -28,6 +28,7 @@ import {
   f_nhapkhoao,
 } from "../../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 
 export const useFailingData = () => {
   const theme = useSelector((state: RootState) => state.totalSlice.theme);
@@ -692,8 +693,10 @@ export const useFailingData = () => {
   // Export Excel Handlers
   const handleExportExcel = useCallback((type: "EX1" | "EX2") => {
     const dataToExport =
-      type === "EX1" && selectedRowsDataA.current.length > 0
-        ? selectedRowsDataA.current
+      type === "EX1"
+        ? selectedRowsDataA.current.length > 0
+          ? selectedRowsDataA.current
+          : getDisplayedGridRows(undefined, inspectiondatatable)
         : inspectiondatatable;
 
     if (dataToExport.length === 0) {

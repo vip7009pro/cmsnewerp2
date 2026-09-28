@@ -63,6 +63,7 @@ export const PrecisionIncomingTable: React.FC<PrecisionIncomingTableProps> = ({
         <AGTable
           columns={columns}
           data={isMobile ? filteredData : data}
+          dataAlias={data}
           suppressRowClickSelection={false}
           onRowClick={(params: any) => onRowClick(params.data)}
           onSelectionChange={(params: any) => onSelectionChange(params.api.getSelectedRows())}

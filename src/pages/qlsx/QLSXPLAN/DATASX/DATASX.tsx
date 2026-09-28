@@ -11,6 +11,7 @@ import { PrecisionDataSxTracking } from "./PrecisionDataSx/PrecisionDataSxTracki
 import { PrecisionDataSxMobileToolbar } from "./PrecisionDataSx/PrecisionDataSxMobileToolbar";
 import { PrecisionDataSxMobileFilterDrawer } from "./PrecisionDataSx/PrecisionDataSxMobileFilterDrawer";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import useIsMobile from "../../../../components/Navbar/AccountInfo/useIsMobile";
 import { lazyOpenable } from "../../../../components/PivotChart/lazyOpenable";
 
@@ -129,7 +130,8 @@ const DATASX: React.FC = () => {
 
   // Xuất Excel
   const handleExportExcel = useCallback(() => {
-    const exportList = filteredDataSxTable.length > 0 ? filteredDataSxTable : datasxtable;
+    // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick search + floating filter + sort).
+    const exportList = getDisplayedGridRows(undefined, filteredDataSxTable);
     if (!exportList || exportList.length === 0) {
       Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel", "warning");
       return;

@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
 import { OQC_DATA } from "../../interfaces/qcInterface";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 
 export const useOQCData = () => {
   const [fromdate, setFromDate] = useState(moment().format("YYYY-MM-DD"));
@@ -201,11 +202,13 @@ export const useOQCData = () => {
 
   // Xuất file Excel
   const exportExcelFiltered = useCallback(() => {
-    if (filteredData.length === 0) {
+    // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick search + floating filter + sort).
+    const rowsToExport = getDisplayedGridRows(undefined, filteredData);
+    if (rowsToExport.length === 0) {
       Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel", "warning");
       return;
     }
-    SaveExcel(filteredData, `OQC_DATA_Filtered_${fromdate}_${todate}`);
+    SaveExcel(rowsToExport, `OQC_DATA_Filtered_${fromdate}_${todate}`);
   }, [filteredData, fromdate, todate]);
 
   const exportExcelAll = useCallback(() => {

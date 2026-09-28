@@ -1,6 +1,7 @@
 import moment from "moment";
-import React, { useMemo, useRef, useState, useEffect } from "react";
+import React, { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 import { useReactToPrint } from "react-to-print";
 import { generalQuery, getCompany } from "../../../api/Api";
 import { renderElement } from "../../../api/services/utilService";
@@ -23,6 +24,8 @@ import { useBOMManagerActions } from "./PrecisionBOMManager/useBOMManagerActions
 import { useBOMManagerData } from "./PrecisionBOMManager/useBOMManagerData";
 import { COMPONENT_DATA } from "../interfaces/rndInterface";
 import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
+import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import { FiX } from "react-icons/fi";
 
 import {
@@ -256,6 +259,29 @@ const BOM_MANAGER: React.FC = () => {
     };
   }, [showPivot, bomgiatable, bomsxtable]);
 
+  // EX1: xuất đúng các dòng ĐANG HIỂN THỊ trên lưới (đã áp floating filter +
+  // quick filter + sort). Trước đây 2 nút này là no-op `() => {}` nên không
+  // xuất được gì. Ưu tiên lưới BOM GIÁ (lưới đang làm việc), fallback BOM SX.
+  const handleExportBOMGridEX1 = useCallback(() => {
+    const giaRows = getDisplayedGridRows(undefined, bomgiatable);
+    const dataToExport = giaRows.length > 0 ? giaRows : getDisplayedGridRows(undefined, bomsxtable);
+    if (dataToExport.length === 0) {
+      Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel", "warning");
+      return;
+    }
+    SaveExcel(dataToExport, `BOM_HienThi_${moment().format("YYYYMMDD_HHmmss")}`);
+  }, [bomgiatable, bomsxtable]);
+
+  // EX1 cho danh sách mã (sidebar) — xuất các dòng mã đang hiển thị.
+  const handleExportCodeListEX1 = useCallback(() => {
+    const dataToExport = getDisplayedGridRows(undefined, codeInfoDataTable);
+    if (dataToExport.length === 0) {
+      Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel", "warning");
+      return;
+    }
+    SaveExcel(dataToExport, `BOM_DanhSachMa_${moment().format("YYYYMMDD_HHmmss")}`);
+  }, [codeInfoDataTable]);
+
   // 4. Khối thông số kỹ thuật sản phẩm
   const specGridJSX = useMemo(
     () => (
@@ -335,7 +361,7 @@ const BOM_MANAGER: React.FC = () => {
           onToggleEdit={() => setEnableEdit((prev) => !prev)}
           pinBOM={pinBOM}
           onTogglePin={() => setPinBOM((prev) => !prev)}
-          onExportEX1={() => {}}
+          onExportEX1={handleExportBOMGridEX1}
           onExportEX2={() => {}}
           onOpenPivot={() => setShowPivot(true)}
           onNew={handleNewProduct}
@@ -385,7 +411,7 @@ const BOM_MANAGER: React.FC = () => {
             enableEdit={enableEdit}
             pinBOM={pinBOM}
             onTogglePin={() => setPinBOM((prev) => !prev)}
-            onExportEX1={() => {}}
+            onExportEX1={handleExportCodeListEX1}
             onExportEX2={() => {}}
             onOpenPivot={() => setShowPivot(true)}
             codeTableJSX={codeTableJSX}
@@ -417,7 +443,7 @@ const BOM_MANAGER: React.FC = () => {
               onToggleEdit={() => setEnableEdit((prev) => !prev)}
               enableEdit={enableEdit}
               pinBOM={pinBOM}
-              onExportEX1={() => {}}
+              onExportEX1={handleExportBOMGridEX1}
               onExportEX2={() => {}}
               onOpenPivot={() => setShowPivot(true)}
               bomsxCount={bomsxtable.length}

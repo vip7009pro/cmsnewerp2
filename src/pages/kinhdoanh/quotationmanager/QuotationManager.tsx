@@ -8,6 +8,7 @@ import { useReactToPrint } from "react-to-print";
 import { RootState } from "../../../redux/store";
 import { generalQuery, getAuditMode, getCompany, getSever } from "../../../api/Api";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import { checkBP } from "../../../api/services/permissionService";
 import { UserData } from "../../../api/GlobalInterface";
 import AGTable from "../../../components/DataTable/AGTable";
@@ -426,7 +427,7 @@ const QuotationManager: React.FC = () => {
             setShowUpPrice(true);
           }}
           onOpenPrint={() => setShowPrint(true)}
-          onExportEX1={() => SaveExcel(selectedBangGiaDocRow.current.length ? selectedBangGiaDocRow.current : rows, "EX1_PriceData")}
+          onExportEX1={() => SaveExcel(getDisplayedGridRows(undefined, rows), "EX1_PriceData")}
           onExportEX2={() => SaveExcel(rows, "EX2_PriceData_Full")}
         />
 

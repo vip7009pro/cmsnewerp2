@@ -44,6 +44,7 @@ export const PrecisionHoldingTable: React.FC<PrecisionHoldingTableProps> = ({
         <AGTable
           columns={columns}
           data={filteredData}
+          dataAlias={data}
           onSelectionChange={onSelectionChange}
         />
       </div>

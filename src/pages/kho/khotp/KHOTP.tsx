@@ -7,6 +7,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import { createPivotDataSource } from "../../../components/PivotChart/lazyPivot";
 import PivotTable from "../../../components/PivotChart/LazyPivotTable";
 import AGTable from "../../../components/DataTable/AGTable";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import { generalQuery, getAuditMode, getCompany } from "../../../api/Api";
 import { SaveExcel } from "../../../api/services/excelService";
 import { f_updateBTP_M100 } from "../../../api/services/inventoryService";
@@ -336,11 +337,13 @@ const KHOTP: React.FC = () => {
 
   // Xử lý Xuất Excel
   const handleExportEX1 = useCallback(() => {
-    if (whdatatable.length === 0) {
+    // EX1 = các dòng ĐANG HIỂN THỊ trên lưới (đã áp floating filter + search + sort).
+    const dataToExport = getDisplayedGridRows(undefined, whdatatable);
+    if (dataToExport.length === 0) {
       Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel", "warning");
       return;
     }
-    SaveExcel(whdatatable, `KHOTP_${buttonselected}_EX1`);
+    SaveExcel(dataToExport, `KHOTP_${buttonselected}_EX1`);
   }, [whdatatable, buttonselected]);
 
   const handleExportEX2 = useCallback(() => {

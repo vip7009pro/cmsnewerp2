@@ -9,6 +9,7 @@ import VLDOC from "./VLDOC";
 import { generalQuery, getCompany, getSocket, getUserData, uploadQuery } from "../../../api/Api";
 import { f_insert_Notification_Data } from "../../../api/services/notificationService";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import { FSC_LIST_DATA, MATERIAL_TABLE_DATA } from "../interfaces/muaInterface";
 import { CustomerListData } from "../../kinhdoanh/interfaces/kdInterface";
@@ -455,7 +456,9 @@ const QLVL: React.FC = () => {
             setSelected_M_NAME(clickedRows?.M_NAME || "");
             setOpenDocDialog(true);
           }}
-          onExportEX1={() => SaveExcel(filteredData, "DS_VatLieu_DangLoc")}
+          onExportEX1={() =>
+            SaveExcel(getDisplayedGridRows(undefined, filteredData), "DS_VatLieu_DangLoc")
+          }
           onExportEX2={() => SaveExcel(data, "DS_VatLieu_ToanBo")}
           onOpenPivot={() => setShowPivotModal(true)}
           searchKeyword={searchKeyword}
@@ -477,7 +480,9 @@ const QLVL: React.FC = () => {
             setSelected_M_NAME(clickedRows?.M_NAME || "");
             setOpenDocDialog(true);
           }}
-          onExportEX1={() => SaveExcel(filteredData, "DS_VatLieu_DangLoc")}
+          onExportEX1={() =>
+            SaveExcel(getDisplayedGridRows(undefined, filteredData), "DS_VatLieu_DangLoc")
+          }
           onExportEX2={() => SaveExcel(data, "DS_VatLieu_ToanBo")}
           onOpenPivot={() => setShowPivotModal(true)}
           searchKeyword={searchKeyword}

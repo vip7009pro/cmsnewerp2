@@ -42,6 +42,7 @@ export const PrecisionBLOCKTable: React.FC<PrecisionBLOCKTableProps> = ({
         <AGTable
           columns={columns}
           data={filteredData}
+          dataAlias={data}
           onSelectionChange={onSelectionChange}
         />
       </div>

@@ -4,6 +4,7 @@ import moment from "moment";
 import * as XLSX from "xlsx";
 import { generalQuery } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import { TestListTable } from "../../interfaces/qcInterface";
 import { f_loadDTC_TestList } from "../../utils/qcUtils";
 import {
@@ -407,7 +408,10 @@ export const useDTCResultData = () => {
       Swal.fire("Không có dữ liệu", "Bảng đang lọc hiện tại rỗng", "info");
       return;
     }
-    SaveExcel(filteredData, `DTC_RESULT_FILTERED_${moment().format("YYYYMMDD_HHmm")}`);
+    SaveExcel(
+      getDisplayedGridRows(undefined, filteredData),
+      `DTC_RESULT_FILTERED_${moment().format("YYYYMMDD_HHmm")}`
+    );
   }, [filteredData]);
 
   // Xuất Excel EX2: Toàn bộ

@@ -8,6 +8,7 @@ import AGTable from "../../../components/DataTable/AGTable";
 import { generalQuery, uploadQuery } from "../../../api/Api";
 import { checkBP } from "../../../api/services/permissionService";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import { f_updateLossKT } from "../../../api/services/inventoryService";
 import {
   f_getCodeInfo,
@@ -184,8 +185,10 @@ const CODE_MANAGER: React.FC = () => {
 
   // 7. Xuất Excel
   const handleExportEX1 = useCallback(() => {
-    if (filteredRows.length > 0) {
-      SaveExcel(filteredRows, "Product_Master_Filtered");
+    // EX1 = các dòng ĐANG HIỂN THỊ trên lưới (đã áp floating filter + search).
+    const dataToExport = getDisplayedGridRows(undefined, filteredRows);
+    if (dataToExport.length > 0) {
+      SaveExcel(dataToExport, "Product_Master_Filtered");
     } else {
       Swal.fire("Thông báo", "Không có dữ liệu để xuất", "warning");
     }

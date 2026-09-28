@@ -14,6 +14,7 @@ import {
   f_loadRollLossDataDaily,
 } from "../../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 
 export interface CuonLieuFilterState {
   fromdate: string;
@@ -297,9 +298,9 @@ export const useCuonLieuData = () => {
     [filters.fromdate, filters.todate, loadRollLoss]
   );
 
-  // Xuất Excel EX1 (dữ liệu đang hiển thị theo bộ lọc)
+  // Xuất Excel EX1 (dữ liệu ĐANG HIỂN THỊ trên lưới theo bộ lọc + floating filter + sort)
   const handleExportEX1 = useCallback(() => {
-    const targetData = filteredData.length > 0 ? filteredData : datasxtable;
+    const targetData = getDisplayedGridRows(undefined, filteredData);
     if (targetData.length === 0) {
       Swal.fire("Thông Báo", "Không có dữ liệu để xuất Excel!", "warning");
       return;
@@ -308,7 +309,7 @@ export const useCuonLieuData = () => {
       targetData,
       `TINH_HINH_CUON_LIEU_FILTERED_${moment().format("YYYYMMDD_HHmmss")}`
     );
-  }, [filteredData, datasxtable]);
+  }, [filteredData]);
 
   // Xuất Excel EX2 (toàn bộ dữ liệu)
   const handleExportEX2 = useCallback(() => {

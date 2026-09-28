@@ -4,6 +4,7 @@ import { getCompany } from "../../../api/Api";
 import AGTable from "../../../components/DataTable/AGTable";
 import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 
 import "./PrecisionADDSPECDTC/PrecisionADDSPECDTC.scss";
 import { PrecisionADDSPECDTCKpi } from "./PrecisionADDSPECDTC/PrecisionADDSPECDTCKpi";
@@ -81,7 +82,8 @@ const ADDSPECTDTC = () => {
 
   // Export handlers
   const handleExportEX1 = useCallback(() => {
-    SaveExcel(filteredGridData, "SPEC_DTC_FILTERED");
+    // EX1 = các dòng ĐANG HIỂN THỊ trên lưới (đã áp floating filter + search).
+    SaveExcel(getDisplayedGridRows(undefined, filteredGridData), "SPEC_DTC_FILTERED");
   }, [filteredGridData]);
 
   const handleExportEX2 = useCallback(() => {

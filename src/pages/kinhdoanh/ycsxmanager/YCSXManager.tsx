@@ -6,6 +6,7 @@ import { FiX } from "react-icons/fi";
 import { getCompany } from "../../../api/Api";
 import { checkBP } from "../../../api/services/permissionService";
 import AGTable from "../../../components/DataTable/AGTable";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import "./PrecisionYCSX/PrecisionYCSX.scss";
 
 // Precision Sub-components
@@ -187,7 +188,11 @@ const YCSXManager: React.FC = () => {
   };
 
   const handleExportEX1 = useCallback(() => {
-    exportToExcel(ycsx.ycsxDataTable, "YCSX_ToanBo");
+    // EX1 = các dòng ĐANG HIỂN THỊ trên lưới (đã áp floating filter + search + sort).
+    exportToExcel(
+      getDisplayedGridRows(undefined, ycsx.ycsxDataTable),
+      "YCSX_HienThi"
+    );
   }, [ycsx.ycsxDataTable]);
 
   const handleExportEX2 = useCallback(() => {

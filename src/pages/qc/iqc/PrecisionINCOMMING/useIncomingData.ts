@@ -7,6 +7,7 @@ import { generalQuery, getAuditMode, getUserData, uploadQuery } from "../../../.
 import { checkBP } from "../../../../api/services/permissionService";
 import { f_updateStockM090 } from "../../../../api/services/inventoryService";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import { IQC_INCOMMING_DATA, DTC_DATA } from "../../interfaces/qcInterface";
 import { UserData } from "../../../../api/GlobalInterface";
 import { RootState } from "../../../../redux/store";
@@ -558,7 +559,12 @@ export const useIncomingData = () => {
 
   // Export Excel
   const handleExportExcel = (type: "EX1" | "EX2") => {
-    const dataToExport = type === "EX1" ? (selectedRowsData.current.length > 0 ? selectedRowsData.current : iqc1datatable) : iqc1datatable;
+    const dataToExport =
+      type === "EX1"
+        ? selectedRowsData.current.length > 0
+          ? selectedRowsData.current
+          : getDisplayedGridRows(undefined, iqc1datatable)
+        : iqc1datatable;
     SaveExcel(dataToExport, `IQC_Incoming_${moment().format("YYYYMMDD_HHmmss")}`);
   };
 

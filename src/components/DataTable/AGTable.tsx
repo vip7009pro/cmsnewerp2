@@ -22,6 +22,7 @@ import { ColDef, GridApi } from 'ag-grid-community';
 import type PivotGridDataSource from 'devextreme/ui/pivot_grid/data_source';
 import { MdOutlinePivotTableChart } from 'react-icons/md';
 import { SaveExcel } from '../../api/services/excelService';
+import { registerGridApiForData } from './gridApiRegistry';
 
 // PivotTable (bảng PIVOT của DevExtreme) chỉ được render khi user bấm nút PIVOT.
 // Import TĨNH ở đây khiến mọi trang có bảng phải tải sẵn widget DevExtreme + theme CSS
@@ -31,6 +32,13 @@ const PivotTable = lazy(() => import('../PivotChart/PivotChart'));
 
 interface AGInterface {
   data: Array<any>,
+  /**
+   * Mảng dữ liệu GỐC (chưa qua lọc client-side của component bọc).
+   * AGTable sẽ đăng ký cùng một GridApi cho cả `data` và `dataAlias`, nhờ đó
+   * các nút `EX1` ở toolbar NGOÀI có thể tra được GridApi theo mảng gốc và
+   * xuất đúng các dòng đang hiển thị (floating filter + quick filter + sort).
+   */
+  dataAlias?: Array<any>,
   columns?: Array<any>,
   toolbar?: ReactElement,
   showFilter?: boolean,
@@ -187,9 +195,26 @@ const AGTableInner = forwardRef((ag_data: AGInterface, gridRef: any) => {
     [ag_data.onSelectionChange, tableSelectionChange]
   );
 
-  const handleGridReady = useCallback(() => {
-    setHeaderHeight(20);
-  }, [setHeaderHeight]);
+  const handleGridReady = useCallback(
+    (params: any) => {
+      setHeaderHeight(20);
+      // Cho phép các nút EX1 ở toolbar NGOÀI (không dùng toolbar built-in này)
+      // tra được GridApi để xuất đúng các dòng đang hiển thị sau filter/sort.
+      registerGridApiForData(ag_data.data, params?.api);
+      registerGridApiForData(ag_data.dataAlias, params?.api);
+    },
+    [setHeaderHeight, ag_data.data, ag_data.dataAlias]
+  );
+
+  // Khi trang đổi nguồn dữ liệu, đăng ký lại GridApi hiện tại cho mảng mới
+  // (AG Grid không tạo lại api nếu chỉ đổi rowData).
+  useEffect(() => {
+    const api = (gridRef ?? gridRefDefault).current?.api;
+    if (api) {
+      registerGridApiForData(ag_data.data, api);
+      registerGridApiForData(ag_data.dataAlias, api);
+    }
+  }, [ag_data.data, ag_data.dataAlias, gridRef]);
 
   interface RowData {
     name: string;

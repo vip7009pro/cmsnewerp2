@@ -6,6 +6,7 @@ import { RootState } from "../../../../redux/store";
 import { UserData } from "../../../../api/GlobalInterface";
 import { generalQuery, uploadQuery } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import { ERROR_TABLE, PQC1_DATA, PQC3_DATA } from "../../interfaces/qcInterface";
 
 export type PQC3ViewMode = "DEFECT" | "SETTING" | "DUAL";
@@ -457,13 +458,9 @@ export const usePQC3Data = () => {
           return;
         }
         let dataToExport = pqc1datatable;
-        if (isFiltered && quickFilter.trim() !== "") {
-          const q = quickFilter.toLowerCase().trim();
-          dataToExport = pqc1datatable.filter((row) =>
-            Object.values(row).some(
-              (val) => val !== null && String(val).toLowerCase().includes(q)
-            )
-          );
+        if (isFiltered) {
+          // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick filter + floating filter + sort).
+          dataToExport = getDisplayedGridRows(undefined, pqc1datatable);
         }
         SaveExcel(dataToExport, `PQC1_SETTING_${moment().format("YYYYMMDD_HHmmss")}`);
       } else {
@@ -472,13 +469,9 @@ export const usePQC3Data = () => {
           return;
         }
         let dataToExport = pqc3datatable;
-        if (isFiltered && quickFilter.trim() !== "") {
-          const q = quickFilter.toLowerCase().trim();
-          dataToExport = pqc3datatable.filter((row) =>
-            Object.values(row).some(
-              (val) => val !== null && String(val).toLowerCase().includes(q)
-            )
-          );
+        if (isFiltered) {
+          // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick filter + floating filter + sort).
+          dataToExport = getDisplayedGridRows(undefined, pqc3datatable);
         }
         SaveExcel(dataToExport, `PQC3_DEFECTS_${moment().format("YYYYMMDD_HHmmss")}`);
       }

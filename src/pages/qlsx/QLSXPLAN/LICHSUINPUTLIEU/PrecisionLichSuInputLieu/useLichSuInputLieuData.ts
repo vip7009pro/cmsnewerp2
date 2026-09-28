@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo, useEffect } from "react";
 import moment from "moment";
 import Swal from "sweetalert2";
 import { SaveExcel } from "../../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../../components/DataTable/gridExportUtils";
 import { LICHSUINPUTLIEU_DATA } from "../../interfaces/khsxInterface";
 import { f_lichsuinputlieu } from "../../utils/khsxUtils";
 
@@ -78,7 +79,11 @@ export const useLichSuInputLieuData = () => {
   // 3. Xuất Excel dữ liệu đang hiển thị hoặc toàn bộ kết quả
   const handleExportExcel = useCallback(
     (customData?: LICHSUINPUTLIEU_DATA[]) => {
-      const exportList = customData || inspectiondatatable;
+      // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick search + floating filter + sort).
+      const exportList = getDisplayedGridRows(
+        undefined,
+        customData || inspectiondatatable
+      );
       if (!exportList || exportList.length === 0) {
         Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel", "warning");
         return;

@@ -8,6 +8,7 @@ import { generalQuery, getAuditMode, getUserData } from "../../../../api/Api";
 import { CheckAddedSPECDATA, DTC_REG_DATA, TestListTable } from "../../interfaces/qcInterface";
 import { f_loadDTC_TestList } from "../../utils/qcUtils";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 
 export const useDKDTCData = () => {
   const userData: UserData | undefined = useSelector(
@@ -454,7 +455,10 @@ export const useDKDTCData = () => {
       Swal.fire("Không có dữ liệu", "Danh sách đang lọc hiện tại đang rỗng", "info");
       return;
     }
-    SaveExcel(filteredData, `DKDTC_Filter_${moment().format("YYYYMMDD_HHmm")}`);
+    SaveExcel(
+      getDisplayedGridRows(undefined, filteredData),
+      `DKDTC_Filter_${moment().format("YYYYMMDD_HHmm")}`
+    );
   }, [filteredData]);
 
   // Xuất Excel EX2 (Toàn bộ)

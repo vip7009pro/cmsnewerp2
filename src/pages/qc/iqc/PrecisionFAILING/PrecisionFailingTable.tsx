@@ -49,6 +49,7 @@ export const PrecisionFailingTable: React.FC<PrecisionFailingTableProps> = ({
         <AGTable
           columns={columns}
           data={filteredData}
+          dataAlias={data}
           onSelectionChange={onSelectionChange}
         />
       </div>

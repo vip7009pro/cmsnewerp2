@@ -3,6 +3,7 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import { generalQuery, uploadQuery } from "../../../../../api/Api";
 import { SaveExcel } from "../../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../../components/DataTable/gridExportUtils";
 import {
   Equipment,
   CalibrationHistory,
@@ -355,12 +356,14 @@ export const useCalibrationData = () => {
 
   // Excel Export
   const handleExportExcel = () => {
-    if (filteredEquipment.length === 0) {
+    // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick filter + floating filter + sort).
+    const rowsToExport = getDisplayedGridRows(undefined, filteredEquipment);
+    if (rowsToExport.length === 0) {
       Swal.fire("Thông báo", "Không có dữ liệu thiết bị để xuất Excel!", "info");
       return;
     }
     SaveExcel(
-      filteredEquipment,
+      rowsToExport,
       `Equipment_Calibration_${moment().format("YYYYMMDD_HHmmss")}`
     );
   };

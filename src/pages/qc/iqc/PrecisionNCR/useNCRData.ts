@@ -7,6 +7,7 @@ import { generalQuery, getCompany, getUserData, uploadQuery } from "../../../../
 import { checkBP } from "../../../../api/services/permissionService";
 import { HOLDDING_BY_NCR_ID, NCR_DATA } from "../../interfaces/qcInterface";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 
 export const useNCRData = () => {
   const userData = useSelector((state: RootState) => state.totalSlice.userData);
@@ -424,20 +425,7 @@ export const useNCRData = () => {
     (type: 1 | 2) => {
       const dataToExport =
         type === 1
-          ? ncr_data_table.filter((r) => {
-              if (pendingOnly && r.PROCESS_STATUS === "Y") return false;
-              if (!quickFilterText.trim()) return true;
-              const q = quickFilterText.toLowerCase();
-              return (
-                r.M_NAME?.toLowerCase().includes(q) ||
-                r.M_CODE?.toLowerCase().includes(q) ||
-                r.VENDOR?.toLowerCase().includes(q) ||
-                r.CMS_LOT?.toLowerCase().includes(q) ||
-                r.VENDOR_LOT?.toLowerCase().includes(q) ||
-                r.DEFECT_TITLE?.toLowerCase().includes(q) ||
-                String(r.NCR_ID ?? "").includes(q)
-              );
-            })
+          ? getDisplayedGridRows(undefined, ncr_data_table)
           : ncr_data_table;
 
       if (dataToExport.length === 0) {

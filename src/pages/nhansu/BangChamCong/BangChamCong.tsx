@@ -8,6 +8,7 @@ import { UserData } from "../../../api/GlobalInterface";
 import { generalQuery, getCompany } from "../../../api/Api";
 import { checkBP } from "../../../api/services/permissionService";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import AGTable from "../../../components/DataTable/AGTable";
 import {
   BANGCHAMCONG_DATA2,
@@ -279,7 +280,12 @@ const BANGCHAMCONG = () => {
           onSetCa={(calv) => {
             checkBP(userData, ["NHANSU"], ["ALL"], ["ALL"], () => handleSETCA(calv));
           }}
-          onExportEX1={() => SaveExcel(bangchamcong2, "BangChamCong_Filtered")}
+          onExportEX1={() =>
+            SaveExcel(
+              getDisplayedGridRows(undefined, bangchamcong2),
+              "BangChamCong_Filtered"
+            )
+          }
           onExportEX2={() => SaveExcel(bangchamcong2, "BangChamCong_All")}
           onOpenPivot={() => setShowHidePivotTable(true)}
           isLoading={loading}

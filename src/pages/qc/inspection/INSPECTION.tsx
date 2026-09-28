@@ -9,6 +9,7 @@ import PivotTable from "../../../components/PivotChart/LazyPivotTable";
 import AGTable from "../../../components/DataTable/AGTable";
 import { generalQuery, getAuditMode } from "../../../api/Api";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import { f_updateTONKIEM_M100 } from "../../../api/services/inventoryService";
 import {
   f_loadKHKT_ADUNG,
@@ -477,7 +478,9 @@ const INSPECTION: React.FC = () => {
       Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel", "warning");
       return;
     }
-    SaveExcel(inspectiondatatable, `Inspection_${activeAction.toUpperCase()}_EX1`);
+    // EX1 = các dòng ĐANG HIỂN THỊ trên lưới (đã áp floating filter + search).
+    const dataToExport = getDisplayedGridRows(undefined, inspectiondatatable);
+    SaveExcel(dataToExport, `Inspection_${activeAction.toUpperCase()}_EX1`);
   }, [inspectiondatatable, activeAction]);
 
   const handleExportEX2 = useCallback(() => {

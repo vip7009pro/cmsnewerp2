@@ -7,6 +7,7 @@ import { RootState } from "../../../redux/store";
 import { UserData } from "../../../api/GlobalInterface";
 import { checkBP } from "../../../api/services/permissionService";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import AGTable from "../../../components/DataTable/AGTable";
 import PivotTable from "../../../components/PivotChart/LazyPivotTable";
 import { BANGGIA_DELETED_DATA } from "../interfaces/kdInterface";
@@ -261,7 +262,9 @@ const QuotationDeleteHistory: React.FC = () => {
             </button>
             <button
               className="precision-quotation__btn precision-quotation__btn--ex-excel"
-              onClick={() => SaveExcel(rows, "Lich_Su_Xoa_Gia_Audit")}
+              onClick={() =>
+                SaveExcel(getDisplayedGridRows(undefined, rows), "Lich_Su_Xoa_Gia_Audit")
+              }
             >
               <FiDownload />
               <span>EX1 (Excel)</span>

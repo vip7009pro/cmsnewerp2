@@ -9,6 +9,7 @@ import {
   f_updateTONKIEM_M100,
 } from "../../../../api/services/inventoryService";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import PivotTable from "../../../../components/PivotChart/LazyPivotTable";
 import { createPivotDataSource } from "../../../../components/PivotChart/lazyPivot";
 import { POFullCMS, POFullSummary } from "../../interfaces/kdInterface";
@@ -57,6 +58,10 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
 
   // Ref lưu dòng chọn
   const selectedRowsRef = useRef<any[]>([]);
+
+  // Giữ GridApi để nút EX1 (Hiển thị) đọc đúng các dòng đang hiển thị sau
+  // khi áp/xóa floating filter và sort của AG Grid.
+  const gridRef = useRef<any>(null);
 
   // Cache bộ cột AG Grid theo từng "chế độ" để GIỮ NGUYÊN REFERENCE của mảng.
   // Trước đây mỗi lần bấm Search đều gọi getColumnsCodeCMS()/getColumnsCodePVN()/getColumnsCodeKD()
@@ -310,13 +315,16 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
     XLSX.writeFile(wb, `${fileName}_${moment().format("YYYYMMDD_HHmmss")}.xlsx`);
   };
 
-  const handleExportEX1 = useCallback(() => {
-    const dataToExport =
-      selectedRowsRef.current.length > 0
-        ? selectedRowsRef.current
-        : pofulldatatable;
-    exportExcel(dataToExport, "PO_TK_FULL_HienThi");
-  }, [pofulldatatable]);
+  // EX1 (Hiển thị): xuất đúng các dòng ĐANG HIỂN THỊ trên lưới — đã áp floating
+  // filter theo cột, quick filter và sort. Khi người dùng xóa hết bộ lọc thì
+  // helper tự trả về toàn bộ `pofulldatatable`, nên không còn xuất lại dữ liệu cũ.
+  const handleExportEX1 = useCallback(
+    (gridApi?: any) => {
+      const dataToExport = getDisplayedGridRows(gridApi, pofulldatatable);
+      exportExcel(dataToExport, "PO_TK_FULL_HienThi");
+    },
+    [pofulldatatable]
+  );
 
   const handleExportEX2 = useCallback(() => {
     exportExcel(pofulldatatable, "PO_TK_FULL_RawData");
@@ -454,7 +462,7 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
         onToggleOnlyPoBalance={() => setAllTime((prev) => !prev)}
         onSearchGCode={handletraPOFullCMS}
         onSearchKD={handletraPOFullKD}
-        onExportEX1={handleExportEX1}
+        onExportEX1={() => handleExportEX1(gridRef.current?.api)}
         onExportEX2={handleExportEX2}
         onTogglePivot={() => setShowPivot(true)}
         poBalance={pofullSummary.PO_BALANCE}
@@ -470,6 +478,7 @@ const PrecisionPOandStockFullTab: React.FC<PrecisionPOandStockFullTabProps> = ({
       {/* 4. AG Grid Workspace Table */}
       <div className="precision-po-stock__tableWrap">
         <AGTable
+          ref={gridRef}
           data={pofulldatatable}
           columns={columnDefinition}
           showFilter={true}

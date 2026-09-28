@@ -50,6 +50,7 @@ export const PrecisionNCRTable: React.FC<PrecisionNCRTableProps> = ({
         <AGTable
           columns={columns}
           data={filteredData}
+          dataAlias={data}
           onRowClick={(e: any) => {
             if (e?.data) {
               onRowClick(e.data);
