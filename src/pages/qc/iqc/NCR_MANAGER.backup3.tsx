@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import "./PrecisionNCR/PrecisionNCR.scss";
 import { useNCRData } from "./PrecisionNCR/useNCRData";
 import { usePrecisionNCRColumns } from "./PrecisionNCR/PrecisionNCRColumns";
@@ -38,9 +38,6 @@ const NCR_MANAGER: React.FC = () => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [showMobileRegister, setShowMobileRegister] = useState(false);
 
-  // Mobile: neo vào khối chi tiết (ảnh lỗi + Holding) để tự cuộn xuống sau khi tap dòng
-  const mobileDetailRef = useRef<HTMLDivElement | null>(null);
-
   const ncrData = useNCRData();
 
   const { ncrColumns, holdingColumns } = usePrecisionNCRColumns({
@@ -65,22 +62,6 @@ const NCR_MANAGER: React.FC = () => {
     ncrData.handleStartNewRegister();
     setShowMobileRegister(true);
   }, [ncrData]);
-
-  // Mobile: tap 1 dòng => nạp ảnh lỗi + bảng Holding rồi tự cuộn xuống khối chi tiết
-  const handleMobileRowClick = useCallback(
-    (row: any) => {
-      ncrData.setSelectedNCR(row);
-      ncrData.handletraHoldingData(row);
-      // Chờ React commit khối detail rồi mới cuộn
-      window.setTimeout(() => {
-        mobileDetailRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }, 120);
-    },
-    [ncrData]
-  );
 
   // Mobile: handle apply filter (trigger search + close drawer)
   const handleMobileApplyFilter = useCallback(() => {
@@ -185,30 +166,26 @@ const NCR_MANAGER: React.FC = () => {
               setPendingOnly={ncrData.setPendingOnly}
             />
 
-            {/* 3b. Data Table (thu chiều cao khi đang mở chi tiết) */}
-            <div
-              className={`precision-ncr-mobile-grid ${
-                ncrData.selectedNCR ? "has-detail" : ""
-              }`}
-            >
+            {/* 3b. Data Table */}
+            <div className="precision-ncr-mobile-grid">
               <PrecisionNCRTable
                 data={ncrData.ncr_data_table}
                 columns={ncrColumns}
                 quickFilterText={ncrData.quickFilterText}
                 pendingOnly={ncrData.pendingOnly}
-                onRowClick={handleMobileRowClick}
+                onRowClick={(row) => {
+                  ncrData.setSelectedNCR(row);
+                  ncrData.handletraHoldingData(row);
+                }}
                 onSelectionChange={(selected) => {
                   ncrData.selectedRowsData.current = selected;
                 }}
               />
             </div>
 
-            {/* 3c. Detail Panel (ảnh lỗi + Holding – hiện ngay dưới dòng vừa tap) */}
+            {/* 3c. Detail Panel (appears below grid when a row is selected) */}
             {ncrData.selectedNCR && (
-              <div
-                className="precision-ncr-mobile-detail"
-                ref={mobileDetailRef}
-              >
+              <div className="precision-ncr-mobile-detail">
                 <PrecisionNCRRightPanel
                   selectedNCR={ncrData.selectedNCR}
                   holdingData={ncrData.holdingdatatable}

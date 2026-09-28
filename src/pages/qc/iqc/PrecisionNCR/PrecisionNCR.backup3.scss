@@ -1123,41 +1123,10 @@
   padding: 0;
   gap: 0;
 
-  // Mobile: giữ root trong 1 khung cao xác định và tự quản việc cuộn bên trong.
-  // KHÔNG mở page-level scroll: .tabs-container / .tab-pane của IQC đều overflow:hidden
-  // nên nội dung dài sẽ bị cắt cụt (xem pitfall DTC.scss).
-  height: 100%;
-  max-height: 100%;
-  overflow: hidden;
-
-  // Tab-content của page chỉ cao calc(100% - 32px) => chừa 2px cho viền/hairline,
-  // dùng max-height:none để nội dung cuộn nội bộ không bị cắt mất footer bảng.
+  // Override component_element height lock for mobile
   .component_element & {
-    height: 100% !important;
-    max-height: none !important;
-    flex: 1 1 auto !important;
-    min-height: 0 !important;
-    overflow: hidden !important;
+    height: auto !important;
   }
-}
-
-// 10.0 Vùng cuộn duy nhất trên mobile
-// Header (42px) + KPI (tuỳ chọn) + Toolbar (87px) đứng cố định, phần còn lại cuộn.
-// Thiếu rule này thì .precision-ncr-mobile-grid (flex:1 1 auto + min-height:0) nằm trong
-// block formatting context => flex vô hiệu, còn .agtable là position:absolute (out-of-flow)
-// => grid cao 0px, bảng và khối chi tiết biến mất.
-.precision-ncr-mobile-scrollable {
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
 }
 
 // 10.1 Mobile Header
@@ -1495,61 +1464,17 @@
   }
 }
 
-// 10.4 Mobile Grid Container (chiều cao xác định — KHÔNG dựa vào height:100%)
-// Bảng NCR cần một chiều cao cụ thể: .agtable bên trong luôn position:absolute,
-// nếu tổ tiên không có height xác định thì grid bị bóp về 0px.
+// 10.4 Mobile Grid Container (maximized space)
 .precision-ncr-mobile-grid {
-  flex: 0 0 auto;
-  height: 56vh;
-  min-height: 300px;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid var(--pn-border);
-  transition: height 0.2s ease;
-
-  // Khi đang xem chi tiết: thu bảng lại để nhường chỗ cho ảnh lỗi + Holding
-  &.has-detail {
-    height: 38vh;
-    min-height: 220px;
-  }
 
   .precision-ncr-grid-container {
     flex: 1 1 auto;
     min-height: 0;
-  }
-}
-
-// 10.4b Mobile Detail (ảnh lỗi + bảng Holding — hiện ngay dưới dòng vừa tap)
-.precision-ncr-mobile-detail {
-  flex: 0 0 auto;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  scroll-margin-top: 8px;
-
-  // Right panel trên desktop là cột 320px cố định + overflow hidden
-  // => trong luồng dọc mobile phải mở khoá để nội dung không bị cắt.
-  .precision-ncr-right-panel {
-    width: 100%;
-    overflow: visible;
-    flex: 0 0 auto;
-
-    .defect-image-card {
-      flex: 0 0 auto;
-
-      // Ảnh lỗi to hơn trên mobile cho dễ nhìn
-      &__preview {
-        height: 200px;
-      }
-    }
-
-    .holding-detail-card {
-      flex: 0 0 auto;
-      height: 380px;
-      min-height: 0;
-    }
   }
 }
 
