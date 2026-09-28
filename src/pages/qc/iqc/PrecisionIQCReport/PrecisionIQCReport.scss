@@ -624,3 +624,705 @@ $cyan-light: #ecfeff;
     }
   }
 }
+
+/* ==========================================================================
+   6. MOBILE LAYER (viewport <= 768px) - ZERO BLUR
+   Desktop không bị ảnh hưởng: mọi rule dưới đây hoặc nằm trong `.is-mobile`
+   (specificity 0,3,0 > 0,1,0 của base) hoặc chỉ render trên mobile.
+   ========================================================================== */
+
+/* 6.1 Compact Mobile Header ------------------------------------------------ */
+.precision-iqc-mobile-header {
+  background: #ffffff;
+  border-bottom: 1px solid $slate-200;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+
+  .mobile-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+
+    .header-title-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+
+      .brand-badge {
+        font-size: 10px;
+        font-weight: 700;
+        color: $primary;
+        background: $primary-light;
+        border: 1px solid #bfdbfe;
+        padding: 2px 6px;
+        border-radius: 4px;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .pulse-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: $emerald-500;
+        flex-shrink: 0;
+      }
+
+      .header-title {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 800;
+        color: $slate-900;
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+
+      button {
+        height: 36px;
+        border-radius: 6px;
+        border: 1px solid $slate-300;
+        background: #ffffff;
+        color: $slate-600;
+        font-size: 11px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        cursor: pointer;
+        white-space: nowrap;
+        padding: 0 9px;
+
+        &:active {
+          transform: scale(0.97);
+        }
+      }
+
+      .btn-action-kpi {
+        width: 36px;
+        min-width: 36px;
+        padding: 0;
+        position: relative;
+        background: $primary-light;
+        border-color: #bfdbfe;
+        color: $primary-hover;
+
+        &.is-active {
+          background: $primary;
+          border-color: $primary;
+          color: #ffffff;
+        }
+
+        .filter-badge {
+          position: absolute;
+          top: -4px;
+          right: -4px;
+          font-size: 9px;
+          font-weight: 800;
+          min-width: 15px;
+          height: 15px;
+          padding: 0 3px;
+          border-radius: 9999px;
+          background: $rose-500;
+          color: #ffffff;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid #ffffff;
+        }
+      }
+
+      .btn-action-refresh {
+        width: 36px;
+        padding: 0;
+      }
+
+      .filter-badge {
+        font-size: 9.5px;
+        font-weight: 800;
+        padding: 1px 5px;
+        border-radius: 9999px;
+        background: $rose-500;
+        color: #ffffff;
+      }
+    }
+  }
+}
+
+/* 6.2 Compact Mobile Toolbar ---------------------------------------------- */
+.precision-iqc-mobile-toolbar {
+  background: #ffffff;
+  border-bottom: 1px solid $slate-200;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+
+  .mobile-toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    button {
+      height: 38px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      white-space: nowrap;
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+
+    .btn-mobile-filter {
+      flex: 0 0 auto;
+      padding: 0 12px;
+      background: #ffffff;
+      border: 1px solid $slate-300;
+      color: $slate-700;
+      position: relative;
+
+      &.has-filters {
+        background: $primary-light;
+        border-color: #93c5fd;
+        color: $primary-hover;
+      }
+
+      .filter-badge {
+        font-size: 9.5px;
+        font-weight: 800;
+        padding: 1px 5px;
+        border-radius: 9999px;
+        background: $rose-500;
+        color: #ffffff;
+      }
+    }
+
+    .btn-mobile-search {
+      flex: 1 1 auto;
+      min-width: 0;
+      padding: 0 14px;
+      background: linear-gradient(135deg, $primary 0%, #1d4ed8 100%);
+      border: none;
+      color: #ffffff;
+      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+    }
+  }
+
+  .mobile-toolbar-tabs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mobile-nav-tab {
+      height: 34px;
+      padding: 0 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: 1px solid $slate-200;
+      border-radius: 6px;
+      background: $slate-50;
+      color: $slate-600;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+
+      &:active {
+        transform: scale(0.97);
+      }
+
+      &--active {
+        background: $primary-light;
+        border-color: #93c5fd;
+        color: $primary-hover;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+/* 6.3 Compact KPI Table ---------------------------------------------------- */
+.precision-iqc-mobile-kpi {
+  margin-bottom: 10px;
+
+  .mobile-kpi-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border: 1px solid $slate-200;
+    border-radius: 8px;
+    overflow: hidden;
+
+    thead th {
+      padding: 0;
+      border-bottom: 1px solid $slate-200;
+      background: #fafbfc;
+    }
+
+    .kpi-head__toggle {
+      width: 100%;
+      height: 36px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: $slate-800;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-align: left;
+
+      > span:first-of-type {
+        flex: 1 1 auto;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .kpi-head__badge {
+        font-size: 9.5px;
+        font-weight: 800;
+        background: $slate-200;
+        color: $slate-600;
+        padding: 1px 6px;
+        border-radius: 9999px;
+        flex-shrink: 0;
+      }
+    }
+
+    .kpi-row {
+      border-bottom: 1px solid $slate-100;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &--blue { border-left: 3px solid $primary; }
+      &--emerald { border-left: 3px solid $emerald-500; }
+      &--amber { border-left: 3px solid $amber-500; }
+      &--rose { border-left: 3px solid $rose-500; }
+    }
+
+    .kpi-cell-label {
+      padding: 6px 8px 6px 10px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: $slate-500;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      width: 34%;
+      vertical-align: middle;
+    }
+
+    .kpi-cell-value {
+      padding: 6px 10px;
+      vertical-align: middle;
+
+      .kpi-rate {
+        display: block;
+        font-size: 15px;
+        font-weight: 800;
+        color: $slate-900;
+        font-family: "JetBrains Mono", Consolas, monospace;
+        line-height: 1.15;
+
+        .kpi-unit {
+          font-size: 10px;
+          font-weight: 600;
+          color: $slate-500;
+          margin-left: 3px;
+        }
+      }
+
+      .kpi-meta {
+        display: block;
+        font-size: 10px;
+        color: $slate-500;
+        font-family: "JetBrains Mono", Consolas, monospace;
+        margin-top: 1px;
+      }
+    }
+  }
+}
+
+/* 6.4 Mobile tinh gọn khối nội dung báo cáo -------------------------------- */
+.precision-iqc-report.is-mobile {
+  padding: 0;
+
+  .precision-iqc-body {
+    padding: 8px 8px 28px 8px;
+  }
+
+  .precision-iqc-section {
+    gap: 8px;
+    margin-bottom: 12px;
+
+    .precision-iqc-section__header {
+      padding-bottom: 3px;
+
+      .section-badge-title {
+        font-size: 12px;
+        gap: 5px;
+        min-width: 0;
+
+        > span:last-child {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      /* meta dài (DAILY • WEEKLY...) nhường chỗ cho tiêu đề */
+      .section-meta {
+        display: none;
+      }
+    }
+
+    .two-col-grid {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .executive-card {
+      &__header {
+        min-height: 42px;
+        padding: 3px 8px 3px 10px;
+        gap: 6px;
+      }
+
+      &__title-wrap {
+        flex: 1 1 auto;
+        min-width: 0;
+
+        svg {
+          flex-shrink: 0;
+        }
+      }
+
+      &__title {
+        font-size: 11px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &__btn-excel {
+        height: 36px;
+        padding: 0 11px;
+        font-size: 11px;
+        flex-shrink: 0;
+      }
+
+      /* Giảm chiều cao biểu đồ để cuộn trang ngắn hơn (chart vẫn responsive) */
+      &__body {
+        height: 300px;
+        padding: 6px;
+
+        &--chart-lg {
+          height: 300px;
+        }
+      }
+    }
+  }
+}
+
+/* 6.5 Floating Filter Bottom Sheet (Zero-Blur) ----------------------------- */
+.precision-iqc-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  height: 100vh;
+  height: 100dvh;
+  bottom: auto;
+  z-index: 10000;
+  background: rgba(15, 23, 42, 0.75); // nền đặc, KHÔNG backdrop-filter blur
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: iqcFadeIn 0.2s ease-out;
+}
+
+.precision-iqc-drawer {
+  width: 100%;
+  max-height: 88dvh;
+  background: #ffffff;
+  border-radius: 14px 14px 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.25);
+  animation: iqcSlideUp 0.25s ease-out;
+
+  .drawer-header {
+    height: 48px;
+    padding: 0 12px;
+    background: #ffffff;
+    border-bottom: 1px solid $slate-200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-shrink: 0;
+
+    .drawer-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      font-size: 12px;
+      font-weight: 800;
+      color: $slate-900;
+      letter-spacing: 0.02em;
+
+      > span:last-child {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      svg {
+        color: $primary;
+        flex-shrink: 0;
+      }
+    }
+
+    .drawer-close {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+      border: 1px solid $slate-300;
+      border-radius: 8px;
+      background: #ffffff;
+      color: $slate-600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+
+      &:active {
+        background: $slate-100;
+      }
+    }
+  }
+
+  .drawer-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px 12px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .drawer-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .drawer-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        font-weight: 700;
+        color: $slate-600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+      }
+
+      .drawer-input {
+        width: 100%;
+        height: 40px;
+        padding: 0 10px;
+        font-size: 14px; // chống auto-zoom iOS Safari
+        border: 1px solid $slate-300;
+        border-radius: 6px;
+        background: #ffffff;
+        color: $slate-800;
+        outline: none;
+        box-sizing: border-box;
+        font-family: inherit;
+
+        &:focus {
+          border-color: $primary;
+          box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+        }
+      }
+
+      .drawer-code-chips {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+        padding-top: 2px;
+
+        .drawer-code-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          height: 26px;
+          padding: 0 4px 0 8px;
+          background: $slate-100;
+          border: 1px solid $slate-200;
+          border-radius: 13px;
+          font-size: 10.5px;
+          font-family: "JetBrains Mono", Consolas, monospace;
+          color: $slate-700;
+
+          .chip-clear {
+            width: 18px;
+            height: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 50%;
+            background: transparent;
+            color: $slate-400;
+            cursor: pointer;
+
+            &:active {
+              background: $slate-200;
+              color: $rose-500;
+            }
+          }
+        }
+
+        .drawer-code-clear {
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
+          height: 26px;
+          padding: 0 8px;
+          border: none;
+          border-radius: 13px;
+          background: transparent;
+          color: $rose-500;
+          font-size: 10.5px;
+          font-weight: 600;
+          text-decoration: underline;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .drawer-checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      min-height: 40px;
+      padding: 8px 10px;
+      background: $slate-50;
+      border: 1px solid $slate-200;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin: 2px 0 0 0;
+        accent-color: $primary;
+        flex-shrink: 0;
+        cursor: pointer;
+      }
+
+      span {
+        font-size: 12px;
+        color: $slate-700;
+        line-height: 1.35;
+      }
+    }
+  }
+
+  .drawer-footer {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    border-top: 1px solid $slate-200;
+    background: #ffffff;
+
+    .drawer-foot-btn {
+      height: 44px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+
+      &:active {
+        transform: scale(0.98);
+      }
+
+      &--primary {
+        flex: 1 1 0;
+        min-width: 0;
+        background: $primary;
+        color: #ffffff;
+      }
+
+      &--ghost {
+        flex: 0 0 108px;
+        background: #ffffff;
+        border: 1px solid $slate-300;
+        color: $slate-600;
+      }
+    }
+  }
+}
+
+@keyframes iqcSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes iqcFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

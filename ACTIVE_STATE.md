@@ -1,5 +1,50 @@
 # ACTIVE_STATE
 
+## Đợt 19 — Mobile IQC REPORT (Báo Cáo Chỉ Số Chất Lượng & Xu Hướng Lỗi PPM) (2026-09-27)
+Task hiện tại: refactor giao diện mobile cho `src/pages/qc/iqc/IQC_REPORT.tsx` + `.agents/skills/mobile_interface_refactoring`.
+Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 1m 27s`, 17138 modules), `get_errors` 0 lỗi, verify trên dev 3001 (@320 / @360 / @393 / @414 / @768 / @1440).
+
+### Đặc thù màn hình
+Đây là màn **báo cáo biểu đồ** (không có AGTable): Desktop gồm Header 38px + Toolbar 2 hàng **219px @393** (8 trường lọc) + 4 card KPI (290px @393 do grid 1 cột) + 8 biểu đồ Recharts 400px trong 3 section. Không có nút hành động dữ liệu (chỉ Excel per-card + Tra cứu).
+
+### Quyết định thiết kế
+- Conditional rendering `useIsMobile` (hook chung `components/Navbar/AccountInfo/useIsMobile.ts`) ⇒ desktop chỉ render `PrecisionIQCReportHeader` / `...Toolbar` / `...Kpi` như cũ.
+- Mobile: `MobileHeader` (brand + pulse + **icon nút lọc có badge số điều kiện** + reload + fullscreen) → `MobileToolbar` 2 hàng (nút **Bộ Lọc** badge + **Tra Cứu Dữ Liệu** flex-1; hàng 2 = 4 segmented tabs cuộn ngang) → body.
+- KPI: `PrecisionIQCReportMobileKpi` = **1 `<table>` 4 dòng** màu theo tone desktop, có nút chevron collapse trong `<th colSpan={2}>` ⇒ 220px → **37px** khi gập (state local, an toàn với `React.memo`).
+- Bộ lọc 6 trường (ngày ×2, Worst By, NG Type, Autocomplete Code + chip mã, Khách hàng, checkbox Mặc định) gom vào **Bottom Sheet Zero-Blur** `PrecisionIQCReportMobileFilterDrawer` với local state + sync khi mở, nút Đặt lại/Áp dụng 44px.
+- Biểu đồ: giữ nguyên toàn bộ `IQC*NGRate` / `IQC_FAILING_PENDING` (đã `CustomResponsiveContainer` = width/height 100%) ⇒ chỉ cần tăng `.executive-card__body--chart-lg` lên 300px trên mobile.
+
+### Pitfall đã gặp & fix
+- **Import sai độ sâu**: `useIsMobile` nằm ở `src/components/...` ⇒ từ `src/pages/qc/iqc/` phải là `../../../components/...` (3 cấp), không phải 4. Sai ⇒ Vite báo `[plugin:vite:import-analysis] Failed to resolve import` + ErrorBoundary chặn cả trang. **Cách lấy lỗi thật**: đọc overlay text qua `read_page`, hoặc `Invoke-WebRequest` (trả 500 nhưng overlay DOM có message).
+- **Inline style `width:"100px"` của ô Khách hàng desktop** phải bỏ khi render trong sheet (dùng `.drawer-input { width:100% }`).
+- **Autocomplete dropdown bị sheet che**: `disablePortal` + drawer `z-index:10000` ⇒ dùng `slotProps={{ popper: { sx: { zIndex: 13000 } } }}` (MUI v7). Đã đo `getComputedStyle(.MuiAutocomplete-popper).zIndex === "13000"` và `elementFromPoint` trong vùng list trả về option, không phải drawer.
+- **Nút Excel 22px quá nhỏ** ⇒ mobile `min-height:42px` cho `__header` + `__btn-excel` 36px (touch target).
+- **Tiêu đề header bị cắt** khi nút Lọc còn nhãn "Lọc" ⇒ chuyển nút lọc sang icon-only 36px + badge neo `position:absolute` ⇒ title `scrollWidth == clientWidth == 82px` (không cụt).
+
+### Kết quả đo (@393×850, dev 3001)
+- root 736px; mobileHeader **49px** / desktop 38px; mobileToolbar **93px** vs desktop **219px** (−126px); mobileKpi **220px** (gập 37px) vs desktop 4 card ~290px.
+- `precision-iqc-body` **479px → 595px** (+116px) khi dùng header/toolbar/KPI mobile; `bodyOverflowX = 0` ở @320/360/393/414/768.
+- Drawer: top 245 → bottom **850 = innerHeight** (footer không bị thanh URL che), body tự cuộn (493px), 6 field, 100 option Code list.
+- Áp dụng filter: badge 3 → **4** (đổi NG Type = MATERIAL) và drawer tự đóng; Đặt lại: badge về **3**, drawer đóng.
+- KPI collapse: 220 → **37** → 220 (toggle 2 chiều OK).
+- Desktop @1440: `is-mobile` **không** xuất hiện, không có `.precision-iqc-mobile-*` và `.precision-iqc-drawer-overlay` trong DOM; header 38px, toolbar 73px (8 filter + 4 tab nguyên vẹn), KPI grid 80px ⇒ **không đổi**.
+
+### File đã chỉnh sửa (đợt 19)
+- `src/pages/qc/iqc/IQC_REPORT.tsx` — thêm `useIsMobile`, `showMobileFilter`, `activeFilterCount` (`useMemo`, chỉ đếm điều kiện khác default); 3 nhánh conditional rendering + render drawer.
+- `PrecisionIQCReport/PrecisionIQCReportMobileHeader.tsx` — **(mới)** brand + pulse + icon lọc (badge) + reload + fullscreen.
+- `PrecisionIQCReport/PrecisionIQCReportMobileToolbar.tsx` — **(mới)** nút Bộ Lọc (badge) + Tra Cứu + 4 segmented tabs cuộn ngang.
+- `PrecisionIQCReport/PrecisionIQCReportMobileKpi.tsx` — **(mới)** bảng KPI 4 dòng collapse được.
+- `PrecisionIQCReport/PrecisionIQCReportMobileFilterDrawer.tsx` — **(mới)** Bottom Sheet 6 trường + chip mã + Đặt lại/Áp dụng.
+- `PrecisionIQCReport/PrecisionIQCReport.scss` — thêm **§6** (~600 dòng, mobile layer): header, toolbar, KPI table, `.is-mobile` tinh gọn section/card, drawer overlay/sheet/footer + `@keyframes iqcSlideUp/iqcFadeIn`.
+- Backup: `IQC_REPORT.backup2.tsx`.
+
+### Ghi chú kỹ thuật
+- `.precision-iqc-report` có `.component_element & { height:100%!important; flex:1 1 auto!important }` và `IQC.scss` ép cùng giá trị ⇒ **không** cần `height:auto` như DTC/DKDTC vì đây là màn scroll nội bộ (`.precision-iqc-body { overflow-y:auto }`) — body tự cuộn (scrollH 3811 > clientH 595).
+- Không cần `!important` cho mobile vì SCSS được viết **sau** base với `.is-mobile` (0,2,0) hoặc class mobile riêng (0,1,0 mới, không xung đột).
+- Badge đếm điều kiện: ngày luôn có giá trị nên mặc định đã là 3 (2 ngày + Mặc định); đổi Worst By/NG Type/Khách hàng/Code làm badge tăng thêm.
+
+---
+
 ## Đợt 18 — Mobile INCOMMING (IQC Kiểm tra NVL đầu vào) (2026-09-27)
 Task hiện tại: refactor giao diện mobile cho `src/pages/qc/iqc/INCOMMING.tsx` + `.agents/skills/mobile_interface_refactoring`.
 Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 1m 34s`), `get_errors` 0 lỗi, verify trên dev 3001 (@320 / @393 / @1440).
