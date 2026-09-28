@@ -1,10 +1,10 @@
 import { useEffect, Suspense, useRef, useMemo, useCallback } from "react";
 import {
-  generalQuery,
   getCompany,
   getGlobalSetting,
   getNotiCount,
   getUserData,
+  logout as logoutSession,
 } from "./api/Api";
 import { RootState } from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -32,6 +32,9 @@ import { useDocumentScrollIdleClass } from "./hooks/useDocumentScrollIdleClass";
 import AppBootScreen from "./components/AppBootScreen/AppBootScreen";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import ChangelogHost, { requestChangelogPopup } from "./components/Changelog/ChangelogHost";
+import NotificationPermissionGate from "./components/NotificationPermissionGate/NotificationPermissionGate";
+import { isPushNotificationSupported } from "./api/services/notificationPermissionService";
+import { getPlatformInfo, isStandalonePwa } from "./api/services/platformDetect";
 
 function App() {
   const isBootstrapping = useAppBootstrap();
@@ -55,6 +58,11 @@ function App() {
       },
     });
   }, []);
+
+  const iosNeedsHomeScreen = useMemo(
+    () => getPlatformInfo().platform === "ios" && !isStandalonePwa(),
+    []
+  );
 
   const full_screen: number = parseInt(
     getGlobalSetting()?.filter(
@@ -146,50 +154,6 @@ function App() {
     }
   }, [showNoti]);
 
-  const urlBase64ToUint8Array = (base64String: string): Uint8Array => {
-    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-    const base64 = (base64String + padding)
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
-    const rawData = window.atob(base64);
-    return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
-  };
-
-  const handleEnableNotifications = useCallback(async (): Promise<void> => {
-    try {
-      if (!("Notification" in window) || !("serviceWorker" in navigator)) {
-        console.log("Trình duyệt không hỗ trợ thông báo đẩy!");
-        return;
-      }
-      const permission: NotificationPermission =
-        await Notification.requestPermission();
-      if (permission !== "granted") {
-        console.log("Người dùng không cho phép thông báo!");
-        return;
-      }
-      const registration: ServiceWorkerRegistration =
-        await navigator.serviceWorker.ready;
-      const subscription: PushSubscription =
-        await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(
-            "BDrr_753esKQykp6mnFRExVohLC_yBXGdodkkOB3KzVAJegzQ79Nk-bDxAeZ3feyzIa9XgAcxpoXb0kdtP9cXBE"
-          ) as BufferSource,
-        });
-      const response = await generalQuery("addSubscription", {
-        subscription: JSON.stringify(subscription),
-      });
-      if (response.data.tk_status === "OK") {
-        console.log("Đã bật thông báo thành công!");
-      } else {
-        console.log("Lỗi khi gửi subscription đến server!");
-      }
-    } catch (error: unknown) {
-      console.error("Lỗi:", error);
-      console.log(`Có lỗi xảy ra: ${(error as Error).message}`);
-    }
-  }, []);
-
   const getIPAddress = useCallback(async () => {
     try {
       const response = await fetch("https://api.ipify.org?format=json");
@@ -217,10 +181,10 @@ function App() {
   useEffect(() => {
     if (isBootstrapping) return;
     void getIPAddress();
-    if (getCompany() === "CMS") {
-      void handleEnableNotifications();
-    }
-  }, [isBootstrapping, getIPAddress, handleEnableNotifications]);
+    // KHÔNG gọi Notification.requestPermission() ở đây nữa: prompt trình duyệt sẽ bật lên
+    // trước khi người dùng hiểu lý do, dễ bị bấm "Chặn" vĩnh viễn. Việc xin quyền do
+    // NotificationPermissionGate đảm nhiệm (xem bên dưới).
+  }, [isBootstrapping, getIPAddress]);
 
   // Warm-up chunk màn hình đăng nhập.
   // Người dùng vào app bằng token còn hạn sẽ KHÔNG bao giờ render <Login /> ở lần boot đầu,
@@ -270,6 +234,22 @@ function App() {
             </ErrorBoundary>
           </Suspense>
         )}
+        {/**
+         * Cổng bắt buộc cấp quyền thông báo đẩy. Chỉ áp dụng cho CMS (đúng với phạm vi
+         * luồng push hiện tại: socket `notification_panel` cũng chỉ chạy cho CMS).
+         * Component tự bỏ qua nếu trình duyệt không hỗ trợ (HTTP nội bộ, iOS chưa
+         * Add to Home Screen…) để không khoá người dùng oan.
+         */}
+        <NotificationPermissionGate
+          enabled={
+            !isBootstrapping &&
+            globalLoginState &&
+            getCompany() === "CMS" &&
+            (isPushNotificationSupported() || iosNeedsHomeScreen)
+          }
+          iosNeedsHomeScreen={iosNeedsHomeScreen}
+          onLogout={logoutSession}
+        />
         <Notifications />
       </>
     </ThemeProvider>

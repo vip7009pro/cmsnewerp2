@@ -1,5 +1,34 @@
 # ACTIVE_STATE
 
+## Đợt 21 — Cổng bắt buộc cấp quyền Notification (Web Push) (2026-09-28)
+Task hiện tại: kiểm tra user đã cho phép notification (FCM/Web Push) chưa; nếu chưa thì popup **bắt buộc** đồng ý mới cho dùng tiếp.
+Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 2m 8s`), `get_errors` 0 lỗi, verify dev 3001 (@1440 / @393×700).
+
+### Quyết định thiết kế
+- **Phạm vi: chỉ CMS** (đúng luồng push hiện có: `notification_panel` socket cũng early-return nếu không phải CMS).
+- **KHÔNG gọi `Notification.requestPermission()` lúc boot nữa** (đã bỏ khỏi `App.tsx`): prompt trình duyệt hiện ra trước khi user hiểu lý do ⇒ dễ bị bấm "Chặn" **vĩnh viễn** (Chrome không hỏi lại). Thay bằng popup giải thích → user bấm "Cho phép" mới kích hoạt prompt.
+- **Chỉ chặn khi quyền CHƯA cấp.** Đã `granted` ⇒ mở cổng ngay, subscription chỉ là best-effort (ghi `console.warn` nếu lỗi). Trước khi sửa, trường hợp granted-nhưng-subscribe-lỗi khiến user **kẹt trong dialog vĩnh viễn** (đã bắt được khi verify).
+- **Không chặn nếu trình duyệt không hỗ trợ** — tránh khoá user oan (quan trọng vì ERP nội bộ có thể chạy HTTP LAN ⇒ Service Worker/Push API không tồn tại). Có 2 lớp guard: `App.tsx` truyền `enabled={... && isPushNotificationSupported()}` + component tự early-return.
+- **Escape hatch khi bị `denied`**: hướng dẫn bật lại theo từng trình duyệt (Chrome/Edge/Firefox/Opera/Safari) + nút "Tôi đã bật lại" (nghe `visibilitychange` để tự mở khi user đổi quyền ở tab cài đặt) + nút **Đăng xuất**.
+- Mọi cách đóng đều bị vô hiệu: `disableEscapeKeyDown` + `onClose={() => undefined}` (đã test: Escape & backdrop click không đóng được).
+
+### Pitfall đã gặp khi verify
+- **`overflow: hidden` + nội dung cao hơn viewport ⇒ cắt cụt tiêu đề**. `.notiPermGate__paper` ban đầu có `overflow:hidden` (để bo góc gradient hero); khi nội dung dài (trạng thái denied có hướng dẫn) thì paper "nổi" lên trên viewport, MUI flex-center đẩy tràn 2 đầu ⇒ **mất dòng "BẤT BUỘC" + tiêu đề** và không cuộn được. Fix: paper → `display:flex; flex-direction:column; max-height: calc(100vh - 48px)`, hero `flex: 0 0 auto`, body `flex:1 1 auto; min-height:0; overflow-y:auto`.
+- Verify nhanh trạng thái `default`: `page.addInitScript` override `Notification.permission` + `Notification.requestPermission` (không dùng được `Browser.setPermission`/`Browser.grantPermissions` — Playwright trong VS Code báo *Method not found*).
+- **Đã vô tình `Browser.resetPermissions` + reload ⇒ reset quyền notification của trình duyệt dev (localhost:3001) từ `granted` về `default`.** Không khôi phục lại được bằng API (method not found) ⇒ cần user bấm "Cho phép" 1 lần trên Chrome dev, hoặc chặn popup bằng cách thêm `localhost:3001` vào danh sách cho phép của Chrome.
+
+### File đã chỉnh sửa (đợt 21)
+- `src/api/services/notificationPermissionService.ts` — **(mới)** `isPushNotificationSupported` (gồm `isSecureContext` + `PushManager` + iOS-Safari phải Add-to-Home-Screen), `getNotificationPermission`, `requestNotificationPermission`, `ensurePushSubscription` (tái dùng subscription cũ nếu có, `serviceWorker.ready` có timeout 10s), `getBrowserSettingsHint`.
+- `src/components/NotificationPermissionGate/NotificationPermissionGate.tsx` — **(mới)** dialog bắt buộc + state `prompt | denied | loading`.
+- `src/components/NotificationPermissionGate/NotificationPermissionGate.scss` — **(mới)** hero gradient, hint box, actions; `@media (max-width:480px)` xếp dọc nút.
+- `src/App.tsx` — bỏ `handleEnableNotifications` + `urlBase64ToUint8Array` (chuyển vào service), thêm `<NotificationPermissionGate enabled={...} onLogout={logoutSession} />`, import `logout as logoutSession`.
+
+### Kết quả đo (@1440×850, dev 3001)
+- `permission = default` ⇒ gate hiện: title "Cho phép thông báo để tiếp tục", 2 nút `["Cho phép", "Đã bật, kiểm tra lại"]`, Escape/backdrop **không** đóng.
+- Bấm "Cho phép" khi bị từ chối ⇒ chuyển state denied: title "Thông báo đang bị chặn", 3 bước hướng dẫn Chrome, `chrome://settings/content/notifications`, nút `["Tôi đã bật lại", "Đăng xuất"]`.
+- Bấm "Tôi đã bật lại" sau khi quyền granted ⇒ dialog **đóng**, vào app bình thường (`dialogCount: 0`).
+- @393×700: paper `top 32 / bottom 668` (fits viewport), hero hiển thị đủ, body cuộn nội bộ (`scrollH 672 > clientH 641`), `bodyOverflowX = false`.
+
 ## Đợt 20 — Mobile NCR: MASTER→DETAIL (Ảnh lỗi + Holding Failing Detail) (2026-09-28)
 Task hiện tại: hoàn thiện nốt yêu cầu còn dở của `src/pages/qc/iqc/NCR_MANAGER.tsx` (refactor mobile 99%).
 Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 1m 32s`), `get_errors` 0 lỗi, verify dev 3001 (@360 / @393 / @768 / @1440).
