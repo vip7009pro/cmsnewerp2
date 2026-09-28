@@ -1,6 +1,7 @@
 import React from "react";
 import { FiSearch, FiDownload, FiFileText } from "react-icons/fi";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { useAgGridApiBridge } from "../../../../components/DataTable/useAgGridApiBridge";
 
 interface PrecisionMainDefectsGridProps {
   columns: any[];
@@ -8,9 +9,11 @@ interface PrecisionMainDefectsGridProps {
   totalCount: number;
   searchKeyword: string;
   onSearchChange: (kw: string) => void;
-  onExportEX1: () => void;
+  onExportEX1: (gridApi?: any) => void;
   onExportEX2: () => void;
   isMobile?: boolean;
+  /** Callback nhận GridApi để EX1 xuất đúng dòng đang hiển thị. */
+  onGridApiReady?: (gridApi: any) => void;
 }
 
 const PrecisionMainDefectsGrid: React.FC<PrecisionMainDefectsGridProps> = ({
@@ -22,7 +25,10 @@ const PrecisionMainDefectsGrid: React.FC<PrecisionMainDefectsGridProps> = ({
   onExportEX1,
   onExportEX2,
   isMobile = false,
+  onGridApiReady,
 }) => {
+  const gridRef = useAgGridApiBridge(onGridApiReady);
+
   return (
     <div className={`precision-maindefects__gridContainer ${isMobile ? "is-mobile-grid" : ""}`}>
       {/* Thanh lọc nhanh & tiện ích bảng (chỉ hiển thị trên Desktop) */}
@@ -44,7 +50,7 @@ const PrecisionMainDefectsGrid: React.FC<PrecisionMainDefectsGridProps> = ({
             <button
               type="button"
               className="btn-action btn-action--excel"
-              onClick={onExportEX1}
+              onClick={() => onExportEX1(gridRef.current?.api)}
               title="Xuất dữ liệu đang hiển thị ra file Excel"
             >
               <FiDownload size={11} />
@@ -78,6 +84,7 @@ const PrecisionMainDefectsGrid: React.FC<PrecisionMainDefectsGridProps> = ({
       {/* AGTable body - BỎ prop toolbar */}
       <div className="precision-maindefects__gridBody">
         <AGTable
+          ref={gridRef}
           columns={columns}
           data={data}
           // KHÔNG truyền prop toolbar để tránh render toolbar xanh lá mặc định

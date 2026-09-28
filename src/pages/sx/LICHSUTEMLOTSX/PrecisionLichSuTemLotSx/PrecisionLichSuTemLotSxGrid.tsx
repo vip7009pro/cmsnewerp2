@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { useAgGridApiBridge } from "../../../../components/DataTable/useAgGridApiBridge";
 import { TEMLOTSX_DATA } from "../../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { getLichSuTemLotColumns } from "./PrecisionLichSuTemLotSxColumns";
 import { FaSearch, FaPrint, FaFileExcel, FaBan, FaBarcode } from "react-icons/fa";
@@ -12,9 +13,11 @@ interface PrecisionLichSuTemLotSxGridProps {
   onSelectRow: (row: TEMLOTSX_DATA) => void;
   onOpenPreview: (row?: TEMLOTSX_DATA) => void;
   onCancelLot: () => void;
-  onExportExcel: (type: "EX1" | "EX2") => void;
+  onExportExcel: (type: "EX1" | "EX2", gridApi?: any) => void;
   selectedRow: TEMLOTSX_DATA | null;
   isMobile?: boolean;
+  /** Callback nhận GridApi để EX1 xuất đúng dòng đang hiển thị. */
+  onGridApiReady?: (gridApi: any) => void;
 }
 
 export const PrecisionLichSuTemLotSxGrid: React.FC<PrecisionLichSuTemLotSxGridProps> = ({
@@ -28,7 +31,10 @@ export const PrecisionLichSuTemLotSxGrid: React.FC<PrecisionLichSuTemLotSxGridPr
   onExportExcel,
   selectedRow,
   isMobile = false,
+  onGridApiReady,
 }) => {
+  const gridRef = useAgGridApiBridge(onGridApiReady);
+
   const columns = useMemo(() => {
     return getLichSuTemLotColumns({
       onPreviewRow: (row) => onOpenPreview(row),
@@ -107,7 +113,7 @@ export const PrecisionLichSuTemLotSxGrid: React.FC<PrecisionLichSuTemLotSxGridPr
             <button
               type="button"
               className="precision-lichsutemlotsx__gridBtn precision-lichsutemlotsx__gridBtn--excel"
-              onClick={() => onExportExcel("EX1")}
+              onClick={() => onExportExcel("EX1", gridRef.current?.api)}
               title="Xuất dữ liệu đang lọc ra file Excel"
             >
               <FaFileExcel size={11} />
@@ -147,6 +153,7 @@ export const PrecisionLichSuTemLotSxGrid: React.FC<PrecisionLichSuTemLotSxGridPr
       {/* Grid Table Body */}
       <div className="precision-lichsutemlotsx__gridBody">
         <AGTable
+          ref={gridRef}
           suppressRowClickSelection={false}
           showFilter={true}
           columns={columns}

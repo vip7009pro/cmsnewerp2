@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState, useCallback, useRef } from "react";
 import "./PrecisionTinhHinhChot/PrecisionTinhHinhChot.scss";
 import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
 import { useTinhHinhChotData } from "./PrecisionTinhHinhChot/useTinhHinhChotData";
@@ -54,6 +54,14 @@ const TINH_HINH_CHOT: React.FC = () => {
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
   const [mobileSearch, setMobileSearch] = useState("");
 
+  // Giữ GridApi riêng cho từng nhà máy (EX1 xuất đúng các dòng đang hiển thị).
+  const gridApiNM1Ref = useRef<any>(null);
+  const gridApiNM2Ref = useRef<any>(null);
+  const handleGridApiReady = useCallback((factory: "NM1" | "NM2", api: any) => {
+    if (factory === "NM1") gridApiNM1Ref.current = api;
+    else gridApiNM2Ref.current = api;
+  }, []);
+
   // Đồng bộ search text trên mobile cho cả 2 nhà máy
   const handleMobileSearchChange = useCallback(
     (val: string) => {
@@ -67,9 +75,9 @@ const TINH_HINH_CHOT: React.FC = () => {
   // Xuất Excel nhanh theo tab đang xem trên mobile
   const handleMobileExportEX1 = useCallback(() => {
     if (viewMode === "NM2") {
-      handleExportExcel("NM2", "EX1");
+      handleExportExcel("NM2", "EX1", gridApiNM2Ref.current);
     } else {
-      handleExportExcel("NM1", "EX1");
+      handleExportExcel("NM1", "EX1", gridApiNM1Ref.current);
     }
   }, [viewMode, handleExportExcel]);
 
@@ -217,6 +225,7 @@ const TINH_HINH_CHOT: React.FC = () => {
               onExportExcel={handleExportExcel}
               isLoading={isLoading}
               isMobile={isMobile}
+              onGridApiReady={handleGridApiReady}
             />
           )}
 
@@ -234,6 +243,7 @@ const TINH_HINH_CHOT: React.FC = () => {
               onExportExcel={handleExportExcel}
               isLoading={isLoading}
               isMobile={isMobile}
+              onGridApiReady={handleGridApiReady}
             />
           )}
         </div>

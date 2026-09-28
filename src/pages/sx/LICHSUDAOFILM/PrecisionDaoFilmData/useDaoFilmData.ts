@@ -3,6 +3,7 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import { DAO_FILM_DATA } from "../../../qc/interfaces/qcInterface";
 import { QUANLYDAOFILM_DATA, XUATDAOFILM_DATA } from "../../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import {
@@ -196,9 +197,14 @@ export const useDaoFilmData = () => {
   }, [rawData]);
 
   // Excel Handlers
-  const handleExportEX1 = useCallback(() => {
-    SaveExcel(filteredData, `DaoFilm_${mode}_Filtered`);
-  }, [filteredData, mode]);
+  const handleExportEX1 = useCallback(
+    (gridApi?: any) => {
+      // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick search + floating filter + sort).
+      const rowsToExport = getDisplayedGridRows(gridApi, filteredData);
+      SaveExcel(rowsToExport, `DaoFilm_${mode}_Filtered`);
+    },
+    [filteredData, mode]
+  );
 
   const handleExportEX2 = useCallback(() => {
     SaveExcel(rawData, `DaoFilm_${mode}_All`);

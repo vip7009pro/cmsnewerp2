@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import "./PrecisionRNR/PrecisionRNR.scss";
 import { useRNRData } from "./PrecisionRNR/useRNRData";
 import PrecisionRNRHeader from "./PrecisionRNR/PrecisionRNRHeader";
@@ -12,6 +12,12 @@ import {
 } from "./PrecisionRNR/PrecisionRNRColumns";
 
 const RNR: React.FC = () => {
+  // Giữ GridApi để EX1 xuất đúng các dòng đang hiển thị (search/filter/sort).
+  const gridApiRef = useRef<any>(null);
+  const handleGridApiReady = useCallback((api: any) => {
+    gridApiRef.current = api;
+  }, []);
+
   const {
     isLoading,
     fromdate,
@@ -91,7 +97,7 @@ const RNR: React.FC = () => {
         isLoading={isLoading}
         quickFilterText={quickFilterText}
         setQuickFilterText={setQuickFilterText}
-        onExportExcelFiltered={exportExcelFiltered}
+        onExportExcelFiltered={() => exportExcelFiltered(gridApiRef.current)}
         onExportExcelAll={exportExcelAll}
         filteredCount={filteredData.length}
         totalCount={currentData.length}
@@ -101,6 +107,7 @@ const RNR: React.FC = () => {
       <PrecisionRNRTable
         columns={columns}
         data={filteredData}
+        onGridApiReady={handleGridApiReady}
       />
     </div>
   );

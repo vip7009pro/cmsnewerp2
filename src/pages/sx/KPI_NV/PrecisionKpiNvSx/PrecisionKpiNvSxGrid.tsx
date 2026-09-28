@@ -2,6 +2,7 @@ import React from "react";
 import { FiSearch, FiFileText, FiDownload, FiTable } from "react-icons/fi";
 import { ColDef } from "ag-grid-community";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { useAgGridApiBridge } from "../../../../components/DataTable/useAgGridApiBridge";
 import { SX_KPI_NV_DATA } from "../../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 
 interface PrecisionKpiNvSxGridProps {
@@ -10,9 +11,11 @@ interface PrecisionKpiNvSxGridProps {
   totalCount: number;
   searchKeyword: string;
   onSearchChange: (val: string) => void;
-  onExportEX1: () => void;
+  onExportEX1: (gridApi?: any) => void;
   onExportEX2: () => void;
   isMobile?: boolean;
+  /** Callback nhận GridApi để EX1 xuất đúng dòng đang hiển thị. */
+  onGridApiReady?: (gridApi: any) => void;
 }
 
 const PrecisionKpiNvSxGrid: React.FC<PrecisionKpiNvSxGridProps> = ({
@@ -24,7 +27,10 @@ const PrecisionKpiNvSxGrid: React.FC<PrecisionKpiNvSxGridProps> = ({
   onExportEX1,
   onExportEX2,
   isMobile = false,
+  onGridApiReady,
 }) => {
+  const gridRef = useAgGridApiBridge(onGridApiReady);
+
   return (
     <div className={`precision-kpinvsx__gridContainer ${isMobile ? "is-mobile-grid" : ""}`}>
       {/* Thanh lọc nhanh & hành động xuất file (chỉ hiển thị trên Desktop) */}
@@ -54,7 +60,7 @@ const PrecisionKpiNvSxGrid: React.FC<PrecisionKpiNvSxGridProps> = ({
             <button
               type="button"
               className="grid-btn grid-btn--excel-filtered"
-              onClick={onExportEX1}
+              onClick={() => onExportEX1(gridRef.current?.api)}
               title="Xuất dữ liệu đang lọc ra Excel"
             >
               <FiFileText size={12} />
@@ -85,6 +91,7 @@ const PrecisionKpiNvSxGrid: React.FC<PrecisionKpiNvSxGridProps> = ({
       {/* Thân bảng AG Grid bọc Flexbox full height */}
       <div className="precision-kpinvsx__gridBody">
         <AGTable
+          ref={gridRef}
           showFilter={true}
           columns={columns}
           data={data}

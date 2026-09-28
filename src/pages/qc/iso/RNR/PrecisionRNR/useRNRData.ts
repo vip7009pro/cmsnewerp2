@@ -3,6 +3,7 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../../api/Api";
 import { SaveExcel } from "../../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../../components/DataTable/gridExportUtils";
 import { RNR_DATA, RNR_DATA_EMPL } from "../../../interfaces/qcInterface";
 import { RNRKpiMetrics } from "./PrecisionRNRKpi";
 
@@ -433,10 +434,15 @@ export const useRNRData = () => {
   }, [rnrdatatable, selectedData, currentData]);
 
   // Xuất Excel
-  const exportExcelFiltered = useCallback(() => {
-    const filename = `RNR_${selectedData}_Filtered_${moment().format("YYYYMMDD_HHmmss")}`;
-    SaveExcel(filteredData, filename);
-  }, [filteredData, selectedData]);
+  const exportExcelFiltered = useCallback(
+    (gridApi?: any) => {
+      // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (floating filter + sort + search).
+      const rowsToExport = getDisplayedGridRows(gridApi, filteredData);
+      const filename = `RNR_${selectedData}_Filtered_${moment().format("YYYYMMDD_HHmmss")}`;
+      SaveExcel(rowsToExport, filename);
+    },
+    [filteredData, selectedData]
+  );
 
   const exportExcelAll = useCallback(() => {
     const filename = `RNR_${selectedData}_All_${moment().format("YYYYMMDD_HHmmss")}`;

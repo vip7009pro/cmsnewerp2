@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { useAgGridApiBridge } from "../../../../components/DataTable/useAgGridApiBridge";
 import { ViewMode } from "./useBtpAutoData";
 import { DETAIL_COLUMNS, SUMMARY_COLUMNS } from "./PrecisionBtpAutoColumns";
 
@@ -11,8 +12,10 @@ interface Props {
   setSearchKeyword: (v: string) => void;
   isLoading: boolean;
   onSwitchMode: (mode: ViewMode) => void;
-  onExportExcel: (type: "EX1" | "EX2") => void;
+  onExportExcel: (type: "EX1" | "EX2", gridApi?: any) => void;
   isMobile?: boolean;
+  /** Callback nhận GridApi của AG Grid để page có thể xuất đúng dòng đang hiển thị (EX1). */
+  onGridApiReady?: (gridApi: any) => void;
 }
 
 /**
@@ -31,7 +34,11 @@ const PrecisionBtpAutoGrid: React.FC<Props> = React.memo(
     onSwitchMode,
     onExportExcel,
     isMobile = false,
+    onGridApiReady,
   }) => {
+    // Đồng bộ GridApi lên page để EX1 đọc đúng dòng đang hiển thị (search/filter/sort).
+    const gridRef = useAgGridApiBridge(onGridApiReady);
+
     const columns = useMemo(
       () => (viewMode === "detail" ? DETAIL_COLUMNS : SUMMARY_COLUMNS),
       [viewMode]
@@ -87,7 +94,7 @@ const PrecisionBtpAutoGrid: React.FC<Props> = React.memo(
                 <button
                   type="button"
                   className="precision-btpauto__gridBtn precision-btpauto__gridBtn--excel"
-                  onClick={() => onExportExcel("EX1")}
+                  onClick={() => onExportExcel("EX1", gridRef.current?.api)}
                   title="Xuất dữ liệu đang lọc ra file Excel"
                 >
                   📄 EX1 <span className="badge">Đang lọc</span>
@@ -95,7 +102,7 @@ const PrecisionBtpAutoGrid: React.FC<Props> = React.memo(
                 <button
                   type="button"
                   className="precision-btpauto__gridBtn precision-btpauto__gridBtn--excel"
-                  onClick={() => onExportExcel("EX2")}
+                  onClick={() => onExportExcel("EX2", gridRef.current?.api)}
                   title="Xuất toàn bộ dữ liệu ra file Excel"
                 >
                   📥 EX2 <span className="badge">Tất cả</span>
@@ -118,6 +125,7 @@ const PrecisionBtpAutoGrid: React.FC<Props> = React.memo(
         {/* ===== GRID BODY ===== */}
         <div className="precision-btpauto__gridBody">
           <AGTable
+            ref={gridRef}
             columns={columns}
             data={filteredData}
             onCellEditingStopped={() => {}}

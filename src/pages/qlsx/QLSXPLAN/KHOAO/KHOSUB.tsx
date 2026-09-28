@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useRef } from "react";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { AiOutlineSearch, AiOutlineFileExcel } from "react-icons/ai";
 import { PrecisionKhoSubHeader } from "./PrecisionKhoSub/PrecisionKhoSubHeader";
@@ -12,6 +12,12 @@ interface KHOSUBProps {
 }
 
 const KHOSUB: React.FC<KHOSUBProps> = ({ NEXT_PLAN }) => {
+  // Giữ GridApi để EX1 xuất đúng các dòng đang hiển thị (search/filter/sort).
+  const gridApiRef = useRef<any>(null);
+  const handleGridApiReady = useCallback((api: any) => {
+    gridApiRef.current = api;
+  }, []);
+
   const {
     activeTab,
     fromdate,
@@ -82,7 +88,7 @@ const KHOSUB: React.FC<KHOSUBProps> = ({ NEXT_PLAN }) => {
               <button
                 type="button"
                 className="grid-btn grid-btn--excel"
-                onClick={() => exportExcel("EX1")}
+                onClick={() => exportExcel("EX1", gridApiRef.current)}
                 title="Xuất dữ liệu đang lọc ra file Excel"
               >
                 <AiOutlineFileExcel />
@@ -112,6 +118,7 @@ const KHOSUB: React.FC<KHOSUBProps> = ({ NEXT_PLAN }) => {
 
         <div className="precision-khosub__gridBody">
           <AGTable
+            ref={gridApiRef}
             showFilter={true}
             columns={columns}
             data={filteredData}

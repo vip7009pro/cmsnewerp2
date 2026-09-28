@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import moment from 'moment';
@@ -10,6 +10,7 @@ import { f_insert_Notification_Data } from '../../../api/services/notificationSe
 import { NotificationElement } from '../../../components/NotificationPanel/Notification';
 import { DiemDanhNhomData, WorkPositionTableData } from '../interfaces/nhansuInterface';
 import AGTable from '../../../components/DataTable/AGTable';
+import { getDisplayedGridRows } from '../../../components/DataTable/gridExportUtils';
 
 // Import Subcomponents theo phong cách Stitch
 import PrecisionDieuChuyenHeader from './PrecisionDieuChuyenTeam/PrecisionDieuChuyenHeader';
@@ -43,6 +44,7 @@ const DieuChuyenTeamCMS: React.FC<DieuChuyenTeamCMSProps> = ({ option1, option2 
   const [isPivotOpen, setIsPivotOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [lastUpdated, setLastUpdated] = useState<string>(moment().format('HH:mm A'));
+  const gridRef = useRef<any>(null);
   const [isMobile, setIsMobile] = useState<boolean>(() =>
     typeof window !== 'undefined' ? window.innerWidth <= 768 : false
   );
@@ -330,7 +332,8 @@ const DieuChuyenTeamCMS: React.FC<DieuChuyenTeamCMSProps> = ({ option1, option2 
   );
 
   const handleExportEX1 = useCallback(() => {
-    exportDataToExcel(filteredTableData, 'EX1');
+    // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (floating filter + sort + search).
+    exportDataToExcel(getDisplayedGridRows(gridRef.current?.api, filteredTableData), 'EX1');
   }, [exportDataToExcel, filteredTableData]);
 
   const handleExportEX2 = useCallback(() => {
@@ -570,6 +573,7 @@ const DieuChuyenTeamCMS: React.FC<DieuChuyenTeamCMSProps> = ({ option1, option2 
         {/* AGTable Grid Body (Đã ẩn hoàn toàn toolbar mặc định của AGTable) */}
         <div className="precision-dieuchuyen__gridBody">
           <AGTable
+            ref={gridRef}
             rowHeight={48}
             columns={columns}
             data={filteredTableData}

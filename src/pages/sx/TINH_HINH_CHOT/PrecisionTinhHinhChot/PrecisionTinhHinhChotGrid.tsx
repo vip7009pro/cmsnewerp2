@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { useAgGridApiBridge } from "../../../../components/DataTable/useAgGridApiBridge";
 import { ExtendedTinhHinhChot } from "./useTinhHinhChotData";
 
 interface PrecisionTinhHinhChotGridProps {
@@ -11,9 +12,11 @@ interface PrecisionTinhHinhChotGridProps {
   searchValue: string;
   onSearchChange: (val: string) => void;
   onRefresh: () => void;
-  onExportExcel: (factory: "NM1" | "NM2", mode: "EX1" | "EX2") => void;
+  onExportExcel: (factory: "NM1" | "NM2", mode: "EX1" | "EX2", gridApi?: any) => void;
   isLoading: boolean;
   isMobile?: boolean;
+  /** Callback nhận GridApi theo từng nhà máy để EX1 xuất đúng dòng đang hiển thị. */
+  onGridApiReady?: (factory: "NM1" | "NM2", gridApi: any) => void;
 }
 
 const PrecisionTinhHinhChotGrid: React.FC<PrecisionTinhHinhChotGridProps> = ({
@@ -28,7 +31,11 @@ const PrecisionTinhHinhChotGrid: React.FC<PrecisionTinhHinhChotGridProps> = ({
   onExportExcel,
   isLoading,
   isMobile = false,
+  onGridApiReady,
 }) => {
+  const gridRef = useAgGridApiBridge(
+    onGridApiReady ? (api: any) => onGridApiReady(factory, api) : undefined
+  );
   // Tính toán dòng tổng cộng ghim chân bảng
   const pinnedBottomRowData = useMemo(() => {
     if (!data || data.length === 0) return [];
@@ -96,7 +103,7 @@ const PrecisionTinhHinhChotGrid: React.FC<PrecisionTinhHinhChotGridProps> = ({
           <button
             type="button"
             className="btn-grid-action btn-grid-action--excel"
-            onClick={() => onExportExcel(factory, "EX1")}
+            onClick={() => onExportExcel(factory, "EX1", gridRef.current?.api)}
             title="Xuất file Excel danh sách đang lọc trên bảng"
           >
             <span className="material-symbols-outlined icon">description</span>
@@ -135,6 +142,7 @@ const PrecisionTinhHinhChotGrid: React.FC<PrecisionTinhHinhChotGridProps> = ({
       {/* Thân bảng AGTable */}
       <div className="precision-thc-grid-card__body">
         <AGTable
+          ref={gridRef}
           rowHeight={30}
           columns={columns}
           data={data}

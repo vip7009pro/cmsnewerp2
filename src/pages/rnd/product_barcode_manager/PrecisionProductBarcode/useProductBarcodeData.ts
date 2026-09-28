@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { generalQuery, getAuditMode } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import { CodeListData } from "../../../kinhdoanh/interfaces/kdInterface";
 import { BARCODE_DATA } from "../../interfaces/rndInterface";
 import {
@@ -320,8 +321,12 @@ export const useProductBarcodeData = (): UseProductBarcodeDataReturn => {
 
   // EXCEL EXPORT (EX1: dữ liệu đang lọc, EX2: toàn bộ dữ liệu)
   const handleExportExcel = useCallback(
-    (type: "EX1" | "EX2" = "EX1") => {
-      const rows = type === "EX1" ? filteredBarcodeData : barcodedatatable;
+    (type: "EX1" | "EX2" = "EX1", gridApi?: any) => {
+      // EX1: đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (floating filter + sort + search).
+      const rows =
+        type === "EX1"
+          ? getDisplayedGridRows(gridApi, filteredBarcodeData)
+          : barcodedatatable;
       if (rows.length === 0) {
         Swal.fire("Thông báo", "Không có dữ liệu barcode để xuất", "warning");
         return;

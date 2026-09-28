@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import "./PrecisionLichSuTemLotSx/PrecisionLichSuTemLotSx.scss";
 import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
 import { useLichSuTemLotSxData } from "./PrecisionLichSuTemLotSx/useLichSuTemLotSxData";
@@ -18,6 +18,12 @@ const LICHSUTEMLOTSX: React.FC = () => {
   const [showMobileKpi, setShowMobileKpi] = useState<boolean>(false);
   const [showMobileCharts, setShowMobileCharts] = useState<boolean>(false);
   const [showFilterDrawer, setShowFilterDrawer] = useState<boolean>(false);
+
+  // Giữ GridApi để EX1 xuất đúng các dòng đang hiển thị (search/filter/sort).
+  const gridApiRef = useRef<any>(null);
+  const handleGridApiReady = useCallback((api: any) => {
+    gridApiRef.current = api;
+  }, []);
 
   const {
     lichsutemlotdata,
@@ -102,6 +108,7 @@ const LICHSUTEMLOTSX: React.FC = () => {
               onExportExcel={handleExportExcel}
               selectedRow={selectedRow}
               isMobile={false}
+              onGridApiReady={handleGridApiReady}
             />
           )}
         </>
@@ -151,7 +158,7 @@ const LICHSUTEMLOTSX: React.FC = () => {
             activeFilterCount={activeFilterCount}
             onOpenPreview={() => handleOpenPreview()}
             onCancelLot={handleCancelLot}
-            onExportExcel={handleExportExcel}
+            onExportExcel={(type) => handleExportExcel(type, gridApiRef.current)}
             dataCount={filteredData.length}
             totalCount={lichsutemlotdata.length}
             selectedLot={selectedRow?.PROCESS_LOT_NO}
@@ -169,6 +176,7 @@ const LICHSUTEMLOTSX: React.FC = () => {
             onExportExcel={handleExportExcel}
             selectedRow={selectedRow}
             isMobile={true}
+            onGridApiReady={handleGridApiReady}
           />
 
           {/* Bottom Sheet Filter Drawer Zero-Blur */}

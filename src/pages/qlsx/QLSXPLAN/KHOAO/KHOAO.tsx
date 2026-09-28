@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useRef } from "react";
 import moment from "moment";
 import AGTable from "../../../../components/DataTable/AGTable";
 import { AiOutlineSearch, AiOutlineFileExcel } from "react-icons/ai";
@@ -21,6 +21,12 @@ const KHOAO: React.FC<KHOAOProps> = ({ NEXT_PLAN }) => {
   const isMobile = useIsMobile();
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [showKpiSummary, setShowKpiSummary] = useState(false);
+
+  // Giữ GridApi để EX1 xuất đúng các dòng đang hiển thị (search/filter/sort).
+  const gridApiRef = useRef<any>(null);
+  const handleGridApiReady = useCallback((api: any) => {
+    gridApiRef.current = api;
+  }, []);
 
   const {
     activeTab,
@@ -142,7 +148,7 @@ const KHOAO: React.FC<KHOAOProps> = ({ NEXT_PLAN }) => {
           onXoaRac={handle_nhappassword_xoarac}
           onAnRac={handle_nhappassword_anrac}
           onRefresh={handleRefresh}
-          onExportExcel={exportExcel}
+          onExportExcel={(type) => exportExcel(type, gridApiRef.current)}
           isLoading={isLoading}
         />
       )}
@@ -175,7 +181,7 @@ const KHOAO: React.FC<KHOAOProps> = ({ NEXT_PLAN }) => {
                 <button
                   type="button"
                   className="grid-btn grid-btn--excel"
-                  onClick={() => exportExcel("EX1")}
+                  onClick={() => exportExcel("EX1", gridApiRef.current)}
                   title="Xuất dữ liệu đang lọc ra file Excel"
                 >
                   <AiOutlineFileExcel />
@@ -206,6 +212,7 @@ const KHOAO: React.FC<KHOAOProps> = ({ NEXT_PLAN }) => {
 
         <div className="precision-khoao__gridBody">
           <AGTable
+            ref={gridApiRef}
             showFilter={true}
             columns={columns}
             data={filteredData}

@@ -7,6 +7,7 @@ import {
   FiSend,
 } from "react-icons/fi";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { useAgGridApiBridge } from "../../../../components/DataTable/useAgGridApiBridge";
 import { DaoFilmMode } from "./useDaoFilmData";
 
 interface PrecisionDaoFilmDataGridProps {
@@ -16,12 +17,14 @@ interface PrecisionDaoFilmDataGridProps {
   totalCount: number;
   searchKeyword: string;
   onSearchChange: (val: string) => void;
-  onExportEX1: () => void;
+  onExportEX1: (gridApi?: any) => void;
   onExportEX2: () => void;
   onOpenGiaoNhan: () => void;
   onGanCode?: () => void;
   onXuatDaoFilm?: () => void;
   isMobile?: boolean;
+  /** Callback nhận GridApi để EX1 xuất đúng dòng đang hiển thị. */
+  onGridApiReady?: (gridApi: any) => void;
 }
 
 export const PrecisionDaoFilmDataGrid: React.FC<PrecisionDaoFilmDataGridProps> = React.memo(
@@ -38,7 +41,10 @@ export const PrecisionDaoFilmDataGrid: React.FC<PrecisionDaoFilmDataGridProps> =
     onGanCode,
     onXuatDaoFilm,
     isMobile = false,
+    onGridApiReady,
   }) => {
+    const gridRef = useAgGridApiBridge(onGridApiReady);
+
     return (
       <div className={`precision-df-grid ${isMobile ? "is-mobile" : ""}`}>
         {/* Top Quick Search & Actions Toolbar (Chỉ hiển thị trên desktop) */}
@@ -61,7 +67,7 @@ export const PrecisionDaoFilmDataGrid: React.FC<PrecisionDaoFilmDataGridProps> =
               <button
                 type="button"
                 className="precision-df-grid__btn precision-df-grid__btn--excel"
-                onClick={onExportEX1}
+                onClick={() => onExportEX1(gridRef.current?.api)}
                 title="Xuất dữ liệu đang lọc ra file Excel"
               >
                 <FiDownload size={11} />
@@ -130,6 +136,7 @@ export const PrecisionDaoFilmDataGrid: React.FC<PrecisionDaoFilmDataGridProps> =
         {/* AGTable Grid Body */}
         <div className="precision-df-grid__body">
           <AGTable
+            ref={gridRef}
             columns={columns}
             data={filteredData ?? []}
             // Không truyền prop toolbar để ẩn toolbar xanh lá mặc định

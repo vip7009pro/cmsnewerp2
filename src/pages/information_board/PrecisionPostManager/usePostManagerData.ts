@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { UserData } from "../../../api/GlobalInterface";
 import { SaveExcel } from "../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import { POST_DATA } from "../interfaces/infoInterface";
 import { f_deletePostData, f_fetchPostListAll, f_updatePostData } from "../utils/infoUtils";
 
@@ -349,8 +350,10 @@ export const usePostManagerData = () => {
   }, [dateFilteredPosts]);
 
   // Xuất Excel EX1 (Đang lọc) & EX2 (Toàn bộ)
-  const handleExportEX1 = () => {
-    SaveExcel(filteredPosts, `BangTin_DangLoc_${moment().format("YYYYMMDD_HHmm")}`);
+  const handleExportEX1 = (gridApi?: any) => {
+    // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick search + floating filter + sort).
+    const rowsToExport = getDisplayedGridRows(gridApi, filteredPosts);
+    SaveExcel(rowsToExport, `BangTin_DangLoc_${moment().format("YYYYMMDD_HHmm")}`);
   };
 
   const handleExportEX2 = () => {

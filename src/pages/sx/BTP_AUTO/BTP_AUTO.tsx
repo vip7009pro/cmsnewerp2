@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import "./BTP_AUTO.scss";
 import "./PrecisionBtpAuto/PrecisionBtpAuto.scss";
 import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
@@ -21,6 +21,12 @@ const BTP_AUTO: React.FC = () => {
   const isMobile = useIsMobile();
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [showKpiSummary, setShowKpiSummary] = useState(false);
+
+  // Giữ GridApi của AG Grid để EX1 xuất đúng các dòng đang hiển thị (search/filter/sort).
+  const gridApiRef = useRef<any>(null);
+  const handleGridApiReady = useCallback((api: any) => {
+    gridApiRef.current = api;
+  }, []);
 
   const {
     btpData,
@@ -99,8 +105,8 @@ const BTP_AUTO: React.FC = () => {
           onSelectXuong={setFilterXuong}
           onlyPositive={onlyPositive}
           onToggleOnlyPositive={() => setOnlyPositive((prev) => !prev)}
-          onExportEX1={() => handleExportExcel("EX1")}
-          onExportEX2={() => handleExportExcel("EX2")}
+          onExportEX1={() => handleExportExcel("EX1", gridApiRef.current)}
+          onExportEX2={() => handleExportExcel("EX2", gridApiRef.current)}
           onOpenGiaoNhan={() => setShowGiaoNhan(true)}
           filteredCount={filteredData.length}
           totalCount={btpData.length}
@@ -136,6 +142,7 @@ const BTP_AUTO: React.FC = () => {
         onSwitchMode={handleSwitchMode}
         onExportExcel={handleExportExcel}
         isMobile={isMobile}
+        onGridApiReady={handleGridApiReady}
       />
 
       {/* ===== 5. MOBILE FILTER DRAWER (BOTTOM SHEET ZERO-BLUR) ===== */}

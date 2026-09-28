@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { generalQuery } from "../../../api/Api";
 import { getErrMessage, getTkMessage, isTkOk } from "../../../api/services/responseService";
 import "./PrecisionPheDuyetNghi/PrecisionPheDuyetNghi.scss";
 import Swal from "sweetalert2";
 import moment from "moment";
 import AGTable from "../../../components/DataTable/AGTable";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import { SaveExcel } from "../../../api/services/excelService";
 import { PheDuyetNghiData } from "../interfaces/nhansuInterface";
 import PrecisionPheDuyetHeader from "./PrecisionPheDuyetNghi/PrecisionPheDuyetHeader";
@@ -33,6 +34,7 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [filterReason, setFilterReason] = useState<string>("all");
   const [isPivotOpen, setIsPivotOpen] = useState<boolean>(false);
+  const gridRef = useRef<any>(null);
   const [isMobile, setIsMobile] = useState<boolean>(() =>
     typeof window !== 'undefined' ? window.innerWidth <= 768 : false
   );
@@ -237,8 +239,10 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
 
   // Xuất Excel EX1 & EX2
   const handleExportEX1 = () => {
-    if (filteredData.length === 0) return;
-    SaveExcel(filteredData, `NS2_PheDuyetNghi_DangLoc_${moment().format("YYYYMMDD_HHmmss")}`);
+    // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (floating filter + sort + search).
+    const rowsToExport = getDisplayedGridRows<any>(gridRef.current?.api, filteredData);
+    if (rowsToExport.length === 0) return;
+    SaveExcel(rowsToExport, `NS2_PheDuyetNghi_DangLoc_${moment().format("YYYYMMDD_HHmmss")}`);
   };
 
   const handleExportEX2 = () => {
@@ -357,6 +361,7 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
 
         <div className="precision-pheduyet__gridBody">
           <AGTable
+            ref={gridRef}
             rowHeight={38}
             columns={columns}
             data={filteredData}

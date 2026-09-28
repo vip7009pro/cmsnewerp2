@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import "./UserManager.scss";
 import "./PrecisionUserManager/PrecisionUserManager.scss";
 import { generalQuery, getCompany, getCtrCd, getUserData, uploadQuery } from "../../../api/Api";
 import { EmployeeTableData } from "../interfaces/nhansuInterface";
 import AGTable from "../../../components/DataTable/AGTable";
+import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";
 import {
   f_addEmployee,
   f_getEmployeeList,
@@ -113,6 +114,7 @@ const UserManager = () => {
   const [workpositionload, setWorkPositionLoad] = useState<Array<any>>([]);
   const [selectedRows, setSelectedRows] = useState<EmployeeTableData>(initialUserState);
   const [quickFilterText, setQuickFilterText] = useState("");
+  const gridRef = useRef<any>(null);
   const [isPivotOpen, setIsPivotOpen] = useState(false);
   const [isMobile, setIsMobile] = useState<boolean>(() =>
     typeof window !== "undefined" ? window.innerWidth <= 768 : false
@@ -369,7 +371,8 @@ const UserManager = () => {
   }, [empl_info, resigned_check, quickFilterText]);
 
   // Excel export
-  const handleExportEX1 = () => SaveExcel(filteredData, "DS_NhanVien_Filtered");
+  const handleExportEX1 = () =>
+    SaveExcel(getDisplayedGridRows(gridRef.current?.api, filteredData), "DS_NhanVien_Filtered");
   const handleExportEX2 = () => SaveExcel(empl_info, "DS_NhanVien_Full");
 
   useEffect(() => {
@@ -406,6 +409,7 @@ const UserManager = () => {
 
           <div className="precision-usermanager__gridContainer">
             <AGTable
+              ref={gridRef}
               suppressRowClickSelection={false}
               rowHeight={34}
               headerHeight={32}

@@ -3,6 +3,7 @@ import moment from "moment";
 import { generalQuery } from "../../../../api/Api";
 import { TINH_HINH_CHOT_BC } from "../../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 
 export interface ExtendedTinhHinhChot extends TINH_HINH_CHOT_BC {
   id: number;
@@ -282,14 +283,14 @@ export const useTinhHinhChotData = () => {
 
   // Xuất file Excel
   const handleExportExcel = useCallback(
-    (factory: "NM1" | "NM2", mode: "EX1" | "EX2") => {
+    (factory: "NM1" | "NM2", mode: "EX1" | "EX2", gridApi?: any) => {
+      const fallbackData = factory === "NM1" ? filteredDataNM1 : filteredDataNM2;
       const dataToExport =
-        factory === "NM1"
-          ? mode === "EX1"
-            ? filteredDataNM1
-            : rawDataNM1
-          : mode === "EX1"
-          ? filteredDataNM2
+        mode === "EX1"
+          ? // EX1: đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (floating filter + sort + search).
+            getDisplayedGridRows(gridApi, fallbackData)
+          : factory === "NM1"
+          ? rawDataNM1
           : rawDataNM2;
 
       if (!dataToExport || dataToExport.length === 0) {

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useRef } from "react";
 import moment from "moment";
 import "./PrecisionMainDefects/PrecisionMainDefects.scss";
 import { useMainDefectsData, ModalImageData } from "./PrecisionMainDefects/useMainDefectsData";
@@ -17,10 +17,15 @@ import PrecisionMainDefectsMobileFilterDrawer from "./PrecisionMainDefects/Preci
 
 const MAINDEFECTS: React.FC = () => {
   const isMobile = useIsMobile();
-
   // Mobile specific UI states
   const [showMobileKpi, setShowMobileKpi] = useState<boolean>(false);
   const [showMobileFilter, setShowMobileFilter] = useState<boolean>(false);
+
+  // Giữ GridApi để EX1 xuất đúng các dòng đang hiển thị (search/filter/sort).
+  const gridApiRef = useRef<any>(null);
+  const handleGridApiReady = useCallback((api: any) => {
+    gridApiRef.current = api;
+  }, []);
 
   const {
     rawData,
@@ -173,7 +178,7 @@ const MAINDEFECTS: React.FC = () => {
           onImageYnChange={setImageYn}
           useYn={useYn}
           onUseYnChange={setUseYn}
-          onExportEX1={handleExportEX1}
+          onExportEX1={() => handleExportEX1(gridApiRef.current)}
           onExportEX2={handleExportEX2}
           onOpenFilterDrawer={() => setShowMobileFilter(true)}
           onSearch={handleLoadData}
@@ -216,9 +221,10 @@ const MAINDEFECTS: React.FC = () => {
             totalCount={rawData.length}
             searchKeyword={quickSearch}
             onSearchChange={setQuickSearch}
-            onExportEX1={handleExportEX1}
+            onExportEX1={() => handleExportEX1(gridApiRef.current)}
             onExportEX2={handleExportEX2}
             isMobile={isMobile}
+            onGridApiReady={handleGridApiReady}
           />
         )}
       </div>

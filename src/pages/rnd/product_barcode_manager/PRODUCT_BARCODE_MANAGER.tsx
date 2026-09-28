@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import { createProductBarcodeColumns } from "./PrecisionProductBarcode/PrecisionProductBarcodeColumns";
 import { PrecisionProductBarcodeForm } from "./PrecisionProductBarcode/PrecisionProductBarcodeForm";
 import { PrecisionProductBarcodeHeader } from "./PrecisionProductBarcode/PrecisionProductBarcodeHeader";
@@ -18,6 +18,12 @@ import "./PrecisionProductBarcode/PrecisionProductBarcode.scss";
 import "./PRODUCT_BARCODE_MANAGER.scss";
 
 const PRODUCT_BARCODE_MANAGER: React.FC = () => {
+  // Giữ GridApi để EX1 xuất đúng các dòng đang hiển thị (search/filter/sort).
+  const gridApiRef = useRef<any>(null);
+  const handleGridApiReady = useCallback((api: any) => {
+    gridApiRef.current = api;
+  }, []);
+
   const {
     barcodedatatable,
     filteredBarcodeData,
@@ -112,7 +118,7 @@ const PRODUCT_BARCODE_MANAGER: React.FC = () => {
             setProdFilter={setProdFilter}
             quickSearch={quickSearch}
             setQuickSearch={setQuickSearch}
-            onExportEX1={() => handleExportExcel("EX1")}
+            onExportEX1={() => handleExportExcel("EX1", gridApiRef.current)}
             onExportEX2={() => handleExportExcel("EX2")}
             onOpenPivot={() => setShowHidePivotTable(true)}
             totalCount={barcodedatatable.length}
@@ -123,6 +129,7 @@ const PRODUCT_BARCODE_MANAGER: React.FC = () => {
             columns={columns}
             data={filteredBarcodeData}
             onSelectRow={handleSelectRow}
+            onGridApiReady={handleGridApiReady}
           />
         </main>
       </div>

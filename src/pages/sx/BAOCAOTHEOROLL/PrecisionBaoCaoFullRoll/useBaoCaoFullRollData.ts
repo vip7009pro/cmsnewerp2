@@ -5,6 +5,7 @@ import { FULL_ROLL_DATA, MACHINE_LIST } from "../../../qlsx/QLSXPLAN/interfaces/
 import { f_getMachineListData } from "../../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { generalQuery } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 
 export const f_handleLoadFullRollData = async (data: any): Promise<FULL_ROLL_DATA[]> => {
   let kq: FULL_ROLL_DATA[] = [];
@@ -298,13 +299,18 @@ export const useBaoCaoFullRollData = () => {
   }, [fullRollData]);
 
   // 10. Excel Export Handlers
-  const handleExportEX1 = useCallback(() => {
-    if (filteredData.length === 0) {
-      Swal.fire("Thông báo", "Không có dữ liệu đang lọc để xuất Excel", "warning");
-      return;
-    }
-    SaveExcel(filteredData, `BaoCaoFullRoll_Filtered_${moment().format("YYYYMMDD_HHmmss")}`);
-  }, [filteredData]);
+  const handleExportEX1 = useCallback(
+    (gridApi?: any) => {
+      // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick search + floating filter + sort).
+      const rowsToExport = getDisplayedGridRows(gridApi, filteredData);
+      if (rowsToExport.length === 0) {
+        Swal.fire("Thông báo", "Không có dữ liệu đang lọc để xuất Excel", "warning");
+        return;
+      }
+      SaveExcel(rowsToExport, `BaoCaoFullRoll_Filtered_${moment().format("YYYYMMDD_HHmmss")}`);
+    },
+    [filteredData]
+  );
 
   const handleExportEX2 = useCallback(() => {
     if (fullRollData.length === 0) {

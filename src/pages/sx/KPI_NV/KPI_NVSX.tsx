@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import moment from "moment";
 import "./PrecisionKpiNvSx/PrecisionKpiNvSx.scss";
 import { useKpiNvSxData } from "./PrecisionKpiNvSx/useKpiNvSxData";
@@ -19,6 +19,12 @@ const KPI_NVSX: React.FC = () => {
   // Mobile specific UI states
   const [showMobileKpi, setShowMobileKpi] = useState<boolean>(false);
   const [showMobileFilter, setShowMobileFilter] = useState<boolean>(false);
+
+  // Giữ GridApi để EX1 xuất đúng các dòng đang hiển thị (search/filter/sort).
+  const gridApiRef = useRef<any>(null);
+  const handleGridApiReady = useCallback((api: any) => {
+    gridApiRef.current = api;
+  }, []);
 
   const {
     fromDate,
@@ -132,7 +138,7 @@ const KPI_NVSX: React.FC = () => {
           option={option}
           allTime={allTime}
           onAllTimeToggle={() => setAllTime((prev) => !prev)}
-          onExportEX1={handleExportEX1}
+          onExportEX1={() => handleExportEX1(gridApiRef.current)}
           onExportEX2={handleExportEX2}
           onOpenFilterDrawer={() => setShowMobileFilter(true)}
           onLoadData={loadKpiData}
@@ -181,9 +187,10 @@ const KPI_NVSX: React.FC = () => {
             totalCount={rawKpiData.length}
             searchKeyword={searchKeyword}
             onSearchChange={setSearchKeyword}
-            onExportEX1={handleExportEX1}
+            onExportEX1={() => handleExportEX1(gridApiRef.current)}
             onExportEX2={handleExportEX2}
             isMobile={isMobile}
+            onGridApiReady={handleGridApiReady}
           />
         )}
       </div>

@@ -5,6 +5,7 @@ import { BTP_AUTO_DATA2, BTP_AUTO_DATA_SUMMARY } from "../../../qlsx/QLSXPLAN/in
 import { f_load_BTP_Auto, f_load_BTP_Summary_Auto } from "../../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { f_updateBTP_M100 } from "../../../../api/services/inventoryService";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 
 export type ViewMode = "detail" | "summary";
 export type XuongFilter = "ALL" | "A" | "B";
@@ -230,9 +231,23 @@ export const useBtpAutoData = () => {
   }, [btpData, viewMode]);
 
   // ===== Excel Export =====
+  /**
+   * EX1 = xuất đúng các dòng ĐANG HIỂN THỊ trên lưới (đã áp quick search,
+   * floating filter theo từng cột và sort của AG Grid).
+   * EX2 = xuất toàn bộ dữ liệu đã load.
+   * `gridApi` là optional: nếu lưới chưa sẵn sàng thì fallback về `filteredData`.
+   */
   const handleExportExcel = useCallback(
-    (type: "EX1" | "EX2") => {
-      const dataToExport = type === "EX1" ? filteredData : btpData;
+    (type: "EX1" | "EX2", gridApi?: any) => {
+      let dataToExport: Array<any>;
+
+      if (type === "EX1") {
+        // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick search + floating filter + sort).
+        dataToExport = getDisplayedGridRows(gridApi, filteredData);
+      } else {
+        dataToExport = btpData;
+      }
+
       if (dataToExport.length === 0) {
         Swal.fire("Thông báo", "Không có dữ liệu để xuất", "warning");
         return;

@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { AiOutlineDownload, AiOutlineSearch } from "react-icons/ai";
 import AGTable from "../../../../../components/DataTable/AGTable";
+import { useAgGridApiBridge } from "../../../../../components/DataTable/useAgGridApiBridge";
+import { getDisplayedGridRows } from "../../../../../components/DataTable/gridExportUtils";
 import { SX_ACHIVE_DATE } from "../../interfaces/khsxInterface";
 import { getColumnAchivementTb } from "./PrecisionAchivementTbColumns";
 
@@ -11,6 +13,8 @@ interface PrecisionAchivementTbGridProps {
   isMobile?: boolean;
   searchTerm?: string;
   setSearchTerm?: (val: string) => void;
+  /** Callback nhận GridApi để EX1 xuất đúng dòng đang hiển thị. */
+  onGridApiReady?: (gridApi: any) => void;
 }
 
 export const PrecisionAchivementTbGrid: React.FC<
@@ -22,7 +26,9 @@ export const PrecisionAchivementTbGrid: React.FC<
   isMobile = false,
   searchTerm: propSearchTerm,
   setSearchTerm: propSetSearchTerm,
+  onGridApiReady,
 }) => {
+  const gridRef = useAgGridApiBridge(onGridApiReady);
   const [internalSearchTerm, setInternalSearchTerm] = useState("");
 
   const searchTerm =
@@ -71,7 +77,9 @@ export const PrecisionAchivementTbGrid: React.FC<
               <button
                 type="button"
                 className="grid-btn grid-btn--excel"
-                onClick={() => onExportEX1(filteredData)}
+                onClick={() =>
+                  onExportEX1(getDisplayedGridRows(gridRef.current?.api, filteredData))
+                }
                 title="Xuất dữ liệu đang lọc ra file Excel"
               >
                 <AiOutlineDownload size={13} />
@@ -106,6 +114,7 @@ export const PrecisionAchivementTbGrid: React.FC<
 
       <div className="precision-achivementtb__gridBody">
         <AGTable
+          ref={gridRef}
           columns={columns}
           data={filteredData}
           toolbar={<div></div>}

@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { FiSearch, FiFileText, FiDownload } from "react-icons/fi";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { useAgGridApiBridge } from "../../../../components/DataTable/useAgGridApiBridge";
 import { FULL_ROLL_DATA } from "../../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { getBaoCaoFullRollColumns } from "./PrecisionBaoCaoFullRollColumns";
 
@@ -9,9 +10,11 @@ interface PrecisionBaoCaoFullRollGridProps {
   totalCount: number;
   searchKeyword: string;
   onSearchKeywordChange: (kw: string) => void;
-  onExportEX1: () => void;
+  onExportEX1: (gridApi?: any) => void;
   onExportEX2: () => void;
   isMobile?: boolean;
+  /** Callback nhận GridApi để EX1 xuất đúng dòng đang hiển thị. */
+  onGridApiReady?: (gridApi: any) => void;
 }
 
 const PrecisionBaoCaoFullRollGrid: React.FC<PrecisionBaoCaoFullRollGridProps> = ({
@@ -22,7 +25,9 @@ const PrecisionBaoCaoFullRollGrid: React.FC<PrecisionBaoCaoFullRollGridProps> = 
   onExportEX1,
   onExportEX2,
   isMobile = false,
+  onGridApiReady,
 }) => {
+  const gridRef = useAgGridApiBridge(onGridApiReady);
   const columns = useMemo(() => getBaoCaoFullRollColumns(), []);
 
   return (
@@ -45,7 +50,7 @@ const PrecisionBaoCaoFullRollGrid: React.FC<PrecisionBaoCaoFullRollGridProps> = 
             <button
               type="button"
               className="precision-bcfr-grid__btn-action precision-bcfr-grid__btn-action--excel"
-              onClick={onExportEX1}
+              onClick={() => onExportEX1(gridRef.current?.api)}
               title="Xuất Excel danh sách đang hiển thị theo bộ lọc tìm kiếm"
             >
               <FiFileText size={11} />
@@ -77,6 +82,7 @@ const PrecisionBaoCaoFullRollGrid: React.FC<PrecisionBaoCaoFullRollGridProps> = 
       {/* Bảng dữ liệu AGTable */}
       <div className="precision-bcfr-grid__body">
         <AGTable
+          ref={gridRef}
           showFilter={true}
           columns={columns}
           data={data}

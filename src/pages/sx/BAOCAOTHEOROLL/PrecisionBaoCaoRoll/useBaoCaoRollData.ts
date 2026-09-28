@@ -3,6 +3,7 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import { generalQuery } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import {
   MACHINE_LIST,
   SX_BAOCAOROLLDATA,
@@ -189,9 +190,13 @@ export const useBaoCaoRollData = () => {
     });
   }, [plandatatable, searchKeyword]);
 
-  const handleExportEX1 = useCallback(() => {
-    SaveExcel(filteredData, "BAOCAOROLL_Filtered");
-  }, [filteredData]);
+  const handleExportEX1 = useCallback(
+    (gridApi?: any) => {
+      // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (floating filter + sort + search).
+      SaveExcel(getDisplayedGridRows(gridApi, filteredData), "BAOCAOROLL_Filtered");
+    },
+    [filteredData]
+  );
 
   const handleExportEX2 = useCallback(() => {
     SaveExcel(plandatatable, "BAOCAOROLL_All");

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import "./PrecisionBaoCaoRoll/PrecisionBaoCaoRoll.scss";
 import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
 import { useBaoCaoRollData } from "./PrecisionBaoCaoRoll/useBaoCaoRollData";
@@ -26,6 +26,12 @@ const BAOCAOTHEOROLL: React.FC = () => {
   const [showMobileKpi, setShowMobileKpi] = useState<boolean>(false);
   const [showMobileChart, setShowMobileChart] = useState<boolean>(false);
   const [showFilterDrawer, setShowFilterDrawer] = useState<boolean>(false);
+
+  // Giữ GridApi để EX1 xuất đúng các dòng đang hiển thị (search/filter/sort).
+  const gridApiRef = useRef<any>(null);
+  const handleGridApiReady = useCallback((api: any) => {
+    gridApiRef.current = api;
+  }, []);
 
   const {
     fromdate,
@@ -129,10 +135,11 @@ const BAOCAOTHEOROLL: React.FC = () => {
                   totalCount={totalRowCount}
                   searchKeyword={searchKeyword}
                   onSearchChange={setSearchKeyword}
-                  onExportEX1={handleExportEX1}
+                  onExportEX1={() => handleExportEX1(gridApiRef.current)}
                   onExportEX2={handleExportEX2}
                   onOpenPivot={() => setShowHidePivotTable(true)}
                   isMobile={false}
+                  onGridApiReady={handleGridApiReady}
                 />
               </>
             )}
@@ -190,7 +197,7 @@ const BAOCAOTHEOROLL: React.FC = () => {
             onSearchChange={setSearchKeyword}
             onOpenFilter={() => setShowFilterDrawer(true)}
             activeFilterCount={activeFilterCount}
-            onExportEX1={handleExportEX1}
+            onExportEX1={() => handleExportEX1(gridApiRef.current)}
             onExportEX2={handleExportEX2}
             onOpenPivot={() => setShowHidePivotTable(true)}
             totalRows={totalRowCount}
@@ -205,10 +212,11 @@ const BAOCAOTHEOROLL: React.FC = () => {
               totalCount={totalRowCount}
               searchKeyword={searchKeyword}
               onSearchChange={setSearchKeyword}
-              onExportEX1={handleExportEX1}
+              onExportEX1={() => handleExportEX1(gridApiRef.current)}
               onExportEX2={handleExportEX2}
               onOpenPivot={() => setShowHidePivotTable(true)}
               isMobile={true}
+              onGridApiReady={handleGridApiReady}
             />
           </div>
 

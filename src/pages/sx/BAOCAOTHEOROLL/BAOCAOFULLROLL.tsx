@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import "./PrecisionBaoCaoFullRoll/PrecisionBaoCaoFullRoll.scss";
 import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
 import { useBaoCaoFullRollData, f_handleLoadFullRollData } from "./PrecisionBaoCaoFullRoll/useBaoCaoFullRollData";
@@ -21,6 +21,12 @@ const BAOCAOFULLROLL: React.FC = () => {
   const [showMobileKpi, setShowMobileKpi] = useState<boolean>(false);
   const [showMobileChart, setShowMobileChart] = useState<boolean>(false);
   const [showFilterDrawer, setShowFilterDrawer] = useState<boolean>(false);
+
+  // Giữ GridApi để EX1 xuất đúng các dòng đang hiển thị (search/filter/sort).
+  const gridApiRef = useRef<any>(null);
+  const handleGridApiReady = useCallback((api: any) => {
+    gridApiRef.current = api;
+  }, []);
 
   const {
     // Filter props
@@ -139,9 +145,10 @@ const BAOCAOFULLROLL: React.FC = () => {
                 totalCount={totalRowCount}
                 searchKeyword={searchKeyword}
                 onSearchKeywordChange={setSearchKeyword}
-                onExportEX1={handleExportEX1}
+                onExportEX1={() => handleExportEX1(gridApiRef.current)}
                 onExportEX2={handleExportEX2}
                 isMobile={false}
+                onGridApiReady={handleGridApiReady}
               />
             )}
           </div>
@@ -194,7 +201,7 @@ const BAOCAOFULLROLL: React.FC = () => {
             onSearchChange={setSearchKeyword}
             onOpenFilter={() => setShowFilterDrawer(true)}
             activeFilterCount={activeFilterCount}
-            onExportEX1={handleExportEX1}
+            onExportEX1={() => handleExportEX1(gridApiRef.current)}
             onExportEX2={handleExportEX2}
             totalRows={totalRowCount}
             filteredRows={filteredRowCount}
@@ -207,7 +214,7 @@ const BAOCAOFULLROLL: React.FC = () => {
               totalCount={totalRowCount}
               searchKeyword={searchKeyword}
               onSearchKeywordChange={setSearchKeyword}
-              onExportEX1={handleExportEX1}
+              onExportEX1={() => handleExportEX1(gridApiRef.current)}
               onExportEX2={handleExportEX2}
               isMobile={true}
             />

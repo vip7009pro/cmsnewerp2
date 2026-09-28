@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { FiSearch, FiDownload, FiPlusCircle, FiCheckSquare, FiTrash2, FiEye } from "react-icons/fi";
 import AGTable from "../../../components/DataTable/AGTable";
+import { useAgGridApiBridge } from "../../../components/DataTable/useAgGridApiBridge";
 import { POST_DATA } from "../interfaces/infoInterface";
 
 interface GridProps {
@@ -13,8 +14,10 @@ interface GridProps {
   onUpdatePosts: () => void;
   onDeletePosts: () => void;
   onViewPost: (post: POST_DATA) => void;
-  onExportEX1: () => void;
+  onExportEX1: (gridApi?: any) => void;
   onExportEX2: () => void;
+  /** Callback nhận GridApi để EX1 xuất đúng dòng đang hiển thị. */
+  onGridApiReady?: (gridApi: any) => void;
 }
 
 const PrecisionPostManagerGrid: React.FC<GridProps> = ({
@@ -29,7 +32,10 @@ const PrecisionPostManagerGrid: React.FC<GridProps> = ({
   onViewPost,
   onExportEX1,
   onExportEX2,
+  onGridApiReady,
 }) => {
+  const gridRef = useAgGridApiBridge(onGridApiReady);
+
   // Giữ nguyên 100% field, headerName và thiết lập editable của cột gốc
   const columns = useMemo(() => {
     return [
@@ -174,7 +180,7 @@ const PrecisionPostManagerGrid: React.FC<GridProps> = ({
             <button
               type="button"
               className="precision-postmanager__gridBtn precision-postmanager__gridBtn--excel"
-              onClick={onExportEX1}
+              onClick={() => onExportEX1(gridRef.current?.api)}
               title="Xuất dữ liệu đang lọc ra file Excel"
             >
               <FiDownload size={11} />
@@ -233,6 +239,7 @@ const PrecisionPostManagerGrid: React.FC<GridProps> = ({
       {/* Grid Body: AGTable */}
       <div className="precision-postmanager__gridBody">
         <AGTable
+          ref={gridRef}
           columns={columns}
           suppressRowClickSelection={false}
           data={data}

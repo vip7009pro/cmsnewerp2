@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import "./PrecisionPostManager/PrecisionPostManager.scss";
 import { usePostManagerData } from "./PrecisionPostManager/usePostManagerData";
 import PrecisionPostManagerHeader from "./PrecisionPostManager/PrecisionPostManagerHeader";
@@ -11,6 +11,12 @@ import PrecisionPostManagerViewModal from "./PrecisionPostManager/PrecisionPostM
 
 const PostManager: React.FC = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
+
+  // Giữ GridApi để EX1 xuất đúng các dòng đang hiển thị (search/filter/sort).
+  const gridApiRef = useRef<any>(null);
+  const handleGridApiReady = useCallback((api: any) => {
+    gridApiRef.current = api;
+  }, []);
 
   const {
     fromdate,
@@ -99,8 +105,9 @@ const PostManager: React.FC = () => {
             onUpdatePosts={updatePost}
             onDeletePosts={deletePost}
             onViewPost={(post) => setViewingPost(post)}
-            onExportEX1={handleExportEX1}
+            onExportEX1={() => handleExportEX1(gridApiRef.current)}
             onExportEX2={handleExportEX2}
+            onGridApiReady={handleGridApiReady}
           />
         )}
       </div>

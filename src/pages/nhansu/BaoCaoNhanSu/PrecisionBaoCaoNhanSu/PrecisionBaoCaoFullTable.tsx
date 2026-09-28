@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { DiemDanhFullData } from "../../interfaces/nhansuInterface";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import { getColumnsFullInfo } from "./PrecisionBaoCaoColumns";
 import { AiOutlineDatabase, AiOutlineSearch } from "react-icons/ai";
 import { RiFileExcel2Line } from "react-icons/ri";
@@ -22,6 +23,7 @@ export const PrecisionBaoCaoFullTable: React.FC<PrecisionBaoCaoFullTableProps> =
   isLoading,
 }) => {
   const [keyword, setKeyword] = useState("");
+  const gridRef = useRef<any>(null);
 
   const columns = useMemo(() => getColumnsFullInfo(), []);
 
@@ -71,7 +73,9 @@ export const PrecisionBaoCaoFullTable: React.FC<PrecisionBaoCaoFullTableProps> =
               <button
                 type="button"
                 className="precision-baocao__gridBtn precision-baocao__gridBtn--excel"
-                onClick={() => onExportEX1(filteredData)}
+                onClick={() =>
+                  onExportEX1(getDisplayedGridRows(gridRef.current?.api, filteredData))
+                }
                 title="Xuất các dòng đang lọc ra file Excel"
               >
                 <RiFileExcel2Line size={13} />
@@ -110,6 +114,7 @@ export const PrecisionBaoCaoFullTable: React.FC<PrecisionBaoCaoFullTableProps> =
 
         <div className="precision-baocao__gridBody" style={{ height: "450px" }}>
           <AGTable
+            ref={gridRef}
             columns={columns}
             data={filteredData}
             rowHeight={32}

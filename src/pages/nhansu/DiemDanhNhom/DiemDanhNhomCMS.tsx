@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import moment from 'moment';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
 import AGTable from '../../../components/DataTable/AGTable';
+import { getDisplayedGridRows } from '../../../components/DataTable/gridExportUtils';
 import { DiemDanhNhomData } from '../interfaces/nhansuInterface';
 import { f_getDiemDanhNhom, f_updateWorkHour } from '../utils/nhansuUtils';
 import { generalQuery, getCompany } from '../../../api/Api';
@@ -156,6 +157,7 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
   const [selectedFactory, setSelectedFactory] = useState<string>('ALL');
   const [diemdanhnhomtable, setDiemDanhNhomTable] = useState<Array<DiemDanhNhomData>>([]);
   const [searchKeyword, setSearchKeyword] = useState<string>('');
+  const gridRef = useRef<any>(null);
   const [isPivotOpen, setIsPivotOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [lastUpdated, setLastUpdated] = useState<string>(moment().format('HH:mm A'));
@@ -418,7 +420,8 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
   );
 
   const handleExportEX1 = useCallback(() => {
-    exportDataToExcel(filteredTableData, 'EX1');
+    // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (floating filter + sort + search).
+    exportDataToExcel(getDisplayedGridRows(gridRef.current?.api, filteredTableData), 'EX1');
   }, [exportDataToExcel, filteredTableData]);
 
   const handleExportEX2 = useCallback(() => {
@@ -639,6 +642,7 @@ const DiemDanhNhomCMS: React.FC<DiemDanhNhomCMSProps> = ({ option }) => {
         {/* AGTable Grid Body (Đã ẩn hoàn toàn toolbar mặc định của AGTable) */}
         <div className="precision-diemdanh__gridBody">
           <AGTable
+            ref={gridRef}
             rowHeight={48}
             columns={columns}
             data={filteredTableData}

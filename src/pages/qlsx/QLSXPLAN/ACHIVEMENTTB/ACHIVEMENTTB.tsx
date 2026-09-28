@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useRef } from "react";
 import moment from "moment";
 import useIsMobile from "../../../../components/Navbar/AccountInfo/useIsMobile";
 import { useAchivementTbData } from "./PrecisionAchivementTb/useAchivementTbData";
@@ -10,6 +10,7 @@ import { PrecisionAchivementTbMobileHeader } from "./PrecisionAchivementTb/Preci
 import { PrecisionAchivementTbMobileToolbar } from "./PrecisionAchivementTb/PrecisionAchivementTbMobileToolbar";
 import { PrecisionAchivementTbMobileKpi } from "./PrecisionAchivementTb/PrecisionAchivementTbMobileKpi";
 import { PrecisionAchivementTbMobileFilterDrawer } from "./PrecisionAchivementTb/PrecisionAchivementTbMobileFilterDrawer";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import "./PrecisionAchivementTb/PrecisionAchivementTb.scss";
 
 const ACHIVEMENTTB: React.FC = () => {
@@ -17,6 +18,12 @@ const ACHIVEMENTTB: React.FC = () => {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [showKpiSummary, setShowKpiSummary] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Giữ GridApi để EX1 xuất đúng các dòng đang hiển thị trên lưới.
+  const gridApiRef = useRef<any>(null);
+  const handleGridApiReady = useCallback((api: any) => {
+    gridApiRef.current = api;
+  }, []);
 
   const {
     machine_list,
@@ -129,7 +136,9 @@ const ACHIVEMENTTB: React.FC = () => {
           onQuickDate={handleQuickDate}
           onOpenFilter={() => setIsMobileFilterOpen(true)}
           activeFilterCount={activeFilterCount}
-          onExportEX1={() => exportExcel(filteredData, "TI_LE_DAT_LOC")}
+          onExportEX1={() =>
+            exportExcel(getDisplayedGridRows(gridApiRef.current, filteredData), "TI_LE_DAT_LOC")
+          }
           onExportEX2={() => exportExcel(plandatatable, "TI_LE_DAT_ALL")}
           onSearch={() => loadTiLeDat()}
           isLoading={isLoading}
@@ -160,6 +169,7 @@ const ACHIVEMENTTB: React.FC = () => {
         setSearchTerm={setSearchTerm}
         onExportEX1={(rows) => exportExcel(rows, "TI_LE_DAT_LOC")}
         onExportEX2={(rows) => exportExcel(rows, "TI_LE_DAT_ALL")}
+        onGridApiReady={handleGridApiReady}
       />
 
       {/* 5. MOBILE ONLY: Zero-Blur Bottom Sheet Filter Drawer */}

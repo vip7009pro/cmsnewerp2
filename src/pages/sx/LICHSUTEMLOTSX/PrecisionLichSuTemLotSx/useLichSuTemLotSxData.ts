@@ -4,6 +4,7 @@ import { useReactToPrint } from "react-to-print";
 import Swal from "sweetalert2";
 import { getUserData } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import { TEMLOTSX_DATA } from "../../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_cancelProductionLot, f_LichSuTemLot } from "../../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { COMPONENT_DATA } from "../../../rnd/interfaces/rndInterface";
@@ -250,8 +251,12 @@ export const useLichSuTemLotSxData = () => {
 
   // Xuất file Excel (EX1: Đang lọc, EX2: Toàn bộ)
   const handleExportExcel = useCallback(
-    (type: "EX1" | "EX2") => {
-      const exportList = type === "EX1" ? filteredData : lichsutemlotdata;
+    (type: "EX1" | "EX2", gridApi?: any) => {
+      const exportList =
+        type === "EX1"
+          ? // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (floating filter + sort + search).
+            getDisplayedGridRows(gridApi, filteredData)
+          : lichsutemlotdata;
       if (exportList.length === 0) {
         Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel", "warning");
         return;

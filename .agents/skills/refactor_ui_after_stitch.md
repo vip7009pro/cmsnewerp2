@@ -51,7 +51,11 @@ Lập bảng ánh xạ nghiệp vụ đảm bảo không sót bất kỳ logic n
 - **API Queries & Commands**: Các hàm `generalQuery`, `f_get...`, update/insert actions, upload files.
 - **Dữ liệu cột (Columns)**: Toàn bộ field của bảng cũ, các bộ format ngày tháng, số tiền, trạng thái.
 - **Chức năng đặc thù**:
-  - Xuất Excel: Chuẩn hóa xuất `EX1` (dữ liệu đang lọc `filteredData`) và `EX2` (toàn bộ dữ liệu `allData`).
+  - Xuất Excel: Chuẩn hóa xuất `EX1` (dữ liệu ĐANG HIỂN THỊ trên lưới) và `EX2` (toàn bộ dữ liệu `allData`).
+    - ⚠️ **EX1 PHẢI đọc từ AG Grid, KHÔNG dùng mảng React đã filter.** Mảng `filteredData` chỉ phản ánh bộ lọc state của trang, KHÔNG phản ánh quick filter gắn vào grid, floating filter theo từng cột (`showFilter`), và sort trên header ⇒ file xuất ra bị đủ dòng so với những gì người dùng đang thấy.
+    - Dùng tiện ích dùng chung: `src/components/DataTable/gridExportUtils.ts` → `getDisplayedGridRows(gridApi, fallbackData)` (duyệt `gridApi.forEachNodeAfterFilterAndSort`).
+    - Truyền GridApi: hook `src/components/DataTable/useAgGridApiBridge.ts` → `const gridRef = useAgGridApiBridge(onGridApiReady)`; gắn `ref={gridRef}` vào `AGTable`; handler `handleExportEX1 = (gridApi?: any) => SaveExcel(getDisplayedGridRows(gridApi, filteredData), ...)`.
+    - Trang giữ `const gridApiRef = useRef<any>(null)` + `handleGridApiReady`, truyền xuống component grid qua prop `onGridApiReady`; mọi nút EX1 (desktop + mobile toolbar) gọi `handleExportEX1(gridApiRef.current)`.
   - Phân tích Pivot: Mở modal DevExtreme/Custom Pivot tương ứng.
   - Các thao tác nhanh: Điểm danh tất cả, phê duyệt nhanh, đổi trạng thái hàng loạt.
 
@@ -295,7 +299,7 @@ Trong component chính, tại khu vực bọc bảng:
         <button
           type="button"
           className="precision-[modulename]__gridBtn precision-[modulename]__gridBtn--excel"
-          onClick={handleExportEX1}
+          onClick={() => handleExportEX1(gridRef.current?.api)}
           title="Xuất dữ liệu đang lọc ra file Excel"
         >
           <span className="material-symbols-outlined">description</span>

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store";
 import { UserData } from "../../../../../api/GlobalInterface";
 import { SaveExcel } from "../../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../../components/DataTable/gridExportUtils";
 import { TONLIEUXUONG, LICHSUNHAPKHOAO } from "../../interfaces/khsxInterface";
 import {
   f_load_nhapkhosub,
@@ -149,8 +150,10 @@ export const useKhoSubData = (initialNextPlan?: string) => {
   }, [datatable, searchKeyword]);
 
   // Xuất Excel
-  const exportExcel = (type: "EX1" | "EX2") => {
-    const dataToExport = type === "EX1" ? filteredData : datatable;
+  const exportExcel = (type: "EX1" | "EX2", gridApi?: any) => {
+    // EX1: đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (floating filter + sort + search).
+    const dataToExport =
+      type === "EX1" ? getDisplayedGridRows(gridApi, filteredData) : datatable;
     if (dataToExport.length === 0) {
       Swal.fire("Thông báo", "Không có dữ liệu để xuất Excel", "warning");
       return;

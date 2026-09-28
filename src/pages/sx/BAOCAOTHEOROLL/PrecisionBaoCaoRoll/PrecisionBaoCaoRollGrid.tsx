@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { useAgGridApiBridge } from "../../../../components/DataTable/useAgGridApiBridge";
 import { getBaoCaoRollColumns } from "./PrecisionBaoCaoRollColumns";
 import { SX_BAOCAOROLLDATA } from "../../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 
@@ -11,10 +12,12 @@ interface Props {
   quickFilterText?: string;
   onSearchChange?: (val: string) => void;
   onFilterChange?: (val: string) => void;
-  onExportEX1?: () => void;
+  onExportEX1?: (gridApi?: any) => void;
   onExportEX2?: () => void;
   onOpenPivot?: () => void;
   isMobile?: boolean;
+  /** Callback nhận GridApi để EX1 xuất đúng dòng đang hiển thị. */
+  onGridApiReady?: (gridApi: any) => void;
 }
 
 const PrecisionBaoCaoRollGrid: React.FC<Props> = ({
@@ -29,7 +32,9 @@ const PrecisionBaoCaoRollGrid: React.FC<Props> = ({
   onExportEX2,
   onOpenPivot,
   isMobile = false,
+  onGridApiReady,
 }) => {
+  const gridRef = useAgGridApiBridge(onGridApiReady);
   const columns = useMemo(() => getBaoCaoRollColumns(), []);
   const displayData = filteredData ?? plandatatable ?? [];
   const keyword = searchKeyword ?? quickFilterText ?? "";
@@ -52,7 +57,7 @@ const PrecisionBaoCaoRollGrid: React.FC<Props> = ({
               />
             </div>
             <div className="precision-bcr-gridActions">
-              <button type="button" className="precision-bcr-gridBtn precision-bcr-gridBtn--excel" onClick={onExportEX1} title="Xuất dữ liệu đang lọc">
+              <button type="button" className="precision-bcr-gridBtn precision-bcr-gridBtn--excel" onClick={() => onExportEX1?.(gridRef.current?.api)} title="Xuất dữ liệu đang lọc">
                 <span style={{ fontSize: 12 }}>📄</span><span>EX1</span>
               </button>
               <button type="button" className="precision-bcr-gridBtn precision-bcr-gridBtn--excel" onClick={onExportEX2} title="Xuất toàn bộ dữ liệu">
@@ -72,6 +77,7 @@ const PrecisionBaoCaoRollGrid: React.FC<Props> = ({
       {/* Grid Body */}
       <div className="precision-bcr-gridBody">
         <AGTable
+          ref={gridRef}
           suppressRowClickSelection={false}
           showFilter={true}
           columns={columns}

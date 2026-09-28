@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import "./PrecisionDaoFilmData/PrecisionDaoFilmData.scss";
 import useIsMobile from "../../../components/Navbar/AccountInfo/useIsMobile";
 import { useDaoFilmData } from "./PrecisionDaoFilmData/useDaoFilmData";
@@ -23,6 +23,12 @@ const DAOFILMDATA: React.FC = () => {
   const [showMobileKpi, setShowMobileKpi] = useState<boolean>(false);
   const [showMobileChart, setShowMobileChart] = useState<boolean>(false);
   const [showFilterDrawer, setShowFilterDrawer] = useState<boolean>(false);
+
+  // Giữ GridApi để EX1 xuất đúng các dòng đang hiển thị (search/filter/sort).
+  const gridApiRef = useRef<any>(null);
+  const handleGridApiReady = useCallback((api: any) => {
+    gridApiRef.current = api;
+  }, []);
 
   const {
     mode,
@@ -166,12 +172,13 @@ const DAOFILMDATA: React.FC = () => {
                 totalCount={totalRowCount}
                 searchKeyword={searchKeyword}
                 onSearchChange={setSearchKeyword}
-                onExportEX1={handleExportEX1}
+                onExportEX1={() => handleExportEX1(gridApiRef.current)}
                 onExportEX2={handleExportEX2}
                 onOpenGiaoNhan={() => setShowGiaoNhan(true)}
                 onGanCode={() => {}}
                 onXuatDaoFilm={() => {}}
                 isMobile={false}
+                onGridApiReady={handleGridApiReady}
               />
             )}
           </div>
@@ -230,7 +237,7 @@ const DAOFILMDATA: React.FC = () => {
             onFetchGiaoNhan={fetchGiaoNhan}
             onFetchQuanLy={fetchQuanLy}
             onFetchLichSuXuat={fetchLichSuXuat}
-            onExportEX1={handleExportEX1}
+            onExportEX1={() => handleExportEX1(gridApiRef.current)}
             onExportEX2={handleExportEX2}
             onOpenGiaoNhan={() => setShowGiaoNhan(true)}
             onGanCode={() => {}}
@@ -246,7 +253,7 @@ const DAOFILMDATA: React.FC = () => {
               totalCount={totalRowCount}
               searchKeyword={searchKeyword}
               onSearchChange={setSearchKeyword}
-              onExportEX1={handleExportEX1}
+              onExportEX1={() => handleExportEX1(gridApiRef.current)}
               onExportEX2={handleExportEX2}
               onOpenGiaoNhan={() => setShowGiaoNhan(true)}
               onGanCode={() => {}}

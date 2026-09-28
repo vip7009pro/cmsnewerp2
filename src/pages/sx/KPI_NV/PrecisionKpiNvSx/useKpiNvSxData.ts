@@ -9,6 +9,7 @@ import {
   f_load_SX_NV_KPI_DATA_Yearly,
 } from "../../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import {
   calculateKpiNvSxSummary,
   aggregatePeriodTrendData,
@@ -125,13 +126,18 @@ export const useKpiNvSxData = () => {
   }, [filteredData]);
 
   // Xuất Excel EX1 (dữ liệu đang lọc)
-  const handleExportEX1 = useCallback(() => {
-    if (!filteredData || filteredData.length === 0) {
-      Swal.fire("Cảnh báo", "Không có dữ liệu để xuất Excel", "warning");
-      return;
-    }
-    SaveExcel(filteredData, `KPI_NVSX_${option}_Filtered`);
-  }, [filteredData, option]);
+  const handleExportEX1 = useCallback(
+    (gridApi?: any) => {
+      // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick search + floating filter + sort).
+      const rowsToExport = getDisplayedGridRows(gridApi, filteredData);
+      if (!rowsToExport || rowsToExport.length === 0) {
+        Swal.fire("Cảnh báo", "Không có dữ liệu để xuất Excel", "warning");
+        return;
+      }
+      SaveExcel(rowsToExport, `KPI_NVSX_${option}_Filtered`);
+    },
+    [filteredData, option]
+  );
 
   // Xuất Excel EX2 (toàn bộ dữ liệu)
   const handleExportEX2 = useCallback(() => {

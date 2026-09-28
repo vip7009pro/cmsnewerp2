@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { generalQuery } from "../../../../api/Api";
 import { SaveExcel } from "../../../../api/services/excelService";
 import { weekdayarray } from "../../../../api/services/utilService";
 import AGTable from "../../../../components/DataTable/AGTable";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import moment from "moment";
 import {
   ApprovalStatusCellRenderer,
@@ -27,6 +28,7 @@ export const PrecisionDangKyHistory: React.FC<PrecisionDangKyHistoryProps> = ({
   const [filterReason, setFilterReason] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const gridRef = useRef<any>(null);
 
   // Mặc định toàn thời gian (từ 2010 đến hết năm sau)
   const fromDate = "2010-01-01";
@@ -143,9 +145,11 @@ export const PrecisionDangKyHistory: React.FC<PrecisionDangKyHistoryProps> = ({
 
   // Xuất Excel EX1: Dữ liệu đang lọc
   const handleExportEX1 = () => {
-    if (filteredData.length === 0) return;
+    // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (floating filter + sort + search).
+    const rowsToExport = getDisplayedGridRows<any>(gridRef.current?.api, filteredData);
+    if (rowsToExport.length === 0) return;
     const dateStr = moment().format("YYYYMMDD_HHmmss");
-    SaveExcel(filteredData, `NS3_LichSuNghiPhep_DangLoc_${dateStr}`);
+    SaveExcel(rowsToExport, `NS3_LichSuNghiPhep_DangLoc_${dateStr}`);
   };
 
   // Xuất Excel EX2: Toàn bộ dữ liệu
@@ -304,6 +308,7 @@ export const PrecisionDangKyHistory: React.FC<PrecisionDangKyHistoryProps> = ({
       {/* KHUNG BODY CHỨA AG-GRID CHUẨN HÓA (ẨN TOOLBAR XANH LÁ) */}
       <div className="precision-dangky__gridBody">
         <AGTable
+          ref={gridRef}
           rowHeight={36}
           columns={columns}
           data={filteredData}

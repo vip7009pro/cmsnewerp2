@@ -3,6 +3,7 @@ import moment from "moment";
 import { DEFECT_PROCESS_DATA } from "../../../qlsx/QLSXPLAN/interfaces/khsxInterface";
 import { f_loadDefectProcessData } from "../../../qlsx/QLSXPLAN/utils/khsxUtils";
 import { SaveExcel } from "../../../../api/services/excelService";
+import { getDisplayedGridRows } from "../../../../components/DataTable/gridExportUtils";
 import {
   calculateDefectsKpi,
   getTop10Defects,
@@ -153,9 +154,14 @@ export const useMainDefectsData = () => {
   const top10Models = useMemo(() => getTop10Models(filteredData), [filteredData]);
 
   // Excel exports
-  const handleExportEX1 = useCallback(() => {
-    SaveExcel(filteredData, `MainDefects_Filtered_${moment().format("YYYYMMDD_HHmm")}`);
-  }, [filteredData]);
+  const handleExportEX1 = useCallback(
+    (gridApi?: any) => {
+      // Đọc đúng các dòng ĐANG HIỂN THỊ trên lưới (quick search + floating filter + sort).
+      const rowsToExport = getDisplayedGridRows(gridApi, filteredData);
+      SaveExcel(rowsToExport, `MainDefects_Filtered_${moment().format("YYYYMMDD_HHmm")}`);
+    },
+    [filteredData]
+  );
 
   const handleExportEX2 = useCallback(() => {
     SaveExcel(rawData, `MainDefects_All_${moment().format("YYYYMMDD_HHmm")}`);
