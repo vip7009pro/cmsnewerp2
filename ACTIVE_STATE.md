@@ -1,5 +1,37 @@
 # ACTIVE_STATE
 
+## Đợt 20 — Mobile NCR: MASTER→DETAIL (Ảnh lỗi + Holding Failing Detail) (2026-09-28)
+Task hiện tại: hoàn thiện nốt yêu cầu còn dở của `src/pages/qc/iqc/NCR_MANAGER.tsx` (refactor mobile 99%).
+Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 1m 32s`), `get_errors` 0 lỗi, verify dev 3001 (@360 / @393 / @768 / @1440).
+
+### Yêu cầu
+Trên mobile không thấy ô **Ảnh Lỗi (Defect Image)** và bảng **Holding – Failing Detail**. User muốn: tap chọn 1 dòng ⇒ chi tiết hiển thị **ngay bên dưới**, cuộn xuống để xem.
+
+### Root cause (quan trọng — đừng chẩn đoán lại từ đầu)
+- `div.precision-ncr-mobile-scrollable` **đã có trong JSX nhưng KHÔNG có rule CSS nào** trong `PrecisionNCR.scss`.
+- Hệ quả: nó là **block formatting context** (`display:block`, cao đúng bằng toolbar 87px) ⇒ `flex:1 1 auto; min-height:0` của `.precision-ncr-mobile-grid` **bị bỏ qua**; mặt khác `.agtable` do trang set `position:absolute; inset:0` (out-of-flow) nên `.precision-ncr-grid-container`/`-wrapper` cao **0px**.
+- Kết quả: bảng không hiển thị, khối chi tiết dù render trong DOM cũng không thấy (đo được `gridWrapper height = 0`).
+- **Cách chẩn đoán nhanh**: đo `getBoundingClientRect().height` của `.mobile-scrollable` → nếu ≈ chiều cao toolbar (87px) và `.mobile-grid` = 0 là trúng.
+
+### Fix (2 file)
+- `PrecisionNCR.scss` — **§10.0** thêm rule cho `.precision-ncr-mobile-scrollable` (`flex:1 1 auto; min-height:0; display:flex; flex-direction:column; overflow-y:auto; overscroll-behavior:contain; scrollbar ẩn`). **§10.4** `.precision-ncr-mobile-grid` từ `flex:1 1 auto` → **chiều cao xác định** `height:56vh; min-height:300px`, thêm modifier `&.has-detail { height:38vh; min-height:220px }` + `transition: height .2s`. **§10.4b** thêm `.precision-ncr-mobile-detail` + override `.precision-ncr-right-panel { width:100%; overflow:visible }`, `.defect-image-card__preview { height:200px }`, `.holding-detail-card { flex:0 0 auto; height:380px }`. **§10.1** root `.is-mobile` giữ `height:100%; overflow:hidden` + `.component_element &` `height:100%!important; max-height:none!important`.
+- `NCR_MANAGER.tsx` — thêm `useRef mobileDetailRef`, `handleMobileRowClick` (setSelectedNCR → `handletraHoldingData` → `scrollIntoView({behavior:"smooth", block:"start"})` sau `setTimeout` 120ms), grid nhận `has-detail`, `.precision-ncr-mobile-detail` gắn `ref`.
+
+### Quyết định kiến trúc
+- **KHÔNG mở page-level scroll** cho root: `.tabs-container` / `.tab-pane` của IQC đều `overflow:hidden` ⇒ nếu mở `overflow:visible` sẽ bị tổ tiên cắt cụt (đúng pitfall DTC.scss trong memory). Thay vào đó scroll **nội bộ** trong `.precision-ncr-mobile-scrollable`.
+
+### Kết quả đo (@393×850, dev 3001)
+- Header 42px + Toolbar 87px cố định; `.mobile-scrollable` 694px (`overflow-y:auto`).
+- Chưa chọn dòng: grid **476px**, 3 row AG hiển thị đủ.
+- Tap dòng: grid `has-detail` → **220px**, detail **685px**, right panel 669px, ảnh lỗi 281px (preview 200px), holding card 380px; **auto-scroll** đưa `detailTop 164` ≈ `viewTop 156` ⇒ ảnh lỗi nằm ngay đỉnh vùng nhìn.
+- Cuộn xuống đáy: `.holding-detail-card__summary` bottom 763 < 780 ⇒ tới được footer bảng Holding.
+- `bodyOverflowX = 0` @360/393/414/768; desktop @1440: sidebar 260 / center 820 / rightPanel 320, `.is-mobile` không xuất hiện trong DOM ⇒ desktop **không đổi**.
+
+### File đã chỉnh sửa (đợt 20)
+- `src/pages/qc/iqc/NCR_MANAGER.tsx` — ref + auto-scroll + class `has-detail`.
+- `PrecisionNCR/PrecisionNCR.scss` — §10.0 / §10.1 / §10.4 / §10.4b.
+- Backup: `NCR_MANAGER.backup3.tsx`, `PrecisionNCR/PrecisionNCR.backup3.scss`.
+
 ## Đợt 19 — Mobile IQC REPORT (Báo Cáo Chỉ Số Chất Lượng & Xu Hướng Lỗi PPM) (2026-09-27)
 Task hiện tại: refactor giao diện mobile cho `src/pages/qc/iqc/IQC_REPORT.tsx` + `.agents/skills/mobile_interface_refactoring`.
 Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 1m 27s`, 17138 modules), `get_errors` 0 lỗi, verify trên dev 3001 (@320 / @360 / @393 / @414 / @768 / @1440).
