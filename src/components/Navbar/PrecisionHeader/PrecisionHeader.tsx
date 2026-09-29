@@ -35,6 +35,7 @@ import {
 } from "../../../redux/slices/globalSlice";
 import { current_ver } from "../../../pages/home/Home";
 import { logout } from "../../../api/Api";
+import { saveTabModePreference } from "../../../api/services/tabModeService";
 import { UserData } from "../../../api/GlobalInterface";
 import NotificationPanel from "../../NotificationPanel/NotificationPanel";
 import NavMenuNew from "../../NavMenu/NavMenuNew";
@@ -432,7 +433,8 @@ export default function PrecisionHeader({
 
   const handleTabModeChange = () => {
     setMobileActionsAnchorEl(null);
-    if (!tabModeSwap) {
+    const nextIsMultiTab = !tabModeSwap;
+    if (nextIsMultiTab) {
       dispatch(resetTab(0));
       dispatch(
         addTab({
@@ -443,7 +445,9 @@ export default function PrecisionHeader({
         })
       );
     }
-    dispatch(setTabModeSwap(!tabModeSwap));
+    // Ghi nhớ lựa chọn CHỦ ĐỘNG ⇒ ưu tiên cao hơn quy tắc "mobile mặc định đơn nhiệm".
+    saveTabModePreference(nextIsMultiTab);
+    dispatch(setTabModeSwap(nextIsMultiTab));
   };
 
   const handleOpenAccountInfo = () => {

@@ -13,8 +13,13 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
       const registration: ServiceWorkerRegistration = await navigator.serviceWorker.register('/service-worker.js', {
-        scope: '/'
+        scope: '/',
+        // Không dùng HTTP cache cho script SW: bản cũ bị giữ lại sẽ khiến
+        // handler click thông báo (điều hướng) không được cập nhật.
+        updateViaCache: 'none',
       });
+      // Chủ động kiểm tra bản mới ngay sau khi đăng ký để thay đổi có hiệu lực sớm.
+      await registration.update();
       console.log('Service Worker đăng ký thành công');
     } catch (error) {
       console.error('Lỗi đăng ký Service Worker:', error);

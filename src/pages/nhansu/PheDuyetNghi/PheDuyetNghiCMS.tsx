@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { generalQuery } from "../../../api/Api";
+import { generalQuery, getSocket, getUserData } from "../../../api/Api";
 import { getErrMessage, getTkMessage, isTkOk } from "../../../api/services/responseService";
+import { f_insert_Notification_Data } from "../../../api/services/notificationService";
+import { NotificationElement } from "../../../components/NotificationPanel/Notification";
 import "./PrecisionPheDuyetNghi/PrecisionPheDuyetNghi.scss";
 import Swal from "sweetalert2";
 import moment from "moment";
@@ -39,6 +41,31 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
     typeof window !== 'undefined' ? window.innerWidth <= 768 : false
   );
 
+  const notifyApprovalInternally = useCallback(async (offId: number, approvalValue: number) => {
+    const request = diemdanhnhomtable.find((item) => (item.OFF_ID || item.id) === offId);
+    if (!request) return;
+
+    const approver = getUserData();
+    const approved = approvalValue === 1;
+    const notification: NotificationElement = {
+      CTR_CD: request.CTR_CD || "002",
+      NOTI_ID: -1,
+      NOTI_TYPE: approved ? "success" : "warning",
+      TITLE: approved ? "Đơn nghỉ đã được duyệt" : "Đơn nghỉ bị từ chối",
+      CONTENT: `Đơn nghỉ ngày ${request.APPLY_DATE || ""} của ${request.EMPL_NO || "nhân viên"} đã được ${approved ? "duyệt" : "từ chối"} bởi ${approver?.EMPL_NO || "quản lý"}.`,
+      SUBDEPTNAME: request.SUBDEPTNAME || "",
+      MAINDEPTNAME: request.MAINDEPTNAME || "",
+      INS_EMPL: approver?.EMPL_NO || "",
+      INS_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
+      UPD_EMPL: approver?.EMPL_NO || "",
+      UPD_DATE: moment().format("YYYY-MM-DD HH:mm:ss"),
+    };
+
+    if (await f_insert_Notification_Data(notification)) {
+      getSocket().emit("notification_panel", notification);
+    }
+  }, [diemdanhnhomtable]);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -68,6 +95,7 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
             setDiemDanhNhomTable((prev) =>
               prev.map((p) => (p.OFF_ID === offId ? { ...p, APPROVAL_STATUS: 1 } : p))
             );
+            void notifyApprovalInternally(offId, 1);
           } else {
             Swal.fire("Có lỗi", "Nội dung: " + getTkMessage(response), "error");
           }
@@ -79,7 +107,7 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
     } else {
       Swal.fire("Thông báo", "Đã điểm danh đi làm, không phê duyệt nghỉ được!", "warning");
     }
-  }, []);
+  }, [notifyApprovalInternally]);
 
   const handleReject = useCallback((offId: number) => {
     generalQuery("setpheduyetnhom", {
@@ -91,6 +119,7 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
           setDiemDanhNhomTable((prev) =>
             prev.map((p) => (p.OFF_ID === offId ? { ...p, APPROVAL_STATUS: 0 } : p))
           );
+          void notifyApprovalInternally(offId, 0);
         } else {
           Swal.fire("Có lỗi", "Nội dung: " + getTkMessage(response), "error");
         }
@@ -99,7 +128,7 @@ const PheDuyetNghiCMS: React.FC<{ option?: string }> = ({ option = "pheduyetnghi
         console.error(error);
         Swal.fire("Lỗi", `Từ chối đơn thất bại: ${getErrMessage(error)}`, "error");
       });
-  }, []);
+  }, [notifyApprovalInternally]);
 
   const handleReset = useCallback((offId: number) => {
     // FIX: bản backup chỉ set state local nên sau khi F5 đơn quay lại trạng thái cũ.

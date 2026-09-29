@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FiBell, FiRefreshCw, FiX, FiArrowRight } from "../icons/localIconSet";
 import Notification, { NotificationElement } from "./Notification";
 import { f_load_Notification_Data } from "../../api/services/notificationService";
+import { resolveNotificationRoute } from "../../api/services/notificationRoute";
 import "./NotificationPanel.scss";
 
 interface NotificationPanelProps {
@@ -11,6 +13,7 @@ interface NotificationPanelProps {
 type TabType = "ALL" | "UNREAD" | "YCSX" | "RND";
 
 export const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose }) => {
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Array<NotificationElement>>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +45,13 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({ onClose })
 
   const handleItemClick = (item: NotificationElement) => {
     setReadIds((prev) => new Set(prev).add(item.NOTI_ID));
+
+    // Điều hướng thẳng tới màn nghiệp vụ tương ứng để người dùng xử lý ngay.
+    const route = resolveNotificationRoute(item);
+    if (route) {
+      onClose?.();
+      navigate(route);
+    }
   };
 
   const unreadCount = useMemo(() => {

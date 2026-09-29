@@ -21,6 +21,7 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RootState } from "../../redux/store";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { addTab, changeGLBLanguage, closeTab, hideSidebar, resetTab, setTabModeSwap, settabIndex, toggleSidebar } from "../../redux/slices/globalSlice";
+import { saveTabModePreference } from "../../api/services/tabModeService";
 import styled from "@emotion/styled";
 import Cookies from "universal-cookie";
 import { MENU_LIST_DATA } from "../../api/GlobalInterface";
@@ -495,7 +496,8 @@ function Home() {
                 <div
                   className="pvnToolBtn"
                   onClick={() => {
-                    if (!tabModeSwap) {
+                    const nextIsMultiTab = !tabModeSwap;
+                    if (nextIsMultiTab) {
                       dispatch(resetTab(0));
                       dispatch(
                         addTab({
@@ -506,7 +508,8 @@ function Home() {
                         })
                       );
                     }
-                    dispatch(setTabModeSwap(!tabModeSwap));
+                    saveTabModePreference(nextIsMultiTab);
+                    dispatch(setTabModeSwap(nextIsMultiTab));
                   }}
                 >
                   {tabModeSwap ? "Multiple Tabs" : "Single Tab"}
@@ -691,7 +694,18 @@ function Home() {
                   );
               })}
             {current_ver >= checkVerWeb ? (
-              !tabModeSwap && <Outlet />
+              !tabModeSwap && (
+                /*
+                 * CHẾ ĐỘ ĐƠN NHIỆM: bọc Outlet trong `.component_element` giống chế độ đa nhiệm.
+                 * Lý do: CSS chỉ ép `.component_element > *` cao 100% + flex:1 + min-height:0; khi
+                 * Outlet render trần thì wrapper của route co theo nội dung ⇒ màn hình bị cụt
+                 * giữa chừng. Thêm modifier `--single` để bỏ offset thanh tab (34px) và phủ hết
+                 * chiều cao còn lại của `.homeContainer`.
+                 */
+                <div className="component_element component_element--single">
+                  <Outlet />
+                </div>
+              )
             ) : (
               <p
                 style={{

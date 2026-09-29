@@ -16,6 +16,7 @@ import {
   updateNotiCount
 } from "../../redux/slices/globalSlice";
 import { RootState } from "../../redux/store";
+import { saveTabModePreference } from "../../api/services/tabModeService";
 import { useSelector, useDispatch } from "react-redux";
 import { addTab, settabIndex, resetTab } from "../../redux/slices/globalSlice";
 import { current_ver } from "../../pages/home/Home";
@@ -817,7 +818,8 @@ export default function Navbar() {
                         <Checkbox
                           checked={tabModeSwap}
                           onChange={(e) => {
-                            if (!tabModeSwap) {
+                            const nextIsMultiTab = !tabModeSwap;
+                            if (nextIsMultiTab) {
                               dispatch(resetTab(0));
                               dispatch(
                                 addTab({
@@ -828,7 +830,8 @@ export default function Navbar() {
                                 }),
                               );
                             }
-                            dispatch(setTabModeSwap(!tabModeSwap));
+                            saveTabModePreference(nextIsMultiTab);
+                            dispatch(setTabModeSwap(nextIsMultiTab));
                           }}
                           inputProps={{ "aria-label": "controlled" }}
                         />

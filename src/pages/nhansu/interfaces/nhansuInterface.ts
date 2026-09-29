@@ -376,6 +376,7 @@ export interface DiemDanhLichSuData {
   L390: number;
 }
 export interface PheDuyetNghiData {
+  CTR_CD?: string;
   FULL_NAME: any;
   id: string;
   EMPL_NO: string;

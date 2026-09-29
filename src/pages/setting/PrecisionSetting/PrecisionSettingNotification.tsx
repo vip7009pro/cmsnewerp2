@@ -14,6 +14,7 @@ export const PrecisionSettingNotification: React.FC<PrecisionSettingNotification
 }) => {
   const [title, setTitle] = useState<string>("");
   const [body, setBody] = useState<string>("");
+  const [url, setUrl] = useState<string>("");
   const [isSending, setIsSending] = useState<boolean>(false);
 
   const handleSendNotification = async () => {
@@ -22,17 +23,36 @@ export const PrecisionSettingNotification: React.FC<PrecisionSettingNotification
       return;
     }
 
+    // Chỉ chấp nhận đường dẫn nội bộ để tránh mở trang ngoài từ thông báo.
+    const trimmedUrl = url.trim();
+    if (trimmedUrl && !trimmedUrl.startsWith("/")) {
+      Swal.fire(
+        "Cảnh báo",
+        'Đường dẫn phải bắt đầu bằng "/" (ví dụ: /nhansu/diemdanhnhom).',
+        "warning"
+      );
+      return;
+    }
+
     try {
       setIsSending(true);
       const response = await generalQuery("sendNotificationAPI", {
         title: title.trim(),
         body: body.trim(),
+        url: trimmedUrl || "/",
       });
 
       if (response?.data?.tk_status === "OK") {
-        Swal.fire("Thành công", "Đã gửi thông báo đẩy đến toàn bộ người dùng!", "success");
+        Swal.fire(
+          "Thành công",
+          trimmedUrl
+            ? `Đã gửi thông báo đẩy, bấm vào sẽ mở ${trimmedUrl} !`
+            : "Đã gửi thông báo đẩy đến toàn bộ người dùng!",
+          "success"
+        );
         setTitle("");
         setBody("");
+        setUrl("");
       } else {
         Swal.fire("Lỗi", "Không thể gửi thông báo. Vui lòng kiểm tra lại!", "error");
       }
@@ -79,6 +99,16 @@ export const PrecisionSettingNotification: React.FC<PrecisionSettingNotification
             onChange={(e) => setBody(e.target.value)}
             fullWidth={isMobile}
             sx={{ flex: isMobile ? "unset" : 2, minWidth: isMobile ? "100%" : "280px" }}
+          />
+          <TextField
+            size="small"
+            label="Đường dẫn khi bấm (tùy chọn)"
+            placeholder="VD: /nhansu/diemdanhnhom"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            fullWidth={isMobile}
+            helperText={isMobile ? undefined : "Để trống ⇒ mở trang chủ"}
+            sx={{ flex: isMobile ? "unset" : 1, minWidth: isMobile ? "100%" : "220px" }}
           />
           <Button
             variant="contained"

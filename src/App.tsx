@@ -29,6 +29,7 @@ import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import { requestFullScreen } from "./api/services/utilCore";
 import { useAppBootstrap } from "./hooks/useAppBootstrap";
 import { useDocumentScrollIdleClass } from "./hooks/useDocumentScrollIdleClass";
+import { useAutoTabModeByViewport } from "./hooks/useAutoTabModeByViewport";
 import AppBootScreen from "./components/AppBootScreen/AppBootScreen";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import ChangelogHost, { requestChangelogPopup } from "./components/Changelog/ChangelogHost";
@@ -39,6 +40,8 @@ import { getPlatformInfo, isStandalonePwa } from "./api/services/platformDetect"
 function App() {
   const isBootstrapping = useAppBootstrap();
   useDocumentScrollIdleClass();
+  // Mobile mặc định đơn nhiệm; chỉ đa nhiệm khi người dùng đã chủ động bật (lưu ở localStorage).
+  useAutoTabModeByViewport();
 
   const appTheme = useMemo(() => {
     const fontFamily = '"Inter", "Segoe UI", sans-serif';

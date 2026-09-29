@@ -15,6 +15,8 @@ export interface NotificationElement {
   INS_DATE: string;
   UPD_EMPL: string;
   UPD_DATE: string;
+  /** Route đích khi bấm vào thông báo (tuỳ chọn). Không có ⇒ suy ra từ nội dung. */
+  LINK?: string;
 }
 
 interface NotificationProps {

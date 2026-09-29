@@ -6,6 +6,7 @@ import {
 } from "../api/Api";
 import { WEB_SETTING_DATA } from "../api/GlobalInterface";
 import { DEFAULT_USER_DATA } from "../api/defaultUserData";
+import { resolveTabMode } from "../api/services/tabModeService";
 import {
   changeDiemDanhState,
   changeGLBSetting,
@@ -93,12 +94,16 @@ export function useAppBootstrap(): boolean {
           dispatch(changeUserData(DEFAULT_USER_DATA));
         } else {
           dispatch(changeUserData(userData));
-          if (
-            userData.JOB_NAME === "Worker" ||
-            userData.POSITION_CODE === 4
-          ) {
-            dispatch(setTabModeSwap(false));
-          }
+          // Ưu tiên: lựa chọn đã lưu ở localStorage > viewport mobile > mặc định Worker > đa nhiệm.
+          dispatch(
+            setTabModeSwap(
+              resolveTabMode({
+                forceSingle:
+                  userData.JOB_NAME === "Worker" ||
+                  userData.POSITION_CODE === 4,
+              })
+            )
+          );
           dispatch(
             update_socket({
               event: "login",

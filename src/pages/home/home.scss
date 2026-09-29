@@ -87,6 +87,21 @@
               box-sizing: border-box;
             }
           }
+
+          /*
+           * CHẾ ĐỘ ĐƠN NHIỆM (Single Tab) — cùng cơ chế co giãn như `.component_element`
+           * nhưng KHÔNG có thanh tab phía trên, nên:
+           *   - `top: 0` thay vì `34px` (bỏ khoảng trống của thanh tab)
+           *   - `height: auto` + `bottom: 0` để khung phủ trọn chiều cao `.homeContainer`
+           *     (thay vì `calc(100vh - 82px)` vốn chừa sẵn chỗ cho thanh tab).
+           * Specificity 6 class > 5 class của rule gốc nên thắng ở mọi media query.
+           */
+          .component_element.component_element--single {
+            top: 0;
+            bottom: 0;
+            height: auto;
+            max-height: none;
+          }
         }
       }
       .navdiv {
