@@ -4,6 +4,11 @@ Options -MultiViews
   <FilesMatch "^index\.html$">
     Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
   </FilesMatch>
+
+  <FilesMatch "^service-worker\.js$">
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header unset ETag
+  </FilesMatch>
 </IfModule>
 
 <IfModule mod_rewrite.c>

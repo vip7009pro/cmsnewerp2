@@ -216,27 +216,33 @@ export const NavMenuNew: React.FC<NavMenuNewProps> = ({
   };
 
   const handleSubMenuClick = (subMenu: SUBNAVMENUDATA) => {
-    if (!tabModeSwap) return;
-    if (!canUseTabMode(userData, subMenu.MENU_CODE)) {
-      Swal.fire("Cảnh báo", "Không đủ quyền hạn", "error");
-      return;
+    // CHẾ ĐỘ ĐA NHIỆM: mở/chuyển tab tương ứng.
+    // Trước đây hàm return sớm khi `!tabModeSwap` nên ở chế độ ĐƠN NHIỆM drawer
+    // không bao giờ được đóng lại (Link vẫn điều hướng nhưng menu che màn hình).
+    // Nay chỉ bỏ qua phần quản lý tab, còn việc đóng drawer luôn chạy ở cuối.
+    if (tabModeSwap) {
+      if (!canUseTabMode(userData, subMenu.MENU_CODE)) {
+        Swal.fire("Cảnh báo", "Không đủ quyền hạn", "error");
+        return;
+      }
+
+      const existedIndex = tabs.findIndex((ele) => ele.ELE_CODE === subMenu.MENU_CODE);
+      if (existedIndex !== -1) {
+        dispatch(settabIndex(existedIndex));
+      } else {
+        dispatch(
+          addTab({
+            ELE_NAME: subMenu.title,
+            ELE_CODE: subMenu.MENU_CODE,
+            REACT_ELE: "",
+            PAGE_ID: -1,
+          })
+        );
+        dispatch(settabIndex(tabs.length));
+      }
     }
 
-    const existedIndex = tabs.findIndex((ele) => ele.ELE_CODE === subMenu.MENU_CODE);
-    if (existedIndex !== -1) {
-      dispatch(settabIndex(existedIndex));
-    } else {
-      dispatch(
-        addTab({
-          ELE_NAME: subMenu.title,
-          ELE_CODE: subMenu.MENU_CODE,
-          REACT_ELE: "",
-          PAGE_ID: -1,
-        })
-      );
-      dispatch(settabIndex(tabs.length));
-    }
-
+    // Đóng drawer cho MỌI chế độ (đa nhiệm lẫn đơn nhiệm).
     if (mode === "overlay" && onClose) {
       onClose();
     }
