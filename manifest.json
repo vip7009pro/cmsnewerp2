@@ -14,6 +14,42 @@
     "display": "standalone",
     "scope": "/",
     "theme_color": "#3367D6",
+    "share_target": {
+      "action": "/share-target",
+      "method": "POST",
+      "enctype": "multipart/form-data",
+      "params": {
+        "title": "title",
+        "text": "text",
+        "url": "url",
+        "files": [
+          {
+            "name": "files",
+            "accept": [
+              "image/*",
+              "video/*",
+              "audio/*",
+              "application/pdf",
+              "text/*",
+              "application/zip",
+              "application/vnd.ms-excel",
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              "application/msword",
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ]
+          }
+        ]
+      }
+    },
+    "file_handlers": [
+      {
+        "action": "/share-target",
+        "accept": {
+          "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"],
+          "application/pdf": [".pdf"]
+        }
+      }
+    ],
    
     "description": "Mô tả phần mềm hệ thống ERP",
     "screenshots": [

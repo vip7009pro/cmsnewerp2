@@ -8,6 +8,14 @@ import ChatGroupPanel from "./ChatGroupPanel";
 import ChatNewChatDialog from "./ChatNewChatDialog";
 import ChatForwardDialog from "./ChatForwardDialog";
 import ChatSearchPanel from "./ChatSearchPanel";
+import ChatShareDialog from "./ChatShareDialog";
+import {
+  collectLaunchQueueFiles,
+  readSharedPayload,
+  SHARE_QUERY_FLAG,
+  sharedFileToFile,
+  sharedPayloadHasContent,
+} from "./chatShareTarget";
 import type { ChatMessage } from "./chat.types";
 import { chatService } from "../../api/services/chatService";
 import { useChatController } from "../../hooks/useChatController";
@@ -29,6 +37,9 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
   const [showRequests, setShowRequests] = useState(false);
   const [showGlobalSearch, setShowGlobalSearch] = useState(false);
   const [forwardMessage, setForwardMessage] = useState<ChatMessage | null>(null);
+  /** Nội dung nhận từ app khác (Zalo/Kakao/Gallery) qua Web Share Target. */
+  const [share, setShare] = useState<{ title: string; text: string; files: File[] } | null>(null);
+  const [shareBusy, setShareBusy] = useState(false);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
 
   const isControlled = open !== undefined;
@@ -50,8 +61,7 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
   }, [controller, isOpen]);
 
   // Deep-link từ thông báo đẩy: /?chat=<conversationId> ⇒ mở panel và vào đúng phòng.
-  const deepLinkHandledRef = useRef(false);
-  useEffect(() => {
+  const deepLinkHandledRef = useRef(false);  useEffect(() => {
     if (deepLinkHandledRef.current) return;
     const conversationId = Number(new URLSearchParams(window.location.search).get("chat"));
     if (!Number.isInteger(conversationId) || conversationId <= 0) return;
@@ -70,6 +80,53 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
   useEffect(() => {
     if (!isOpen) setShowInfo(false);
   }, [isOpen]);
+
+  /**
+   * Nhận nội dung chia sẻ từ app khác.
+   * - Web Share Target: SW lưu payload vào Cache rồi redirect về `/share-target`.
+   * - `file_handlers`: tệp đến qua `launchQueue` (mở app bằng "Mở bằng...").
+   */
+  const shareCheckedRef = useRef(false);
+  useEffect(() => {
+    if (shareCheckedRef.current) return;
+    shareCheckedRef.current = true;
+
+    const collect = async () => {
+      const payload = await readSharedPayload();
+      const launchFiles = payload ? [] : await collectLaunchQueueFiles();
+      const files = payload
+        ? (payload.files.map(sharedFileToFile).filter(Boolean) as File[])
+        : launchFiles;
+
+      if (!payload && files.length === 0) return;
+      if (payload && !sharedPayloadHasContent(payload) && files.length === 0) return;
+
+      setShare({ title: payload?.title || "", text: payload?.text || "", files });
+      setOpen(true);
+
+      // Dọn cờ `?shared=1` trên URL để F5 không kích hoạt lại luồng chia sẻ.
+      const params = new URLSearchParams(window.location.search);
+      if (params.has(SHARE_QUERY_FLAG)) {
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    };
+
+    void collect();
+  }, [setOpen]);
+
+  /** Gửi nội dung chia sẻ vào phòng đã chọn. */
+  const handleShareSend = useCallback(
+    async (conversationId: number, content: string, files: File[]) => {
+      setShareBusy(true);
+      try {
+        await controller.selectConversation(conversationId);
+        await controller.sendMessage({ conversationId, content, files });
+      } finally {
+        setShareBusy(false);
+      }
+    },
+    [controller]
+  );
 
   const typingNamesFor = useCallback(
     (conversationId: number) => Object.values(controller.typingUsers[conversationId] || {}),
@@ -135,6 +192,16 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
     await controller.refreshConversation();
     setShowInfo(false);
   }, [controller]);
+
+  /** Đổi avatar phòng nhóm: chuỗi rỗng là bỏ avatar. */
+  const handleChangeAvatar = useCallback(
+    async (avatar: string) => {
+      if (!controller.activeId) return;
+      await chatService.updateGroup(controller.activeId, { avatar });
+      await controller.refreshConversation();
+    },
+    [controller]
+  );
 
   /** Bấm 1 kết quả tìm kiếm: đóng bảng tìm kiếm rồi nhảy tới tin nhắn trong phòng tương ứng. */
   const handleJumpToMessage = useCallback(
@@ -234,6 +301,7 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
             onSetRole={handleSetRole}
             onTransferOwner={handleTransferOwner}
             onRenameGroup={handleRenameGroup}
+            onChangeAvatar={handleChangeAvatar}
             onLeave={handleLeave}
             onSearch={controller.searchEmployees}
           />
@@ -243,6 +311,7 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
     [
       controller,
       handleAddMembers,
+      handleChangeAvatar,
       handleLeave,
       handleRemoveMember,
       handleRenameGroup,
@@ -333,6 +402,17 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
         }}
       />
 
+      <ChatShareDialog
+        open={Boolean(share)}
+        title={share?.title}
+        text={share?.text}
+        files={share?.files || []}
+        conversations={controller.conversations}
+        busy={shareBusy}
+        onClose={() => setShare(null)}
+        onSend={handleShareSend}
+      />
+
       <ChatNewChatDialog
         open={showNewChat}
         onClose={() => setShowNewChat(false)}
@@ -340,7 +420,6 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
         onStartDirect={controller.startDirect}
         onCreateGroup={controller.createGroup}
       />
-
       <Dialog
         open={showGlobalSearch}
         onClose={() => setShowGlobalSearch(false)}

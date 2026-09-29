@@ -320,8 +320,10 @@ export function useChatController() {
       mentions?: string[];
       replyToMessageId?: number;
       msgType?: string;
+      /** Gửi vào phòng cụ thể (dùng cho luồng chia sẻ từ app khác); mặc định là phòng đang mở. */
+      conversationId?: number;
     }) => {
-      const conversationId = activeIdRef.current;
+      const conversationId = Number(payload.conversationId) || activeIdRef.current;
       if (!conversationId) return;
 
       const content = payload.content.trim();
@@ -695,8 +697,8 @@ export function useChatController() {
   );
 
   const createGroup = useCallback(
-    async (title: string, memberEmplNos: string[]) => {
-      const conversation = await chatService.createGroup(title, memberEmplNos);
+    async (title: string, memberEmplNos: string[], avatar?: string) => {
+      const conversation = await chatService.createGroup(title, memberEmplNos, avatar);
       setConversations((prev) => [conversation, ...prev]);
       await selectConversation(conversation.CONVERSATION_ID);
       return conversation;

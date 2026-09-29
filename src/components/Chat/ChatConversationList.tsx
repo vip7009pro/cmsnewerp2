@@ -7,6 +7,7 @@ import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import FolderSpecialRoundedIcon from "@mui/icons-material/FolderSpecialRounded";
 import type { ChatConversation } from "./chat.types";
 import { chatAvatarUrl, initialsOf, shortTime } from "./chatUtils";
+import ChatRoomAvatar from "./chatAvatars";
 
 interface Props {
   conversations: ChatConversation[];
@@ -120,18 +121,12 @@ export default function ChatConversationList({
               onClick={() => onSelect(conversation.CONVERSATION_ID)}
             >
               <div className="erp-chat__convAvatar">
-                <Avatar
-                  src={conversation.DISPLAY_AVATAR || undefined}
-                  sx={{ width: 44, height: 44, fontSize: 15, bgcolor: isSelf ? "#0f766e" : "#2563eb" }}
-                >
-                  {isSelf ? (
-                    <FolderSpecialRoundedIcon fontSize="small" />
-                  ) : isDirect ? (
-                    initialsOf(conversation.DISPLAY_NAME)
-                  ) : (
-                    <GroupRoundedIcon fontSize="small" />
-                  )}
-                </Avatar>
+                <ChatRoomAvatar
+                  value={conversation.DISPLAY_AVATAR}
+                  name={conversation.DISPLAY_NAME}
+                  size={44}
+                  isDirect={isDirect}
+                />
                 {peerOnline && <span className="erp-chat__onlineDot" />}
               </div>
 

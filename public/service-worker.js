@@ -173,3 +173,75 @@ self.addEventListener("notificationclick", (event) => {
     })()
   );
 });
+/* ================= Web Share Target: nhận chia sẻ từ app khác =================
+ *
+ * Các app khác (Zalo, Kakao, Thư viện ảnh...) POST multipart tới /share-target theo
+ * khai báo trong manifest.json. SW lưu payload vào Cache API rồi redirect 303 về
+ * TRANG CHỦ kèm cờ `?shared=1` (không có route riêng ⇒ tránh "No routes matched") để
+ * app đọc lại payload và hiện hộp chọn phòng chat.
+ *
+ * Dùng Cache API vì SW không truy cập được localStorage/IndexedDB của trang.
+ */
+const SHARE_TARGET_PATH = "/share-target";
+const SHARE_REDIRECT_PATH = "/?shared=1";
+const SHARE_CACHE = "erp-share-target-v1";
+const SHARE_KEY = "/__erp-shared-payload";
+
+function bufferToBase64(buffer) {
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  const chunkSize = 0x8000;
+  for (let index = 0; index < bytes.length; index += chunkSize) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(index, index + chunkSize));
+  }
+  return btoa(binary);
+}
+
+async function handleShareTarget(request) {
+  try {
+    const formData = await request.formData();
+    const rawFiles = formData.getAll("files");
+
+    const payload = {
+      title: String(formData.get("title") || ""),
+      text: String(formData.get("text") || ""),
+      url: String(formData.get("url") || ""),
+      sharedAt: Date.now(),
+      files: [],
+    };
+
+    for (const entry of rawFiles) {
+      // Bỏ qua trường text lẫn trong danh sách files.
+      if (!entry || typeof entry === "string" || typeof entry.arrayBuffer !== "function") continue;
+      payload.files.push({
+        name: entry.name || `shared-${Date.now()}`,
+        type: entry.type || "application/octet-stream",
+        size: entry.size || 0,
+        data: bufferToBase64(await entry.arrayBuffer()),
+      });
+    }
+
+    const cache = await caches.open(SHARE_CACHE);
+    await cache.put(
+      new Request(SHARE_KEY),
+      new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json" } })
+    );
+  } catch (error) {
+    // Không chặn luồng mở app: vẫn redirect để người dùng thấy thông báo trống.
+    console.warn("[sw] không đọc được nội dung chia sẻ:", error);
+  }
+
+  return Response.redirect(`${SHARE_REDIRECT_PATH}&t=${Date.now()}`, 303);
+}
+
+self.addEventListener("fetch", (event) => {
+  let url;
+  try {
+    url = new URL(event.request.url);
+  } catch (error) {
+    return;
+  }
+  if (event.request.method === "POST" && url.pathname === SHARE_TARGET_PATH) {
+    event.respondWith(handleShareTarget(event.request));
+  }
+});

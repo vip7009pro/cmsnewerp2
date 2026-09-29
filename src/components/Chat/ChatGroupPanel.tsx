@@ -21,6 +21,8 @@ import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import type { ChatConversation, ChatEmployee, ChatMember } from "./chat.types";
 import { chatAvatarUrl, initialsOf } from "./chatUtils";
+import ChatRoomAvatar from "./chatAvatars";
+import ChatAvatarPicker from "./ChatAvatarPicker";
 
 interface Props {
   conversation: ChatConversation;
@@ -32,6 +34,7 @@ interface Props {
   onSetRole: (emplNo: string, role: "MODERATOR" | "MEMBER") => Promise<void>;
   onTransferOwner: (emplNo: string) => Promise<void>;
   onRenameGroup: (title: string) => Promise<void>;
+  onChangeAvatar: (avatar: string) => Promise<void>;
   onLeave: () => Promise<void>;
   onSearch: (keyword: string) => Promise<ChatEmployee[]>;
 }
@@ -60,6 +63,7 @@ export default function ChatGroupPanel({
   onSetRole,
   onTransferOwner,
   onRenameGroup,
+  onChangeAvatar,
   onLeave,
   onSearch,
 }: Props) {
@@ -68,6 +72,8 @@ export default function ChatGroupPanel({
   const canModerate = canManage || conversation.MY_ROLE === "MODERATOR";
 
   const [title, setTitle] = useState(conversation.TITLE || "");
+  const [avatar, setAvatar] = useState(conversation.AVATAR || "");
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [candidates, setCandidates] = useState<ChatEmployee[]>([]);
@@ -119,13 +125,34 @@ export default function ChatGroupPanel({
         {/* Hero: avatar + tên + vai trò */}
         <div className="erp-chat__infoHero">
           <div className="erp-chat__infoAvatar">
-            <Avatar
-              src={conversation.DISPLAY_AVATAR || undefined}
-              sx={{ width: 64, height: 64, fontSize: 22, bgcolor: "#2563eb" }}
-            >
-              {isGroup ? <GroupRoundedIcon /> : initialsOf(conversation.DISPLAY_NAME)}
-            </Avatar>
+            <ChatRoomAvatar
+              value={conversation.DISPLAY_AVATAR}
+              name={conversation.DISPLAY_NAME}
+              size={64}
+              isDirect={!isGroup}
+            />
           </div>
+
+          {isGroup && canManage && (
+            <button
+              type="button"
+              className="erp-chat__ghostBtn erp-chat__changeAvatarBtn"
+              onClick={() => setShowAvatarPicker((prev) => !prev)}
+            >
+              {showAvatarPicker ? "Đóng" : "Đổi avatar phòng"}
+            </button>
+          )}
+
+          {isGroup && canManage && showAvatarPicker && (
+            <ChatAvatarPicker
+              value={avatar}
+              name={title || conversation.DISPLAY_NAME}
+              onChange={(next) => {
+                setAvatar(next);
+                void run(() => onChangeAvatar(next), "Đã cập nhật avatar phòng");
+              }}
+            />
+          )}
 
           {isGroup && canManage ? (
             <div className="erp-chat__renameRow">

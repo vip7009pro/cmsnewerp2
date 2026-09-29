@@ -22,6 +22,7 @@ import ChatMessageBubble from "./ChatMessageBubble";
 import ChatMessageMenu, { type ChatMessageMenuState } from "./ChatMessageMenu";
 import ChatSearchPanel from "./ChatSearchPanel";
 import ChatMediaDialog from "./ChatMediaDialog";
+import ChatRoomAvatar from "./chatAvatars";
 import type { PendingUpload } from "../../hooks/useChatController";
 import { chatService, type ChatStorage } from "../../api/services/chatService";
 import {
@@ -532,18 +533,12 @@ export default function ChatConversationView({
             <ArrowBackRoundedIcon fontSize="small" />
           </IconButton>
         )}
-        <Avatar
-          src={conversation.DISPLAY_AVATAR || undefined}
-          sx={{ width: 36, height: 36, fontSize: 14, bgcolor: isSelf ? "#0f766e" : "#2563eb" }}
-        >
-          {isSelf ? (
-            <FolderSpecialRoundedIcon fontSize="small" />
-          ) : isDirect ? (
-            initialsOf(conversation.DISPLAY_NAME)
-          ) : (
-            <GroupRoundedIcon fontSize="small" />
-          )}
-        </Avatar>
+        <ChatRoomAvatar
+          value={conversation.DISPLAY_AVATAR}
+          name={conversation.DISPLAY_NAME}
+          size={36}
+          isDirect={isDirect}
+        />
         <div className="erp-chat__mainMeta">
           <span className="erp-chat__mainName">{conversation.DISPLAY_NAME}</span>
           <span className="erp-chat__mainStatus">

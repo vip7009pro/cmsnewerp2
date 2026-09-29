@@ -15,13 +15,14 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import type { ChatEmployee } from "./chat.types";
 import { chatAvatarUrl, initialsOf } from "./chatUtils";
+import ChatAvatarPicker from "./ChatAvatarPicker";
 
 interface Props {
   open: boolean;
   onClose: () => void;
   onSearch: (keyword: string) => Promise<ChatEmployee[]>;
   onStartDirect: (emplNo: string) => Promise<unknown>;
-  onCreateGroup: (title: string, memberEmplNos: string[]) => Promise<unknown>;
+  onCreateGroup: (title: string, memberEmplNos: string[], avatar?: string) => Promise<unknown>;
 }
 
 export default function ChatNewChatDialog({
@@ -36,6 +37,7 @@ export default function ChatNewChatDialog({
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<ChatEmployee[]>([]);
   const [groupTitle, setGroupTitle] = useState("");
+  const [groupAvatar, setGroupAvatar] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,6 +68,7 @@ export default function ChatNewChatDialog({
       setKeyword("");
       setSelected([]);
       setGroupTitle("");
+      setGroupAvatar("");
       setError(null);
     }
   }, [open]);
@@ -105,7 +108,7 @@ export default function ChatNewChatDialog({
     setSubmitting(true);
     setError(null);
     try {
-      await onCreateGroup(groupTitle.trim(), selectedNos);
+      await onCreateGroup(groupTitle.trim(), selectedNos, groupAvatar || undefined);
       onClose();
     } catch (err: any) {
       setError(err?.message || "Không tạo được nhóm");
@@ -159,14 +162,22 @@ export default function ChatNewChatDialog({
         )}
 
         {selected.length > 1 && (
-          <TextField
-            size="small"
-            fullWidth
-            label="Tên nhóm"
-            value={groupTitle}
-            onChange={(event) => setGroupTitle(event.target.value)}
-            sx={{ mt: 1.5 }}
-          />
+          <>
+            <TextField
+              size="small"
+              fullWidth
+              label="Tên nhóm"
+              value={groupTitle}
+              onChange={(event) => setGroupTitle(event.target.value)}
+              sx={{ mt: 1.5 }}
+            />
+            <ChatAvatarPicker
+              value={groupAvatar}
+              name={groupTitle || "Nhóm"}
+              onChange={setGroupAvatar}
+              compact
+            />
+          </>
         )}
 
         <div className="erp-chat-dialog__list">

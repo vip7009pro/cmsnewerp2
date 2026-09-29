@@ -2173,3 +2173,207 @@ $chat-bubble-other: #f1f5f9;
     width: 100%;
   }
 }
+
+/* ==================== Avatar phòng (icon mặc định / ảnh) ==================== */
+
+.erp-chat__roomAvatarImg {
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.erp-chat__roomAvatarIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.erp-chat__avatarPicker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid $chat-border;
+  border-radius: 12px;
+  background: $chat-bg-soft;
+}
+
+.erp-chat__avatarPreview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.erp-chat__avatarPreviewActions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+
+  .erp-chat__ghostBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+}
+
+.erp-chat__avatarGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(34px, 1fr));
+  gap: 6px;
+}
+
+.erp-chat__avatarSwatch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 2px solid transparent;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px -4px rgba(15, 23, 42, 0.45);
+  }
+
+  &.is-active {
+    border-color: $chat-primary;
+    box-shadow: 0 0 0 2px $chat-primary-soft;
+  }
+}
+
+.erp-chat__avatarHint {
+  font-size: 10.5px;
+  color: $chat-muted;
+}
+
+.erp-chat__changeAvatarBtn {
+  align-self: flex-start;
+}
+
+/* ==================== Hộp nhận chia sẻ từ app khác ==================== */
+
+.erp-chat__shareTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: $chat-text;
+  margin-bottom: 6px;
+}
+
+.erp-chat__shareFiles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 210px;
+  overflow-y: auto;
+  padding: 2px;
+  background: $chat-bg-soft;
+  border-radius: 10px;
+}
+
+.erp-chat__shareFile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 9px;
+  background: #fff;
+  border: 1px solid $chat-border;
+  color: $chat-muted;
+
+  img {
+    width: 52px;
+    height: 52px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex: 0 0 auto;
+  }
+
+  i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 9px;
+    font-size: 20px;
+    font-style: normal;
+    flex: 0 0 auto;
+  }
+}
+
+.erp-chat__shareFileMeta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1 1 auto;
+
+  strong {
+    font-size: 12px;
+    font-weight: 600;
+    color: $chat-text;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  small {
+    font-size: 10.5px;
+  }
+}
+
+.erp-chat__shareList {
+  max-height: 240px;
+  overflow-y: auto;
+  margin-top: 6px;
+  border: 1px solid $chat-border;
+  border-radius: 10px;
+}
+
+.erp-chat__shareItem {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 7px 9px;
+  border: none;
+  border-bottom: 1px solid #f1f5f9;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover,
+  &.is-active {
+    background: $chat-primary-soft;
+  }
+}
+
+.erp-chat__shareItemName {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1 1 auto;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: $chat-text;
+
+  small {
+    font-size: 10.5px;
+    color: $chat-muted;
+    font-weight: 400;
+  }
+}

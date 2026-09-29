@@ -50,8 +50,8 @@ export const chatService = {
   getOrCreateDirect: (otherEmplNo: string) =>
     chatQuery<ChatConversation>("chatGetOrCreateDirect", { otherEmplNo }),
 
-  createGroup: (title: string, memberEmplNos: string[]) =>
-    chatQuery<ChatConversation>("chatCreateGroup", { title, memberEmplNos }),
+  createGroup: (title: string, memberEmplNos: string[], avatar?: string) =>
+    chatQuery<ChatConversation>("chatCreateGroup", { title, memberEmplNos, avatar }),
 
   loadMessages: (conversationId: number, beforeMessageId?: number, limit = 40) =>
     chatQuery<{ conversationId: number; messages: ChatMessage[]; hasMore: boolean }>("chatLoadMessages", {
@@ -109,7 +109,6 @@ export const chatService = {
 
   updateGroup: (conversationId: number, patch: { title?: string; avatar?: string }) =>
     chatQuery<ChatConversation>("chatUpdateGroup", { conversationId, ...patch }),
-
   addMembers: (conversationId: number, memberEmplNos: string[]) =>
     chatQuery<ChatConversation>("chatAddMembers", { conversationId, memberEmplNos }),
 
@@ -187,6 +186,15 @@ export async function uploadChatFile(
   formData.append("CTR_CD", getCtrCd());
 
   const response = await axios.post(`${getSever()}/chatfile`, formData, { onUploadProgress });
+  return unwrap(response);
+}
+
+/** Upload ảnh avatar cho phòng nhóm (chỉ cần đăng nhập, không cần là thành viên). */
+export async function uploadChatAvatar(file: File): Promise<{ url: string; size: number }> {
+  const formData = new FormData();
+  formData.append("uploadedfile", file);
+  formData.append("token_string", cookies.get("token"));
+  const response = await axios.post(`${getSever()}/chatavatar`, formData);
   return unwrap(response);
 }
 

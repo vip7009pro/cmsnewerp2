@@ -1,5 +1,43 @@
 # ACTIVE_STATE
 
+## Đợt 22.8 — Avatar phòng chat & nhận chia sẻ từ app khác (PWA Share Target) (2026-09-30)
+Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` OK, `get_errors` 0 lỗi, verify end-to-end bằng Playwright + DB.
+
+### 1. Avatar phòng (icon mặc định + ảnh tải lên)
+- `ZTB_CHAT_CONVERSATION.AVATAR` nhận 1 trong 3 dạng: `icon:<id>` | `/chatavatar/<file>` | NULL (không đổi schema).
+- `routes/chatAvatar.js` mount `/chatavatar`: POST upload **chỉ cần đăng nhập** (avatar phải upload được TRƯỚC khi
+  tạo nhóm nên không thể dùng `/chatfile` vốn yêu cầu là thành viên phòng), ảnh ≤ 5MB, lưu `outbinary/chatavatars/`;
+  GET công khai + chặn path traversal.
+- `chatRoomService`: `AVATAR_ICONS` (16 id, khớp FE) + `normalizeAvatar()`; `chatUpdateGroup` thêm tham số
+  `@CLEAR_AVATAR` để phân biệt "không đổi" với "xoá avatar"; `buildConversationView` trả `DISPLAY_AVATAR` cho nhóm.
+- FE: `chatAvatars.tsx` (preset + `ChatRoomAvatar` dùng chung cho danh sách/tiêu đề/dialog) và
+  `ChatAvatarPicker.tsx` (16 swatch + "Tải ảnh lên" + "Bỏ avatar"), gắn ở dialog tạo nhóm và panel quản lý nhóm.
+
+### 2. Nhận chia sẻ từ app khác (Zalo, Kakao, Gallery…) vào PWA
+Luồng: app khác → Chia sẻ → chọn ERP → POST multipart `/share-target` → **service worker chặn**, lưu payload vào
+**Cache API** rồi **redirect 303 về `/?shared=1`** → app đọc payload và mở hộp chọn phòng chat.
+- `manifest.json`: thêm `share_target` (multipart, field `files`) và `file_handlers` (ảnh/pdf).
+- `public/service-worker.js`: listener `fetch` xử lý POST, chuyển tệp sang base64, lưu vào cache
+  `erp-share-target-v1` (Cache API vì SW không truy cập được localStorage của trang).
+- FE: `chatShareTarget.ts` (đọc + xoá payload, chuyển base64 → `File`, đọc `launchQueue` cho `file_handlers`),
+  `ChatShareDialog.tsx` (xem trước + sửa nội dung + chọn phòng), `ChatDock` tự phát hiện payload khi mount;
+  `sendMessage` nhận thêm `conversationId` để gửi vào phòng được chọn.
+
+### Lưu ý quan trọng khi vận hành
+- **Không redirect về `/share-target`** vì React Router không có route đó (chỉ log "No routes matched" và không render gì)
+  ⇒ chuyển hướng về trang chủ kèm `?shared=1` rồi `history.replaceState`.
+- Sau khi sửa `service-worker.js`, tab đang mở vẫn do SW **cũ** điều khiển (controller có thể null) ⇒ phải gỡ đăng ký /
+  đóng hết tab rồi mở lại, nếu không POST sẽ trả 404 (không ai chặn).
+- Web Share Target chỉ hoạt động khi app đã **cài như PWA**, trên **Android/Chrome và Windows/Chrome-Edge**;
+  **iOS Safari không hỗ trợ** (chỉ có `navigator.share` chiều gửi đi).
+
+### Kiểm chứng đã chạy
+- Tạo nhóm với icon "Dự án" ⇒ danh sách + tiêu đề hiện ô icon tím `rgb(124,58,237)`.
+- Upload ảnh PNG trong panel nhóm ⇒ header đổi sang `/chatavatar/<file>` + thông báo "Đã cập nhật avatar phòng".
+- POST `/share-target` (FormData có tiêu đề + text + ảnh) ⇒ SW lưu cache (1 tệp) và redirect `/?shared=1`;
+  nạp `/?shared=1` ⇒ hộp "Chia sẻ vào chat nội bộ" mở với ảnh xem trước, text và danh sách phòng.
+- Chọn phòng và Gửi ⇒ DB ghi tin `MSG_TYPE='IMAGE'`, nội dung chia sẻ, tệp `anh-tu-zalo.png`.
+
 ## Đợt 22.7 — Múi giờ Việt Nam, restyle bộ lọc, tag tên theo tên nhân viên (2026-09-30)
 Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` OK, `get_errors` 0 lỗi,
 `scratch/test_chat_search_media.js` PASS 32/32, verify bằng Playwright.
