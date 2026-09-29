@@ -40,6 +40,9 @@ self.addEventListener("push", (event) => {
     body: payload.body,
     icon: "/icon-192.png",
     badge: "/icon-192.png",
+    // `tag` (do backend gửi kèm, ví dụ "chat-<conversationId>") ⇒ nhiều tin trong cùng
+    // một phòng chat sẽ gộp thành 1 thông báo thay vì xếp chồng.
+    tag: payload.tag || undefined,
     // Gắn URL đích + dữ liệu thao tác nhanh vào chính notification để handler click đọc lại.
     data: { url: targetUrl, approval: payload.approval || null },
   };

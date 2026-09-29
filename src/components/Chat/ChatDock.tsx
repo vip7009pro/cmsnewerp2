@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Popover } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import ChatBubbleRoundedIcon from "@mui/icons-material/ChatBubbleRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ChatConversationList from "./ChatConversationList";
@@ -21,7 +21,6 @@ interface ChatDockProps {
 export default function ChatDock({ isMobile = false, open, onOpenChange, showTrigger = true }: ChatDockProps) {
   const controller = useChatController();
   const [internalOpen, setInternalOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [showInfo, setShowInfo] = useState(false);
   const [showNewChat, setShowNewChat] = useState(false);
   const [showRequests, setShowRequests] = useState(false);
@@ -62,11 +61,10 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
     return () => window.clearTimeout(timer);
   }, [controller, setOpen]);
 
-  // Khi mở panel trên desktop cần anchor để neo popover.
+  // Đóng cửa sổ thì đóng luôn pane thông tin nhóm đang mở.
   useEffect(() => {
-    if (isOpen && !isMobile) setAnchorEl(triggerRef.current);
     if (!isOpen) setShowInfo(false);
-  }, [isMobile, isOpen]);
+  }, [isOpen]);
 
   const typingNamesFor = useCallback(
     (conversationId: number) => Object.values(controller.typingUsers[conversationId] || {}),
@@ -249,27 +247,33 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
           </div>
         )
       ) : (
-        <Popover
-          open={isOpen && Boolean(anchorEl)}
-          anchorEl={anchorEl}
-          onClose={() => setOpen(false)}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          transformOrigin={{ vertical: "top", horizontal: "right" }}
-          PaperProps={{
-            sx: {
-              mt: 1.5,
-              borderRadius: "16px",
-              overflow: "hidden",
-              boxShadow: "0 25px 60px -12px rgba(15, 23, 42, 0.28)",
-              width: 900,
-              height: 620,
-              maxWidth: "calc(100vw - 32px)",
-              maxHeight: "calc(100vh - 96px)",
-            },
-          }}
-        >
-          {panel}
-        </Popover>
+        isOpen && (
+          /* Cửa sổ neo góc phải-dưới kiểu Messenger: KHÔNG có backdrop, không tự đóng
+             khi click ra ngoài — chỉ đóng bằng nút X hoặc bấm lại icon trên navbar. */
+          <div className="erp-chat__window" role="dialog" aria-label="Chat nội bộ">
+            <div className="erp-chat__windowHead">
+              <span className="erp-chat__windowTitle">
+                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+                  chat_bubble
+                </span>
+                Tin nhắn nội bộ
+                {controller.unreadTotal > 0 && (
+                  <span className="erp-chat__windowCount">{controller.unreadTotal}</span>
+                )}
+              </span>
+              <IconButton
+                size="small"
+                className="erp-chat__iconBtn"
+                onClick={() => setOpen(false)}
+                aria-label="Đóng cửa sổ chat"
+                title="Đóng cửa sổ chat"
+              >
+                <CloseRoundedIcon fontSize="small" />
+              </IconButton>
+            </div>
+            <div className="erp-chat__windowBody">{panel}</div>
+          </div>
+        )
       )}
 
       <ChatNewChatDialog

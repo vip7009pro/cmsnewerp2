@@ -842,12 +842,79 @@ $chat-bubble-other: #f1f5f9;
   gap: 6px;
 }
 
+/* ------------------------- Desktop: cửa sổ neo góc phải-dưới ------------------ */
+
+.erp-chat__window {
+  position: fixed;
+  right: 20px;
+  bottom: 0;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  width: 900px;
+  max-width: calc(100vw - 32px);
+  height: min(640px, calc(100vh - 88px));
+  background: $chat-bg;
+  border: 1px solid $chat-border;
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -14px 44px -14px rgba(15, 23, 42, 0.3);
+  overflow: hidden;
+  /* KHÔNG dùng animation transform: ở tab bị ẩn/CPU throttle, animation có thể bị treo
+     ở trạng thái đầu (translateY) làm cửa sổ lệch khỏi đáy màn hình. */
+}
+
+.erp-chat__windowHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex: 0 0 auto;
+  height: 46px;
+  padding: 0 8px 0 14px;
+  border-bottom: 1px solid $chat-border;
+  background: #fff;
+}
+
+.erp-chat__windowTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: $chat-text;
+}
+
+.erp-chat__windowCount {
+  min-width: 18px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: $chat-primary;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.erp-chat__windowBody {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+
+  > .erp-chat__panel {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+}
+
 /* -------------------------------- Mobile -------------------------------- */
 
 .erp-chat__mobileOverlay {
   position: fixed;
   inset: 0;
-  z-index: 1400;
+  /* Thấp hơn MUI Dialog (1300) để dialog "Cuộc trò chuyện mới"/thông tin nhóm hiện lên trên. */
+  z-index: 1200;
   display: flex;
   flex-direction: column;
   background: #fff;

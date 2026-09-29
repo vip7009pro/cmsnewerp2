@@ -31,6 +31,38 @@ Trạng thái: **HOÀN THÀNH phase 1 (backend + frontend web)** — migration 6
 - Chưa làm: sửa tin nhắn (edit), ghim tin, thông báo khi được tag, block người dùng, Redis adapter, object storage, client Flutter.
 - `ACTIVE_STATE.md` đang vượt 200 dòng (còn lịch sử đợt ≤ 21) — nên nén/archives các đợt cũ.
 
+## Đợt 22.1 — Sửa realtime, push offline & cửa sổ chat desktop (2026-09-29)
+Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 2m 2s`), `get_errors` 0 lỗi, verify trên trình duyệt thật.
+
+### Yêu cầu
+1. Cửa sổ chat neo góc phải-dưới, có nút đóng riêng, **không tự đóng khi click ra ngoài** (desktop).
+2. Push khi user offline (tắt tab) không tới, trong khi push đăng ký/phê duyệt nghỉ vẫn chạy.
+
+### Phát hiện & fix
+- **Realtime "phải F5"**: do đường mạng cổng 3007 bị PMTU black-hole (mất payload > ~1.4KB) khiến handshake
+  chứa JWT ~1.9KB treo; cộng thêm server chỉ phát `chat:message` vào room phòng chat.
+  Đã cho socket dùng **cùng base với API** (`server_ip`) và phát thêm tới **room riêng từng thành viên**.
+- **Push offline**: push TRƯỚC ĐÂY chỉ gọi ở nhánh socket `chat:send`; luồng HTTP `chatSendMessage`
+  (luồng client dùng khi socket chưa nối) **không gọi push** ⇒ tách `services/chat/chatPush.js` +
+  `socket/presence.js` và gọi ở cả 2 nhánh. Thêm `tag` để gộp thông báo cùng phòng.
+- **Đo trên DB**: `ZTB_SUBSCRIPTION_TB` có 359 row legacy `SUB_STATUS='Y'` không owner (bị lọc bỏ, đúng thiết kế),
+  chỉ 37 row `SUB_STATUS='1'` có owner nhận targeted push; push trực tiếp trả 201 OK (3/5), 2/5 trả 410 hết hạn.
+  **Quyền Notification của trình duyệt phải là `granted`**, nếu `denied` thì không có thông báo nào hiện.
+- **UI**: bỏ MUI `Popover` ⇒ thay `.erp-chat__window` (`fixed right:20px bottom:0`, `z-index:1200`, header + nút X,
+  không backdrop). **Không dùng CSS animation transform** cho cửa sổ này (tab ẩn làm animation treo ⇒ lệch 14px).
+
+### Verify
+- Click ra ngoài ⇒ cửa sổ vẫn mở; bấm X ⇒ đóng; `gapRight=20, gapBottom=0, transform=none`.
+- Badge chat nhảy ngay khi user khác gửi tin (không F5).
+- `[chat] push offline conv=10 -> NNH1609 (online: 1)` xuất hiện trong log khi gửi qua HTTP.
+- `test_chat_realtime.js` REALTIME OK; `test_push_delivery.js` 3/5 endpoint trả 201.
+
+### Việc cần làm tiếp theo (đợt 22.1)
+- **Phải deploy backend chat lên server mà ERP trỏ tới** (cổng 5013 hiện là backend khác, không có chat)
+  hoặc sửa MTU/PMTUD cho cổng 3007 — nếu không, chat vẫn không chạy thật.
+- Cân nhắc dọn subscription hết hạn (410) và nâng cấp 359 row legacy `SUB_STATUS='Y'` sang có owner.
+- Chưa làm: sửa tin nhắn, ghim tin, thông báo khi được tag, block người dùng, Redis adapter, Flutter.
+
 ## Đợt 21 — Cổng bắt buộc cấp quyền Notification (Web Push) (2026-09-28)
 Task hiện tại: kiểm tra user đã cho phép notification (FCM/Web Push) chưa; nếu chưa thì popup **bắt buộc** đồng ý mới cho dùng tiếp.
 Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 2m 8s`), `get_errors` 0 lỗi, verify dev 3001 (@1440 / @393×700).
