@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { ReactElement } from "react";
 import { io } from "socket.io-client";
+import Cookies from "universal-cookie";
 import Swal from "sweetalert2";
 import { getUserData, logout as LGOT } from "../../api/Api";
 import { ELE_ARRAY, GlobalInterface, UserData, WEB_SETTING_DATA, } from "../../api/GlobalInterface";
@@ -88,7 +89,64 @@ const companyInfo = {
   },
 };
 //console.log('companyInfo',companyInfo);
-const socket = io(companyInfo[startCPN as keyof typeof companyInfo].apiUrl);
+/**
+ * Socket PHẢI dùng cùng base với API mà app đang gọi.
+ *
+ * Lý do (đã đo thực tế): cổng 3007 đi qua NAT bị mất các gói client→server lớn hơn
+ * ~1.4KB (PMTU black-hole), trong khi token JWT ~1.9KB nằm trong gói connect ⇒ handshake
+ * treo, socket không bao giờ "connected" ⇒ chat realtime chết, phải F5. Cổng API (5013/5014)
+ * không bị vấn đề này nên socket dùng chung base đó là an toàn nhất.
+ */
+const SOCKET_DEFAULT_PORTS: Record<string, string> = { https: "5014", http: "5013" };
+const resolveSocketUrl = () => {
+  const raw = String(
+    localStorage.getItem("server_ip") || companyInfo[startCPN as keyof typeof companyInfo].apiUrl || ""
+  ).trim();
+  // Ép giao thức theo trang để tránh mixed-content (Chrome chặn http từ trang https).
+  const base = raw.replace(/^https?:\/\//i, `${protocol}://`).replace(/\/+$/, "");
+  return /:\d+$/.test(base) ? base : `${base}:${SOCKET_DEFAULT_PORTS[protocol]}`;
+};
+const SOCKET_URL = resolveSocketUrl();
+
+const socket = io(SOCKET_URL, {
+  // websocket trước để giảm round-trip; polling là fallback nếu WS bị chặn.
+  transports: ["websocket", "polling"],
+  reconnection: true,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 8000,
+  timeout: 10000,
+  // `auth` dạng hàm: socket.io gọi lại MỖI lần (re)connect ⇒ luôn lấy token mới nhất
+  // từ cookie. Cần cho chat vì backend xác thực JWT ngay ở handshake.
+  auth: (cb: (data: Record<string, unknown>) => void) => {
+    try {
+      cb({ token: new Cookies().get("token") || "" });
+    } catch {
+      cb({ token: "" });
+    }
+  },
+});
+
+/**
+ * Tự phục hồi khi transport chết (ví dụ backend restart ⇒ sid cũ bị từ chối 400).
+ * `socket.io-client` có thể kẹt ở session cũ; ngắt hẳn rồi kết nối lại sẽ tạo
+ * handshake mới. Có delay để không thành vòng lặp nóng.
+ */
+const forceFreshHandshake = () => {
+  try {
+    if (socket.connected) return;
+    socket.disconnect();
+    socket.connect();
+  } catch (error) {
+    console.warn("[socket] Không làm mới được kết nối:", error);
+  }
+};
+socket.on("connect_error", (error: unknown) => {
+  console.warn("[socket] connect_error:", (error as Error)?.message || error);
+  window.setTimeout(forceFreshHandshake, 1500);
+});
+socket.io.on("error", () => {
+  window.setTimeout(forceFreshHandshake, 1500);
+});
 socket.on("connect", () => {
   console.log(socket.id);
 });

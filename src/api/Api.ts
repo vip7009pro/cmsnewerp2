@@ -82,6 +82,22 @@ export function getSocket() {
   const state = store.getState();
   return state.totalSlice.globalSocket;
 }
+
+/**
+ * Ngắt & kết nối lại socket để handshake mang theo token mới.
+ * Cần thiết cho chat nội bộ: backend xác thực JWT ngay ở handshake và dùng
+ * quyền của phiên hiện tại, nên sau login/logout phải bắt tay lại.
+ */
+export function refreshSocketAuth() {
+  const socket = getSocket();
+  if (!socket) return;
+  try {
+    socket.disconnect();
+    socket.connect();
+  } catch (error) {
+    console.warn("[socket] Không làm mới được handshake:", error);
+  }
+}
 export function getNotiCount() {
   const state = store.getState();
   return state.totalSlice.notificationCount;
@@ -152,6 +168,8 @@ export function login(
           secure: window.location.protocol === "https:",
         });
         localStorage.setItem("publicKey", Jresult.publicKey);
+        // Có token mới ⇒ bắt tay lại để socket được xác thực cho chat nội bộ.
+        refreshSocketAuth();
         checkLogin()
           .then((data) => {
             const tkStatus = String(data?.data?.tk_status ?? "").toUpperCase();
@@ -301,6 +319,8 @@ export function logout() {
     // Giá trị "reset" là quy ước của backend (xem authService.logout trong practice1).
     cookies.set("token", "reset", { path: "/" });
     localStorage.removeItem("publicKey");
+    // Token đã vô hiệu ⇒ bắt tay lại để socket mất quyền chat ngay lập tức.
+    refreshSocketAuth();
   } catch (error) {
     console.log(error);
   }

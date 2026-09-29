@@ -1,5 +1,36 @@
 # ACTIVE_STATE
 
+## Đợt 22 — Chat nội bộ ERP (Socket.IO + Web Push) (2026-09-29)
+Task hiện tại: triển khai chat nội bộ cho ERP — chat in-app realtime khi đang dùng web, thông báo đẩy khi không có socket active; kết bạn, tag tên, nhóm chat, đính kèm file/ảnh/tài liệu, avatar dùng chung ảnh nhân sự, quản lý nhóm (owner/admin/mod), lưu tin nhắn vĩnh viễn trong DB.
+Trạng thái: **HOÀN THÀNH phase 1 (backend + frontend web)** — migration 6 bảng OK; `node scratch/test_chat_service.js` 20/20 PASS; `npm run build` OK (`✓ built in 1m 45s`), `get_errors` 0 lỗi.
+
+### Phạm vi đã chốt với user
+- Chỉ **web ERP** trước (Flutter sau); giữ **Web Push VAPID** hiện có, không đổi sang FCM.
+- File lưu disk server, **tối đa 25MB/file**; download phải qua endpoint kiểm tra quyền thành viên.
+- Chạy **1 process** (presence in-memory); chưa dùng Redis adapter.
+- **Chat 1-1 không cần kết bạn**; module friend chỉ là danh bạ/lời mời.
+- Nhóm: OWNER toàn quyền, ADMIN cấp/thu quyền MODERATOR, MODERATOR xoá tin người khác + loại MEMBER.
+  **OWNER rời nhóm khi còn thành viên khác ⇒ bắt buộc chuyển quyền** (backend trả `code:"NEED_TRANSFER"`).
+- **Không xoá vật lý** — mọi xoá/sửa là soft-delete + ghi `ZTB_CHAT_AUDIT`.
+- Push **chỉ** gửi khi người nhận không còn socket active; deep-link `/?chat=<conversationId>`.
+
+### Kiến trúc
+- Backend: `services/chat/chatRepository.js` (SQL) → `chatMessageCore.js` (lõi dùng chung HTTP+Socket, persist-before-emit) → `chatRoomService.js` / `chatFriendService.js` (command qua POST /api); `routes/chatFile.js` mount `/chatfile`.
+- Socket: `io.use(authenticate)` xác thực JWT handshake (không tin EMPL_NO client khai); room `user:{EMPL_NO}` + `conversation:{id}`; event `chat:join/leave/send(ack)/typing/read`; export `emitToConversation`, `emitToUsers`, `isUserOnline`.
+- Frontend: `api/services/chatService.ts`, `hooks/useChatController.ts`, `components/Chat/*` (`ChatDock` = trigger + Popover desktop / overlay mobile, ConversationList, ConversationView, GroupPanel, NewChatDialog, `chat.scss` namespace `.erp-chat__*`).
+- Tích hợp: `PrecisionHeader` — desktop trong `precision-header__actions`, mobile trong `precision-header__mobileActions` (chỉ 1 instance mount nhờ conditional rendering theo `isMobile`).
+
+### Pitfall đã gặp thật (đừng chẩn đoán lại)
+- **`ZTBEMPLINFO.EMPL_NO` là kiểu char ⇒ bị đệm khoảng trắng**, phải `trim().toUpperCase()`. Chưa trim ⇒ role OWNER lưu sai (thành MEMBER) và membership bị từ chối oan.
+- **`ZTBEMPLINFO` KHÔNG có `JOB_NAME`/`MAINDEPTCODE`/`SUBDEPTCODE`** ⇒ join `ZTBJOB (JOB_CODE)` và `ZTBWORKPOSITION → ZTBSUBDEPARTMENT → ZTBMAINDEPARMENT` (tên bảng một chữ R).
+- `queryDB_New` trả NG khi `rowsAffected = 0` ⇒ DDL/multi-statement phải dùng `openConnection()`/`openDedicatedConnection()`.
+
+### Việc cần làm tiếp theo (đợt 22)
+- Verify trực quan trên dev 3001 khi có phiên đăng nhập (chưa chạy được vì cần tài khoản ERP): badge, panel 2 khung, mobile overlay, tag tên, upload file, đổi quyền nhóm.
+- Mở rộng `public/service-worker.js` nếu cần badge/notification tag riêng cho tin nhắn chat.
+- Chưa làm: sửa tin nhắn (edit), ghim tin, thông báo khi được tag, block người dùng, Redis adapter, object storage, client Flutter.
+- `ACTIVE_STATE.md` đang vượt 200 dòng (còn lịch sử đợt ≤ 21) — nên nén/archives các đợt cũ.
+
 ## Đợt 21 — Cổng bắt buộc cấp quyền Notification (Web Push) (2026-09-28)
 Task hiện tại: kiểm tra user đã cho phép notification (FCM/Web Push) chưa; nếu chưa thì popup **bắt buộc** đồng ý mới cho dùng tiếp.
 Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 2m 8s`), `get_errors` 0 lỗi, verify dev 3001 (@1440 / @393×700).

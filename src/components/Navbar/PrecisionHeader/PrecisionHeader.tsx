@@ -38,6 +38,7 @@ import { logout } from "../../../api/Api";
 import { saveTabModePreference } from "../../../api/services/tabModeService";
 import { UserData } from "../../../api/GlobalInterface";
 import NotificationPanel from "../../NotificationPanel/NotificationPanel";
+import ChatDock from "../../Chat/ChatDock";
 import NavMenuNew from "../../NavMenu/NavMenuNew";
 import type { NAVMENUDATA } from "../../NavMenu/getNavMenu";
 import { canUseTabMode, getFirstNavMenuSearchResult, normalizeMenuPath } from "../../NavMenu/navMenuSearch";
@@ -680,6 +681,9 @@ export default function PrecisionHeader({
                 </span>
               )}
             </button>
+
+            {/* Chat nội bộ: nút + badge chưa đọc, overlay toàn màn hình khi mở */}
+            <ChatDock isMobile />
           </div>
         ) : (
           <>
@@ -720,6 +724,9 @@ export default function PrecisionHeader({
               <strong style={{ color: lang === "kr" ? "#1d4ed8" : undefined }}>KR</strong>
             </span>
           </div>
+
+          {/* Chat nội bộ (Messenger-style) */}
+          <ChatDock isMobile={false} />
 
           {/* Notifications Center */}
           <div
