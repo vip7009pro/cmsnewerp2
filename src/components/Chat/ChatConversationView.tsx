@@ -32,6 +32,7 @@ import {
   fileKindOf,
   formatFileSize,
   initialsOf,
+  normalizeText,
 } from "./chatUtils";
 
 interface Props {
@@ -317,13 +318,45 @@ export default function ChatConversationView({
     return groups;
   }, [messages]);
 
+  /**
+   * Danh sách gợi ý khi gõ `@`: khớp theo TÊN (không dấu cũng được) hoặc MÃ nhân viên,
+   * ưu tiên người có tên bắt đầu bằng từ khoá.
+   */
   const mentionCandidates = useMemo(() => {
     if (mentionKeyword === null) return [];
-    const key = mentionKeyword.toLowerCase();
-    return conversation.MEMBERS.filter((m) => m.EMPL_NO !== myEmplNo)
-      .filter((m) => (m.FULL_NAME || "").toLowerCase().includes(key))
-      .slice(0, 6);
+    const key = normalizeText(mentionKeyword);
+    const others = conversation.MEMBERS.filter((m) => m.EMPL_NO !== myEmplNo);
+    if (!key) return others.slice(0, 8);
+    return others
+      .map((member) => {
+        const name = normalizeText(member.FULL_NAME);
+        const code = normalizeText(member.EMPL_NO);
+        let score = -1;
+        if (name.startsWith(key) || code.startsWith(key)) score = 0;
+        else if (name.includes(key) || code.includes(key)) score = 1;
+        return { member, score };
+      })
+      .filter((item) => item.score >= 0)
+      .sort((a, b) => a.score - b.score)
+      .slice(0, 8)
+      .map((item) => item.member);
   }, [conversation.MEMBERS, mentionKeyword, myEmplNo]);
+
+  /** Vị trí đang chọn trong danh sách gợi ý (điều hướng bằng phím mũi tên). */
+  const [mentionIndex, setMentionIndex] = useState(0);
+  const mentionListRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setMentionIndex(0);
+  }, [mentionKeyword]);
+
+  // Giữ mục đang chọn luôn nằm trong vùng nhìn thấy khi bấm mũi tên.
+  useEffect(() => {
+    const list = mentionListRef.current;
+    if (!list) return;
+    const active = list.children[mentionIndex] as HTMLElement | undefined;
+    active?.scrollIntoView({ block: "nearest" });
+  }, [mentionIndex, mentionCandidates.length]);
 
   const handleTextChange = (value: string) => {
     setText(value);
@@ -341,13 +374,17 @@ export default function ChatConversationView({
     setMentionKeyword(match ? match[1] : null);
   };
 
-  const insertMention = (member: ChatMember) => {
-    const label = member.FULL_NAME || member.EMPL_NO;
-    setText((prev) => prev.replace(/@([^\s@]*)$/, `@${label} `));
-    setMentions((prev) => (prev.includes(member.EMPL_NO) ? prev : [...prev, member.EMPL_NO]));
-    setMentionKeyword(null);
-    textareaRef.current?.focus();
-  };
+  const insertMention = useCallback(
+    (member: ChatMember) => {
+      // Tag hiển thị bằng TÊN nhân viên (rơi về mã nếu chưa có tên).
+      const label = member.FULL_NAME || member.EMPL_NO;
+      setText((prev) => prev.replace(/@([^\s@]*)$/, `@${label} `));
+      setMentions((prev) => (prev.includes(member.EMPL_NO) ? prev : [...prev, member.EMPL_NO]));
+      setMentionKeyword(null);
+      textareaRef.current?.focus();
+    },
+    []
+  );
 
   const addFiles = (incoming: FileList | File[] | null) => {
     if (!incoming) return;
@@ -424,6 +461,32 @@ export default function ChatConversationView({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Khi bảng gợi ý tag đang mở: mũi tên di chuyển, Enter/Tab chọn, Esc đóng.
+    if (mentionKeyword !== null && mentionCandidates.length > 0) {
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        setMentionIndex((prev) => (prev + 1) % mentionCandidates.length);
+        return;
+      }
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        setMentionIndex(
+          (prev) => (prev - 1 + mentionCandidates.length) % mentionCandidates.length
+        );
+        return;
+      }
+      if (event.key === "Enter" || event.key === "Tab") {
+        event.preventDefault();
+        insertMention(mentionCandidates[Math.min(mentionIndex, mentionCandidates.length - 1)]);
+        return;
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setMentionKeyword(null);
+        return;
+      }
+    }
+
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       handleSubmit();
@@ -655,19 +718,31 @@ export default function ChatConversationView({
 
       <div className="erp-chat__composer">
         {mentionCandidates.length > 0 && (
-          <div className="erp-chat__mentions">
-            {mentionCandidates.map((member) => (
-              <button key={member.EMPL_NO} type="button" onClick={() => insertMention(member)}>
+          <div className="erp-chat__mentions" ref={mentionListRef} role="listbox">
+            {mentionCandidates.map((member, index) => (
+              <button
+                key={member.EMPL_NO}
+                type="button"
+                role="option"
+                aria-selected={index === mentionIndex}
+                className={index === mentionIndex ? "is-active" : undefined}
+                onMouseEnter={() => setMentionIndex(index)}
+                onClick={() => insertMention(member)}
+              >
                 <Avatar
                   src={chatAvatarUrl(member.EMPL_NO, member.EMPL_IMAGE)}
                   sx={{ width: 22, height: 22, fontSize: 10 }}
                 >
                   {initialsOf(member.FULL_NAME)}
                 </Avatar>
-                <span>{member.FULL_NAME}</span>
-                <small>{member.JOB_NAME || ""}</small>
+                <span className="erp-chat__mentionName">{member.FULL_NAME || member.EMPL_NO}</span>
+                <small className="erp-chat__mentionCode">({member.EMPL_NO})</small>
+                {member.JOB_NAME && <small className="erp-chat__mentionJob">{member.JOB_NAME}</small>}
               </button>
             ))}
+            <div className="erp-chat__mentionHint">
+              ↑↓ để chọn · Enter để tag · Esc để đóng
+            </div>
           </div>
         )}
 
@@ -712,8 +787,7 @@ export default function ChatConversationView({
             className="erp-chat__input"
             rows={1}
             value={text}
-            placeholder="Nhập tin nhắn... (Enter để gửi, Shift+Enter xuống dòng, @ để tag tên)"
-            onChange={(event) => handleTextChange(event.target.value)}
+            placeholder="Nhập tin nhắn... (Enter để gửi, Shift+Enter xuống dòng, @ để tag tên)"            onChange={(event) => handleTextChange(event.target.value)}
             onKeyDown={handleKeyDown}
             onInput={(event) => {
               const target = event.target as HTMLTextAreaElement;

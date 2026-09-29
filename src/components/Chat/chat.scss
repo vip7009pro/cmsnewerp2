@@ -721,7 +721,7 @@ $chat-bubble-other: #f1f5f9;
   bottom: calc(100% + 6px);
   left: 12px;
   right: 12px;
-  max-height: 220px;
+  max-height: 240px;
   overflow-y: auto;
   background: #fff;
   border: 1px solid $chat-border;
@@ -741,16 +741,48 @@ $chat-bubble-other: #f1f5f9;
     text-align: left;
     font-size: 12.5px;
 
-    &:hover {
-      background: #f1f5f9;
+    &:hover,
+    &.is-active {
+      background: $chat-primary-soft;
     }
 
-    small {
-      margin-left: auto;
-      color: $chat-muted;
-      font-size: 11px;
+    &.is-active {
+      box-shadow: inset 2px 0 0 $chat-primary;
     }
   }
+}
+
+/* Tên nhân viên được tag — nổi bật hơn mã nhân viên đi kèm. */
+.erp-chat__mentionName {
+  font-weight: 600;
+  color: $chat-text;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.erp-chat__mentionCode {
+  margin-left: auto;
+  color: $chat-muted;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.erp-chat__mentionJob {
+  color: #94a3b8;
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+
+.erp-chat__mentionHint {
+  position: sticky;
+  bottom: 0;
+  padding: 5px 10px;
+  background: #f8fafc;
+  border-top: 1px solid $chat-border;
+  color: $chat-muted;
+  font-size: 10.5px;
+  text-align: center;
 }
 
 /* ------------------------------ Info panel ------------------------------ */
@@ -1597,20 +1629,126 @@ $chat-bubble-other: #f1f5f9;
   border-bottom: 1px solid $chat-border;
 }
 
-.erp-chat__filterSelect {
-  min-width: 130px;
+/*
+ * Phải dùng selector 2 lớp: emotion của MUI cũng là 1 lớp và được chèn SAU stylesheet này,
+ * nên `.erp-chat__filterSelect { min-width }` một lớp sẽ bị `min-width: 0` của MUI ghi đè
+ * (đã từng gặp: ô "Người gửi" co lại còn 46px).
+ */
+.erp-chat__filterRow .erp-chat__filterSelect {
+  flex: 0 0 auto;
+  min-width: 168px;
+  width: 168px;
 
   .MuiInputBase-root {
     font-size: 12px;
   }
 }
 
-.erp-chat__filterDate {
-  width: 132px;
+/* Ô chọn ngày: tự vẽ dd/MM/yyyy, mở lịch gốc của trình duyệt qua input ẩn. */
+.erp-chat__dateField {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 0 0 auto;
+}
 
-  .MuiInputBase-root {
-    font-size: 12px;
+.erp-chat__dateLabel {
+  font-size: 10.5px;
+  color: $chat-muted;
+  padding-left: 2px;
+}
+
+.erp-chat__dateBox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: 148px;
+  padding: 5px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    border-color: $chat-primary;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+    outline: none;
   }
+
+  .erp-chat__dateIcon {
+    margin-left: auto;
+    color: $chat-muted;
+  }
+}
+
+.erp-chat__dateValue {
+  font-size: 12px;
+  color: $chat-text;
+  white-space: nowrap;
+
+  &.is-empty {
+    color: #94a3b8;
+  }
+}
+
+.erp-chat__dateClear {
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  background: transparent;
+  color: $chat-muted;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    color: #dc2626;
+  }
+}
+
+/* Input ngày gốc: trong suốt, chỉ để gọi showPicker() — không nhận chuột. */
+.erp-chat__dateNative {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  border: none;
+  padding: 0;
+}
+
+/* Nhóm bộ lọc xếp thành từng hàng cho gọn và dễ nhìn. */
+.erp-chat__filterRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+
+  &--kinds {
+    align-items: flex-start;
+  }
+
+  &--actions {
+    justify-content: flex-end;
+  }
+}
+
+.erp-chat__filterLabel {
+  flex: 0 0 auto;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: $chat-muted;
+}
+
+.erp-chat__menuCode {
+  margin-left: 5px;
+  color: $chat-muted;
+  font-style: normal;
+  font-size: 11px;
 }
 
 .erp-chat__kindChips {

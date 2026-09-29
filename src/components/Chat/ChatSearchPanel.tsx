@@ -16,6 +16,7 @@ import type {
   ChatSearchFilters,
   ChatSearchResult,
 } from "./chat.types";
+import ChatDateField from "./ChatDateField";
 import { chatService } from "../../api/services/chatService";
 import {
   FILE_KIND_COLOR,
@@ -26,6 +27,8 @@ import {
   initialsOf,
   timeLabel,
   dayLabel,
+  vnDayOffset,
+  vnToday,
 } from "./chatUtils";
 
 interface Props {
@@ -64,6 +67,20 @@ const EMPTY_FILTERS: ChatSearchFilters = {
   onlyWithFiles: false,
 };
 
+/** Mặc định: lọc theo NGÀY HÔM NAY (giờ Việt Nam). */
+function defaultFilters(): ChatSearchFilters {
+  const today = vnToday();
+  return { ...EMPTY_FILTERS, fromDate: today, toDate: today };
+}
+
+/** Khoảng ngày chọn nhanh (số ngày lùi về trước so với hôm nay). */
+const DATE_PRESETS: { label: string; days: number | null }[] = [
+  { label: "Hôm nay", days: 0 },
+  { label: "7 ngày", days: 6 },
+  { label: "30 ngày", days: 29 },
+  { label: "Tất cả", days: null },
+];
+
 export default function ChatSearchPanel({
   conversationId,
   conversation,
@@ -72,7 +89,7 @@ export default function ChatSearchPanel({
   onOpenResult,
   autoFocus = true,
 }: Props) {
-  const [filters, setFilters] = useState<ChatSearchFilters>(EMPTY_FILTERS);
+  const [filters, setFilters] = useState<ChatSearchFilters>(() => defaultFilters());
   const [results, setResults] = useState<ChatSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
@@ -116,7 +133,9 @@ export default function ChatSearchPanel({
 
   // Chạy tìm kiếm khi mở (để thấy ngay tin/tệp gần nhất) và khi đổi bộ lọc.
   useEffect(() => {
-    void runSearch(EMPTY_FILTERS, false);
+    const initial = defaultFilters();
+    setFilters(initial);
+    void runSearch(initial, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationId]);
 
@@ -130,9 +149,31 @@ export default function ChatSearchPanel({
   };
 
   const reset = () => {
-    setFilters(EMPTY_FILTERS);
-    void runSearch(EMPTY_FILTERS, false);
+    const initial = defaultFilters();
+    setFilters(initial);
+    void runSearch(initial, false);
   };
+
+  /** Bấm preset khoảng ngày ⇒ áp dụng và tìm luôn. */
+  const applyPreset = (days: number | null) => {
+    const next: ChatSearchFilters = {
+      ...filters,
+      fromDate: days === null ? "" : vnDayOffset(-days),
+      toDate: days === null ? "" : vnToday(),
+    };
+    setFilters(next);
+    void runSearch(next, false);
+  };
+
+  const activePreset = useMemo(() => {
+    const from = filters.fromDate || "";
+    const to = filters.toDate || "";
+    if (!from && !to) return null;
+    return DATE_PRESETS.find(
+      (preset) =>
+        preset.days !== null && from === vnDayOffset(-preset.days) && to === vnToday()
+    )?.days;
+  }, [filters.fromDate, filters.toDate]);
 
   const grouped = useMemo(() => {
     const buckets: { day: string; items: ChatSearchResult[] }[] = [];
@@ -175,66 +216,80 @@ export default function ChatSearchPanel({
       </form>
 
       <div className="erp-chat__searchFilters">
-        {!isGlobal && senderOptions.length > 0 && (
-          <TextField
-            select
-            size="small"
-            label="Người gửi"
-            value={filters.senderEmplNo || ""}
-            onChange={(event) => patch({ senderEmplNo: event.target.value })}
-            className="erp-chat__filterSelect"
-          >
-            <MenuItem value="">Tất cả</MenuItem>
-            {senderOptions.map((member) => (
-              <MenuItem key={member.EMPL_NO} value={member.EMPL_NO}>
-                {member.FULL_NAME || member.EMPL_NO}
-              </MenuItem>
-            ))}
-          </TextField>
-        )}
-
-        <TextField
-          type="date"
-          size="small"
-          label="Từ ngày"
-          InputLabelProps={{ shrink: true }}
-          value={filters.fromDate || ""}
-          onChange={(event) => patch({ fromDate: event.target.value })}
-          className="erp-chat__filterDate"
-        />
-        <TextField
-          type="date"
-          size="small"
-          label="Đến ngày"
-          InputLabelProps={{ shrink: true }}
-          value={filters.toDate || ""}
-          onChange={(event) => patch({ toDate: event.target.value })}
-          className="erp-chat__filterDate"
-        />
-
-        <div className="erp-chat__kindChips">
-          {KIND_OPTIONS.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              className={`erp-chat__kindChip${
-                (filters.fileKind || "all") === option.value ? " is-active" : ""
-              }`}
-              onClick={() => patch({ fileKind: option.value })}
+        <div className="erp-chat__filterRow">
+          {!isGlobal && senderOptions.length > 0 && (
+            <TextField
+              select
+              size="small"
+              label="Người gửi"
+              value={filters.senderEmplNo || ""}
+              onChange={(event) => patch({ senderEmplNo: event.target.value })}
+              className="erp-chat__filterSelect"
             >
-              {option.label}
-            </button>
-          ))}
-          <button
-            type="button"
-            className={`erp-chat__kindChip${filters.onlyWithFiles ? " is-active" : ""}`}
-            onClick={() => patch({ onlyWithFiles: !filters.onlyWithFiles })}
-          >
-            Chỉ tin có tệp
-          </button>
+              <MenuItem value="">Tất cả</MenuItem>
+              {senderOptions.map((member) => (
+                <MenuItem key={member.EMPL_NO} value={member.EMPL_NO}>
+                  {member.FULL_NAME || member.EMPL_NO}
+                  <em className="erp-chat__menuCode">({member.EMPL_NO})</em>
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+
+          <ChatDateField
+            label="Từ ngày"
+            value={filters.fromDate || ""}
+            maxDate={filters.toDate || undefined}
+            onChange={(value) => patch({ fromDate: value })}
+          />
+          <ChatDateField
+            label="Đến ngày"
+            value={filters.toDate || ""}
+            minDate={filters.fromDate || undefined}
+            onChange={(value) => patch({ toDate: value })}
+          />
         </div>
 
-        <div className="erp-chat__searchActions">
+        <div className="erp-chat__filterRow erp-chat__filterRow--presets">
+          <span className="erp-chat__filterLabel">Khoảng:</span>
+          {DATE_PRESETS.map((preset) => (
+            <button
+              key={preset.label}
+              type="button"
+              className={`erp-chat__kindChip${activePreset === preset.days ? " is-active" : ""}`}
+              onClick={() => applyPreset(preset.days)}
+            >
+              {preset.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="erp-chat__filterRow erp-chat__filterRow--kinds">
+          <span className="erp-chat__filterLabel">Loại tệp:</span>
+          <div className="erp-chat__kindChips">
+            {KIND_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                className={`erp-chat__kindChip${
+                  (filters.fileKind || "all") === option.value ? " is-active" : ""
+                }`}
+                onClick={() => patch({ fileKind: option.value })}
+              >
+                {option.label}
+              </button>
+            ))}
+            <button
+              type="button"
+              className={`erp-chat__kindChip${filters.onlyWithFiles ? " is-active" : ""}`}
+              onClick={() => patch({ onlyWithFiles: !filters.onlyWithFiles })}
+            >
+              Chỉ tin có tệp
+            </button>
+          </div>
+        </div>
+
+        <div className="erp-chat__filterRow erp-chat__filterRow--actions">
           <button type="button" className="erp-chat__primaryBtn" onClick={() => handleSubmit()}>
             Áp dụng bộ lọc
           </button>

@@ -1,5 +1,43 @@
 # ACTIVE_STATE
 
+## Đợt 22.7 — Múi giờ Việt Nam, restyle bộ lọc, tag tên theo tên nhân viên (2026-09-30)
+Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` OK, `get_errors` 0 lỗi,
+`scratch/test_chat_search_media.js` PASS 32/32, verify bằng Playwright.
+
+### 1. Múi giờ — lấy giờ Việt Nam làm mặc định
+Chuỗi thực tế: SQL Server dùng `GETDATE()` ⇒ cột thời gian lưu **giờ VN**; driver mssql đặt `useUTC: true`
+⇒ khi đọc trả về Date có thành phần UTC đúng bằng giờ VN, khi ghi thì lấy thành phần UTC của Date.
+- **Lỗi hiển thị +7 giờ:** FE dùng `moment.utc(v).local()` nên cộng thêm 7 giờ khi trình duyệt ở VN.
+  Đã thay bằng `vnMoment(v) = moment.utc(v)` (đọc thẳng số giờ VN, không phụ thuộc múi giờ máy khách) +
+  `vnNow()/vnToday()/vnDayOffset()` cho `shortTime`, `dayLabel`, `timeLabel`.
+- **Lỗi lọc theo ngày lệch 7 giờ:** `parseDayStart/parseDayEnd` phải dựng Date bằng `Date.UTC(...)`
+  (không dùng `new Date(y,m,d)` — driver sẽ chuyển thành 17:00 hôm trước). `toDate` = 00:00 ngày kế tiếp, so sánh `<`.
+
+### 2. Restyle bộ lọc tìm kiếm + mặc định hôm nay
+- Mặc định `Từ ngày = Đến ngày = hôm nay (giờ VN)`; thêm preset **Hôm nay / 7 ngày / 30 ngày / Tất cả**;
+  bố cục lại thành các hàng rõ ràng (người gửi + 2 ô ngày / khoảng / loại tệp / nút).
+- `ChatDateField` tự viết: hiển thị `dd/MM/yyyy` theo ý mình, mở lịch gốc của trình duyệt qua input ẩn + `showPicker()`.
+  (Không dùng MUI X DatePicker vì AdapterMoment lấy tên thứ/tháng từ locale toàn cục của moment, mà Vite tách
+  `moment/locale/vi` sang instance khác nên lịch MUI luôn hiện tiếng Anh.)
+- ⚠️ Emotion của MUI ghi đè `min-width` ⇒ phải viết selector 2 lớp `.erp-chat__filterRow .erp-chat__filterSelect`
+  (đã từng bị ô "Người gửi" co còn 46px).
+
+### 3. Tag tên theo TÊN nhân viên + điều hướng bàn phím
+- **Lỗi gốc đã sửa:** `buildConversationView` gọi `memberView` **hai lần** (caller đã map sẵn rồi truyền vào)
+  ⇒ mất `MIDLAST_NAME`/`FIRST_NAME` nên `FULL_NAME` rơi về mã nhân viên. Đây là lý do dropdown tag, panel nhóm,
+  tên người gửi trong bong bóng/reply/reaction đều hiện mã. Nay hàm tự map **một lần**, caller truyền dòng thô.
+- Khớp **không dấu** (NFD + bỏ dấu + đ→d) nên gõ `@ng` ra "Nguyễn Đức Anh"; khớp cả mã nhân viên; ưu tiên bắt đầu bằng từ khoá.
+- Dropdown hiện **Tên (MÃ_NV) + chức danh**, có dòng gợi ý; **↑↓ di chuyển, Enter/Tab chọn, Esc đóng**
+  (mục đang chọn tự cuộn vào vùng nhìn thấy).
+- `renderMentions` khớp tên nhiều từ lẫn mã nhân viên ⇒ tag hiển thị và bấm được để mở chat riêng.
+
+### Kiểm chứng đã chạy
+- `scratch/test_chat_search_media.js` → **PASS 32/32** (thêm test: tin nhắn 23:00 giờ VN hôm nay vẫn thuộc lọc "hôm nay").
+- Playwright: tin gửi lúc 05:18 hiển thị đúng `05:18` (trước đây lệch +7 giờ); bộ lọc hiện `dd/MM/yyyy`,
+  preset "Hôm nay" mặc định, ô "Người gửi" rộng 168px; gõ `@ng` ra "Nguyễn Đức Anh"; ↓ rồi Enter chèn
+  `@KYUNG SOK BUYN `; gửi tin ⇒ cả 2 tag tên nhiều từ hiển thị dạng nút bấm được.
+- Dọn dẹp: `scratch/cleanup_chat_testconv.js`, `scratch/reset_my_files.js`.
+
 ## Đợt 22.6 — Paste tệp, "My Files", tìm kiếm & media timeline, giới hạn 1GB (2026-09-30)
 Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` (`✓ built in 1m 23s`), `get_errors` 0 lỗi,
 `scratch/test_chat_search_media.js` PASS 30/30, verify end-to-end bằng Playwright.

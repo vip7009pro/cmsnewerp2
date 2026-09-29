@@ -1,4 +1,49 @@
 import moment from "moment";
+
+/**
+ * Múi giờ nghiệp vụ của hệ thống: Việt Nam (UTC+7).
+ *
+ * Thời gian chat được SQL Server sinh bằng `GETDATE()` (giờ Việt Nam) và driver mssql cấu hình
+ * `useUTC: true` nên trả về dưới dạng UTC mang ĐÚNG con số của giờ VN. Vì vậy phải đọc thẳng
+ * bằng `moment.utc(...)` — nếu gọi `.local()` sẽ bị cộng thêm 7 giờ khi trình duyệt ở VN.
+ */
+export const VN_UTC_OFFSET_MINUTES = 420;
+
+/** Moment của một mốc thời gian chat (đã ở đúng giờ VN, không phụ thuộc múi giờ máy khách). */
+export function vnMoment(value?: string | null): moment.Moment | null {
+  if (!value) return null;
+  const parsed = moment.utc(value);
+  return parsed.isValid() ? parsed : null;
+}
+
+/** Thời điểm hiện tại theo giờ Việt Nam. */
+export function vnNow(): moment.Moment {
+  return moment.utc().utcOffset(VN_UTC_OFFSET_MINUTES);
+}
+
+/** Ngày hôm nay theo giờ Việt Nam, dạng YYYY-MM-DD (dùng cho bộ lọc ngày). */
+export function vnToday(): string {
+  return vnNow().format("YYYY-MM-DD");
+}
+
+/** Cộng/trừ ngày so với hôm nay (giờ VN), trả về YYYY-MM-DD. */
+export function vnDayOffset(days: number): string {
+  return vnNow().add(days, "day").format("YYYY-MM-DD");
+}
+
+/**
+ * Chuẩn hoá văn bản để so khớp khi người dùng gõ không dấu (NFD + bỏ đ/Đ).
+ * Ví dụ: "NGUYỄN VĂN HÙNG" → "nguyen van hung".
+ */
+export function normalizeText(value?: string | null): string {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D")
+    .toLowerCase()
+    .trim();
+}
 import ArticleRoundedIcon from "@mui/icons-material/ArticleRounded";
 import AudioFileRoundedIcon from "@mui/icons-material/AudioFileRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
@@ -113,26 +158,30 @@ export function initialsOf(name?: string | null): string {
 
 /** Thời gian trong danh sách phòng: hôm nay -> HH:mm, cũ hơn -> DD/MM. */
 export function shortTime(value?: string | null): string {
-  if (!value) return "";
-  const time = moment.utc(value).local();
-  if (!time.isValid()) return "";
-  return time.isSame(moment(), "day") ? time.format("HH:mm") : time.format("DD/MM");
+  const time = vnMoment(value);
+  if (!time) return "";
+  return time.format("YYYY-MM-DD") === vnToday() ? time.format("HH:mm") : time.format("DD/MM");
 }
 
 /** Nhãn ngày cho dải phân cách trong khung tin nhắn. */
 export function dayLabel(value?: string | null): string {
-  if (!value) return "";
-  const time = moment.utc(value).local();
-  if (!time.isValid()) return "";
-  if (time.isSame(moment(), "day")) return "Hôm nay";
-  if (time.isSame(moment().subtract(1, "day"), "day")) return "Hôm qua";
+  const time = vnMoment(value);
+  if (!time) return "";
+  const day = time.format("YYYY-MM-DD");
+  if (day === vnToday()) return "Hôm nay";
+  if (day === vnDayOffset(-1)) return "Hôm qua";
   return time.format("DD/MM/YYYY");
 }
 
 export function timeLabel(value?: string | null): string {
-  if (!value) return "";
-  const time = moment.utc(value).local();
-  return time.isValid() ? time.format("HH:mm") : "";
+  const time = vnMoment(value);
+  return time ? time.format("HH:mm") : "";
+}
+
+/** Ngày dạng DD/MM/YYYY theo giờ Việt Nam (dùng cho tệp media). */
+export function dateLabel(value?: string | null): string {
+  const time = vnMoment(value);
+  return time ? time.format("DD/MM/YYYY") : "";
 }
 
 export function formatFileSize(bytes?: number | null): string {
@@ -153,19 +202,28 @@ export function renderMentions(
   if (!content) return [];
 
   const { memberNames = [], onMentionClick } = options;
-  // Ưu tiên khớp theo tên đầy đủ của thành viên để biết chính xác người được tag.
+  // Khớp theo TÊN đầy đủ (ưu tiên, tên dài trước để không cắt nhầm) và cả mã nhân viên
+  // cho các tin nhắn cũ đã tag bằng mã.
   const candidates = memberNames
-    .filter((item) => item.name)
-    .sort((a, b) => b.name.length - a.name.length);
+    .filter((item) => item.name || item.emplNo)
+    .map((item) => ({ ...item, label: item.name || item.emplNo }))
+    .sort((a, b) => b.label.length - a.label.length);
 
   if (candidates.length === 0) return [content];
 
-  const escaped = candidates.map((item) => item.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
-  const regex = new RegExp(`(@(?:${escaped.join("|")}))`, "g");
+  const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const patterns = [
+    ...new Set(candidates.flatMap((item) => [item.label, item.emplNo]).filter(Boolean)),
+  ]
+    .sort((a, b) => b.length - a.length)
+    .map(escapeRegex);
+
+  const regex = new RegExp(`(@(?:${patterns.join("|")}))`, "g");
 
   return content.split(regex).map((part, index) => {
     if (!part || !part.startsWith("@")) return part;
-    const matched = candidates.find((item) => part === `@${item.name}`);
+    const keyword = part.slice(1);
+    const matched = candidates.find((item) => item.label === keyword || item.emplNo === keyword);
     if (!matched) return part;
 
     return (
@@ -174,12 +232,12 @@ export function renderMentions(
         className="erp-chat__mention"
         role={onMentionClick ? "button" : undefined}
         tabIndex={onMentionClick ? 0 : undefined}
-        title={onMentionClick ? `Chat riêng với ${matched.name}` : undefined}
+        title={onMentionClick ? `Chat riêng với ${matched.label}` : undefined}
         onClick={
           onMentionClick
             ? (event) => {
                 event.stopPropagation();
-                onMentionClick(matched.emplNo, matched.name);
+                onMentionClick(matched.emplNo, matched.label);
               }
             : undefined
         }
