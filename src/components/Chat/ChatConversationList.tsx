@@ -4,6 +4,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import GroupRoundedIcon from "@mui/icons-material/GroupsRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
+import FolderSpecialRoundedIcon from "@mui/icons-material/FolderSpecialRounded";
 import type { ChatConversation } from "./chat.types";
 import { chatAvatarUrl, initialsOf, shortTime } from "./chatUtils";
 
@@ -16,6 +17,8 @@ interface Props {
   onSelect: (conversationId: number) => void;
   onNewChat: () => void;
   onShowRequests: () => void;
+  /** Mở tìm kiếm toàn cục (mọi phòng). */
+  onGlobalSearch: () => void;
   requestCount: number;
 }
 
@@ -38,6 +41,7 @@ export default function ChatConversationList({
   onSelect,
   onNewChat,
   onShowRequests,
+  onGlobalSearch,
   requestCount,
 }: Props) {
   const [keyword, setKeyword] = useState("");
@@ -63,6 +67,16 @@ export default function ChatConversationList({
             aria-label="Tìm cuộc trò chuyện"
           />
         </div>
+        <Tooltip title="Tìm kiếm trong toàn bộ tin nhắn">
+          <IconButton
+            size="small"
+            className="erp-chat__iconBtn"
+            onClick={onGlobalSearch}
+            aria-label="Tìm kiếm toàn cục"
+          >
+            <SearchRoundedIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
         <Tooltip title="Cuộc trò chuyện mới">
           <IconButton size="small" className="erp-chat__iconBtn" onClick={onNewChat}>
             <AddRoundedIcon fontSize="small" />
@@ -89,6 +103,7 @@ export default function ChatConversationList({
         {filtered.map((conversation) => {
           const typing = Object.keys(typingUsers[conversation.CONVERSATION_ID] || {});
           const isDirect = conversation.CONV_TYPE === "DIRECT";
+          const isSelf = conversation.CONV_TYPE === "SELF";
           const peerOnline = isDirect && conversation.PEER_EMPL_NO
             ? onlineUsers.has(conversation.PEER_EMPL_NO)
             : false;
@@ -107,9 +122,15 @@ export default function ChatConversationList({
               <div className="erp-chat__convAvatar">
                 <Avatar
                   src={conversation.DISPLAY_AVATAR || undefined}
-                  sx={{ width: 44, height: 44, fontSize: 15, bgcolor: "#2563eb" }}
+                  sx={{ width: 44, height: 44, fontSize: 15, bgcolor: isSelf ? "#0f766e" : "#2563eb" }}
                 >
-                  {isDirect ? initialsOf(conversation.DISPLAY_NAME) : <GroupRoundedIcon fontSize="small" />}
+                  {isSelf ? (
+                    <FolderSpecialRoundedIcon fontSize="small" />
+                  ) : isDirect ? (
+                    initialsOf(conversation.DISPLAY_NAME)
+                  ) : (
+                    <GroupRoundedIcon fontSize="small" />
+                  )}
                 </Avatar>
                 {peerOnline && <span className="erp-chat__onlineDot" />}
               </div>

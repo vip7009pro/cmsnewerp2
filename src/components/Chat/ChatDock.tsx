@@ -7,6 +7,7 @@ import ChatConversationView from "./ChatConversationView";
 import ChatGroupPanel from "./ChatGroupPanel";
 import ChatNewChatDialog from "./ChatNewChatDialog";
 import ChatForwardDialog from "./ChatForwardDialog";
+import ChatSearchPanel from "./ChatSearchPanel";
 import type { ChatMessage } from "./chat.types";
 import { chatService } from "../../api/services/chatService";
 import { useChatController } from "../../hooks/useChatController";
@@ -26,6 +27,7 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
   const [showInfo, setShowInfo] = useState(false);
   const [showNewChat, setShowNewChat] = useState(false);
   const [showRequests, setShowRequests] = useState(false);
+  const [showGlobalSearch, setShowGlobalSearch] = useState(false);
   const [forwardMessage, setForwardMessage] = useState<ChatMessage | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
 
@@ -134,6 +136,16 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
     setShowInfo(false);
   }, [controller]);
 
+  /** Bấm 1 kết quả tìm kiếm: đóng bảng tìm kiếm rồi nhảy tới tin nhắn trong phòng tương ứng. */
+  const handleJumpToMessage = useCallback(
+    (conversationId: number, messageId: number) => {
+      setShowGlobalSearch(false);
+      setShowInfo(false);
+      void controller.jumpToMessage(conversationId, messageId);
+    },
+    [controller]
+  );
+
   const panel = useMemo(
     () => (
       <div className={`erp-chat__panel${controller.activeConversation ? " has-active" : ""}`}>
@@ -146,6 +158,7 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
           onSelect={handleSelectConversation}
           onNewChat={() => setShowNewChat(true)}
           onShowRequests={() => setShowRequests(true)}
+          onGlobalSearch={() => setShowGlobalSearch(true)}
           requestCount={controller.requests.filter((r) => r.DIRECTION === "INCOMING").length}
         />
 
@@ -199,6 +212,8 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
             }
             onConsumeDraft={controller.consumeDraft}
             onTyping={controller.notifyTyping}
+            focusMessage={controller.focusMessage}
+            onJumpToMessage={handleJumpToMessage}
           />
         ) : (
           <div className="erp-chat__main erp-chat__main--empty">
@@ -237,6 +252,7 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
       isMobile,
       showInfo,
       typingNamesFor,
+      handleJumpToMessage,
     ]
   );
 
@@ -324,6 +340,25 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
         onStartDirect={controller.startDirect}
         onCreateGroup={controller.createGroup}
       />
+
+      <Dialog
+        open={showGlobalSearch}
+        onClose={() => setShowGlobalSearch(false)}
+        maxWidth="md"
+        fullWidth
+        className="erp-chat__globalSearchDialog"
+      >
+        <DialogTitle sx={{ fontSize: 15, fontWeight: 700, pb: 1 }}>
+          Tìm kiếm toàn bộ tin nhắn &amp; tệp
+        </DialogTitle>
+        <DialogContent dividers sx={{ p: 0 }}>
+          <ChatSearchPanel
+            myEmplNo={controller.myEmplNo}
+            onClose={() => setShowGlobalSearch(false)}
+            onOpenResult={handleJumpToMessage}
+          />
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={showRequests} onClose={() => setShowRequests(false)} maxWidth="xs" fullWidth>
         <DialogTitle sx={{ fontSize: 15, fontWeight: 700 }}>Lời mời kết bạn</DialogTitle>

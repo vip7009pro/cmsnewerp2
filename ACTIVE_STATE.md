@@ -1,5 +1,51 @@
 # ACTIVE_STATE
 
+## Đợt 22.6 — Paste tệp, "My Files", tìm kiếm & media timeline, giới hạn 1GB (2026-09-30)
+Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` (`✓ built in 1m 23s`), `get_errors` 0 lỗi,
+`scratch/test_chat_search_media.js` PASS 30/30, verify end-to-end bằng Playwright.
+
+### 1. Giới hạn mỗi tệp lên 1GB
+- `routes/chatFile.js`: mặc định `1024 * 1024 * 1024` (đổi bằng env `CHAT_UPLOAD_MAX_BYTES`); mở rộng allowlist
+  MIME/đuôi cho video, audio, rar/7z/tar/gz, odt/ods/odp, rtf, svg, pps...
+- **Bọc multer để bắt `LIMIT_FILE_SIZE`** ⇒ trả JSON 413 kèm giới hạn (mặc định Express trả HTML 500 khó hiểu).
+- FE `MAX_FILE_BYTES = 1GB`; cột `ZTB_CHAT_ATTACHMENT.FILE_SIZE` là `BIGINT` nên không cần đổi schema.
+
+### 2. "My Files" — cloud cá nhân cho mọi user
+- Hội thoại mới `CONV_TYPE = 'SELF'`, `DIRECT_KEY = 'SELF|<EMPL_NO>'` (dùng lại unique index `UX_CHAT_CONV_DIRECT`
+  để chống tạo trùng), 1 participant ROLE `OWNER`.
+- `repo.ensureSelfConversation` được gọi trong **cả `chatBootstrap` và `chatSync`** ⇒ phòng luôn tồn tại.
+- `buildConversationView` xử lý SELF: tên "My Files", không có peer/avatar; `pushOfflineChat` tự bỏ qua vì là chính mình.
+- FE: avatar thư mục teal trong danh sách; header "Cloud cá nhân, dung lượng không giới hạn · N tệp";
+  command `chatConversationStorage` cấp số liệu dung lượng.
+- **Lưu ý:** phải theo dõi "chữ ký" tin cuối (MESSAGE_ID + số tệp) chứ không dùng `messages.length` — tin lạc quan
+  được thêm TRƯỚC khi upload xong nên đếm theo length sẽ ra sai (đã gặp: hiện "0 tệp").
+
+### 3. Tìm kiếm & xem media
+- `repo.searchMessages` (command `chatSearchMessages`): từ khoá khớp **nội dung hoặc tên tệp**, người gửi,
+  khoảng ngày, loại tệp (`image/video/audio/pdf/word/excel/csv/ppt/zip/other`), `onlyWithFiles`, phân trang;
+  bỏ `conversationId` ⇒ tìm toàn cục trong mọi phòng user tham gia.
+- `repo.listConversationMedia` (command `chatListMedia`) + `repo.getConversationStorage`.
+- ⚠️ **Lỗi múi giờ đã sửa:** `new Date("2026-09-30")` là 00:00 **UTC** còn DB lưu `GETDATE()` (giờ máy) ⇒ tin tạo
+  trong khoảng 00:00–07:00 giờ VN bị loại oan. Đã thêm `parseDayStart`/`parseDayEnd` theo **giờ địa phương**.
+- UI: `ChatSearchPanel` (dùng chung cho cả 2 phạm vi) với ô từ khoá + lọc người gửi + Từ/Đến ngày + chip loại tệp;
+  `ChatMediaDialog` hiển thị lưới ảnh + danh sách tệp **phân nhóm theo ngày dạng timeline**.
+- Bấm kết quả tìm kiếm ⇒ `jumpToMessage()` mở đúng phòng, nạp thêm trang nếu tin chưa có, cuộn tới giữa và
+  làm nổi bật 2.4 giây.
+
+### 4. Dán ảnh/tệp từ clipboard
+- Listener `paste` gắn ở **document** (sự kiện chỉ phát cho phần tử đang focus), chỉ `preventDefault` khi thật sự có tệp.
+- `clipboardFiles()`: ưu tiên `dataTransfer.files`, nếu rỗng mới dùng `items` (Chrome có thể trả cả hai ⇒ dễ trùng);
+  ảnh copy từ web không có tên ⇒ đặt `clipboard-<ts>.<ext theo MIME>`.
+- Tệp dán vào đi qua đúng `addFiles()` ⇒ dùng chung giới hạn 1GB/5 tệp, hiện chip chờ gửi + toast xác nhận.
+
+### Kiểm chứng đã chạy
+- `node scratch/test_chat_search_media.js` → **PASS 30/30** (tự tạo 7 tệp pdf/xlsx/docx/pptx/zip/png/bin + tin có từ khoá,
+  kiểm tra mọi bộ lọc/loại tệp/media/dung lượng rồi tự dọn).
+- Playwright: paste 2 tệp (ảnh không tên → `clipboard-<ts>.png`), gửi ⇒ bong bóng có 1 ảnh + thẻ PDF;
+  cửa sổ media hiện timeline + 10 chip lọc; tìm theo TÊN TỆP đúng; lọc PDF/Ảnh đúng; bấm kết quả ⇒ nhảy + highlight;
+  tìm toàn cục hiện nhãn phòng.
+- Dọn dẹp: `node scratch/reset_my_files.js [EMPL_NO]`.
+
 ## Đợt 22.5 — Kéo-thả tệp, biểu tượng loại tệp, cuộn đáy, sửa badge chưa đọc (2026-09-29)
 Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` (`✓ built in 1m 7s`), `get_errors` 0 lỗi,
 verify bằng Playwright + truy vấn DB.

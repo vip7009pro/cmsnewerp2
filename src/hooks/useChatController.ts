@@ -59,6 +59,12 @@ export function useChatController() {
   const [replyTarget, setReplyTarget] = useState<ChatReplyTarget | null>(null);
   /** Văn bản soạn sẵn khi bấm vào tên được tag để mở chat riêng. */
   const [draft, setDraft] = useState<{ conversationId: number; text: string } | null>(null);
+  /** Tin nhắn cần nhảy tới (sau khi tìm kiếm) — đổi `seq` để kích hoạt lại hiệu ứng. */
+  const [focusMessage, setFocusMessage] = useState<{
+    conversationId: number;
+    messageId: number;
+    seq: number;
+  } | null>(null);
 
   const activeIdRef = useRef<number | null>(null);
   const typingTimers = useRef<Record<string, number>>({});
@@ -192,7 +198,7 @@ export function useChatController() {
 
       if (messages[conversationId]) {
         markRead(conversationId);
-        return;
+        return messages[conversationId];
       }
 
       setLoadingMessages(true);
@@ -205,13 +211,46 @@ export function useChatController() {
           ? result.messages[result.messages.length - 1].MESSAGE_ID
           : 0;
         markRead(conversationId, newest);
+        return result.messages;
       } catch (error) {
         console.warn("[chat] loadMessages lỗi:", error);
+        return [];
       } finally {
         setLoadingMessages(false);
       }
     },
     [markRead, messages]
+  );
+
+  /**
+   * Nhảy tới 1 tin nhắn (từ kết quả tìm kiếm): mở phòng, nạp thêm nếu tin chưa có
+   * trong bộ đang hiển thị, rồi phát tín hiệu để view cuộn tới và làm nổi bật.
+   */
+  const jumpToMessage = useCallback(
+    async (conversationId: number, messageId: number) => {
+      const loaded = (await selectConversation(conversationId)) || [];
+
+      if (!loaded.some((m) => m.MESSAGE_ID === messageId)) {
+        try {
+          // Lấy 1 trang kết thúc ngay tại tin cần tìm (before = id + 1).
+          const result = await chatService.loadMessages(conversationId, messageId + 1, 30);
+          if (result.messages.length > 0) {
+            setMessages((prev) => {
+              const existing = prev[conversationId] || [];
+              const seen = new Set(existing.map((m) => m.MESSAGE_ID));
+              const merged = [...existing, ...result.messages.filter((m) => !seen.has(m.MESSAGE_ID))]
+                .sort((a, b) => a.MESSAGE_ID - b.MESSAGE_ID);
+              return { ...prev, [conversationId]: merged };
+            });
+          }
+        } catch (error) {
+          console.warn("[chat] không nạp được quanh tin nhắn:", error);
+        }
+      }
+
+      setFocusMessage({ conversationId, messageId, seq: Date.now() });
+    },
+    [selectConversation]
   );
 
   const loadMore = useCallback(
@@ -844,6 +883,8 @@ export function useChatController() {
     openPrivateChatWithQuote,
     draft,
     consumeDraft,
+    jumpToMessage,
+    focusMessage,
   };
 }
 

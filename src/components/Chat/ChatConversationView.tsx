@@ -3,6 +3,9 @@ import { Avatar, IconButton, LinearProgress, Snackbar, Tooltip } from "@mui/mate
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 import CloudUploadRoundedIcon from "@mui/icons-material/CloudUploadRounded";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import PermMediaRoundedIcon from "@mui/icons-material/PermMediaRounded";
+import FolderSpecialRoundedIcon from "@mui/icons-material/FolderSpecialRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -17,7 +20,10 @@ import type {
 } from "./chat.types";
 import ChatMessageBubble from "./ChatMessageBubble";
 import ChatMessageMenu, { type ChatMessageMenuState } from "./ChatMessageMenu";
+import ChatSearchPanel from "./ChatSearchPanel";
+import ChatMediaDialog from "./ChatMediaDialog";
 import type { PendingUpload } from "../../hooks/useChatController";
+import { chatService, type ChatStorage } from "../../api/services/chatService";
 import {
   FILE_KIND_COLOR,
   FileKindIcon,
@@ -59,9 +65,49 @@ interface Props {
   onConsumeDraft: () => void;
   /** Báo trạng thái "đang nhập" cho phòng hiện tại. */
   onTyping: (typing: boolean) => void;
+  /** Tin nhắn cần cuộn tới và làm nổi bật (từ kết quả tìm kiếm). */
+  focusMessage?: { conversationId: number; messageId: number; seq: number } | null;
+  /** Nhảy tới tin nhắn ở phòng khác (tìm kiếm toàn cục). */
+  onJumpToMessage: (conversationId: number, messageId: number) => void;
 }
 
-const MAX_FILE_BYTES = 25 * 1024 * 1024;
+/** Giới hạn dung lượng mỗi tệp — khớp với env CHAT_UPLOAD_MAX_BYTES của backend. */
+const MAX_FILE_BYTES = 1024 * 1024 * 1024;
+const MAX_FILES_PER_MESSAGE = 5;
+
+/** Tên tệp suy ra từ MIME khi clipboard không kèm tên (ảnh copy từ trang web). */
+function nameFromMime(mime: string): string {
+  const ext = (mime.split("/")[1] || "bin").split("+")[0].replace(/[^a-z0-9]/gi, "");
+  return `clipboard-${Date.now()}.${ext || "bin"}`;
+}
+
+/** Lấy danh sách tệp từ clipboard (hỗ trợ copy tệp và copy ảnh). */
+function clipboardFiles(data: DataTransfer | null): File[] {
+  if (!data) return [];
+  const out: File[] = [];
+  const push = (file: File | null) => {
+    if (!file) return;
+    const named =
+      file.name && file.name.trim()
+        ? file
+        : new File([file], nameFromMime(file.type || "application/octet-stream"), {
+            type: file.type,
+          });
+    const duplicated = out.some(
+      (item) => item.name === named.name && item.size === named.size && item.type === named.type
+    );
+    if (!duplicated) out.push(named);
+  };
+
+  // Chrome có thể đưa cùng 1 tệp vào cả `files` và `items` ⇒ ưu tiên `files` để khỏi trùng.
+  if (data.files && data.files.length > 0) Array.from(data.files).forEach(push);
+  else if (data.items) {
+    Array.from(data.items)
+      .filter((item) => item.kind === "file")
+      .forEach((item) => push(item.getAsFile()));
+  }
+  return out;
+}
 
 function memberOf(conversation: ChatConversation, emplNo: string): ChatMember | undefined {
   return conversation.MEMBERS.find((m) => m.EMPL_NO === emplNo);
@@ -96,6 +142,8 @@ export default function ChatConversationView({
   onMentionClick,
   onConsumeDraft,
   onTyping,
+  focusMessage,
+  onJumpToMessage,
 }: Props) {
   const [text, setText] = useState("");
   const [files, setFiles] = useState<File[]>([]);
@@ -106,6 +154,13 @@ export default function ChatConversationView({
   const [toast, setToast] = useState<string | null>(null);
   /** Đang kéo tệp vào khung chat. */
   const [dragging, setDragging] = useState(false);
+  /** Mở bảng tìm kiếm trong phòng. */
+  const [showSearch, setShowSearch] = useState(false);
+  /** Mở cửa sổ media/tệp của phòng. */
+  const [showMedia, setShowMedia] = useState(false);
+  /** Tin nhắn đang được làm nổi bật sau khi nhảy tới. */
+  const [highlightId, setHighlightId] = useState<number | null>(null);
+  const [storage, setStorage] = useState<ChatStorage | null>(null);
 
   const listRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -118,6 +173,8 @@ export default function ChatConversationView({
   const pendingScrollRef = useRef(false);
 
   const isDirect = conversation.CONV_TYPE === "DIRECT";
+  /** "My Files" — cloud cá nhân, không phải hội thoại với người khác. */
+  const isSelf = conversation.CONV_TYPE === "SELF";
   const canModerate =
     conversation.MY_ROLE === "OWNER" ||
     conversation.MY_ROLE === "ADMIN" ||
@@ -177,6 +234,78 @@ export default function ChatConversationView({
     if (nearBottom) scrollToBottom();
   }, [messages, scrollToBottom]);
 
+  // Nhảy tới tin nhắn (từ kết quả tìm kiếm): cuộn tới giữa khung và làm nổi bật ~2.4s.
+  useEffect(() => {
+    if (!focusMessage || focusMessage.conversationId !== conversation.CONVERSATION_ID) return;
+    let cancelled = false;
+    const timers: number[] = [];
+
+    const reveal = (attempt: number) => {
+      if (cancelled) return;
+      const target = listRef.current?.querySelector<HTMLElement>(
+        `[data-message-id="${focusMessage.messageId}"]`
+      );
+      if (target) {
+        target.scrollIntoView({ block: "center" });
+        setHighlightId(focusMessage.messageId);
+        timers.push(window.setTimeout(() => setHighlightId(null), 2400));
+        return;
+      }
+      if (attempt < 8) timers.push(window.setTimeout(() => reveal(attempt + 1), 180));
+    };
+
+    reveal(0);
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => window.clearTimeout(timer));
+    };
+  }, [focusMessage, conversation.CONVERSATION_ID]);
+
+  // My Files: hiển thị dung lượng đã dùng ở tiêu đề (cloud cá nhân).
+  // Theo dõi "chữ ký" của tin cuối (id + số tệp) vì tin lạc quan được thêm TRƯỚC khi
+  // upload xong ⇒ chỉ theo dõi messages.length sẽ bỏ lỡ lúc tệp thực sự được lưu.
+  const lastMessageSignature = useMemo(() => {
+    const last = messages[messages.length - 1];
+    if (!last) return "";
+    return `${last.MESSAGE_ID}:${(last.ATTACHMENTS || []).length}:${last.DELETED_AT ? "d" : "a"}`;
+  }, [messages]);
+
+  useEffect(() => {
+    if (!isSelf) {
+      setStorage(null);
+      return;
+    }
+    let cancelled = false;
+    chatService
+      .conversationStorage(conversation.CONVERSATION_ID)
+      .then((data) => {
+        if (!cancelled) setStorage(data);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [isSelf, conversation.CONVERSATION_ID, lastMessageSignature]);
+
+  /**
+   * Dán ảnh/tệp từ clipboard (copy ảnh ở nơi khác hoặc copy tệp trong Explorer).
+   * Gắn ở document vì sự kiện paste chỉ phát cho phần tử đang được focus.
+   */
+  const addFilesRef = useRef<(incoming: FileList | File[] | null) => void>(() => undefined);
+
+  useEffect(() => {
+    const onPaste = (event: ClipboardEvent) => {
+      const incoming = clipboardFiles(event.clipboardData);
+      if (incoming.length === 0) return;
+      // Chỉ chặn hành vi mặc định khi thực sự có tệp để đính kèm.
+      event.preventDefault();
+      addFilesRef.current(incoming);
+      setToast(`Đã dán ${incoming.length} tệp vào khung soạn tin`);
+    };
+    document.addEventListener("paste", onPaste);
+    return () => document.removeEventListener("paste", onPaste);
+  }, []);
+
   const grouped = useMemo(() => {
     const groups: { day: string; items: ChatMessage[] }[] = [];
     messages.forEach((message) => {
@@ -220,22 +349,32 @@ export default function ChatConversationView({
     textareaRef.current?.focus();
   };
 
-  const addFiles = (incoming: FileList | null) => {
-    if (!incoming || incoming.length === 0) return;
+  const addFiles = (incoming: FileList | File[] | null) => {
+    if (!incoming) return;
+    const list = Array.isArray(incoming) ? incoming : Array.from(incoming);
+    if (list.length === 0) return;
+
     const accepted: File[] = [];
     let error: string | null = null;
+    let oversized = 0;
 
-    Array.from(incoming).forEach((file) => {
+    list.forEach((file) => {
       if (file.size > MAX_FILE_BYTES) {
-        error = `"${file.name}" vượt quá 25MB`;
+        oversized += 1;
         return;
       }
       accepted.push(file);
     });
 
+    if (oversized > 0) {
+      error = `${oversized} tệp vượt quá 1GB nên bị bỏ qua`;
+    }
     setFileError(error);
-    if (accepted.length > 0) setFiles((prev) => [...prev, ...accepted].slice(0, 5));
+    if (accepted.length > 0) {
+      setFiles((prev) => [...prev, ...accepted].slice(0, MAX_FILES_PER_MESSAGE));
+    }
   };
+  addFilesRef.current = addFiles;
 
   /* ---------------------- Kéo - thả tệp vào khung chat -------------------- */
   const dragHasFiles = (event: React.DragEvent<HTMLElement>) => {
@@ -320,7 +459,7 @@ export default function ChatConversationView({
         <div className="erp-chat__dropOverlay" aria-hidden="true">
           <CloudUploadRoundedIcon sx={{ fontSize: 44 }} />
           <strong>Thả tệp để đính kèm</strong>
-          <small>Tối đa 5 tệp · mỗi tệp không quá 25MB</small>
+          <small>Tối đa {MAX_FILES_PER_MESSAGE} tệp · mỗi tệp không quá 1GB</small>
         </div>
       )}
 
@@ -332,14 +471,25 @@ export default function ChatConversationView({
         )}
         <Avatar
           src={conversation.DISPLAY_AVATAR || undefined}
-          sx={{ width: 36, height: 36, fontSize: 14, bgcolor: "#2563eb" }}
+          sx={{ width: 36, height: 36, fontSize: 14, bgcolor: isSelf ? "#0f766e" : "#2563eb" }}
         >
-          {isDirect ? initialsOf(conversation.DISPLAY_NAME) : <GroupRoundedIcon fontSize="small" />}
+          {isSelf ? (
+            <FolderSpecialRoundedIcon fontSize="small" />
+          ) : isDirect ? (
+            initialsOf(conversation.DISPLAY_NAME)
+          ) : (
+            <GroupRoundedIcon fontSize="small" />
+          )}
         </Avatar>
         <div className="erp-chat__mainMeta">
           <span className="erp-chat__mainName">{conversation.DISPLAY_NAME}</span>
           <span className="erp-chat__mainStatus">
-            {typingNames.length > 0 ? (
+            {isSelf ? (
+              <>
+                Cloud cá nhân, dung lượng không giới hạn
+                {storage ? ` · ${storage.fileCount} tệp` : ""}
+              </>
+            ) : typingNames.length > 0 ? (
               <em>{typingNames.join(", ")} đang nhập...</em>
             ) : isDirect ? (
               peerOnline ? (
@@ -354,13 +504,50 @@ export default function ChatConversationView({
             )}
           </span>
         </div>
-        <Tooltip title={isDirect ? "Thông tin hội thoại" : "Quản lý nhóm"}>
-          <IconButton size="small" className="erp-chat__iconBtn" onClick={onOpenInfo}>
-            <InfoOutlinedIcon fontSize="small" />
+
+        <Tooltip title={showSearch ? "Đóng tìm kiếm" : "Tìm kiếm trong cuộc trò chuyện"}>
+          <IconButton
+            size="small"
+            className={`erp-chat__iconBtn${showSearch ? " is-active" : ""}`}
+            onClick={() => setShowSearch((prev) => !prev)}
+            aria-label="Tìm kiếm trong cuộc trò chuyện"
+          >
+            <SearchRoundedIcon fontSize="small" />
           </IconButton>
         </Tooltip>
+
+        <Tooltip title="Media & tệp của cuộc trò chuyện">
+          <IconButton
+            size="small"
+            className="erp-chat__iconBtn"
+            onClick={() => setShowMedia(true)}
+            aria-label="Xem media của cuộc trò chuyện"
+          >
+            <PermMediaRoundedIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+
+        {!isSelf && (
+          <Tooltip title={isDirect ? "Thông tin hội thoại" : "Quản lý nhóm"}>
+            <IconButton size="small" className="erp-chat__iconBtn" onClick={onOpenInfo}>
+              <InfoOutlinedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        )}
       </div>
 
+      {showSearch ? (
+        <ChatSearchPanel
+          conversationId={conversation.CONVERSATION_ID}
+          conversation={conversation}
+          myEmplNo={myEmplNo}
+          onClose={() => setShowSearch(false)}
+          onOpenResult={(conversationId, messageId) => {
+            setShowSearch(false);
+            onJumpToMessage(conversationId, messageId);
+          }}
+        />
+      ) : (
       <div className="erp-chat__messages" ref={listRef}>
         {hasMore && (
           <div className="erp-chat__loadMore">
@@ -404,6 +591,7 @@ export default function ChatConversationView({
                       ? reactionBurst
                       : null
                   }
+                  highlight={highlightId === message.MESSAGE_ID}
                   onOpenMenu={(target, x, y) => setMenuState({ message: target, top: y, left: x })}
                   onAddReaction={onAddReaction}
                   onReply={onReply}
@@ -414,6 +602,7 @@ export default function ChatConversationView({
           </div>
         ))}
       </div>
+      )}
 
       {pendingUploads.length > 0 && (
         <div className="erp-chat__uploads">
@@ -544,6 +733,14 @@ export default function ChatConversationView({
           </IconButton>
         </div>
       </div>
+
+      <ChatMediaDialog
+        open={showMedia}
+        conversationId={conversation.CONVERSATION_ID}
+        conversationName={conversation.DISPLAY_NAME}
+        isSelf={isSelf}
+        onClose={() => setShowMedia(false)}
+      />
 
       <ChatMessageMenu
         state={menuState}

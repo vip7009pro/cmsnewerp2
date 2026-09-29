@@ -6,8 +6,16 @@ import type {
   ChatConversation,
   ChatEmployee,
   ChatFriendEntry,
+  ChatMediaItem,
   ChatMessage,
+  ChatSearchResult,
 } from "../../components/Chat/chat.types";
+
+/** Dung lượng đã dùng của một phòng chat. */
+export interface ChatStorage {
+  fileCount: number;
+  totalBytes: number;
+}
 
 const cookies = new Cookies();
 
@@ -131,6 +139,39 @@ export const chatService = {
 
   friendCancel: (friendId: number) =>
     chatQuery<{ friendId: number; status: string }>("chatFriendCancel", { friendId }),
+
+  /**
+   * Tìm kiếm tin nhắn/tệp. Bỏ `conversationId` để tìm toàn cục trong mọi phòng của user.
+   */
+  searchMessages: (params: {
+    conversationId?: number;
+    keyword?: string;
+    senderEmplNo?: string | null;
+    fromDate?: string | null;
+    toDate?: string | null;
+    fileKind?: string;
+    onlyWithFiles?: boolean;
+    beforeMessageId?: number;
+    limit?: number;
+  }) =>
+    chatQuery<{ results: ChatSearchResult[]; hasMore: boolean }>("chatSearchMessages", params),
+
+  /** Danh sách media/tệp của 1 phòng (cửa sổ "Xem media"). */
+  listMedia: (params: {
+    conversationId: number;
+    fileKind?: string;
+    fromDate?: string | null;
+    toDate?: string | null;
+    beforeAttachmentId?: number;
+    limit?: number;
+  }) =>
+    chatQuery<{ items: ChatMediaItem[]; hasMore: boolean; storage: ChatStorage }>(
+      "chatListMedia",
+      params
+    ),
+
+  conversationStorage: (conversationId: number) =>
+    chatQuery<ChatStorage>("chatConversationStorage", { conversationId }),
 };
 
 /** Upload 1 file vào phòng chat, trả về attachment vừa lưu. */

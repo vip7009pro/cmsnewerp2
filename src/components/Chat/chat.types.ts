@@ -1,4 +1,4 @@
-export type ChatConversationType = "DIRECT" | "GROUP";
+export type ChatConversationType = "DIRECT" | "GROUP" | "SELF";
 export type ChatRole = "OWNER" | "ADMIN" | "MODERATOR" | "MEMBER";
 export type ChatMessageType = "TEXT" | "IMAGE" | "FILE" | "SYSTEM";
 export type ChatReactionType = "LIKE" | "LOVE" | "HAHA" | "WOW" | "SAD" | "ANGRY";
@@ -21,6 +21,56 @@ export interface ChatReactionBurst {
   emplNo: string;
   reaction: ChatReactionType;
   seq: number;
+}
+
+/** Nhóm loại tệp dùng cho bộ lọc tìm kiếm / xem media. */
+export type ChatFileKindFilter =
+  | "all"
+  | "image"
+  | "video"
+  | "audio"
+  | "pdf"
+  | "word"
+  | "excel"
+  | "csv"
+  | "ppt"
+  | "zip"
+  | "other";
+
+/** Bộ lọc dùng chung cho tìm kiếm và xem media. */
+export interface ChatSearchFilters {
+  keyword?: string;
+  senderEmplNo?: string | null;
+  fromDate?: string | null;
+  toDate?: string | null;
+  fileKind?: ChatFileKindFilter;
+  onlyWithFiles?: boolean;
+}
+
+/** 1 kết quả tìm kiếm (kèm thông tin phòng để hiển thị khi tìm toàn cục). */
+export interface ChatSearchResult {
+  MESSAGE_ID: number;
+  CONVERSATION_ID: number;
+  SENDER_EMPL_NO: string;
+  MSG_TYPE: ChatMessageType;
+  CONTENT: string | null;
+  CREATED_AT: string;
+  DELETED_AT?: string | null;
+  ATTACHMENTS: ChatAttachment[];
+  CONVERSATION_NAME: string;
+  CONVERSATION_TYPE: ChatConversationType;
+  CONVERSATION_PEER: string | null;
+}
+
+/** 1 mục media/tệp trong cửa sổ xem media của phòng. */
+export interface ChatMediaItem {
+  attachmentId: number;
+  messageId: number;
+  originalName: string;
+  mimeType?: string | null;
+  fileSize?: number | null;
+  senderEmplNo: string;
+  createdAt: string;
 }
 
 /** Nội dung được trích dẫn khi trả lời tin nhắn. */

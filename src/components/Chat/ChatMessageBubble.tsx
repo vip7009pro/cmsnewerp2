@@ -36,6 +36,8 @@ interface Props {
   showAvatar: boolean;
   /** Người khác vừa thả cảm xúc cho đúng tin này ⇒ bắn tim bay. */
   burst?: ChatReactionBurst | null;
+  /** Tin nhắn vừa được nhảy tới từ kết quả tìm kiếm ⇒ làm nổi bật. */
+  highlight?: boolean;
   onOpenMenu: (message: ChatMessage, x: number, y: number) => void;
   /** Thả cảm xúc — mỗi lần gọi là +1 (không giới hạn). */
   onAddReaction: (message: ChatMessage, reaction: ChatReactionType) => void;
@@ -95,6 +97,7 @@ export default function ChatMessageBubble({
   canModerate,
   showAvatar,
   burst,
+  highlight,
   onOpenMenu,
   onAddReaction,
   onReply,
@@ -181,7 +184,9 @@ export default function ChatMessageBubble({
 
   return (
     <div
-      className={`erp-chat__row${mine ? " is-mine" : ""}${showAvatar ? " has-avatar" : ""}`}
+      className={`erp-chat__row${mine ? " is-mine" : ""}${showAvatar ? " has-avatar" : ""}${
+        highlight ? " is-highlight" : ""
+      }`}
       onContextMenu={(event) => {
         event.preventDefault();
         openMenuAt(event.clientX, event.clientY);
