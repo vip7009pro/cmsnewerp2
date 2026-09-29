@@ -6,6 +6,8 @@ import ChatConversationList from "./ChatConversationList";
 import ChatConversationView from "./ChatConversationView";
 import ChatGroupPanel from "./ChatGroupPanel";
 import ChatNewChatDialog from "./ChatNewChatDialog";
+import ChatForwardDialog from "./ChatForwardDialog";
+import type { ChatMessage } from "./chat.types";
 import { chatService } from "../../api/services/chatService";
 import { useChatController } from "../../hooks/useChatController";
 import "./chat.scss";
@@ -24,6 +26,7 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
   const [showInfo, setShowInfo] = useState(false);
   const [showNewChat, setShowNewChat] = useState(false);
   const [showRequests, setShowRequests] = useState(false);
+  const [forwardMessage, setForwardMessage] = useState<ChatMessage | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
 
   const isControlled = open !== undefined;
@@ -158,6 +161,13 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
             loadingMore={controller.loadingMore}
             hasMore={Boolean(controller.hasMore[controller.activeConversation.CONVERSATION_ID])}
             isMobile={isMobile}
+            replyTarget={controller.replyTarget}
+            reactionBurst={controller.reactionBurst}
+            draftText={
+              controller.draft?.conversationId === controller.activeConversation.CONVERSATION_ID
+                ? controller.draft.text
+                : null
+            }
             onBack={controller.clearActive}
             onOpenInfo={() => setShowInfo(true)}
             onLoadMore={() =>
@@ -165,11 +175,29 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
             }
             onSend={(payload) => void controller.sendMessage(payload)}
             onRetry={(message) => void controller.retryMessage(message)}
-            onDelete={(message) => {
-              if (controller.activeId) {
-                void controller.deleteMessage(controller.activeId, message.MESSAGE_ID);
-              }
-            }}
+            onReply={(message) => controller.startReply(message)}
+            onClearReply={controller.clearReply}
+            onAddReaction={(message, reaction) =>
+              void controller.addReaction(message.CONVERSATION_ID, message.MESSAGE_ID, reaction)
+            }
+            onClearReaction={(message) =>
+              void controller.clearReaction(message.CONVERSATION_ID, message.MESSAGE_ID)
+            }
+            onForward={(message) => setForwardMessage(message)}
+            onHide={(message) =>
+              void controller.hideMessage(message.CONVERSATION_ID, message.MESSAGE_ID)
+            }
+            onRecall={(message) =>
+              void controller.deleteMessage(message.CONVERSATION_ID, message.MESSAGE_ID)
+            }
+            onMentionClick={(emplNo, name, preview) =>
+              void controller.openPrivateChatWithQuote({
+                emplNo,
+                name,
+                preview: preview.length > 120 ? `${preview.slice(0, 120)}…` : preview,
+              })
+            }
+            onConsumeDraft={controller.consumeDraft}
             onTyping={controller.notifyTyping}
           />
         ) : (
@@ -275,6 +303,19 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
           </div>
         )
       )}
+
+      <ChatForwardDialog
+        open={Boolean(forwardMessage)}
+        conversations={controller.conversations}
+        excludeConversationId={controller.activeId}
+        onClose={() => setForwardMessage(null)}
+        onSubmit={(targets) => {
+          if (!forwardMessage) return;
+          const source = forwardMessage;
+          setForwardMessage(null);
+          void controller.forwardMessage(source.CONVERSATION_ID, source.MESSAGE_ID, targets);
+        }}
+      />
 
       <ChatNewChatDialog
         open={showNewChat}

@@ -38,7 +38,8 @@ self.addEventListener("push", (event) => {
 
   const options = {
     body: payload.body,
-    icon: "/icon-192.png",
+    // Ảnh nhỏ: avatar nhân viên gửi (backend gửi kèm), không có thì dùng logo CMS.
+    icon: payload.icon || "/icon-192.png",
     badge: "/icon-192.png",
     // `tag` (do backend gửi kèm, ví dụ "chat-<conversationId>") ⇒ nhiều tin trong cùng
     // một phòng chat sẽ gộp thành 1 thông báo thay vì xếp chồng.

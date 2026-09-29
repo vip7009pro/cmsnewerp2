@@ -1,27 +1,24 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Avatar, IconButton, LinearProgress, Tooltip } from "@mui/material";
+import { Avatar, IconButton, LinearProgress, Snackbar, Tooltip } from "@mui/material";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import InsertDriveFileRoundedIcon from "@mui/icons-material/InsertDriveFileRounded";
-import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
-import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
-import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
-import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
 import GroupRoundedIcon from "@mui/icons-material/GroupsRounded";
-import type { ChatConversation, ChatMember, ChatMessage } from "./chat.types";
-import { chatFileUrl } from "../../api/services/chatService";
+import type {
+  ChatConversation,
+  ChatMember,
+  ChatMessage,
+  ChatReactionBurst,
+  ChatReactionType,
+  ChatReplyTarget,
+} from "./chat.types";
+import ChatMessageBubble from "./ChatMessageBubble";
+import ChatMessageMenu, { type ChatMessageMenuState } from "./ChatMessageMenu";
 import type { PendingUpload } from "../../hooks/useChatController";
-import {
-  chatAvatarUrl,
-  dayLabel,
-  formatFileSize,
-  initialsOf,
-  renderMentions,
-  timeLabel,
-} from "./chatUtils";
+import { chatAvatarUrl, dayLabel, initialsOf } from "./chatUtils";
 
 interface Props {
   conversation: ChatConversation;
@@ -34,12 +31,25 @@ interface Props {
   loadingMore: boolean;
   hasMore: boolean;
   isMobile: boolean;
+  replyTarget: ChatReplyTarget | null;
+  draftText?: string | null;
+  /** Sự kiện cảm xúc vừa được thả ở nơi khác (tim bay hiện ở cả 2 phía). */
+  reactionBurst?: ChatReactionBurst | null;
   onBack: () => void;
   onOpenInfo: () => void;
   onLoadMore: () => void;
   onSend: (payload: { content: string; files?: File[]; mentions?: string[] }) => void;
   onRetry: (message: ChatMessage) => void;
-  onDelete: (message: ChatMessage) => void;
+  onReply: (message: ChatMessage) => void;
+  onClearReply: () => void;
+  onAddReaction: (message: ChatMessage, reaction: ChatReactionType) => void;
+  onClearReaction: (message: ChatMessage) => void;
+  onForward: (message: ChatMessage) => void;
+  onHide: (message: ChatMessage) => void;
+  onRecall: (message: ChatMessage) => void;
+  onMentionClick: (emplNo: string, name: string, preview: string) => void;
+  onConsumeDraft: () => void;
+  /** Báo trạng thái "đang nhập" cho phòng hiện tại. */
   onTyping: (typing: boolean) => void;
 }
 
@@ -60,12 +70,23 @@ export default function ChatConversationView({
   loadingMore,
   hasMore,
   isMobile,
+  replyTarget,
+  draftText,
+  reactionBurst,
   onBack,
   onOpenInfo,
   onLoadMore,
   onSend,
   onRetry,
-  onDelete,
+  onReply,
+  onClearReply,
+  onAddReaction,
+  onClearReaction,
+  onForward,
+  onHide,
+  onRecall,
+  onMentionClick,
+  onConsumeDraft,
   onTyping,
 }: Props) {
   const [text, setText] = useState("");
@@ -73,6 +94,8 @@ export default function ChatConversationView({
   const [fileError, setFileError] = useState<string | null>(null);
   const [mentionKeyword, setMentionKeyword] = useState<string | null>(null);
   const [mentions, setMentions] = useState<string[]>([]);
+  const [menuState, setMenuState] = useState<ChatMessageMenuState | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
 
   const listRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -81,11 +104,22 @@ export default function ChatConversationView({
   const lastMessageIdRef = useRef<number>(0);
 
   const isDirect = conversation.CONV_TYPE === "DIRECT";
-  const peerOnline = isDirect && conversation.PEER_EMPL_NO
-    ? onlineUsers.has(conversation.PEER_EMPL_NO)
-    : false;
+  const canModerate =
+    conversation.MY_ROLE === "OWNER" ||
+    conversation.MY_ROLE === "ADMIN" ||
+    conversation.MY_ROLE === "MODERATOR";
+  const peerOnline =
+    isDirect && conversation.PEER_EMPL_NO ? onlineUsers.has(conversation.PEER_EMPL_NO) : false;
 
-  // Tự cuộn xuống cuối khi có tin mới (chỉ khi đang ở gần đáy để không phá thao tác đọc).
+  // Văn bản soạn sẵn (bấm vào tên được tag ⇒ mở chat riêng kèm trích dẫn).
+  useEffect(() => {
+    if (!draftText) return;
+    setText(draftText);
+    onConsumeDraft();
+    requestAnimationFrame(() => textareaRef.current?.focus());
+  }, [draftText, onConsumeDraft]);
+
+  // Cuộn xuống cuối khi có tin mới (chỉ khi đang ở gần đáy để không phá thao tác đọc).
   useEffect(() => {
     const element = listRef.current;
     if (!element) return;
@@ -126,9 +160,9 @@ export default function ChatConversationView({
   const mentionCandidates = useMemo(() => {
     if (mentionKeyword === null) return [];
     const key = mentionKeyword.toLowerCase();
-    return conversation.MEMBERS.filter((m) => m.EMPL_NO !== myEmplNo).filter((m) =>
-      (m.FULL_NAME || "").toLowerCase().includes(key)
-    ).slice(0, 6);
+    return conversation.MEMBERS.filter((m) => m.EMPL_NO !== myEmplNo)
+      .filter((m) => (m.FULL_NAME || "").toLowerCase().includes(key))
+      .slice(0, 6);
   }, [conversation.MEMBERS, mentionKeyword, myEmplNo]);
 
   const handleTextChange = (value: string) => {
@@ -143,7 +177,6 @@ export default function ChatConversationView({
       }, 2500);
     }
 
-    // Phát hiện "@từ khoá" ở cuối chuỗi để mở gợi ý tag tên.
     const match = value.match(/@([^\s@]*)$/);
     setMentionKeyword(match ? match[1] : null);
   };
@@ -181,6 +214,7 @@ export default function ChatConversationView({
     setMentions([]);
     setFileError(null);
     setMentionKeyword(null);
+    onClearReply();
     if (textareaRef.current) textareaRef.current.style.height = "auto";
   };
 
@@ -191,10 +225,22 @@ export default function ChatConversationView({
     }
   };
 
-  const canModerate =
-    conversation.MY_ROLE === "OWNER" ||
-    conversation.MY_ROLE === "ADMIN" ||
-    conversation.MY_ROLE === "MODERATOR";
+  const handleCopy = async (message: ChatMessage) => {
+    const lines: string[] = [];
+    if (message.CONTENT) lines.push(message.CONTENT);
+    (message.ATTACHMENTS || []).forEach((attachment) =>
+      lines.push(`[Tệp] ${attachment.originalName}`)
+    );
+    const payload = lines.join("\n") || "(tin nhắn trống)";
+
+    try {
+      await navigator.clipboard.writeText(payload);
+      setToast("Đã sao chép tin nhắn");
+    } catch (error) {
+      console.warn("[chat] không sao chép được:", error);
+      setToast("Không sao chép được (trình duyệt chặn clipboard)");
+    }
+  };
 
   return (
     <div className="erp-chat__main">
@@ -260,130 +306,29 @@ export default function ChatConversationView({
             </div>
 
             {group.items.map((message, index) => {
-              const mine = message.SENDER_EMPL_NO === myEmplNo;
-              const isSystem = message.MSG_TYPE === "SYSTEM";
-              const sender = memberOf(conversation, message.SENDER_EMPL_NO);
               const prev = group.items[index - 1];
-              const showAvatar = !mine && (!prev || prev.SENDER_EMPL_NO !== message.SENDER_EMPL_NO);
-              const deleted = Boolean(message.DELETED_AT);
-              const attachmentList = message.ATTACHMENTS || [];
-              const mentionList = message.MENTIONS
-                ? String(message.MENTIONS).replace(/[[\]"]/g, "").split(",").map((v) => v.trim())
-                : [];
-
-              if (isSystem) {
-                return (
-                  <div key={message.MESSAGE_ID} className="erp-chat__systemMsg">
-                    {message.CONTENT}
-                  </div>
-                );
-              }
+              const showAvatar =
+                message.SENDER_EMPL_NO !== myEmplNo &&
+                (!prev || prev.SENDER_EMPL_NO !== message.SENDER_EMPL_NO);
 
               return (
-                <div
+                <ChatMessageBubble
                   key={message.MESSAGE_ID}
-                  className={`erp-chat__row${mine ? " is-mine" : ""}${
-                    showAvatar ? " has-avatar" : ""
-                  }`}
-                >
-                  <div className="erp-chat__rowAvatar">
-                    {showAvatar && (
-                      <Avatar
-                        src={chatAvatarUrl(message.SENDER_EMPL_NO, sender?.EMPL_IMAGE)}
-                        sx={{ width: 30, height: 30, fontSize: 12, bgcolor: "#64748b" }}
-                      >
-                        {initialsOf(sender?.FULL_NAME || message.SENDER_EMPL_NO)}
-                      </Avatar>
-                    )}
-                  </div>
-
-                  <div className="erp-chat__bubbleWrap">
-                    {showAvatar && !mine && (
-                      <span className="erp-chat__senderName">
-                        {sender?.FULL_NAME || message.SENDER_EMPL_NO}
-                      </span>
-                    )}
-
-                    <div className={`erp-chat__bubble${deleted ? " is-deleted" : ""}`}>
-                      {deleted ? (
-                        <em className="erp-chat__deleted">Tin nhắn đã được thu hồi</em>
-                      ) : (
-                        <>
-                          {attachmentList.length > 0 && (
-                            <div className="erp-chat__attachments">
-                              {attachmentList.map((attachment) =>
-                                /^image\//.test(String(attachment.mimeType || "")) ? (
-                                  <a
-                                    key={attachment.attachmentId}
-                                    href={chatFileUrl(attachment.attachmentId)}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="erp-chat__attachImage"
-                                  >
-                                    <img
-                                      src={chatFileUrl(attachment.attachmentId)}
-                                      alt={attachment.originalName}
-                                      loading="lazy"
-                                    />
-                                  </a>
-                                ) : (
-                                  <a
-                                    key={attachment.attachmentId}
-                                    href={chatFileUrl(attachment.attachmentId)}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="erp-chat__attachFile"
-                                  >
-                                    <InsertDriveFileRoundedIcon fontSize="small" />
-                                    <span className="erp-chat__attachMeta">
-                                      <strong>{attachment.originalName}</strong>
-                                      <small>{formatFileSize(attachment.fileSize)}</small>
-                                    </span>
-                                    <DownloadRoundedIcon fontSize="small" />
-                                  </a>
-                                )
-                              )}
-                            </div>
-                          )}
-
-                          {message.CONTENT && (
-                            <div className="erp-chat__text">
-                              {renderMentions(message.CONTENT, mentionList)}
-                            </div>
-                          )}
-                        </>
-                      )}
-
-                      <div className="erp-chat__bubbleMeta">
-                        <span>{timeLabel(message.CREATED_AT)}</span>
-                        {message.EDITED_AT && <span>· đã sửa</span>}
-                        {mine && message._status === "sending" && <span>· đang gửi</span>}
-                        {mine && message._status === "failed" && (
-                          <span className="erp-chat__failed">
-                            <ErrorOutlineRoundedIcon sx={{ fontSize: 13 }} /> gửi lỗi
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {!deleted && (mine || canModerate) && (
-                      <div className="erp-chat__rowActions">
-                        {mine && message._status === "failed" && (
-                          <Tooltip title="Gửi lại">
-                            <IconButton size="small" onClick={() => onRetry(message)}>
-                              <ReplayRoundedIcon sx={{ fontSize: 15 }} />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                        <Tooltip title="Thu hồi">
-                          <IconButton size="small" onClick={() => onDelete(message)}>
-                            <DeleteOutlineRoundedIcon sx={{ fontSize: 15 }} />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                  message={message}
+                  conversation={conversation}
+                  myEmplNo={myEmplNo}
+                  canModerate={canModerate}
+                  showAvatar={showAvatar}
+                  burst={
+                    reactionBurst && reactionBurst.messageId === message.MESSAGE_ID
+                      ? reactionBurst
+                      : null
+                  }
+                  onOpenMenu={(target, x, y) => setMenuState({ message: target, top: y, left: x })}
+                  onAddReaction={onAddReaction}
+                  onReply={onReply}
+                  onMentionClick={onMentionClick}
+                />
               );
             })}
           </div>
@@ -446,50 +391,90 @@ export default function ChatConversationView({
           </div>
         )}
 
-        <IconButton
-          size="small"
-          className="erp-chat__iconBtn"
-          onClick={() => fileInputRef.current?.click()}
-          aria-label="Đính kèm tệp"
-        >
-          <AttachFileRoundedIcon fontSize="small" />
-        </IconButton>
-        <input
-          ref={fileInputRef}
-          type="file"
-          hidden
-          multiple
-          onChange={(event) => {
-            addFiles(event.target.files);
-            event.target.value = "";
-          }}
-        />
+        {replyTarget && (
+          <div className="erp-chat__replyBar">
+            <div className="erp-chat__replyBarBody">
+              <span className="erp-chat__replyBarName">
+                Trả lời{" "}
+                {memberOf(conversation, replyTarget.senderEmplNo)?.FULL_NAME ||
+                  replyTarget.senderEmplNo}
+              </span>
+              <span className="erp-chat__replyBarText">{replyTarget.preview}</span>
+            </div>
+            <IconButton size="small" onClick={onClearReply} aria-label="Bỏ trả lời">
+              <CloseRoundedIcon fontSize="small" />
+            </IconButton>
+          </div>
+        )}
 
-        <textarea
-          ref={textareaRef}
-          className="erp-chat__input"
-          rows={1}
-          value={text}
-          placeholder="Nhập tin nhắn... (Enter để gửi, Shift+Enter xuống dòng, @ để tag tên)"
-          onChange={(event) => handleTextChange(event.target.value)}
-          onKeyDown={handleKeyDown}
-          onInput={(event) => {
-            const target = event.target as HTMLTextAreaElement;
-            target.style.height = "auto";
-            target.style.height = `${Math.min(target.scrollHeight, 120)}px`;
-          }}
-        />
+        <div className="erp-chat__composerRow">
+          <IconButton
+            size="small"
+            className="erp-chat__iconBtn"
+            onClick={() => fileInputRef.current?.click()}
+            aria-label="Đính kèm tệp"
+          >
+            <AttachFileRoundedIcon fontSize="small" />
+          </IconButton>
+          <input
+            ref={fileInputRef}
+            type="file"
+            hidden
+            multiple
+            onChange={(event) => {
+              addFiles(event.target.files);
+              event.target.value = "";
+            }}
+          />
 
-        <IconButton
-          size="small"
-          className="erp-chat__sendBtn"
-          onClick={handleSubmit}
-          disabled={!text.trim() && files.length === 0}
-          aria-label="Gửi tin nhắn"
-        >
-          <SendRoundedIcon fontSize="small" />
-        </IconButton>
+          <textarea
+            ref={textareaRef}
+            className="erp-chat__input"
+            rows={1}
+            value={text}
+            placeholder="Nhập tin nhắn... (Enter để gửi, Shift+Enter xuống dòng, @ để tag tên)"
+            onChange={(event) => handleTextChange(event.target.value)}
+            onKeyDown={handleKeyDown}
+            onInput={(event) => {
+              const target = event.target as HTMLTextAreaElement;
+              target.style.height = "auto";
+              target.style.height = `${Math.min(target.scrollHeight, 120)}px`;
+            }}
+          />
+
+          <IconButton
+            size="small"
+            className="erp-chat__sendBtn"
+            onClick={handleSubmit}
+            disabled={!text.trim() && files.length === 0}
+            aria-label="Gửi tin nhắn"
+          >
+            <SendRoundedIcon fontSize="small" />
+          </IconButton>
+        </div>
       </div>
+
+      <ChatMessageMenu
+        state={menuState}
+        myEmplNo={myEmplNo}
+        canRecall={canModerate}
+        onClose={() => setMenuState(null)}
+        onReply={onReply}
+        onReact={(message, reaction) => onAddReaction(message, reaction)}
+        onClearReaction={onClearReaction}
+        onForward={onForward}
+        onCopy={(message) => void handleCopy(message)}
+        onHide={onHide}
+        onRecall={onRecall}
+      />
+
+      <Snackbar
+        open={Boolean(toast)}
+        autoHideDuration={2200}
+        onClose={() => setToast(null)}
+        message={toast}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </div>
   );
 }

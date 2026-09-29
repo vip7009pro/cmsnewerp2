@@ -6,7 +6,20 @@ import type {
   ChatEmployee,
   ChatFriendEntry,
   ChatMessage,
+  ChatReactionBurst,
+  ChatReactionType,
+  ChatReplyTarget,
 } from "../components/Chat/chat.types";
+
+/** Danh sách cảm xúc hợp lệ — dùng để lọc sự kiện realtime trước khi bắn hiệu ứng tim bay. */
+const REACTION_KEYS = new Set<ChatReactionType>([
+  "LIKE",
+  "LOVE",
+  "HAHA",
+  "WOW",
+  "SAD",
+  "ANGRY",
+]);
 
 export interface PendingUpload {
   id: string;
@@ -40,15 +53,25 @@ export function useChatController() {
   const [typingUsers, setTypingUsers] = useState<Record<number, Record<string, string>>>({});
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
   const [pendingUploads, setPendingUploads] = useState<PendingUpload[]>([]);
+  /** Cảm xúc vừa được thả ở nơi khác ⇒ bắn hiệu ứng tim bay ở mọi phía đang mở phòng. */
+  const [reactionBurst, setReactionBurst] = useState<ChatReactionBurst | null>(null);
+  /** Tin nhắn đang được trả lời (hiện trong composer). */
+  const [replyTarget, setReplyTarget] = useState<ChatReplyTarget | null>(null);
+  /** Văn bản soạn sẵn khi bấm vào tên được tag để mở chat riêng. */
+  const [draft, setDraft] = useState<{ conversationId: number; text: string } | null>(null);
 
   const activeIdRef = useRef<number | null>(null);
   const typingTimers = useRef<Record<string, number>>({});
   const conversationsRef = useRef<ChatConversation[]>([]);
+  const replyTargetRef = useRef<ChatReplyTarget | null>(null);
   /** Chống xử lý trùng: server phát cùng 1 tin qua cả room phòng và room user. */
   const seenMessageIds = useRef<Set<number>>(new Set());
+  /** Chống nhân đôi hiệu ứng tim bay khi cùng 1 sự kiện cảm xúc được phát 2 lần. */
+  const lastBurstKeyRef = useRef("");
 
   activeIdRef.current = activeId;
   conversationsRef.current = conversations;
+  replyTargetRef.current = replyTarget;
 
   const activeConversation = useMemo(
     () => conversations.find((c) => c.CONVERSATION_ID === activeId) || null,
@@ -59,26 +82,56 @@ export function useChatController() {
 
   /* ----------------------------- Nạp dữ liệu ---------------------------- */
 
-  const applySync = useCallback((list: ChatConversation[], unread: number) => {
-    setConversations(list);
-    setUnreadTotal(unread);
-  }, []);
+  const applySync = useCallback(
+    (list: ChatConversation[], unread: number, onlineEmplNos?: string[]) => {
+      setConversations(list);
+      setUnreadTotal(unread);
+      // Danh sách online đầy đủ từ server — thiếu bước này FE sẽ hiển thị
+      // tất cả là "không hoạt động" cho tới khi có sự kiện presence đầu tiên.
+      if (Array.isArray(onlineEmplNos)) {
+        setOnlineUsers(new Set(onlineEmplNos.map((v) => String(v || "").trim().toUpperCase())));
+      }
+    },
+    []
+  );
 
   const refreshBadge = useCallback(async () => {
     try {
       const result = await chatService.sync();
-      applySync(result.conversations, result.unreadTotal);
+      applySync(result.conversations, result.unreadTotal, result.onlineEmplNos);
     } catch {
       // Badge là thông tin phụ — lỗi mạng không nên làm ồn UI.
     }
   }, [applySync]);
+
+  /**
+   * Thay thế nguyên trạng bản tổng hợp cảm xúc của 1 tin nhắn bằng dữ liệu từ server.
+   * Dùng dữ liệu server (không tự cộng trừ ở client) vì mỗi người có thể thả nhiều lần
+   * và chỉ server mới biết chính xác số đếm.
+   * PHẢI khai báo TRƯỚC effect socket vì effect dùng nó trong dependency.
+   */
+  const applyReactions = useCallback(
+    (conversationId: number, messageId: number, reactions: ChatMessage["REACTIONS"]) => {
+      setMessages((prev) => {
+        const list = prev[conversationId];
+        if (!list) return prev;
+        return {
+          ...prev,
+          [conversationId]: list.map((message) =>
+            message.MESSAGE_ID === messageId ? { ...message, REACTIONS: reactions || {} } : message
+          ),
+        };
+      });
+    },
+    []
+  );
 
   const bootstrap = useCallback(async () => {
     if (booting) return;
     setBooting(true);
     try {
       const data = await chatService.bootstrap();
-      applySync(data.conversations, data.unreadTotal);
+      applySync(data.conversations, data.unreadTotal, data.onlineEmplNos);
       setRequests(data.requests || []);
       setFriends(
         (data.friends || []).map((f) => ({
@@ -210,7 +263,13 @@ export function useChatController() {
   );
 
   const sendMessage = useCallback(
-    async (payload: { content: string; files?: File[]; mentions?: string[]; replyToMessageId?: number }) => {
+    async (payload: {
+      content: string;
+      files?: File[];
+      mentions?: string[];
+      replyToMessageId?: number;
+      msgType?: string;
+    }) => {
       const conversationId = activeIdRef.current;
       if (!conversationId) return;
 
@@ -261,6 +320,9 @@ export function useChatController() {
         }
       }
 
+      // Đã "khoá" tin nhắn được trả lời vào payloadToSend ⇒ bỏ khỏi composer.
+      if (replyTargetRef.current) setReplyTarget(null);
+
       const markFailed = () => {
         setMessages((prev) => ({
           ...prev,
@@ -275,7 +337,12 @@ export function useChatController() {
         content,
         clientMessageId,
         mentions: payload.mentions,
-        replyToMessageId: payload.replyToMessageId,
+        // Trả lời tin nhắn: ưu tiên tham số truyền vào, không thì dùng tin đang được chọn để trả lời.
+        replyToMessageId: payload.replyToMessageId ?? replyTargetRef.current?.messageId,
+        // Loại tin suy ra từ file đính kèm để server lưu đúng IMAGE/FILE.
+        msgType:
+          payload.msgType ||
+          (files.length > 0 ? (files[0].type.startsWith("image/") ? "IMAGE" : "FILE") : "TEXT"),
         attachmentIds: attachmentIds.length > 0 ? attachmentIds : undefined,
       };
 
@@ -467,11 +534,69 @@ export function useChatController() {
       if (activeIdRef.current === conversationId) setActiveId(null);
     };
 
+    const onReaction = (payload: {
+      conversationId: number;
+      messageId: number;
+      emplNo?: string;
+      reaction?: string | null;
+      removed?: boolean;
+      reactions?: ChatMessage["REACTIONS"];
+    }) => {
+      const { conversationId, messageId, reactions } = payload || ({} as any);
+      if (!conversationId || !messageId) return;
+      // Server gửi kèm bản tổng hợp số đếm ⇒ thay thế nguyên trạng, không tự cộng trừ.
+      if (reactions) applyReactions(conversationId, messageId, reactions);
+
+      // Hiệu ứng tim bay ở phía NGƯỜI KHÁC (chính mình đã bắn ngay khi bấm).
+      const actor = String((payload as any)?.emplNo || "").trim().toUpperCase();
+      const reaction = String((payload as any)?.reaction || "").trim().toUpperCase();
+      if (!actor || actor === myEmplNo || !reaction || (payload as any)?.removed) return;
+      if (!REACTION_KEYS.has(reaction as ChatReactionType)) return;
+      // Server phát cùng sự kiện qua CẢ room phòng và room user ⇒ chống nhân đôi hiệu ứng
+      // bằng "chữ ký" gồm người thả + loại + số đếm mới nhất.
+      const count = (reactions as any)?.[reaction]?.count ?? 0;
+      const signature = `${messageId}:${actor}:${reaction}:${count}`;
+      if (lastBurstKeyRef.current === signature) return;
+      lastBurstKeyRef.current = signature;
+      setReactionBurst({
+        conversationId,
+        messageId,
+        emplNo: actor,
+        reaction: reaction as ChatReactionType,
+        seq: Date.now() + Math.random(),
+      });
+    };
+
+    const onPresenceList = (payload: { emplNos?: string[] }) => {
+      const list = payload?.emplNos;
+      if (!Array.isArray(list)) return;
+      setOnlineUsers(new Set(list.map((value) => String(value || "").trim().toUpperCase())));
+    };
+
+    const onMessageHidden = (payload: { conversationId: number; messageId: number }) => {
+      const { conversationId, messageId } = payload || ({} as any);
+      if (!conversationId || !messageId) return;
+      setMessages((prev) => ({
+        ...prev,
+        [conversationId]: (prev[conversationId] || []).filter((m) => m.MESSAGE_ID !== messageId),
+      }));
+    };
+
     const onFriendRequest = () => {
       void bootstrap();
     };
 
+    // Socket có thể mất kết nối rồi tự nối lại (đổi mạng, server restart) ⇒ phải vào lại
+    // room phòng đang mở, nếu không các sự kiện phát theo room (typing, read) sẽ im lặng.
+    const onConnect = () => {
+      const conversationId = activeIdRef.current;
+      if (conversationId) socket.emit("chat:join", { conversationId });
+    };
+
     socket.on("chat:message", onMessage);
+    socket.on("chat:reaction", onReaction);
+    socket.on("chat:presence-list", onPresenceList);
+    socket.on("chat:message-hidden", onMessageHidden);
     socket.on("chat:message-deleted", onMessageDeleted);
     socket.on("chat:typing", onTyping);
     socket.on("chat:presence", onPresence);
@@ -479,9 +604,15 @@ export function useChatController() {
     socket.on("chat:conversation-removed", onConversationRemoved);
     socket.on("chat:members-changed", onConversationUpdated);
     socket.on("chat:friend-request", onFriendRequest);
+    socket.on("connect", onConnect);
+    // Socket đã kết nối sẵn từ trước khi hook mount ⇒ vào room ngay.
+    if (socket.connected) onConnect();
 
     return () => {
       socket.off("chat:message", onMessage);
+      socket.off("chat:reaction", onReaction);
+      socket.off("chat:presence-list", onPresenceList);
+      socket.off("chat:message-hidden", onMessageHidden);
       socket.off("chat:message-deleted", onMessageDeleted);
       socket.off("chat:typing", onTyping);
       socket.off("chat:presence", onPresence);
@@ -489,8 +620,9 @@ export function useChatController() {
       socket.off("chat:conversation-removed", onConversationRemoved);
       socket.off("chat:members-changed", onConversationUpdated);
       socket.off("chat:friend-request", onFriendRequest);
+      socket.off("connect", onConnect);
     };
-  }, [appendMessage, bootstrap, bumpConversationPreview, myEmplNo, refreshBadge]);
+  }, [appendMessage, applyReactions, bootstrap, bumpConversationPreview, myEmplNo, refreshBadge]);
 
   /* ------------------------------- Actions ------------------------------- */
 
@@ -530,6 +662,125 @@ export function useChatController() {
     await chatService.friendRequest(recipient);
   }, []);
 
+  /* ------------------ Cảm xúc / ẩn tin / chuyển tiếp / trả lời ------------------ */
+
+  /**
+   * Ghi cảm xúc lên server rồi lấy lại bản tổng hợp số đếm mới nhất.
+   * `reaction = "NONE"` để bỏ cảm xúc của mình.
+   */
+  const sendReaction = useCallback(
+    async (conversationId: number, messageId: number, reaction: string) => {
+      const socket = getSocket();
+      const delivered = await new Promise<{ ok: boolean; reactions?: ChatMessage["REACTIONS"] }>(
+        (resolve) => {
+          if (!socket?.connected) return resolve({ ok: false });
+          let settled = false;
+          const timer = window.setTimeout(() => {
+            if (!settled) {
+              settled = true;
+              resolve({ ok: false });
+            }
+          }, 8000);
+          socket.emit("chat:reaction", { conversationId, messageId, reaction }, (ack: any) => {
+            if (settled) return;
+            settled = true;
+            window.clearTimeout(timer);
+            resolve({ ok: Boolean(ack?.ok), reactions: ack?.reactions });
+          });
+        }
+      );
+
+      if (delivered.ok) {
+        if (delivered.reactions) applyReactions(conversationId, messageId, delivered.reactions);
+        return;
+      }
+
+      try {
+        const result = await chatService.react(conversationId, messageId, reaction);
+        if (result?.reactions) applyReactions(conversationId, messageId, result.reactions);
+      } catch (error) {
+        console.warn("[chat] react lỗi:", error);
+      }
+    },
+    [applyReactions]
+  );
+
+  /** Thả cảm xúc — mỗi lần bấm là +1, KHÔNG giới hạn (giống "tim bay"). */
+  const addReaction = useCallback(
+    (conversationId: number, messageId: number, reaction: ChatReactionType) =>
+      sendReaction(conversationId, messageId, reaction),
+    [sendReaction]
+  );
+
+  /** Bỏ toàn bộ cảm xúc của mình trên tin nhắn. */
+  const clearReaction = useCallback(
+    (conversationId: number, messageId: number) => sendReaction(conversationId, messageId, "NONE"),
+    [sendReaction]
+  );
+
+  /** Xoá ở phía tôi: ẩn tin với riêng mình. */
+  const hideMessage = useCallback(async (conversationId: number, messageId: number) => {
+    try {
+      await chatService.hideMessage(conversationId, messageId);
+    } catch (error) {
+      console.warn("[chat] hideMessage lỗi:", error);
+    }
+    setMessages((prev) => ({
+      ...prev,
+      [conversationId]: (prev[conversationId] || []).filter((m) => m.MESSAGE_ID !== messageId),
+    }));
+  }, []);
+
+  /** Chuyển tiếp tin nhắn sang các phòng khác. */
+  const forwardMessage = useCallback(
+    async (conversationId: number, messageId: number, targetConversationIds: number[]) => {
+      await chatService.forward(conversationId, messageId, targetConversationIds);
+      await refreshBadge();
+    },
+    [refreshBadge]
+  );
+
+  const startReply = useCallback((message: ChatMessage) => {
+    const preview = message.DELETED_AT
+      ? "Tin nhắn đã được thu hồi"
+      : message.MSG_TYPE === "IMAGE"
+      ? "[Hình ảnh]"
+      : message.MSG_TYPE === "FILE"
+      ? "[Tệp đính kèm]"
+      : String(message.CONTENT || "").slice(0, 120);
+    setReplyTarget({
+      messageId: message.MESSAGE_ID,
+      senderEmplNo: message.SENDER_EMPL_NO,
+      preview,
+    });
+  }, []);
+
+  const clearReply = useCallback(() => setReplyTarget(null), []);
+
+  /**
+   * Bấm vào tên được tag ⇒ mở chat riêng với người đó và soạn sẵn nội dung trích dẫn
+   * tin nhắn cũ để gửi tiếp.
+   */
+  const openPrivateChatWithQuote = useCallback(
+    async (params: { emplNo: string; name: string; preview: string }) => {
+      const conversation = await chatService.getOrCreateDirect(params.emplNo);
+      setConversations((prev) =>
+        prev.some((c) => c.CONVERSATION_ID === conversation.CONVERSATION_ID)
+          ? prev.map((c) => (c.CONVERSATION_ID === conversation.CONVERSATION_ID ? conversation : c))
+          : [conversation, ...prev]
+      );
+      setReplyTarget(null);
+      setDraft({
+        conversationId: conversation.CONVERSATION_ID,
+        text: `[Trích dẫn tin nhắn của ${params.name}]: "${params.preview}"\n`,
+      });
+      await selectConversation(conversation.CONVERSATION_ID);
+    },
+    [selectConversation]
+  );
+
+  const consumeDraft = useCallback(() => setDraft(null), []);
+
   const refreshConversation = useCallback(async () => {
     await refreshBadge();
   }, [refreshBadge]);
@@ -555,6 +806,7 @@ export function useChatController() {
     friends,
     typingUsers,
     onlineUsers,
+    reactionBurst,
     pendingUploads,
     bootstrap,
     selectConversation,
@@ -570,6 +822,16 @@ export function useChatController() {
     sendFriendRequest,
     refreshConversation,
     clearActive,
+    replyTarget,
+    startReply,
+    clearReply,
+    addReaction,
+    clearReaction,
+    hideMessage,
+    forwardMessage,
+    openPrivateChatWithQuote,
+    draft,
+    consumeDraft,
   };
 }
 

@@ -1,5 +1,81 @@
 # ACTIVE_STATE
 
+## Đợt 22.4 — Tim bay cả 2 phía & sửa lỗi "onTyping is not defined" (2026-09-29)
+Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` (`✓ built in 1m 50s`), `get_errors` 0 lỗi,
+verify end-to-end bằng Playwright (bắt trực tiếp gói tin socket).
+
+### 1. `ReferenceError: onTyping is not defined` (gõ ô soạn tin là crash)
+`ChatDock` truyền `onTyping={controller.notifyTyping}` nhưng `ChatConversationView` **không khai báo prop này
+trong interface `Props` và không destructure** ⇒ biến không tồn tại ⇒ lỗi mỗi lần gõ, chỉ báo "đang nhập"
+không bao giờ hoạt động.
+- Đã thêm `onTyping: (typing: boolean) => void` vào `Props` + destructure.
+- **Bài học:** TypeScript KHÔNG phát hiện prop thừa khi component không dùng `...rest` ⇒ thêm prop phải sửa
+  đồng thời 3 chỗ: interface `Props`, danh sách destructure, nơi truyền (và type trả về của hook).
+
+### 2. Typing bền hơn khi socket nối lại
+Server chỉ phát `chat:typing` vào **room phòng**, nên nếu socket mất kết nối rồi tự nối lại thì client mất room
+⇒ typing im lặng. Đã thêm listener `connect` trong `useChatController` để tự `chat:join` lại phòng đang mở
+(và join ngay nếu socket đã kết nối lúc hook mount).
+
+### 3. Hiệu ứng tim bay hiện ở CẢ HAI phía
+- Payload `chat:reaction` đã có đủ `emplNo`/`reaction`/`removed`/`reactions` ⇒ không cần thêm event mới.
+- Controller giữ `reactionBurst {conversationId, messageId, emplNo, reaction, seq}` (set khi `emplNo !== myEmplNo`),
+  truyền xuống `ChatDock` → `ChatConversationView` (lọc theo `messageId`) → `ChatMessageBubble` bắn `spawnFlyer`.
+- Phía người bấm vẫn bắn tim ngay khi click; burst của chính mình bị bỏ qua để không nhân đôi.
+- **Chống nhân đôi:** server phát sự kiện 2 lần (room phòng + room user) ⇒ dùng chữ ký
+  `${messageId}:${actor}:${reaction}:${count}` ⇒ mỗi lần thả đúng **1** flyer.
+
+### Kiểm chứng đã chạy
+- `node scratch/peer_socket.js LSG1103 typingloop 16 20000`: trình duyệt nhận `chat:typing` và hiện
+  **"LSG1103 đang nhập..."** ở cả header lẫn danh sách hội thoại.
+- `... reactloop 16 HAHA 30000`: bên nhận thấy tim bay đúng emoji, `maxFlyersAtOnce = 1` (chống nhân đôi OK).
+- Gõ vào ô soạn tin: `pageerror = []` và có emit `chat:typing` (lỗi cũ đã hết).
+- Phía người bấm: bấm chip ⇒ 1 flyer, số đếm vẫn tăng bình thường.
+
+### ⚠️ Pitfall khi kiểm thử UI (rất tốn thời gian nếu quên)
+Sau khi sửa component, **`page.reload()` thường KHÔNG đủ**: Vite có nội dung mới nhưng trình duyệt vẫn dùng
+module đã cache ⇒ UI không đổi dù code đúng. Phải hard reload:
+`const cdp = await page.context().newCDPSession(page); await cdp.send('Page.reload', { ignoreCache: true });`
+Cách phát hiện: so `fetch('/src/...tsx')` với `fetch('/src/...tsx?probe=' + Date.now())`.
+
+## Đợt 22.3 — Trạng thái online & Đếm cảm xúc + hiệu ứng tim bay (2026-09-29)
+Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `node scratch/test_reaction_count.js` PASS,
+`npm run build` (`✓ built in 1m 40s`), `get_errors` 0 lỗi, verify end-to-end trên trình duyệt.
+
+### 1. "Đang hoạt động" nhưng status hiển thị "không hoạt động"
+Nguyên nhân: chỉ có event `chat:presence` phát khi connect/disconnect; không có cách lấy **danh sách online lúc load**
+⇒ status sai cho tới khi có sự kiện, và client dễ so lệch hoa/thường của `EMPL_NO`.
+- Thêm `socket/presence.js`: `markOnline/markOffline/isUserOnline/getOnlineEmplNos` (Map in-memory, không deps).
+- Connect ⇒ `emitToAll("chat:presence", {emplNo, online:true})` **và** `emitToAll("chat:presence-list", {emplNos})`;
+  disconnect khi hết mọi socket ⇒ phát lại cả 2.
+- `chatBootstrap` + `chatSync` trả thêm `onlineEmplNos` ⇒ seed ngay khi mở app / refresh badge.
+- Client: 1 nguồn duy nhất `onlineUsers: Set<string>` trong `useChatController` (`applySync(list, unread, onlineEmplNos?)`),
+  luôn upper-case; listener mới `chat:presence-list` thay thế toàn bộ set.
+
+### 2. Reaction chỉ hiện biểu tượng đã chọn → cần số đếm + thả tim vô hạn có hiệu ứng bay
+- Migration `scripts/migrate_chat_extras.js` thêm cột **`ZTB_CHAT_REACTION.RX_COUNT INT NOT NULL DEFAULT 1`**.
+- `repo.setReaction` đổi sang ngữ nghĩa tăng dần: cùng loại ⇒ `RX_COUNT + 1`; khác loại ⇒ đổi loại và reset `= 1`.
+  (`reaction = "NONE"` ⇒ `removeReaction`.)
+- `core.buildReactions(rows)` ⇒ `REACTIONS: { TYPE: { count, users[] } }`; `toClientMessage`/`enrichMessage(s)` gắn vào payload.
+  **Client thay thế toàn bộ summary, không tự cộng** (nguồn chân lý là server) — áp dụng cho cả socket ack và fallback HTTP.
+- UI: `ChatMessageBubble` render chip theo `REACTION_ORDER` (chỉ `count > 0`), sắp xếp giảm dần, `<em>{count}</em>`,
+  `is-mine` khi `users.includes(myEmplNo)`; `ChatMessageMenu` hiện badge số cho từng loại.
+- Hiệu ứng tim bay: state `flyers` trong bubble, tối đa ~9, sống ~1100ms, biến ngẫu nhiên `--drift`
+  (`.erp-chat__flyers` / `.erp-chat__flyer` + `@keyframes erpChatHeartFly`).
+
+### Kiểm chứng đã chạy
+- `node scratch/hold_socket.js LSG1103 300` giữ peer online ⇒ chat hiện **"Đang hoạt động"**; kill tiến trình ⇒ ~4s sau
+  chuyển **"Không hoạt động"** (realtime, không cần F5).
+- Bấm chip 👍 liên tiếp: `👍1 → 👍2 → 👍3 → 👍4` (like vô hạn OK); chip ❤️ độc lập vẫn `1`.
+  `.erp-chat__flyer` = 1–2 ngay sau khi bấm và về 0 sau ~1.2s.
+- `node scratch/test_reaction_count.js` PASS; dọn dữ liệu test bằng `node scratch/cleanup_chat_testdata.js`.
+
+### Ghi chú kỹ thuật
+- `CMS_ID` **KHÔNG unique** trong `ZTBEMPLINFO` ⇒ script tra nhân sự phải ưu tiên khớp `EMPL_NO` trước `CMS_ID`.
+- Dialog `NotificationPermissionGate` chặn pointer ⇒ khi test UI phải đóng (nút "Để sau") trước.
+- Vẫn còn 2 việc chặn production: (a) backend chat phải được deploy lên server mà ERP trỏ tới (cổng 5013 hiện trả
+  `Command 'chatSync' not supported`) hoặc xử lý bẫy MTU ở cổng 3007; (b) `chatFileUrl` còn nhúng `token_string` trong query.
+
 ## Đợt 22 — Chat nội bộ ERP (Socket.IO + Web Push) (2026-09-29)
 Task hiện tại: triển khai chat nội bộ cho ERP — chat in-app realtime khi đang dùng web, thông báo đẩy khi không có socket active; kết bạn, tag tên, nhóm chat, đính kèm file/ảnh/tài liệu, avatar dùng chung ảnh nhân sự, quản lý nhóm (owner/admin/mod), lưu tin nhắn vĩnh viễn trong DB.
 Trạng thái: **HOÀN THÀNH phase 1 (backend + frontend web)** — migration 6 bảng OK; `node scratch/test_chat_service.js` 20/20 PASS; `npm run build` OK (`✓ built in 1m 45s`), `get_errors` 0 lỗi.
@@ -30,6 +106,35 @@ Trạng thái: **HOÀN THÀNH phase 1 (backend + frontend web)** — migration 6
 - Mở rộng `public/service-worker.js` nếu cần badge/notification tag riêng cho tin nhắn chat.
 - Chưa làm: sửa tin nhắn (edit), ghim tin, thông báo khi được tag, block người dùng, Redis adapter, object storage, client Flutter.
 - `ACTIVE_STATE.md` đang vượt 200 dòng (còn lịch sử đợt ≤ 21) — nên nén/archives các đợt cũ.
+
+## Đợt 22.2 — Đính kèm, reaction, reply, chuyển tiếp, xoá 2 chế độ, restyle panel nhóm (2026-09-29)
+Trạng thái: **HOÀN THÀNH** — build OK (`✓ built in 1m`), `get_errors` 0 lỗi, verify trên trình duyệt thật.
+
+### Yêu cầu & kết quả
+1. **Gửi ảnh/file không hiển thị** → đã sửa. File lưu tại `practice1/outbinary/chatfiles/`
+   (env `CHAT_UPLOAD_FOLDER`), DB ghi `ZTB_CHAT_ATTACHMENT.STORAGE_PATH`, tải qua `GET /chatfile/:id` (kiểm quyền).
+   Nguyên nhân: payload realtime/ack thiếu `ATTACHMENTS`, và client không gửi `msgType` nên tin chỉ có file bị lưu `TEXT`.
+   Đã thêm `core.enrichMessage/enrichMessages` và cho server tự suy ra IMAGE/FILE từ đính kèm.
+2. **Restyle panel quản lý nhóm** → role chip, menu ⋮ cho từng thành viên (cấp/thu Moderator, chuyển chủ nhóm, xoá),
+   peer card cho hội thoại 1-1, thêm thành viên có tìm kiếm, nút Rời nhóm dạng outline đỏ.
+3. **Tag tên bấm được** → mở chat riêng với người được tag và soạn sẵn nội dung trích dẫn tin nhắn.
+4. **Reply/quote** → menu "Trả lời", thanh trả lời trong composer, khối trích dẫn trong bong bóng (`REPLY_TO`).
+5. **Cảm xúc** 👍❤️😆😮😢😡 → bảng `ZTB_CHAT_REACTION` (1 cảm xúc/người/tin), chip trên bong bóng, bấm để bật/tắt.
+6. **Chuyển tiếp** → `chatForward`, nhân bản đính kèm (không copy file), có badge "Đã chuyển tiếp".
+7. **Sao chép** → copy nội dung + tên tệp vào clipboard, có snackbar xác nhận.
+8. **Xoá 2 chế độ** → "Xoá ở phía tôi" (`ZTB_CHAT_MESSAGE_HIDDEN`, chỉ ẩn với mình) và "Thu hồi cả hai phía" (soft-delete).
+9. **Mở menu** → chuột phải (desktop) hoặc nhấn giữ 450ms (mobile).
+10. **Push icon** → avatar nhân viên gửi (`/Picture_NS/NS_<EMPL>.jpg`), fallback logo CMS ở service worker.
+
+### Pitfall nghiêm trọng đã gặp
+`useCallback` dùng trong **dependency array của `useEffect` khai báo trước nó** ⇒
+`ReferenceError: Cannot access 'X' before initialization` ⇒ **cả app rơi vào ErrorBoundary** ("Đã xảy ra lỗi (Runtime Error)").
+Luôn khai báo callback TRƯỚC effect dùng nó. (Phát hiện nhờ gắn listener `error`/`unhandledrejection` trong trình duyệt.)
+
+### Việc cần làm tiếp theo (đợt 22.2)
+- Cân nhắc bỏ `token_string` khỏi URL tải file (`chatFileUrl`) khi API cùng origin, để không lộ JWT trong query.
+- Chưa làm: sửa tin nhắn, ghim tin, thông báo khi được tag, block người dùng, Redis adapter, client Flutter.
+- Vẫn cần **deploy backend chat lên server ERP trỏ tới (5013)** hoặc sửa MTU cổng 3007 mới chạy được thật.
 
 ## Đợt 22.1 — Sửa realtime, push offline & cửa sổ chat desktop (2026-09-29)
 Trạng thái: **HOÀN THÀNH** — `npm run build` OK (`✓ built in 2m 2s`), `get_errors` 0 lỗi, verify trên trình duyệt thật.

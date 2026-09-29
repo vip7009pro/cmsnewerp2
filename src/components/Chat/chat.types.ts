@@ -1,6 +1,36 @@
 export type ChatConversationType = "DIRECT" | "GROUP";
 export type ChatRole = "OWNER" | "ADMIN" | "MODERATOR" | "MEMBER";
 export type ChatMessageType = "TEXT" | "IMAGE" | "FILE" | "SYSTEM";
+export type ChatReactionType = "LIKE" | "LOVE" | "HAHA" | "WOW" | "SAD" | "ANGRY";
+
+/** Tổng hợp cảm xúc của 1 loại trên 1 tin nhắn. */
+export interface ChatReactionSummary {
+  /** Tổng số lần thả (một người có thể thả nhiều lần). */
+  count: number;
+  /** Danh sách nhân viên đã thả loại này (để biết "tôi đã thả chưa"). */
+  users: string[];
+}
+
+/**
+ * Sự kiện "vừa có người thả cảm xúc" — dùng để bắn hiệu ứng tim bay ở CẢ HAI phía.
+ * `seq` đổi mỗi lần nên cùng 1 tin thả nhiều lần vẫn kích hoạt hiệu ứng mới.
+ */
+export interface ChatReactionBurst {
+  conversationId: number;
+  messageId: number;
+  emplNo: string;
+  reaction: ChatReactionType;
+  seq: number;
+}
+
+/** Nội dung được trích dẫn khi trả lời tin nhắn. */
+export interface ChatReplyPreview {
+  MESSAGE_ID: number;
+  SENDER_EMPL_NO: string;
+  MSG_TYPE: ChatMessageType;
+  DELETED_AT?: string | null;
+  PREVIEW: string;
+}
 
 export interface ChatAttachment {
   attachmentId: number;
@@ -17,6 +47,11 @@ export interface ChatMessage {
   CONTENT: string | null;
   MENTIONS?: string | null;
   REPLY_TO_MESSAGE_ID?: number | null;
+  REPLY_TO?: ChatReplyPreview | null;
+  FORWARDED_FROM_MESSAGE_ID?: number | null;
+  IS_FORWARDED?: boolean;
+  /** Cảm xúc theo loại: { LIKE: { count: 12, users: ["A"] } } */
+  REACTIONS?: Partial<Record<ChatReactionType, ChatReactionSummary>>;
   CLIENT_MESSAGE_ID?: string | null;
   CREATED_AT: string;
   EDITED_AT?: string | null;
@@ -87,6 +122,15 @@ export interface ChatFriendEntry {
 export interface ChatBootstrap {
   conversations: ChatConversation[];
   unreadTotal: number;
+  /** Những EMPL_NO đang có socket active (để hiển thị đúng trạng thái online). */
+  onlineEmplNos?: string[];
   friends: { FRIEND_ID: number; PARTNER: string; STATUS: string }[];
   requests: ChatFriendEntry[];
+}
+
+/** Tin nhắn đang được trả lời (hiện trong composer). */
+export interface ChatReplyTarget {
+  messageId: number;
+  senderEmplNo: string;
+  preview: string;
 }

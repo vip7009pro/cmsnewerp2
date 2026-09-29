@@ -30,8 +30,11 @@ export async function chatQuery<T>(command: string, data: Record<string, unknown
 export const chatService = {
   bootstrap: () => chatQuery<ChatBootstrap>("chatBootstrap"),
 
-  /** Bản nhẹ: chỉ danh sách phòng + số chưa đọc (dùng cho badge ở navbar). */
-  sync: () => chatQuery<{ conversations: ChatConversation[]; unreadTotal: number }>("chatSync"),
+  /** Bản nhẹ: chỉ danh sách phòng + số chưa đọc + danh sách đang online. */
+  sync: () =>
+    chatQuery<{ conversations: ChatConversation[]; unreadTotal: number; onlineEmplNos?: string[] }>(
+      "chatSync"
+    ),
 
   searchEmployees: (keyword: string) =>
     chatQuery<ChatEmployee[]>("chatSearchEmployees", { keyword, limit: 30 }),
@@ -56,6 +59,7 @@ export const chatService = {
     mentions?: string[];
     replyToMessageId?: number;
     attachmentIds?: number[];
+    msgType?: string;
   }) => chatQuery<{ conversationId: number; message: ChatMessage }>("chatSendMessage", params),
 
   markRead: (conversationId: number, lastMessageId: number) =>
@@ -68,6 +72,31 @@ export const chatService = {
     chatQuery<{ conversationId: number; messageId: number }>("chatDeleteMessage", {
       conversationId,
       messageId,
+    }),
+
+  /** Thả cảm xúc: mỗi lần gọi là +1. reaction = "NONE" để bỏ. */
+  react: (conversationId: number, messageId: number, reaction: string) =>
+    chatQuery<{
+      conversationId: number;
+      messageId: number;
+      reaction: string | null;
+      removed: boolean;
+      reactions?: Record<string, { count: number; users: string[] }>;
+    }>("chatReact", { conversationId, messageId, reaction }),
+
+  /** "Xoá ở phía tôi" — chỉ ẩn với chính mình. */
+  hideMessage: (conversationId: number, messageId: number) =>
+    chatQuery<{ conversationId: number; messageId: number }>("chatHideMessage", {
+      conversationId,
+      messageId,
+    }),
+
+  /** Chuyển tiếp 1 tin nhắn sang các phòng khác. */
+  forward: (conversationId: number, messageId: number, targetConversationIds: number[]) =>
+    chatQuery<{ messageId: number; forwarded: number[] }>("chatForward", {
+      conversationId,
+      messageId,
+      targetConversationIds,
     }),
 
   updateGroup: (conversationId: number, patch: { title?: string; avatar?: string }) =>

@@ -45,22 +45,76 @@ export function formatFileSize(bytes?: number | null): string {
   return `${(size / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-/** Người nhận được tag trong nội dung tin nhắn (@TÊN). */
-export function renderMentions(content: string, mentions: string[] = []): (string | JSX.Element)[] {
+/** Người nhận được tag trong nội dung tin nhắn (@TÊN) — bấm được để mở chat riêng. */
+export function renderMentions(
+  content: string,
+  options: {
+    memberNames?: { name: string; emplNo: string }[];
+    onMentionClick?: (emplNo: string, name: string) => void;
+  } = {}
+): (string | JSX.Element)[] {
   if (!content) return [];
-  if (mentions.length === 0) return [content];
 
-  const escaped = mentions.filter(Boolean).map((m) => m.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
-  if (escaped.length === 0) return [content];
+  const { memberNames = [], onMentionClick } = options;
+  // Ưu tiên khớp theo tên đầy đủ của thành viên để biết chính xác người được tag.
+  const candidates = memberNames
+    .filter((item) => item.name)
+    .sort((a, b) => b.name.length - a.name.length);
 
+  if (candidates.length === 0) return [content];
+
+  const escaped = candidates.map((item) => item.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
   const regex = new RegExp(`(@(?:${escaped.join("|")}))`, "g");
-  return content.split(regex).map((part, index) =>
-    regex.test(part) ? (
-      <span key={`mention-${index}`} className="erp-chat__mention">
+
+  return content.split(regex).map((part, index) => {
+    if (!part || !part.startsWith("@")) return part;
+    const matched = candidates.find((item) => part === `@${item.name}`);
+    if (!matched) return part;
+
+    return (
+      <span
+        key={`mention-${index}`}
+        className="erp-chat__mention"
+        role={onMentionClick ? "button" : undefined}
+        tabIndex={onMentionClick ? 0 : undefined}
+        title={onMentionClick ? `Chat riêng với ${matched.name}` : undefined}
+        onClick={
+          onMentionClick
+            ? (event) => {
+                event.stopPropagation();
+                onMentionClick(matched.emplNo, matched.name);
+              }
+            : undefined
+        }
+      >
         {part}
       </span>
-    ) : (
-      part
-    )
-  );
+    );
+  });
+}
+
+/* --------------------------- Cảm xúc (reaction) --------------------------- */
+
+export const REACTION_EMOJI: Record<string, string> = {
+  LIKE: "👍",
+  LOVE: "❤️",
+  HAHA: "😆",
+  WOW: "😮",
+  SAD: "😢",
+  ANGRY: "😡",
+};
+
+/** Thứ tự hiển thị trong thanh chọn cảm xúc (giống Zalo/Messenger). */
+export const REACTION_ORDER = ["LIKE", "LOVE", "HAHA", "WOW", "SAD", "ANGRY"] as const;
+
+export function reactionLabel(key: string): string {
+  const labels: Record<string, string> = {
+    LIKE: "Thích",
+    LOVE: "Yêu thích",
+    HAHA: "Haha",
+    WOW: "Ngạc nhiên",
+    SAD: "Buồn",
+    ANGRY: "Tức giận",
+  };
+  return labels[key] || key;
 }
