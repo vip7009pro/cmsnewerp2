@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Avatar, IconButton, Tooltip } from "@mui/material";
-import InsertDriveFileRoundedIcon from "@mui/icons-material/InsertDriveFileRounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
 import ForwardRoundedIcon from "@mui/icons-material/ForwardRounded";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import type {
+  ChatAttachment,
   ChatConversation,
   ChatMember,
   ChatMessage,
@@ -14,9 +14,13 @@ import type {
 } from "./chat.types";
 import { chatFileUrl } from "../../api/services/chatService";
 import {
+  FILE_KIND_COLOR,
+  FileKindIcon,
   REACTION_EMOJI,
   REACTION_ORDER,
   chatAvatarUrl,
+  fileKindLabel,
+  fileKindOf,
   formatFileSize,
   initialsOf,
   reactionLabel,
@@ -44,6 +48,44 @@ const FLYER_LIFETIME_MS = 1100;
 
 function memberOf(conversation: ChatConversation, emplNo: string): ChatMember | undefined {
   return conversation.MEMBERS.find((m) => m.EMPL_NO === emplNo);
+}
+
+/** Phần mở rộng viết hoa để hiển thị nhỏ bên cạnh dung lượng tệp. */
+function extOf(name?: string | null): string {
+  const parts = String(name || "").split(".");
+  return parts.length > 1 ? parts.pop()!.toUpperCase().slice(0, 5) : "";
+}
+
+/** Thẻ tệp đính kèm (không phải ảnh): biểu tượng theo loại + tên tệp + dung lượng. */
+function FileAttachmentCard({ attachment }: { attachment: ChatAttachment }) {
+  const kind = fileKindOf(attachment.originalName, attachment.mimeType);
+  const color = FILE_KIND_COLOR[kind];
+  return (
+    <a
+      href={chatFileUrl(attachment.attachmentId)}
+      target="_blank"
+      rel="noreferrer"
+      className="erp-chat__attachFile"
+      title={attachment.originalName}
+    >
+      <span
+        className="erp-chat__attachIcon"
+        style={{ background: color.bg, color: color.fg }}
+        aria-hidden="true"
+      >
+        <FileKindIcon kind={kind} />
+        <em>{fileKindLabel(kind)}</em>
+      </span>
+      <span className="erp-chat__attachMeta">
+        <strong>{attachment.originalName}</strong>
+        <small>
+          {extOf(attachment.originalName) ? `${extOf(attachment.originalName)} · ` : ""}
+          {formatFileSize(attachment.fileSize)}
+        </small>
+      </span>
+      <DownloadRoundedIcon sx={{ fontSize: 18 }} />
+    </a>
+  );
 }
 
 export default function ChatMessageBubble({
@@ -207,7 +249,7 @@ export default function ChatMessageBubble({
               {attachments.length > 0 && (
                 <div className="erp-chat__attachments">
                   {attachments.map((attachment) =>
-                    /^image\//.test(String(attachment.mimeType || "")) ? (
+                    fileKindOf(attachment.originalName, attachment.mimeType) === "image" ? (
                       <a
                         key={attachment.attachmentId}
                         href={chatFileUrl(attachment.attachmentId)}
@@ -222,20 +264,7 @@ export default function ChatMessageBubble({
                         />
                       </a>
                     ) : (
-                      <a
-                        key={attachment.attachmentId}
-                        href={chatFileUrl(attachment.attachmentId)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="erp-chat__attachFile"
-                      >
-                        <InsertDriveFileRoundedIcon fontSize="small" />
-                        <span className="erp-chat__attachMeta">
-                          <strong>{attachment.originalName}</strong>
-                          <small>{formatFileSize(attachment.fileSize)}</small>
-                        </span>
-                        <DownloadRoundedIcon fontSize="small" />
-                      </a>
+                      <FileAttachmentCard key={attachment.attachmentId} attachment={attachment} />
                     )
                   )}
                 </div>

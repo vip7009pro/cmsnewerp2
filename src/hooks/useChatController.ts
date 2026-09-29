@@ -64,6 +64,8 @@ export function useChatController() {
   const typingTimers = useRef<Record<string, number>>({});
   const conversationsRef = useRef<ChatConversation[]>([]);
   const replyTargetRef = useRef<ChatReplyTarget | null>(null);
+  /** Bản mới nhất của tin nhắn — cần cho markRead vì state trong closure có thể đã cũ. */
+  const messagesRef = useRef<Record<number, ChatMessage[]>>({});
   /** Chống xử lý trùng: server phát cùng 1 tin qua cả room phòng và room user. */
   const seenMessageIds = useRef<Set<number>>(new Set());
   /** Chống nhân đôi hiệu ứng tim bay khi cùng 1 sự kiện cảm xúc được phát 2 lần. */
@@ -72,6 +74,7 @@ export function useChatController() {
   activeIdRef.current = activeId;
   conversationsRef.current = conversations;
   replyTargetRef.current = replyTarget;
+  messagesRef.current = messages;
 
   const activeConversation = useMemo(
     () => conversations.find((c) => c.CONVERSATION_ID === activeId) || null,
@@ -156,9 +159,14 @@ export function useChatController() {
   /* --------------------------------- Đọc -------------------------------- */
 
   const markRead = useCallback(
-    (conversationId: number) => {
-      const list = messages[conversationId] || [];
-      const lastId = list.length > 0 ? list[list.length - 1].MESSAGE_ID : 0;
+    (conversationId: number, explicitLastId?: number) => {
+      // `messages` trong closure có thể là bản CŨ (vừa setMessages chưa re-render) ⇒ đọc qua ref,
+      // và luôn ưu tiên id truyền vào. Trước đây đọc state cũ nên lastId = 0 ⇒ bỏ luôn việc
+      // báo đã đọc lên server, khiến badge còn nguyên sau khi F5.
+      const list = messagesRef.current[conversationId] || [];
+      const fromList = list.length > 0 ? list[list.length - 1].MESSAGE_ID : 0;
+      const lastId = Number(explicitLastId) > 0 ? Number(explicitLastId) : fromList;
+
       setConversations((prev) =>
         prev.map((c) =>
           c.CONVERSATION_ID === conversationId ? { ...c, UNREAD_COUNT: 0 } : c
@@ -173,7 +181,7 @@ export function useChatController() {
       if (socket?.connected) socket.emit("chat:read", { conversationId, lastMessageId: lastId });
       else void chatService.markRead(conversationId, lastId).catch(() => undefined);
     },
-    [conversations, messages]
+    [conversations]
   );
 
   const selectConversation = useCallback(
@@ -192,7 +200,11 @@ export function useChatController() {
         const result = await chatService.loadMessages(conversationId, undefined, 40);
         setMessages((prev) => ({ ...prev, [conversationId]: result.messages }));
         setHasMore((prev) => ({ ...prev, [conversationId]: result.hasMore }));
-        markRead(conversationId);
+        // Truyền thẳng id mới nhất vừa tải (không phụ thuộc state vừa set).
+        const newest = result.messages.length > 0
+          ? result.messages[result.messages.length - 1].MESSAGE_ID
+          : 0;
+        markRead(conversationId, newest);
       } catch (error) {
         console.warn("[chat] loadMessages lỗi:", error);
       } finally {

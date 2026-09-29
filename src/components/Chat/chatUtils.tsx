@@ -1,4 +1,101 @@
 import moment from "moment";
+import ArticleRoundedIcon from "@mui/icons-material/ArticleRounded";
+import AudioFileRoundedIcon from "@mui/icons-material/AudioFileRounded";
+import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
+import FolderZipRoundedIcon from "@mui/icons-material/FolderZipRounded";
+import GridOnRoundedIcon from "@mui/icons-material/GridOnRounded";
+import ImageRoundedIcon from "@mui/icons-material/ImageRounded";
+import InsertDriveFileRoundedIcon from "@mui/icons-material/InsertDriveFileRounded";
+import PictureAsPdfRoundedIcon from "@mui/icons-material/PictureAsPdfRounded";
+import SlideshowRoundedIcon from "@mui/icons-material/SlideshowRounded";
+import TableChartRoundedIcon from "@mui/icons-material/TableChartRounded";
+import VideoFileRoundedIcon from "@mui/icons-material/VideoFileRounded";
+
+/**
+ * Nhận diện loại tệp để hiển thị đúng biểu tượng + màu.
+ * Ưu tiên phần mở rộng tên tệp (đáng tin hơn MIME do trình duyệt có thể trả chung chung).
+ */
+export type ChatFileKind =
+  | "pdf"
+  | "word"
+  | "excel"
+  | "csv"
+  | "powerpoint"
+  | "zip"
+  | "image"
+  | "audio"
+  | "video"
+  | "text"
+  | "file";
+
+export function fileKindOf(name?: string | null, mimeType?: string | null): ChatFileKind {
+  const ext = String(name || "")
+    .toLowerCase()
+    .split(".")
+    .pop() || "";
+  const mime = String(mimeType || "").toLowerCase();
+
+  if (ext === "pdf" || mime === "application/pdf") return "pdf";
+  if (["doc", "docx", "rtf", "odt"].includes(ext)) return "word";
+  if (["xls", "xlsx", "xlsm", "ods"].includes(ext)) return "excel";
+  if (ext === "csv" || mime.includes("csv")) return "csv";
+  if (["ppt", "pptx", "pps", "ppsx", "odp"].includes(ext)) return "powerpoint";
+  if (["zip", "rar", "7z", "tar", "gz", "bz2"].includes(ext)) return "zip";
+  if (mime.startsWith("image/") || ["png", "jpg", "jpeg", "gif", "webp", "bmp", "svg", "heic"].includes(ext))
+    return "image";
+  if (mime.startsWith("audio/") || ["mp3", "wav", "m4a", "ogg", "aac", "flac"].includes(ext)) return "audio";
+  if (mime.startsWith("video/") || ["mp4", "mov", "avi", "mkv", "webm", "wmv"].includes(ext)) return "video";
+  if (mime.startsWith("text/") || ["txt", "log", "md", "json", "xml", "html"].includes(ext)) return "text";
+  return "file";
+}
+
+/** Màu nền + màu chữ của ô biểu tượng theo loại tệp. */
+export const FILE_KIND_COLOR: Record<ChatFileKind, { bg: string; fg: string }> = {
+  pdf: { bg: "#fdeaea", fg: "#d32f2f" },
+  word: { bg: "#e7f0fd", fg: "#185abd" },
+  excel: { bg: "#e6f5ec", fg: "#1d7a3e" },
+  csv: { bg: "#e6f5ec", fg: "#1d7a3e" },
+  powerpoint: { bg: "#fdeee4", fg: "#d24726" },
+  zip: { bg: "#fdf4e3", fg: "#b78103" },
+  image: { bg: "#eaf3fe", fg: "#2563eb" },
+  audio: { bg: "#f2ebfd", fg: "#6d28d9" },
+  video: { bg: "#fdeaf4", fg: "#be185d" },
+  text: { bg: "#eef2f7", fg: "#475569" },
+  file: { bg: "#eef2f7", fg: "#64748b" },
+};
+
+/** Nhãn ngắn hiển thị trong ô biểu tượng khi không có icon riêng. */
+export function fileKindLabel(kind: ChatFileKind): string {
+  return kind === "file" ? "TỆP" : kind.toUpperCase();
+}
+
+/** Biểu tượng MUI theo loại tệp. */
+export function FileKindIcon({ kind }: { kind: ChatFileKind }) {
+  switch (kind) {
+    case "pdf":
+      return <PictureAsPdfRoundedIcon fontSize="inherit" />;
+    case "word":
+      return <DescriptionRoundedIcon fontSize="inherit" />;
+    case "excel":
+      return <TableChartRoundedIcon fontSize="inherit" />;
+    case "csv":
+      return <GridOnRoundedIcon fontSize="inherit" />;
+    case "powerpoint":
+      return <SlideshowRoundedIcon fontSize="inherit" />;
+    case "zip":
+      return <FolderZipRoundedIcon fontSize="inherit" />;
+    case "image":
+      return <ImageRoundedIcon fontSize="inherit" />;
+    case "audio":
+      return <AudioFileRoundedIcon fontSize="inherit" />;
+    case "video":
+      return <VideoFileRoundedIcon fontSize="inherit" />;
+    case "text":
+      return <ArticleRoundedIcon fontSize="inherit" />;
+    default:
+      return <InsertDriveFileRoundedIcon fontSize="inherit" />;
+  }
+}
 
 /** URL avatar dùng đúng quy ước ảnh nhân sự hiện có của ERP. */
 export function chatAvatarUrl(emplNo?: string | null, emplImage?: string | null): string | undefined {

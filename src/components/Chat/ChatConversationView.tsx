@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Avatar, IconButton, LinearProgress, Snackbar, Tooltip } from "@mui/material";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
+import CloudUploadRoundedIcon from "@mui/icons-material/CloudUploadRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import InsertDriveFileRoundedIcon from "@mui/icons-material/InsertDriveFileRounded";
 import GroupRoundedIcon from "@mui/icons-material/GroupsRounded";
 import type {
   ChatConversation,
@@ -18,7 +18,15 @@ import type {
 import ChatMessageBubble from "./ChatMessageBubble";
 import ChatMessageMenu, { type ChatMessageMenuState } from "./ChatMessageMenu";
 import type { PendingUpload } from "../../hooks/useChatController";
-import { chatAvatarUrl, dayLabel, initialsOf } from "./chatUtils";
+import {
+  FILE_KIND_COLOR,
+  FileKindIcon,
+  chatAvatarUrl,
+  dayLabel,
+  fileKindOf,
+  formatFileSize,
+  initialsOf,
+} from "./chatUtils";
 
 interface Props {
   conversation: ChatConversation;
@@ -96,12 +104,18 @@ export default function ChatConversationView({
   const [mentions, setMentions] = useState<string[]>([]);
   const [menuState, setMenuState] = useState<ChatMessageMenuState | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  /** Đang kéo tệp vào khung chat. */
+  const [dragging, setDragging] = useState(false);
 
   const listRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const typingSentRef = useRef(false);
   const lastMessageIdRef = useRef<number>(0);
+  /** Đếm độ sâu dragenter/dragleave để không nhấp nháy khi rê qua phần tử con. */
+  const dragDepthRef = useRef(0);
+  /** Vừa đổi phòng ⇒ cần cuộn xuống đáy ngay khi tin nhắn tải xong. */
+  const pendingScrollRef = useRef(false);
 
   const isDirect = conversation.CONV_TYPE === "DIRECT";
   const canModerate =
@@ -119,7 +133,38 @@ export default function ChatConversationView({
     requestAnimationFrame(() => textareaRef.current?.focus());
   }, [draftText, onConsumeDraft]);
 
-  // Cuộn xuống cuối khi có tin mới (chỉ khi đang ở gần đáy để không phá thao tác đọc).
+  /**
+   * Cuộn xuống cuối khung tin nhắn. Gọi lặp vài nhịp vì chiều cao danh sách còn thay đổi
+   * sau khi React render xong (ảnh/font/video tải chậm).
+   */
+  const scrollToBottom = useCallback(() => {
+    const element = listRef.current;
+    if (!element) return;
+    const apply = () => {
+      element.scrollTop = element.scrollHeight;
+    };
+    apply();
+    requestAnimationFrame(apply);
+    window.setTimeout(apply, 90);
+    window.setTimeout(apply, 320);
+  }, []);
+
+  // Đổi phòng ⇒ đánh dấu cần cuộn xuống đáy (dữ liệu về sau nên không cuộn ngay được).
+  useEffect(() => {
+    lastMessageIdRef.current = 0;
+    pendingScrollRef.current = true;
+  }, [conversation.CONVERSATION_ID]);
+
+  // Cuộn xuống khi mở phòng: chờ tin nhắn tải xong rồi mới cuộn ⇒ luôn thấy tin mới nhất.
+  useEffect(() => {
+    if (!pendingScrollRef.current) return;
+    if (loading) return;
+    if (messages.length === 0) return;
+    pendingScrollRef.current = false;
+    scrollToBottom();
+  }, [messages, loading, conversation.CONVERSATION_ID, scrollToBottom]);
+
+  // Cuộn xuống khi có tin mới (chỉ khi đang ở gần đáy để không phá thao tác đọc).
   useEffect(() => {
     const element = listRef.current;
     if (!element) return;
@@ -129,22 +174,8 @@ export default function ChatConversationView({
     if (!append) return;
 
     const nearBottom = element.scrollHeight - element.scrollTop - element.clientHeight < 240;
-    if (nearBottom || newest < 0) {
-      requestAnimationFrame(() => {
-        element.scrollTop = element.scrollHeight;
-      });
-    }
-  }, [messages]);
-
-  // Lần đầu mở phòng: cuộn xuống cuối ngay.
-  useEffect(() => {
-    const element = listRef.current;
-    if (!element) return;
-    lastMessageIdRef.current = 0;
-    requestAnimationFrame(() => {
-      element.scrollTop = element.scrollHeight;
-    });
-  }, [conversation.CONVERSATION_ID]);
+    if (nearBottom) scrollToBottom();
+  }, [messages, scrollToBottom]);
 
   const grouped = useMemo(() => {
     const groups: { day: string; items: ChatMessage[] }[] = [];
@@ -206,6 +237,41 @@ export default function ChatConversationView({
     if (accepted.length > 0) setFiles((prev) => [...prev, ...accepted].slice(0, 5));
   };
 
+  /* ---------------------- Kéo - thả tệp vào khung chat -------------------- */
+  const dragHasFiles = (event: React.DragEvent<HTMLElement>) => {
+    const types = event.dataTransfer?.types ? Array.from(event.dataTransfer.types) : [];
+    return types.includes("Files");
+  };
+
+  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+    if (!dragHasFiles(event)) return;
+    event.preventDefault();
+    dragDepthRef.current += 1;
+    setDragging(true);
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    if (!dragHasFiles(event)) return;
+    // Bắt buộc preventDefault thì trình duyệt mới cho phép thả.
+    event.preventDefault();
+    if (event.dataTransfer) event.dataTransfer.dropEffect = "copy";
+    if (!dragging) setDragging(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    if (!dragHasFiles(event)) return;
+    dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
+    if (dragDepthRef.current === 0) setDragging(false);
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    if (!dragHasFiles(event)) return;
+    event.preventDefault();
+    dragDepthRef.current = 0;
+    setDragging(false);
+    addFiles(event.dataTransfer?.files || null);
+  };
+
   const handleSubmit = () => {
     if (!text.trim() && files.length === 0) return;
     onSend({ content: text, files, mentions });
@@ -243,7 +309,21 @@ export default function ChatConversationView({
   };
 
   return (
-    <div className="erp-chat__main">
+    <div
+      className={`erp-chat__main${dragging ? " is-dragging" : ""}`}
+      onDragEnter={handleDragEnter}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {dragging && (
+        <div className="erp-chat__dropOverlay" aria-hidden="true">
+          <CloudUploadRoundedIcon sx={{ fontSize: 44 }} />
+          <strong>Thả tệp để đính kèm</strong>
+          <small>Tối đa 5 tệp · mỗi tệp không quá 25MB</small>
+        </div>
+      )}
+
       <div className="erp-chat__mainHead">
         {isMobile && (
           <IconButton size="small" className="erp-chat__iconBtn" onClick={onBack} aria-label="Quay lại">
@@ -357,19 +437,30 @@ export default function ChatConversationView({
 
       {files.length > 0 && (
         <div className="erp-chat__pendingFiles">
-          {files.map((file, index) => (
-            <span key={`${file.name}-${index}`} className="erp-chat__pendingFile">
-              <InsertDriveFileRoundedIcon sx={{ fontSize: 14 }} />
-              {file.name}
-              <button
-                type="button"
-                aria-label={`Bỏ ${file.name}`}
-                onClick={() => setFiles((prev) => prev.filter((_, i) => i !== index))}
-              >
-                <CloseRoundedIcon sx={{ fontSize: 13 }} />
-              </button>
-            </span>
-          ))}
+          {files.map((file, index) => {
+            const kind = fileKindOf(file.name, file.type);
+            const color = FILE_KIND_COLOR[kind];
+            return (
+              <span key={`${file.name}-${index}`} className="erp-chat__pendingFile" title={file.name}>
+                <i
+                  className="erp-chat__pendingIcon"
+                  style={{ background: color.bg, color: color.fg }}
+                  aria-hidden="true"
+                >
+                  <FileKindIcon kind={kind} />
+                </i>
+                <span className="erp-chat__pendingName">{file.name}</span>
+                <span className="erp-chat__pendingSize">{formatFileSize(file.size)}</span>
+                <button
+                  type="button"
+                  aria-label={`Bỏ ${file.name}`}
+                  onClick={() => setFiles((prev) => prev.filter((_, i) => i !== index))}
+                >
+                  <CloseRoundedIcon sx={{ fontSize: 13 }} />
+                </button>
+              </span>
+            );
+          })}
         </div>
       )}
 
