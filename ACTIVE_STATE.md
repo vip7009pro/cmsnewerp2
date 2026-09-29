@@ -1,5 +1,45 @@
 # ACTIVE_STATE
 
+## Đợt 22.5 — Kéo-thả tệp, biểu tượng loại tệp, cuộn đáy, sửa badge chưa đọc (2026-09-29)
+Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` (`✓ built in 1m 7s`), `get_errors` 0 lỗi,
+verify bằng Playwright + truy vấn DB.
+
+### 1. Kéo–thả tệp vào khung chat
+`ChatConversationView` gắn `onDragEnter/DragOver/DragLeave/Drop` lên `.erp-chat__main`:
+- Chỉ xử lý khi `dataTransfer.types` có `"Files"`; **bắt buộc `preventDefault` ở `dragover`** thì trình duyệt mới cho thả.
+- Đếm độ sâu `dragDepthRef` để lớp phủ không nhấp nháy khi rê qua phần tử con.
+- Lớp phủ `.erp-chat__dropOverlay` có `pointer-events: none` (nếu không sẽ tự cản sự kiện drop).
+- Tệp thả vào đi qua đúng `addFiles()` cũ ⇒ giữ nguyên giới hạn 25MB và tối đa 5 tệp.
+
+### 2. Biểu tượng theo loại tệp
+`chatUtils.tsx` bổ sung `fileKindOf(name, mimeType)` (pdf | word | excel | csv | powerpoint | zip | image | audio |
+video | text | file), `FILE_KIND_COLOR` và component `FileKindIcon`.
+**Ưu tiên đuôi tên tệp** vì trình duyệt hay trả MIME chung chung (`application/octet-stream`).
+Dùng cho thẻ tệp trong bong bóng (ô biểu tượng + huy hiệu đuôi + tên + dung lượng + nút tải) và chip tệp chờ gửi.
+Ảnh vẫn render `<img>` như trước nhưng nhận diện qua `fileKindOf`.
+
+### 3. Luôn cuộn xuống tin mới nhất khi mở hội thoại
+- `scrollToBottom()` gọi lặp 4 nhịp (ngay, rAF, 90ms, 320ms) vì chiều cao danh sách còn đổi sau khi render.
+- Effect cuộn cũ chạy khi đổi phòng nhưng lúc đó `messages` còn rỗng nên vô tác dụng ⇒ thêm cờ `pendingScrollRef`:
+  đổi phòng thì bật cờ, chỉ cuộn khi `loading === false && messages.length > 0`.
+- Vẫn giữ luật "chỉ tự cuộn khi đang ở gần đáy" cho tin nhắn mới để không phá thao tác đọc tin cũ.
+
+### 4. Lỗi badge chưa đọc không mất sau khi xem (đã sửa)
+**Nguyên nhân thật:** `markRead` đọc `messages[conversationId]` từ **closure của render hiện tại**, nhưng trong
+`selectConversation` nó được gọi ngay sau `setMessages(...)` ⇒ closure còn bản cũ ⇒ `lastId = 0` ⇒ hàm `return` sớm
+⇒ **không gửi `chat:read` lên server**. UI vẫn tự đặt `UNREAD_COUNT = 0` nên trông như đã đọc, còn
+`LAST_READ_MESSAGE_ID` trong DB không đổi ⇒ **F5 là badge quay lại**.
+- Sửa: `markRead(conversationId, explicitLastId?)` ưu tiên id truyền vào, nếu không thì đọc `messagesRef.current`
+  (ref gán mỗi render); `selectConversation` truyền thẳng id mới nhất vừa tải.
+- **Bài học:** đừng đọc state trong closure ngay sau khi vừa `setState` — truyền giá trị tường minh hoặc dùng ref.
+
+### Kiểm chứng đã chạy
+- Cuộn: `atBottom = true` khi mở hội thoại.
+- Kéo–thả 4 tệp (pdf/csv/zip/png) ⇒ lớp phủ hiện rồi biến mất, 4 chip đúng biểu tượng/màu; gửi ⇒ bong bóng có
+  3 thẻ tệp `PDF/CSV/ZIP` + tên + dung lượng và 1 ảnh; tải lại trang vẫn còn đủ.
+- Badge: đóng cửa sổ chat → đối phương gửi tin ⇒ navbar hiện `1`; mở hội thoại ⇒ hết số; **F5 ⇒ không còn badge**.
+- DB (`node scratch/inspect_read_state.js NHU1903`): `LAST_READ_MESSAGE_ID = 69 = NEWEST_MESSAGE_ID`, `UNREAD_COUNT = 0`.
+
 ## Đợt 22.4 — Tim bay cả 2 phía & sửa lỗi "onTyping is not defined" (2026-09-29)
 Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` (`✓ built in 1m 50s`), `get_errors` 0 lỗi,
 verify end-to-end bằng Playwright (bắt trực tiếp gói tin socket).
