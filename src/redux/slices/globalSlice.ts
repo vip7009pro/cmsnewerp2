@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import { getUserData, logout as LGOT } from "../../api/Api";
 import { ELE_ARRAY, GlobalInterface, UserData, WEB_SETTING_DATA, } from "../../api/GlobalInterface";
 import { DEFAULT_USER_DATA } from "../../api/defaultUserData";
+import { getDeviceId } from "../../api/services/deviceIdentity";
 import { QLSXPLANDATA } from "../../pages/qlsx/QLSXPLAN/interfaces/khsxInterface";
 const startCPN: string = "CMS";
 console.log("protocol", window.location.protocol);
@@ -119,7 +120,9 @@ const socket = io(SOCKET_URL, {
   // từ cookie. Cần cho chat vì backend xác thực JWT ngay ở handshake.
   auth: (cb: (data: Record<string, unknown>) => void) => {
     try {
-      cb({ token: new Cookies().get("token") || "" });
+      // deviceId đi kèm handshake để server biết socket này thuộc THIẾT BỊ nào
+      // ⇒ quyết định push theo từng thiết bị thay vì theo user.
+      cb({ token: new Cookies().get("token") || "", deviceId: getDeviceId() });
     } catch {
       cb({ token: "" });
     }

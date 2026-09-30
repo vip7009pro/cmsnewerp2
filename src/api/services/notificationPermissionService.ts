@@ -1,5 +1,6 @@
 import { generalQuery } from "../Api";
 import { getPlatformInfo, isStandalonePwa } from "./platformDetect";
+import { getDeviceId } from "./deviceIdentity";
 
 /**
  * Quản lý quyền thông báo đẩy (Web Push) của trình duyệt.
@@ -106,6 +107,9 @@ async function registerPushSubscription(): Promise<boolean> {
 
   const response = await generalQuery("addSubscription", {
     subscription: JSON.stringify(subscription),
+    // deviceId ⇒ server biết subscription này của THIẾT BỊ nào; nhờ đó không push
+    // cho đúng thiết bị đang mở ERP mà vẫn push cho các thiết bị khác của cùng user.
+    deviceId: getDeviceId(),
   });
   return response?.data?.tk_status !== "NG";
 }

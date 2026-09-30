@@ -258,6 +258,11 @@ export default function ChatConversationView({
   const dragDepthRef = useRef(0);
   /** Vừa đổi phòng ⇒ cần cuộn xuống đáy ngay khi tin nhắn tải xong. */
   const pendingScrollRef = useRef(false);
+  /**
+   * Mốc neo khi nạp thêm lịch sử: chiều cao khung + MESSAGE_ID của tin ĐẦU TIÊN lúc bấm.
+   * Dùng để bù scrollTop sau khi prepend ⇒ vị trí đang đọc không bị nhảy.
+   */
+  const prependAnchorRef = useRef<{ scrollHeight: number; firstId: number } | null>(null);
 
   const isDirect = conversation.CONV_TYPE === "DIRECT";
   /** "My Files" — cloud cá nhân, không phải hội thoại với người khác. */
@@ -345,6 +350,35 @@ export default function ChatConversationView({
     const nearBottom = element.scrollHeight - element.scrollTop - element.clientHeight < 240;
     if (nearBottom) scrollToBottom();
   }, [messages, scrollToBottom]);
+
+  /**
+   * Giữ nguyên vị trí đang đọc khi nạp thêm tin CŨ (prepend).
+   * Không có bước này, nội dung chèn lên trên sẽ đẩy phần đang xem xuống ⇒ giật màn hình.
+   */
+  useEffect(() => {
+    const element = listRef.current;
+    if (!element) return;
+    const anchor = prependAnchorRef.current;
+    if (!anchor) return;
+    // Chỉ xử lý 1 lần cho mỗi lần bấm (dù dữ liệu về sau vài nhịp render).
+    prependAnchorRef.current = null;
+    const firstId = messages.length > 0 ? messages[0].MESSAGE_ID : 0;
+    // Chỉ bù khi thật sự đã prepend tin cũ hơn; tin mới/không đổi thì bỏ qua.
+    if (firstId > 0 && firstId < anchor.firstId) {
+      const delta = element.scrollHeight - anchor.scrollHeight;
+      if (delta > 0) element.scrollTop += delta;
+    }
+  }, [messages]);
+
+  /** Bấm "Tải tin nhắn cũ hơn": ghi mốc TRƯỚC khi dữ liệu được thêm vào. */
+  const handleLoadMore = useCallback(() => {
+    const element = listRef.current;
+    const firstId = messages.length > 0 ? messages[0].MESSAGE_ID : 0;
+    if (element && firstId > 0) {
+      prependAnchorRef.current = { scrollHeight: element.scrollHeight, firstId };
+    }
+    onLoadMore();
+  }, [messages, onLoadMore]);
 
   // Nhảy tới tin nhắn (từ kết quả tìm kiếm): cuộn tới giữa khung và làm nổi bật ~2.4s.
   useEffect(() => {
@@ -896,7 +930,7 @@ export default function ChatConversationView({
                   onClick={() =>
                     onJumpToMessage(conversation.CONVERSATION_ID, pin.MESSAGE_ID)
                   }
-                  title="Bấm để tới tin nhắn gốc"
+                  title="Bấm để tới tin nhắhandlegốc"
                 >
                   <span className="erp-chat__pinWho">
                     {memberOf(conversation, pin.SENDER_EMPL_NO)?.FULL_NAME ||

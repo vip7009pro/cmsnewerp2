@@ -84,6 +84,16 @@ export const chatService = {
       limit,
     }),
 
+  /**
+   * Đồng bộ tin nhắn bị LỠ sau khi mất mạng / reconnect.
+   * Trả về các tin có MESSAGE_ID > `afterMessageId` (thứ tự tăng dần) — KHÔNG tải lại cả phòng.
+   */
+  syncMessages: (conversationId: number, afterMessageId: number, limit = 200) =>
+    chatQuery<{ conversationId: number; afterMessageId: number; messages: ChatMessage[]; hasMore: boolean }>(
+      "chatSyncMessages",
+      { conversationId, afterMessageId, limit }
+    ),
+
   sendMessage: (params: {
     conversationId: number;
     content: string;

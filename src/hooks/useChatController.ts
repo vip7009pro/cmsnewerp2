@@ -64,6 +64,27 @@ export interface PendingUpload {
 const makeClientId = () =>
   `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
+/**
+ * Trần bộ nhớ cho bộ chống trùng tin nhắn.
+ * Set chỉ cần giữ các id GẦN ĐÂY (đủ để chặn bản phát lặp trong cùng thời điểm);
+ * nếu để phình vô hạn thì người chat nhiều giờ sẽ tăng RAM không cần thiết.
+ */
+const SEEN_MESSAGE_LIMIT = 5000;
+const SEEN_MESSAGE_KEEP = 3000;
+
+/** Thêm MESSAGE_ID vào bộ chống trùng, tự bỏ phần CŨ NHẤT khi vượt trần. */
+function rememberSeenMessage(seen: Set<number>, id: number) {
+  if (seen.size >= SEEN_MESSAGE_LIMIT) {
+    const drop = seen.size - SEEN_MESSAGE_KEEP;
+    let index = 0;
+    for (const value of seen) {
+      if (index++ >= drop) break;
+      seen.delete(value);
+    }
+  }
+  seen.add(id);
+}
+
 /** Mốc thời gian ghim (ms) — 0 nghĩa là không ghim. */
 function pinTime(conversation: ChatConversation): number {
   if (!conversation.PINNED_AT) return 0;
@@ -292,6 +313,59 @@ export function useChatController() {
       // Badge là thông tin phụ — lỗi mạng không nên làm ồn UI.
     }
   }, [applySync]);
+
+  /**
+   * Đồng bộ tin nhắn bị LỠ sau khi socket nối lại.
+   *
+   * Trước đây khi mất mạng, client chỉ `chat:join` lại phòng mà KHÔNG lấy các tin
+   * đã bỏ lỡ trong lúc offline ⇒ phải F5 mới thấy. Nay gọi `chatSyncMessages`
+   * với `afterMessageId` = MESSAGE_ID mới nhất đang có ⇒ chỉ tải phần còn thiếu.
+   */
+  const syncAfterReconnect = useCallback(
+    async (conversationId: number) => {
+      const current = messagesRef.current[conversationId];
+      if (!current || current.length === 0) return;
+      const lastId = current[current.length - 1].MESSAGE_ID;
+      if (!Number.isFinite(lastId) || lastId <= 0) return;
+      try {
+        const result = await chatService.syncMessages(conversationId, lastId, 200);
+        const incoming = result.messages || [];
+        if (incoming.length === 0) return;
+
+        const curSeen = new Set(current.map((m) => m.MESSAGE_ID));
+        const missing = incoming.filter((m) => !curSeen.has(m.MESSAGE_ID));
+        if (missing.length === 0) return;
+
+        // Đánh dấu đã xử lý để bản phát lặp qua socket không cộng nhầm số chưa đọc.
+        missing.forEach((m) => seenMessageIds.current.add(m.MESSAGE_ID));
+
+        setMessages((prev) => {
+          const list = prev[conversationId] || [];
+          const seen = new Set(list.map((m) => m.MESSAGE_ID));
+          const add = missing.filter((m) => !seen.has(m.MESSAGE_ID));
+          if (add.length === 0) return prev;
+          return {
+            ...prev,
+            [conversationId]: [...list, ...add].sort((a, b) => a.MESSAGE_ID - b.MESSAGE_ID),
+          };
+        });
+        // Danh sách phòng/badge có thể cũng lỡ ⇒ làm mới (nhẹ, chỉ metadata).
+        void refreshBadge();
+      } catch (error) {
+        console.warn("[chat] đồng bộ sau reconnect lỗi:", error);
+      }
+    },
+    [refreshBadge]
+  );
+
+  /**
+   * Báo server "thiết bị này đang thực sự được dùng" (tab đang hiển thị).
+   * Server dùng mốc này để quyết định push theo TỪNG thiết bị.
+   */
+  const markDeviceActive = useCallback(() => {
+    const socket = getSocket();
+    if (socket?.connected) socket.emit("chat:active");
+  }, []);
 
   /** Ghim / bỏ ghim 1 tin nhắn trong phòng (cập nhật lạc quan, server sẽ xác nhận). */
   const setMessagePinned = useCallback(
@@ -733,7 +807,7 @@ export function useChatController() {
       // Server phát 2 lần (room phòng + room user) ⇒ chỉ xử lý 1 lần để không
       // nhân đôi số chưa đọc và không thêm trùng tin nhắn.
       if (seenMessageIds.current.has(message.MESSAGE_ID)) return;
-      seenMessageIds.current.add(message.MESSAGE_ID);
+      rememberSeenMessage(seenMessageIds.current, message.MESSAGE_ID);
 
       // Hội thoại chưa có trong danh sách (người mới nhắn lần đầu) ⇒ nạp lại danh sách
       // để tin nhắn/badge xuất hiện ngay, không cần tải lại trang.
@@ -941,10 +1015,14 @@ export function useChatController() {
     };
 
     // Socket có thể mất kết nối rồi tự nối lại (đổi mạng, server restart) ⇒ phải vào lại
-    // room phòng đang mở, nếu không các sự kiện phát theo room (typing, read) sẽ im lặng.
+    // room phòng đang mở, ĐỒNG BỘ các tin bị lỡ, và báo thiết bị đang active.
     const onConnect = () => {
       const conversationId = activeIdRef.current;
-      if (conversationId) socket.emit("chat:join", { conversationId });
+      markDeviceActive();
+      if (conversationId) {
+        socket.emit("chat:join", { conversationId });
+        void syncAfterReconnect(conversationId);
+      }
     };
 
     socket.on("chat:message", onMessage);
@@ -986,9 +1064,32 @@ export function useChatController() {
     bootstrap,
     bumpConversationPreview,
     isConversationMuted,
+    markDeviceActive,
     myEmplNo,
     refreshBadge,
+    syncAfterReconnect,
   ]);
+
+  /**
+   * Nhịp "thiết bị này đang được dùng": gửi khi tab được focus/hiện lại và định kỳ
+   * mỗi 60s lúc tab đang hiển thị. Server dùng mốc này để quyết định push theo thiết bị
+   * (tab để nền quá lâu sẽ không còn tính là "active" ⇒ vẫn nhận push).
+   */
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const ping = () => {
+      if (document.visibilityState === "visible") markDeviceActive();
+    };
+    ping();
+    document.addEventListener("visibilitychange", ping);
+    window.addEventListener("focus", ping);
+    const timer = window.setInterval(ping, 60_000);
+    return () => {
+      document.removeEventListener("visibilitychange", ping);
+      window.removeEventListener("focus", ping);
+      window.clearInterval(timer);
+    };
+  }, [markDeviceActive]);
 
   /* ------------------------------- Actions ------------------------------- */
 
