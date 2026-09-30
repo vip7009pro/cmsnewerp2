@@ -27,6 +27,9 @@ import NotificationsActiveRoundedIcon from "@mui/icons-material/NotificationsAct
 import NotificationsOffRoundedIcon from "@mui/icons-material/NotificationsOffRounded";
 import PushPinRoundedIcon from "@mui/icons-material/PushPinRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
+import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
+import IosShareRoundedIcon from "@mui/icons-material/IosShareRounded";
+import ViewSidebarRoundedIcon from "@mui/icons-material/ViewSidebarRounded";
 import type {
   ChatAttachment,
   ChatConversation,
@@ -49,7 +52,7 @@ import {
   sanitizeRichHtml,
 } from "./chatRichText";
 import ChatRoomAvatar from "./chatAvatars";
-import { shareAttachmentOut, shareMessageOut } from "./chatShareOut";
+import { shareAttachmentOut, shareMessageOut, shareMessagesOut } from "./chatShareOut";
 import type { PendingUpload } from "../../hooks/useChatController";
 import { chatService, type ChatStorage } from "../../api/services/chatService";
 import {
@@ -61,6 +64,7 @@ import {
   formatFileSize,
   formatMuteRemaining,
   initialsOf,
+  memberFullLabel,
   mentionQueryFromText,
   messagePreview,
   normalizeName,
@@ -120,6 +124,10 @@ interface Props {
    * `null` = không hiển thị nút đóng.
    */
   onCloseWindow?: (() => void) | null;
+  /** Desktop: cột danh sách cuộc trò chuyện đang bị thu gọn hay không. */
+  sidebarCollapsed?: boolean;
+  /** Desktop: ẩn/hiện cột danh sách cuộc trò chuyện (nút ở header phòng). */
+  onToggleSidebar?: () => void;
 }
 
 /** Giới hạn dung lượng mỗi tệp — khớp với env CHAT_UPLOAD_MAX_BYTES của backend. */
@@ -207,6 +215,8 @@ export default function ChatConversationView({
   readState,
   onTogglePin,
   onCloseWindow,
+  sidebarCollapsed = false,
+  onToggleSidebar,
 }: Props) {
   const [text, setText] = useState("");
   /**
@@ -242,6 +252,10 @@ export default function ChatConversationView({
   const [readersOf, setReadersOf] = useState<number | null>(null);
   /** Thu gọn thanh ghim (khi có nhiều ghim). */
   const [pinsOpen, setPinsOpen] = useState(true);
+  /** Đang ở chế độ CHỌN NHIỀU tin nhắn (để chia sẻ/chuyển tiếp 1 lượt). */
+  const [selectMode, setSelectMode] = useState(false);
+  /** MESSAGE_ID của các tin đang được chọn. */
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const listRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -295,6 +309,58 @@ export default function ChatConversationView({
     }
     onConsumeDraft();
   }, [draftText, onConsumeDraft, richMode]);
+
+  /**
+   * Bấm "Trả lời" ⇒ tự focus ô soạn tin để gõ ngay (trước đây phải trỏ chuột lại vào ô).
+   * Con trỏ được đặt ở cuối nội dung đang soạn.
+   */
+  useEffect(() => {
+    if (!replyTarget) return;
+    const frame = requestAnimationFrame(() => {
+      if (richMode) {
+        richEditorRef.current?.focus();
+        return;
+      }
+      const element = textareaRef.current;
+      if (!element) return;
+      element.focus();
+      const end = element.value.length;
+      element.setSelectionRange(end, end);
+      caretRef.current = end;
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [replyTarget, richMode]);
+
+  // Đổi phòng ⇒ thoát chế độ chọn nhiều (phạm vi chọn thuộc từng phòng).
+  useEffect(() => {
+    setSelectMode(false);
+    setSelectedIds([]);
+  }, [conversation.CONVERSATION_ID]);
+
+  /** Bật chế độ chọn nhiều ngay từ menu ngữ cảnh của 1 tin. */
+  const startSelectMode = useCallback((message: ChatMessage) => {
+    setSelectMode(true);
+    setSelectedIds([message.MESSAGE_ID]);
+  }, []);
+
+  const exitSelectMode = useCallback(() => {
+    setSelectMode(false);
+    setSelectedIds([]);
+  }, []);
+
+  const toggleSelectMessage = useCallback((message: ChatMessage) => {
+    setSelectedIds((prev) =>
+      prev.includes(message.MESSAGE_ID)
+        ? prev.filter((id) => id !== message.MESSAGE_ID)
+        : [...prev, message.MESSAGE_ID]
+    );
+  }, []);
+
+  /** Các tin đang chọn, theo đúng thứ tự hiển thị trong khung chat. */
+  const selectedMessages = useMemo(
+    () => messages.filter((message) => selectedIds.includes(message.MESSAGE_ID)),
+    [messages, selectedIds]
+  );
 
   /** Báo "đang nhập" — tự chống spam trong 2.5s (dùng chung cho cả 2 chế độ soạn tin). */
   const notifyTyping = useCallback(() => {
@@ -785,6 +851,43 @@ export default function ChatConversationView({
     setToast(outcome.message);
   };
 
+  /** Chia sẻ NHIỀU tin nhắn đang chọn trong 1 lượt (Web Share / sao chép / tải tệp). */
+  const handleShareSelected = async () => {
+    if (selectedMessages.length === 0) return;
+    const outcome = await shareMessagesOut({
+      messages: selectedMessages,
+      conversation,
+      senderNameOf: (emplNo) => memberOf(conversation, emplNo)?.FULL_NAME || emplNo,
+    });
+    setToast(outcome.message);
+    if (outcome.ok) exitSelectMode();
+  };
+
+  /** Sao chép nội dung của TẤT CẢ tin đang chọn. */
+  const handleCopySelected = async () => {
+    if (selectedMessages.length === 0) return;
+    const payload = selectedMessages
+      .map((message) => {
+        const lines: string[] = [];
+        if (message.CONTENT) {
+          lines.push(message.MSG_TYPE === "RICH" ? richToPlainText(message.CONTENT) : message.CONTENT);
+        }
+        (message.ATTACHMENTS || []).forEach((attachment) =>
+          lines.push(`[Tệp] ${attachment.originalName}`)
+        );
+        return lines.join("\n") || "(tin nhắn trống)";
+      })
+      .join("\n\n");
+    try {
+      await navigator.clipboard.writeText(payload);
+      setToast(`Đã sao chép ${selectedMessages.length} tin nhắn`);
+      exitSelectMode();
+    } catch (error) {
+      console.warn("[chat] không sao chép được:", error);
+      setToast("Không sao chép được (trình duyệt chặn clipboard)");
+    }
+  };
+
   return (
     <div
       className={`erp-chat__main${dragging ? " is-dragging" : ""}`}
@@ -816,8 +919,7 @@ export default function ChatConversationView({
           isDirect={isDirect}
         />
         <div className="erp-chat__mainMeta">
-          <span className="erp-chat__mainName">{conversation.DISPLAY_NAME}</span>
-          <span className="erp-chat__mainStatus">
+          <span className="erp-chat__mainName">{conversation.DISPLAY_NAME}</span>          <span className="erp-chat__mainStatus">
             {isSelf ? (
               <>
                 Cloud cá nhân, dung lượng không giới hạn
@@ -839,6 +941,24 @@ export default function ChatConversationView({
           </span>
         </div>
 
+        {/* Desktop: ẩn/hiện cột danh sách cuộc trò chuyện để tiết kiệm không gian. */}
+        {!isMobile && onToggleSidebar && (
+          <Tooltip
+            title={sidebarCollapsed ? "Hiện danh sách cuộc trò chuyện" : "Ẩn danh sách cuộc trò chuyện"}
+          >
+            <IconButton
+              size="small"
+              className={`erp-chat__iconBtn${sidebarCollapsed ? " is-active" : ""}`}
+              onClick={onToggleSidebar}
+              aria-label={
+                sidebarCollapsed ? "Hiện danh sách cuộc trò chuyện" : "Ẩn danh sách cuộc trò chuyện"
+              }
+            >
+              <ViewSidebarRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        )}
+
         <Tooltip title={showSearch ? "Đóng tìm kiếm" : "Tìm kiếm trong cuộc trò chuyện"}>
           <IconButton
             size="small"
@@ -849,7 +969,6 @@ export default function ChatConversationView({
             <SearchRoundedIcon fontSize="small" />
           </IconButton>
         </Tooltip>
-
         <Tooltip title="Media & tệp của cuộc trò chuyện">
           <IconButton
             size="small"
@@ -1032,6 +1151,9 @@ export default function ChatConversationView({
                   onReply={onReply}
                   onShareOut={(target, attachment) => void handleShareOut(target, attachment)}
                   onMentionClick={onMentionClick}
+                  selectionMode={selectMode}
+                  selected={selectedIds.includes(message.MESSAGE_ID)}
+                  onToggleSelect={toggleSelectMessage}
                 />
               );
             })}
@@ -1089,6 +1211,37 @@ export default function ChatConversationView({
         </div>
       )}
 
+      {/* Thanh chọn nhiều tin nhắn: chia sẻ / sao chép một lượt. */}
+      {selectMode && (
+        <div className="erp-chat__selectBar" role="toolbar" aria-label="Chọn nhiều tin nhắn">
+          <span className="erp-chat__selectCount">
+            Đã chọn <strong>{selectedIds.length}</strong> tin nhắn
+          </span>
+          <div className="erp-chat__selectActions">
+            <Button
+              size="small"
+              startIcon={<ContentCopyRoundedIcon sx={{ fontSize: 16 }} />}
+              disabled={selectedIds.length === 0}
+              onClick={() => void handleCopySelected()}
+            >
+              Sao chép
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              startIcon={<IosShareRoundedIcon sx={{ fontSize: 16 }} />}
+              disabled={selectedIds.length === 0}
+              onClick={() => void handleShareSelected()}
+            >
+              Chia sẻ
+            </Button>
+            <Button size="small" onClick={exitSelectMode}>
+              Huỷ
+            </Button>
+          </div>
+        </div>
+      )}
+
       <div className="erp-chat__composer">
         {mentionCandidates.length > 0 && (
           <div className="erp-chat__mentions" ref={mentionListRef} role="listbox">
@@ -1108,7 +1261,7 @@ export default function ChatConversationView({
                 >
                   {initialsOf(member.FULL_NAME)}
                 </Avatar>
-                <span className="erp-chat__mentionName">{member.FULL_NAME || member.EMPL_NO}</span>
+                <span className="erp-chat__mentionName">{memberFullLabel(member)}</span>
                 <small className="erp-chat__mentionCode">({member.EMPL_NO})</small>
                 {member.JOB_NAME && <small className="erp-chat__mentionJob">{member.JOB_NAME}</small>}
               </button>
@@ -1135,7 +1288,7 @@ export default function ChatConversationView({
           </div>
         )}
 
-        <div className="erp-chat__composerRow">
+        <div className={`erp-chat__composerRow${richMode ? " is-rich" : ""}`}>
           <IconButton
             size="small"
             className="erp-chat__iconBtn"
@@ -1268,6 +1421,7 @@ export default function ChatConversationView({
         onHide={onHide}
         onRecall={onRecall}
         onTogglePin={onTogglePin}
+        onSelectMultiple={startSelectMode}
       />
 
       {/* Danh sách người đã xem 1 tin nhắn của tôi */}

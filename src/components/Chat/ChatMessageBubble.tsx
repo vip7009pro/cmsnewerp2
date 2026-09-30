@@ -7,6 +7,7 @@ import IosShareRoundedIcon from "@mui/icons-material/IosShareRounded";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import PushPinRoundedIcon from "@mui/icons-material/PushPinRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import type {
   ChatAttachment,
   ChatConversation,
@@ -46,6 +47,11 @@ interface Props {
   highlight?: boolean;
   /** Tin này đang được ghim trong phòng. */
   isPinned?: boolean;
+  /** Đang ở chế độ CHỌN NHIỀU tin nhắn ⇒ hiện checkbox và bấm vào là chọn/bỏ chọn. */
+  selectionMode?: boolean;
+  /** Tin này có đang được chọn hay không (chỉ có ý nghĩa khi `selectionMode`). */
+  selected?: boolean;
+  onToggleSelect?: (message: ChatMessage) => void;
   /**
    * Trạng thái đã xem của tin nhắn CỦA TÔI (chỉ truyền cho tin do mình gửi).
    * Bấm vào để xem danh sách người đã xem.
@@ -114,6 +120,9 @@ export default function ChatMessageBubble({
   burst,
   highlight,
   isPinned,
+  selectionMode = false,
+  selected = false,
+  onToggleSelect,
   readReceipt,
   onOpenMenu,
   onAddReaction,
@@ -224,19 +233,34 @@ export default function ChatMessageBubble({
     <div
       className={`erp-chat__row${mine ? " is-mine" : ""}${showAvatar ? " has-avatar" : ""}${
         highlight ? " is-highlight" : ""
-      }`}
+      }${selectionMode ? " is-selecting" : ""}${selected ? " is-selected" : ""}`}
       onContextMenu={(event) => {
+        // Ở chế độ chọn nhiều: không mở menu hành động (tránh nhầm thao tác).
+        if (selectionMode) return;
         event.preventDefault();
         openMenuAt(event.clientX, event.clientY);
       }}
-      onTouchStart={startLongPress}
-      onTouchEnd={cancelLongPress}
-      onTouchMove={cancelLongPress}
+      onTouchStart={selectionMode ? undefined : startLongPress}
+      onTouchEnd={selectionMode ? undefined : cancelLongPress}
+      onTouchMove={selectionMode ? undefined : cancelLongPress}
       onClick={() => {
+        if (selectionMode) {
+          onToggleSelect?.(message);
+          return;
+        }
         if (longPressFired.current) longPressFired.current = false;
       }}
       data-message-id={message.MESSAGE_ID}
     >
+      {selectionMode && (
+        <span
+          className={`erp-chat__selectBox${selected ? " is-checked" : ""}`}
+          aria-hidden="true"
+        >
+          {selected && <CheckRoundedIcon sx={{ fontSize: 15 }} />}
+        </span>
+      )}
+
       <div className="erp-chat__rowAvatar">
         {showAvatar && !mine && (
           <Avatar
@@ -350,13 +374,70 @@ export default function ChatMessageBubble({
           )}
 
           <div className="erp-chat__bubbleMeta">
-            <span>{timeLabel(message.CREATED_AT)}</span>
+            <span className="erp-chat__bubbleTime">{timeLabel(message.CREATED_AT)}</span>
             {message.EDITED_AT && <span>· đã sửa</span>}
             {mine && message._status === "sending" && <span>· đang gửi</span>}
             {mine && message._status === "failed" && (
               <span className="erp-chat__failed">
                 <ErrorOutlineRoundedIcon sx={{ fontSize: 13 }} /> gửi lỗi
               </span>
+            )}
+
+            {/*
+             * Cảm xúc đưa LÊN CÙNG DÒNG với giờ gửi (trước đây là hàng riêng với
+             * margin âm nên đè lên nhãn "Đã xem").
+             */}
+            {reactionChips.length > 0 && (
+              <span className="erp-chat__reactionRow">
+                {reactionChips.map((chip) => (
+                  <Tooltip
+                    key={chip.key}
+                    title={`${reactionLabel(chip.key)} · ${chip.count} lượt${
+                      chip.users.length > 0
+                        ? ` — ${chip.users
+                            .map((emplNo) => memberOf(conversation, emplNo)?.FULL_NAME || emplNo)
+                            .join(", ")}`
+                        : ""
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      className={`erp-chat__reactionChip${chip.mine ? " is-mine" : ""}`}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleReact(chip.key);
+                      }}
+                    >
+                      <span className="erp-chat__reactionEmoji">
+                        {REACTION_EMOJI[chip.key] || "👍"}
+                      </span>
+                      <em>{chip.count}</em>
+                    </button>
+                  </Tooltip>
+                ))}
+              </span>
+            )}
+
+            {/* Ai đã xem — chỉ hiện với tin do mình gửi (bấm để xem danh sách) */}
+            {readReceipt && !deleted && (
+              <button
+                type="button"
+                className={`erp-chat__receipt${
+                  readReceipt.readCount > 0 ? " is-seen" : ""
+                }${readReceipt.readCount >= readReceipt.totalCount ? " is-full" : ""}`}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  readReceipt.onOpen();
+                }}
+                title="Bấm để xem danh sách người đã xem"
+              >
+                <DoneAllRoundedIcon sx={{ fontSize: 13 }} />
+                {readReceipt.totalCount === 0
+                  ? "Đã gửi"
+                  : readReceipt.readCount > 0
+                    ? `Đã xem ${readReceipt.readCount}/${readReceipt.totalCount}`
+                    : `Chưa ai xem (0/${readReceipt.totalCount})`}
+              </button>
             )}
           </div>
         </div>
@@ -366,55 +447,6 @@ export default function ChatMessageBubble({
           <span className="erp-chat__pinBadge" title="Tin nhắn đã được ghim">
             <PushPinRoundedIcon sx={{ fontSize: 12 }} /> Đã ghim
           </span>
-        )}
-
-        {/* Ai đã xem — chỉ hiện với tin do mình gửi (bấm để xem danh sách) */}
-        {readReceipt && !deleted && (
-          <button
-            type="button"
-            className={`erp-chat__receipt${
-              readReceipt.readCount > 0 ? " is-seen" : ""
-            }${readReceipt.readCount >= readReceipt.totalCount ? " is-full" : ""}`}
-            onClick={(event) => {
-              event.stopPropagation();
-              readReceipt.onOpen();
-            }}
-            title="Bấm để xem danh sách người đã xem"
-          >
-            <DoneAllRoundedIcon sx={{ fontSize: 14 }} />
-            {readReceipt.totalCount === 0
-              ? "Đã gửi"
-              : readReceipt.readCount > 0
-                ? `Đã xem ${readReceipt.readCount}/${readReceipt.totalCount}`
-                : `Chưa ai xem (0/${readReceipt.totalCount})`}
-          </button>
-        )}
-
-        {/* Số lượng từng loại cảm xúc — bấm để thả thêm (+1) */}
-        {reactionChips.length > 0 && (
-          <div className="erp-chat__reactionRow">
-            {reactionChips.map((chip) => (
-              <Tooltip
-                key={chip.key}
-                title={`${reactionLabel(chip.key)} · ${chip.count} lượt${
-                  chip.users.length > 0
-                    ? ` — ${chip.users
-                        .map((emplNo) => memberOf(conversation, emplNo)?.FULL_NAME || emplNo)
-                        .join(", ")}`
-                    : ""
-                }`}
-              >
-                <button
-                  type="button"
-                  className={`erp-chat__reactionChip${chip.mine ? " is-mine" : ""}`}
-                  onClick={() => handleReact(chip.key)}
-                >
-                  <span className="erp-chat__reactionEmoji">{REACTION_EMOJI[chip.key] || "👍"}</span>
-                  <em>{chip.count}</em>
-                </button>
-              </Tooltip>
-            ))}
-          </div>
         )}
 
         <div className="erp-chat__rowActions">

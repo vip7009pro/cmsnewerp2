@@ -74,6 +74,28 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
   const [fullscreen, setFullscreen] = useState(false);
   /** Neo menu chọn thời gian "Tạm ngừng thông báo". */
   const [muteAnchor, setMuteAnchor] = useState<HTMLElement | null>(null);
+  /**
+   * Desktop: thu gọn cột danh sách cuộc trò chuyện để rộng chỗ cho khung tin nhắn.
+   * Nhớ lựa chọn của người dùng giữa các lần mở.
+   */
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem("chat_sidebar_collapsed") === "1";
+    } catch {
+      return false;
+    }
+  });
+  const toggleSidebar = useCallback(() => {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("chat_sidebar_collapsed", next ? "1" : "0");
+      } catch {
+        /* localStorage bị chặn — chỉ mất tính năng nhớ trạng thái. */
+      }
+      return next;
+    });
+  }, []);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
 
   const isControlled = open !== undefined;
@@ -348,7 +370,11 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
 
   const panel = useMemo(
     () => (
-      <div className={`erp-chat__panel${controller.activeConversation ? " has-active" : ""}`}>
+      <div
+        className={`erp-chat__panel${controller.activeConversation ? " has-active" : ""}${
+          !isMobile && sidebarCollapsed ? " is-sidebar-collapsed" : ""
+        }`}
+      >
         <ChatConversationList
           conversations={controller.conversations}
           activeId={controller.activeId}
@@ -400,6 +426,8 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
             }
             /* Mobile: nút đóng cửa sổ nằm trong header phòng (bỏ header "Tin nhắn nội bộ"). */
             onCloseWindow={isMobile ? () => setOpen(false) : null}
+            sidebarCollapsed={sidebarCollapsed}
+            onToggleSidebar={toggleSidebar}
             onLoadMore={() =>
               controller.activeId ? controller.loadMore(controller.activeId) : Promise.resolve()
             }
@@ -472,6 +500,8 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
       showInfo,
       typingNamesFor,
       handleJumpToMessage,
+      sidebarCollapsed,
+      toggleSidebar,
     ]
   );
 

@@ -589,20 +589,24 @@ export function useChatController() {
   const bumpConversationPreview = useCallback(
     (conversationId: number, message: ChatMessage, incrementUnread: boolean) => {
       setConversations((prev) =>
-        prev.map((c) =>
-          c.CONVERSATION_ID === conversationId
-            ? {
-                ...c,
-                LAST_MESSAGE: {
-                  MESSAGE_ID: message.MESSAGE_ID,
-                  SENDER_EMPL_NO: message.SENDER_EMPL_NO,
-                  MSG_TYPE: message.MSG_TYPE,
-                  CONTENT: message.CONTENT,
-                  CREATED_AT: message.CREATED_AT,
-                },
-                UNREAD_COUNT: incrementUnread ? c.UNREAD_COUNT + 1 : 0,
-              }
-            : c
+        // Sắp xếp LẠI sau mỗi lần cập nhật tin cuối: phòng vừa có hoạt động phải nhảy lên
+        // ngay dưới các phòng đã ghim, KHÔNG cần F5 mới thấy thứ tự mới.
+        sortConversations(
+          prev.map((c) =>
+            c.CONVERSATION_ID === conversationId
+              ? {
+                  ...c,
+                  LAST_MESSAGE: {
+                    MESSAGE_ID: message.MESSAGE_ID,
+                    SENDER_EMPL_NO: message.SENDER_EMPL_NO,
+                    MSG_TYPE: message.MSG_TYPE,
+                    CONTENT: message.CONTENT,
+                    CREATED_AT: message.CREATED_AT,
+                  },
+                  UNREAD_COUNT: incrementUnread ? c.UNREAD_COUNT + 1 : 0,
+                }
+              : c
+          )
         )
       );
       if (incrementUnread) setUnreadTotal((prev) => prev + 1);

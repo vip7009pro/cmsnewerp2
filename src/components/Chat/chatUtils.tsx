@@ -222,6 +222,48 @@ export function initialsOf(name?: string | null): string {
   return (parts[parts.length - 1] || clean).charAt(0).toUpperCase();
 }
 
+/**
+ * Bỏ hậu tố phòng ban `[PHÒNG BAN]-[BỘ PHẬN]` khỏi tên hiển thị.
+ * Cần thiết vì `initialsOf` lấy ký tự đầu của từ CUỐI ⇒ nếu giữ hậu tố sẽ ra "[".
+ */
+export function stripDeptSuffix(name?: string | null): string {
+  return String(name || "")
+    .replace(/\s*\[[^\]]*\]\s*-\s*\[[^\]]*\]\s*$/, "")
+    .trim();
+}
+
+/**
+ * Phòng ban của 1 nhân sự dạng `[PHÒNG BAN CHÍNH]-[BỘ PHẬN]`.
+ * Trả về chuỗi rỗng khi không có dữ liệu (KHÔNG hiện "[]-[]").
+ */
+export function memberDeptLabel(
+  member?: { MAINDEPTNAME?: string | null; SUBDEPTNAME?: string | null } | null
+): string {
+  if (!member) return "";
+  const main = String(member.MAINDEPTNAME || "").trim();
+  const sub = String(member.SUBDEPTNAME || "").trim();
+  if (!main && !sub) return "";
+  return `[${main}]-[${sub}]`;
+}
+
+/**
+ * Nhãn đầy đủ của 1 thành viên: `TÊN [PHÒNG BAN]-[BỘ PHẬN]`.
+ * Dùng thống nhất ở danh sách chat 1-1, danh sách thành viên nhóm và gợi ý tag tên.
+ */
+export function memberFullLabel(
+  member?: {
+    FULL_NAME?: string | null;
+    EMPL_NO?: string | null;
+    MAINDEPTNAME?: string | null;
+    SUBDEPTNAME?: string | null;
+  } | null
+): string {
+  if (!member) return "";
+  const name = String(member.FULL_NAME || member.EMPL_NO || "").trim();
+  const dept = memberDeptLabel(member);
+  return dept ? `${name} ${dept}` : name;
+}
+
 /** Thời gian trong danh sách phòng: hôm nay -> HH:mm, cũ hơn -> DD/MM. */
 export function shortTime(value?: string | null): string {
   const time = vnMoment(value);

@@ -16,7 +16,7 @@ import BuildRoundedIcon from "@mui/icons-material/BuildRounded";
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
 import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import CampaignRoundedIcon from "@mui/icons-material/CampaignRounded";
-import { initialsOf } from "./chatUtils";
+import { initialsOf, stripDeptSuffix } from "./chatUtils";
 
 /**
  * Icon avatar phòng mặc định.
@@ -146,7 +146,7 @@ export default function ChatRoomAvatar({ value, name, size = 44, isDirect = fals
       className="erp-chat__roomAvatarIcon"
       style={{ width: size, height: size, background: "#2563eb", fontSize: size * 0.42 }}
     >
-      {isDirect ? initialsOf(name) : <GroupsRoundedIcon fontSize="inherit" />}
+      {isDirect ? initialsOf(stripDeptSuffix(name)) : <GroupsRoundedIcon fontSize="inherit" />}
     </span>
   );
 }

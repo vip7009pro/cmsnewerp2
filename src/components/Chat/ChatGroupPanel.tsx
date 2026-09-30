@@ -20,7 +20,7 @@ import SwapHorizRoundedIcon from "@mui/icons-material/SwapHorizRounded";
 import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import type { ChatConversation, ChatEmployee, ChatMember } from "./chat.types";
-import { chatAvatarUrl, initialsOf } from "./chatUtils";
+import { chatAvatarUrl, initialsOf, memberFullLabel } from "./chatUtils";
 import ChatRoomAvatar from "./chatAvatars";
 import ChatAvatarPicker from "./ChatAvatarPicker";
 
@@ -195,7 +195,7 @@ export default function ChatGroupPanel({
               {initialsOf(peer.FULL_NAME)}
             </Avatar>
             <div className="erp-chat__peerMeta">
-              <strong>{peer.FULL_NAME}</strong>
+              <strong>{memberFullLabel(peer)}</strong>
               <small>
                 {peer.JOB_NAME || "Nhân viên"}
                 {peer.CMS_ID ? ` · ${peer.CMS_ID}` : ""}
@@ -296,7 +296,7 @@ export default function ChatGroupPanel({
 
                       <div className="erp-chat__memberInfo">
                         <strong>
-                          {member.FULL_NAME}
+                          {memberFullLabel(member)}
                           {isMe && <em> (bạn)</em>}
                         </strong>
                         <small>

@@ -8,6 +8,7 @@ import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import PushPinRoundedIcon from "@mui/icons-material/PushPinRounded";
 import UndoRoundedIcon from "@mui/icons-material/UndoRounded";
 import DeleteSweepRoundedIcon from "@mui/icons-material/DeleteSweepRounded";
+import ChecklistRoundedIcon from "@mui/icons-material/ChecklistRounded";
 import type { ChatMessage, ChatReactionType } from "./chat.types";
 import { REACTION_EMOJI, REACTION_ORDER, reactionLabel } from "./chatUtils";
 
@@ -36,6 +37,8 @@ interface Props {
   onRecall: (message: ChatMessage) => void;
   /** Ghim / bỏ ghim tin nhắn lên thanh ghim của phòng. */
   onTogglePin?: (message: ChatMessage, pinned: boolean) => void;
+  /** Bật chế độ CHỌN NHIỀU tin nhắn (để chia sẻ/chuyển tiếp một lượt). */
+  onSelectMultiple?: (message: ChatMessage) => void;
 }
 
 /**
@@ -56,6 +59,7 @@ export default function ChatMessageMenu({
   onHide,
   onRecall,
   onTogglePin,
+  onSelectMultiple,
 }: Props) {
   const message = state?.message;
   const mine = message?.SENDER_EMPL_NO === myEmplNo;
@@ -193,6 +197,25 @@ export default function ChatMessageMenu({
           <ListItemText
             primary={isPinned ? "Bỏ ghim tin nhắn" : "Ghim tin nhắn"}
             secondary={isPinned ? undefined : "Hiện ở thanh ghim ngay dưới tên phòng"}
+            primaryTypographyProps={{ fontSize: 12.5 }}
+            secondaryTypographyProps={{ fontSize: 10.5 }}
+          />
+        </MenuItem>
+      )}
+
+      {!deleted && message && onSelectMultiple && (
+        <MenuItem
+          onClick={() => {
+            onSelectMultiple(message);
+            onClose();
+          }}
+        >
+          <ListItemIcon>
+            <ChecklistRoundedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary="Chọn nhiều tin nhắn"
+            secondary="Chọn các tin cần chia sẻ / chuyển tiếp một lượt"
             primaryTypographyProps={{ fontSize: 12.5 }}
             secondaryTypographyProps={{ fontSize: 10.5 }}
           />

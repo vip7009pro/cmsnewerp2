@@ -119,6 +119,10 @@ export interface ChatMember {
   FULL_NAME: string;
   EMPL_IMAGE?: string | null;
   JOB_NAME?: string | null;
+  /** Phòng ban chính — hiển thị kèm tên dạng `TÊN [PHÒNG BAN]-[BỘ PHẬN]`. */
+  MAINDEPTNAME?: string | null;
+  /** Bộ phận (phòng ban con). */
+  SUBDEPTNAME?: string | null;
   ROLE: ChatRole;
   LEFT_AT?: string | null;
   /** MESSAGE_ID lớn nhất mà người này đã đọc trong phòng — dùng để đếm/liệt kê "ai đã xem". */

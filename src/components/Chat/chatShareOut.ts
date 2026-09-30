@@ -329,3 +329,80 @@ export async function shareMessageOut({
       : `Trình duyệt không chia sẻ tệp trực tiếp được — đã tải ${saved}/${picked.length} tệp để bạn gửi thủ công`,
   };
 }
+
+export interface ShareMessagesOutParams {
+  /** Danh sách tin nhắn cần chia sẻ CÙNG LÚC (theo thứ tự hiển thị). */
+  messages: ChatMessage[];
+  conversation?: ChatConversation | null;
+  /** Hàm lấy tên người gửi theo EMPL_NO (mỗi tin có thể của người khác nhau). */
+  senderNameOf?: (emplNo: string) => string | null;
+}
+
+/**
+ * Chia sẻ NHIỀU tin nhắn trong 1 lượt (nội dung gộp + tệp/ảnh đính kèm).
+ * Mỗi tin là 1 khối có tiêu đề riêng để người nhận biết ai gửi, lúc nào.
+ */
+export async function shareMessagesOut({
+  messages,
+  conversation,
+  senderNameOf,
+}: ShareMessagesOutParams): Promise<ShareOutcome> {
+  const usable = (messages || []).filter((message) => !message.DELETED_AT);
+  if (usable.length === 0) {
+    return { ok: false, mode: "failed", message: "Không có tin nhắn nào để chia sẻ" };
+  }
+
+  const blocks = usable.map((message) =>
+    buildMessageShareText({
+      // Tin RICHTEXT lưu HTML ⇒ chia sẻ ra ngoài phải là chữ thuần.
+      content: message.MSG_TYPE === "RICH" ? richToPlainText(message.CONTENT) : message.CONTENT,
+      attachments: message.ATTACHMENTS || [],
+      conversationName: conversation?.DISPLAY_NAME,
+      senderName: senderNameOf?.(message.SENDER_EMPL_NO) || message.SENDER_EMPL_NO,
+      createdAt: message.CREATED_AT,
+      // Chỉ gắn liên kết 1 lần ở cuối cùng, không lặp cho từng tin.
+      includeLink: false,
+    })
+  );
+  const link = conversationDeepLink(conversation?.CONVERSATION_ID);
+  const text = `${blocks.join("\n\n")}${link ? `\n\n${link}` : ""}`.trim();
+
+  const picked = usable
+    .flatMap((message) => message.ATTACHMENTS || [])
+    .slice(0, MAX_SHARE_OUT_FILES);
+
+  // Không có tệp ⇒ chia sẻ/chép nội dung gộp là đủ.
+  if (picked.length === 0) {
+    return shareTextOut(text, conversation?.DISPLAY_NAME || SHARE_APP_TITLE);
+  }
+
+  const totalBytes = picked.reduce((sum, item) => sum + Number(item.fileSize || 0), 0);
+
+  if (canShareNative() && totalBytes <= MAX_SHARE_OUT_BYTES) {
+    try {
+      const files = await Promise.all(picked.map((item) => fetchAttachmentFile(item)));
+      if (canShareFiles(files)) {
+        return await runNativeShare(
+          { files, title: conversation?.DISPLAY_NAME || SHARE_APP_TITLE, text },
+          `Đã chia sẻ ${usable.length} tin nhắn kèm ${files.length} tệp`
+        );
+      }
+    } catch (error) {
+      console.warn("[chat] không nạp được tệp để chia sẻ nhiều tin nhắn:", error);
+    }
+  }
+
+  // Dự phòng: sao chép nội dung gộp + tải tệp xuống để gửi thủ công.
+  const copied = text ? await copyTextToClipboard(text) : false;
+  let saved = 0;
+  for (const item of picked) {
+    if (await downloadAttachmentFile(item)) saved += 1;
+  }
+  return {
+    ok: true,
+    mode: "download",
+    message: copied
+      ? `Đã sao chép ${usable.length} tin nhắn & tải ${saved}/${picked.length} tệp để gửi thủ công`
+      : `Trình duyệt không chia sẻ tệp trực tiếp được — đã tải ${saved}/${picked.length} tệp để bạn gửi thủ công`,
+  };
+}
