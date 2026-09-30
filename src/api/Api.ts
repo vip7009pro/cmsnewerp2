@@ -18,12 +18,54 @@ const cookies = new Cookies();
 axios.defaults.withCredentials = true;
 axios.defaults.timeout = 45000; // 45 giây chống treo socket vô hạn trên trình duyệt
 
+// Hạn sống của cookie token — PHẢI khớp `expiresIn` của JWT ở backend (24h).
+// Trước đây cookie không set maxAge nên là SESSION COOKIE: đóng hẳn trình duyệt là mất token
+// dù JWT vẫn còn hạn ⇒ lần sau vào web bị báo "Hết phiên làm việc" ngoài ý muốn.
+export const TOKEN_MAX_AGE_SECONDS = 24 * 60 * 60;
+
+/**
+ * Ghi cookie token dùng chung cho MỌI luồng cấp token mới (login, MFA, refresh).
+ * Luôn kèm maxAge để cookie không chết theo phiên trình duyệt.
+ */
+export function setAuthCookie(token: string) {
+  cookies.set("token", token, {
+    path: "/",
+    sameSite: "lax",
+    secure: window.location.protocol === "https:",
+    maxAge: TOKEN_MAX_AGE_SECONDS,
+  });
+}
+
 // Cờ chống logout trùng lặp (xem logout() bên dưới).
 let loggingOut = false;
 let authExpiredAlertShown = false;
 
+/** Đang thực sự trong phiên đăng nhập (theo Redux) hay không. */
+function hasActiveSession(): boolean {
+  try {
+    return Boolean(store.getState().totalSlice.loginState);
+  } catch {
+    return false;
+  }
+}
+
+// Đánh dấu những request ĐƯỢC GỬI ĐI khi client thực sự đang có token.
+// Dùng WeakSet thay vì gắn cờ lên config để không phá type của axios.
+const tokenBearingRequests = new WeakSet<object>();
+axios.interceptors.request.use((config) => {
+  const token = cookies.get("token");
+  if (Boolean(token) && token !== "reset" && typeof config === "object") {
+    tokenBearingRequests.add(config);
+  }
+  return config;
+});
+
 export function notifySessionExpired(customMessage?: string) {
   if (authExpiredAlertShown || isLoggingOut()) return;
+  // Chỉ báo "hết phiên" khi THỰC SỰ đang có phiên. Lúc chưa đăng nhập (màn login), một request
+  // bảo vệ trả 401 là chuyện bình thường (ví dụ checkdiemdanh lúc boot) — bật popup lúc đó
+  // khiến người dùng tưởng vừa bị đá phiên.
+  if (!hasActiveSession()) return;
   authExpiredAlertShown = true;
   Swal.fire({
     title: "Hết phiên làm việc",
@@ -41,6 +83,7 @@ export function notifySessionExpired(customMessage?: string) {
 // Bắt mã 401 hoặc payload { tk_status: "TOKEN_EXPIRED" } tập trung cho toàn ứng dụng
 axios.interceptors.response.use(
   (response) => {
+    // Server báo token hết hạn ngay trong body ⇒ tín hiệu chắc chắn, luôn xử lý.
     const tkStatus = String(response?.data?.tk_status ?? "").toUpperCase();
     if (tkStatus === "TOKEN_EXPIRED") {
       notifySessionExpired(response?.data?.message);
@@ -50,7 +93,9 @@ axios.interceptors.response.use(
   (error) => {
     const status = error?.response?.status;
     const tkStatus = String(error?.response?.data?.tk_status ?? "").toUpperCase();
-    if (status === 401 || tkStatus === "TOKEN_EXPIRED") {
+    // 401 chỉ được coi là "chết phiên" khi request đó thực sự gửi kèm token.
+    const requestHadToken = Boolean(error?.config && tokenBearingRequests.has(error.config));
+    if ((status === 401 || tkStatus === "TOKEN_EXPIRED") && requestHadToken) {
       notifySessionExpired(error?.response?.data?.message);
     }
     return Promise.reject(error);
@@ -162,11 +207,7 @@ export function login(
           "Chúc mừng bạn, đăng nhập thành công !",
           "success"
         );
-        cookies.set("token", Jresult.token_content, {
-          path: "/",
-          sameSite: "lax",
-          secure: window.location.protocol === "https:",
-        });
+        setAuthCookie(Jresult.token_content);
         localStorage.setItem("publicKey", Jresult.publicKey);
         // Có token mới ⇒ bắt tay lại để socket được xác thực cho chat nội bộ.
         refreshSocketAuth();
@@ -257,11 +298,7 @@ export async function verifyMfaLogin(
           "Xác thực 2 bước thành công! Đang vào hệ thống...",
           "success"
         );
-        cookies.set("token", Jresult.token_content, {
-          path: "/",
-          sameSite: "lax",
-          secure: window.location.protocol === "https:",
-        });
+        setAuthCookie(Jresult.token_content);
         localStorage.setItem("publicKey", Jresult.publicKey);
         checkLogin()
           .then((data) => {

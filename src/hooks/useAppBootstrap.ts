@@ -64,54 +64,60 @@ export function useAppBootstrap(): boolean {
 
     const run = async () => {
       try {
-        const [loginData, diemDanhRes] = await Promise.all([
-          checkLogin().catch((err) => {
-            console.error("Login check failed:", err);
-            return { data: { tk_status: "ng", data: DEFAULT_USER_DATA } };
-          }),
-          generalQuery("checkdiemdanh", {}).catch((error) => {
-            console.log(error);
-            return { data: { tk_status: "NG" } };
-          }),
-        ]);
+        // checkLogin() là command CÔNG KHAI ⇒ không bao giờ 401 khi chưa có phiên.
+        const loginData = await checkLogin().catch((err) => {
+          console.error("Login check failed:", err);
+          return { data: { tk_status: "ng", data: DEFAULT_USER_DATA } };
+        });
 
         if (cancelled) return;
 
+        // loadWebSetting cũng là command công khai và màn Login cần setting (FULL_SCREEN...).
         await loadWebSetting();
         if (cancelled) return;
-
-        if (diemDanhRes.data.tk_status !== "NG") {
-          dispatch(changeDiemDanhState(true));
-        } else {
-          dispatch(changeDiemDanhState(false));
-        }
 
         const tkStatus = String(loginData?.data?.tk_status ?? "").toLowerCase();
         const userData = loginData?.data?.data;
 
         if (tkStatus !== "ok" || !userData) {
+          // QUAN TRỌNG: KHÔNG gọi checkdiemdanh khi chưa xác thực. Đây là command bảo vệ
+          // (không nằm trong PUBLIC_COMMANDS) nên sẽ trả 401 và bật popup "Hết phiên làm việc"
+          // ngay trên màn hình login — dù người dùng chỉ cần đăng nhập lại.
+          dispatch(changeDiemDanhState(false));
           dispatch(logout(false));
           dispatch(changeUserData(DEFAULT_USER_DATA));
-        } else {
-          dispatch(changeUserData(userData));
-          // Ưu tiên: lựa chọn đã lưu ở localStorage > viewport mobile > mặc định Worker > đa nhiệm.
-          dispatch(
-            setTabModeSwap(
-              resolveTabMode({
-                forceSingle:
-                  userData.JOB_NAME === "Worker" ||
-                  userData.POSITION_CODE === 4,
-              })
-            )
-          );
-          dispatch(
-            update_socket({
-              event: "login",
-              data: userData.EMPL_NO,
-            })
-          );
-          dispatch(login(true));
+          return;
         }
+
+        // Chỉ khi đã xác nhận có phiên hợp lệ mới gọi các command bảo vệ.
+        const diemDanhRes = await generalQuery("checkdiemdanh", {}).catch(
+          (error) => {
+            console.log(error);
+            return { data: { tk_status: "NG" } };
+          }
+        );
+
+        if (cancelled) return;
+        dispatch(changeDiemDanhState(diemDanhRes.data.tk_status !== "NG"));
+
+        dispatch(changeUserData(userData));
+        // Ưu tiên: lựa chọn đã lưu ở localStorage > viewport mobile > mặc định Worker > đa nhiệm.
+        dispatch(
+          setTabModeSwap(
+            resolveTabMode({
+              forceSingle:
+                userData.JOB_NAME === "Worker" ||
+                userData.POSITION_CODE === 4,
+            })
+          )
+        );
+        dispatch(
+          update_socket({
+            event: "login",
+            data: userData.EMPL_NO,
+          })
+        );
+        dispatch(login(true));
       } catch (err) {
         console.error("Bootstrap failed:", err);
         dispatch(logout(false));

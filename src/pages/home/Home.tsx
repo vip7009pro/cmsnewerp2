@@ -8,6 +8,7 @@ import {
   getUserData,
   isLoggingOut,
   logout,
+  setAuthCookie,
 } from "../../api/Api";
 import Swal from "sweetalert2";
 import {
@@ -23,7 +24,6 @@ import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { addTab, changeGLBLanguage, closeTab, hideSidebar, resetTab, setTabModeSwap, settabIndex, toggleSidebar } from "../../redux/slices/globalSlice";
 import { saveTabModePreference } from "../../api/services/tabModeService";
 import styled from "@emotion/styled";
-import Cookies from "universal-cookie";
 import { MENU_LIST_DATA } from "../../api/GlobalInterface";
 import { AccountInfo } from "../../api/lazyPages";
 import { getMenuList } from "./menuConfig";
@@ -84,7 +84,6 @@ const CustomTabs = styled(Tabs)({
 });
 
 function Home() {
-  const cookies = new Cookies();
   const navigate = useNavigate();
   const { theme, tabs, lang, company, tabIndex, tabModeSwap, sidebarStatus, cpnInfo, selectedServer, userData } =
     useSelector((state: RootState) => ({
@@ -209,11 +208,7 @@ function Home() {
         // được bắn TRƯỚC khi logout nhưng response về SAU: nếu vẫn ghi cookie thì token
         // hợp lệ được "hồi sinh", user đã đăng xuất trên UI nhưng F5 lại vào được app.
         if (tkStatus !== "NG" && rfr_token && !isLoggingOut()) {
-          cookies.set("token", rfr_token, {
-            path: "/",
-            sameSite: "lax",
-            secure: window.location.protocol === "https:",
-          });
+          setAuthCookie(rfr_token);
         }
       })
       .catch((error) => {
