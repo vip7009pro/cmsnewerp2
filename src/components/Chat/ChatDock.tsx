@@ -33,6 +33,7 @@ import {
 import type { ChatMessage } from "./chat.types";
 import { chatService } from "../../api/services/chatService";
 import { useChatController } from "../../hooks/useChatController";
+import { useMobileBackClose } from "../NavMenu/useMobileBackClose";
 import "./chat.scss";
 
 interface ChatDockProps {
@@ -89,6 +90,24 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
       onOpenChange?.(next);
     },
     [isControlled, onOpenChange]
+  );
+
+  /**
+   * Mobile: nút Back (Android) / vuốt cạnh (iOS) đi theo TỪNG TẦNG.
+   *  - Đang mở một hội thoại ⇒ về danh sách chat.
+   *  - Đang ở danh sách ⇒ đóng chat, về home.
+   *
+   * Trước đây không chặn Back nên ở màn chat vuốt Back là THOÁT LUÔN app.
+   * `rearm: true` vì UI có 2 tầng — nếu không đặt lại guard, lần Back thứ hai
+   * vẫn thoát app thay vì xuống tầng tiếp theo.
+   */
+  useMobileBackClose(
+    isMobile && isOpen,
+    () => {
+      if (controller.activeId) controller.clearActive();
+      else setOpen(false);
+    },
+    { rearm: true }
   );
 
   // Nạp dữ liệu đầy đủ ở lần mở đầu tiên (badge đã có sẵn từ chatSync).

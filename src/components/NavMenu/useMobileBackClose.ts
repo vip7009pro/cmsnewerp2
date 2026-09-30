@@ -49,10 +49,28 @@ const removeGuardEntry = () => {
 /**
  * @param enabled  Chỉ bật trên mobile (desktop đã có chuột/phím, không nên chiếm nút Back).
  * @param onRequestClose  Hàm đóng drawer do component cung cấp.
+ * @param options  `rearm: true` ⇒ đặt lại guard ngay sau mỗi lần xử lý Back (xem bên dưới).
  */
-export function useMobileBackClose(enabled: boolean, onRequestClose: () => void): void {
+export interface MobileBackCloseOptions {
+  /**
+   * Đặt lại guard ngay sau khi đã xử lý 1 lần Back.
+   *
+   * Cần cho UI NHIỀU TẦNG: ví dụ chat mobile có 2 tầng
+   * (đang mở hội thoại → danh sách → home). Nếu không đặt lại guard,
+   * lần Back thứ hai sẽ thoát app thay vì xuống tầng tiếp theo.
+   */
+  rearm?: boolean;
+}
+
+export function useMobileBackClose(
+  enabled: boolean,
+  onRequestClose: () => void,
+  options: MobileBackCloseOptions = {}
+): void {
   const closeHandlerRef = useRef(onRequestClose);
   closeHandlerRef.current = onRequestClose;
+  const rearmRef = useRef(Boolean(options.rearm));
+  rearmRef.current = Boolean(options.rearm);
 
   useEffect(() => {
     if (!enabled || typeof window === "undefined" || !window.history?.pushState) return;
@@ -60,14 +78,17 @@ export function useMobileBackClose(enabled: boolean, onRequestClose: () => void)
     // Mount lại ngay sau cleanup (StrictMode) ⇒ giữ nguyên guard đang có.
     cancelPendingGuardRemoval();
 
-    if (!isOnGuardEntry()) {
+    const pushGuard = () => {
+      if (isOnGuardEntry()) return;
       // Giữ lại state sẵn có (React Router lưu key/idx trong đó) để không phá bookkeeping của router.
       window.history.pushState(
         { ...(window.history.state || {}), [GUARD_STATE_KEY]: true },
         "",
         window.location.href
       );
-    }
+    };
+
+    pushGuard();
 
     const handlePopState = () => {
       if (selfBackPending > 0) {
@@ -75,6 +96,8 @@ export function useMobileBackClose(enabled: boolean, onRequestClose: () => void)
         return;
       }
       closeHandlerRef.current();
+      // UI nhiều tầng: chặn tiếp lần Back kế tiếp bằng một guard mới.
+      if (rearmRef.current) pushGuard();
     };
 
     window.addEventListener("popstate", handlePopState);
