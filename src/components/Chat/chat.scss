@@ -1197,14 +1197,25 @@ $chat-bubble-other: #f1f5f9;
     height: 100%;
   }
 
+  /*
+   * Mobile 1 CỘT: danh sách phải chiếm TRỌN chiều rộng.
+   * `flex: 1 1 100%` (KHÔNG phải `1 1 auto` + `width:100%`): với `auto`, flex-basis lấy theo
+   * `width:100%` của sidebar còn khung chat cũng giãn ⇒ hai bên chia đôi màn hình và danh sách
+   * bị lệch sang một bên (lỗi đã gặp trên mobile).
+   */
   .erp-chat__sidebar {
     width: 100%;
-    flex: 1 1 auto;
+    flex: 1 1 100%;
     border-right: none;
   }
 
   /* Khi đang mở 1 hội thoại: ẩn sidebar, chỉ hiện khung chat (mobile 1 cột). */
   .erp-chat__panel.has-active .erp-chat__sidebar {
+    display: none;
+  }
+
+  /* Đang ở danh sách ⇒ ẩn khung chat trống, nếu không nó vẫn chiếm chỗ và làm lệch bố cục. */
+  .erp-chat__panel:not(.has-active) .erp-chat__main--empty {
     display: none;
   }
 
