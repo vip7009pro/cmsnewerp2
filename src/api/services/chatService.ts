@@ -35,6 +35,21 @@ export async function chatQuery<T>(command: string, data: Record<string, unknown
   return unwrap<T>(response);
 }
 
+/**
+ * Bóc thông báo lỗi THẬT từ server cho các request dùng axios trực tiếp.
+ * Mặc định axios chỉ ném "Request failed with status code 400" nên người dùng không biết vì sao sai.
+ */
+function serverErrorMessage(error: any, fallback: string): string {
+  const payload = error?.response?.data;
+  if (payload && typeof payload === "object" && payload.message) {
+    return String(payload.message);
+  }
+  if (typeof payload === "string" && payload.trim() && !/^\s*<(!doctype|html)/i.test(payload)) {
+    return payload.trim().slice(0, 200);
+  }
+  return error?.message || fallback;
+}
+
 export const chatService = {
   bootstrap: () => chatQuery<ChatBootstrap>("chatBootstrap"),
 
@@ -210,7 +225,11 @@ export async function uploadChatFile(
   formData.append("token_string", cookies.get("token"));
   formData.append("CTR_CD", getCtrCd());
 
-  const response = await axios.post(`${getSever()}/chatfile`, formData, { onUploadProgress });
+  const response = await axios
+    .post(`${getSever()}/chatfile`, formData, { onUploadProgress })
+    .catch((error: any) => {
+      throw new Error(serverErrorMessage(error, "Upload tệp thất bại"));
+    });
   return unwrap(response);
 }
 
@@ -219,7 +238,11 @@ export async function uploadChatAvatar(file: File): Promise<{ url: string; size:
   const formData = new FormData();
   formData.append("uploadedfile", file);
   formData.append("token_string", cookies.get("token"));
-  const response = await axios.post(`${getSever()}/chatavatar`, formData);
+  const response = await axios
+    .post(`${getSever()}/chatavatar`, formData)
+    .catch((error: any) => {
+      throw new Error(serverErrorMessage(error, "Upload ảnh thất bại"));
+    });
   return unwrap(response);
 }
 

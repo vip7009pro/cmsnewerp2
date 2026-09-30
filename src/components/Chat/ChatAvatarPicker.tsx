@@ -8,6 +8,13 @@ import { uploadChatAvatar } from "../../api/services/chatService";
 
 const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
 
+/** Định dạng ẢNH nhưng trình duyệt không hiển thị được (iPhone thường chụp .HEIC). */
+const UNSUPPORTED_IMAGE = /^image\/(heic|heif|tiff)$/i;
+const UNSUPPORTED_EXT = /\.(heic|heif|tif|tiff)$/i;
+
+/** Hộp chọn tệp chỉ hiện các định dạng web hiển thị được. */
+const AVATAR_ACCEPT = "image/png,image/jpeg,image/jpg,image/webp,image/gif,image/bmp,image/avif";
+
 interface Props {
   /** Giá trị avatar hiện tại: `icon:<id>`, `/chatavatar/<file>` hoặc rỗng. */
   value: string;
@@ -28,7 +35,11 @@ export default function ChatAvatarPicker({ value, name, onChange, compact = fals
 
   const handlePick = async (file: File | null) => {
     if (!file) return;
-    if (!/^image\//.test(file.type)) {
+    if (UNSUPPORTED_IMAGE.test(file.type) || UNSUPPORTED_EXT.test(file.name)) {
+      setError("Ảnh HEIC/TIFF chưa được hỗ trợ. Hãy chọn ảnh JPG/PNG/WEBP.");
+      return;
+    }
+    if (file.type && !/^image\//.test(file.type)) {
       setError("Chỉ nhận tệp ảnh");
       return;
     }
@@ -82,7 +93,7 @@ export default function ChatAvatarPicker({ value, name, onChange, compact = fals
         ref={fileRef}
         type="file"
         hidden
-        accept="image/*"
+        accept={AVATAR_ACCEPT}
         onChange={(event) => {
           void handlePick(event.target.files?.[0] || null);
           event.target.value = "";
