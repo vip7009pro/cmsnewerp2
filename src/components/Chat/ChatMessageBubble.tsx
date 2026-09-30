@@ -20,6 +20,7 @@ import {
   REACTION_EMOJI,
   REACTION_ORDER,
   chatAvatarUrl,
+  extractFirstUrl,
   fileKindLabel,
   fileKindOf,
   formatFileSize,
@@ -29,6 +30,7 @@ import {
   timeLabel,
 } from "./chatUtils";
 import { decorateMentionsInHtml, richToPlainText } from "./chatRichText";
+import ChatLinkPreview from "./ChatLinkPreview";
 
 interface Props {
   message: ChatMessage;
@@ -123,6 +125,11 @@ export default function ChatMessageBubble({
   const richHtml = useMemo(
     () => (isRich ? decorateMentionsInHtml(message.CONTENT, memberNames) : ""),
     [isRich, message.CONTENT, memberNames]
+  );
+  /** Liên kết đầu tiên trong tin nhắn ⇒ hiện thẻ xem trước (bỏ qua tin đã thu hồi). */
+  const firstUrl = useMemo(
+    () => (deleted ? null : extractFirstUrl(message.CONTENT)),
+    [deleted, message.CONTENT]
   );
 
   /** Bấm vào tag tên trong tin richtext (span có `data-mention`). */
@@ -326,6 +333,8 @@ export default function ChatMessageBubble({
                     })}
                   </div>
                 ))}
+
+              {firstUrl && <ChatLinkPreview url={firstUrl} />}
             </>
           )}
 

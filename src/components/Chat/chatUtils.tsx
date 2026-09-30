@@ -191,7 +191,69 @@ export function formatFileSize(bytes?: number | null): string {
   return `${(size / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-/** Người nhận được tag trong nội dung tin nhắn (@TÊN) — bấm được để mở chat riêng. */
+/** Regex nhận diện URL gõ trực tiếp trong tin nhắn (http/https hoặc www.). */
+const URL_REGEX = /\b(?:https?:\/\/|www\.)[^\s<>"']+/gi;
+
+/** Bỏ dấu câu dính ở cuối URL (người dùng hay gõ "... xem tại https://a.com."). */
+function splitTrailingPunctuation(value: string): { url: string; trailing: string } {
+  const match = value.match(/[.,;:!?)\]}'"]+$/);
+  if (!match) return { url: value, trailing: "" };
+  return { url: value.slice(0, -match[0].length), trailing: match[0] };
+}
+
+/** Thêm scheme cho URL rút gọn kiểu `www.example.com`. */
+export function hrefOf(raw: string): string {
+  return /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+}
+
+/** Tách 1 đoạn văn bản thành các phần, biến URL thành thẻ <a> bấm được. */
+export function linkifyText(text: string, keyPrefix = "link"): (string | JSX.Element)[] {
+  if (!text) return [];
+  const out: (string | JSX.Element)[] = [];
+  let lastIndex = 0;
+  let index = 0;
+  const regex = new RegExp(URL_REGEX.source, "gi");
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(text)) !== null) {
+    const { url, trailing } = splitTrailingPunctuation(match[0]);
+    if (!url) continue;
+    if (match.index > lastIndex) out.push(text.slice(lastIndex, match.index));
+    out.push(
+      <a
+        key={`${keyPrefix}-${index}`}
+        className="erp-chat__link"
+        href={hrefOf(url)}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(event) => event.stopPropagation()}
+      >
+        {url}
+      </a>
+    );
+    if (trailing) out.push(trailing);
+    lastIndex = match.index + match[0].length;
+    index += 1;
+  }
+
+  if (lastIndex < text.length) out.push(text.slice(lastIndex));
+  return out;
+}
+
+/** URL đầu tiên trong nội dung tin nhắn (dùng để lấy link preview). */
+export function extractFirstUrl(content?: string | null): string | null {
+  const text = String(content || "");
+  if (!text) return null;
+  const regex = new RegExp(URL_REGEX.source, "i");
+  const match = regex.exec(text);
+  if (!match) return null;
+  return splitTrailingPunctuation(match[0]).url || null;
+}
+
+/**
+ * Người nhận được tag trong nội dung tin nhắn (@TÊN) — bấm được để mở chat riêng —
+ * ĐỒNG THỜI biến URL trong tin nhắn thành thẻ <a> mở tab mới.
+ */
 export function renderMentions(
   content: string,
   options: {
@@ -209,7 +271,7 @@ export function renderMentions(
     .map((item) => ({ ...item, label: item.name || item.emplNo }))
     .sort((a, b) => b.label.length - a.label.length);
 
-  if (candidates.length === 0) return [content];
+  if (candidates.length === 0) return linkifyText(content, "plain");
 
   const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const patterns = [
@@ -220,13 +282,14 @@ export function renderMentions(
 
   const regex = new RegExp(`(@(?:${patterns.join("|")}))`, "g");
 
-  return content.split(regex).map((part, index) => {
-    if (!part || !part.startsWith("@")) return part;
+  return content.split(regex).flatMap((part, index) => {
+    if (!part) return [];
+    if (!part.startsWith("@")) return linkifyText(part, `text-${index}`);
     const keyword = part.slice(1);
     const matched = candidates.find((item) => item.label === keyword || item.emplNo === keyword);
-    if (!matched) return part;
+    if (!matched) return linkifyText(part, `text-${index}`);
 
-    return (
+    return [
       <span
         key={`mention-${index}`}
         className="erp-chat__mention"
@@ -243,8 +306,8 @@ export function renderMentions(
         }
       >
         {part}
-      </span>
-    );
+      </span>,
+    ];
   });
 }
 

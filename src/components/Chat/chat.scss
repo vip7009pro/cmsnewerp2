@@ -475,8 +475,11 @@ $chat-bubble-other: #f1f5f9;
   box-shadow: 0 1px 1px rgba(15, 23, 42, 0.04);
 
   .erp-chat__row.is-mine & {
-    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-    color: #fff;
+    /* Nền xanh đậm trước đây làm chữ khó đọc (nhất là link / chữ nhạt) ⇒ dùng
+       TRẮNG XÁM NHẸ + viền mảnh để vẫn phân biệt được với tin của người khác. */
+    background: #f7f9fc;
+    color: $chat-text;
+    border: 1px solid #dfe6ee;
   }
 
   &.is-deleted {
@@ -496,7 +499,7 @@ $chat-bubble-other: #f1f5f9;
   color: #1d4ed8;
 
   .erp-chat__row.is-mine & {
-    color: #dbeafe;
+    color: #1d4ed8;
     text-decoration: underline;
   }
 }
@@ -514,7 +517,7 @@ $chat-bubble-other: #f1f5f9;
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  color: #fecaca;
+  color: #dc2626;
 }
 
 .erp-chat__rowActions {
@@ -562,7 +565,8 @@ $chat-bubble-other: #f1f5f9;
   max-width: 300px;
 
   .erp-chat__row.is-mine & {
-    background: rgba(255, 255, 255, 0.18);
+    background: #ffffff;
+    border-color: #e2e8f0;
   }
 
   &:hover {
@@ -1231,8 +1235,8 @@ $chat-bubble-other: #f1f5f9;
   background: rgba(37, 99, 235, 0.08);
 
   .erp-chat__row.is-mine & {
-    border-left-color: rgba(255, 255, 255, 0.85);
-    background: rgba(255, 255, 255, 0.16);
+    border-left-color: rgba(37, 99, 235, 0.75);
+    background: #ffffff;
   }
 }
 
@@ -1242,7 +1246,7 @@ $chat-bubble-other: #f1f5f9;
   color: #1d4ed8;
 
   .erp-chat__row.is-mine & {
-    color: #e0efff;
+    color: #1d4ed8;
   }
 }
 
@@ -2875,4 +2879,84 @@ $chat-bubble-other: #f1f5f9;
   .erp-chat__mention {
     cursor: pointer;
   }
+}
+
+/* ------------------------- Liên kết trong tin nhắn ------------------------ */
+
+.erp-chat__link {
+  color: #1d4ed8;
+  text-decoration: underline;
+  word-break: break-all;
+
+  &:hover {
+    color: #1e40af;
+  }
+}
+
+.erp-chat__text--rich a {
+  color: #1d4ed8;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+/* Thẻ xem trước liên kết (ảnh + tiêu đề + mô tả) */
+.erp-chat__linkPreview {
+  display: flex;
+  flex-direction: column;
+  margin-top: 6px;
+  overflow: hidden;
+  max-width: 380px;
+  border: 1px solid #dfe6ee;
+  border-left: 3px solid $chat-primary;
+  border-radius: 10px;
+  background: #ffffff;
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    border-color: #93c5fd;
+  }
+}
+
+.erp-chat__linkPreviewImg {
+  display: block;
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  background: #f1f5f9;
+}
+
+.erp-chat__linkPreviewBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 7px 9px;
+}
+
+.erp-chat__linkPreviewSite {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: $chat-muted;
+}
+
+.erp-chat__linkPreviewTitle {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: $chat-text;
+}
+
+.erp-chat__linkPreviewDesc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 11.5px;
+  color: $chat-muted;
 }

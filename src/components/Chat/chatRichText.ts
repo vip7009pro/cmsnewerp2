@@ -27,6 +27,7 @@ const ALLOWED_TAGS = new Set([
   "pre",
   "mark",
   "font",
+  "a",
   "ul",
   "ol",
   "li",
@@ -70,6 +71,9 @@ const ALLOWED_STYLE_PROPS = new Set([
 
 /** Thuộc tính được phép giữ ngoài `style`. */
 const ALLOWED_ATTRS = new Set(["color", "size", "face"]);
+
+/** Scheme cho phép của thẻ <a> (chặn javascript:, data:...). */
+const SAFE_LINK_SCHEME = /^(https?:\/\/|mailto:)/i;
 
 function filterStyle(value: string): string {
   return String(value || "")
@@ -115,6 +119,16 @@ function sanitizeNode(node: Node, doc: Document): Node[] {
     if (name === "style") {
       const safe = filterStyle(attribute.value);
       if (safe) clean.setAttribute("style", safe);
+      return;
+    }
+    // Thẻ link: chỉ giữ href cùng scheme an toàn, luôn mở tab mới.
+    if (tag === "a") {
+      if (name !== "href") return;
+      const href = attribute.value.trim();
+      if (!SAFE_LINK_SCHEME.test(href)) return;
+      clean.setAttribute("href", href);
+      clean.setAttribute("target", "_blank");
+      clean.setAttribute("rel", "noopener noreferrer");
       return;
     }
     if (ALLOWED_ATTRS.has(name)) clean.setAttribute(name, attribute.value);
@@ -180,62 +194,93 @@ export function plainTextToRichHtml(text?: string | null): string {
 }
 
 /**
- * Lọc HTML richtext rồi bọc mọi `@Tên` thành `<span class="erp-chat__mention" data-mention="MÃ_NV">`
- * để hiển thị giống tin thường và bấm được (bắt sự kiện bằng delegation ở component cha).
+ * Lọc HTML richtext rồi:
+ *  - bọc mọi `@Tên` thành `<span class="erp-chat__mention" data-mention="MÃ_NV">` (bấm được qua delegation);
+ *  - tự nhận diện URL trần trong từng đoạn chữ thành thẻ `<a>` mở tab mới.
  *
- * Chỉ khớp trong TỪNG node văn bản: nếu tên bị định dạng cắt đôi (vd `<b>@Nguyễn</b> Văn A`)
- * thì đoạn đó không được bọc — chấp nhận được, nội dung vẫn hiển thị đúng.
+ * Chỉ xử lý trong TỪNG node văn bản và BỎ QUA đoạn đã nằm trong thẻ `<a>` (tránh lồng link).
+ * Nếu tên bị định dạng cắt đôi (vd `<b>@Nguyễn</b> Văn A`) thì đoạn đó không được bọc — chấp nhận được.
  */
 export function decorateMentionsInHtml(
   html: string | null | undefined,
   members: { name: string; emplNo: string }[]
 ): string {
   const safe = sanitizeRichHtml(html);
-  if (!safe || members.length === 0) return safe;
+  if (!safe) return safe;
   if (typeof DOMParser === "undefined" || typeof NodeFilter === "undefined") return safe;
 
   const candidates = members
     .map((item) => ({ label: String(item.name || item.emplNo || "").trim(), emplNo: item.emplNo }))
     .filter((item) => item.label);
-  if (candidates.length === 0) return safe;
 
   const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const patterns = [...new Set(candidates.flatMap((item) => [item.label, item.emplNo]))]
-    .filter(Boolean)
-    .sort((a, b) => b.length - a.length)
-    .map(escapeRegex);
-  const regex = new RegExp(`@(?:${patterns.join("|")})`, "g");
+  const mentionPattern =
+    candidates.length > 0
+      ? `@(?:${[...new Set(candidates.flatMap((item) => [item.label, item.emplNo]))]
+          .filter(Boolean)
+          .sort((a, b) => b.length - a.length)
+          .map(escapeRegex)
+          .join("|")})`
+      : null;
+  const urlPattern = `\\b(?:https?:\\/\\/|www\\.)[^\\s<>"']+`;
+  const combined = new RegExp([mentionPattern, urlPattern].filter(Boolean).join("|"), "gi");
 
   const doc = new DOMParser().parseFromString(safe, "text/html");
   const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
   const textNodes: Text[] = [];
   while (walker.nextNode()) {
     const node = walker.currentNode as Text;
-    if (node.nodeValue && node.nodeValue.includes("@")) textNodes.push(node);
+    const value = node.nodeValue || "";
+    if (!value) continue;
+    if (!value.includes("@") && !combined.test(value)) continue;
+    combined.lastIndex = 0;
+    // Bỏ qua chữ đã nằm trong thẻ <a> (tránh lồng link / bọc lại).
+    if ((node.parentElement as Element | null)?.closest?.("a")) continue;
+    textNodes.push(node);
   }
 
   textNodes.forEach((node) => {
     const value = node.nodeValue || "";
-    regex.lastIndex = 0;
-    if (!regex.test(value)) return;
-
-    regex.lastIndex = 0;
+    combined.lastIndex = 0;
     const fragment = doc.createDocumentFragment();
     let lastIndex = 0;
     let match: RegExpExecArray | null;
-    while ((match = regex.exec(value)) !== null) {
+
+    while ((match = combined.exec(value)) !== null) {
       if (match.index > lastIndex) {
         fragment.appendChild(doc.createTextNode(value.slice(lastIndex, match.index)));
       }
-      const keyword = match[0].slice(1);
-      const found = candidates.find((item) => item.label === keyword || item.emplNo === keyword);
-      const span = doc.createElement("span");
-      span.className = "erp-chat__mention";
-      if (found) span.setAttribute("data-mention", found.emplNo);
-      span.textContent = match[0];
-      fragment.appendChild(span);
-      lastIndex = match.index + match[0].length;
+      const token = match[0];
+
+      if (token.startsWith("@")) {
+        const keyword = token.slice(1);
+        const found = candidates.find((item) => item.label === keyword || item.emplNo === keyword);
+        if (!found) {
+          fragment.appendChild(doc.createTextNode(token));
+        } else {
+          const span = doc.createElement("span");
+          span.className = "erp-chat__mention";
+          span.setAttribute("data-mention", found.emplNo);
+          span.textContent = token;
+          fragment.appendChild(span);
+        }
+      } else {
+        // URL: bỏ dấu câu dính ở cuối ra ngoài thẻ link.
+        const trailingMatch = token.match(/[.,;:!?)\]}'"]+$/);
+        const url = trailingMatch ? token.slice(0, -trailingMatch[0].length) : token;
+        const anchor = doc.createElement("a");
+        anchor.className = "erp-chat__link";
+        anchor.setAttribute("href", /^https?:\/\//i.test(url) ? url : `https://${url}`);
+        anchor.setAttribute("target", "_blank");
+        anchor.setAttribute("rel", "noopener noreferrer");
+        anchor.textContent = url;
+        fragment.appendChild(anchor);
+        if (trailingMatch) fragment.appendChild(doc.createTextNode(trailingMatch[0]));
+      }
+
+      lastIndex = match.index + token.length;
     }
+
     if (lastIndex < value.length) {
       fragment.appendChild(doc.createTextNode(value.slice(lastIndex)));
     }

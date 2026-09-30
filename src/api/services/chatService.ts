@@ -186,6 +186,16 @@ export const chatService = {
 
   conversationStorage: (conversationId: number) =>
     chatQuery<ChatStorage>("chatConversationStorage", { conversationId }),
+
+  /** Metadata (OG) của 1 liên kết để hiển thị link preview. Server fetch hộ (tránh CORS). */
+  linkPreview: (url: string) =>
+    chatQuery<{
+      url: string;
+      title: string;
+      description: string;
+      image: string;
+      siteName: string;
+    }>("chatLinkPreview", { url }),
 };
 
 /** Upload 1 file vào phòng chat, trả về attachment vừa lưu. */
