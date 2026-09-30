@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from "react";
 import {
-  Avatar,
   Button,
   Checkbox,
   Dialog,
@@ -11,9 +10,8 @@ import {
 } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import GroupRoundedIcon from "@mui/icons-material/GroupsRounded";
 import type { ChatConversation } from "./chat.types";
-import { initialsOf } from "./chatUtils";
+import ChatRoomAvatar from "./chatAvatars";
 
 interface Props {
   open: boolean;
@@ -90,16 +88,12 @@ export default function ChatForwardDialog({
                 checked={selected.includes(conversation.CONVERSATION_ID)}
                 onChange={() => toggle(conversation.CONVERSATION_ID)}
               />
-              <Avatar
-                src={conversation.DISPLAY_AVATAR || undefined}
-                sx={{ width: 30, height: 30, fontSize: 12, bgcolor: "#2563eb" }}
-              >
-                {conversation.CONV_TYPE === "GROUP" ? (
-                  <GroupRoundedIcon sx={{ fontSize: 16 }} />
-                ) : (
-                  initialsOf(conversation.DISPLAY_NAME)
-                )}
-              </Avatar>
+              <ChatRoomAvatar
+                value={conversation.DISPLAY_AVATAR}
+                name={conversation.DISPLAY_NAME}
+                size={30}
+                isDirect={conversation.CONV_TYPE === "DIRECT"}
+              />
               <span className="erp-chat-forward__name">
                 {conversation.DISPLAY_NAME}
                 <small>

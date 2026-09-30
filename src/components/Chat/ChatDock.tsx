@@ -239,6 +239,9 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
           onShowRequests={() => setShowRequests(true)}
           onGlobalSearch={() => setShowGlobalSearch(true)}
           requestCount={controller.requests.filter((r) => r.DIRECTION === "INCOMING").length}
+          onTogglePin={(conversationId, pinned) => {
+            void controller.togglePin(conversationId, pinned);
+          }}
         />
 
         {controller.activeConversation ? (

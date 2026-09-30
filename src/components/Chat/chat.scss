@@ -135,6 +135,19 @@ $chat-bubble-other: #f1f5f9;
   &.is-active {
     background: $chat-primary-soft;
   }
+
+  /* Phòng đã ghim: nền hổ phách nhạt để phân biệt bằng mắt. */
+  &.is-pinned {
+    background: #fffbeb;
+
+    &:hover {
+      background: #fef3c7;
+    }
+
+    &.is-active {
+      background: $chat-primary-soft;
+    }
+  }
 }
 
 .erp-chat__convAvatar {
@@ -166,12 +179,25 @@ $chat-bubble-other: #f1f5f9;
 }
 
 .erp-chat__convName {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
   font-size: 13px;
   font-weight: 600;
   color: $chat-text;
+}
+
+.erp-chat__convNameText {
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.erp-chat__convPin {
+  flex: 0 0 auto;
+  color: #f59e0b;
 }
 
 .erp-chat__convTime {
@@ -214,6 +240,52 @@ $chat-bubble-other: #f1f5f9;
   font-size: 11px;
   font-weight: 700;
   text-align: center;
+}
+
+/* ------------------- Menu ngữ cảnh cuộc trò chuyện ---------------------- */
+
+/* Lớp phủ trong suốt bắt click ra ngoài để đóng menu. */
+.erp-chat__convMenuBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  background: transparent;
+}
+
+.erp-chat__convMenu {
+  position: fixed;
+  z-index: 1301;
+  min-width: 224px;
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+}
+
+.erp-chat__convMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    background: #eef2f7;
+  }
+
+  svg {
+    flex: 0 0 auto;
+    color: #f59e0b;
+  }
 }
 
 /* --------------------------------- Main --------------------------------- */

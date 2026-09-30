@@ -31,6 +31,33 @@ export interface PendingUpload {
 const makeClientId = () =>
   `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
+/** Mốc thời gian ghim (ms) — 0 nghĩa là không ghim. */
+function pinTime(conversation: ChatConversation): number {
+  if (!conversation.PINNED_AT) return 0;
+  const value = Date.parse(conversation.PINNED_AT);
+  return Number.isFinite(value) ? value : 0;
+}
+
+/** Mốc hoạt động gần nhất (tin cuối, hoặc lúc tạo phòng nếu chưa có tin). */
+function activityTime(conversation: ChatConversation): number {
+  const raw = conversation.LAST_MESSAGE?.CREATED_AT || conversation.CREATED_AT || "";
+  const value = Date.parse(String(raw));
+  return Number.isFinite(value) ? value : 0;
+}
+
+/**
+ * Sắp xếp danh sách phòng GIỐNG server:
+ * phòng đã ghim lên trước (ghim MỚI hơn ở trên cùng), phần còn lại theo hoạt động mới nhất.
+ */
+export function sortConversations(list: ChatConversation[]): ChatConversation[] {
+  return [...list].sort((a, b) => {
+    const aPin = pinTime(a);
+    const bPin = pinTime(b);
+    if (aPin !== bPin) return bPin - aPin;
+    return activityTime(b) - activityTime(a);
+  });
+}
+
 /**
  * Quản lý toàn bộ trạng thái chat: danh sách phòng, tin nhắn, gửi lạc quan,
  * typing, presence và số tin chưa đọc. Socket là singleton của app nên hook này
@@ -93,7 +120,7 @@ export function useChatController() {
 
   const applySync = useCallback(
     (list: ChatConversation[], unread: number, onlineEmplNos?: string[]) => {
-      setConversations(list);
+      setConversations(sortConversations(list));
       setUnreadTotal(unread);
       // Danh sách online đầy đủ từ server — thiếu bước này FE sẽ hiển thị
       // tất cả là "không hoạt động" cho tới khi có sự kiện presence đầu tiên.
@@ -706,6 +733,29 @@ export function useChatController() {
     [selectConversation]
   );
 
+  /**
+   * Ghim / bỏ ghim cuộc trò chuyện (tuỳ chọn của RIÊNG người dùng hiện tại).
+   * Không truyền `pinned` ⇒ đảo trạng thái hiện tại.
+   */
+  const togglePin = useCallback(async (conversationId: number, pinned?: boolean) => {
+    const current = conversationsRef.current.find((c) => c.CONVERSATION_ID === conversationId);
+    const next = pinned === undefined ? !current?.PINNED_AT : pinned;
+    try {
+      const result = await chatService.pinConversation(conversationId, next);
+      setConversations((prev) =>
+        sortConversations(
+          prev.map((c) =>
+            c.CONVERSATION_ID === conversationId
+              ? { ...c, PINNED_AT: result.pinnedAt || null }
+              : c
+          )
+        )
+      );
+    } catch (error) {
+      console.warn("[chat] ghim cuộc trò chuyện lỗi:", error);
+    }
+  }, []);
+
   const respondFriendRequest = useCallback(async (friendId: number, action: "accept" | "reject") => {
     await chatService.friendRespond(friendId, action);
     setRequests((prev) => prev.filter((r) => r.FRIEND_ID !== friendId));
@@ -875,6 +925,7 @@ export function useChatController() {
     sendFriendRequest,
     refreshConversation,
     clearActive,
+    togglePin,
     replyTarget,
     startReply,
     clearReply,

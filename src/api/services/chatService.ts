@@ -76,6 +76,13 @@ export const chatService = {
       lastMessageId,
     }),
 
+  /** Ghim / bỏ ghim cuộc trò chuyện — tuỳ chọn của RIÊNG người dùng hiện tại. */
+  pinConversation: (conversationId: number, pinned: boolean) =>
+    chatQuery<{ conversationId: number; pinned: boolean; pinnedAt: string | null }>(
+      "chatPinConversation",
+      { conversationId, pinned }
+    ),
+
   deleteMessage: (conversationId: number, messageId: number) =>
     chatQuery<{ conversationId: number; messageId: number }>("chatDeleteMessage", {
       conversationId,

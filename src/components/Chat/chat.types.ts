@@ -141,6 +141,10 @@ export interface ChatConversation {
   OWNER_EMPL_NO: string | null;
   MY_ROLE: ChatRole;
   MUTED: boolean;
+  /** Thời điểm TÔI ghim phòng này (null = không ghim). Ghim mới hơn lên trên. */
+  PINNED_AT?: string | null;
+  /** Mốc tạo phòng — dùng để sắp xếp khi phòng chưa có tin nhắn nào. */
+  CREATED_AT?: string | null;
   UNREAD_COUNT: number;
   LAST_MESSAGE: ChatLastMessage | null;
   MEMBERS: ChatMember[];

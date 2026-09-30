@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { getSever } from "../../api/Api";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import RocketLaunchRoundedIcon from "@mui/icons-material/RocketLaunchRounded";
@@ -59,19 +59,41 @@ export function findAvatarPreset(value?: string | null): ChatAvatarPreset | null
   return PRESET_BY_ID.get(raw.slice(5)) || null;
 }
 
-/** Avatar là ảnh upload (đường dẫn nội bộ của backend). */
+/** Avatar là ảnh upload của phòng (đường dẫn nội bộ của backend). */
 export function isUploadedAvatar(value?: string | null): boolean {
   return /^\/chatavatar\//.test(String(value || ""));
 }
 
-/** URL đầy đủ của ảnh avatar (trỏ về backend, ảnh công khai không cần token). */
+/**
+ * Avatar là ẢNH NHÂN SỰ theo quy ước `NS_<EMPL_NO>.jpg` của ERP.
+ *
+ * Với hội thoại 1-1, avatar phòng CHÍNH LÀ ảnh của đối phương (backend trả sẵn ở
+ * `DISPLAY_AVATAR`). Ảnh này nằm cùng origin với web (thư mục `Picture_NS`), KHÔNG phải
+ * của backend nên không được ghép `getSever()` vào trước.
+ */
+export function isEmployeePhoto(value?: string | null): boolean {
+  return /^\/Picture_NS\/[^/]+$/i.test(String(value || ""));
+}
+
+/**
+ * URL đầy đủ của ảnh avatar phòng.
+ * Ảnh upload (`/chatavatar/<file>`) nằm ở backend → ghép `getSever()`.
+ * Ảnh nhân sự (`/Picture_NS/NS_<EMPL_NO>.jpg`) nằm cùng origin web → giữ nguyên.
+ */
 export function chatAvatarSrc(value?: string | null): string | undefined {
-  if (!isUploadedAvatar(value)) return undefined;
-  return `${getSever()}${value}`;
+  const raw = String(value || "");
+  if (isEmployeePhoto(raw)) return raw;
+  if (isUploadedAvatar(raw)) return `${getSever()}${raw}`;
+  return undefined;
 }
 
 interface AvatarProps {
-  /** Giá trị AVATAR của phòng: `icon:<id>` hoặc `/chatavatar/<file>`. */
+  /**
+   * Giá trị avatar phòng:
+   *  - `icon:<id>` — icon mặc định của nhóm
+   *  - `/chatavatar/<file>` — ảnh upload của nhóm
+   *  - `/Picture_NS/NS_<EMPL_NO>.jpg` — ẢNH NHÂN SỰ (hội thoại 1-1 = ảnh đối phương)
+   */
   value?: string | null;
   /** Tên phòng — dùng làm ảnh chữ cái khi chưa có avatar. */
   name?: string | null;
@@ -83,19 +105,26 @@ interface AvatarProps {
 
 /**
  * Avatar phòng dùng chung cho danh sách hội thoại, tiêu đề và dialog:
- * ưu tiên ảnh upload → icon mặc định → chữ cái đầu/icon nhóm.
+ * ảnh (nhân sự 1-1 / upload của nhóm) → icon mặc định → chữ cái đầu / icon nhóm.
  */
 export default function ChatRoomAvatar({ value, name, size = 44, isDirect = false }: AvatarProps) {
-  const uploaded = isUploadedAvatar(value);
+  const photoSrc = chatAvatarSrc(value);
   const preset = findAvatarPreset(value);
+  // Ảnh nhân sự chưa tồn tại (hoặc hỏng) ⇒ rơi về chữ cái đầu, KHÔNG hiện icon ảnh vỡ.
+  const [imageFailed, setImageFailed] = useState(false);
 
-  if (uploaded) {
+  useEffect(() => {
+    setImageFailed(false);
+  }, [photoSrc]);
+
+  if (photoSrc && !imageFailed) {
     return (
       <img
         className="erp-chat__roomAvatarImg"
-        src={chatAvatarSrc(value)}
+        src={photoSrc}
         alt={name || "avatar"}
         style={{ width: size, height: size }}
+        onError={() => setImageFailed(true)}
       />
     );
   }

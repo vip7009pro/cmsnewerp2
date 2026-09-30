@@ -542,7 +542,9 @@ export default function ChatConversationView({
         <div className="erp-chat__dropOverlay" aria-hidden="true">
           <CloudUploadRoundedIcon sx={{ fontSize: 44 }} />
           <strong>Thả tệp để đính kèm</strong>
-          <small>Tối đa {MAX_FILES_PER_MESSAGE} tệp · mỗi tệp không quá 1GB</small>
+          <small>
+            Tối đa {MAX_FILES_PER_MESSAGE} tệp · mỗi tệp không quá 1GB · mọi định dạng
+          </small>
         </div>
       )}
 
