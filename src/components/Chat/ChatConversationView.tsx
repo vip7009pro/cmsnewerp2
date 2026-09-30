@@ -10,6 +10,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import GroupRoundedIcon from "@mui/icons-material/GroupsRounded";
+import TextFormatRoundedIcon from "@mui/icons-material/TextFormatRounded";
 import type {
   ChatAttachment,
   ChatConversation,
@@ -23,6 +24,13 @@ import ChatMessageBubble from "./ChatMessageBubble";
 import ChatMessageMenu, { type ChatMessageMenuState } from "./ChatMessageMenu";
 import ChatSearchPanel from "./ChatSearchPanel";
 import ChatMediaDialog from "./ChatMediaDialog";
+import ChatRichEditor, { type ChatRichEditorHandle } from "./ChatRichEditor";
+import {
+  isRichContentEmpty,
+  plainTextToRichHtml,
+  richToPlainText,
+  sanitizeRichHtml,
+} from "./chatRichText";
 import ChatRoomAvatar from "./chatAvatars";
 import { shareAttachmentOut, shareMessageOut } from "./chatShareOut";
 import type { PendingUpload } from "../../hooks/useChatController";
@@ -56,7 +64,7 @@ interface Props {
   onBack: () => void;
   onOpenInfo: () => void;
   onLoadMore: () => void;
-  onSend: (payload: { content: string; files?: File[]; mentions?: string[] }) => void;
+  onSend: (payload: { content: string; files?: File[]; mentions?: string[]; msgType?: string }) => void;
   onRetry: (message: ChatMessage) => void;
   onReply: (message: ChatMessage) => void;
   onClearReply: () => void;
@@ -150,6 +158,20 @@ export default function ChatConversationView({
   onJumpToMessage,
 }: Props) {
   const [text, setText] = useState("");
+  /**
+   * Chế độ soạn tin RICHTEXT (định dạng đậm/nghiêng/màu/cỡ chữ...).
+   * Nhớ theo người dùng để lần sau mở lại vẫn đúng chế độ đang dùng.
+   */
+  const [richMode, setRichMode] = useState(() => {
+    try {
+      return localStorage.getItem("chat_rich_mode") === "1";
+    } catch {
+      return false;
+    }
+  });
+  /** HTML hiện tại của vùng soạn richtext (đã lọc theo allowlist). */
+  const [richHtml, setRichHtml] = useState("");
+  const richEditorRef = useRef<ChatRichEditorHandle | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
   const [mentionKeyword, setMentionKeyword] = useState<string | null>(null);
@@ -190,9 +212,29 @@ export default function ChatConversationView({
   useEffect(() => {
     if (!draftText) return;
     setText(draftText);
+    if (richMode) {
+      const html = plainTextToRichHtml(draftText);
+      setRichHtml(html);
+      requestAnimationFrame(() => {
+        richEditorRef.current?.setHtml(html);
+        richEditorRef.current?.focus();
+      });
+    } else {
+      requestAnimationFrame(() => textareaRef.current?.focus());
+    }
     onConsumeDraft();
-    requestAnimationFrame(() => textareaRef.current?.focus());
-  }, [draftText, onConsumeDraft]);
+  }, [draftText, onConsumeDraft, richMode]);
+
+  /** Báo "đang nhập" — tự chống spam trong 2.5s (dùng chung cho cả 2 chế độ soạn tin). */
+  const notifyTyping = useCallback(() => {
+    if (typingSentRef.current) return;
+    typingSentRef.current = true;
+    onTyping(true);
+    window.setTimeout(() => {
+      typingSentRef.current = false;
+      onTyping(false);
+    }, 2500);
+  }, [onTyping]);
 
   /**
    * Cuộn xuống cuối khung tin nhắn. Gọi lặp vài nhịp vì chiều cao danh sách còn thay đổi
@@ -364,29 +406,49 @@ export default function ChatConversationView({
   const handleTextChange = (value: string) => {
     setText(value);
 
-    if (!typingSentRef.current && value.trim().length > 0) {
-      typingSentRef.current = true;
-      onTyping(true);
-      window.setTimeout(() => {
-        typingSentRef.current = false;
-        onTyping(false);
-      }, 2500);
-    }
+    if (value.trim().length > 0) notifyTyping();
 
     const match = value.match(/@([^\s@]*)$/);
     setMentionKeyword(match ? match[1] : null);
+  };
+
+  /** Bật/tắt chế độ richtext — chuyển đổi nội dung đang soạn giữa text thuần và HTML. */
+  const toggleRichMode = () => {
+    const next = !richMode;
+    if (next) {
+      const html = richHtml || plainTextToRichHtml(text);
+      setRichHtml(html);
+      setRichMode(true);
+      requestAnimationFrame(() => {
+        richEditorRef.current?.setHtml(html);
+        richEditorRef.current?.focus();
+      });
+    } else {
+      setText(richToPlainText(richHtml));
+      setRichMode(false);
+      requestAnimationFrame(() => textareaRef.current?.focus());
+    }
+    try {
+      localStorage.setItem("chat_rich_mode", next ? "1" : "0");
+    } catch {
+      /* localStorage bị chặn — bỏ qua, chỉ mất tính năng nhớ chế độ. */
+    }
   };
 
   const insertMention = useCallback(
     (member: ChatMember) => {
       // Tag hiển thị bằng TÊN nhân viên (rơi về mã nếu chưa có tên).
       const label = member.FULL_NAME || member.EMPL_NO;
-      setText((prev) => prev.replace(/@([^\s@]*)$/, `@${label} `));
+      if (richMode) {
+        richEditorRef.current?.insertMention(label);
+      } else {
+        setText((prev) => prev.replace(/@([^\s@]*)$/, `@${label} `));
+        textareaRef.current?.focus();
+      }
       setMentions((prev) => (prev.includes(member.EMPL_NO) ? prev : [...prev, member.EMPL_NO]));
       setMentionKeyword(null);
-      textareaRef.current?.focus();
     },
-    []
+    [richMode]
   );
 
   const addFiles = (incoming: FileList | File[] | null) => {
@@ -452,15 +514,55 @@ export default function ChatConversationView({
   };
 
   const handleSubmit = () => {
-    if (!text.trim() && files.length === 0) return;
-    onSend({ content: text, files, mentions });
+    if (richMode) {
+      // Gửi HTML ĐÃ LỌC — server vẫn có lớp lọc riêng trước khi lưu.
+      const html = sanitizeRichHtml(richHtml);
+      if (isRichContentEmpty(html) && files.length === 0) return;
+      onSend({ content: html, files, mentions, msgType: "RICH" });
+    } else {
+      if (!text.trim() && files.length === 0) return;
+      onSend({ content: text, files, mentions });
+    }
     setText("");
+    setRichHtml("");
+    richEditorRef.current?.clear();
     setFiles([]);
     setMentions([]);
     setFileError(null);
     setMentionKeyword(null);
     onClearReply();
     if (textareaRef.current) textareaRef.current.style.height = "auto";
+  };
+
+  /**
+   * Điều hướng bảng gợi ý tag khi đang ở chế độ richtext.
+   * Trả về true nghĩa là đã xử lý phím ⇒ ChatRichEditor không gửi tin/xuống dòng.
+   */
+  const handleRichMentionKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (mentionKeyword === null || mentionCandidates.length === 0) return false;
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setMentionIndex((prev) => (prev + 1) % mentionCandidates.length);
+      return true;
+    }
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setMentionIndex(
+        (prev) => (prev - 1 + mentionCandidates.length) % mentionCandidates.length
+      );
+      return true;
+    }
+    if (event.key === "Enter" || event.key === "Tab") {
+      event.preventDefault();
+      insertMention(mentionCandidates[Math.min(mentionIndex, mentionCandidates.length - 1)]);
+      return true;
+    }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      setMentionKeyword(null);
+      return true;
+    }
+    return false;
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -498,7 +600,12 @@ export default function ChatConversationView({
 
   const handleCopy = async (message: ChatMessage) => {
     const lines: string[] = [];
-    if (message.CONTENT) lines.push(message.CONTENT);
+    if (message.CONTENT) {
+      // Tin RICHTEXT lưu HTML ⇒ sao chép phải ra chữ thuần.
+      lines.push(
+        message.MSG_TYPE === "RICH" ? richToPlainText(message.CONTENT) : message.CONTENT
+      );
+    }
     (message.ATTACHMENTS || []).forEach((attachment) =>
       lines.push(`[Tệp] ${attachment.originalName}`)
     );
@@ -799,25 +906,58 @@ export default function ChatConversationView({
             }}
           />
 
-          <textarea
-            ref={textareaRef}
-            className="erp-chat__input"
-            rows={1}
-            value={text}
-            placeholder="Nhập tin nhắn... (Enter để gửi, Shift+Enter xuống dòng, @ để tag tên)"            onChange={(event) => handleTextChange(event.target.value)}
-            onKeyDown={handleKeyDown}
-            onInput={(event) => {
-              const target = event.target as HTMLTextAreaElement;
-              target.style.height = "auto";
-              target.style.height = `${Math.min(target.scrollHeight, 120)}px`;
-            }}
-          />
+          <Tooltip
+            title={
+              richMode
+                ? "Tắt chế độ định dạng (quay về văn bản thuần)"
+                : "Bật chế độ định dạng (Richtext)"
+            }
+          >
+            <IconButton
+              size="small"
+              className={`erp-chat__iconBtn${richMode ? " is-rich" : ""}`}
+              onClick={toggleRichMode}
+              aria-label={richMode ? "Tắt chế độ định dạng" : "Bật chế độ định dạng"}
+            >
+              <TextFormatRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+
+          {richMode ? (
+            <ChatRichEditor
+              ref={richEditorRef}
+              onChange={setRichHtml}
+              onSubmit={handleSubmit}
+              onTyping={notifyTyping}
+              onMentionQuery={setMentionKeyword}
+              mentionOpen={mentionKeyword !== null && mentionCandidates.length > 0}
+              onMentionKeyDown={handleRichMentionKeyDown}
+            />
+          ) : (
+            <textarea
+              ref={textareaRef}
+              className="erp-chat__input"
+              rows={1}
+              value={text}
+              placeholder="Nhập tin nhắn... (Enter để gửi, Shift+Enter xuống dòng, @ để tag tên)"
+              onChange={(event) => handleTextChange(event.target.value)}
+              onKeyDown={handleKeyDown}
+              onInput={(event) => {
+                const target = event.target as HTMLTextAreaElement;
+                target.style.height = "auto";
+                target.style.height = `${Math.min(target.scrollHeight, 120)}px`;
+              }}
+            />
+          )}
 
           <IconButton
             size="small"
             className="erp-chat__sendBtn"
             onClick={handleSubmit}
-            disabled={!text.trim() && files.length === 0}
+            disabled={
+              files.length === 0 &&
+              (richMode ? isRichContentEmpty(richHtml) : !text.trim())
+            }
             aria-label="Gửi tin nhắn"
           >
             <SendRoundedIcon fontSize="small" />

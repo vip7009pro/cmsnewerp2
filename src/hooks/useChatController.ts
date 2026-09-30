@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getSocket, getUserData } from "../api/Api";
 import { chatService, uploadChatFile } from "../api/services/chatService";
+import { richToPlainText } from "../components/Chat/chatRichText";
 import type {
   ChatConversation,
   ChatEmployee,
@@ -20,6 +21,9 @@ const REACTION_KEYS = new Set<ChatReactionType>([
   "SAD",
   "ANGRY",
 ]);
+
+/** Khoá localStorage lưu mốc hết hạn "tạm ngừng thông báo" của chat. */
+const MUTE_STORAGE_KEY = "chat_notify_mute_until";
 
 export interface PendingUpload {
   id: string;
@@ -93,6 +97,29 @@ export function useChatController() {
     seq: number;
   } | null>(null);
 
+  /**
+   * Mốc thời gian (ms) hết hạn "Tạm ngừng thông báo". 0 = đang bật thông báo.
+   * Lưu ở localStorage để giữ nguyên khi F5 giữa lúc đang tập trung làm việc.
+   */
+  const [muteUntil, setMuteUntilState] = useState<number>(() => {
+    try {
+      const raw = Number(localStorage.getItem(MUTE_STORAGE_KEY) || 0);
+      return Number.isFinite(raw) && raw > Date.now() ? raw : 0;
+    } catch {
+      return 0;
+    }
+  });
+  const muteUntilRef = useRef(muteUntil);
+  muteUntilRef.current = muteUntil;
+
+  /** Cửa sổ chat đang mở hay không — ChatDock đồng bộ xuống để biết khi nào cần tự bật. */
+  const dockOpenRef = useRef(false);
+  /**
+   * Yêu cầu "mở cửa sổ chat và vào đúng phòng này" khi có tin mới.
+   * `seq` đổi mỗi lần nên cùng 1 phòng nhận nhiều tin vẫn kích hoạt lại.
+   */
+  const [autoOpen, setAutoOpen] = useState<{ conversationId: number; seq: number } | null>(null);
+
   const activeIdRef = useRef<number | null>(null);
   const typingTimers = useRef<Record<string, number>>({});
   const conversationsRef = useRef<ChatConversation[]>([]);
@@ -115,6 +142,29 @@ export function useChatController() {
   );
 
   const activeMessages = activeId ? messages[activeId] || [] : [];
+
+  /** Đang tạm ngừng thông báo chat (không tự bật cửa sổ khi có tin mới). */
+  const isMuted = muteUntil > Date.now();
+
+  /** Bật/tắt tạm ngừng thông báo. `null` hoặc 0 = bật lại ngay. */
+  const setMute = useCallback((minutes: number | null) => {
+    const until = minutes && minutes > 0 ? Date.now() + minutes * 60_000 : 0;
+    setMuteUntilState(until);
+    try {
+      if (until > 0) localStorage.setItem(MUTE_STORAGE_KEY, String(until));
+      else localStorage.removeItem(MUTE_STORAGE_KEY);
+    } catch {
+      /* localStorage có thể bị chặn — bỏ qua, chỉ mất tính năng nhớ trạng thái. */
+    }
+  }, []);
+
+  /** ChatDock báo lên trạng thái mở/đóng để tránh tự bật khi cửa sổ đã mở đúng phòng. */
+  const setDockOpen = useCallback((open: boolean) => {
+    dockOpenRef.current = open;
+  }, []);
+
+  /** ChatDock gọi sau khi đã xử lý yêu cầu tự mở (tránh lặp vô hạn vì `controller` đổi mỗi render). */
+  const consumeAutoOpen = useCallback(() => setAutoOpen(null), []);
 
   /* ----------------------------- Nạp dữ liệu ---------------------------- */
 
@@ -358,11 +408,18 @@ export function useChatController() {
       if (!content && files.length === 0) return;
 
       const clientMessageId = makeClientId();
+      // Loại tin: tôn trọng `msgType` do composer gửi (ví dụ "RICH" khi bật định dạng).
+      const derivedType = files.length > 0
+        ? files[0].type.startsWith("image/")
+          ? "IMAGE"
+          : "FILE"
+        : "TEXT";
+      const outgoingType = (payload.msgType as ChatMessage["MSG_TYPE"]) || derivedType;
       const optimistic: ChatMessage = {
         MESSAGE_ID: -Date.now(),
         CONVERSATION_ID: conversationId,
         SENDER_EMPL_NO: myEmplNo,
-        MSG_TYPE: files.length > 0 ? (files[0].type.startsWith("image/") ? "IMAGE" : "FILE") : "TEXT",
+        MSG_TYPE: outgoingType,
         CONTENT: content || null,
         CREATED_AT: new Date().toISOString(),
         CLIENT_MESSAGE_ID: clientMessageId,
@@ -420,9 +477,7 @@ export function useChatController() {
         // Trả lời tin nhắn: ưu tiên tham số truyền vào, không thì dùng tin đang được chọn để trả lời.
         replyToMessageId: payload.replyToMessageId ?? replyTargetRef.current?.messageId,
         // Loại tin suy ra từ file đính kèm để server lưu đúng IMAGE/FILE.
-        msgType:
-          payload.msgType ||
-          (files.length > 0 ? (files[0].type.startsWith("image/") ? "IMAGE" : "FILE") : "TEXT"),
+        msgType: outgoingType,
         attachmentIds: attachmentIds.length > 0 ? attachmentIds : undefined,
       };
 
@@ -547,6 +602,17 @@ export function useChatController() {
       if (isActive && !isMine) {
         const socketNow = getSocket();
         socketNow?.emit("chat:read", { conversationId, lastMessageId: message.MESSAGE_ID });
+      }
+
+      // Tự bật cửa sổ chat và vào đúng phòng khi có tin mới tới — TRỪ khi:
+      //  - tin do chính mình gửi;
+      //  - người dùng đang "tạm ngừng thông báo" (muốn tập trung làm việc);
+      //  - phòng đó đang được mở sẵn (không cần bật lại).
+      if (!isMine && muteUntilRef.current <= Date.now()) {
+        const alreadyVisible = dockOpenRef.current && isActive;
+        if (!alreadyVisible) {
+          setAutoOpen({ conversationId, seq: Date.now() + Math.random() });
+        }
       }
     };
 
@@ -854,6 +920,8 @@ export function useChatController() {
       ? "[Hình ảnh]"
       : message.MSG_TYPE === "FILE"
       ? "[Tệp đính kèm]"
+      : message.MSG_TYPE === "RICH"
+      ? richToPlainText(message.CONTENT).slice(0, 120)
       : String(message.CONTENT || "").slice(0, 120);
     setReplyTarget({
       messageId: message.MESSAGE_ID,
@@ -903,6 +971,12 @@ export function useChatController() {
     activeId,
     activeConversation,
     activeMessages,
+    autoOpen,
+    consumeAutoOpen,
+    isMuted,
+    muteUntil,
+    setMute,
+    setDockOpen,
     hasMore,
     loadingMessages,
     loadingMore,

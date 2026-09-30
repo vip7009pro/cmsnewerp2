@@ -1,6 +1,6 @@
 export type ChatConversationType = "DIRECT" | "GROUP" | "SELF";
 export type ChatRole = "OWNER" | "ADMIN" | "MODERATOR" | "MEMBER";
-export type ChatMessageType = "TEXT" | "IMAGE" | "FILE" | "SYSTEM";
+export type ChatMessageType = "TEXT" | "IMAGE" | "FILE" | "SYSTEM" | "RICH";
 export type ChatReactionType = "LIKE" | "LOVE" | "HAHA" | "WOW" | "SAD" | "ANGRY";
 
 /** Tổng hợp cảm xúc của 1 loại trên 1 tin nhắn. */

@@ -1,6 +1,7 @@
 import type { ChatAttachment, ChatConversation, ChatMediaItem, ChatMessage } from "./chat.types";
 import { chatFileUrl } from "../../api/services/chatService";
 import { timeLabel } from "./chatUtils";
+import { richToPlainText } from "./chatRichText";
 
 /**
  * Chia sẻ nội dung chat RA app bên ngoài (Zalo, Kakao, Telegram, Mail, ...)
@@ -280,7 +281,9 @@ export async function shareMessageOut({
 
   const attachments = message.ATTACHMENTS || [];
   const text = buildMessageShareText({
-    content: message.CONTENT,
+    // Tin RICHTEXT lưu HTML ⇒ chia sẻ ra ngoài phải là chữ thuần.
+    content:
+      message.MSG_TYPE === "RICH" ? richToPlainText(message.CONTENT) : message.CONTENT,
     attachments,
     conversationId: message.CONVERSATION_ID,
     conversationName: conversation?.DISPLAY_NAME,

@@ -7,6 +7,7 @@ import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import FolderSpecialRoundedIcon from "@mui/icons-material/FolderSpecialRounded";
 import type { ChatConversation } from "./chat.types";
 import { chatAvatarUrl, initialsOf, shortTime } from "./chatUtils";
+import { richToPlainText } from "./chatRichText";
 import ChatRoomAvatar from "./chatAvatars";
 
 interface Props {
@@ -52,6 +53,8 @@ function previewText(conversation: ChatConversation): string {
   if (last.DELETED_AT) return `${prefix}Tin nhắn đã được thu hồi`;
   if (last.MSG_TYPE === "IMAGE") return `${prefix}[Hình ảnh]`;
   if (last.MSG_TYPE === "FILE") return `${prefix}[Tệp đính kèm]`;
+  // Tin RICHTEXT lưu HTML ⇒ preview phải là chữ thuần, nếu không sẽ thấy cả thẻ.
+  if (last.MSG_TYPE === "RICH") return `${prefix}${richToPlainText(last.CONTENT)}`;
   return `${prefix}${last.CONTENT || ""}`;
 }
 

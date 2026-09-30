@@ -17,6 +17,7 @@ import type {
   ChatSearchResult,
 } from "./chat.types";
 import ChatDateField from "./ChatDateField";
+import { richToPlainText } from "./chatRichText";
 import { chatService } from "../../api/services/chatService";
 import {
   FILE_KIND_COLOR,
@@ -341,6 +342,8 @@ export default function ChatSearchPanel({
                   <span className="erp-chat__searchText">
                     {item.DELETED_AT ? (
                       <em>Tin nhắn đã được thu hồi</em>
+                    ) : item.MSG_TYPE === "RICH" ? (
+                      richToPlainText(item.CONTENT) || "(không có nội dung văn bản)"
                     ) : (
                       item.CONTENT || "(không có nội dung văn bản)"
                     )}

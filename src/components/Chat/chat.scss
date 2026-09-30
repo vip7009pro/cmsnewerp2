@@ -1134,6 +1134,34 @@ $chat-bubble-other: #f1f5f9;
   }
 }
 
+/* Chế độ toàn màn hình: chiếm trọn viewport, bỏ bo góc/viền. */
+.erp-chat__window.is-fullscreen {
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  max-width: 100vw;
+  height: 100vh;
+  border: none;
+  border-radius: 0;
+}
+
+.erp-chat__windowActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+/* Đang tạm ngừng thông báo: tô đỏ để nhìn là biết. */
+.erp-chat__iconBtn.is-muted {
+  color: #dc2626;
+  background: #fee2e2;
+
+  &:hover {
+    background: #fecaca;
+  }
+}
+
 /* -------------------------------- Mobile -------------------------------- */
 
 .erp-chat__mobileOverlay {
@@ -2625,5 +2653,226 @@ $chat-bubble-other: #f1f5f9;
   .erp-chat__imageShare,
   .erp-chat__mediaTileWrap .erp-chat__mediaShare {
     opacity: 0.92;
+  }
+}
+
+/* ============================================================================
+   Chế độ soạn tin RICHTEXT (MSG_TYPE = "RICH") — thanh công cụ + vùng soạn thảo
+   ========================================================================= */
+
+.erp-chat__richWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.erp-chat__richToolbar {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1px;
+  padding: 3px 4px;
+  border: 1px solid $chat-border;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.erp-chat__richBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #475569;
+  font-size: 16px;
+  cursor: pointer;
+
+  &:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+  }
+
+  &.is-active {
+    background: $chat-primary-soft;
+    color: #1d4ed8;
+  }
+}
+
+.erp-chat__richSep {
+  width: 1px;
+  height: 16px;
+  margin: 0 3px;
+  background: $chat-border;
+}
+
+/* Panel nổi của thanh công cụ (cỡ chữ / màu chữ / màu nền). */
+.erp-chat__richPanel {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 4px);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  min-width: 96px;
+  padding: 4px;
+  border: 1px solid $chat-border;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.18);
+}
+
+.erp-chat__richPanel--swatch {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: 128px;
+}
+
+.erp-chat__richPanelItem {
+  padding: 5px 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: $chat-text;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    background: #eef2f7;
+  }
+}
+
+.erp-chat__richSwatch {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.erp-chat__richInput {
+  flex: 1;
+  min-width: 0;
+  min-height: 38px;
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 9px 12px;
+  border: 1px solid $chat-border;
+  border-radius: 12px;
+  outline: none;
+  font-size: 13px;
+  line-height: 1.45;
+  color: $chat-text;
+  word-break: break-word;
+
+  &:focus {
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+
+  &:empty::before {
+    content: attr(data-placeholder);
+    color: #94a3b8;
+    pointer-events: none;
+  }
+
+  /* Định dạng cơ bản ngay trong lúc soạn (khớp với allowlist khi render). */
+  h1,
+  h2,
+  h3 {
+    margin: 4px 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  blockquote {
+    margin: 4px 0;
+    padding: 2px 0 2px 8px;
+    border-left: 3px solid #cbd5e1;
+    color: #475569;
+  }
+
+  ul,
+  ol {
+    margin: 4px 0;
+    padding-left: 20px;
+  }
+}
+
+/* Nút bật/tắt chế độ richtext trên thanh soạn tin. */
+.erp-chat__iconBtn.is-rich {
+  color: #1d4ed8;
+  background: $chat-primary-soft;
+}
+
+/* ------------------------- Hiển thị tin RICHTEXT ------------------------- */
+
+.erp-chat__text--rich {
+  cursor: default;
+
+  p,
+  div {
+    margin: 0 0 4px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 6px 0 4px;
+    font-weight: 700;
+    line-height: 1.3;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  h3 {
+    font-size: 15px;
+  }
+
+  blockquote {
+    margin: 4px 0;
+    padding: 2px 0 2px 8px;
+    border-left: 3px solid #cbd5e1;
+    color: #475569;
+  }
+
+  ul,
+  ol {
+    margin: 4px 0;
+    padding-left: 20px;
+  }
+
+  code,
+  pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+
+  mark {
+    background: #fef08a;
+  }
+
+  /* Tag tên bấm được (span do decorateMentionsInHtml sinh ra). */
+  .erp-chat__mention {
+    cursor: pointer;
   }
 }

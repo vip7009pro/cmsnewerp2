@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Avatar, IconButton, Tooltip } from "@mui/material";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
@@ -28,6 +28,7 @@ import {
   renderMentions,
   timeLabel,
 } from "./chatUtils";
+import { decorateMentionsInHtml, richToPlainText } from "./chatRichText";
 
 interface Props {
   message: ChatMessage;
@@ -117,6 +118,21 @@ export default function ChatMessageBubble({
   const deleted = Boolean(message.DELETED_AT);
   const attachments = message.ATTACHMENTS || [];
   const memberNames = conversation.MEMBERS.map((m) => ({ name: m.FULL_NAME, emplNo: m.EMPL_NO }));
+  /** Tin RICHTEXT ⇒ HTML đã lọc + bọc sẵn tag tên (bấm được qua delegation bên dưới). */
+  const isRich = message.MSG_TYPE === "RICH";
+  const richHtml = useMemo(
+    () => (isRich ? decorateMentionsInHtml(message.CONTENT, memberNames) : ""),
+    [isRich, message.CONTENT, memberNames]
+  );
+
+  /** Bấm vào tag tên trong tin richtext (span có `data-mention`). */
+  const handleRichTextClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const emplNo = (event.target as HTMLElement)?.dataset?.mention;
+    if (!emplNo) return;
+    event.stopPropagation();
+    const name = memberNames.find((item) => item.emplNo === emplNo)?.name || emplNo;
+    onMentionClick(emplNo, name, richToPlainText(message.CONTENT));
+  };
 
   // Chip cảm xúc: chỉ hiện loại đã có người thả, sắp xếp theo số lượng giảm dần.
   const reactionChips = REACTION_ORDER.map((key) => {
@@ -294,15 +310,22 @@ export default function ChatMessageBubble({
                 </div>
               )}
 
-              {message.CONTENT && (
-                <div className="erp-chat__text">
-                  {renderMentions(message.CONTENT, {
-                    memberNames,
-                    onMentionClick: (emplNo, name) =>
-                      onMentionClick(emplNo, name, message.CONTENT || ""),
-                  })}
-                </div>
-              )}
+              {message.CONTENT &&
+                (isRich ? (
+                  <div
+                    className="erp-chat__text erp-chat__text--rich"
+                    onClick={handleRichTextClick}
+                    dangerouslySetInnerHTML={{ __html: richHtml }}
+                  />
+                ) : (
+                  <div className="erp-chat__text">
+                    {renderMentions(message.CONTENT, {
+                      memberNames,
+                      onMentionClick: (emplNo, name) =>
+                        onMentionClick(emplNo, name, message.CONTENT || ""),
+                    })}
+                  </div>
+                ))}
             </>
           )}
 
