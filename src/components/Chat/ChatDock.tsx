@@ -32,7 +32,12 @@ import {
 } from "./chatShareTarget";
 import type { ChatMessage } from "./chat.types";
 import { chatService } from "../../api/services/chatService";
-import { useChatController } from "../../hooks/useChatController";
+import { formatMuteRemaining } from "./chatUtils";
+import {
+  isMuteUntilOpen,
+  useChatController,
+  type ChatMuteOption,
+} from "../../hooks/useChatController";
 import { useMobileBackClose } from "../NavMenu/useMobileBackClose";
 import "./chat.scss";
 
@@ -44,25 +49,15 @@ interface ChatDockProps {
   showTrigger?: boolean;
 }
 
-/** Các mốc thời gian "Tạm ngừng thông báo" chat. */
-const MUTE_OPTIONS: { label: string; minutes: number }[] = [
-  { label: "Trong 10 phút", minutes: 10 },
-  { label: "Trong 1 giờ", minutes: 60 },
-  { label: "Trong 4 giờ", minutes: 240 },
-  { label: "Trong 1 ngày", minutes: 1440 },
+/** Các mốc thời gian tắt thông báo cho 1 phòng. */
+const MUTE_OPTIONS: { label: string; value: ChatMuteOption }[] = [
+  { label: "Trong 10 phút", value: 10 },
+  { label: "Trong 1 giờ", value: 60 },
+  { label: "Trong 4 giờ", value: 240 },
+  { label: "Trong 1 ngày", value: 1440 },
+  // Không hết hạn theo thời gian — chỉ bật lại khi người dùng mở lại phòng.
+  { label: "Cho tới khi mở lại", value: "untilOpen" },
 ];
-
-/** Chuỗi "còn lại bao lâu" cho tooltip/nhãn khi đang tạm ngừng thông báo. */
-function formatMuteRemaining(muteUntil: number): string {
-  const ms = muteUntil - Date.now();
-  if (ms <= 0) return "";
-  const minutes = Math.ceil(ms / 60_000);
-  if (minutes < 60) return `${minutes} phút`;
-  const hours = Math.floor(minutes / 60);
-  const rest = minutes % 60;
-  if (hours < 24) return rest > 0 ? `${hours} giờ ${rest} phút` : `${hours} giờ`;
-  return `${Math.ceil(hours / 24)} ngày`;
-}
 
 export default function ChatDock({ isMobile = false, open, onOpenChange, showTrigger = true }: ChatDockProps) {
   const controller = useChatController();
@@ -170,13 +165,14 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
     }
   }, [controller, setOpen]);
 
-  // Nhịp 30 giây để nhãn "còn lại" của chế độ tạm ngừng thông báo tự cập nhật.
+  // Nhịp 30 giây để nhãn "còn lại" của chế độ tắt thông báo tự cập nhật.
+  const anyConversationMuted = controller.conversations.some((c) => c.MUTED);
   const [, setClockTick] = useState(0);
   useEffect(() => {
-    if (!controller.isMuted) return;
+    if (!anyConversationMuted) return;
     const timer = window.setInterval(() => setClockTick((value) => value + 1), 30_000);
     return () => window.clearInterval(timer);
-  }, [controller.isMuted]);
+  }, [anyConversationMuted]);
 
   // Esc để thoát toàn màn hình.
   useEffect(() => {
@@ -188,31 +184,17 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [fullscreen]);
 
-  const muteLabel = controller.isMuted ? formatMuteRemaining(controller.muteUntil) : "";
-
-  /** Nút tạm ngừng thông báo (dùng chung cho header desktop và mobile). */
-  const muteButton = (
-    <Tooltip
-      title={
-        controller.isMuted
-          ? `Đang tạm ngừng thông báo (còn ${muteLabel}) · bấm để đổi`
-          : "Tạm ngừng thông báo tin mới"
-      }
-    >
-      <IconButton
-        size="small"
-        className={`erp-chat__iconBtn${controller.isMuted ? " is-muted" : ""}`}
-        onClick={(event) => setMuteAnchor(event.currentTarget)}
-        aria-label="Tạm ngừng thông báo"
-      >
-        {controller.isMuted ? (
-          <NotificationsOffRoundedIcon fontSize="small" />
-        ) : (
-          <NotificationsActiveRoundedIcon fontSize="small" />
-        )}
-      </IconButton>
-    </Tooltip>
+  /**
+   * Chuông tắt thông báo nay thuộc TỪNG PHÒNG và nằm trong header phòng
+   * (ChatConversationView báo lên đây để mở menu, tránh phải truyền ReactNode xuống).
+   */
+  const activeMuteSeconds = controller.activeId
+    ? controller.muteSecondsLeftOfConversation(controller.activeId)
+    : null;
+  const activeMuteUntilOpen = Boolean(
+    activeMuteSeconds && isMuteUntilOpen(activeMuteSeconds)
   );
+  const muteLabel = activeMuteSeconds ? formatMuteRemaining(activeMuteSeconds) : "";
 
   /** Nút bật/tắt toàn màn hình — chỉ có ý nghĩa ở cửa sổ desktop. */
   const fullscreenButton = (
@@ -404,6 +386,20 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
             }
             onBack={controller.clearActive}
             onOpenInfo={() => setShowInfo(true)}
+            onOpenMuteMenu={(anchor) => setMuteAnchor(anchor)}
+            muteSecondsLeft={activeMuteSeconds}
+            muteUntilOpen={activeMuteUntilOpen}
+            pins={controller.pins[controller.activeConversation.CONVERSATION_ID] || []}
+            readState={controller.readState[controller.activeConversation.CONVERSATION_ID] || {}}
+            onTogglePin={(message, pinned) =>
+              void controller.setMessagePinned(
+                controller.activeConversation!.CONVERSATION_ID,
+                message.MESSAGE_ID,
+                pinned
+              )
+            }
+            /* Mobile: nút đóng cửa sổ nằm trong header phòng (bỏ header "Tin nhắn nội bộ"). */
+            onCloseWindow={isMobile ? () => setOpen(false) : null}
             onLoadMore={() =>
               controller.activeId ? controller.loadMore(controller.activeId) : Promise.resolve()
             }
@@ -503,16 +499,9 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
 
       {isMobile ? (
         isOpen && (
+          /* Mobile: KHÔNG có header "Tin nhắn nội bộ" — chuông tắt thông báo và nút đóng
+             nằm trong header của phòng (xem ChatConversationView). */
           <div className="erp-chat__mobileOverlay">
-            <div className="erp-chat__mobileHead">
-              <span>Tin nhắn nội bộ</span>
-              <div className="erp-chat__windowActions">
-                {muteButton}
-                <IconButton size="small" onClick={() => setOpen(false)} aria-label="Đóng chat">
-                  <CloseRoundedIcon fontSize="small" />
-                </IconButton>
-              </div>
-            </div>
             <div className="erp-chat__mobileBody">{panel}</div>
           </div>
         )
@@ -536,7 +525,6 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
                 )}
               </span>
               <div className="erp-chat__windowActions">
-                {muteButton}
                 {fullscreenButton}
                 <IconButton
                   size="small"
@@ -554,6 +542,7 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
         )
       )}
 
+      {/* Menu tắt thông báo cho ĐÚNG phòng đang mở (nút chuông nằm ở header phòng). */}
       <Menu
         anchorEl={muteAnchor}
         open={Boolean(muteAnchor)}
@@ -562,34 +551,38 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
         <MenuItem disabled sx={{ fontSize: 12, opacity: "1 !important", fontWeight: 700 }}>
-          Tạm ngừng thông báo
+          Tắt thông báo phòng này
         </MenuItem>
         {MUTE_OPTIONS.map((option) => (
           <MenuItem
-            key={option.minutes}
+            key={option.label}
             sx={{ fontSize: 13 }}
             onClick={() => {
-              controller.setMute(option.minutes);
+              const conversationId = controller.activeId;
               setMuteAnchor(null);
+              if (conversationId) void controller.setConversationMute(conversationId, option.value);
             }}
           >
             {option.label}
           </MenuItem>
         ))}
-        {controller.isMuted && (
+        {activeMuteSeconds && (
           <MenuItem
             sx={{ fontSize: 13, color: "#dc2626" }}
             onClick={() => {
-              controller.setMute(null);
+              const conversationId = controller.activeId;
               setMuteAnchor(null);
+              if (conversationId) void controller.setConversationMute(conversationId, null);
             }}
           >
             Bật lại thông báo
           </MenuItem>
         )}
-        {controller.isMuted && (
+        {activeMuteSeconds && (
           <MenuItem disabled sx={{ fontSize: 11, opacity: "1 !important", color: "#64748b" }}>
-            Còn {muteLabel} · cửa sổ chat sẽ không tự bật
+            {activeMuteUntilOpen
+              ? "Sẽ bật lại khi bạn mở lại phòng này"
+              : `Còn ${muteLabel} · tin mới sẽ không tự bật cửa sổ`}
           </MenuItem>
         )}
       </Menu>

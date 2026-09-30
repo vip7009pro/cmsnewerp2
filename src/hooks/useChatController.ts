@@ -7,6 +7,7 @@ import type {
   ChatEmployee,
   ChatFriendEntry,
   ChatMessage,
+  ChatPinnedMessage,
   ChatReactionBurst,
   ChatReactionType,
   ChatReplyTarget,
@@ -22,8 +23,36 @@ const REACTION_KEYS = new Set<ChatReactionType>([
   "ANGRY",
 ]);
 
-/** Khoá localStorage lưu mốc hết hạn "tạm ngừng thông báo" của chat. */
-const MUTE_STORAGE_KEY = "chat_notify_mute_until";
+/**
+ * Số giây "coi như vô hạn" cho chế độ tắt thông báo **Cho tới khi mở lại** ở 1 phòng.
+ * Server trả đúng mốc này (chặn trần 1 năm) nên chỉ cần so sánh ngưỡng.
+ */
+export const MUTE_UNTIL_OPEN_SECONDS = 365 * 24 * 3600;
+
+/** Ngưỡng nhận biết chế độ "cho tới khi mở lại" (≥ 300 ngày). */
+export const MUTE_UNTIL_OPEN_THRESHOLD_SECONDS = 300 * 24 * 3600;
+
+/** True khi số giây còn lại thuộc chế độ "cho tới khi mở lại phòng". */
+export function isMuteUntilOpen(secondsLeft: number): boolean {
+  return Number(secondsLeft) >= MUTE_UNTIL_OPEN_THRESHOLD_SECONDS;
+}
+
+/** Lựa chọn tắt thông báo: số phút, "untilOpen", hoặc null = bật lại. */
+export type ChatMuteOption = number | "untilOpen" | null;
+
+/** Trạng thái tắt thông báo của 1 phòng (đã quy về mốc thời gian tuyệt đối). */
+export interface ChatMuteState {
+  /** Mốc hết hạn (ms). */
+  deadline: number;
+  untilOpen: boolean;
+}
+
+/** Số giây còn lại (đã trừ thời gian trôi qua từ lúc nhận). */
+function muteSecondsLeftOf(state: ChatMuteState | undefined, now: number): number | null {
+  if (!state) return null;
+  const ms = state.deadline - now;
+  return ms > 0 ? Math.round(ms / 1000) : null;
+}
 
 export interface PendingUpload {
   id: string;
@@ -98,19 +127,18 @@ export function useChatController() {
   } | null>(null);
 
   /**
-   * Mốc thời gian (ms) hết hạn "Tạm ngừng thông báo". 0 = đang bật thông báo.
-   * Lưu ở localStorage để giữ nguyên khi F5 giữa lúc đang tập trung làm việc.
+   * Trạng thái TẮT THÔNG BÁO theo TỪNG PHÒNG (mốc hết hạn tuyệt đối).
+   * Nguồn sự thật là server (participant.MUTED_UNTIL) nên đổi máy vẫn giữ nguyên.
    */
-  const [muteUntil, setMuteUntilState] = useState<number>(() => {
-    try {
-      const raw = Number(localStorage.getItem(MUTE_STORAGE_KEY) || 0);
-      return Number.isFinite(raw) && raw > Date.now() ? raw : 0;
-    } catch {
-      return 0;
-    }
-  });
-  const muteUntilRef = useRef(muteUntil);
-  muteUntilRef.current = muteUntil;
+  const [muteStates, setMuteStates] = useState<Record<number, ChatMuteState>>({});
+  const muteStatesRef = useRef<Record<number, ChatMuteState>>({});
+  muteStatesRef.current = muteStates;
+
+  /** Mốc đọc cuối của từng thành viên: conversationId → emplNo → messageId. */
+  const [readState, setReadState] = useState<Record<number, Record<string, number>>>({});
+
+  /** Tin nhắn đang ghim của từng phòng (ghim mới nhất trước). */
+  const [pins, setPins] = useState<Record<number, ChatPinnedMessage[]>>({});
 
   /** Cửa sổ chat đang mở hay không — ChatDock đồng bộ xuống để biết khi nào cần tự bật. */
   const dockOpenRef = useRef(false);
@@ -143,20 +171,59 @@ export function useChatController() {
 
   const activeMessages = activeId ? messages[activeId] || [] : [];
 
-  /** Đang tạm ngừng thông báo chat (không tự bật cửa sổ khi có tin mới). */
-  const isMuted = muteUntil > Date.now();
+  /** Số giây còn tắt thông báo của 1 phòng (null = đang nhận thông báo). */
+  const muteSecondsLeftOfConversation = useCallback(
+    (conversationId: number): number | null =>
+      muteSecondsLeftOf(muteStatesRef.current[conversationId], Date.now()),
+    []
+  );
 
-  /** Bật/tắt tạm ngừng thông báo. `null` hoặc 0 = bật lại ngay. */
-  const setMute = useCallback((minutes: number | null) => {
-    const until = minutes && minutes > 0 ? Date.now() + minutes * 60_000 : 0;
-    setMuteUntilState(until);
-    try {
-      if (until > 0) localStorage.setItem(MUTE_STORAGE_KEY, String(until));
-      else localStorage.removeItem(MUTE_STORAGE_KEY);
-    } catch {
-      /* localStorage có thể bị chặn — bỏ qua, chỉ mất tính năng nhớ trạng thái. */
-    }
+  /** Đang tắt thông báo phòng này? Dùng để chặn tự bật cửa sổ khi có tin mới. */
+  const isConversationMuted = useCallback((conversationId: number): boolean => {
+    const state = muteStatesRef.current[conversationId];
+    return Boolean(state && state.deadline > Date.now());
   }, []);
+
+  /**
+   * Tắt/bật thông báo cho RIÊNG 1 phòng.
+   * `null` = bật lại; `"untilOpen"` = tới khi mở lại phòng; số = số phút.
+   */
+  const setConversationMute = useCallback(
+    async (conversationId: number, option: ChatMuteOption) => {
+      const payload =
+        option === null
+          ? { mode: "off" as const }
+          : option === "untilOpen"
+            ? { mode: "untilOpen" as const }
+            : { mode: "minutes" as const, minutes: option };
+
+      try {
+        const result = await chatService.muteConversation(conversationId, payload);
+        const seconds = Number(result?.mutedSecondsLeft) > 0 ? Number(result.mutedSecondsLeft) : 0;
+        setMuteStates((prev) => {
+          const next = { ...prev };
+          if (seconds > 0) next[conversationId] = { deadline: Date.now() + seconds * 1000, untilOpen: Boolean(result.mutedUntilOpen) };
+          else delete next[conversationId];
+          return next;
+        });
+        setConversations((prev) =>
+          prev.map((c) =>
+            c.CONVERSATION_ID === conversationId
+              ? {
+                  ...c,
+                  MUTED: seconds > 0,
+                  MUTED_SECONDS_LEFT: seconds > 0 ? seconds : null,
+                  MUTED_UNTIL_OPEN: Boolean(result?.mutedUntilOpen),
+                }
+              : c
+          )
+        );
+      } catch (error) {
+        console.warn("[chat] đổi trạng thái thông báo lỗi:", error);
+      }
+    },
+    []
+  );
 
   /** ChatDock báo lên trạng thái mở/đóng để tránh tự bật khi cửa sổ đã mở đúng phòng. */
   const setDockOpen = useCallback((open: boolean) => {
@@ -177,6 +244,42 @@ export function useChatController() {
       if (Array.isArray(onlineEmplNos)) {
         setOnlineUsers(new Set(onlineEmplNos.map((v) => String(v || "").trim().toUpperCase())));
       }
+
+      // Tắt thông báo theo phòng: đổi số giây còn lại thành mốc tuyệt đối để đếm ngược.
+      const now = Date.now();
+      const nextMutes: Record<number, ChatMuteState> = {};
+      list.forEach((conversation) => {
+        const seconds = Number(conversation.MUTED_SECONDS_LEFT);
+        if (Number.isFinite(seconds) && seconds > 0) {
+          nextMutes[conversation.CONVERSATION_ID] = {
+            deadline: now + seconds * 1000,
+            untilOpen: Boolean(conversation.MUTED_UNTIL_OPEN),
+          };
+        }
+      });
+      setMuteStates(nextMutes);
+
+      // Mốc đọc cuối của từng thành viên → đếm "ai đã xem" từng tin nhắn.
+      const nextReads: Record<number, Record<string, number>> = {};
+      const nextPins: Record<number, ChatPinnedMessage[]> = {};
+      list.forEach((conversation) => {
+        const markers: Record<string, number> = {};
+        (conversation.MEMBERS || []).forEach((member) => {
+          markers[member.EMPL_NO] = Number(member.LAST_READ_MESSAGE_ID) || 0;
+        });
+        nextReads[conversation.CONVERSATION_ID] = markers;
+        nextPins[conversation.CONVERSATION_ID] = conversation.PINNED || [];
+      });
+      setReadState(nextReads);
+      setPins((prev) => {
+        // Giữ lại ghim vừa thao tác lạc quan ở phòng CHƯA có trong danh sách vừa tải.
+        const merged: Record<number, ChatPinnedMessage[]> = { ...nextPins };
+        Object.keys(prev).forEach((key) => {
+          const id = Number(key);
+          if (!(id in merged)) merged[id] = prev[id];
+        });
+        return merged;
+      });
     },
     []
   );
@@ -189,6 +292,41 @@ export function useChatController() {
       // Badge là thông tin phụ — lỗi mạng không nên làm ồn UI.
     }
   }, [applySync]);
+
+  /** Ghim / bỏ ghim 1 tin nhắn trong phòng (cập nhật lạc quan, server sẽ xác nhận). */
+  const setMessagePinned = useCallback(
+    async (conversationId: number, messageId: number, pinned: boolean) => {
+      setPins((prev) => {
+        const list = prev[conversationId] || [];
+        if (!pinned) {
+          return { ...prev, [conversationId]: list.filter((p) => p.MESSAGE_ID !== messageId) };
+        }
+        if (list.some((p) => p.MESSAGE_ID === messageId)) return prev;
+        const message = (messagesRef.current[conversationId] || []).find(
+          (m) => m.MESSAGE_ID === messageId
+        );
+        const entry: ChatPinnedMessage = {
+          MESSAGE_ID: messageId,
+          SENDER_EMPL_NO: message?.SENDER_EMPL_NO || myEmplNo,
+          MSG_TYPE: message?.MSG_TYPE || "TEXT",
+          CONTENT: message?.CONTENT ?? null,
+          CREATED_AT: message?.CREATED_AT || new Date().toISOString(),
+          PINNED_AT: new Date().toISOString(),
+          PINNED_BY: myEmplNo,
+        };
+        return { ...prev, [conversationId]: [entry, ...list] };
+      });
+
+      try {
+        await chatService.pinMessage(conversationId, messageId, pinned);
+      } catch (error) {
+        console.warn("[chat] ghim tin nhắn lỗi:", error);
+        // Sai ⇒ đồng bộ lại từ server để không hiển thị trạng thái sai.
+        await refreshBadge();
+      }
+    },
+    [myEmplNo, refreshBadge]
+  );
 
   /**
    * Thay thế nguyên trạng bản tổng hợp cảm xúc của 1 tin nhắn bằng dữ liệu từ server.
@@ -270,6 +408,14 @@ export function useChatController() {
   const selectConversation = useCallback(
     async (conversationId: number) => {
       setActiveId(conversationId);
+      /*
+       * Chế độ "Cho tới khi mở lại phòng" ⇒ người dùng vừa mở lại phòng này nên bật lại thông báo.
+       * Chỉ áp dụng cho ĐÚNG phòng đó, không ảnh hưởng các phòng khác.
+       */
+      const muteState = muteStatesRef.current[conversationId];
+      if (muteState?.untilOpen && muteState.deadline > Date.now()) {
+        void setConversationMute(conversationId, null);
+      }
       const socket = getSocket();
       if (socket?.connected) socket.emit("chat:join", { conversationId });
 
@@ -296,7 +442,7 @@ export function useChatController() {
         setLoadingMessages(false);
       }
     },
-    [markRead, messages]
+    [markRead, messages, setConversationMute]
   );
 
   /**
@@ -606,9 +752,9 @@ export function useChatController() {
 
       // Tự bật cửa sổ chat và vào đúng phòng khi có tin mới tới — TRỪ khi:
       //  - tin do chính mình gửi;
-      //  - người dùng đang "tạm ngừng thông báo" (muốn tập trung làm việc);
+      //  - phòng đó đang "tắt thông báo" (muốn tập trung làm việc);
       //  - phòng đó đang được mở sẵn (không cần bật lại).
-      if (!isMine && muteUntilRef.current <= Date.now()) {
+      if (!isMine && !isConversationMuted(conversationId)) {
         const alreadyVisible = dockOpenRef.current && isActive;
         if (!alreadyVisible) {
           setAutoOpen({ conversationId, seq: Date.now() + Math.random() });
@@ -732,6 +878,68 @@ export function useChatController() {
       void bootstrap();
     };
 
+    /** Có người ghim / bỏ ghim tin nhắn ⇒ cập nhật thanh ghim của phòng. */
+    const onPinned = (payload: {
+      conversationId: number;
+      messageId: number;
+      pinned: boolean;
+      pinnedBy?: string;
+      pinnedAt?: string | null;
+    }) => {
+      const { conversationId, messageId, pinned, pinnedBy, pinnedAt } = payload || ({} as any);
+      if (!conversationId || !messageId) return;
+      setPins((prev) => {
+        const list = prev[conversationId] || [];
+        if (!pinned) {
+          return { ...prev, [conversationId]: list.filter((p) => p.MESSAGE_ID !== messageId) };
+        }
+        if (list.some((p) => p.MESSAGE_ID === messageId)) return prev;
+        const message = (messagesRef.current[conversationId] || []).find(
+          (m) => m.MESSAGE_ID === messageId
+        );
+        // Tin không nằm trong bộ đang hiển thị ⇒ không đủ dựng preview; gọi chatSync để
+        // lấy nội dung thật (chỉ 1 lần, xảy ra khi bị ghim ở phòng chưa mở).
+        if (!message) {
+          void refreshBadge();
+          return prev;
+        }
+        return {
+          ...prev,
+          [conversationId]: [
+            {
+              MESSAGE_ID: messageId,
+              SENDER_EMPL_NO: message.SENDER_EMPL_NO,
+              MSG_TYPE: message.MSG_TYPE,
+              CONTENT: message.CONTENT,
+              CREATED_AT: message.CREATED_AT,
+              PINNED_AT: pinnedAt || new Date().toISOString(),
+              PINNED_BY: pinnedBy || null,
+            },
+            ...list,
+          ],
+        };
+      });
+    };
+
+    /** Người khác đọc tin ⇒ cập nhật mốc đã đọc để đếm "ai đã xem". */
+    const onReadState = (payload: {
+      conversationId: number;
+      emplNo: string;
+      lastMessageId: number;
+    }) => {
+      const { conversationId, emplNo, lastMessageId } = payload || ({} as any);
+      if (!conversationId || !emplNo) return;
+      const who = String(emplNo).trim().toUpperCase();
+      const id = Number(lastMessageId) || 0;
+      if (id <= 0) return;
+      setReadState((prev) => {
+        const forConversation = { ...(prev[conversationId] || {}) };
+        if ((forConversation[who] || 0) >= id) return prev;
+        forConversation[who] = id;
+        return { ...prev, [conversationId]: forConversation };
+      });
+    };
+
     // Socket có thể mất kết nối rồi tự nối lại (đổi mạng, server restart) ⇒ phải vào lại
     // room phòng đang mở, nếu không các sự kiện phát theo room (typing, read) sẽ im lặng.
     const onConnect = () => {
@@ -741,6 +949,8 @@ export function useChatController() {
 
     socket.on("chat:message", onMessage);
     socket.on("chat:reaction", onReaction);
+    socket.on("chat:pinned", onPinned);
+    socket.on("chat:read", onReadState);
     socket.on("chat:presence-list", onPresenceList);
     socket.on("chat:message-hidden", onMessageHidden);
     socket.on("chat:message-deleted", onMessageDeleted);
@@ -757,6 +967,8 @@ export function useChatController() {
     return () => {
       socket.off("chat:message", onMessage);
       socket.off("chat:reaction", onReaction);
+      socket.off("chat:pinned", onPinned);
+      socket.off("chat:read", onReadState);
       socket.off("chat:presence-list", onPresenceList);
       socket.off("chat:message-hidden", onMessageHidden);
       socket.off("chat:message-deleted", onMessageDeleted);
@@ -768,7 +980,15 @@ export function useChatController() {
       socket.off("chat:friend-request", onFriendRequest);
       socket.off("connect", onConnect);
     };
-  }, [appendMessage, applyReactions, bootstrap, bumpConversationPreview, myEmplNo, refreshBadge]);
+  }, [
+    appendMessage,
+    applyReactions,
+    bootstrap,
+    bumpConversationPreview,
+    isConversationMuted,
+    myEmplNo,
+    refreshBadge,
+  ]);
 
   /* ------------------------------- Actions ------------------------------- */
 
@@ -973,9 +1193,15 @@ export function useChatController() {
     activeMessages,
     autoOpen,
     consumeAutoOpen,
-    isMuted,
-    muteUntil,
-    setMute,
+    /** Tắt thông báo theo TỪNG phòng (thay cho chuông toàn cục trước đây). */
+    isConversationMuted,
+    muteSecondsLeftOfConversation,
+    setConversationMute,
+    /** Ghim tin nhắn của phòng (thanh ghim dưới header). */
+    pins,
+    setMessagePinned,
+    /** Mốc "đã đọc" của từng thành viên → đếm/liệt kê ai đã xem tin nhắn. */
+    readState,
     setDockOpen,
     hasMore,
     loadingMessages,

@@ -1,5 +1,21 @@
 # ACTIVE_STATE
 
+## Fix 30.9 — ĐƠN NHIỆM: page dưới route layout trung gian sụp 0px (2026-09-30)
+Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` OK; verify Playwright cả 2 chế độ.
+
+- **Triệu chứng:** `/sx/datasx` (`BAOCAOSXALL`) — thanh tab con hiện nhưng vùng nội dung trắng trơn. Đa nhiệm OK.
+- **Nguyên nhân:** ở đơn nhiệm page được render qua route layout `/sx` → `QC` (`<div className="qc"><Outlet/></div>`).
+  Wrapper pass-through này chen giữa `.component_element--single` và page gốc, làm đứt mạch `height:100%`:
+  `.qlsxplan` → `auto` ⇒ `.tabs-container`/`.tab-content` (MyTabs, `flex:1 1 0; min-height:0`) sụp còn **0px**.
+  Đa nhiệm không dính vì `Home.tsx` render `MENU_ITEM` là con TRỰC TIẾP của `.component_element`.
+- **Fix:**
+  - `src/pages/qc/QC.tsx`: thêm class `route-outlet-wrapper` cho div bọc `<Outlet/>`.
+  - `src/pages/home/home.scss`: rule `.component_element > .route-outlet-wrapper`
+    (`display:flex; flex-direction:column; height:100%; min-height:0` + `> * { flex:1 1 auto; min-height:0 }`).
+- **Nợ kỹ thuật còn lại:** các route layout pass-through khác (`kinhdoanh`, `qlsx`, `sx`, `muahang`, `info`, NhanSu)
+  **chưa** gắn `route-outlet-wrapper` ⇒ page con dùng mạch `height:100%` vẫn có thể sụp ở đơn nhiệm.
+  Cách sửa: thêm class `route-outlet-wrapper` cho div bọc `<Outlet/>` của chúng (rule SCSS đã dùng chung).
+
 ## Đợt 22.9 — Chia sẻ tin nhắn / tệp / ảnh RA app bên ngoài (Web Share) (2026-09-30)
 Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` OK, `get_errors` 0 lỗi, verify end-to-end trên trình duyệt.
 

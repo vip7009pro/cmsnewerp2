@@ -5,6 +5,7 @@ import ForwardRoundedIcon from "@mui/icons-material/ForwardRounded";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import IosShareRoundedIcon from "@mui/icons-material/IosShareRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
+import PushPinRoundedIcon from "@mui/icons-material/PushPinRounded";
 import UndoRoundedIcon from "@mui/icons-material/UndoRounded";
 import DeleteSweepRoundedIcon from "@mui/icons-material/DeleteSweepRounded";
 import type { ChatMessage, ChatReactionType } from "./chat.types";
@@ -33,6 +34,8 @@ interface Props {
   onCopy: (message: ChatMessage) => void;
   onHide: (message: ChatMessage) => void;
   onRecall: (message: ChatMessage) => void;
+  /** Ghim / bỏ ghim tin nhắn lên thanh ghim của phòng. */
+  onTogglePin?: (message: ChatMessage, pinned: boolean) => void;
 }
 
 /**
@@ -52,10 +55,12 @@ export default function ChatMessageMenu({
   onCopy,
   onHide,
   onRecall,
+  onTogglePin,
 }: Props) {
   const message = state?.message;
   const mine = message?.SENDER_EMPL_NO === myEmplNo;
   const deleted = Boolean(message?.DELETED_AT);
+  const isPinned = Boolean(message?.PINNED_AT);
   const myReaction = message
     ? (Object.keys(message.REACTIONS || {}) as ChatReactionType[]).find((key) =>
         (message.REACTIONS?.[key]?.users || []).includes(myEmplNo)
@@ -172,6 +177,25 @@ export default function ChatMessageMenu({
             <ContentCopyRoundedIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText primary="Sao chép tin nhắn" primaryTypographyProps={{ fontSize: 12.5 }} />
+        </MenuItem>
+      )}
+
+      {!deleted && message && onTogglePin && (
+        <MenuItem
+          onClick={() => {
+            onTogglePin(message, !isPinned);
+            onClose();
+          }}
+        >
+          <ListItemIcon>
+            <PushPinRoundedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary={isPinned ? "Bỏ ghim tin nhắn" : "Ghim tin nhắn"}
+            secondary={isPinned ? undefined : "Hiện ở thanh ghim ngay dưới tên phòng"}
+            primaryTypographyProps={{ fontSize: 12.5 }}
+            secondaryTypographyProps={{ fontSize: 10.5 }}
+          />
         </MenuItem>
       )}
 

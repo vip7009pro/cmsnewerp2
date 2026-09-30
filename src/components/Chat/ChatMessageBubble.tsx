@@ -5,6 +5,8 @@ import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
 import ForwardRoundedIcon from "@mui/icons-material/ForwardRounded";
 import IosShareRoundedIcon from "@mui/icons-material/IosShareRounded";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
+import PushPinRoundedIcon from "@mui/icons-material/PushPinRounded";
+import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import type {
   ChatAttachment,
   ChatConversation,
@@ -42,6 +44,13 @@ interface Props {
   burst?: ChatReactionBurst | null;
   /** Tin nhắn vừa được nhảy tới từ kết quả tìm kiếm ⇒ làm nổi bật. */
   highlight?: boolean;
+  /** Tin này đang được ghim trong phòng. */
+  isPinned?: boolean;
+  /**
+   * Trạng thái đã xem của tin nhắn CỦA TÔI (chỉ truyền cho tin do mình gửi).
+   * Bấm vào để xem danh sách người đã xem.
+   */
+  readReceipt?: { readCount: number; totalCount: number; onOpen: () => void } | null;
   onOpenMenu: (message: ChatMessage, x: number, y: number) => void;
   /** Thả cảm xúc — mỗi lần gọi là +1 (không giới hạn). */
   onAddReaction: (message: ChatMessage, reaction: ChatReactionType) => void;
@@ -104,6 +113,8 @@ export default function ChatMessageBubble({
   showAvatar,
   burst,
   highlight,
+  isPinned,
+  readReceipt,
   onOpenMenu,
   onAddReaction,
   onReply,
@@ -349,6 +360,35 @@ export default function ChatMessageBubble({
             )}
           </div>
         </div>
+
+        {/* Tin đang ghim trong phòng */}
+        {isPinned && !deleted && (
+          <span className="erp-chat__pinBadge" title="Tin nhắn đã được ghim">
+            <PushPinRoundedIcon sx={{ fontSize: 12 }} /> Đã ghim
+          </span>
+        )}
+
+        {/* Ai đã xem — chỉ hiện với tin do mình gửi (bấm để xem danh sách) */}
+        {readReceipt && !deleted && (
+          <button
+            type="button"
+            className={`erp-chat__receipt${
+              readReceipt.readCount > 0 ? " is-seen" : ""
+            }${readReceipt.readCount >= readReceipt.totalCount ? " is-full" : ""}`}
+            onClick={(event) => {
+              event.stopPropagation();
+              readReceipt.onOpen();
+            }}
+            title="Bấm để xem danh sách người đã xem"
+          >
+            <DoneAllRoundedIcon sx={{ fontSize: 14 }} />
+            {readReceipt.totalCount === 0
+              ? "Đã gửi"
+              : readReceipt.readCount > 0
+                ? `Đã xem ${readReceipt.readCount}/${readReceipt.totalCount}`
+                : `Chưa ai xem (0/${readReceipt.totalCount})`}
+          </button>
+        )}
 
         {/* Số lượng từng loại cảm xúc — bấm để thả thêm (+1) */}
         {reactionChips.length > 0 && (

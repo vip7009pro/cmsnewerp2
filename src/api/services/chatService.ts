@@ -8,6 +8,7 @@ import type {
   ChatFriendEntry,
   ChatMediaItem,
   ChatMessage,
+  ChatMuteMode,
   ChatSearchResult,
 } from "../../components/Chat/chat.types";
 
@@ -105,6 +106,31 @@ export const chatService = {
       "chatPinConversation",
       { conversationId, pinned }
     ),
+
+  /**
+   * Ghim / bỏ ghim 1 TIN NHẮN trong phòng (ghim chung — mọi thành viên đều thấy).
+   * Tin ghim hiển thị ở thanh ngay dưới header phòng.
+   */
+  pinMessage: (conversationId: number, messageId: number, pinned: boolean) =>
+    chatQuery<{
+      conversationId: number;
+      messageId: number;
+      pinned: boolean;
+      pinnedBy?: string;
+      pinnedAt?: string | null;
+    }>("chatPinMessage", { conversationId, messageId, pinned }),
+
+  /**
+   * Tắt/bật thông báo cho RIÊNG người dùng ở 1 phòng.
+   * `minutes` ⇒ tắt trong N phút; `untilOpen` ⇒ tới khi mở lại phòng; `off` ⇒ bật lại.
+   */
+  muteConversation: (conversationId: number, option: ChatMuteMode) =>
+    chatQuery<{
+      conversationId: number;
+      muted: boolean;
+      mutedUntilOpen: boolean;
+      mutedSecondsLeft: number | null;
+    }>("chatSetConversationMute", { conversationId, ...option }),
 
   deleteMessage: (conversationId: number, messageId: number) =>
     chatQuery<{ conversationId: number; messageId: number }>("chatDeleteMessage", {

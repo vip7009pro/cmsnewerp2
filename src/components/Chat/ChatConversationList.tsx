@@ -4,6 +4,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import GroupRoundedIcon from "@mui/icons-material/GroupsRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
+import NotificationsOffRoundedIcon from "@mui/icons-material/NotificationsOffRounded";
 import FolderSpecialRoundedIcon from "@mui/icons-material/FolderSpecialRounded";
 import type { ChatConversation } from "./chat.types";
 import { chatAvatarUrl, initialsOf, shortTime } from "./chatUtils";
@@ -230,7 +231,15 @@ export default function ChatConversationList({
                     {isPinned && <PinIcon className="erp-chat__convPin" size={13} />}
                     <span className="erp-chat__convNameText">{conversation.DISPLAY_NAME}</span>
                   </span>
-                  <span className="erp-chat__convTime">{shortTime(last?.CREATED_AT)}</span>
+                  <span className="erp-chat__convTime">
+                    {conversation.MUTED && (
+                      <NotificationsOffRoundedIcon
+                        sx={{ fontSize: 13, mr: 0.4, opacity: 0.75 }}
+                        titleAccess="Đang tắt thông báo"
+                      />
+                    )}
+                    {shortTime(last?.CREATED_AT)}
+                  </span>
                 </div>
                 <div className="erp-chat__convBottom">
                   <span className="erp-chat__convPreview">

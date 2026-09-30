@@ -1,5 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Avatar, IconButton, LinearProgress, Snackbar, Tooltip } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  LinearProgress,
+  Snackbar,
+  Tooltip,
+} from "@mui/material";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 import ImageRoundedIcon from "@mui/icons-material/ImageRounded";
@@ -12,11 +23,16 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import GroupRoundedIcon from "@mui/icons-material/GroupsRounded";
 import TextFormatRoundedIcon from "@mui/icons-material/TextFormatRounded";
+import NotificationsActiveRoundedIcon from "@mui/icons-material/NotificationsActiveRounded";
+import NotificationsOffRoundedIcon from "@mui/icons-material/NotificationsOffRounded";
+import PushPinRoundedIcon from "@mui/icons-material/PushPinRounded";
+import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import type {
   ChatAttachment,
   ChatConversation,
   ChatMember,
   ChatMessage,
+  ChatPinnedMessage,
   ChatReactionBurst,
   ChatReactionType,
   ChatReplyTarget,
@@ -43,7 +59,11 @@ import {
   dayLabel,
   fileKindOf,
   formatFileSize,
+  formatMuteRemaining,
   initialsOf,
+  mentionQueryFromText,
+  messagePreview,
+  normalizeName,
   normalizeText,
 } from "./chatUtils";
 import ChatMessageBubble from "./ChatMessageBubble";
@@ -83,6 +103,23 @@ interface Props {
   focusMessage?: { conversationId: number; messageId: number; seq: number } | null;
   /** Nhảy tới tin nhắn ở phòng khác (tìm kiếm toàn cục). */
   onJumpToMessage: (conversationId: number, messageId: number) => void;
+  /** Mở menu tắt/bật thông báo cho RIÊNG phòng này (neo vào nút chuông). */
+  onOpenMuteMenu: (anchor: HTMLElement) => void;
+  /** Số giây còn tắt thông báo của phòng (null = đang nhận thông báo). */
+  muteSecondsLeft: number | null;
+  /** Đang ở chế độ "cho tới khi mở lại phòng". */
+  muteUntilOpen: boolean;
+  /** Tin nhắn đang ghim của phòng (ghim mới nhất trước). */
+  pins: ChatPinnedMessage[];
+  /** Mốc "đã đọc" của từng thành viên trong phòng (emplNo → messageId). */
+  readState: Record<string, number>;
+  /** Ghim / bỏ ghim 1 tin nhắn. */
+  onTogglePin: (message: ChatMessage, pinned: boolean) => void;
+  /**
+   * Mobile: nút đóng cửa sổ chat được đưa vào header phòng (header "Tin nhắn nội bộ" bị bỏ).
+   * `null` = không hiển thị nút đóng.
+   */
+  onCloseWindow?: (() => void) | null;
 }
 
 /** Giới hạn dung lượng mỗi tệp — khớp với env CHAT_UPLOAD_MAX_BYTES của backend. */
@@ -127,6 +164,11 @@ function memberOf(conversation: ChatConversation, emplNo: string): ChatMember | 
   return conversation.MEMBERS.find((m) => m.EMPL_NO === emplNo);
 }
 
+/** Nội dung rút gọn hiển thị trên thanh ghim (bỏ HTML với tin RICHTEXT). */
+function pinPreview(pin: ChatPinnedMessage): string {
+  return messagePreview(pin.MSG_TYPE, pin.CONTENT, false);
+}
+
 export default function ChatConversationView({
   conversation,
   messages,
@@ -158,6 +200,13 @@ export default function ChatConversationView({
   onTyping,
   focusMessage,
   onJumpToMessage,
+  onOpenMuteMenu,
+  muteSecondsLeft,
+  muteUntilOpen,
+  pins,
+  readState,
+  onTogglePin,
+  onCloseWindow,
 }: Props) {
   const [text, setText] = useState("");
   /**
@@ -189,12 +238,20 @@ export default function ChatConversationView({
   /** Tin nhắn đang được làm nổi bật sau khi nhảy tới. */
   const [highlightId, setHighlightId] = useState<number | null>(null);
   const [storage, setStorage] = useState<ChatStorage | null>(null);
+  /** Tin nhắn đang mở danh sách "ai đã xem". */
+  const [readersOf, setReadersOf] = useState<number | null>(null);
+  /** Thu gọn thanh ghim (khi có nhiều ghim). */
+  const [pinsOpen, setPinsOpen] = useState(true);
 
   const listRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   /** Input riêng cho ảnh/video (mở thư viện ảnh trên mobile). */
   const mediaInputRef = useRef<HTMLInputElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  /** Vị trí con trỏ gần nhất trong ô soạn tin (giữ lại cả khi textarea mất focus khi bấm chọn tag). */
+  const caretRef = useRef<number>(0);
+  /** Nhãn vừa chèn bằng tag tên — dùng để không tự mở lại danh sách gợi ý ngay sau khi chèn. */
+  const justInsertedLabelRef = useRef<string>("");
   const typingSentRef = useRef(false);
   const lastMessageIdRef = useRef<number>(0);
   /** Đếm độ sâu dragenter/dragleave để không nhấp nháy khi rê qua phần tử con. */
@@ -209,6 +266,11 @@ export default function ChatConversationView({
     conversation.MY_ROLE === "OWNER" ||
     conversation.MY_ROLE === "ADMIN" ||
     conversation.MY_ROLE === "MODERATOR";
+  /** Thành viên KHÁC (trừ tôi) — dùng đếm "ai đã xem" tin nhắn của tôi. */
+  const otherMembers = useMemo(
+    () => (conversation.MEMBERS || []).filter((m) => m.EMPL_NO !== myEmplNo),
+    [conversation.MEMBERS, myEmplNo]
+  );
   const peerOnline =
     isDirect && conversation.PEER_EMPL_NO ? onlineUsers.has(conversation.PEER_EMPL_NO) : false;
 
@@ -373,12 +435,12 @@ export default function ChatConversationView({
    */
   const mentionCandidates = useMemo(() => {
     if (mentionKeyword === null) return [];
-    const key = normalizeText(mentionKeyword);
+    const key = normalizeName(mentionKeyword);
     const others = conversation.MEMBERS.filter((m) => m.EMPL_NO !== myEmplNo);
     if (!key) return others.slice(0, 8);
     return others
       .map((member) => {
-        const name = normalizeText(member.FULL_NAME);
+        const name = normalizeName(member.FULL_NAME);
         const code = normalizeText(member.EMPL_NO);
         let score = -1;
         if (name.startsWith(key) || code.startsWith(key)) score = 0;
@@ -407,13 +469,28 @@ export default function ChatConversationView({
     active?.scrollIntoView({ block: "nearest" });
   }, [mentionIndex, mentionCandidates.length]);
 
-  const handleTextChange = (value: string) => {
+  /**
+   * Đồng bộ từ khoá tag tên từ vị trí con trỏ.
+   * Bỏ qua ngay sau khi vừa chèn 1 tag (nếu không danh sách sẽ tự bật lại đúng người vừa chọn).
+   */
+  const applyMentionQuery = useCallback((raw: string | null) => {
+    const inserted = justInsertedLabelRef.current;
+    if (inserted) {
+      if (normalizeName(raw) === inserted) return; // vừa chèn xong ⇒ giữ đóng
+      justInsertedLabelRef.current = ""; // đã gõ tiếp nội dung khác ⇒ cho phép gợi ý lại
+    }
+    setMentionKeyword(raw);
+  }, []);
+
+  const handleTextChange = (value: string, caret?: number | null) => {
     setText(value);
 
     if (value.trim().length > 0) notifyTyping();
 
-    const match = value.match(/@([^\s@]*)$/);
-    setMentionKeyword(match ? match[1] : null);
+    // Lấy từ khoá theo đúng vị trí con trỏ (sửa giữa câu vẫn phải đúng).
+    const position = typeof caret === "number" ? caret : value.length;
+    caretRef.current = position;
+    applyMentionQuery(mentionQueryFromText(value.slice(0, position)));
   };
 
   /** Bật/tắt chế độ richtext — chuyển đổi nội dung đang soạn giữa text thuần và HTML. */
@@ -446,13 +523,31 @@ export default function ChatConversationView({
       if (richMode) {
         richEditorRef.current?.insertMention(label);
       } else {
-        setText((prev) => prev.replace(/@([^\s@]*)$/, `@${label} `));
-        textareaRef.current?.focus();
+        // Thay thế ĐÚNG đoạn `@...` đang gõ (có thể gồm nhiều từ) tại vị trí con trỏ.
+        const element = textareaRef.current;
+        const caret = element?.selectionStart ?? caretRef.current ?? text.length;
+        const query = mentionQueryFromText(text.slice(0, caret));
+        if (query !== null) {
+          const start = caret - query.length - 1;
+          const next = `${text.slice(0, start)}@${label} ${text.slice(caret)}`;
+          setText(next);
+          const nextCaret = start + label.length + 2;
+          requestAnimationFrame(() => {
+            const el = textareaRef.current;
+            el?.focus();
+            el?.setSelectionRange(nextCaret, nextCaret);
+            caretRef.current = nextCaret;
+          });
+        } else {
+          setText((prev) => `${prev}@${label} `);
+          textareaRef.current?.focus();
+        }
       }
+      justInsertedLabelRef.current = normalizeName(label);
       setMentions((prev) => (prev.includes(member.EMPL_NO) ? prev : [...prev, member.EMPL_NO]));
       setMentionKeyword(null);
     },
-    [richMode]
+    [richMode, text]
   );
 
   const addFiles = (incoming: FileList | File[] | null, options?: { mediaOnly?: boolean }) => {
@@ -548,6 +643,7 @@ export default function ChatConversationView({
     setMentions([]);
     setFileError(null);
     setMentionKeyword(null);
+    justInsertedLabelRef.current = "";
     onClearReply();
     if (textareaRef.current) textareaRef.current.style.height = "auto";
   };
@@ -738,7 +834,81 @@ export default function ChatConversationView({
             </IconButton>
           </Tooltip>
         )}
+
+        {/* Chuông tắt thông báo RIÊNG cho phòng này (trước đây là chuông toàn cục ở header cửa sổ). */}
+        <Tooltip
+          title={
+            muteSecondsLeft
+              ? muteUntilOpen
+                ? "Đang tắt thông báo cho tới khi mở lại phòng này · bấm để đổi"
+                : `Đang tắt thông báo phòng này (còn ${formatMuteRemaining(muteSecondsLeft)}) · bấm để đổi`
+              : "Tắt thông báo cho phòng này"
+          }
+        >
+          <IconButton
+            size="small"
+            className={`erp-chat__iconBtn${muteSecondsLeft ? " is-muted" : ""}`}
+            onClick={(event) => onOpenMuteMenu(event.currentTarget)}
+            aria-label="Tắt thông báo cho phòng này"
+          >
+            {muteSecondsLeft ? (
+              <NotificationsOffRoundedIcon fontSize="small" />
+            ) : (
+              <NotificationsActiveRoundedIcon fontSize="small" />
+            )}
+          </IconButton>
+        </Tooltip>
+
+        {/* Mobile: nút đóng cửa sổ chat nằm trong header phòng (bỏ header "Tin nhắn nội bộ"). */}
+        {onCloseWindow && (
+          <IconButton
+            size="small"
+            className="erp-chat__iconBtn"
+            onClick={onCloseWindow}
+            aria-label="Đóng chat"
+            title="Đóng chat"
+          >
+            <CloseRoundedIcon fontSize="small" />
+          </IconButton>
+        )}
       </div>
+
+      {/* Thanh ghim — tin nhắn đang ghim của phòng, bấm để nhảy tới tin gốc */}
+      {pins.length > 0 && (
+        <div className={`erp-chat__pins${pinsOpen ? "" : " is-collapsed"}`}>
+          <button
+            type="button"
+            className="erp-chat__pinsToggle"
+            onClick={() => setPinsOpen((prev) => !prev)}
+            title={pinsOpen ? "Thu gọn danh sách ghim" : "Mở danh sách ghim"}
+            aria-label={pinsOpen ? "Thu gọn danh sách ghim" : "Mở danh sách ghim"}
+          >
+            <PushPinRoundedIcon sx={{ fontSize: 15 }} />
+            <em>{pins.length}</em>
+          </button>
+          {pinsOpen && (
+            <div className="erp-chat__pinsList">
+              {pins.map((pin) => (
+                <button
+                  key={pin.MESSAGE_ID}
+                  type="button"
+                  className="erp-chat__pinItem"
+                  onClick={() =>
+                    onJumpToMessage(conversation.CONVERSATION_ID, pin.MESSAGE_ID)
+                  }
+                  title="Bấm để tới tin nhắn gốc"
+                >
+                  <span className="erp-chat__pinWho">
+                    {memberOf(conversation, pin.SENDER_EMPL_NO)?.FULL_NAME ||
+                      pin.SENDER_EMPL_NO}
+                  </span>
+                  <span className="erp-chat__pinText">{pinPreview(pin)}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {showSearch ? (
         <ChatSearchPanel
@@ -796,7 +966,34 @@ export default function ChatConversationView({
                       : null
                   }
                   highlight={highlightId === message.MESSAGE_ID}
-                  onOpenMenu={(target, x, y) => setMenuState({ message: target, top: y, left: x })}
+                  onOpenMenu={(target, x, y) =>
+                    setMenuState({
+                      // Tin nhắn trong bộ đang hiển thị KHÔNG kèm cờ ghim (ghim nằm ở
+                      // danh sách PINNED của phòng) ⇒ gắn thêm để menu hiện đúng
+                      // "Ghim tin nhắn" / "Bỏ ghim tin nhắn".
+                      message: {
+                        ...target,
+                        PINNED_AT:
+                          (pins || []).find((p) => p.MESSAGE_ID === target.MESSAGE_ID)
+                            ?.PINNED_AT || null,
+                      },
+                      top: y,
+                      left: x,
+                    })
+                  }
+                  isPinned={(pins || []).some((p) => p.MESSAGE_ID === message.MESSAGE_ID)}
+                  readReceipt={
+                    message.SENDER_EMPL_NO === myEmplNo && message.MSG_TYPE !== "SYSTEM"
+                      ? {
+                          readCount: otherMembers.filter(
+                            (member) =>
+                              (readState?.[member.EMPL_NO] || 0) >= message.MESSAGE_ID
+                          ).length,
+                          totalCount: otherMembers.length,
+                          onOpen: () => setReadersOf(message.MESSAGE_ID),
+                        }
+                      : null
+                  }
                   onAddReaction={onAddReaction}
                   onReply={onReply}
                   onShareOut={(target, attachment) => void handleShareOut(target, attachment)}
@@ -973,7 +1170,7 @@ export default function ChatConversationView({
               onChange={setRichHtml}
               onSubmit={handleSubmit}
               onTyping={notifyTyping}
-              onMentionQuery={setMentionKeyword}
+              onMentionQuery={applyMentionQuery}
               mentionOpen={mentionKeyword !== null && mentionCandidates.length > 0}
               onMentionKeyDown={handleRichMentionKeyDown}
             />
@@ -984,7 +1181,13 @@ export default function ChatConversationView({
               rows={1}
               value={text}
               placeholder="Nhập tin nhắn... (Enter để gửi, Shift+Enter xuống dòng, @ để tag tên)"
-              onChange={(event) => handleTextChange(event.target.value)}
+              onChange={(event) =>
+                handleTextChange(event.target.value, event.target.selectionStart)
+              }
+              onSelect={(event) => {
+                const target = event.target as HTMLTextAreaElement;
+                caretRef.current = target.selectionStart ?? caretRef.current;
+              }}
               onKeyDown={handleKeyDown}
               onInput={(event) => {
                 const target = event.target as HTMLTextAreaElement;
@@ -1030,7 +1233,73 @@ export default function ChatConversationView({
         onCopy={(message) => void handleCopy(message)}
         onHide={onHide}
         onRecall={onRecall}
+        onTogglePin={onTogglePin}
       />
+
+      {/* Danh sách người đã xem 1 tin nhắn của tôi */}
+      <Dialog
+        open={readersOf !== null}
+        onClose={() => setReadersOf(null)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle sx={{ fontSize: 15, fontWeight: 700, pb: 0.5 }}>
+          Người đã xem tin nhắn
+        </DialogTitle>
+        <DialogContent sx={{ pt: 1 }}>
+          {(() => {
+            const read = otherMembers.filter(
+              (member) => (readState?.[member.EMPL_NO] || 0) >= (readersOf || 0)
+            );
+            const notRead = otherMembers.filter(
+              (member) => (readState?.[member.EMPL_NO] || 0) < (readersOf || 0)
+            );
+            if (otherMembers.length === 0) {
+              return <div className="erp-chat__readersEmpty">Phòng này chỉ có mình bạn.</div>;
+            }
+            return (
+              <div className="erp-chat__readers">
+                <div className="erp-chat__readersGroup">
+                  <strong>Đã xem · {read.length}</strong>
+                  {read.length === 0 && <em>Chưa ai xem</em>}
+                  {read.map((member) => (
+                    <span key={member.EMPL_NO} className="erp-chat__readerItem">
+                      <Avatar
+                        src={chatAvatarUrl(member.EMPL_NO, member.EMPL_IMAGE)}
+                        sx={{ width: 24, height: 24, fontSize: 11, bgcolor: "#64748b" }}
+                      >
+                        {initialsOf(member.FULL_NAME || member.EMPL_NO)}
+                      </Avatar>
+                      {member.FULL_NAME || member.EMPL_NO}
+                    </span>
+                  ))}
+                </div>
+                {notRead.length > 0 && (
+                  <div className="erp-chat__readersGroup is-muted">
+                    <strong>Chưa xem · {notRead.length}</strong>
+                    {notRead.map((member) => (
+                      <span key={member.EMPL_NO} className="erp-chat__readerItem">
+                        <Avatar
+                          src={chatAvatarUrl(member.EMPL_NO, member.EMPL_IMAGE)}
+                          sx={{ width: 24, height: 24, fontSize: 11, bgcolor: "#cbd5e1" }}
+                        >
+                          {initialsOf(member.FULL_NAME || member.EMPL_NO)}
+                        </Avatar>
+                        {member.FULL_NAME || member.EMPL_NO}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+        </DialogContent>
+        <DialogActions>
+          <Button size="small" onClick={() => setReadersOf(null)}>
+            Đóng
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Snackbar
         open={Boolean(toast)}

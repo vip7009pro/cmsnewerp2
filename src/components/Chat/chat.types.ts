@@ -107,6 +107,8 @@ export interface ChatMessage {
   EDITED_AT?: string | null;
   DELETED_AT?: string | null;
   ATTACHMENTS?: ChatAttachment[];
+  /** Mốc ghim trong phòng (null/undefined = chưa ghim). */
+  PINNED_AT?: string | null;
   /** Chỉ tồn tại ở client: trạng thái gửi của tin lạc quan. */
   _status?: "sending" | "sent" | "failed";
 }
@@ -119,7 +121,26 @@ export interface ChatMember {
   JOB_NAME?: string | null;
   ROLE: ChatRole;
   LEFT_AT?: string | null;
+  /** MESSAGE_ID lớn nhất mà người này đã đọc trong phòng — dùng để đếm/liệt kê "ai đã xem". */
+  LAST_READ_MESSAGE_ID?: number;
 }
+
+/** 1 tin nhắn đang được ghim trong phòng (hiển thị ở thanh ghim dưới header). */
+export interface ChatPinnedMessage {
+  MESSAGE_ID: number;
+  SENDER_EMPL_NO: string;
+  MSG_TYPE: ChatMessageType;
+  CONTENT: string | null;
+  CREATED_AT: string;
+  PINNED_AT?: string | null;
+  PINNED_BY?: string | null;
+}
+
+/** Chế độ tắt thông báo cho 1 phòng. */
+export type ChatMuteMode =
+  | { mode: "off" }
+  | { mode: "minutes"; minutes: number }
+  | { mode: "untilOpen" };
 
 export interface ChatLastMessage {
   MESSAGE_ID: number;
@@ -141,6 +162,12 @@ export interface ChatConversation {
   OWNER_EMPL_NO: string | null;
   MY_ROLE: ChatRole;
   MUTED: boolean;
+  /** Số giây còn tắt thông báo cho riêng phòng này (null = đang nhận thông báo). */
+  MUTED_SECONDS_LEFT?: number | null;
+  /** true khi đang ở chế độ "cho tới khi mở lại phòng". */
+  MUTED_UNTIL_OPEN?: boolean;
+  /** Tin nhắn đang ghim của phòng (ghim mới nhất trước). */
+  PINNED?: ChatPinnedMessage[];
   /** Thời điểm TÔI ghim phòng này (null = không ghim). Ghim mới hơn lên trên. */
   PINNED_AT?: string | null;
   /** Mốc tạo phòng — dùng để sắp xếp khi phòng chưa có tin nhắn nào. */

@@ -23,6 +23,7 @@ import FormatAlignCenterRoundedIcon from "@mui/icons-material/FormatAlignCenterR
 import FormatAlignRightRoundedIcon from "@mui/icons-material/FormatAlignRightRounded";
 import FormatClearRoundedIcon from "@mui/icons-material/FormatClearRounded";
 import { sanitizeRichHtml } from "./chatRichText";
+import { mentionQueryFromText } from "./chatUtils";
 
 export interface ChatRichEditorHandle {
   focus: () => void;
@@ -107,8 +108,11 @@ function ToolButton({ title, onClick, active = false, children }: ToolButtonProp
   );
 }
 
-/** Lấy từ khoá `@...` ngay trước con trỏ (chỉ khi con trỏ nằm trong vùng soạn thảo). */
-function caretMentionKeyword(root: HTMLElement | null): string | null {
+/**
+ * Lấy ngữ cảnh `@...` ngay trước con trỏ (chỉ khi con trỏ nằm trong vùng soạn thảo).
+ * `length` = số ký tự cần xoá để bỏ đoạn đã gõ (kể cả dấu `@`) trước khi chèn tag.
+ */
+function caretMentionContext(root: HTMLElement | null): { query: string; length: number } | null {
   if (!root) return null;
   const selection = window.getSelection();
   if (!selection || selection.rangeCount === 0) return null;
@@ -117,8 +121,8 @@ function caretMentionKeyword(root: HTMLElement | null): string | null {
   const node = range.startContainer;
   if (node.nodeType !== Node.TEXT_NODE) return null;
   const before = (node.nodeValue || "").slice(0, range.startOffset);
-  const match = before.match(/@([^\s@]*)$/);
-  return match ? match[1] : null;
+  const query = mentionQueryFromText(before);
+  return query === null ? null : { query, length: query.length + 1 };
 }
 
 /**
@@ -150,7 +154,7 @@ const ChatRichEditor = forwardRef<ChatRichEditorHandle, Props>(function ChatRich
   }, [onChange]);
 
   const syncMention = useCallback(() => {
-    onMentionQuery(caretMentionKeyword(editorRef.current));
+    onMentionQuery(caretMentionContext(editorRef.current)?.query ?? null);
   }, [onMentionQuery]);
 
   const syncActiveFormats = useCallback(() => {
@@ -190,6 +194,12 @@ const ChatRichEditor = forwardRef<ChatRichEditorHandle, Props>(function ChatRich
         const editor = editorRef.current;
         if (!editor) return;
         editor.focus();
+        // Xoá đoạn `@...` đã gõ (có thể nhiều từ) rồi mới chèn tag, nếu không sẽ bị lặp
+        // ví dụ "@nguyen@Nguyễn Văn Hùng ".
+        const context = caretMentionContext(editor);
+        for (let i = 0; i < (context?.length ?? 0); i += 1) {
+          document.execCommand("delete", false);
+        }
         document.execCommand("insertText", false, `@${label} `);
         emitChange();
         onMentionQuery(null);

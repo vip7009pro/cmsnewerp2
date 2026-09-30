@@ -44,6 +44,72 @@ export function normalizeText(value?: string | null): string {
     .toLowerCase()
     .trim();
 }
+
+/** Rút gọn khoảng trắng thừa để so khớp tên nhiều từ ("Nguyễn  Văn " → "nguyen van"). */
+export function normalizeName(value?: string | null): string {
+  return normalizeText(value).replace(/\s+/g, " ");
+}
+
+/**
+ * Số giây còn lại của chế độ tắt thông báo → chuỗi "còn lại bao lâu".
+ * `untilOpen` (giá trị rất lớn) do nơi gọi tự xử lý nhãn riêng.
+ */
+export function formatMuteRemaining(secondsLeft: number): string {
+  if (!Number.isFinite(secondsLeft) || secondsLeft <= 0) return "";
+  const minutes = Math.ceil(secondsLeft / 60);
+  if (minutes < 60) return `${minutes} phút`;
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  if (hours < 24) return rest > 0 ? `${hours} giờ ${rest} phút` : `${hours} giờ`;
+  return `${Math.ceil(hours / 24)} ngày`;
+}
+
+/** Nội dung rút gọn của 1 tin nhắn (dùng cho thanh ghim / trả lời / chuyển tiếp). */
+export function messagePreview(
+  msgType?: string | null,
+  content?: string | null,
+  deleted?: boolean
+): string {
+  if (deleted) return "Tin nhắn đã được thu hồi";
+  if (msgType === "IMAGE") return "[Hình ảnh]";
+  if (msgType === "FILE") return "[Tệp đính kèm]";
+  const raw =
+    msgType === "RICH"
+      ? String(content || "")
+          .replace(/<[^>]*>/g, " ")
+          .replace(/&nbsp;/g, " ")
+      : String(content || "");
+  const text = raw.replace(/\s+/g, " ").trim();
+  return text.length > 120 ? `${text.slice(0, 120)}…` : text || "(không có nội dung)";
+}
+
+
+/** Số từ tối đa cho phép trong từ khoá tag tên (tên người hiếm khi dài hơn). */
+const MENTION_MAX_WORDS = 6;
+/** Độ dài tối đa của từ khoá tag tên — vượt là coi như người dùng gõ văn bản thường. */
+const MENTION_MAX_LENGTH = 60;
+
+/**
+ * Lấy từ khoá tag tên đang gõ dở ngay TRƯỚC con trỏ.
+ *
+ * Cho phép **khoảng trắng** trong từ khoá để tag được tên đầy đủ nhiều từ
+ * (`@Nguyễn Văn Hùng`). Trước đây regex dừng ngay khi gặp dấu cách nên vừa gõ xong họ
+ * là danh sách gợi ý biến mất, muốn sửa lại phải xoá `@` và gõ lại từ đầu.
+ *
+ * Trả về `null` khi không ở trong ngữ cảnh tag (ví dụ đang gõ email `abc@xyz`).
+ */
+export function mentionQueryFromText(before: string): string | null {
+  if (!before) return null;
+  // `@` phải ở đầu chuỗi hoặc sau khoảng trắng để không bắt nhầm địa chỉ email.
+  const match = before.match(/(?:^|\s)@([^@\n]*)$/);
+  if (!match) return null;
+  const raw = match[1];
+  // Chỉ toàn khoảng trắng ⇒ người dùng đã tag xong / không có ý định tag.
+  if (!raw.trim()) return null;
+  if (raw.length > MENTION_MAX_LENGTH) return null;
+  if (raw.trim().split(/\s+/).length > MENTION_MAX_WORDS) return null;
+  return raw;
+}
 import ArticleRoundedIcon from "@mui/icons-material/ArticleRounded";
 import AudioFileRoundedIcon from "@mui/icons-material/AudioFileRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
