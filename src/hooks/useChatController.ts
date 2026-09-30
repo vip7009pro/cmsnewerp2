@@ -706,7 +706,11 @@ export function useChatController() {
 
   /* ------------------------------- Actions ------------------------------- */
 
-  const searchEmployees = useCallback((keyword: string) => chatService.searchEmployees(keyword), []);
+  const searchEmployees = useCallback(
+    (keyword: string, options?: { all?: boolean; limit?: number }) =>
+      chatService.searchEmployees(keyword, options),
+    []
+  );
 
   const startDirect = useCallback(
     async (otherEmplNo: string) => {

@@ -23,6 +23,10 @@ interface Props {
   onSearch: (keyword: string) => Promise<ChatEmployee[]>;
   onStartDirect: (emplNo: string) => Promise<unknown>;
   onCreateGroup: (title: string, memberEmplNos: string[], avatar?: string) => Promise<unknown>;
+  /** Chỉ hiện nút "Chọn tất cả" cho tài khoản được phép (NHU1903). */
+  canSelectAll?: boolean;
+  /** Lấy TOÀN BỘ nhân sự đang làm việc — dùng cho nút "Chọn tất cả". */
+  onLoadAll?: () => Promise<ChatEmployee[]>;
 }
 
 export default function ChatNewChatDialog({
@@ -31,6 +35,8 @@ export default function ChatNewChatDialog({
   onSearch,
   onStartDirect,
   onCreateGroup,
+  canSelectAll = false,
+  onLoadAll,
 }: Props) {
   const [keyword, setKeyword] = useState("");
   const [results, setResults] = useState<ChatEmployee[]>([]);
@@ -40,6 +46,14 @@ export default function ChatNewChatDialog({
   const [groupAvatar, setGroupAvatar] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /**
+   * Khác `null` nghĩa là đang ở chế độ "chọn tất cả": giữ danh sách nhân sự đầy đủ
+   * nhưng KHÔNG render thành chip (công ty có thể ~300 người ⇒ hàng trăm chip sẽ treo UI).
+   */
+  const [selectAllMembers, setSelectAllMembers] = useState<ChatEmployee[] | null>(null);
+  const [loadingAll, setLoadingAll] = useState(false);
+
+  const isSelectAll = selectAllMembers !== null;
 
   // Debounce tìm kiếm nhân viên để không spam API khi gõ nhanh.
   useEffect(() => {
@@ -67,20 +81,59 @@ export default function ChatNewChatDialog({
     if (!open) {
       setKeyword("");
       setSelected([]);
+      setSelectAllMembers(null);
+      setLoadingAll(false);
       setGroupTitle("");
       setGroupAvatar("");
       setError(null);
     }
   }, [open]);
 
-  const selectedNos = useMemo(() => selected.map((item) => item.EMPL_NO), [selected]);
+  const selectedNos = useMemo(
+    () =>
+      selectAllMembers
+        ? selectAllMembers.map((item) => item.EMPL_NO)
+        : selected.map((item) => item.EMPL_NO),
+    [selectAllMembers, selected]
+  );
 
   const toggle = (employee: ChatEmployee) => {
-    setSelected((prev) =>
-      prev.some((item) => item.EMPL_NO === employee.EMPL_NO)
-        ? prev.filter((item) => item.EMPL_NO !== employee.EMPL_NO)
-        : [...prev, employee]
-    );
+    // Đang "chọn tất cả" mà bỏ chọn 1 người ⇒ chuyển sang chọn thủ công danh sách đầy đủ
+    // trừ người đó (giữ đúng cảm giác "bấm là bỏ chọn người này").
+    setSelected((prev) => {
+      const base = selectAllMembers ?? prev;
+      return base.some((item) => item.EMPL_NO === employee.EMPL_NO)
+        ? base.filter((item) => item.EMPL_NO !== employee.EMPL_NO)
+        : [...base, employee];
+    });
+    if (selectAllMembers) setSelectAllMembers(null);
+  };
+
+  const handleSelectAll = async () => {
+    if (isSelectAll) {
+      setSelectAllMembers(null);
+      setSelected([]);
+      setError(null);
+      return;
+    }
+    if (!onLoadAll) return;
+    setLoadingAll(true);
+    setError(null);
+    try {
+      const all = await onLoadAll();
+      if (all.length === 0) {
+        setError("Không lấy được danh sách nhân sự");
+        return;
+      }
+      setSelectAllMembers(all);
+      setSelected([]);
+      // Gợi ý sẵn tên nhóm cho phòng toàn công ty (người dùng vẫn sửa được).
+      setGroupTitle((prev) => (prev.trim() ? prev : "Toàn công ty"));
+    } catch (err: any) {
+      setError(err?.message || "Không lấy được danh sách nhân sự");
+    } finally {
+      setLoadingAll(false);
+    }
   };
 
   const handleStartDirect = async (employee: ChatEmployee) => {
@@ -132,36 +185,68 @@ export default function ChatNewChatDialog({
       </DialogTitle>
 
       <DialogContent sx={{ pt: 1 }}>
-        <div className="erp-chat__searchBox erp-chat__searchBox--dialog">
-          <SearchRoundedIcon fontSize="small" />
-          <input
-            autoFocus
-            value={keyword}
-            onChange={(event) => setKeyword(event.target.value)}
-            placeholder="Tìm theo tên, mã nhân viên, CMS ID"
-          />
+        <div className="erp-chat-dialog__searchRow">
+          <div className="erp-chat__searchBox erp-chat__searchBox--dialog">
+            <SearchRoundedIcon fontSize="small" />
+            <input
+              autoFocus
+              value={keyword}
+              onChange={(event) => setKeyword(event.target.value)}
+              placeholder="Tìm theo tên, mã nhân viên, CMS ID"
+            />
+          </div>
+          {canSelectAll && onLoadAll && (
+            <Button
+              size="small"
+              variant={isSelectAll ? "contained" : "outlined"}
+              className="erp-chat-dialog__selectAll"
+              onClick={handleSelectAll}
+              disabled={submitting || loadingAll}
+            >
+              {loadingAll ? <CircularProgress size={14} color="inherit" /> : null}
+              {isSelectAll ? "Bỏ chọn tất cả" : "Chọn tất cả"}
+            </Button>
+          )}
         </div>
 
-        {selected.length > 0 && (
-          <div className="erp-chat-dialog__chips">
-            {selected.map((employee) => (
-              <span key={employee.EMPL_NO} className="erp-chat-dialog__chip">
-                <Avatar
-                  src={chatAvatarUrl(employee.EMPL_NO, employee.EMPL_IMAGE)}
-                  sx={{ width: 20, height: 20, fontSize: 10 }}
-                >
-                  {initialsOf(employee.FULL_NAME)}
-                </Avatar>
-                {employee.FULL_NAME}
-                <button type="button" onClick={() => toggle(employee)} aria-label="Bỏ chọn">
-                  <CloseRoundedIcon sx={{ fontSize: 12 }} />
-                </button>
-              </span>
-            ))}
+        {isSelectAll ? (
+          <div className="erp-chat-dialog__allBar">
+            <div className="erp-chat-dialog__allBarInfo">
+              <strong>Đã chọn toàn bộ {selectedNos.length} nhân sự</strong>
+              <small>Phòng chat toàn công ty · mọi nhân sự đang làm việc</small>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setSelectAllMembers(null);
+                setSelected([]);
+              }}
+            >
+              Bỏ chọn
+            </button>
           </div>
+        ) : (
+          selected.length > 0 && (
+            <div className="erp-chat-dialog__chips">
+              {selected.map((employee) => (
+                <span key={employee.EMPL_NO} className="erp-chat-dialog__chip">
+                  <Avatar
+                    src={chatAvatarUrl(employee.EMPL_NO, employee.EMPL_IMAGE)}
+                    sx={{ width: 20, height: 20, fontSize: 10 }}
+                  >
+                    {initialsOf(employee.FULL_NAME)}
+                  </Avatar>
+                  {employee.FULL_NAME}
+                  <button type="button" onClick={() => toggle(employee)} aria-label="Bỏ chọn">
+                    <CloseRoundedIcon sx={{ fontSize: 12 }} />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )
         )}
 
-        {selected.length > 1 && (
+        {selectedNos.length > 1 && (
           <>
             <TextField
               size="small"
@@ -235,10 +320,10 @@ export default function ChatNewChatDialog({
         <Button
           variant="contained"
           size="small"
-          disabled={submitting || selected.length === 0}
+          disabled={submitting || selectedNos.length === 0}
           onClick={handleCreateGroup}
         >
-          {selected.length > 1 ? `Tạo nhóm (${selected.length + 1})` : "Tạo nhóm"}
+          {selectedNos.length > 1 ? `Tạo nhóm (${selectedNos.length + 1})` : "Tạo nhóm"}
         </Button>
       </DialogActions>
     </Dialog>

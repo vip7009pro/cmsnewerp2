@@ -44,8 +44,16 @@ export const chatService = {
       "chatSync"
     ),
 
-  searchEmployees: (keyword: string) =>
-    chatQuery<ChatEmployee[]>("chatSearchEmployees", { keyword, limit: 30 }),
+  /**
+   * Tìm nhân sự. `options.all = true` ⇒ lấy TOÀN BỘ nhân sự đang làm việc
+   * (dùng cho nút "Chọn tất cả" khi tạo phòng toàn công ty; chỉ tài khoản quản trị).
+   */
+  searchEmployees: (keyword: string, options?: { all?: boolean; limit?: number }) =>
+    chatQuery<ChatEmployee[]>("chatSearchEmployees", {
+      keyword,
+      limit: options?.limit ?? 30,
+      all: options?.all === true,
+    }),
 
   getOrCreateDirect: (otherEmplNo: string) =>
     chatQuery<ChatConversation>("chatGetOrCreateDirect", { otherEmplNo }),

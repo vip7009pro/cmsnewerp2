@@ -434,6 +434,9 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
         onSearch={controller.searchEmployees}
         onStartDirect={controller.startDirect}
         onCreateGroup={controller.createGroup}
+        // "Chọn tất cả" để tạo phòng toàn công ty — chỉ mở cho tài khoản quản trị chat.
+        canSelectAll={controller.myEmplNo === "NHU1903"}
+        onLoadAll={() => controller.searchEmployees("", { all: true })}
       />
       <Dialog
         open={showGlobalSearch}

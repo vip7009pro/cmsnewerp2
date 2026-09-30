@@ -1640,6 +1640,74 @@ $chat-bubble-other: #f1f5f9;
   font-size: 12px;
 }
 
+/* --------------- Dialog "Cuộc trò chuyện mới" — chọn tất cả --------------- */
+
+.erp-chat-dialog__searchRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.erp-chat-dialog__selectAll {
+  flex: 0 0 auto;
+  height: 34px;
+  gap: 6px;
+  font-size: 12px;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+/* Thanh thông báo gọn thay cho hàng trăm chip khi đã chọn toàn bộ nhân sự. */
+.erp-chat-dialog__allBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #bfdbfe;
+  background: $chat-primary-soft;
+  color: #1e40af;
+
+  .erp-chat-dialog__allBarInfo {
+    min-width: 0;
+
+    strong {
+      display: block;
+      font-size: 12.5px;
+    }
+
+    small {
+      display: block;
+      margin-top: 2px;
+      font-size: 11px;
+      color: #3b6fd4;
+    }
+  }
+
+  button {
+    flex: 0 0 auto;
+    border: none;
+    background: transparent;
+    color: #1e40af;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 480px) {
+  .erp-chat-dialog__searchRow {
+    flex-wrap: wrap;
+  }
+
+  .erp-chat-dialog__selectAll {
+    width: 100%;
+  }
+}
+
 @media (max-width: 480px) {
   .erp-chat__composer {
     padding: 8px;
