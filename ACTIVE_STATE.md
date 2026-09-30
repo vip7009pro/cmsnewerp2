@@ -1,5 +1,48 @@
 # ACTIVE_STATE
 
+## Đợt 22.9 — Chia sẻ tin nhắn / tệp / ảnh RA app bên ngoài (Web Share) (2026-09-30)
+Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` OK, `get_errors` 0 lỗi, verify end-to-end trên trình duyệt.
+
+### 1. Module `src/components/Chat/chatShareOut.ts`
+Một chỗ duy nhất lo toàn bộ việc chia sẻ ra ngoài, với **3 chế độ dự phòng theo thứ tự**:
+| Chế độ | Khi nào | Hành vi |
+|---|---|---|
+| `native` | Trình duyệt có `navigator.share` (+ `canShare({files})` nếu kèm tệp) | Mở bảng chia sẻ của HĐH — chia sẻ được cả tệp thật |
+| `clipboard` | Không có Web Share API, nội dung chỉ là chữ | Sao chép nội dung để dán sang app khác |
+| `download` | Không chia sẻ được tệp | Sao chép nội dung + tải tệp về máy để gửi thủ công |
+
+- Người dùng tự đóng bảng chia sẻ (`AbortError`) ⇒ coi là "đã huỷ", **không** báo lỗi.
+- Giới hạn: tối đa **5 tệp** và **120MB**/lượt (vượt ngưỡng thì bỏ qua đường chia sẻ tệp để tránh treo tab).
+- Nội dung chia sẻ của 1 tin nhắn: `— Người gửi · Tên phòng · giờ —` + nội dung + `📎 tên tệp` + liên kết `?chat=<id>`.
+- `shareMessageOut` (cả tin), `shareAttachmentOut` (1 ảnh/tệp), `shareMediaItemOut` (mục trong cửa sổ Media), `shareTextOut`.
+
+### 2. Bốn điểm bấm chia sẻ
+1. **Menu hành động** (chuột phải / nhấn giữ): mục "Chia sẻ ra ngoài" kèm mô tả phụ.
+2. **Nút hover trên bong bóng** (`erp-chat__rowActions`) — cùng hàng với Trả lời / cảm xúc / Chuyển tiếp.
+3. **Nút trên ảnh** (`erp-chat__imageShare`): chỉ chia sẻ đúng ảnh đó; ẩn cho tới khi hover, luôn hiện trên thiết bị cảm ứng.
+4. **Cửa sổ Media & tệp**: nút chia sẻ trên từng ô ảnh và từng dòng tệp (có snackbar riêng).
+
+### 3. Hai lỗi thật phát hiện khi kiểm chứng
+- **Thuộc tính `download` KHÔNG có tác dụng với URL khác origin.** File chat nằm ở host API (3007) còn app ở 3001,
+  nên thẻ `<a download href="...3007/chatfile/41">` bị trình duyệt **điều hướng thẳng** sang ảnh thay vì tải xuống.
+  ⇒ Đã đổi sang `fetch` lấy blob → `URL.createObjectURL` (cùng origin) rồi mới bấm tải; tệp > 120MB thì mở tab mới.
+- **Deep-link `/?chat=<id>` không hoạt động.** `ChatDock` dùng `setTimeout(..., 350)` để chờ danh sách hội thoại,
+  nhưng React **StrictMode** (dev) chạy effect 2 lần: cleanup của lần chạy đầu **huỷ mất timer** ⇒ không bao giờ
+  chọn phòng. Đã thay bằng ref + effect riêng chọn phòng **khi danh sách đã nạp xong** (idempotent, không dùng timer).
+  Lỗi này ảnh hưởng cả thông báo đẩy lẫn liên kết chia sẻ.
+
+### Kiểm chứng đã chạy
+- Ảnh trong bong bóng: `navigator.share` nhận **1 tệp thật** `image.png` (406.810 byte) nạp từ `/chatfile`.
+- Chia sẻ cả tin nhắn: nhận `text` đầy đủ (header + "test anh copy" + `📎 image.png` + link) **và** tệp ảnh; toast "Đã chia sẻ tin nhắn kèm ...".
+- Không có Web Share (Chromium headless): tin chữ ⇒ toast "Đã sao chép nội dung — dán vào app bạn muốn gửi";
+  tin có tệp ⇒ toast "Đã sao chép nội dung & tải 1/1 tệp để gửi thủ công" và **URL không bị đổi** (trước khi sửa thì bị điều hướng).
+- Cửa sổ Media: chia sẻ tệp PDF trong danh sách ⇒ hiện đúng toast dự phòng.
+- `/?chat=25` ⇒ mở đúng phòng "okkk", mục danh sách được tô sáng, 20 bong bóng.
+
+### Ghi chú vận hành
+- Web Share API yêu cầu **secure context**: HTTPS hoặc `localhost`. Deploy qua HTTP thường sẽ rơi vào nhánh `clipboard`/`download`.
+- Trên máy tính chỉ Chrome/Edge mới có bảng chia sẻ; **Firefox desktop không hỗ trợ** ⇒ tự động dùng dự phòng.
+
 ## Đợt 22.8 — Avatar phòng chat & nhận chia sẻ từ app khác (PWA Share Target) (2026-09-30)
 Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` OK, `get_errors` 0 lỗi, verify end-to-end bằng Playwright + DB.
 

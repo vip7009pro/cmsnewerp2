@@ -5,14 +5,17 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Snackbar,
   Tooltip,
 } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import FolderZipRoundedIcon from "@mui/icons-material/FolderZipRounded";
+import IosShareRoundedIcon from "@mui/icons-material/IosShareRounded";
 import type { ChatFileKindFilter, ChatMediaItem } from "./chat.types";
 import type { ChatStorage } from "../../api/services/chatService";
 import { chatFileUrl, chatService } from "../../api/services/chatService";
+import { shareMediaItemOut } from "./chatShareOut";
 import {
   FILE_KIND_COLOR,
   FileKindIcon,
@@ -59,6 +62,23 @@ export default function ChatMediaDialog({
   const [kind, setKind] = useState<ChatFileKindFilter>("all");
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  /** Đang nạp tệp để đưa vào bảng chia sẻ của hệ điều hành. */
+  const [sharingId, setSharingId] = useState<number | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+
+  /** Chia sẻ 1 mục media/tệp ra app bên ngoài (Zalo, Kakao, Mail, ...). */
+  const handleShareOut = useCallback(
+    async (item: ChatMediaItem) => {
+      setSharingId(item.attachmentId);
+      try {
+        const outcome = await shareMediaItemOut(item, conversationName);
+        setToast(outcome.message);
+      } finally {
+        setSharingId(null);
+      }
+    },
+    [conversationName]
+  );
 
   const load = useCallback(
     async (nextKind: ChatFileKindFilter, append = false) => {
@@ -169,25 +189,40 @@ export default function ChatMediaDialog({
                 {group.images.length > 0 && (
                   <div className="erp-chat__mediaGrid">
                     {group.images.map((item) => (
-                      <Tooltip
-                        key={item.attachmentId}
-                        title={`${item.originalName} · ${formatFileSize(item.fileSize)} · ${timeLabel(
-                          item.createdAt
-                        )}`}
-                      >
-                        <a
-                          href={chatFileUrl(item.attachmentId)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="erp-chat__mediaTile"
+                      <div key={item.attachmentId} className="erp-chat__mediaTileWrap">
+                        <Tooltip
+                          title={`${item.originalName} · ${formatFileSize(item.fileSize)} · ${timeLabel(
+                            item.createdAt
+                          )}`}
                         >
-                          <img
-                            src={chatFileUrl(item.attachmentId)}
-                            alt={item.originalName}
-                            loading="lazy"
-                          />
-                        </a>
-                      </Tooltip>
+                          <a
+                            href={chatFileUrl(item.attachmentId)}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="erp-chat__mediaTile"
+                          >
+                            <img
+                              src={chatFileUrl(item.attachmentId)}
+                              alt={item.originalName}
+                              loading="lazy"
+                            />
+                          </a>
+                        </Tooltip>
+                        <button
+                          type="button"
+                          className="erp-chat__mediaShare"
+                          title="Chia sẻ ra ngoài"
+                          aria-label={`Chia sẻ ${item.originalName} ra ngoài`}
+                          disabled={sharingId === item.attachmentId}
+                          onClick={() => void handleShareOut(item)}
+                        >
+                          {sharingId === item.attachmentId ? (
+                            <CircularProgress size={12} color="inherit" />
+                          ) : (
+                            <IosShareRoundedIcon sx={{ fontSize: 14 }} />
+                          )}
+                        </button>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -198,29 +233,44 @@ export default function ChatMediaDialog({
                       const itemKind = fileKindOf(item.originalName, item.mimeType);
                       const color = FILE_KIND_COLOR[itemKind];
                       return (
-                        <a
-                          key={item.attachmentId}
-                          href={chatFileUrl(item.attachmentId)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="erp-chat__mediaFile"
-                          title={item.originalName}
-                        >
-                          <i
-                            className="erp-chat__mediaFileIcon"
-                            style={{ background: color.bg, color: color.fg }}
+                        <div key={item.attachmentId} className="erp-chat__mediaFileRow">
+                          <a
+                            href={chatFileUrl(item.attachmentId)}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="erp-chat__mediaFile"
+                            title={item.originalName}
                           >
-                            <FileKindIcon kind={itemKind} />
-                          </i>
-                          <span className="erp-chat__mediaFileMeta">
-                            <strong>{item.originalName}</strong>
-                            <small>
-                              {timeLabel(item.createdAt)} · {item.senderEmplNo} ·{" "}
-                              {formatFileSize(item.fileSize)}
-                            </small>
-                          </span>
-                          <DownloadRoundedIcon sx={{ fontSize: 17 }} />
-                        </a>
+                            <i
+                              className="erp-chat__mediaFileIcon"
+                              style={{ background: color.bg, color: color.fg }}
+                            >
+                              <FileKindIcon kind={itemKind} />
+                            </i>
+                            <span className="erp-chat__mediaFileMeta">
+                              <strong>{item.originalName}</strong>
+                              <small>
+                                {timeLabel(item.createdAt)} · {item.senderEmplNo} ·{" "}
+                                {formatFileSize(item.fileSize)}
+                              </small>
+                            </span>
+                            <DownloadRoundedIcon sx={{ fontSize: 17 }} />
+                          </a>
+                          <button
+                            type="button"
+                            className="erp-chat__mediaShare erp-chat__mediaShare--row"
+                            title="Chia sẻ ra ngoài"
+                            aria-label={`Chia sẻ ${item.originalName} ra ngoài`}
+                            disabled={sharingId === item.attachmentId}
+                            onClick={() => void handleShareOut(item)}
+                          >
+                            {sharingId === item.attachmentId ? (
+                              <CircularProgress size={12} color="inherit" />
+                            ) : (
+                              <IosShareRoundedIcon sx={{ fontSize: 15 }} />
+                            )}
+                          </button>
+                        </div>
                       );
                     })}
                   </div>
@@ -238,6 +288,15 @@ export default function ChatMediaDialog({
           </div>
         )}
       </DialogContent>
+
+      {/* Snackbar portal ra body nên vẫn nằm trên dialog. */}
+      <Snackbar
+        open={Boolean(toast)}
+        autoHideDuration={3200}
+        onClose={() => setToast(null)}
+        message={toast}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </Dialog>
   );
 }

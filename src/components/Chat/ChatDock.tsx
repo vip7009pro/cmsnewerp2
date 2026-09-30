@@ -60,21 +60,33 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
     }
   }, [controller, isOpen]);
 
-  // Deep-link từ thông báo đẩy: /?chat=<conversationId> ⇒ mở panel và vào đúng phòng.
-  const deepLinkHandledRef = useRef(false);  useEffect(() => {
+  // Deep-link từ thông báo đẩy hoặc liên kết chia sẻ: /?chat=<conversationId> ⇒ mở panel và vào đúng phòng.
+  const deepLinkHandledRef = useRef(false);
+  /** Phòng cần mở ngay khi danh sách hội thoại sẵn sàng. */
+  const pendingDeepLinkRef = useRef<number | null>(null);
+
+  useEffect(() => {
     if (deepLinkHandledRef.current) return;
     const conversationId = Number(new URLSearchParams(window.location.search).get("chat"));
     if (!Number.isInteger(conversationId) || conversationId <= 0) return;
 
     deepLinkHandledRef.current = true;
+    pendingDeepLinkRef.current = conversationId;
     setOpen(true);
+  }, [setOpen]);
 
-    const timer = window.setTimeout(() => {
-      void controller.selectConversation(conversationId);
-    }, 350);
+  // Chọn phòng của deep-link khi danh sách đã nạp xong.
+  // KHÔNG dùng setTimeout: React StrictMode (dev) chạy effect 2 lần nên mọi timer
+  // đặt trong effect đều bị cleanup của lần chạy đầu huỷ mất ⇒ deep-link không hoạt động.
+  // Cách này idempotent: ref được xoá TRƯỚC khi gọi nên chạy lại cũng không chọn hai lần.
+  useEffect(() => {
+    const conversationId = pendingDeepLinkRef.current;
+    if (!conversationId) return;
+    if (!controller.conversations.some((item) => item.CONVERSATION_ID === conversationId)) return;
 
-    return () => window.clearTimeout(timer);
-  }, [controller, setOpen]);
+    pendingDeepLinkRef.current = null;
+    void controller.selectConversation(conversationId);
+  }, [controller]);
 
   // Đóng cửa sổ thì đóng luôn pane thông tin nhóm đang mở.
   useEffect(() => {

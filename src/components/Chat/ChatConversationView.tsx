@@ -11,6 +11,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import GroupRoundedIcon from "@mui/icons-material/GroupsRounded";
 import type {
+  ChatAttachment,
   ChatConversation,
   ChatMember,
   ChatMessage,
@@ -23,6 +24,7 @@ import ChatMessageMenu, { type ChatMessageMenuState } from "./ChatMessageMenu";
 import ChatSearchPanel from "./ChatSearchPanel";
 import ChatMediaDialog from "./ChatMediaDialog";
 import ChatRoomAvatar from "./chatAvatars";
+import { shareAttachmentOut, shareMessageOut } from "./chatShareOut";
 import type { PendingUpload } from "../../hooks/useChatController";
 import { chatService, type ChatStorage } from "../../api/services/chatService";
 import {
@@ -511,6 +513,23 @@ export default function ChatConversationView({
     }
   };
 
+  /**
+   * Chia sẻ ra app bên ngoài (Zalo, Kakao, Mail, ...).
+   * - Không truyền `attachment` ⇒ chia sẻ cả tin nhắn (nội dung + tệp).
+   * - Truyền `attachment` ⇒ chỉ chia sẻ đúng ảnh/tệp vừa bấm.
+   */
+  const handleShareOut = async (message: ChatMessage, attachment?: ChatAttachment) => {
+    const outcome = attachment
+      ? await shareAttachmentOut(attachment)
+      : await shareMessageOut({
+          message,
+          conversation,
+          senderName:
+            memberOf(conversation, message.SENDER_EMPL_NO)?.FULL_NAME || message.SENDER_EMPL_NO,
+        });
+    setToast(outcome.message);
+  };
+
   return (
     <div
       className={`erp-chat__main${dragging ? " is-dragging" : ""}`}
@@ -653,6 +672,7 @@ export default function ChatConversationView({
                   onOpenMenu={(target, x, y) => setMenuState({ message: target, top: y, left: x })}
                   onAddReaction={onAddReaction}
                   onReply={onReply}
+                  onShareOut={(target, attachment) => void handleShareOut(target, attachment)}
                   onMentionClick={onMentionClick}
                 />
               );
@@ -820,6 +840,7 @@ export default function ChatConversationView({
         onReact={(message, reaction) => onAddReaction(message, reaction)}
         onClearReaction={onClearReaction}
         onForward={onForward}
+        onShareOut={(message) => void handleShareOut(message)}
         onCopy={(message) => void handleCopy(message)}
         onHide={onHide}
         onRecall={onRecall}

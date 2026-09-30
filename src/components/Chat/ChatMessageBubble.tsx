@@ -3,6 +3,7 @@ import { Avatar, IconButton, Tooltip } from "@mui/material";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
 import ForwardRoundedIcon from "@mui/icons-material/ForwardRounded";
+import IosShareRoundedIcon from "@mui/icons-material/IosShareRounded";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import type {
   ChatAttachment,
@@ -42,6 +43,8 @@ interface Props {
   /** Thả cảm xúc — mỗi lần gọi là +1 (không giới hạn). */
   onAddReaction: (message: ChatMessage, reaction: ChatReactionType) => void;
   onReply: (message: ChatMessage) => void;
+  /** Chia sẻ ra app khác: không truyền `attachment` là chia sẻ cả tin nhắn. */
+  onShareOut?: (message: ChatMessage, attachment?: ChatAttachment) => void;
   onMentionClick: (emplNo: string, name: string, preview: string) => void;
 }
 
@@ -101,6 +104,7 @@ export default function ChatMessageBubble({
   onOpenMenu,
   onAddReaction,
   onReply,
+  onShareOut,
   onMentionClick,
 }: Props) {
   const longPressTimer = useRef<number | null>(null);
@@ -255,19 +259,34 @@ export default function ChatMessageBubble({
                 <div className="erp-chat__attachments">
                   {attachments.map((attachment) =>
                     fileKindOf(attachment.originalName, attachment.mimeType) === "image" ? (
-                      <a
-                        key={attachment.attachmentId}
-                        href={chatFileUrl(attachment.attachmentId)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="erp-chat__attachImage"
-                      >
-                        <img
-                          src={chatFileUrl(attachment.attachmentId)}
-                          alt={attachment.originalName}
-                          loading="lazy"
-                        />
-                      </a>
+                      <span key={attachment.attachmentId} className="erp-chat__attachImage">
+                        <a
+                          href={chatFileUrl(attachment.attachmentId)}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <img
+                            src={chatFileUrl(attachment.attachmentId)}
+                            alt={attachment.originalName}
+                            loading="lazy"
+                          />
+                        </a>
+                        {onShareOut && (
+                          <button
+                            type="button"
+                            className="erp-chat__imageShare"
+                            title="Chia sẻ ảnh ra ngoài (Zalo, Kakao, ...)"
+                            aria-label={`Chia sẻ ảnh ${attachment.originalName} ra ngoài`}
+                            onClick={(event) => {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              onShareOut(message, attachment);
+                            }}
+                          >
+                            <IosShareRoundedIcon sx={{ fontSize: 15 }} />
+                          </button>
+                        )}
+                      </span>
                     ) : (
                       <FileAttachmentCard key={attachment.attachmentId} attachment={attachment} />
                     )
@@ -346,6 +365,13 @@ export default function ChatMessageBubble({
                   <ForwardRoundedIcon sx={{ fontSize: 15 }} />
                 </IconButton>
               </Tooltip>
+              {onShareOut && (
+                <Tooltip title="Chia sẻ ra ngoài">
+                  <IconButton size="small" onClick={() => onShareOut(message)}>
+                    <IosShareRoundedIcon sx={{ fontSize: 15 }} />
+                  </IconButton>
+                </Tooltip>
+              )}
             </>
           )}
         </div>

@@ -2377,3 +2377,113 @@ $chat-bubble-other: #f1f5f9;
     font-weight: 400;
   }
 }
+
+/* ==================== Chia sẻ ra app bên ngoài (Web Share) ==================== */
+
+/* Ảnh trong bong bóng: bọc thêm 1 lớp để neo nút chia sẻ ở góc ảnh.
+   `align-self: flex-start` để lớp bọc co đúng theo bề ngang ảnh (không kéo hết bong bóng). */
+.erp-chat__attachImage {
+  position: relative;
+  display: inline-block;
+  align-self: flex-start;
+  line-height: 0;
+}
+
+.erp-chat__imageShare {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.55);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    background: rgba(15, 23, 42, 0.85);
+  }
+}
+
+.erp-chat__attachImage:hover .erp-chat__imageShare {
+  opacity: 1;
+}
+
+/* Cửa sổ media: nút chia sẻ trên từng ô ảnh và từng dòng tệp. */
+.erp-chat__mediaTileWrap {
+  position: relative;
+
+  .erp-chat__mediaShare {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 26px;
+    height: 26px;
+    background: rgba(15, 23, 42, 0.6);
+    border-color: transparent;
+    color: #fff;
+    opacity: 0;
+  }
+
+  &:hover .erp-chat__mediaShare {
+    opacity: 1;
+  }
+
+  .erp-chat__mediaShare:hover:not(:disabled) {
+    background: rgba(15, 23, 42, 0.88);
+    color: #fff;
+    border-color: transparent;
+  }
+}
+
+.erp-chat__mediaFileRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  .erp-chat__mediaFile {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+.erp-chat__mediaShare {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid $chat-border;
+  border-radius: 8px;
+  background: #fff;
+  color: $chat-muted;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    color: $chat-primary;
+    border-color: $chat-primary;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: progress;
+  }
+}
+
+/* Thiết bị cảm ứng không có hover ⇒ luôn hiện nút chia sẻ. */
+@media (hover: none) {
+  .erp-chat__imageShare,
+  .erp-chat__mediaTileWrap .erp-chat__mediaShare {
+    opacity: 0.92;
+  }
+}

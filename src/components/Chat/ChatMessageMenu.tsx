@@ -3,6 +3,7 @@ import { Divider, ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/materi
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import ForwardRoundedIcon from "@mui/icons-material/ForwardRounded";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
+import IosShareRoundedIcon from "@mui/icons-material/IosShareRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import UndoRoundedIcon from "@mui/icons-material/UndoRounded";
 import DeleteSweepRoundedIcon from "@mui/icons-material/DeleteSweepRounded";
@@ -27,6 +28,8 @@ interface Props {
   /** Bỏ toàn bộ cảm xúc của mình trên tin nhắn. */
   onClearReaction: (message: ChatMessage) => void;
   onForward: (message: ChatMessage) => void;
+  /** Chia sẻ ra app bên ngoài (Zalo, Kakao, Mail, ...). */
+  onShareOut: (message: ChatMessage) => void;
   onCopy: (message: ChatMessage) => void;
   onHide: (message: ChatMessage) => void;
   onRecall: (message: ChatMessage) => void;
@@ -45,6 +48,7 @@ export default function ChatMessageMenu({
   onReact,
   onClearReaction,
   onForward,
+  onShareOut,
   onCopy,
   onHide,
   onRecall,
@@ -135,6 +139,25 @@ export default function ChatMessageMenu({
             <ForwardRoundedIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText primary="Chuyển tiếp" primaryTypographyProps={{ fontSize: 12.5 }} />
+        </MenuItem>
+      )}
+
+      {!deleted && message && (
+        <MenuItem
+          onClick={() => {
+            onShareOut(message);
+            onClose();
+          }}
+        >
+          <ListItemIcon>
+            <IosShareRoundedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary="Chia sẻ ra ngoài"
+            secondary="Gửi sang Zalo, Kakao, Mail, ... các app khác"
+            primaryTypographyProps={{ fontSize: 12.5 }}
+            secondaryTypographyProps={{ fontSize: 10.5 }}
+          />
         </MenuItem>
       )}
 
