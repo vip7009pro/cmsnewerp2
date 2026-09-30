@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Avatar, IconButton, LinearProgress, Snackbar, Tooltip } from "@mui/material";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
+import ImageRoundedIcon from "@mui/icons-material/ImageRounded";
 import CloudUploadRoundedIcon from "@mui/icons-material/CloudUploadRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import PermMediaRoundedIcon from "@mui/icons-material/PermMediaRounded";
@@ -20,7 +21,7 @@ import type {
   ChatReactionType,
   ChatReplyTarget,
 } from "./chat.types";
-import ChatMessageBubble from "./ChatMessageBubble";
+
 import ChatMessageMenu, { type ChatMessageMenuState } from "./ChatMessageMenu";
 import ChatSearchPanel from "./ChatSearchPanel";
 import ChatMediaDialog from "./ChatMediaDialog";
@@ -45,6 +46,7 @@ import {
   initialsOf,
   normalizeText,
 } from "./chatUtils";
+import ChatMessageBubble from "./ChatMessageBubble";
 
 interface Props {
   conversation: ChatConversation;
@@ -190,6 +192,8 @@ export default function ChatConversationView({
 
   const listRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  /** Input riêng cho ảnh/video (mở thư viện ảnh trên mobile). */
+  const mediaInputRef = useRef<HTMLInputElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const typingSentRef = useRef(false);
   const lastMessageIdRef = useRef<number>(0);
@@ -451,27 +455,41 @@ export default function ChatConversationView({
     [richMode]
   );
 
-  const addFiles = (incoming: FileList | File[] | null) => {
+  const addFiles = (incoming: FileList | File[] | null, options?: { mediaOnly?: boolean }) => {
     if (!incoming) return;
     const list = Array.isArray(incoming) ? incoming : Array.from(incoming);
     if (list.length === 0) return;
 
+    const mediaOnly = options?.mediaOnly === true;
     const accepted: File[] = [];
-    let error: string | null = null;
+    const errors: string[] = [];
     let oversized = 0;
+    let rejected = 0;
 
     list.forEach((file) => {
       if (file.size > MAX_FILE_BYTES) {
         oversized += 1;
         return;
       }
+      if (mediaOnly) {
+        // "Gửi ảnh/video" chỉ nhận ảnh và video; nhận diện theo MIME, rơi về đuôi tệp
+        // vì có máy trả MIME chung chung (application/octet-stream).
+        const kind = fileKindOf(file.name, file.type);
+        if (kind !== "image" && kind !== "video") {
+          rejected += 1;
+          return;
+        }
+      }
       accepted.push(file);
     });
 
     if (oversized > 0) {
-      error = `${oversized} tệp vượt quá 1GB nên bị bỏ qua`;
+      errors.push(`${oversized} tệp vượt quá 1GB nên bị bỏ qua`);
     }
-    setFileError(error);
+    if (rejected > 0) {
+      errors.push(`${rejected} tệp không phải ảnh/video nên bị bỏ qua`);
+    }
+    setFileError(errors.length > 0 ? errors.join("; ") : null);
     if (accepted.length > 0) {
       setFiles((prev) => [...prev, ...accepted].slice(0, MAX_FILES_PER_MESSAGE));
     }
@@ -902,6 +920,32 @@ export default function ChatConversationView({
             multiple
             onChange={(event) => {
               addFiles(event.target.files);
+              event.target.value = "";
+            }}
+          />
+
+          {/*
+           * Nút riêng cho ẢNH/VIDEO: trên mobile, `accept="image/*,video/*"` mở thẳng
+           * thư viện ảnh của máy, nhanh hơn nhiều so với phải duyệt cây thư mục ở nút tệp.
+           */}
+          <Tooltip title="Gửi ảnh / video (mở thư viện ảnh)">
+            <IconButton
+              size="small"
+              className="erp-chat__iconBtn"
+              onClick={() => mediaInputRef.current?.click()}
+              aria-label="Gửi ảnh hoặc video"
+            >
+              <ImageRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <input
+            ref={mediaInputRef}
+            type="file"
+            hidden
+            multiple
+            accept="image/*,video/*"
+            onChange={(event) => {
+              addFiles(event.target.files, { mediaOnly: true });
               event.target.value = "";
             }}
           />
