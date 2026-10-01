@@ -77,6 +77,7 @@ import {
   normalizeText,
 } from "./chatUtils";
 import ChatMessageBubble from "./ChatMessageBubble";
+import ChatImageViewer, { type ImageViewerItem } from "./ChatImageViewer";
 import {
   clipboardHasTable,
   extractTableGrid,
@@ -276,6 +277,68 @@ export default function ChatConversationView({
   const [showSearch, setShowSearch] = useState(false);
   /** Mở cửa sổ media/tệp của phòng. */
   const [showMedia, setShowMedia] = useState(false);
+  /** Bộ XEM ẢNH dùng chung đang mở ở ảnh thứ mấy (null = đang đóng). */
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
+
+  /**
+   * Bộ ảnh của phòng theo đúng thứ tự tin nhắn — nguồn dữ liệu cho bộ xem ảnh
+   * dùng chung (chuyển ảnh, tải về, chuyển tiếp, tới tin gốc, thông tin ảnh).
+   */
+  const chatImageItems = useMemo<ImageViewerItem[]>(() => {
+    const result: ImageViewerItem[] = [];
+    messages.forEach((message) => {
+      (message.ATTACHMENTS || []).forEach((attachment) => {
+        if (fileKindOf(attachment.originalName, attachment.mimeType) !== "image") return;
+        result.push({
+          attachmentId: attachment.attachmentId,
+          originalName: attachment.originalName,
+          fileSize: attachment.fileSize,
+          senderEmplNo: message.SENDER_EMPL_NO,
+          senderName:
+            memberOf(conversation, message.SENDER_EMPL_NO)?.FULL_NAME || message.SENDER_EMPL_NO,
+          createdAt: message.CREATED_AT,
+          conversationId: conversation.CONVERSATION_ID,
+          conversationName: conversation.DISPLAY_NAME,
+          messageId: message.MESSAGE_ID,
+        });
+      });
+    });
+    return result;
+  }, [messages, conversation]);
+
+  /** Chuyển tiếp tin nhắn chứa ảnh theo MESSAGE_ID (dùng cho bong bóng lẫn cửa sổ media). */
+  const forwardMessageById = useCallback(
+    (messageId: number) => {
+      const target = messages.find((message) => message.MESSAGE_ID === messageId);
+      if (target) {
+        onForward(target);
+        return;
+      }
+      // Tin chưa nằm trong bộ đang hiển thị ⇒ chỉ cần ID là đủ để chuyển tiếp.
+      onForward({
+        MESSAGE_ID: messageId,
+        CONVERSATION_ID: conversation.CONVERSATION_ID,
+        SENDER_EMPL_NO: myEmplNo,
+        MSG_TYPE: "IMAGE",
+        CONTENT: null,
+        CREATED_AT: new Date().toISOString(),
+      } as unknown as ChatMessage);
+    },
+    [messages, onForward, conversation.CONVERSATION_ID, myEmplNo]
+  );
+
+  /** Bấm ảnh trong bong bóng ⇒ mở bộ xem ảnh tại đúng ảnh đó. */
+  const openImageViewer = useCallback(
+    (attachment: ChatAttachment, message: ChatMessage) => {
+      const found = chatImageItems.findIndex(
+        (item) =>
+          item.attachmentId === attachment.attachmentId && item.messageId === message.MESSAGE_ID
+      );
+      setViewerIndex(found >= 0 ? found : chatImageItems.length ? 0 : null);
+    },
+    [chatImageItems]
+  );
+
   /** Tin nhắn đang được làm nổi bật sau khi nhảy tới. */
   const [highlightId, setHighlightId] = useState<number | null>(null);
   const [storage, setStorage] = useState<ChatStorage | null>(null);
@@ -1332,6 +1395,7 @@ export default function ChatConversationView({
                   onAddReaction={onAddReaction}
                   onReply={onReply}
                   onShareOut={(target, attachment) => void handleShareOut(target, attachment)}
+                  onOpenImage={openImageViewer}
                   onMentionClick={onMentionClick}
                   selectionMode={selectMode}
                   selected={selectedIds.includes(message.MESSAGE_ID)}
@@ -1606,6 +1670,20 @@ export default function ChatConversationView({
         </div>
       </div>
 
+      <ChatImageViewer
+        open={viewerIndex !== null}
+        items={chatImageItems}
+        index={viewerIndex ?? 0}
+        onIndexChange={setViewerIndex}
+        onClose={() => setViewerIndex(null)}
+        onForward={(item) => forwardMessageById(item.messageId)}
+        onJumpToMessage={(item) => {
+          setViewerIndex(null);
+          setShowMedia(false);
+          onJumpToMessage(item.conversationId, item.messageId);
+        }}
+      />
+
       <ChatMediaDialog
         open={showMedia}
         conversationId={conversation.CONVERSATION_ID}
@@ -1613,6 +1691,7 @@ export default function ChatConversationView({
         isSelf={isSelf}
         myEmplNo={myEmplNo}
         members={conversation.MEMBERS}
+        onForwardMessage={forwardMessageById}
         onOpenMessage={(conversationId, messageId) => {
           setShowMedia(false);
           onJumpToMessage(conversationId, messageId);

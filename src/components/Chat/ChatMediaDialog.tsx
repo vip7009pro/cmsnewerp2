@@ -25,6 +25,7 @@ import { chatFileUrl, chatService } from "../../api/services/chatService";
 import { shareMediaItemOut } from "./chatShareOut";
 import ChatDateField from "./ChatDateField";
 import ChatSenderField from "./ChatSenderField";
+import ChatImageViewer, { type ImageViewerItem } from "./ChatImageViewer";
 import {
   FILE_KIND_COLOR,
   FileKindIcon,
@@ -51,6 +52,8 @@ interface Props {
   onClose: () => void;
   /** Bấm 1 tin chứa Link ⇒ nhảy tới tin đó trong khung chat. */
   onOpenMessage?: (conversationId: number, messageId: number) => void;
+  /** Chuyển tiếp tin nhắn chứa ảnh đang xem (tuỳ chọn). */
+  onForwardMessage?: (messageId: number) => void;
 }
 
 const KIND_FILTERS: { value: ChatFileKindFilter; label: string }[] = [
@@ -112,6 +115,7 @@ export default function ChatMediaDialog({
   members,
   onClose,
   onOpenMessage,
+  onForwardMessage,
 }: Props) {
   const [items, setItems] = useState<ChatMediaItem[]>([]);
   const [linkResults, setLinkResults] = useState<ChatSearchResult[]>([]);
@@ -122,6 +126,8 @@ export default function ChatMediaDialog({
   /** Đang nạp tệp để đưa vào bảng chia sẻ của hệ điều hành. */
   const [sharingId, setSharingId] = useState<number | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  /** Bộ XEM ẢNH dùng chung đang mở ở ảnh thứ mấy (null = đang đóng). */
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
 
   const senderOptions = useMemo(
     () => (members || []).filter((m) => m.EMPL_NO !== myEmplNo),
@@ -270,6 +276,36 @@ export default function ChatMediaDialog({
   }, [items]);
 
   const totalFiles = storage?.fileCount ?? items.length;
+
+  /** Ảnh đang hiển thị (theo đúng thứ tự timeline) — nguồn cho bộ xem ảnh dùng chung. */
+  const mediaImageItems = useMemo<ImageViewerItem[]>(
+    () =>
+      grouped.flatMap((group) =>
+        group.images.map((item) => ({
+          attachmentId: item.attachmentId,
+          originalName: item.originalName,
+          fileSize: item.fileSize,
+          senderEmplNo: item.senderEmplNo,
+          senderName:
+            (members || []).find((member) => member.EMPL_NO === item.senderEmplNo)?.FULL_NAME ||
+            item.senderEmplNo,
+          createdAt: item.createdAt,
+          conversationId: conversationId ?? 0,
+          conversationName,
+          messageId: item.messageId,
+        }))
+      ),
+    [grouped, members, conversationId, conversationName]
+  );
+
+  /** Bấm 1 ô ảnh ⇒ mở bộ xem ảnh tại đúng ảnh đó. */
+  const openViewerAt = useCallback(
+    (attachmentId: number) => {
+      const found = mediaImageItems.findIndex((item) => item.attachmentId === attachmentId);
+      setViewerIndex(found >= 0 ? found : null);
+    },
+    [mediaImageItems]
+  );
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth className="erp-chat-mediaDialog">
@@ -439,18 +475,18 @@ export default function ChatMediaDialog({
                                 item.fileSize
                               )} · ${timeLabel(item.createdAt)}`}
                             >
-                              <a
-                                href={chatFileUrl(item.attachmentId)}
-                                target="_blank"
-                                rel="noreferrer"
+                              <button
+                                type="button"
                                 className="erp-chat__mediaTile"
+                                aria-label={`Xem ảnh ${item.originalName}`}
+                                onClick={() => openViewerAt(item.attachmentId)}
                               >
                                 <img
                                   src={chatFileUrl(item.attachmentId)}
                                   alt={item.originalName}
                                   loading="lazy"
                                 />
-                              </a>
+                              </button>
                             </Tooltip>
                             <button
                               type="button"
@@ -542,6 +578,20 @@ export default function ChatMediaDialog({
         onClose={() => setToast(null)}
         message={toast}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
+
+      {/* Bộ xem ảnh dùng chung — dùng lại y nguyên như trong khung chat. */}
+      <ChatImageViewer
+        open={viewerIndex !== null}
+        items={mediaImageItems}
+        index={viewerIndex ?? 0}
+        onIndexChange={setViewerIndex}
+        onClose={() => setViewerIndex(null)}
+        onForward={onForwardMessage ? (item) => onForwardMessage(item.messageId) : undefined}
+        onJumpToMessage={(item) => {
+          setViewerIndex(null);
+          onOpenMessage?.(item.conversationId, item.messageId);
+        }}
       />
     </Dialog>
   );

@@ -2414,6 +2414,8 @@ $chat-bubble-other: #f1f5f9;
 .erp-chat__mediaTile {
   display: block;
   aspect-ratio: 1 / 1;
+  padding: 0;
+  cursor: zoom-in;
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid $chat-border;
@@ -2762,6 +2764,17 @@ $chat-bubble-other: #f1f5f9;
 
 .erp-chat__attachImage:hover .erp-chat__imageShare {
   opacity: 1;
+}
+
+/* Ảnh trong bong bóng giờ là nút mở bộ xem ảnh ⇒ bỏ mặc định của <button>. */
+.erp-chat__imageOpen {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  line-height: 0;
+  cursor: zoom-in;
 }
 
 /* Cửa sổ media: nút chia sẻ trên từng ô ảnh và từng dòng tệp. */
@@ -3764,5 +3777,381 @@ $chat-bubble-other: #f1f5f9;
 
   .erp-chat__timelineGroup {
     gap: 8px;
+  }
+}
+
+/* ================================================================== */
+/* Bộ XEM ẢNH dùng chung (chat + cửa sổ Media/Tệp) — GIAO DIỆN SÁNG    */
+/* ================================================================== */
+
+.erp-chat-viewer .MuiDialog-paper {
+  background: $chat-bg-soft;
+}
+
+.erp-chat-viewer__stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  /* Cho phép vuốt NGANG để chuyển ảnh mà không chặn thao tác dọc của trình duyệt. */
+  touch-action: pan-y;
+}
+
+.erp-chat-viewer__topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid $chat-border;
+  backdrop-filter: blur(6px);
+  color: $chat-text;
+}
+
+.erp-chat-viewer__counter {
+  font-size: 13px;
+  font-weight: 700;
+  color: $chat-muted;
+}
+
+.erp-chat-viewer__topLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* Cụm điều khiển ZOOM: − 100% + (bấm vào % để về 100%). */
+.erp-chat-viewer__zoom {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid $chat-border;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.erp-chat-viewer__zoomBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: $chat-text;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(37, 99, 235, 0.12);
+    color: $chat-primary;
+  }
+
+  &:disabled {
+    color: #cbd5e1;
+    cursor: default;
+  }
+}
+
+.erp-chat-viewer__zoomValue {
+  min-width: 48px;
+  height: 30px;
+  padding: 0 6px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: $chat-muted;
+  font-size: 12.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+
+  &:hover {
+    background: $chat-bg-soft;
+  }
+
+  &.is-zoomed {
+    background: $chat-primary-soft;
+    color: $chat-primary;
+  }
+}
+
+/* Nút X tắt bộ xem ảnh — cố tình TO & có chữ để không bị "chìm" vào nền. */
+.erp-chat-viewer__close {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid $chat-border;
+  border-radius: 10px;
+  background: #fff;
+  color: $chat-text;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: #fee2e2;
+    border-color: #fecaca;
+    color: #dc2626;
+  }
+}
+
+.erp-chat-viewer__iconBtn {
+  color: $chat-text;
+  padding: 6px;
+
+  &:hover {
+    background: rgba(37, 99, 235, 0.12);
+    color: $chat-primary;
+  }
+
+  &.is-active {
+    background: $chat-primary-soft;
+    color: $chat-primary;
+  }
+}
+
+.erp-chat-viewer__imageWrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 62px 16px 104px;
+  outline: none;
+
+  /* Đang zoom ⇒ con trỏ dạng bàn tay để biết có thể kéo di chuyển ảnh. */
+  &.is-zoomed {
+    cursor: grab;
+  }
+}
+
+.erp-chat-viewer__spinner {
+  position: absolute;
+  color: $chat-primary;
+}
+
+.erp-chat-viewer__img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.18);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.erp-chat-viewer__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid $chat-border;
+  border-radius: 50%;
+  background: #fff;
+  color: $chat-text;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.14);
+
+  &:hover {
+    background: $chat-primary-soft;
+    border-color: $chat-primary;
+    color: $chat-primary;
+  }
+
+  &.is-prev {
+    left: 12px;
+  }
+
+  &.is-next {
+    right: 12px;
+  }
+}
+
+.erp-chat-viewer__bottombar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px 12px;
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 1px solid $chat-border;
+  backdrop-filter: blur(6px);
+  color: $chat-text;
+}
+
+.erp-chat-viewer__info {
+  align-self: flex-end;
+  min-width: 260px;
+  max-width: min(420px, 100%);
+  padding: 10px 12px;
+  border: 1px solid $chat-border;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.12);
+}
+
+.erp-chat-viewer__infoRow {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+
+  span {
+    flex: 0 0 84px;
+    color: $chat-muted;
+  }
+
+  b {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-weight: 600;
+    color: $chat-text;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.erp-chat-viewer__barRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.erp-chat-viewer__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: $chat-text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.erp-chat-viewer__actions {
+  display: flex;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 640px) {
+  /* Mobile: xếp DỌC theo luồng thật (thanh trên → vùng ảnh → thanh dưới) để 2 nút
+     chuyển ảnh neo được xuống ĐÁY VÙNG ẢNH thay vì nổi giữa màn hình đè lên ảnh. */
+  .erp-chat-viewer__stage {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .erp-chat-viewer__topbar {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    flex: 0 0 auto;
+  }
+
+  .erp-chat-viewer__imageWrap {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    /* Chừa 58px ở đáy để 2 nút chuyển ảnh nằm gọn bên dưới tấm ảnh. */
+    padding: 10px 8px 58px;
+  }
+
+  .erp-chat-viewer__nav {
+    top: auto;
+    bottom: 9px;
+    transform: none;
+    width: 42px;
+    height: 42px;
+  }
+
+  .erp-chat-viewer__nav.is-prev {
+    left: 16px;
+  }
+
+  .erp-chat-viewer__nav.is-next {
+    right: 16px;
+  }
+
+  .erp-chat-viewer__bottombar {
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    flex: 0 0 auto;
+  }
+
+  /* Mobile: nút X chỉ còn biểu tượng cho gọn. */
+  .erp-chat-viewer__close {
+    width: 34px;
+    padding: 0;
+    justify-content: center;
+
+    span {
+      display: none;
+    }
+  }
+
+  /* Mobile: thu gọn cụm zoom cho vừa 1 hàng với bộ đếm + nút X. */
+  .erp-chat-viewer__topbar {
+    padding: 6px 8px;
+  }
+
+  .erp-chat-viewer__topLeft {
+    gap: 6px;
+  }
+
+  .erp-chat-viewer__zoomBtn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .erp-chat-viewer__zoomValue {
+    min-width: 42px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .erp-chat-viewer__info {
+    align-self: stretch;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .erp-chat-viewer__infoRow span {
+    flex: 0 0 74px;
   }
 }

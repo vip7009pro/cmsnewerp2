@@ -65,6 +65,8 @@ interface Props {
   onReply: (message: ChatMessage) => void;
   /** Chia sẻ ra app khác: không truyền `attachment` là chia sẻ cả tin nhắn. */
   onShareOut?: (message: ChatMessage, attachment?: ChatAttachment) => void;
+  /** Bấm vào ảnh ⇒ mở bộ xem ảnh dùng chung (thay vì mở tab mới). */
+  onOpenImage?: (attachment: ChatAttachment, message: ChatMessage) => void;
   onMentionClick: (emplNo: string, name: string, preview: string) => void;
 }
 
@@ -130,6 +132,7 @@ export default function ChatMessageBubble({
   onAddReaction,
   onReply,
   onShareOut,
+  onOpenImage,
   onMentionClick,
 }: Props) {
   const longPressTimer = useRef<number | null>(null);
@@ -325,17 +328,23 @@ export default function ChatMessageBubble({
                   {attachments.map((attachment) =>
                     fileKindOf(attachment.originalName, attachment.mimeType) === "image" ? (
                       <span key={attachment.attachmentId} className="erp-chat__attachImage">
-                        <a
-                          href={chatFileUrl(attachment.attachmentId)}
-                          target="_blank"
-                          rel="noreferrer"
+                        <button
+                          type="button"
+                          className="erp-chat__imageOpen"
+                          title={`Xem ảnh ${attachment.originalName}`}
+                          aria-label={`Xem ảnh ${attachment.originalName}`}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            onOpenImage?.(attachment, message);
+                          }}
                         >
                           <img
                             src={chatFileUrl(attachment.attachmentId)}
                             alt={attachment.originalName}
                             loading="lazy"
                           />
-                        </a>
+                        </button>
                         {onShareOut && (
                           <button
                             type="button"
