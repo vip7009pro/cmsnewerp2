@@ -28,6 +28,27 @@ Trạng thái: **HOÀN THÀNH** — BE `node --check` OK + `node scratch/test_ch
 - `useChatController`: `deleteConversation`, `deleteMessages` + xử lý socket mới.
 - `chat.scss`: `.erp-chat__tablePreview`.
 
+### Restyle Media & Tệp (mobile + desktop) — cùng ngày
+- Thêm `ChatSenderField.tsx` — AutoComplete chọn người gửi (search theo TÊN không dấu **hoặc** MÃ, `autoHighlight`,
+  avatar + tên + mã/chức danh, popper `.erp-chat__senderPopper` global, có `label` để thẳng hàng với ô ngày).
+- `ChatMediaDialog`: bộ lọc thành "card" 3 hàng (từ khoá + Áp dụng/Xoá lọc → Người gửi + Từ/Đến ngày →
+  Khoảng + chip Loại), Dialog flex-column tự cuộn, mobile **toàn màn hình**, lưới ảnh/nhãn gọn hơn.
+- `ChatSearchPanel`: dùng chung `ChatSenderField`, `.erp-chat__searchFilters` xếp dọc.
+- `chat.scss`: block cuối file `Media & Tệp ... restyle` + media query ≤640px. `npm run build` OK.
+
+### Follow-up (cùng ngày) — lọc 1 dòng + rời hội thoại 1-1
+- **Thanh lọc 1 DÒNG (desktop)**: `ChatMediaDialog` + `ChatSearchPanel` gom `tìm kiếm · Người gửi (AutoComplete) ·
+  Từ ngày · Đến ngày · Áp dụng · Xoá lọc` vào `.erp-chat__filterBar` (`flex-wrap: nowrap` ≥760px); chip ở
+  `.erp-chat__chipBar`. `ChatDateField` thêm `compact` (bỏ nhãn trên, dùng nhãn làm placeholder trong ô, cao 34px).
+  `ChatSenderField` dùng `placeholder="Người gửi"` (không còn nhãn). Mặc định **Từ/Đến = HÔM NAY** ở cả 2 cửa sổ.
+  Mobile: search 100%, người gửi 100%, 2 ô ngày chia đôi, 2 nút chia đôi.
+- **Rời hội thoại 1-1**: `ChatGroupPanel` thêm nút "Rời hội thoại" cho `CONV_TYPE='DIRECT'` → `chatLeaveGroup`.
+  Backend giữ nguyên hội thoại cho bên còn lại (chỉ `LEFT_AT` người rời; không đóng vì chỉ GROUP mới đóng khi rỗng).
+  ⚠️ **BUG ĐÃ SỬA**: `chatLeaveGroup` tạo tin hệ thống SAU khi set `LEFT_AT` ⇒ người rời không còn là thành viên
+  nên `core.sendMessage` trả FORBIDDEN ⇒ **tin báo không bao giờ hiện**. Nay tạo tin TRƯỚC khi đánh dấu rời;
+  nội dung DIRECT = "… đã rời hội thoại", GROUP = "… đã rời nhóm".
+  Verify: `node scratch/test_direct_leave.js` → **6/6 PASS**; `test_chat_service.js` PASS; `npm run build` OK.
+
 ## Fix 30.9 — ĐƠN NHIỆM: page dưới route layout trung gian sụp 0px (2026-09-30)
 Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` OK; verify Playwright cả 2 chế độ.
 

@@ -1,12 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  Avatar,
-  CircularProgress,
-  IconButton,
-  MenuItem,
-  TextField,
-  Tooltip,
-} from "@mui/material";
+import { Avatar, CircularProgress, IconButton, Tooltip } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import InsertDriveFileRoundedIcon from "@mui/icons-material/InsertDriveFileRounded";
@@ -17,6 +10,7 @@ import type {
   ChatSearchResult,
 } from "./chat.types";
 import ChatDateField from "./ChatDateField";
+import ChatSenderField from "./ChatSenderField";
 import { richToPlainText } from "./chatRichText";
 import { chatService } from "../../api/services/chatService";
 import {
@@ -195,69 +189,64 @@ export default function ChatSearchPanel({
 
   return (
     <div className="erp-chat__searchPanel">
-      <form className="erp-chat__searchForm" onSubmit={handleSubmit}>
-        <div className="erp-chat__searchInput">
-          <SearchRoundedIcon fontSize="small" />
-          <input
-            value={filters.keyword || ""}
-            onChange={(event) => patch({ keyword: event.target.value })}
-            placeholder={
-              isGlobal ? "Tìm trong toàn bộ lịch sử chat và tệp..." : "Tìm trong cuộc trò chuyện này..."
-            }
-            aria-label="Từ khoá tìm kiếm"
-            autoFocus={autoFocus}
-          />
-        </div>
-        <Tooltip title="Tìm">
-          <IconButton size="small" className="erp-chat__iconBtn" type="submit">
-            <SearchRoundedIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        {onClose && (
-          <Tooltip title="Đóng tìm kiếm">
-            <IconButton size="small" className="erp-chat__iconBtn" onClick={onClose} type="button">
-              <CloseRoundedIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        )}
-      </form>
-
+      {/* Bộ lọc: 1 DÒNG gọn (từ khoá · người gửi · từ/đến ngày · nút) + dải chip. */}
       <div className="erp-chat__searchFilters">
-        <div className="erp-chat__filterRow">
+        <div className="erp-chat__filterBar">
+          <div className="erp-chat__searchInput">
+            <SearchRoundedIcon fontSize="small" />
+            <input
+              value={filters.keyword || ""}
+              onChange={(event) => patch({ keyword: event.target.value })}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") handleSubmit();
+              }}
+              placeholder={
+                isGlobal
+                  ? "Tìm trong toàn bộ lịch sử chat và tệp..."
+                  : "Tìm trong cuộc trò chuyện này..."
+              }
+              aria-label="Từ khoá tìm kiếm"
+              autoFocus={autoFocus}
+            />
+          </div>
           {!isGlobal && senderOptions.length > 0 && (
-            <TextField
-              select
-              size="small"
-              label="Người gửi"
+            <ChatSenderField
+              members={senderOptions}
               value={filters.senderEmplNo || ""}
-              onChange={(event) => patch({ senderEmplNo: event.target.value })}
-              className="erp-chat__filterSelect"
-            >
-              <MenuItem value="">Tất cả</MenuItem>
-              {senderOptions.map((member) => (
-                <MenuItem key={member.EMPL_NO} value={member.EMPL_NO}>
-                  {member.FULL_NAME || member.EMPL_NO}
-                  <em className="erp-chat__menuCode">({member.EMPL_NO})</em>
-                </MenuItem>
-              ))}
-            </TextField>
+              onChange={(emplNo) => patch({ senderEmplNo: emplNo })}
+              placeholder="Người gửi"
+            />
           )}
-
           <ChatDateField
+            compact
             label="Từ ngày"
             value={filters.fromDate || ""}
             maxDate={filters.toDate || undefined}
             onChange={(value) => patch({ fromDate: value })}
           />
           <ChatDateField
+            compact
             label="Đến ngày"
             value={filters.toDate || ""}
             minDate={filters.fromDate || undefined}
             onChange={(value) => patch({ toDate: value })}
           />
+          <button type="button" className="erp-chat__primaryBtn" onClick={() => handleSubmit()}>
+            Áp dụng
+          </button>
+          <button type="button" className="erp-chat__ghostBtn" onClick={reset}>
+            Xoá lọc
+          </button>
+          {onClose && (
+            <Tooltip title="Đóng tìm kiếm">
+              <IconButton size="small" className="erp-chat__iconBtn" onClick={onClose} type="button">
+                <CloseRoundedIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
         </div>
 
-        <div className="erp-chat__filterRow erp-chat__filterRow--presets">
+        <div className="erp-chat__chipBar">
           <span className="erp-chat__filterLabel">Khoảng:</span>
           {DATE_PRESETS.map((preset) => (
             <button
@@ -269,39 +258,25 @@ export default function ChatSearchPanel({
               {preset.label}
             </button>
           ))}
-        </div>
-
-        <div className="erp-chat__filterRow erp-chat__filterRow--kinds">
-          <span className="erp-chat__filterLabel">Loại tệp:</span>
-          <div className="erp-chat__kindChips">
-            {KIND_OPTIONS.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                className={`erp-chat__kindChip${
-                  (filters.fileKind || "all") === option.value ? " is-active" : ""
-                }`}
-                onClick={() => patch({ fileKind: option.value })}
-              >
-                {option.label}
-              </button>
-            ))}
+          <span className="erp-chat__filterLabel erp-chat__filterLabel--sep">Loại:</span>
+          {KIND_OPTIONS.map((option) => (
             <button
+              key={option.value}
               type="button"
-              className={`erp-chat__kindChip${filters.onlyWithFiles ? " is-active" : ""}`}
-              onClick={() => patch({ onlyWithFiles: !filters.onlyWithFiles })}
+              className={`erp-chat__kindChip${
+                (filters.fileKind || "all") === option.value ? " is-active" : ""
+              }`}
+              onClick={() => patch({ fileKind: option.value })}
             >
-              Chỉ tin có tệp
+              {option.label}
             </button>
-          </div>
-        </div>
-
-        <div className="erp-chat__filterRow erp-chat__filterRow--actions">
-          <button type="button" className="erp-chat__primaryBtn" onClick={() => handleSubmit()}>
-            Áp dụng bộ lọc
-          </button>
-          <button type="button" className="erp-chat__ghostBtn" onClick={reset}>
-            Xoá lọc
+          ))}
+          <button
+            type="button"
+            className={`erp-chat__kindChip${filters.onlyWithFiles ? " is-active" : ""}`}
+            onClick={() => patch({ onlyWithFiles: !filters.onlyWithFiles })}
+          >
+            Chỉ tin có tệp
           </button>
         </div>
       </div>

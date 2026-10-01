@@ -9,6 +9,11 @@ interface Props {
   value: string;
   minDate?: string;
   maxDate?: string;
+  /**
+   * Chế độ gọn: KHÔNG hiện nhãn phía trên; khi trống thì hiện chính nhãn làm placeholder
+   * bên trong ô. Dùng để xếp nhiều bộ lọc trên CÙNG MỘT DÒNG.
+   */
+  compact?: boolean;
   onChange: (value: string) => void;
 }
 
@@ -23,7 +28,14 @@ interface Props {
  *
  * Giá trị trao đổi luôn là `YYYY-MM-DD`, dựng bằng `moment.utc` nên không lệch ngày.
  */
-export default function ChatDateField({ label, value, minDate, maxDate, onChange }: Props) {
+export default function ChatDateField({
+  label,
+  value,
+  minDate,
+  maxDate,
+  compact = false,
+  onChange,
+}: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const display = value ? moment.utc(value).format("DD/MM/YYYY") : "";
 
@@ -36,8 +48,8 @@ export default function ChatDateField({ label, value, minDate, maxDate, onChange
   };
 
   return (
-    <div className="erp-chat__dateField">
-      <span className="erp-chat__dateLabel">{label}</span>
+    <div className={`erp-chat__dateField${compact ? " is-compact" : ""}`}>
+      {!compact && <span className="erp-chat__dateLabel">{label}</span>}
       <div
         className="erp-chat__dateBox"
         role="button"
@@ -52,7 +64,7 @@ export default function ChatDateField({ label, value, minDate, maxDate, onChange
         aria-label={`${label}${display ? `: ${display}` : ""}`}
       >
         <span className={`erp-chat__dateValue${display ? "" : " is-empty"}`}>
-          {display || "dd/mm/yyyy"}
+          {display || (compact ? label : "dd/mm/yyyy")}
         </span>
 
         {display && (

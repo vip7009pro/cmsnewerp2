@@ -3321,3 +3321,397 @@ $chat-bubble-other: #f1f5f9;
     color: $chat-muted;
   }
 }
+
+/* ================================================================== */
+/* Media & Tệp (toàn cục + từng phòng): restyle bộ lọc + danh sách     */
+/* ================================================================== */
+
+/* Hộp thoại: bo góc, cột dọc để phần danh sách tự cuộn. */
+.erp-chat-mediaDialog .MuiDialog-paper {
+  display: flex;
+  flex-direction: column;
+  max-height: min(90vh, 820px);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.erp-chat__mediaHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 14px 16px 12px;
+  background: #fff;
+  border-bottom: 1px solid $chat-border;
+
+  .erp-chat__mediaClose {
+    margin-left: auto;
+  }
+}
+
+.erp-chat__mediaTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: $chat-text;
+}
+
+.erp-chat__mediaStorage {
+  font-size: 11.5px;
+  color: $chat-muted;
+
+  em {
+    font-style: normal;
+    color: #0f766e;
+  }
+}
+
+/* Khối bộ lọc: 1 "card" gọn, chia hàng rõ ràng. */
+.erp-chat__mediaFilterWrap,
+.erp-chat__searchFilters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  border-bottom: 1px solid $chat-border;
+}
+
+/* ----- Thanh lọc 1 DÒNG (desktop) ----- */
+.erp-chat__filterBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+@media (min-width: 760px) {
+  .erp-chat__filterBar {
+    flex-wrap: nowrap;
+  }
+}
+
+.erp-chat__filterBar .erp-chat__searchInput {
+  flex: 1 1 180px;
+  min-width: 96px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid $chat-border;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus-within {
+    border-color: $chat-primary;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+}
+
+.erp-chat__filterBar .erp-chat__senderWrap {
+  flex: 0 1 210px;
+  width: 210px;
+}
+
+.erp-chat__filterBar .erp-chat__dateField {
+  flex: 0 0 132px;
+  width: 132px;
+}
+
+.erp-chat__filterBar .erp-chat__dateBox {
+  width: 100%;
+  height: 34px;
+  padding: 0 8px;
+}
+
+.erp-chat__filterBar .erp-chat__senderField .MuiOutlinedInput-root {
+  min-height: 34px;
+}
+
+.erp-chat__filterBar .erp-chat__primaryBtn,
+.erp-chat__filterBar .erp-chat__ghostBtn {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+/* ----- Dải chip lọc (bên dưới thanh) ----- */
+.erp-chat__chipBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.erp-chat__filterLabel--sep {
+  margin-left: 8px;
+}
+
+/* Ô ngày chế độ GỌN: bỏ nhãn trên, dùng nhãn làm placeholder trong ô. */
+.erp-chat__dateField.is-compact .erp-chat__dateBox {
+  gap: 4px;
+}
+
+.erp-chat__mediaSearchRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.erp-chat__mediaSearchRow .erp-chat__searchInput {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 7px 10px;
+  border: 1px solid $chat-border;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus-within {
+    border-color: $chat-primary;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+}
+
+.erp-chat__mediaSearchActions {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.erp-chat__mediaFieldGrid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.6fr) minmax(150px, 1fr) minmax(150px, 1fr);
+  gap: 10px;
+  align-items: end;
+}
+
+.erp-chat__mediaFieldGrid .erp-chat__dateField,
+.erp-chat__mediaFieldGrid .erp-chat__senderWrap {
+  width: 100%;
+  min-width: 0;
+}
+
+.erp-chat__mediaFieldGrid .erp-chat__dateBox {
+  width: 100%;
+}
+
+.erp-chat__mediaChipRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  &--kinds {
+    align-items: flex-start;
+  }
+}
+
+/* Chip lọc (kể cả chip Link có icon) canh giữa theo chiều dọc. */
+.erp-chat__mediaFilterWrap .erp-chat__kindChip,
+.erp-chat__searchFilters .erp-chat__kindChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+}
+
+/* ----- Ô chọn NGƯỜI GỬI dạng AutoComplete ----- */
+.erp-chat__senderWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-width: 0;
+}
+
+.erp-chat__senderField {
+  width: 100%;
+
+  .MuiOutlinedInput-root {
+    min-height: 34px;
+    padding: 0 30px 0 8px;
+    border-radius: 9px;
+    font-size: 12.5px;
+    background: #fff;
+  }
+
+  .MuiAutocomplete-input {
+    padding: 0 !important;
+    font-size: 12.5px;
+  }
+
+  .MuiAutocomplete-endAdornment {
+    right: 6px;
+  }
+}
+
+/* Trong bộ lọc tìm kiếm (không phải lưới) thì giới hạn bề rộng cho gọn hàng. */
+.erp-chat__filterRow .erp-chat__senderWrap {
+  flex: 0 0 260px;
+  width: 260px;
+}
+
+/* Popper của AutoComplete được render qua Portal (body) ⇒ phải để ở cấp GLOBAL. */
+.erp-chat__senderPopper {
+  z-index: 1400; /* trên MUI Dialog (1300) */
+
+  .MuiAutocomplete-paper {
+    border: 1px solid $chat-border;
+    border-radius: 12px;
+    box-shadow: 0 14px 34px -10px rgba(15, 23, 42, 0.32);
+  }
+
+  .MuiAutocomplete-listbox {
+    max-height: 300px;
+    padding: 6px;
+  }
+
+  .MuiAutocomplete-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    font-size: 12.5px;
+
+    &[aria-selected="true"] {
+      background: $chat-primary-soft;
+    }
+
+    &.Mui-focused {
+      background: #eff6ff;
+    }
+  }
+}
+
+.erp-chat__senderOpt {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  strong {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: $chat-text;
+  }
+
+  small {
+    font-size: 10.5px;
+    color: $chat-muted;
+  }
+}
+
+.erp-chat__senderAll {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: $chat-primary;
+}
+
+/* Phần danh sách: cho phép co giãn để tự cuộn trong hộp thoại. */
+.erp-chat__mediaBody {
+  flex: 1 1 auto;
+  min-height: 260px;
+  max-height: none;
+  padding: 14px 16px 18px;
+}
+
+.erp-chat__mediaGrid {
+  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  gap: 10px;
+}
+
+.erp-chat__mediaTile {
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px -6px rgba(15, 23, 42, 0.28);
+  }
+}
+
+/* Bộ lọc của panel TÌM KIẾM: xếp dọc cho rõ hàng. */
+.erp-chat__searchFilters {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+/* ======================= Mobile: toàn màn hình ======================= */
+@media (max-width: 640px) {
+  .erp-chat-mediaDialog .MuiDialog-paper {
+    margin: 0;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .erp-chat__mediaHead {
+    padding: 12px;
+    gap: 6px;
+  }
+
+  .erp-chat__mediaTitle {
+    font-size: 14px;
+  }
+
+  .erp-chat__mediaStorage {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .erp-chat__mediaFilterWrap,
+  .erp-chat__searchFilters {
+    gap: 8px;
+    padding: 10px 12px 12px;
+  }
+
+  .erp-chat__filterBar {
+    gap: 6px;
+  }
+
+  .erp-chat__filterBar .erp-chat__searchInput {
+    flex: 1 1 100%;
+  }
+
+  .erp-chat__filterBar .erp-chat__senderWrap {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .erp-chat__filterBar .erp-chat__dateField {
+    flex: 1 1 calc(50% - 3px);
+    width: auto;
+  }
+
+  .erp-chat__filterBar .erp-chat__primaryBtn,
+  .erp-chat__filterBar .erp-chat__ghostBtn {
+    flex: 1 1 0;
+    height: 32px;
+    padding: 0 10px;
+    font-size: 12.5px;
+  }
+
+  .erp-chat__mediaBody {
+    min-height: 0;
+    padding: 12px 12px 16px;
+  }
+
+  .erp-chat__mediaGrid {
+    grid-template-columns: repeat(auto-fill, minmax(98px, 1fr));
+    gap: 8px;
+  }
+
+  .erp-chat__timelineGroup {
+    gap: 8px;
+  }
+}

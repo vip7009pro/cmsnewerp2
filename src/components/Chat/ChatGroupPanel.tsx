@@ -68,6 +68,7 @@ export default function ChatGroupPanel({
   onSearch,
 }: Props) {
   const isGroup = conversation.CONV_TYPE === "GROUP";
+  const isDirect = conversation.CONV_TYPE === "DIRECT";
   const canManage = conversation.MY_ROLE === "OWNER" || conversation.MY_ROLE === "ADMIN";
   const canModerate = canManage || conversation.MY_ROLE === "MODERATOR";
 
@@ -205,6 +206,24 @@ export default function ChatGroupPanel({
               </small>
             </div>
           </div>
+        )}
+
+        {/*
+         * Hội thoại 1-1 được coi như nhóm thường ⇒ cũng có nút RỜI.
+         * Bên kia vẫn giữ hội thoại và xem được bình thường; mở lại chat với nhau sẽ tham gia lại.
+         */}
+        {isDirect && (
+          <Button
+            fullWidth
+            color="error"
+            size="small"
+            variant="outlined"
+            disabled={busy}
+            className="erp-chat__dangerBtn"
+            onClick={() => run(onLeave, "Đã rời hội thoại")}
+          >
+            Rời hội thoại
+          </Button>
         )}
 
         {/* Nhóm: danh sách thành viên */}

@@ -5,9 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  MenuItem,
   Snackbar,
-  TextField,
   Tooltip,
 } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -26,6 +24,7 @@ import type { ChatStorage } from "../../api/services/chatService";
 import { chatFileUrl, chatService } from "../../api/services/chatService";
 import { shareMediaItemOut } from "./chatShareOut";
 import ChatDateField from "./ChatDateField";
+import ChatSenderField from "./ChatSenderField";
 import {
   FILE_KIND_COLOR,
   FileKindIcon,
@@ -93,6 +92,12 @@ const EMPTY_FILTERS: MediaFilters = {
   toDate: "",
 };
 
+/** Bộ lọc mặc định: loại "all", ngày Từ/Đến = HÔM NAY (giờ Việt Nam). */
+function defaultFilters(): MediaFilters {
+  const today = vnToday();
+  return { ...EMPTY_FILTERS, fromDate: today, toDate: today };
+}
+
 /**
  * Cửa sổ xem media/tệp của 1 phòng: lưới ảnh + danh sách tệp, phân nhóm theo ngày
  * dạng timeline. Hỗ trợ lọc theo từ khoá / người gửi / khoảng ngày / loại tệp —
@@ -111,7 +116,7 @@ export default function ChatMediaDialog({
   const [items, setItems] = useState<ChatMediaItem[]>([]);
   const [linkResults, setLinkResults] = useState<ChatSearchResult[]>([]);
   const [storage, setStorage] = useState<ChatStorage | null>(null);
-  const [filters, setFilters] = useState<MediaFilters>(EMPTY_FILTERS);
+  const [filters, setFilters] = useState<MediaFilters>(() => defaultFilters());
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   /** Đang nạp tệp để đưa vào bảng chia sẻ của hệ điều hành. */
@@ -199,8 +204,9 @@ export default function ChatMediaDialog({
   // Mở cửa sổ hoặc đổi phòng ⇒ xoá bộ lọc và tải lại từ đầu.
   useEffect(() => {
     if (!open || !conversationId) return;
-    setFilters(EMPTY_FILTERS);
-    void load(EMPTY_FILTERS, false);
+    const initial = defaultFilters();
+    setFilters(initial);
+    void load(initial, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, conversationId]);
 
@@ -214,8 +220,9 @@ export default function ChatMediaDialog({
   const applyFilters = () => void load(filters, false);
 
   const resetFilters = () => {
-    setFilters(EMPTY_FILTERS);
-    void load(EMPTY_FILTERS, false);
+    const initial = defaultFilters();
+    setFilters(initial);
+    void load(initial, false);
   };
 
   const applyPreset = (days: number | null) => {
@@ -275,14 +282,19 @@ export default function ChatMediaDialog({
           {totalFiles} tệp · {formatFileSize(storage?.totalBytes)}
           {isSelf && <em> · cloud cá nhân, dung lượng không giới hạn</em>}
         </span>
-        <IconButton size="small" onClick={onClose} aria-label="Đóng">
+        <IconButton
+          size="small"
+          className="erp-chat__mediaClose"
+          onClick={onClose}
+          aria-label="Đóng"
+        >
           <CloseRoundedIcon fontSize="small" />
         </IconButton>
       </DialogTitle>
 
-      {/* Bộ lọc theo phòng: từ khoá + người gửi + khoảng ngày + loại tệp (kèm chip Link). */}
+      {/* Bộ lọc theo phòng: 1 DÒNG gọn (tìm kiếm · người gửi · từ/đến ngày · nút) + dải chip. */}
       <div className="erp-chat__mediaFilterWrap">
-        <div className="erp-chat__filterRow erp-chat__mediaSearchRow">
+        <div className="erp-chat__filterBar">
           <div className="erp-chat__searchInput">
             <SearchRoundedIcon fontSize="small" />
             <input
@@ -296,32 +308,22 @@ export default function ChatMediaDialog({
             />
           </div>
           {senderOptions.length > 0 && (
-            <TextField
-              select
-              size="small"
-              label="Người gửi"
+            <ChatSenderField
+              members={senderOptions}
               value={filters.senderEmplNo}
-              onChange={(event) =>
-                setFilters((prev) => ({ ...prev, senderEmplNo: event.target.value }))
-              }
-              className="erp-chat__filterSelect"
-            >
-              <MenuItem value="">Tất cả</MenuItem>
-              {senderOptions.map((member) => (
-                <MenuItem key={member.EMPL_NO} value={member.EMPL_NO}>
-                  {member.FULL_NAME || member.EMPL_NO}
-                  <em className="erp-chat__menuCode">({member.EMPL_NO})</em>
-                </MenuItem>
-              ))}
-            </TextField>
+              onChange={(emplNo) => setFilters((prev) => ({ ...prev, senderEmplNo: emplNo }))}
+              placeholder="Người gửi"
+            />
           )}
           <ChatDateField
+            compact
             label="Từ ngày"
             value={filters.fromDate}
             maxDate={filters.toDate || undefined}
             onChange={(value) => setFilters((prev) => ({ ...prev, fromDate: value }))}
           />
           <ChatDateField
+            compact
             label="Đến ngày"
             value={filters.toDate}
             minDate={filters.fromDate || undefined}
@@ -335,7 +337,7 @@ export default function ChatMediaDialog({
           </button>
         </div>
 
-        <div className="erp-chat__filterRow erp-chat__filterRow--presets">
+        <div className="erp-chat__chipBar">
           <span className="erp-chat__filterLabel">Khoảng:</span>
           {DATE_PRESETS.map((preset) => (
             <button
@@ -347,9 +349,7 @@ export default function ChatMediaDialog({
               {preset.label}
             </button>
           ))}
-        </div>
-
-        <div className="erp-chat__mediaFilters">
+          <span className="erp-chat__filterLabel erp-chat__filterLabel--sep">Loại:</span>
           {KIND_FILTERS.map((option) => (
             <button
               key={option.value}
