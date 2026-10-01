@@ -454,7 +454,7 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
               void controller.deleteMessage(message.CONVERSATION_ID, message.MESSAGE_ID)
             }
             onDeleteMessages={(messageIds, mode) =>
-              void controller.deleteMessages(
+              controller.deleteMessages(
                 controller.activeConversation!.CONVERSATION_ID,
                 messageIds,
                 mode
@@ -659,8 +659,8 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
         onSearch={controller.searchEmployees}
         onStartDirect={controller.startDirect}
         onCreateGroup={controller.createGroup}
-        // "Chọn tất cả" để tạo phòng toàn công ty — chỉ mở cho tài khoản quản trị chat.
-        canSelectAll={controller.myEmplNo === "NHU1903"}
+        // "Chọn tất cả" + lọc theo phòng ban — nay MỞ cho mọi tài khoản.
+        canSelectAll
         onLoadAll={() => controller.searchEmployees("", { all: true })}
       />
       <Dialog

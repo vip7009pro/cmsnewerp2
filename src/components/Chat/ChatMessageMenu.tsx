@@ -22,6 +22,10 @@ export interface ChatMessageMenuState {
 interface Props {
   state: ChatMessageMenuState | null;
   myEmplNo: string;
+  /**
+   * Được phép "Thu hồi với cả hai phía" hay không — nơi gọi đã tính sẵn:
+   * CHỈ tin của chính mình và (đối phương chưa xem HOẶC trong vòng 10 phút).
+   */
   canRecall: boolean;
   onClose: () => void;
   onReply: (message: ChatMessage) => void;
@@ -62,7 +66,6 @@ export default function ChatMessageMenu({
   onSelectMultiple,
 }: Props) {
   const message = state?.message;
-  const mine = message?.SENDER_EMPL_NO === myEmplNo;
   const deleted = Boolean(message?.DELETED_AT);
   const isPinned = Boolean(message?.PINNED_AT);
   const myReaction = message
@@ -244,7 +247,7 @@ export default function ChatMessageMenu({
         </>
       )}
 
-      {!deleted && message && (mine || canRecall) && (
+      {!deleted && message && canRecall && (
         <MenuItem
           onClick={() => {
             onRecall(message);

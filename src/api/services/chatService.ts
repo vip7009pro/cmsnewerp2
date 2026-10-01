@@ -151,17 +151,21 @@ export const chatService = {
   /**
    * Xoá NHIỀU tin nhắn một lượt.
    *  - mode "hide"   ⇒ xoá ở phía tôi.
-   *  - mode "recall" ⇒ thu hồi với cả hai phía (chỉ tin của mình / khi có quyền kiểm duyệt).
+   *  - mode "recall" ⇒ thu hồi với cả hai phía (CHỈ tin của mình + chưa xem hoặc trong 10 phút).
+   * `skipped` = số tin bị bỏ qua vì không đủ điều kiện thu hồi.
    */
   deleteMessages: (
     conversationId: number,
     messageIds: number[],
     mode: "hide" | "recall"
   ) =>
-    chatQuery<{ conversationId: number; mode: string; hidden: number[]; recalled: number[] }>(
-      "chatDeleteMessages",
-      { conversationId, messageIds, mode }
-    ),
+    chatQuery<{
+      conversationId: number;
+      mode: string;
+      hidden: number[];
+      recalled: number[];
+      skipped: number;
+    }>("chatDeleteMessages", { conversationId, messageIds, mode }),
 
   /** Xoá phòng chat (ẩn lịch sử phía tôi) — phòng biến mất tới khi có tin MỚI hơn. */
   deleteConversation: (conversationId: number) =>

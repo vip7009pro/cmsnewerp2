@@ -964,6 +964,19 @@ $chat-bubble-other: #f1f5f9;
   white-space: nowrap;
 }
 
+/* Ô biểu tượng cho mục "@All" trong danh sách gợi ý tag tên. */
+.erp-chat__mentionAllIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: $chat-primary-soft;
+  color: $chat-primary;
+}
+
 .erp-chat__mentionHint {
   position: sticky;
   bottom: 0;
@@ -1814,6 +1827,32 @@ $chat-bubble-other: #f1f5f9;
   white-space: nowrap;
 }
 
+/* Hàng lọc theo PHÒNG BAN / BỘ PHẬN để tạo nhóm nhanh. */
+.erp-chat-dialog__deptRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.erp-chat-dialog__deptSelect {
+  flex: 1 1 0;
+  min-width: 0;
+
+  .MuiInputBase-root {
+    font-size: 12.5px;
+  }
+}
+
+.erp-chat-dialog__deptBtn {
+  flex: 0 0 auto;
+  height: 40px;
+  gap: 6px;
+  font-size: 12px;
+  text-transform: none;
+  white-space: nowrap;
+}
+
 /* Thanh thông báo gọn thay cho hàng trăm chip khi đã chọn toàn bộ nhân sự. */
 .erp-chat-dialog__allBar {
   display: flex;
@@ -1862,6 +1901,18 @@ $chat-bubble-other: #f1f5f9;
 
   .erp-chat-dialog__selectAll {
     width: 100%;
+  }
+
+  .erp-chat-dialog__deptRow {
+    flex-wrap: wrap;
+  }
+
+  .erp-chat-dialog__deptSelect {
+    flex: 1 1 100%;
+  }
+
+  .erp-chat-dialog__deptBtn {
+    flex: 1 1 100%;
   }
 }
 

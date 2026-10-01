@@ -59,14 +59,19 @@ import { chatService, type ChatStorage } from "../../api/services/chatService";
 import {
   FILE_KIND_COLOR,
   FileKindIcon,
+  MENTION_ALL_ID,
+  MENTION_ALL_NAME,
+  RECALL_WINDOW_MINUTES,
   chatAvatarUrl,
   dayLabel,
   fileKindOf,
   formatFileSize,
   formatMuteRemaining,
   initialsOf,
+  matchesMentionAll,
   memberFullLabel,
   mentionQueryFromText,
+  messageAgeMinutes,
   messagePreview,
   normalizeName,
   normalizeText,
@@ -77,6 +82,7 @@ import {
   extractTableGrid,
   gridToText,
   renderGridToPngFile,
+  renderTableHtmlToPngFile,
 } from "./chatClipboardTable";
 
 interface Props {
@@ -107,7 +113,10 @@ interface Props {
   onHide: (message: ChatMessage) => void;
   onRecall: (message: ChatMessage) => void;
   /** Xoá NHIỀU tin nhắn đang chọn: "hide" = ẩn phía tôi, "recall" = thu hồi 2 phía. */
-  onDeleteMessages: (messageIds: number[], mode: "hide" | "recall") => void;
+  onDeleteMessages: (
+    messageIds: number[],
+    mode: "hide" | "recall"
+  ) => Promise<{ recalled?: number[]; hidden?: number[]; skipped?: number } | null | void>;
   onMentionClick: (emplNo: string, name: string, preview: string) => void;
   onConsumeDraft: () => void;
   /** Báo trạng thái "đang nhập" cho phòng hiện tại. */
@@ -180,6 +189,18 @@ function clipboardFiles(data: DataTransfer | null): File[] {
 function memberOf(conversation: ChatConversation, emplNo: string): ChatMember | undefined {
   return conversation.MEMBERS.find((m) => m.EMPL_NO === emplNo);
 }
+
+/** Ảnh bitmap mà app nguồn (Excel, Word...) đặt kèm trên clipboard — nếu có. */
+function clipboardImageFile(data: DataTransfer | null): File | null {
+  return clipboardFiles(data).find((file) => file.type.startsWith("image/")) || null;
+}
+
+/** Mục "@All" (tag cả phòng) trong danh sách gợi ý tag tên. */
+const MENTION_ALL_MEMBER: ChatMember = {
+  EMPL_NO: MENTION_ALL_ID,
+  FULL_NAME: MENTION_ALL_NAME,
+  ROLE: "MEMBER",
+};
 
 /** Nội dung rút gọn hiển thị trên thanh ghim (bỏ HTML với tin RICHTEXT). */
 function pinPreview(pin: ChatPinnedMessage): string {
@@ -269,7 +290,12 @@ export default function ChatConversationView({
   /** Mở hộp xác nhận xoá HÀNG LOẠT các tin đang chọn. */
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
   /** Bảng vừa dán từ Excel ⇒ hỏi người dùng dán thành ẢNH hay CHỮ. */
-  const [tablePaste, setTablePaste] = useState<{ grid: string[][] } | null>(null);
+  const [tablePaste, setTablePaste] = useState<{
+    grid: string[][];
+    html: string;
+    /** Ảnh bitmap gốc do Excel đặt kèm clipboard (null nếu không có). */
+    image: File | null;
+  } | null>(null);
   /** Đang dựng ảnh từ bảng (nút "Dán thành ảnh"). */
   const [tableBusy, setTableBusy] = useState(false);
 
@@ -545,11 +571,12 @@ export default function ChatConversationView({
       const inChat =
         event.target instanceof Element && Boolean(event.target.closest(".erp-chat__main"));
       if (!inChat || !clipboardHasTable(data)) return;
-      const grid = extractTableGrid(data.getData("text/html") || "");
+      const html = data.getData("text/html") || "";
+      const grid = extractTableGrid(html);
       if (grid.length === 0) return;
       event.preventDefault();
       event.stopPropagation();
-      setTablePaste({ grid });
+      setTablePaste({ grid, html, image: clipboardImageFile(data) });
     };
     document.addEventListener("paste", onPaste, true);
     return () => document.removeEventListener("paste", onPaste, true);
@@ -586,7 +613,11 @@ export default function ChatConversationView({
     if (!grid) return;
     setTableBusy(true);
     try {
-      const file = await renderGridToPngFile(grid, `bang-${Date.now()}.png`);
+      const name = `bang-${Date.now()}.png`;
+      // Ưu tiên dựng ảnh từ HTML gốc (GIỐNG bảng Excel); lỗi thì vẽ thủ công từ ma trận ô.
+      const file =
+        (await renderTableHtmlToPngFile(tablePaste?.html || "", name)) ||
+        (await renderGridToPngFile(grid, name));
       if (!file) {
         setToast("Không dựng được ảnh từ bảng");
         return;
@@ -618,20 +649,24 @@ export default function ChatConversationView({
     if (mentionKeyword === null) return [];
     const key = normalizeName(mentionKeyword);
     const others = conversation.MEMBERS.filter((m) => m.EMPL_NO !== myEmplNo);
-    if (!key) return others.slice(0, 8);
-    return others
-      .map((member) => {
-        const name = normalizeName(member.FULL_NAME);
-        const code = normalizeText(member.EMPL_NO);
-        let score = -1;
-        if (name.startsWith(key) || code.startsWith(key)) score = 0;
-        else if (name.includes(key) || code.includes(key)) score = 1;
-        return { member, score };
-      })
-      .filter((item) => item.score >= 0)
-      .sort((a, b) => a.score - b.score)
-      .slice(0, 8)
-      .map((item) => item.member);
+    // "@All" luôn đứng ĐẦU khi từ khoá khớp (trống ⇒ cũng gợi ý luôn).
+    const allEntry = matchesMentionAll(key) ? [MENTION_ALL_MEMBER] : [];
+    if (!key) return [...allEntry, ...others].slice(0, 8);
+    return [
+      ...allEntry,
+      ...others
+        .map((member) => {
+          const name = normalizeName(member.FULL_NAME);
+          const code = normalizeText(member.EMPL_NO);
+          let score = -1;
+          if (name.startsWith(key) || code.startsWith(key)) score = 0;
+          else if (name.includes(key) || code.includes(key)) score = 1;
+          return { member, score };
+        })
+        .filter((item) => item.score >= 0)
+        .sort((a, b) => a.score - b.score)
+        .map((item) => item.member),
+    ].slice(0, 8);
   }, [conversation.MEMBERS, mentionKeyword, myEmplNo]);
 
   /** Vị trí đang chọn trong danh sách gợi ý (điều hướng bằng phím mũi tên). */
@@ -699,8 +734,9 @@ export default function ChatConversationView({
 
   const insertMention = useCallback(
     (member: ChatMember) => {
-      // Tag hiển thị bằng TÊN nhân viên (rơi về mã nếu chưa có tên).
-      const label = member.FULL_NAME || member.EMPL_NO;
+      const isAll = member.EMPL_NO === MENTION_ALL_ID;
+      // Tag hiển thị bằng TÊN nhân viên (rơi về mã nếu chưa có tên); @All dùng chữ "All".
+      const label = isAll ? MENTION_ALL_NAME : member.FULL_NAME || member.EMPL_NO;
       if (richMode) {
         richEditorRef.current?.insertMention(label);
       } else {
@@ -725,10 +761,18 @@ export default function ChatConversationView({
         }
       }
       justInsertedLabelRef.current = normalizeName(label);
-      setMentions((prev) => (prev.includes(member.EMPL_NO) ? prev : [...prev, member.EMPL_NO]));
+      if (isAll) {
+        // Tag cả phòng ⇒ đánh dấu MỌI thành viên khác trong `mentions`.
+        const allNos = conversation.MEMBERS.filter((m) => m.EMPL_NO !== myEmplNo).map(
+          (m) => m.EMPL_NO
+        );
+        setMentions((prev) => [...new Set([...prev, ...allNos])]);
+      } else {
+        setMentions((prev) => (prev.includes(member.EMPL_NO) ? prev : [...prev, member.EMPL_NO]));
+      }
       setMentionKeyword(null);
     },
-    [richMode, text]
+    [richMode, text, conversation.MEMBERS, myEmplNo]
   );
 
   const addFiles = (incoming: FileList | File[] | null, options?: { mediaOnly?: boolean }) => {
@@ -969,22 +1013,62 @@ export default function ChatConversationView({
     }
   };
 
-  /** Toàn bộ tin đang chọn đều thu hồi được (tin của tôi / có quyền kiểm duyệt). */
-  const canRecallSelected = useMemo(
-    () =>
-      selectedMessages.length > 0 &&
-      selectedMessages.every((m) => m.SENDER_EMPL_NO === myEmplNo || canModerate),
-    [selectedMessages, myEmplNo, canModerate]
+  /**
+   * Tin nhắn CÓ THỂ THU HỒI (xoá cả hai phía):
+   *  - chỉ tin do CHÍNH MÌNH gửi;
+   *  - đối phương CHƯA XEM, hoặc trong vòng `RECALL_WINDOW_MINUTES` phút.
+   * (Backend kiểm tra lại lần nữa — đây chỉ để ẩn/hiện nút cho đúng.)
+   */
+  const canRecallMessage = useCallback(
+    (message: ChatMessage) => {
+      if (!message || message.DELETED_AT) return false;
+      if (message.SENDER_EMPL_NO !== myEmplNo) return false;
+      if (!Number.isFinite(message.MESSAGE_ID) || message.MESSAGE_ID <= 0) return false;
+      const withinWindow = messageAgeMinutes(message.CREATED_AT) <= RECALL_WINDOW_MINUTES;
+      const unseen = otherMembers.some(
+        (member) => Number(readState?.[member.EMPL_NO] || 0) < message.MESSAGE_ID
+      );
+      return unseen || withinWindow;
+    },
+    [myEmplNo, otherMembers, readState]
   );
 
-  const handleDeleteSelected = (mode: "hide" | "recall") => {
+  /** Toàn bộ tin đang chọn đều thu hồi được (chỉ tin của tôi + đủ điều kiện). */
+  const canRecallSelected = useMemo(
+    () => selectedMessages.length > 0 && selectedMessages.every((m) => canRecallMessage(m)),
+    [selectedMessages, canRecallMessage]
+  );
+
+  const handleDeleteSelected = async (mode: "hide" | "recall") => {
     if (selectedIds.length === 0) return;
     const count = selectedIds.length;
-    onDeleteMessages([...selectedIds], mode);
     setBulkDeleteOpen(false);
+    const result = await onDeleteMessages([...selectedIds], mode);
     exitSelectMode();
-    setToast(mode === "recall" ? `Đã thu hồi ${count} tin nhắn` : `Đã xoá ${count} tin nhắn`);
+    if (mode === "recall") {
+      const recalledCount = result?.recalled?.length ?? count;
+      const skipped = result?.skipped ?? 0;
+      setToast(
+        skipped > 0
+          ? `Đã thu hồi ${recalledCount} tin · bỏ qua ${skipped} tin không đủ điều kiện`
+          : `Đã thu hồi ${recalledCount} tin nhắn`
+      );
+    } else {
+      setToast(`Đã xoá ${count} tin nhắn`);
+    }
   };
+
+  /** Dán ẢNH GỐC do Excel đặt kèm trên clipboard (không qua vẽ lại). */
+  const applyTableAsOriginalImage = useCallback(() => {
+    const image = tablePaste?.image;
+    if (!image) {
+      setToast("Clipboard không kèm ảnh gốc từ Excel");
+      return;
+    }
+    addFilesRef.current([image]);
+    setTablePaste(null);
+    setToast("Đã dán ảnh gốc từ Excel — bấm Gửi để hoàn tất");
+  }, [tablePaste]);
 
   return (
     <div
@@ -1362,15 +1446,31 @@ export default function ChatConversationView({
                 onMouseEnter={() => setMentionIndex(index)}
                 onClick={() => insertMention(member)}
               >
-                <Avatar
-                  src={chatAvatarUrl(member.EMPL_NO, member.EMPL_IMAGE)}
-                  sx={{ width: 22, height: 22, fontSize: 10 }}
-                >
-                  {initialsOf(member.FULL_NAME)}
-                </Avatar>
-                <span className="erp-chat__mentionName">{memberFullLabel(member)}</span>
-                <small className="erp-chat__mentionCode">({member.EMPL_NO})</small>
-                {member.JOB_NAME && <small className="erp-chat__mentionJob">{member.JOB_NAME}</small>}
+                {member.EMPL_NO === MENTION_ALL_ID ? (
+                  <span className="erp-chat__mentionAllIcon" aria-hidden="true">
+                    <GroupRoundedIcon sx={{ fontSize: 16 }} />
+                  </span>
+                ) : (
+                  <Avatar
+                    src={chatAvatarUrl(member.EMPL_NO, member.EMPL_IMAGE)}
+                    sx={{ width: 22, height: 22, fontSize: 10 }}
+                  >
+                    {initialsOf(member.FULL_NAME)}
+                  </Avatar>
+                )}
+                <span className="erp-chat__mentionName">
+                  {member.EMPL_NO === MENTION_ALL_ID ? "All — cả phòng" : memberFullLabel(member)}
+                </span>
+                {member.EMPL_NO === MENTION_ALL_ID ? (
+                  <small className="erp-chat__mentionJob">tất cả mọi người</small>
+                ) : (
+                  <>
+                    <small className="erp-chat__mentionCode">({member.EMPL_NO})</small>
+                    {member.JOB_NAME && (
+                      <small className="erp-chat__mentionJob">{member.JOB_NAME}</small>
+                    )}
+                  </>
+                )}
               </button>
             ))}
             <div className="erp-chat__mentionHint">
@@ -1523,7 +1623,7 @@ export default function ChatConversationView({
       <ChatMessageMenu
         state={menuState}
         myEmplNo={myEmplNo}
-        canRecall={canModerate}
+        canRecall={menuState ? canRecallMessage(menuState.message) : false}
         onClose={() => setMenuState(null)}
         onReply={onReply}
         onReact={(message, reaction) => onAddReaction(message, reaction)}
@@ -1557,7 +1657,7 @@ export default function ChatConversationView({
           <Button size="small" onClick={() => setBulkDeleteOpen(false)}>
             Huỷ
           </Button>
-          <Button size="small" onClick={() => handleDeleteSelected("hide")}>
+          <Button size="small" onClick={() => void handleDeleteSelected("hide")}>
             Xoá ở phía tôi
           </Button>
           {canRecallSelected && (
@@ -1565,7 +1665,7 @@ export default function ChatConversationView({
               size="small"
               color="error"
               variant="contained"
-              onClick={() => handleDeleteSelected("recall")}
+              onClick={() => void handleDeleteSelected("recall")}
             >
               Thu hồi với cả hai phía
             </Button>
@@ -1604,7 +1704,9 @@ export default function ChatConversationView({
             )}
           </div>
           <p style={{ margin: "10px 0 0", fontSize: 12.5, color: "#475569" }}>
-            <b>Dán thành ảnh</b>: tạo ảnh PNG từ bảng (giữ đúng bố cục, không sửa được).
+            <b>Ảnh theo HTML</b>: dựng ảnh từ chính bảng HTML — giữ màu/kẻ/font, bỏ dòng bị ẩn.
+            <br />
+            <b>Ảnh gốc Excel</b>: dùng ảnh bitmap Excel đặt kèm clipboard (nếu có).
             <br />
             <b>Dán dạng chữ</b>: chèn văn bản thuần (dán lại vào Excel vẫn ra bảng).
           </p>
@@ -1618,11 +1720,24 @@ export default function ChatConversationView({
           </Button>
           <Button
             size="small"
+            variant="outlined"
+            onClick={applyTableAsOriginalImage}
+            disabled={tableBusy || !tablePaste?.image}
+            title={
+              tablePaste?.image
+                ? "Ảnh bitmap do Excel đặt trên clipboard"
+                : "Clipboard không kèm ảnh gốc từ Excel"
+            }
+          >
+            Ảnh gốc Excel
+          </Button>
+          <Button
+            size="small"
             variant="contained"
             onClick={() => void applyTableAsImage()}
             disabled={tableBusy}
           >
-            {tableBusy ? "Đang tạo ảnh..." : "Dán thành ảnh"}
+            {tableBusy ? "Đang tạo ảnh..." : "Ảnh theo HTML"}
           </Button>
         </DialogActions>
       </Dialog>

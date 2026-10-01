@@ -31,6 +31,23 @@ export function vnDayOffset(days: number): string {
   return vnNow().add(days, "day").format("YYYY-MM-DD");
 }
 
+/** Cửa sổ (phút) cho phép THU HỒI tin đã bị đối phương xem — khớp backend. */
+export const RECALL_WINDOW_MINUTES = 10;
+
+/**
+ * Tuổi của tin nhắn tính bằng PHÚT (theo giờ thực).
+ *
+ * `CREATED_AT` được lưu là giờ VN nhưng driver serialize thành mốc UTC ⇒ phải so trong
+ * CÙNG một hệ quy chiếu (đồng hồ VN) thay vì trừ epoch thô (sẽ lệch 7 giờ).
+ */
+export function messageAgeMinutes(createdAt?: string | null): number {
+  const created = vnMoment(createdAt);
+  if (!created) return Number.POSITIVE_INFINITY;
+  // `utcOffset(0, true)` giữ nguyên ĐỒNG HỒ VN nhưng đưa offset về 0 để trừ trực tiếp.
+  const nowVn = vnNow().utcOffset(0, true);
+  return nowVn.diff(created, "minutes", true);
+}
+
 /**
  * Chuẩn hoá văn bản để so khớp khi người dùng gõ không dấu (NFD + bỏ đ/Đ).
  * Ví dụ: "NGUYỄN VĂN HÙNG" → "nguyen van hung".
@@ -84,9 +101,22 @@ export function messagePreview(
 }
 
 
+/**
+ * Tag "cả phòng" — chèn `@All` và đánh dấu MỌI thành viên khác vào `mentions`.
+ * Dùng chung giữa ô soạn tin (gợi ý/chèn) và bong bóng (tô sáng, chặn mở chat riêng).
+ */
+export const MENTION_ALL_ID = "__ALL__";
+export const MENTION_ALL_NAME = "All";
+
+/** Từ khoá gõ ra gợi ý @All. */
+export function matchesMentionAll(keyword: string): boolean {
+  if (!keyword) return true;
+  const aliases = ["all", "moinguoi", "tatca", "moi", "everyone"];
+  return aliases.some((alias) => alias.startsWith(keyword));
+}
+
 /** Số từ tối đa cho phép trong từ khoá tag tên (tên người hiếm khi dài hơn). */
-const MENTION_MAX_WORDS = 6;
-/** Độ dài tối đa của từ khoá tag tên — vượt là coi như người dùng gõ văn bản thường. */
+const MENTION_MAX_WORDS = 6;/** Độ dài tối đa của từ khoá tag tên — vượt là coi như người dùng gõ văn bản thường. */
 const MENTION_MAX_LENGTH = 60;
 
 /**

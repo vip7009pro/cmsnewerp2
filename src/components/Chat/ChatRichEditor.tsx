@@ -206,6 +206,15 @@ const ChatRichEditor = forwardRef<ChatRichEditorHandle, Props>(function ChatRich
         emitChange();
         onMentionQuery(null);
       },
+      insertText: (text: string) => {
+        const editor = editorRef.current;
+        if (!editor) return;
+        editor.focus();
+        // Chèn VĂN BẢN THUẦN tại con trỏ (dùng khi dán bảng Excel dạng chữ).
+        document.execCommand("insertText", false, text);
+        emitChange();
+        onMentionQuery(null);
+      },
     }),
     [emitChange, onChange, onMentionQuery]
   );

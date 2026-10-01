@@ -49,6 +49,36 @@ Trạng thái: **HOÀN THÀNH** — BE `node --check` OK + `node scratch/test_ch
   nội dung DIRECT = "… đã rời hội thoại", GROUP = "… đã rời nhóm".
   Verify: `node scratch/test_direct_leave.js` → **6/6 PASS**; `test_chat_service.js` PASS; `npm run build` OK.
 
+### Follow-up 2 (cùng ngày) — điều kiện thu hồi + tạo nhóm theo phòng ban
+- **Thu hồi tin nhắn**: trước đây `canRecall = canModerate` ⇒ OWNER/ADMIN/MODERATOR thu hồi được tin **người khác**.
+  Nay **CHỈ tin của chính mình**; được phép khi **đối phương CHƯA XEM** HOẶC trong **10 phút**
+  (`CHAT_RECALL_WINDOW_MINUTES`). Backend `checkRecallAllowed` (repo: `getMessageRecallInfo` DATEDIFF +
+  `listMemberReadState`) chặn cả `chatDeleteMessage` lẫn `chatDeleteMessages` mode `recall` (trả `skipped`).
+  FE: `chatUtils.messageAgeMinutes` + `canRecallMessage` (view) → menu chỉ hiện khi đủ điều kiện; bulk recall
+  báo "Đã thu hồi X · bỏ qua Y". `ChatMessageMenu` bỏ điều kiện `mine || canRecall`.
+  Verify: `scratch/test_chat_recall.js` → **6/6 PASS**; `test_chat_service.js`/`test_chat_rich.js` PASS.
+- **Tạo nhóm theo phòng ban**: bỏ whitelist `NHU1903` (`SUPER_ADMIN_EMPL_NOS` đã xoá) — `chatSearchEmployees {all:true}`
+  mở cho MỌI tài khoản. `ChatNewChatDialog` thêm hàng lọc **Phòng ban (MAINDEPTNAME) + Bộ phận (SUBDEPTNAME)**
+  (nguồn = danh sách all nạp 1 lần khi mở) + nút "Chọn cả bộ phận (N)" (chọn hàng loạt, gợi ý tên nhóm "Bộ phận X").
+  `test_chat_select_all.js` cập nhật kỳ vọng → **14/14 PASS**.
+
+### Follow-up 3 (cùng ngày) — Tag @All + dán bảng Excel giống hệt
+- **Tag @All**: `chatUtils` thêm `MENTION_ALL_ID="__ALL__"`, `MENTION_ALL_NAME="All"`, `matchesMentionAll(key)`
+  (khớp "all"/"moi"/"moinguoi"/"tatca"/"everyone"). `ChatConversationView`: mục `@All` đứng ĐẦU danh sách gợi ý;
+  chèn `@All ` và đánh dấu **mọi thành viên khác** vào `mentions`. `ChatMessageBubble`: thêm All vào `memberNames`
+  để TÔ SÁNG `@All` nhưng **không mở chat riêng** khi bấm. (Không cần đổi backend — `mentions` đã được hỗ trợ.)
+- **Bug "Dán dạng chữ" không chạy**: `ChatRichEditorHandle` khai báo `insertText` nhưng `useImperativeHandle`
+  THIẾU hàm này ⇒ `richEditorRef.current.insertText is not a function`. Đã bổ sung `insertText`.
+- **Ảnh dán giống bảng Excel**: `chatClipboardTable.renderTableHtmlToPngFile(html)` — render bảng ngoài màn hình
+  rồi đọc `getComputedStyle` từng ô (nền/viền/font/màu/canh lề) và **vẽ lên canvas** (fillRect + stroke + fillText
+  tự ngắt dòng); đổi `windowtext` (màu hệ thống Excel) → `#000000`. `applyTableAsImage` ưu tiên HTML gốc, `null`
+  thì rơi về `renderGridToPngFile`. `tablePaste` giữ `{ grid, html }`. FE build OK, `get_errors` 0.
+  ⚠️ **Không dùng `SVG <foreignObject>`**: Chrome taint canvas ⇒ `toBlob` lỗi ⇒ ảnh ra xám (đã từng bị).
+  ⚠️ **Đường kẻ**: Excel khai viền bằng `mso-border-*-alt` (Chrome bỏ qua) ⇒ `translateExcelStyles` đổi sang
+  `border-*` chuẩn + `windowtext`→`#000000`; viền `.5pt` = 1px; có lưới dự phòng nếu đọc ra 0 cạnh.
+  🆕 Bỏ **dòng bị ẩn** (`mso-hide:all`/`display:none`/kích thước 0). Dialog dán bảng có **2 kiểu ảnh**:
+  "Ảnh theo HTML" (render) và "Ảnh gốc Excel" (bitmap Excel đặt kèm clipboard) + "Dán dạng chữ".
+
 ## Fix 30.9 — ĐƠN NHIỆM: page dưới route layout trung gian sụp 0px (2026-09-30)
 Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` OK; verify Playwright cả 2 chế độ.
 

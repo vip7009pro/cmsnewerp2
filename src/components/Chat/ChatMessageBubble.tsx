@@ -20,6 +20,8 @@ import { chatFileUrl } from "../../api/services/chatService";
 import {
   FILE_KIND_COLOR,
   FileKindIcon,
+  MENTION_ALL_ID,
+  MENTION_ALL_NAME,
   REACTION_EMOJI,
   REACTION_ORDER,
   chatAvatarUrl,
@@ -139,7 +141,11 @@ export default function ChatMessageBubble({
   const sender = memberOf(conversation, message.SENDER_EMPL_NO);
   const deleted = Boolean(message.DELETED_AT);
   const attachments = message.ATTACHMENTS || [];
-  const memberNames = conversation.MEMBERS.map((m) => ({ name: m.FULL_NAME, emplNo: m.EMPL_NO }));
+  // Thêm mục "@All" để tô sáng tag cả phòng (bấm vào KHÔNG mở chat riêng).
+  const memberNames = [
+    { name: MENTION_ALL_NAME, emplNo: MENTION_ALL_ID },
+    ...conversation.MEMBERS.map((m) => ({ name: m.FULL_NAME, emplNo: m.EMPL_NO })),
+  ];
   /** Tin RICHTEXT ⇒ HTML đã lọc + bọc sẵn tag tên (bấm được qua delegation bên dưới). */
   const isRich = message.MSG_TYPE === "RICH";
   const richHtml = useMemo(
@@ -157,6 +163,7 @@ export default function ChatMessageBubble({
     const emplNo = (event.target as HTMLElement)?.dataset?.mention;
     if (!emplNo) return;
     event.stopPropagation();
+    if (emplNo === MENTION_ALL_ID) return; // @All: chỉ để nhắc, không mở chat riêng
     const name = memberNames.find((item) => item.emplNo === emplNo)?.name || emplNo;
     onMentionClick(emplNo, name, richToPlainText(message.CONTENT));
   };
@@ -363,8 +370,10 @@ export default function ChatMessageBubble({
                   <div className="erp-chat__text">
                     {renderMentions(message.CONTENT, {
                       memberNames,
-                      onMentionClick: (emplNo, name) =>
-                        onMentionClick(emplNo, name, message.CONTENT || ""),
+                      onMentionClick: (emplNo, name) => {
+                        if (emplNo === MENTION_ALL_ID) return; // @All không mở chat riêng
+                        onMentionClick(emplNo, name, message.CONTENT || "");
+                      },
                     })}
                   </div>
                 ))}

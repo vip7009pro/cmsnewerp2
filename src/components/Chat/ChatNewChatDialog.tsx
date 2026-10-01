@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Avatar,
   Button,
@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  MenuItem,
   TextField,
 } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
@@ -23,11 +24,14 @@ interface Props {
   onSearch: (keyword: string) => Promise<ChatEmployee[]>;
   onStartDirect: (emplNo: string) => Promise<unknown>;
   onCreateGroup: (title: string, memberEmplNos: string[], avatar?: string) => Promise<unknown>;
-  /** Chỉ hiện nút "Chọn tất cả" cho tài khoản được phép (NHU1903). */
+  /** Hiện nút "Chọn tất cả" / lọc theo phòng ban (nay mở cho MỌI tài khoản). */
   canSelectAll?: boolean;
-  /** Lấy TOÀN BỘ nhân sự đang làm việc — dùng cho nút "Chọn tất cả". */
+  /** Lấy TOÀN BỘ nhân sự đang làm việc — dùng cho "Chọn tất cả" và lọc phòng ban. */
   onLoadAll?: () => Promise<ChatEmployee[]>;
 }
+
+/** Mô tả mặc định cho thanh chọn hàng loạt (toàn công ty). */
+const ALL_COMPANY_HINT = "Phòng chat toàn công ty · mọi nhân sự đang làm việc";
 
 export default function ChatNewChatDialog({
   open,
@@ -35,7 +39,7 @@ export default function ChatNewChatDialog({
   onSearch,
   onStartDirect,
   onCreateGroup,
-  canSelectAll = false,
+  canSelectAll = true,
   onLoadAll,
 }: Props) {
   const [keyword, setKeyword] = useState("");
@@ -54,6 +58,28 @@ export default function ChatNewChatDialog({
   const [loadingAll, setLoadingAll] = useState(false);
 
   const isSelectAll = selectAllMembers !== null;
+
+  // ---- Danh sách TOÀN BỘ nhân sự (nạp 1 lần) cho lọc phòng ban + "Chọn tất cả" ----
+  const [allEmployees, setAllEmployees] = useState<ChatEmployee[] | null>(null);
+  const [deptMain, setDeptMain] = useState("");
+  const [deptSub, setDeptSub] = useState("");
+  const [bulkHint, setBulkHint] = useState(ALL_COMPANY_HINT);
+
+  const ensureAllEmployees = useCallback(async (): Promise<ChatEmployee[]> => {
+    if (allEmployees) return allEmployees;
+    if (!onLoadAll) return [];
+    setLoadingAll(true);
+    try {
+      const all = await onLoadAll();
+      setAllEmployees(all);
+      return all;
+    } catch (err: any) {
+      setError(err?.message || "Không lấy được danh sách nhân sự");
+      return [];
+    } finally {
+      setLoadingAll(false);
+    }
+  }, [allEmployees, onLoadAll]);
 
   // Debounce tìm kiếm nhân viên để không spam API khi gõ nhanh.
   useEffect(() => {
@@ -86,7 +112,17 @@ export default function ChatNewChatDialog({
       setGroupTitle("");
       setGroupAvatar("");
       setError(null);
+      setDeptMain("");
+      setDeptSub("");
+      setBulkHint(ALL_COMPANY_HINT);
     }
+  }, [open]);
+
+  // Nạp sẵn danh sách nhân sự khi mở hộp thoại (để lọc phòng ban dùng được ngay).
+  useEffect(() => {
+    if (!open || !onLoadAll) return;
+    void ensureAllEmployees();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const selectedNos = useMemo(
@@ -113,27 +149,76 @@ export default function ChatNewChatDialog({
     if (isSelectAll) {
       setSelectAllMembers(null);
       setSelected([]);
+      setBulkHint(ALL_COMPANY_HINT);
       setError(null);
       return;
     }
-    if (!onLoadAll) return;
-    setLoadingAll(true);
     setError(null);
-    try {
-      const all = await onLoadAll();
-      if (all.length === 0) {
-        setError("Không lấy được danh sách nhân sự");
-        return;
-      }
-      setSelectAllMembers(all);
-      setSelected([]);
-      // Gợi ý sẵn tên nhóm cho phòng toàn công ty (người dùng vẫn sửa được).
-      setGroupTitle((prev) => (prev.trim() ? prev : "Toàn công ty"));
-    } catch (err: any) {
-      setError(err?.message || "Không lấy được danh sách nhân sự");
-    } finally {
-      setLoadingAll(false);
+    const all = await ensureAllEmployees();
+    if (all.length === 0) {
+      setError("Không lấy được danh sách nhân sự");
+      return;
     }
+    setSelectAllMembers(all);
+    setSelected([]);
+    setBulkHint(ALL_COMPANY_HINT);
+    // Gợi ý sẵn tên nhóm cho phòng toàn công ty (người dùng vẫn sửa được).
+    setGroupTitle((prev) => (prev.trim() ? prev : "Toàn công ty"));
+  };
+
+  // ---------------------- Lọc theo phòng ban / bộ phận ----------------------
+  const mainDeptOptions = useMemo(() => {
+    const set = new Set<string>();
+    (allEmployees || []).forEach((e) => {
+      if (e.MAINDEPTNAME) set.add(e.MAINDEPTNAME);
+    });
+    return [...set].sort((a, b) => a.localeCompare(b, "vi"));
+  }, [allEmployees]);
+
+  const subDeptOptions = useMemo(() => {
+    const set = new Set<string>();
+    (allEmployees || [])
+      .filter((e) => !deptMain || (e.MAINDEPTNAME || "") === deptMain)
+      .forEach((e) => {
+        if (e.SUBDEPTNAME) set.add(e.SUBDEPTNAME);
+      });
+    return [...set].sort((a, b) => a.localeCompare(b, "vi"));
+  }, [allEmployees, deptMain]);
+
+  const deptMembers = useMemo(
+    () =>
+      (allEmployees || []).filter(
+        (e) =>
+          (!deptMain || (e.MAINDEPTNAME || "") === deptMain) &&
+          (!deptSub || (e.SUBDEPTNAME || "") === deptSub)
+      ),
+    [allEmployees, deptMain, deptSub]
+  );
+
+  /** Chọn NHANH toàn bộ nhân sự của phòng ban/bộ phận đang chọn. */
+  const handleSelectDepartment = async () => {
+    setError(null);
+    if (!deptMain && !deptSub) {
+      setError("Chọn phòng ban hoặc bộ phận trước");
+      return;
+    }
+    const all = await ensureAllEmployees();
+    const members = all.filter(
+      (e) =>
+        (!deptMain || (e.MAINDEPTNAME || "") === deptMain) &&
+        (!deptSub || (e.SUBDEPTNAME || "") === deptSub)
+    );
+    if (members.length === 0) {
+      setError("Bộ phận này không có nhân sự");
+      return;
+    }
+    setSelected([]);
+    setSelectAllMembers(members);
+    const label = deptSub || deptMain;
+    setBulkHint(
+      `Bộ phận ${label}${deptMain && deptSub ? ` · ${deptMain}` : ""} · ${members.length} nhân sự`
+    );
+    setGroupTitle((prev) => (prev.trim() ? prev : `Bộ phận ${label}`));
   };
 
   const handleStartDirect = async (employee: ChatEmployee) => {
@@ -209,11 +294,60 @@ export default function ChatNewChatDialog({
           )}
         </div>
 
+        {/* Tạo nhanh nhóm theo PHÒNG BAN / BỘ PHẬN */}
+        {canSelectAll && onLoadAll && (
+          <div className="erp-chat-dialog__deptRow">
+            <TextField
+              select
+              size="small"
+              label="Phòng ban"
+              value={deptMain}
+              onChange={(event) => {
+                setDeptMain(event.target.value);
+                setDeptSub("");
+              }}
+              className="erp-chat-dialog__deptSelect"
+            >
+              <MenuItem value="">Tất cả</MenuItem>
+              {mainDeptOptions.map((dept) => (
+                <MenuItem key={dept} value={dept}>
+                  {dept}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              select
+              size="small"
+              label="Bộ phận"
+              value={deptSub}
+              onChange={(event) => setDeptSub(event.target.value)}
+              className="erp-chat-dialog__deptSelect"
+            >
+              <MenuItem value="">Tất cả</MenuItem>
+              {subDeptOptions.map((dept) => (
+                <MenuItem key={dept} value={dept}>
+                  {dept}
+                </MenuItem>
+              ))}
+            </TextField>
+            <Button
+              size="small"
+              variant="outlined"
+              className="erp-chat-dialog__deptBtn"
+              disabled={(!deptMain && !deptSub) || loadingAll || submitting}
+              onClick={() => void handleSelectDepartment()}
+            >
+              {loadingAll ? <CircularProgress size={14} color="inherit" /> : null}
+              Chọn cả bộ phận{deptMembers.length > 0 ? ` (${deptMembers.length})` : ""}
+            </Button>
+          </div>
+        )}
+
         {isSelectAll ? (
           <div className="erp-chat-dialog__allBar">
             <div className="erp-chat-dialog__allBarInfo">
               <strong>Đã chọn toàn bộ {selectedNos.length} nhân sự</strong>
-              <small>Phòng chat toàn công ty · mọi nhân sự đang làm việc</small>
+              <small>{bulkHint}</small>
             </div>
             <button
               type="button"

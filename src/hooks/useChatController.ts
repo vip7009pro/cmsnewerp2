@@ -828,7 +828,7 @@ export function useChatController() {
    */
   const deleteMessages = useCallback(
     async (conversationId: number, messageIds: number[], mode: "hide" | "recall") => {
-      if (messageIds.length === 0) return;
+      if (messageIds.length === 0) return null;
       try {
         const result = await chatService.deleteMessages(conversationId, messageIds, mode);
         const hidden = new Set(result?.hidden || []);
@@ -843,8 +843,10 @@ export function useChatController() {
                 : m
             ),
         }));
+        return result;
       } catch (error) {
         console.warn("[chat] deleteMessages lỗi:", error);
+        return null;
       }
     },
     []
