@@ -389,6 +389,11 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
           onTogglePin={(conversationId, pinned) => {
             void controller.togglePin(conversationId, pinned);
           }}
+          onDeleteConversation={(conversationId) => {
+            void controller.deleteConversation(conversationId);
+          }}
+          /* Mobile: nút đóng danh sách chat để về màn hình chính. */
+          onCloseMobile={isMobile ? () => setOpen(false) : undefined}
         />
 
         {controller.activeConversation ? (
@@ -447,6 +452,13 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
             }
             onRecall={(message) =>
               void controller.deleteMessage(message.CONVERSATION_ID, message.MESSAGE_ID)
+            }
+            onDeleteMessages={(messageIds, mode) =>
+              void controller.deleteMessages(
+                controller.activeConversation!.CONVERSATION_ID,
+                messageIds,
+                mode
+              )
             }
             onMentionClick={(emplNo, name, preview) =>
               void controller.openPrivateChatWithQuote({

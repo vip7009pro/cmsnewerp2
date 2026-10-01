@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Avatar, IconButton, Tooltip } from "@mui/material";
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Tooltip } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import GroupRoundedIcon from "@mui/icons-material/GroupsRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import NotificationsOffRoundedIcon from "@mui/icons-material/NotificationsOffRounded";
 import FolderSpecialRoundedIcon from "@mui/icons-material/FolderSpecialRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import type { ChatConversation } from "./chat.types";
 import { chatAvatarUrl, initialsOf, shortTime } from "./chatUtils";
 import { richToPlainText } from "./chatRichText";
@@ -25,6 +27,10 @@ interface Props {
   requestCount: number;
   /** Ghim / bỏ ghim cuộc trò chuyện — tuỳ chọn của RIÊNG tôi. */
   onTogglePin: (conversationId: number, pinned: boolean) => void;
+  /** Xoá phòng chat (ẩn lịch sử phía tôi) — có xác nhận trước khi xoá. */
+  onDeleteConversation: (conversationId: number) => void;
+  /** Mobile: đóng danh sách chat, trở về màn hình chính. */
+  onCloseMobile?: () => void;
 }
 
 /**
@@ -71,19 +77,23 @@ export default function ChatConversationList({
   onGlobalSearch,
   requestCount,
   onTogglePin,
+  onDeleteConversation,
+  onCloseMobile,
 }: Props) {
   const [keyword, setKeyword] = useState("");
   /** Menu ngữ cảnh (chuột phải / nhấn giữ) — toạ độ tính theo viewport. */
   const [menu, setMenu] = useState<{ conversationId: number; x: number; y: number } | null>(null);
+  /** Phòng đang chờ xác nhận xoá. */
+  const [deleteTarget, setDeleteTarget] = useState<ChatConversation | null>(null);
   const longPressTimer = useRef<number | null>(null);
   const longPressFired = useRef(false);
 
   const closeMenu = useCallback(() => setMenu(null), []);
 
   const openMenu = useCallback((conversationId: number, x: number, y: number) => {
-    // Giữ menu trong khung nhìn (menu rộng ~230px, cao ~50px).
+    // Giữ menu trong khung nhìn (menu rộng ~230px, cao ~120px với 2 mục).
     const left = Math.max(8, Math.min(x, window.innerWidth - 240));
-    const top = Math.max(8, Math.min(y, window.innerHeight - 60));
+    const top = Math.max(8, Math.min(y, window.innerHeight - 130));
     setMenu({ conversationId, x: left, y: top });
   }, []);
 
@@ -163,6 +173,19 @@ export default function ChatConversationList({
             <AddRoundedIcon fontSize="small" />
           </IconButton>
         </Tooltip>
+        {/* Mobile: đóng danh sách chat để về màn hình chính (ngay cạnh nút thêm chat mới). */}
+        {onCloseMobile && (
+          <Tooltip title="Đóng danh sách chat">
+            <IconButton
+              size="small"
+              className="erp-chat__iconBtn"
+              onClick={onCloseMobile}
+              aria-label="Đóng danh sách chat"
+            >
+              <CloseRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        )}
       </div>
 
       {requestCount > 0 && (
@@ -293,9 +316,57 @@ export default function ChatConversationList({
               <PinIcon size={15} />
               <span>{menuTarget.PINNED_AT ? "Bỏ ghim cuộc trò chuyện" : "Ghim cuộc trò chuyện"}</span>
             </button>
+            <Divider sx={{ my: 0.5 }} />
+            <button
+              type="button"
+              role="menuitem"
+              className="erp-chat__convMenuItem is-danger"
+              onClick={() => {
+                setDeleteTarget(menuTarget);
+                closeMenu();
+              }}
+            >
+              <DeleteOutlineRoundedIcon sx={{ fontSize: 16 }} />
+              <span>Xoá phòng chat</span>
+            </button>
           </div>
         </>
       )}
+
+      {/* Xác nhận xoá phòng chat (ẩn lịch sử phía tôi, KHÔNG ảnh hưởng người khác). */}
+      <Dialog
+        open={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle sx={{ fontSize: 16, fontWeight: 700 }}>Xoá phòng chat?</DialogTitle>
+        <DialogContent>
+          <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55 }}>
+            Phòng chat <b>{deleteTarget?.DISPLAY_NAME}</b> sẽ bị xoá khỏi danh sách của bạn.
+            Bạn chỉ xem được các tin nhắn bắt đầu từ sau khi xoá.
+          </p>
+          <p style={{ margin: "10px 0 0", fontSize: 12.5, color: "#b45309" }}>
+            Người khác vẫn giữ nguyên cuộc trò chuyện; nếu họ nhắn tin mới, phòng sẽ hiện lại.
+          </p>
+        </DialogContent>
+        <DialogActions>
+          <Button size="small" onClick={() => setDeleteTarget(null)}>
+            Huỷ
+          </Button>
+          <Button
+            size="small"
+            color="error"
+            variant="contained"
+            onClick={() => {
+              if (deleteTarget) onDeleteConversation(deleteTarget.CONVERSATION_ID);
+              setDeleteTarget(null);
+            }}
+          >
+            Xoá phòng
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

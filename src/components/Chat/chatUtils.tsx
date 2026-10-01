@@ -223,31 +223,31 @@ export function initialsOf(name?: string | null): string {
 }
 
 /**
- * Bỏ hậu tố phòng ban `[PHÒNG BAN]-[BỘ PHẬN]` khỏi tên hiển thị.
+ * Bỏ hậu tố bộ phận `[BỘ PHẬN]` (hoặc `[PHÒNG BAN]-[BỘ PHẬN]` cũ) khỏi tên hiển thị.
  * Cần thiết vì `initialsOf` lấy ký tự đầu của từ CUỐI ⇒ nếu giữ hậu tố sẽ ra "[".
  */
 export function stripDeptSuffix(name?: string | null): string {
   return String(name || "")
-    .replace(/\s*\[[^\]]*\]\s*-\s*\[[^\]]*\]\s*$/, "")
+    .replace(/\s*\[[^\]]*\]\s*-\s*\[[^\]]*\]\s*$/g, "") // dạng cũ [PHÒNG BAN]-[BỘ PHẬN]
+    .replace(/\s*\[[^\]]*\]\s*$/g, "") // dạng mới [BỘ PHẬN]
     .trim();
 }
 
 /**
- * Phòng ban của 1 nhân sự dạng `[PHÒNG BAN CHÍNH]-[BỘ PHẬN]`.
- * Trả về chuỗi rỗng khi không có dữ liệu (KHÔNG hiện "[]-[]").
+ * Bộ phận của 1 nhân sự, dạng `[BỘ PHẬN]`.
+ * Trước đây hiện `[PHÒNG BAN CHÍNH]-[BỘ PHẬN]`; nay chỉ giữ BỘ PHẬN cho gọn.
+ * Trả về chuỗi rỗng khi không có dữ liệu (KHÔNG hiện "[]").
  */
 export function memberDeptLabel(
   member?: { MAINDEPTNAME?: string | null; SUBDEPTNAME?: string | null } | null
 ): string {
   if (!member) return "";
-  const main = String(member.MAINDEPTNAME || "").trim();
   const sub = String(member.SUBDEPTNAME || "").trim();
-  if (!main && !sub) return "";
-  return `[${main}]-[${sub}]`;
+  return sub ? `[${sub}]` : "";
 }
 
 /**
- * Nhãn đầy đủ của 1 thành viên: `TÊN [PHÒNG BAN]-[BỘ PHẬN]`.
+ * Nhãn đầy đủ của 1 thành viên: `TÊN [BỘ PHẬN]`.
  * Dùng thống nhất ở danh sách chat 1-1, danh sách thành viên nhóm và gợi ý tag tên.
  */
 export function memberFullLabel(

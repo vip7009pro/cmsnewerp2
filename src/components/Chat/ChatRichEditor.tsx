@@ -32,6 +32,8 @@ export interface ChatRichEditorHandle {
   setHtml: (html: string) => void;
   /** Chèn tag tên tại vị trí con trỏ. */
   insertMention: (label: string) => void;
+  /** Chèn VĂN BẢN THUẦN tại con trỏ (dán bảng Excel dạng chữ). */
+  insertText: (text: string) => void;
 }
 
 interface Props {

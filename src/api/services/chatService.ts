@@ -148,6 +148,27 @@ export const chatService = {
       messageId,
     }),
 
+  /**
+   * Xoá NHIỀU tin nhắn một lượt.
+   *  - mode "hide"   ⇒ xoá ở phía tôi.
+   *  - mode "recall" ⇒ thu hồi với cả hai phía (chỉ tin của mình / khi có quyền kiểm duyệt).
+   */
+  deleteMessages: (
+    conversationId: number,
+    messageIds: number[],
+    mode: "hide" | "recall"
+  ) =>
+    chatQuery<{ conversationId: number; mode: string; hidden: number[]; recalled: number[] }>(
+      "chatDeleteMessages",
+      { conversationId, messageIds, mode }
+    ),
+
+  /** Xoá phòng chat (ẩn lịch sử phía tôi) — phòng biến mất tới khi có tin MỚI hơn. */
+  deleteConversation: (conversationId: number) =>
+    chatQuery<{ conversationId: number; clearedBefore: number }>("chatDeleteConversation", {
+      conversationId,
+    }),
+
   /** Thả cảm xúc: mỗi lần gọi là +1. reaction = "NONE" để bỏ. */
   react: (conversationId: number, messageId: number, reaction: string) =>
     chatQuery<{
@@ -216,6 +237,8 @@ export const chatService = {
     toDate?: string | null;
     fileKind?: string;
     onlyWithFiles?: boolean;
+    /** Chỉ lấy các tin nhắn CHỨA LIÊN KẾT (chip "Link"). */
+    hasLink?: boolean;
     beforeMessageId?: number;
     limit?: number;
   }) =>
@@ -225,6 +248,8 @@ export const chatService = {
   listMedia: (params: {
     conversationId: number;
     fileKind?: string;
+    keyword?: string;
+    senderEmplNo?: string | null;
     fromDate?: string | null;
     toDate?: string | null;
     beforeAttachmentId?: number;

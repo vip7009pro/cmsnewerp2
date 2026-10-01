@@ -29,6 +29,7 @@ import PushPinRoundedIcon from "@mui/icons-material/PushPinRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import IosShareRoundedIcon from "@mui/icons-material/IosShareRounded";
+import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import ViewSidebarRoundedIcon from "@mui/icons-material/ViewSidebarRounded";
 import type {
   ChatAttachment,
@@ -71,6 +72,12 @@ import {
   normalizeText,
 } from "./chatUtils";
 import ChatMessageBubble from "./ChatMessageBubble";
+import {
+  clipboardHasTable,
+  extractTableGrid,
+  gridToText,
+  renderGridToPngFile,
+} from "./chatClipboardTable";
 
 interface Props {
   conversation: ChatConversation;
@@ -99,6 +106,8 @@ interface Props {
   onForward: (message: ChatMessage) => void;
   onHide: (message: ChatMessage) => void;
   onRecall: (message: ChatMessage) => void;
+  /** Xoá NHIỀU tin nhắn đang chọn: "hide" = ẩn phía tôi, "recall" = thu hồi 2 phía. */
+  onDeleteMessages: (messageIds: number[], mode: "hide" | "recall") => void;
   onMentionClick: (emplNo: string, name: string, preview: string) => void;
   onConsumeDraft: () => void;
   /** Báo trạng thái "đang nhập" cho phòng hiện tại. */
@@ -203,6 +212,7 @@ export default function ChatConversationView({
   onForward,
   onHide,
   onRecall,
+  onDeleteMessages,
   onMentionClick,
   onConsumeDraft,
   onTyping,
@@ -256,6 +266,12 @@ export default function ChatConversationView({
   const [selectMode, setSelectMode] = useState(false);
   /** MESSAGE_ID của các tin đang được chọn. */
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  /** Mở hộp xác nhận xoá HÀNG LOẠT các tin đang chọn. */
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
+  /** Bảng vừa dán từ Excel ⇒ hỏi người dùng dán thành ẢNH hay CHỮ. */
+  const [tablePaste, setTablePaste] = useState<{ grid: string[][] } | null>(null);
+  /** Đang dựng ảnh từ bảng (nút "Dán thành ảnh"). */
+  const [tableBusy, setTableBusy] = useState(false);
 
   const listRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -505,6 +521,8 @@ export default function ChatConversationView({
    */
   const addFilesRef = useRef<(incoming: FileList | File[] | null) => void>(() => undefined);
 
+  // Dán ảnh/tệp từ clipboard (copy ảnh ở nơi khác hoặc copy tệp trong Explorer).
+  // Gắn ở document vì sự kiện paste chỉ phát cho phần tử đang được focus.
   useEffect(() => {
     const onPaste = (event: ClipboardEvent) => {
       const incoming = clipboardFiles(event.clipboardData);
@@ -517,6 +535,69 @@ export default function ChatConversationView({
     document.addEventListener("paste", onPaste);
     return () => document.removeEventListener("paste", onPaste);
   }, []);
+
+  // Dán BẢNG (copy từ Excel hoặc bảng trên web) trong khung chat ⇒ hỏi "Ảnh hay Chữ".
+  // Dùng pha CAPTURE để chặn TRƯỚC khi trình soạn thảo (richtext/textarea) tự chèn HTML bảng.
+  useEffect(() => {
+    const onPaste = (event: ClipboardEvent) => {
+      const data = event.clipboardData;
+      if (!data) return;
+      const inChat =
+        event.target instanceof Element && Boolean(event.target.closest(".erp-chat__main"));
+      if (!inChat || !clipboardHasTable(data)) return;
+      const grid = extractTableGrid(data.getData("text/html") || "");
+      if (grid.length === 0) return;
+      event.preventDefault();
+      event.stopPropagation();
+      setTablePaste({ grid });
+    };
+    document.addEventListener("paste", onPaste, true);
+    return () => document.removeEventListener("paste", onPaste, true);
+  }, []);
+
+  /** Dán bảng dạng CHỮ vào ô soạn tin (giữ đúng thứ tự ô, mỗi hàng 1 dòng). */
+  const applyTableAsText = useCallback(() => {
+    const grid = tablePaste?.grid;
+    if (!grid) return;
+    const plain = gridToText(grid);
+    if (richMode) {
+      richEditorRef.current?.insertText(`\n${plain}\n`);
+    } else {
+      const element = textareaRef.current;
+      const caret =
+        element?.selectionStart ?? caretRef.current ?? text.length;
+      const next = `${text.slice(0, caret)}${plain}${text.slice(caret)}`;
+      setText(next);
+      const nextCaret = caret + plain.length;
+      requestAnimationFrame(() => {
+        const el = textareaRef.current;
+        el?.focus();
+        el?.setSelectionRange(nextCaret, nextCaret);
+        caretRef.current = nextCaret;
+      });
+    }
+    setTablePaste(null);
+    setToast("Đã dán bảng dạng chữ");
+  }, [tablePaste, richMode, text]);
+
+  /** Dựng bảng thành ảnh PNG rồi đính kèm vào khung soạn tin. */
+  const applyTableAsImage = useCallback(async () => {
+    const grid = tablePaste?.grid;
+    if (!grid) return;
+    setTableBusy(true);
+    try {
+      const file = await renderGridToPngFile(grid, `bang-${Date.now()}.png`);
+      if (!file) {
+        setToast("Không dựng được ảnh từ bảng");
+        return;
+      }
+      addFilesRef.current([file]);
+      setTablePaste(null);
+      setToast("Đã dán bảng thành ảnh — bấm Gửi để hoàn tất");
+    } finally {
+      setTableBusy(false);
+    }
+  }, [tablePaste]);
 
   const grouped = useMemo(() => {
     const groups: { day: string; items: ChatMessage[] }[] = [];
@@ -888,6 +969,23 @@ export default function ChatConversationView({
     }
   };
 
+  /** Toàn bộ tin đang chọn đều thu hồi được (tin của tôi / có quyền kiểm duyệt). */
+  const canRecallSelected = useMemo(
+    () =>
+      selectedMessages.length > 0 &&
+      selectedMessages.every((m) => m.SENDER_EMPL_NO === myEmplNo || canModerate),
+    [selectedMessages, myEmplNo, canModerate]
+  );
+
+  const handleDeleteSelected = (mode: "hide" | "recall") => {
+    if (selectedIds.length === 0) return;
+    const count = selectedIds.length;
+    onDeleteMessages([...selectedIds], mode);
+    setBulkDeleteOpen(false);
+    exitSelectMode();
+    setToast(mode === "recall" ? `Đã thu hồi ${count} tin nhắn` : `Đã xoá ${count} tin nhắn`);
+  };
+
   return (
     <div
       className={`erp-chat__main${dragging ? " is-dragging" : ""}`}
@@ -1235,6 +1333,15 @@ export default function ChatConversationView({
             >
               Chia sẻ
             </Button>
+            <Button
+              size="small"
+              color="error"
+              startIcon={<DeleteOutlineRoundedIcon sx={{ fontSize: 16 }} />}
+              disabled={selectedIds.length === 0}
+              onClick={() => setBulkDeleteOpen(true)}
+            >
+              Xoá
+            </Button>
             <Button size="small" onClick={exitSelectMode}>
               Huỷ
             </Button>
@@ -1404,6 +1511,12 @@ export default function ChatConversationView({
         conversationId={conversation.CONVERSATION_ID}
         conversationName={conversation.DISPLAY_NAME}
         isSelf={isSelf}
+        myEmplNo={myEmplNo}
+        members={conversation.MEMBERS}
+        onOpenMessage={(conversationId, messageId) => {
+          setShowMedia(false);
+          onJumpToMessage(conversationId, messageId);
+        }}
         onClose={() => setShowMedia(false)}
       />
 
@@ -1423,6 +1536,96 @@ export default function ChatConversationView({
         onTogglePin={onTogglePin}
         onSelectMultiple={startSelectMode}
       />
+
+      {/* Xác nhận xoá HÀNG LOẠT các tin nhắn đang chọn */}
+      <Dialog
+        open={bulkDeleteOpen}
+        onClose={() => setBulkDeleteOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle sx={{ fontSize: 16, fontWeight: 700 }}>Xoá tin nhắn đã chọn?</DialogTitle>
+        <DialogContent>
+          <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55 }}>
+            Bạn đã chọn <b>{selectedIds.length}</b> tin nhắn.
+          </p>
+          <p style={{ margin: "8px 0 0", fontSize: 12.5, color: "#475569" }}>
+            "Xoá ở phía tôi" chỉ ẩn với bạn; "Thu hồi" khiến cả phòng thấy tin đã thu hồi.
+          </p>
+        </DialogContent>
+        <DialogActions sx={{ px: 2, pb: 1.5, gap: 1, flexWrap: "wrap" }}>
+          <Button size="small" onClick={() => setBulkDeleteOpen(false)}>
+            Huỷ
+          </Button>
+          <Button size="small" onClick={() => handleDeleteSelected("hide")}>
+            Xoá ở phía tôi
+          </Button>
+          {canRecallSelected && (
+            <Button
+              size="small"
+              color="error"
+              variant="contained"
+              onClick={() => handleDeleteSelected("recall")}
+            >
+              Thu hồi với cả hai phía
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
+
+      {/* Dán bảng từ Excel: hỏi dán thành ẢNH hay CHỮ */}
+      <Dialog
+        open={Boolean(tablePaste)}
+        onClose={() => setTablePaste(null)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ fontSize: 16, fontWeight: 700 }}>Dán bảng vào chat</DialogTitle>
+        <DialogContent>
+          <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55 }}>
+            Bạn vừa dán một bảng ({tablePaste?.grid.length || 0} hàng). Chọn cách dán:
+          </p>
+          <div className="erp-chat__tablePreview">
+            <table>
+              <tbody>
+                {(tablePaste?.grid || []).slice(0, 12).map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {row.slice(0, 8).map((cell, cellIndex) => (
+                      <td key={cellIndex} title={cell}>
+                        {cell}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {(tablePaste?.grid.length || 0) > 12 && (
+              <small>… và {tablePaste!.grid.length - 12} hàng nữa</small>
+            )}
+          </div>
+          <p style={{ margin: "10px 0 0", fontSize: 12.5, color: "#475569" }}>
+            <b>Dán thành ảnh</b>: tạo ảnh PNG từ bảng (giữ đúng bố cục, không sửa được).
+            <br />
+            <b>Dán dạng chữ</b>: chèn văn bản thuần (dán lại vào Excel vẫn ra bảng).
+          </p>
+        </DialogContent>
+        <DialogActions sx={{ px: 2, pb: 1.5, gap: 1, flexWrap: "wrap" }}>
+          <Button size="small" onClick={() => setTablePaste(null)} disabled={tableBusy}>
+            Huỷ
+          </Button>
+          <Button size="small" onClick={applyTableAsText} disabled={tableBusy}>
+            Dán dạng chữ
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            onClick={() => void applyTableAsImage()}
+            disabled={tableBusy}
+          >
+            {tableBusy ? "Đang tạo ảnh..." : "Dán thành ảnh"}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Danh sách người đã xem 1 tin nhắn của tôi */}
       <Dialog

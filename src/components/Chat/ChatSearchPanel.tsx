@@ -56,6 +56,7 @@ const KIND_OPTIONS: { value: ChatFileKindFilter; label: string }[] = [
   { value: "zip", label: "Nén (zip)" },
   { value: "video", label: "Video" },
   { value: "audio", label: "Âm thanh" },
+  { value: "link", label: "Link" },
   { value: "other", label: "Khác" },
 ];
 
@@ -107,14 +108,19 @@ export default function ChatSearchPanel({
     async (nextFilters: ChatSearchFilters, append = false) => {
       setLoading(true);
       try {
+        const isLink = nextFilters.fileKind === "link";
         const payload = {
           conversationId,
           keyword: nextFilters.keyword?.trim() || undefined,
           senderEmplNo: nextFilters.senderEmplNo || undefined,
           fromDate: nextFilters.fromDate || undefined,
           toDate: nextFilters.toDate || undefined,
-          fileKind: nextFilters.fileKind && nextFilters.fileKind !== "all" ? nextFilters.fileKind : undefined,
+          fileKind:
+            nextFilters.fileKind && nextFilters.fileKind !== "all" && !isLink
+              ? nextFilters.fileKind
+              : undefined,
           onlyWithFiles: nextFilters.onlyWithFiles || undefined,
+          hasLink: isLink || undefined,
           beforeMessageId: append ? results[results.length - 1]?.MESSAGE_ID : undefined,
           limit: 30,
         };

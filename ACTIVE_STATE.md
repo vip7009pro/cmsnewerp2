@@ -1,5 +1,33 @@
 # ACTIVE_STATE
 
+## Đợt 22.19 — 7 chỉnh sửa chat (mobile close, xoá phòng, phòng rỗng 1-1, xoá hàng loạt, tên bộ phận, lọc media + Link, dán bảng Excel) (2026-10-01)
+Trạng thái: **HOÀN THÀNH** — BE `node --check` OK + `node scratch/test_chat_delete_hidden.js` **21/21 PASS**;
+`test_chat_service.js` PASS; FE `npm run build` OK, `get_errors` 0. Backend PM2 đã restart.
+
+### Migration (đã chạy): `practice1/scripts/migrate_chat_hidden_cleared.js`
+- `ZTB_CHAT_PARTICIPANT.HIDDEN BIT NOT NULL DEFAULT 0` — phòng DIRECT vừa tạo chưa gõ tin thì ẩn với đối phương.
+- `ZTB_CHAT_PARTICIPANT.CLEARED_BEFORE_MESSAGE_ID INT NOT NULL DEFAULT 0` — mốc "xoá phòng chat" theo từng người.
+
+### Backend (`practice1`)
+- `chatRepository`: `listConversations` lọc `HIDDEN=0` + ẩn phòng nếu `LAST_MESSAGE_ID <= CLEARED`; `listMessages`/
+  `searchMessages`/`listConversationMedia` bỏ tin `<= CLEARED` của người xem; thêm `setParticipantVisibility`,
+  `startConversation` (bỏ ẩn khi có tin đầu), `clearConversationForUser`; `ensureParticipant({visible})`;
+  `searchMessages({hasLink})`; `listConversationMedia({keyword, senderEmplNo})`.
+- `chatMessageCore.sendMessage`: sau khi lưu tin ⇒ `repo.startConversation()` mở phòng cho mọi thành viên.
+- `chatRoomService`: `deptSuffix` chỉ còn `[SUBDEPTNAME]`; `buildConversationView` lấy peer DIRECT từ TẤT CẢ thành viên;
+  `chatGetOrCreateDirect` đặt HIDDEN cho đối phương khi phòng rỗng; command mới `chatDeleteConversation`,
+  `chatDeleteMessages` (mode `hide`|`recall`); truyền `hasLink`/`keyword`/`senderEmplNo`.
+- Socket mới: `chat:conversation-cleared`, `chat:messages-deleted`, `chat:messages-hidden` (FE đã lắng nghe).
+
+### Frontend (`cmsnewerp2/src/components/Chat`)
+- `ChatConversationList`: nút ĐÓNG (mobile, cạnh nút +) + mục menu "Xoá phòng chat" kèm hộp xác nhận.
+- `ChatConversationView`: nút "Xoá" trong thanh chọn nhiều + hộp xác nhận (ẩn phía tôi / thu hồi 2 phía);
+  dán BẢNG (`chatClipboardTable.ts`: `clipboardHasTable`/`extractTableGrid`/`renderGridToPngFile`) ⇒ hộp thoại chọn Ảnh/Chữ.
+- `chatUtils`: `memberDeptLabel`/`stripDeptSuffix` chỉ giữ `[SUBDEPTNAME]`.
+- `ChatSearchPanel` + `ChatMediaDialog`: chip lọc **Link** (`hasLink`); media dialog thêm từ khoá/người gửi/ngày + preset.
+- `useChatController`: `deleteConversation`, `deleteMessages` + xử lý socket mới.
+- `chat.scss`: `.erp-chat__tablePreview`.
+
 ## Fix 30.9 — ĐƠN NHIỆM: page dưới route layout trung gian sụp 0px (2026-09-30)
 Trạng thái: **HOÀN THÀNH & ĐÃ KIỂM CHỨNG** — `npm run build` OK; verify Playwright cả 2 chế độ.
 

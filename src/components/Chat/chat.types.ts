@@ -35,7 +35,9 @@ export type ChatFileKindFilter =
   | "csv"
   | "ppt"
   | "zip"
-  | "other";
+  | "other"
+  /** Tin nhắn CHỨA LIÊN KẾT (không phải loại tệp — lọc theo nội dung). */
+  | "link";
 
 /** Bộ lọc dùng chung cho tìm kiếm và xem media. */
 export interface ChatSearchFilters {
@@ -45,6 +47,8 @@ export interface ChatSearchFilters {
   toDate?: string | null;
   fileKind?: ChatFileKindFilter;
   onlyWithFiles?: boolean;
+  /** Chỉ lấy tin nhắn chứa liên kết. */
+  hasLink?: boolean;
 }
 
 /** 1 kết quả tìm kiếm (kèm thông tin phòng để hiển thị khi tìm toàn cục). */

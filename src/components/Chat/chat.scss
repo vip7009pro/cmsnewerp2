@@ -3286,3 +3286,38 @@ $chat-bubble-other: #f1f5f9;
     padding: 4px 8px;
   }
 }
+
+/* Xem trước bảng khi dán từ Excel (hộp thoại chọn "Ảnh" hay "Chữ"). */
+.erp-chat__tablePreview {
+  margin-top: 10px;
+  max-height: 240px;
+  overflow: auto;
+  border: 1px solid $chat-border;
+  border-radius: 8px;
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 12px;
+  }
+
+  td {
+    border: 1px solid #e2e8f0;
+    padding: 4px 6px;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  tr:first-child td {
+    background: #f1f5f9;
+    font-weight: 600;
+  }
+
+  small {
+    display: block;
+    padding: 4px 6px;
+    color: $chat-muted;
+  }
+}

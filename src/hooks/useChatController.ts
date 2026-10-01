@@ -791,6 +791,65 @@ export function useChatController() {
     }
   }, []);
 
+  /**
+   * Xoá phòng chat (ẩn lịch sử phía TÔI): bỏ khỏi danh sách và xoá bộ tin đang giữ.
+   * Nếu đối phương nhắn tin mới, phòng sẽ tự hiện lại (server đã xử lý ở mốc xoá).
+   */
+  const deleteConversation = useCallback(async (conversationId: number) => {
+    try {
+      await chatService.deleteConversation(conversationId);
+    } catch (error) {
+      console.warn("[chat] deleteConversation lỗi:", error);
+      return;
+    }
+    setConversations((prev) => prev.filter((c) => c.CONVERSATION_ID !== conversationId));
+    setMessages((prev) => {
+      const next = { ...prev };
+      delete next[conversationId];
+      return next;
+    });
+    setPins((prev) => {
+      const next = { ...prev };
+      delete next[conversationId];
+      return next;
+    });
+    setReadState((prev) => {
+      const next = { ...prev };
+      delete next[conversationId];
+      return next;
+    });
+    if (activeIdRef.current === conversationId) setActiveId(null);
+  }, []);
+
+  /**
+   * Xoá NHIỀU tin nhắn đang chọn.
+   *  - mode "hide"   ⇒ ẩn với riêng mình.
+   *  - mode "recall" ⇒ thu hồi với cả hai phía (bong bóng chuyển "đã thu hồi").
+   */
+  const deleteMessages = useCallback(
+    async (conversationId: number, messageIds: number[], mode: "hide" | "recall") => {
+      if (messageIds.length === 0) return;
+      try {
+        const result = await chatService.deleteMessages(conversationId, messageIds, mode);
+        const hidden = new Set(result?.hidden || []);
+        const recalled = new Set(result?.recalled || []);
+        setMessages((prev) => ({
+          ...prev,
+          [conversationId]: (prev[conversationId] || [])
+            .filter((m) => !hidden.has(m.MESSAGE_ID))
+            .map((m) =>
+              recalled.has(m.MESSAGE_ID)
+                ? { ...m, DELETED_AT: new Date().toISOString(), CONTENT: null }
+                : m
+            ),
+        }));
+      } catch (error) {
+        console.warn("[chat] deleteMessages lỗi:", error);
+      }
+    },
+    []
+  );
+
   const notifyTyping = useCallback((typing: boolean) => {
     const conversationId = activeIdRef.current;
     if (!conversationId) return;
@@ -851,6 +910,45 @@ export function useChatController() {
             : m
         ),
       }));
+    };
+
+    /** Thu hồi HÀNG LOẠT (chọn nhiều tin) — bong bóng chuyển "đã thu hồi". */
+    const onMessagesDeleted = (payload: { conversationId: number; messageIds: number[] }) => {
+      const { conversationId, messageIds } = payload || ({} as any);
+      if (!conversationId || !Array.isArray(messageIds) || messageIds.length === 0) return;
+      const ids = new Set(messageIds.map((v) => Number(v)));
+      setMessages((prev) => ({
+        ...prev,
+        [conversationId]: (prev[conversationId] || []).map((m) =>
+          ids.has(m.MESSAGE_ID)
+            ? { ...m, DELETED_AT: new Date().toISOString(), CONTENT: null }
+            : m
+        ),
+      }));
+    };
+
+    /** "Xoá ở phía tôi" HÀNG LOẠT — bỏ hẳn khỏi khung tin nhắn. */
+    const onMessagesHidden = (payload: { conversationId: number; messageIds: number[] }) => {
+      const { conversationId, messageIds } = payload || ({} as any);
+      if (!conversationId || !Array.isArray(messageIds) || messageIds.length === 0) return;
+      const ids = new Set(messageIds.map((v) => Number(v)));
+      setMessages((prev) => ({
+        ...prev,
+        [conversationId]: (prev[conversationId] || []).filter((m) => !ids.has(m.MESSAGE_ID)),
+      }));
+    };
+
+    /** Xoá phòng chat ở tab/thiết bị KHÁC của CÙNG người dùng. */
+    const onConversationCleared = (payload: { conversationId: number }) => {
+      const conversationId = payload?.conversationId;
+      if (!conversationId) return;
+      setConversations((prev) => prev.filter((c) => c.CONVERSATION_ID !== conversationId));
+      setMessages((prev) => {
+        const next = { ...prev };
+        delete next[conversationId];
+        return next;
+      });
+      if (activeIdRef.current === conversationId) setActiveId(null);
     };
 
     const onTyping = (payload: { conversationId: number; emplNo: string; emplName?: string; typing: boolean }) => {
@@ -1036,6 +1134,9 @@ export function useChatController() {
     socket.on("chat:presence-list", onPresenceList);
     socket.on("chat:message-hidden", onMessageHidden);
     socket.on("chat:message-deleted", onMessageDeleted);
+    socket.on("chat:messages-deleted", onMessagesDeleted);
+    socket.on("chat:messages-hidden", onMessagesHidden);
+    socket.on("chat:conversation-cleared", onConversationCleared);
     socket.on("chat:typing", onTyping);
     socket.on("chat:presence", onPresence);
     socket.on("chat:conversation-updated", onConversationUpdated);
@@ -1054,6 +1155,9 @@ export function useChatController() {
       socket.off("chat:presence-list", onPresenceList);
       socket.off("chat:message-hidden", onMessageHidden);
       socket.off("chat:message-deleted", onMessageDeleted);
+      socket.off("chat:messages-deleted", onMessagesDeleted);
+      socket.off("chat:messages-hidden", onMessagesHidden);
+      socket.off("chat:conversation-cleared", onConversationCleared);
       socket.off("chat:typing", onTyping);
       socket.off("chat:presence", onPresence);
       socket.off("chat:conversation-updated", onConversationUpdated);
@@ -1326,6 +1430,8 @@ export function useChatController() {
     sendMessage,
     retryMessage,
     deleteMessage,
+    deleteConversation,
+    deleteMessages,
     notifyTyping,
     searchEmployees,
     startDirect,
