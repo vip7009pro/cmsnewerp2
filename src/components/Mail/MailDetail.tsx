@@ -89,84 +89,104 @@ export default function MailDetail({ detail, loading, isMobile, onClose, onToggl
 
   const { message, attachments, thread } = detail;
 
-  return (
-    <div className="erp-mail__detail">
-      <div className="erp-mail__detailHead">
-        {isMobile && (
-          <button type="button" className="erp-mail__backBtn" onClick={onClose} aria-label="Quay lại danh sách">
-            <ArrowBackRoundedIcon fontSize="small" />
-          </button>
-        )}
-        {!isMobile && onToggleList && (
-          <button
-            type="button"
-            className={`erp-mail__backBtn${listCollapsed ? " is-off" : ""}`}
-            onClick={onToggleList}
-            title={listCollapsed ? "Hiện danh sách email" : "Ẩn danh sách email (rộng chỗ đọc)"}
-            aria-label={listCollapsed ? "Hiện danh sách email" : "Ẩn danh sách email"}
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
-              {listCollapsed ? "right_panel_open" : "right_panel_close"}
-            </span>
-          </button>
-        )}
-        <span className="erp-mail__detailSubject" title={message.subject}>
-          {message.subject}
-        </span>
-        {onReply && (
-          <IconButton size="small" className="erp-mail__iconBtn" onClick={onReply} title="Trả lời" aria-label="Trả lời">
-            <span className="material-symbols-outlined" style={{ fontSize: 19 }}>reply</span>
-          </IconButton>
-        )}
-        {onReplyAll && (
-          <IconButton size="small" className="erp-mail__iconBtn" onClick={onReplyAll} title="Trả lời tất cả" aria-label="Trả lời tất cả">
-            <span className="material-symbols-outlined" style={{ fontSize: 19 }}>reply_all</span>
-          </IconButton>
-        )}
-        {onForward && (
-          <IconButton size="small" className="erp-mail__iconBtn" onClick={onForward} title="Chuyển tiếp" aria-label="Chuyển tiếp">
-            <span className="material-symbols-outlined" style={{ fontSize: 19 }}>forward</span>
-          </IconButton>
-        )}
-        {onSaveAsGroup && (
-          <IconButton
-            size="small"
-            className="erp-mail__iconBtn"
-            onClick={onSaveAsGroup}
-            title="Lưu người nhận / CC thành nhóm danh bạ"
-            aria-label="Lưu người nhận thành nhóm danh bạ"
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: 19 }}>playlist_add</span>
-          </IconButton>
-        )}
+  // Nút quay lại (mobile) / thu-gọn danh sách (desktop) — tái sử dụng cho cả 2 nhánh layout.
+  const backOrCollapseBtn = isMobile ? (
+    <button type="button" className="erp-mail__backBtn" onClick={onClose} aria-label="Quay lại danh sách">
+      <ArrowBackRoundedIcon fontSize="small" />
+    </button>
+  ) : onToggleList ? (
+    <button
+      type="button"
+      className={`erp-mail__backBtn${listCollapsed ? " is-off" : ""}`}
+      onClick={onToggleList}
+      title={listCollapsed ? "Hiện danh sách email" : "Ẩn danh sách email (rộng chỗ đọc)"}
+      aria-label={listCollapsed ? "Hiện danh sách email" : "Ẩn danh sách email"}
+    >
+      <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+        {listCollapsed ? "right_panel_open" : "right_panel_close"}
+      </span>
+    </button>
+  ) : null;
+
+  // Cụm nút chức năng (trả lời / chuyển tiếp / gắn sao / xoá...).
+  const actionButtons = (
+    <>
+      {onReply && (
+        <IconButton size="small" className="erp-mail__iconBtn" onClick={onReply} title="Trả lời" aria-label="Trả lời">
+          <span className="material-symbols-outlined" style={{ fontSize: 19 }}>reply</span>
+        </IconButton>
+      )}
+      {onReplyAll && (
+        <IconButton size="small" className="erp-mail__iconBtn" onClick={onReplyAll} title="Trả lời tất cả" aria-label="Trả lời tất cả">
+          <span className="material-symbols-outlined" style={{ fontSize: 19 }}>reply_all</span>
+        </IconButton>
+      )}
+      {onForward && (
+        <IconButton size="small" className="erp-mail__iconBtn" onClick={onForward} title="Chuyển tiếp" aria-label="Chuyển tiếp">
+          <span className="material-symbols-outlined" style={{ fontSize: 19 }}>forward</span>
+        </IconButton>
+      )}
+      {onSaveAsGroup && (
         <IconButton
           size="small"
           className="erp-mail__iconBtn"
-          onClick={() => onToggleStar(!message.isStarred)}
-          aria-label={message.isStarred ? "Bỏ gắn sao" : "Gắn sao"}
-          title={message.isStarred ? "Bỏ gắn sao" : "Gắn sao"}
+          onClick={onSaveAsGroup}
+          title="Lưu người nhận / CC thành nhóm danh bạ"
+          aria-label="Lưu người nhận thành nhóm danh bạ"
         >
-          <span className="material-symbols-outlined" style={{ fontSize: 20, color: message.isStarred ? "#f59e0b" : "#94a3b8" }}>
-            {message.isStarred ? "star" : "star_border"}
-          </span>
+          <span className="material-symbols-outlined" style={{ fontSize: 19 }}>playlist_add</span>
         </IconButton>
-        {onDelete && (
-          <IconButton
-            size="small"
-            className="erp-mail__iconBtn"
-            onClick={onDelete}
-            title="Xoá khỏi hộp thư của tôi"
-            aria-label="Xoá khỏi hộp thư của tôi"
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: 19 }}>delete</span>
-          </IconButton>
-        )}
-        {!isMobile && (
+      )}
+      <IconButton
+        size="small"
+        className="erp-mail__iconBtn"
+        onClick={() => onToggleStar(!message.isStarred)}
+        aria-label={message.isStarred ? "Bỏ gắn sao" : "Gắn sao"}
+        title={message.isStarred ? "Bỏ gắn sao" : "Gắn sao"}
+      >
+        <span className="material-symbols-outlined" style={{ fontSize: 20, color: message.isStarred ? "#f59e0b" : "#94a3b8" }}>
+          {message.isStarred ? "star" : "star_border"}
+        </span>
+      </IconButton>
+      {onDelete && (
+        <IconButton
+          size="small"
+          className="erp-mail__iconBtn"
+          onClick={onDelete}
+          title="Xoá khỏi hộp thư của tôi"
+          aria-label="Xoá khỏi hộp thư của tôi"
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: 19 }}>delete</span>
+        </IconButton>
+      )}
+    </>
+  );
+
+  return (
+    <div className="erp-mail__detail">
+      {isMobile ? (
+        <>
+          {/* Mobile: hàng 1 = quay lại + tiêu đề, hàng 2 = các nút chức năng. */}
+          <div className="erp-mail__detailHead">
+            {backOrCollapseBtn}
+            <span className="erp-mail__detailSubject" title={message.subject}>
+              {message.subject}
+            </span>
+          </div>
+          <div className="erp-mail__detailActions">{actionButtons}</div>
+        </>
+      ) : (
+        <div className="erp-mail__detailHead">
+          {backOrCollapseBtn}
+          <span className="erp-mail__detailSubject" title={message.subject}>
+            {message.subject}
+          </span>
+          {actionButtons}
           <IconButton size="small" className="erp-mail__iconBtn" onClick={onClose} aria-label="Đóng chi tiết email" title="Đóng">
             <CloseRoundedIcon fontSize="small" />
           </IconButton>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="erp-mail__detailMeta">
         <div>
