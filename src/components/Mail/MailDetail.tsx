@@ -21,6 +21,8 @@ interface MailDetailProps {
   onReply?: () => void;
   onReplyAll?: () => void;
   onForward?: () => void;
+  /** Xoá mềm email khỏi hộp thư của người dùng hiện tại (Phase 8). */
+  onDelete?: () => void;
 }
 
 /** Số người nhận hiển thị trước khi thu gọn. */
@@ -62,7 +64,7 @@ function RecipientLine({ label, list }: { label: string; list: MailAddress[] }) 
 }
 
 /** Chi tiết 1 email: người gửi/nhận, thời gian, nội dung HTML an toàn, đính kèm, hội thoại. */
-export default function MailDetail({ detail, loading, isMobile, onClose, onToggleStar, listCollapsed, onToggleList, onReply, onReplyAll, onForward }: MailDetailProps) {
+export default function MailDetail({ detail, loading, isMobile, onClose, onToggleStar, listCollapsed, onToggleList, onReply, onReplyAll, onForward, onDelete }: MailDetailProps) {
   // Ảnh nhúng theo Content-ID ⇒ URL tải từ server để hiển thị trong nội dung.
   const inlineImages = useMemo(() => {
     const map: Record<string, string> = {};
@@ -135,6 +137,17 @@ export default function MailDetail({ detail, loading, isMobile, onClose, onToggl
             {message.isStarred ? "star" : "star_border"}
           </span>
         </IconButton>
+        {onDelete && (
+          <IconButton
+            size="small"
+            className="erp-mail__iconBtn"
+            onClick={onDelete}
+            title="Xoá khỏi hộp thư của tôi"
+            aria-label="Xoá khỏi hộp thư của tôi"
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 19 }}>delete</span>
+          </IconButton>
+        )}
         {!isMobile && (
           <IconButton size="small" className="erp-mail__iconBtn" onClick={onClose} aria-label="Đóng chi tiết email" title="Đóng">
             <CloseRoundedIcon fontSize="small" />

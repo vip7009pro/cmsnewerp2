@@ -3,12 +3,16 @@ import axios from "axios";
 import { generalQuery, getCtrCd, getSever } from "../Api";
 import type {
   MailAccountConfig,
+  MailAdminEmployee,
+  MailAdminOverview,
   MailAttachment,
   MailBootstrap,
   MailDetailResponse,
   MailInboxPage,
   MailSearchFilters,
   MailSearchPage,
+  MailStorageDashboard,
+  MailSyncLogRow,
   MailSyncPage,
   MailSyncStatusResponse,
 } from "../../components/Mail/mail.types";
@@ -29,6 +33,31 @@ function unwrap<T>(response: any): T {
 export async function mailQuery<T>(command: string, data: Record<string, unknown> = {}): Promise<T> {
   const response = await generalQuery(command, data);
   return unwrap<T>(response);
+}
+
+/** Kết quả `emailAccountImport` — nhập hàng loạt mailbox từ Excel. */
+export interface MailImportResult {
+  total: number;
+  created: number;
+  updated: number;
+  skipped: number;
+  dryRun: boolean;
+  errors: { row: number; label: string; message: string }[];
+  warnings: { row: number; label: string; message: string }[];
+  accounts: { row: number; id?: number; emailAddress?: string; action?: string }[];
+}
+
+/** Trạng thái "đồng bộ hàng loạt". */
+export interface MailSyncAllState {
+  running: boolean;
+  total: number;
+  processed: number;
+  ok: number;
+  failed: number;
+  startedAt: string | null;
+  finishedAt: string | null;
+  started?: boolean;
+  message?: string;
 }
 
 /** Kết quả gửi thư (mailSendService trả về thêm thông tin ảnh nhúng). */
@@ -160,6 +189,33 @@ export const emailService = {
   /* --- Tải / xem trước đính kèm (Phase 4) --- */
   fetchAttachmentBlob: (id: number, opts: { signal?: AbortSignal } = {}) => fetchMailAttachmentBlob(id, opts),
   downloadAttachment: (id: number, fileName: string) => downloadMailAttachment(id, fileName),
+
+  /* --- Xoá mềm theo từng người (Phase 8 — retention) --- */
+  deleteMessage: (id: number) => mailQuery<{ id: number; deleted: boolean }>("emailDelete", { ID: id }),
+  restoreMessage: (id: number) => mailQuery<{ id: number; deleted: boolean }>("emailRestore", { ID: id }),
+
+  /* --- Quản trị + monitoring (Phase 8) --- */
+  adminOverview: (limit?: number) => mailQuery<MailAdminOverview>("emailAdminOverview", { limit: limit ?? 500 }),
+  storageDashboard: () => mailQuery<MailStorageDashboard>("emailStorageDashboard"),
+  storageByEmployee: () =>
+    mailQuery<{ employees: (MailAdminEmployee & { mailboxes: { id: number; emailAddress: string; isActive: boolean; messageCount: number; attachmentCount: number; storageBytes: number }[] })[] }>(
+      "emailStorageByEmployee"
+    ),
+  reconcileNow: () => mailQuery<{ refs: number; orphans: number; failed: number; ms: number }>("emailReconcileNow"),
+  accountToggle: (id: number, isActive: boolean) =>
+    mailQuery<{ id: number; isActive: boolean }>("emailAccountToggle", { ID: id, IS_ACTIVE: isActive }),
+  accountTest: (id: number) => mailQuery<{ message: string }>("emailAccountTest", { ID: id }),
+  accountReset: (id: number) => mailQuery<{ id: number }>("emailAccountReset", { ID: id }),
+  syncLogList: (id: number, limit = 50) => mailQuery<MailSyncLogRow[]>("emailSyncLogList", { ID: id, limit }),
+
+  /* --- Nhập hàng loạt + đồng bộ hàng loạt (Phase 8 mở rộng) --- */
+  /** Nhập danh sách mailbox từ Excel (ROWS = mảng object đọc từ tệp). `dryRun` = chỉ kiểm tra. */
+  accountImport: (rows: Record<string, unknown>[], dryRun = false) =>
+    mailQuery<MailImportResult>("emailAccountImport", { ROWS: rows, DRY_RUN: dryRun }),
+
+  /** Đẩy đồng bộ cho TẤT CẢ mailbox đang bật (chạy nền). */
+  syncAll: () => mailQuery<MailSyncAllState>("emailSyncAll"),
+  syncAllStatus: () => mailQuery<MailSyncAllState>("emailSyncAllStatus"),
 };
 
 /** Upload 1 tệp đính kèm soạn thảo ⇒ trả {id, fileName, fileSize, contentType, dangerous}. */

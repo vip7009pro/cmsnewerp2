@@ -45,6 +45,8 @@ export interface MailController {
   mutedAccountIds: number[];
   isAccountMuted: (accountId: number) => boolean;
   toggleMute: (accountId: number) => Promise<void>;
+  /** Admin có cho phép nhân viên tự cấu hình mailbox không. */
+  selfServiceEnabled: boolean;
   bootstrap: () => Promise<void>;
   /** Nạp lại bootstrap (bỏ qua cờ bootstrapped) — dùng sau khi lưu cấu hình mailbox. */
   reloadBootstrap: () => Promise<void>;
@@ -55,6 +57,8 @@ export interface MailController {
   closeDetail: () => void;
   toggleStar: (item: MailListItemModel) => Promise<void>;
   markRead: (id: number, isRead: boolean) => Promise<void>;
+  /** Xoá mềm email khỏi hộp thư của người dùng (Phase 8). */
+  deleteMessage: (id: number) => Promise<void>;
 }
 
 export function useMailController(options: { realtime?: boolean } = {}): MailController {
@@ -280,9 +284,14 @@ export function useMailController(options: { realtime?: boolean } = {}): MailCon
       void syncNewEmails();
     };
     /** Trạng thái đọc/sao thay đổi ở tab/thiết bị khác ⇒ cập nhật ngay (idempotent). */
-    const onState = (payload: { messageId?: number; isRead?: boolean; isStarred?: boolean }) => {
+    const onState = (payload: { messageId?: number; isRead?: boolean; isStarred?: boolean; deleted?: boolean }) => {
       const id = Number(payload?.messageId);
       if (!id) return;
+      if (payload.deleted === true) {
+        setMessages((prev) => prev.filter((m) => m.id !== id));
+        setDetail((prev) => (prev && prev.message.id === id ? null : prev));
+        return;
+      }
       const patch: Partial<MailListItemModel> = {};
       if (payload.isRead !== undefined) patch.isRead = payload.isRead;
       if (payload.isStarred !== undefined) patch.isStarred = payload.isStarred;
@@ -359,6 +368,21 @@ export function useMailController(options: { realtime?: boolean } = {}): MailCon
 
   const closeDetail = useCallback(() => setDetail(null), []);
 
+  /** Xoá mềm: ẩn khỏi hộp thư người dùng, KHÔNG xoá dữ liệu gốc hay trên POP3 server. */
+  const deleteMessage = useCallback(
+    async (id: number) => {
+      setMessages((prev) => prev.filter((m) => m.id !== id));
+      setDetail((prev) => (prev && prev.message.id === id ? null : prev));
+      try {
+        await emailService.deleteMessage(id);
+      } catch (error: any) {
+        console.warn("[mail] xoá email lỗi:", error?.message || error);
+        await loadPage(activeFolderRef.current, true).catch(() => undefined);
+      }
+    },
+    [loadPage]
+  );
+
   const toggleStar = useCallback(
     async (item: MailListItemModel) => {
       const next = !item.isStarred;
@@ -411,6 +435,7 @@ export function useMailController(options: { realtime?: boolean } = {}): MailCon
     mutedAccountIds: mail.mutedAccountIds || [],
     isAccountMuted,
     toggleMute,
+    selfServiceEnabled: mail.selfServiceEnabled !== false,
     bootstrap,
     reloadBootstrap,
     openFolder,
@@ -420,6 +445,7 @@ export function useMailController(options: { realtime?: boolean } = {}): MailCon
     closeDetail,
     toggleStar,
     markRead,
+    deleteMessage,
   };
 }
 

@@ -1,0 +1,441 @@
+/* ============================================================================
+   Trang quản trị Email (Phase 8) — namespace .precision-email__*
+   ========================================================================== */
+
+$pe-primary: #2563eb;
+$pe-primary-soft: #eff6ff;
+$pe-text: #0f172a;
+$pe-muted: #64748b;
+$pe-border: #e2e8f0;
+$pe-danger: #dc2626;
+$pe-success: #15803d;
+$pe-warning: #b45309;
+
+.precision-email {
+  padding: 16px;
+  min-height: 100%;
+  background: #f8fafc;
+  color: $pe-text;
+}
+
+.precision-email__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.precision-email__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.precision-email__subtitle {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  color: $pe-muted;
+}
+
+.precision-email__actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.precision-email__search {
+  min-width: 240px;
+
+  .MuiInputBase-input {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+}
+
+/* ---------------------------- KPI ---------------------------- */
+
+.precision-email__kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.precision-email__kpi {
+  background: #fff;
+  border: 1px solid $pe-border;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &.is-danger {
+    border-color: rgba(220, 38, 38, 0.4);
+    background: #fff5f5;
+  }
+}
+
+.precision-email__kpiLabel {
+  font-size: 11.5px;
+  color: $pe-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.precision-email__kpiValue {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.precision-email__kpiHint {
+  font-size: 11px;
+  color: $pe-muted;
+}
+
+/* Tiến độ đồng bộ hàng loạt. */
+.precision-email__syncAll {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border: 1px solid $pe-primary;
+  border-radius: 8px;
+  background: $pe-primary-soft;
+  color: $pe-primary;
+  font-size: 12.5px;
+
+  &.is-done {
+    border-color: #86efac;
+    background: #f0fdf4;
+    color: $pe-success;
+  }
+}
+
+/* -------------------------- Bộ lọc -------------------------- */
+
+.precision-email__filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.precision-email__pill {
+  border: 1px solid $pe-border;
+  background: #fff;
+  color: $pe-muted;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $pe-primary;
+    color: $pe-primary;
+  }
+
+  &.is-active {
+    background: $pe-primary-soft;
+    border-color: $pe-primary;
+    color: $pe-primary;
+  }
+}
+
+/* --------------------------- Bảng --------------------------- */
+
+.precision-email__tableWrap {
+  background: #fff;
+  border: 1px solid $pe-border;
+  border-radius: 10px;
+  max-height: 60vh;
+  overflow: auto;
+
+  .MuiTableCell-root {
+    font-size: 12.5px;
+    padding: 6px 8px;
+    white-space: nowrap;
+  }
+
+  .MuiTableCell-head {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: $pe-muted;
+    background: #f1f5f9;
+  }
+}
+
+.precision-email__empl {
+  font-weight: 600;
+}
+
+.precision-email__muted {
+  color: $pe-muted;
+  font-size: 11.5px;
+}
+
+.precision-email__pending {
+  color: $pe-warning;
+  font-size: 11.5px;
+}
+
+.precision-email__errText {
+  display: inline-block;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: $pe-danger;
+  font-size: 11.5px;
+  vertical-align: bottom;
+}
+
+.precision-email__status {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+
+  &--ok {
+    background: #dcfce7;
+    color: $pe-success;
+  }
+
+  &--error {
+    background: #fee2e2;
+    color: $pe-danger;
+  }
+
+  &--syncing {
+    background: $pe-primary-soft;
+    color: $pe-primary;
+  }
+
+  &--off {
+    background: #e2e8f0;
+    color: $pe-muted;
+  }
+}
+
+.precision-email__rowActions {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+}
+
+.precision-email__iconBtn {
+  border: 0;
+  background: transparent;
+  padding: 3px;
+  border-radius: 6px;
+  color: $pe-muted;
+  cursor: pointer;
+  display: inline-flex;
+
+  &:hover:not(:disabled) {
+    background: rgba(37, 99, 235, 0.1);
+    color: $pe-primary;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  &.is-danger:hover:not(:disabled) {
+    background: rgba(220, 38, 38, 0.1);
+    color: $pe-danger;
+  }
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+}
+
+.precision-email__empty {
+  color: $pe-muted;
+  padding: 24px;
+}
+
+/* ------------------------- Dashboard ------------------------- */
+
+.precision-email__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.precision-email__card {
+  background: #fff;
+  border: 1px solid $pe-border;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.precision-email__cardTitle {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  border-bottom: 1px solid $pe-border;
+  background: #f8fafc;
+}
+
+.precision-email__cardBody {
+  padding: 6px 8px 10px;
+
+  .MuiTableCell-root {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}
+
+.precision-email__spark {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 90px;
+  padding: 6px 4px 0;
+}
+
+.precision-email__sparkBar {
+  flex: 1 1 0;
+  min-width: 6px;
+  background: linear-gradient(180deg, #60a5fa, $pe-primary);
+  border-radius: 3px 3px 0 0;
+}
+
+/* ------------------------ Nhật ký sync ------------------------ */
+
+.precision-email__logDialog {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  max-height: 84vh;
+}
+
+.precision-email__logHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid $pe-border;
+}
+
+.precision-email__logTitle {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.precision-email__logBody {
+  padding: 8px;
+  overflow: auto;
+
+  .MuiTableCell-root {
+    font-size: 12px;
+    padding: 5px 8px;
+    white-space: nowrap;
+  }
+
+  .MuiTableCell-head {
+    background: #f1f5f9;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: $pe-muted;
+  }
+}
+
+/* ---------------- Lối vào từ tab Cài đặt (SettingPage) ---------------- */
+
+.precision-setting__mailAdmin {
+  margin-top: 14px;
+}
+
+.precision-setting__mailAdminBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid $pe-primary;
+  border-radius: 10px;
+  background: $pe-primary-soft;
+  color: $pe-primary;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: #dbeafe;
+  }
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+}
+
+.precision-setting__mailAdminDialog {
+  display: flex;
+  flex-direction: column;
+  max-height: 92vh;
+  background: #f8fafc;
+}
+
+.precision-setting__mailAdminHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid $pe-border;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  color: $pe-text;
+}
+
+.precision-setting__mailAdminBody {
+  overflow: auto;
+  flex: 1 1 auto;
+}
+
+/* --------------------------- Mobile --------------------------- */
+@media (max-width: 768px) {
+  .precision-email {
+    padding: 10px;
+  }
+
+  .precision-email__header {
+    flex-direction: column;
+  }
+
+  .precision-email__actions {
+    width: 100%;
+  }
+
+  .precision-email__search {
+    flex: 1 1 100%;
+    min-width: 0;
+
+    /* iOS: input < 16px sẽ tự zoom khi focus. */
+    .MuiInputBase-input {
+      font-size: 16px;
+    }
+  }
+
+  .precision-email__tableWrap {
+    max-height: none;
+  }
+
+  .precision-email__kpiValue {
+    font-size: 18px;
+  }
+}

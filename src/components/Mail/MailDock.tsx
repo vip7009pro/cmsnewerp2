@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
-import { IconButton, Tooltip } from "@mui/material";
+import { Dialog, IconButton, Tooltip } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import FullscreenRoundedIcon from "@mui/icons-material/FullscreenRounded";
 import FullscreenExitRoundedIcon from "@mui/icons-material/FullscreenExitRounded";
@@ -12,6 +12,9 @@ import MailSyncStatus from "./MailSyncStatus";
 import MailComposer, { type MailComposeMode } from "./MailComposer";
 import { useMailController } from "../../hooks/useMailController";
 import { useMobileBackClose } from "../NavMenu/useMobileBackClose";
+import { getUserData } from "../../api/Api";
+import { isMailAdminUser } from "./mailUtils";
+import PrecisionEmailAdmin from "../../pages/setting/PrecisionEmail/PrecisionEmailAdmin";
 import type { MailListItemModel } from "./mail.types";
 import "./mail.scss";
 
@@ -31,6 +34,9 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
   const controller = useMailController({ realtime: isOpen });
   const [fullscreen, setFullscreen] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
+  /** Bảng quản trị Email — chỉ admin mở được (Phase 8). */
+  const [showAdmin, setShowAdmin] = useState(false);
+  const mailAdmin = isMailAdminUser(getUserData());
   /** Trạng thái hộp soạn thảo (Phase 3). */
   const [compose, setCompose] = useState<{ open: boolean; mode: MailComposeMode; draftId?: number | null }>({ open: false, mode: "new" });
   // Ẩn/hiện cột thư mục (cột 1) và cột danh sách (cột 2) để tối ưu không gian đọc nội dung.
@@ -180,6 +186,9 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
         onCompose={() => setCompose({ open: true, mode: "new" })}
         mutedAccountIds={controller.mutedAccountIds}
         onToggleMute={(accountId) => void controller.toggleMute(accountId)}
+        isAdmin={mailAdmin}
+        onOpenAdmin={() => setShowAdmin(true)}
+        selfServiceEnabled={controller.selfServiceEnabled}
       />
       <MailList
         title={folderTitle}
@@ -250,6 +259,12 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
             onReply={() => setCompose({ open: true, mode: "reply" })}
             onReplyAll={() => setCompose({ open: true, mode: "replyAll" })}
             onForward={() => setCompose({ open: true, mode: "forward" })}
+            onDelete={() => {
+              const id = controller.detail?.message.id;
+              if (!id) return;
+              if (!window.confirm("Xoá email này khỏi hộp thư của bạn? (dữ liệu gốc trên server vẫn được giữ)")) return;
+              void controller.deleteMessage(id);
+            }}
             onClose={controller.closeDetail}
             onToggleStar={(isStarred) => {
               const item = controller.messages.find((m) => m.id === controller.detail?.message.id);
@@ -341,6 +356,28 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
           void controller.openFolder("INBOX");
         }}
       />
+
+      {/* Bảng quản trị Email (Phase 8) — mở ngay trong cửa sổ hộp thư. */}
+      {mailAdmin && (
+        <Dialog open={showAdmin} onClose={() => setShowAdmin(false)} fullWidth maxWidth="xl">
+          <div className="erp-mail__adminDialog">
+            <div className="erp-mail__adminHead">
+              <span className="erp-mail__adminTitle">
+                <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
+                  admin_panel_settings
+                </span>
+                Quản trị Email
+              </span>
+              <IconButton size="small" onClick={() => setShowAdmin(false)} title="Đóng">
+                <CloseRoundedIcon fontSize="small" />
+              </IconButton>
+            </div>
+            <div className="erp-mail__adminBody">
+              <PrecisionEmailAdmin />
+            </div>
+          </div>
+        </Dialog>
+      )}
 
       <MailComposer
         open={compose.open}

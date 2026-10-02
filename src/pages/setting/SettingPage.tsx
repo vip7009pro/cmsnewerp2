@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Dialog, IconButton } from "@mui/material";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import "./PrecisionSetting/PrecisionSetting.scss";
+import PrecisionEmailAdmin from "./PrecisionEmail/PrecisionEmailAdmin";
+import "./PrecisionEmail/PrecisionEmailAdmin.scss";
 import { WEB_SETTING_DATA } from "../../api/GlobalInterface";
 import { generalQuery, getUserData } from "../../api/Api";
 import { useDispatch } from "react-redux";
@@ -17,6 +21,7 @@ const SettingPage: React.FC = () => {
   const dispatch = useDispatch();
   const [settings, setSettings] = useState<Array<WEB_SETTING_DATA>>([]);
   const [activeTab, setActiveTab] = useState<SettingTabType>("mfa");
+  const [mailAdminOpen, setMailAdminOpen] = useState(false);
   const [mfaEnabled, setMfaEnabled] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
@@ -171,6 +176,34 @@ const SettingPage: React.FC = () => {
           {/* Phần tiện ích riêng của Quản trị viên (NHU1903) */}
           {isAdmin && <PrecisionSettingNotification isMobile={false} />}
         </>
+      )}
+
+      {/* Quản trị Email (Phase 8) — mở toàn màn hình ngay trong tab Cài đặt. */}
+      {isAdmin && (
+        <div className="precision-setting__mailAdmin">
+          <button
+            type="button"
+            className="precision-setting__mailAdminBtn"
+            onClick={() => setMailAdminOpen(true)}
+          >
+            <span className="material-symbols-outlined">admin_panel_settings</span>
+            Quản trị Email — mailbox · nhật ký đồng bộ · dung lượng NAS
+          </button>
+
+          <Dialog open={mailAdminOpen} onClose={() => setMailAdminOpen(false)} fullWidth maxWidth="xl">
+            <div className="precision-setting__mailAdminDialog">
+              <div className="precision-setting__mailAdminHead">
+                <span>Quản trị Email</span>
+                <IconButton size="small" onClick={() => setMailAdminOpen(false)} title="Đóng">
+                  <CloseRoundedIcon fontSize="small" />
+                </IconButton>
+              </div>
+              <div className="precision-setting__mailAdminBody">
+                <PrecisionEmailAdmin />
+              </div>
+            </div>
+          </Dialog>
+        </div>
       )}
     </div>
   );

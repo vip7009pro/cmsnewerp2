@@ -1013,6 +1013,24 @@ export default function PrecisionHeader({
           <ListItemText primary="Cài đặt hệ thống" primaryTypographyProps={{ fontSize: 12 }} />
         </MenuItem>
 
+        {/* Quản trị Email (Phase 8) — chỉ hiện với người có quyền quản lý. */}
+        {hasManagementRole(userData) && (
+          <MenuItem
+            onClick={() => {
+              setAvatarAnchorEl(null);
+              setMobileActionsAnchorEl(null);
+              navigate("/setting/email");
+            }}
+          >
+            <ListItemIcon>
+              <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
+                admin_panel_settings
+              </span>
+            </ListItemIcon>
+            <ListItemText primary="Quản trị Email" primaryTypographyProps={{ fontSize: 12 }} />
+          </MenuItem>
+        )}
+
         <Divider sx={{ my: 0.5 }} />
 
         <MenuItem onClick={handleLogout} sx={{ color: "#f43f5e" }}>

@@ -16,6 +16,8 @@ export interface MailState {
   ownAccountId: number | null;
   /** Mailbox người dùng đã tắt thông báo đẩy (Phase 7). */
   mutedAccountIds: number[];
+  /** Nhân viên có được tự cấu hình mailbox không (admin bật/tắt qua env). */
+  selfServiceEnabled: boolean;
 }
 
 const initialState: MailState = {
@@ -27,6 +29,7 @@ const initialState: MailState = {
   hasOwnAccount: false,
   ownAccountId: null,
   mutedAccountIds: [],
+  selfServiceEnabled: true,
 };
 
 const mailSlice = createSlice({
@@ -43,6 +46,7 @@ const mailSlice = createSlice({
       state.hasOwnAccount = payload.hasOwnAccount === true;
       state.ownAccountId = payload.ownAccountId ?? null;
       state.mutedAccountIds = Array.isArray(payload.mutedAccountIds) ? payload.mutedAccountIds.map(Number) : [];
+      state.selfServiceEnabled = payload.selfServiceEnabled !== false;
     },
     /** Cập nhật danh sách mailbox tắt thông báo đẩy (đã chuẩn hoá từ server). */
     setMailMutes(state, action: PayloadAction<number[]>) {

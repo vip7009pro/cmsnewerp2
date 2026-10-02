@@ -27,6 +27,8 @@ export interface MailBootstrap {
   ownAccountId?: number | null;
   /** Mailbox đã TẮT thông báo đẩy (Phase 7). */
   mutedAccountIds?: number[];
+  /** Admin có cho phép nhân viên tự cấu hình mailbox không (mặc định true). */
+  selfServiceEnabled?: boolean;
 }
 
 export interface MailAddress {
@@ -86,6 +88,92 @@ export interface MailSyncPage {
   hasMore: boolean;
   latest: { receivedAt: string; id: number } | null;
   unreadTotal: number;
+}
+
+/* ---------------- Phase 8: quản trị + dung lượng ---------------- */
+
+/** 1 mailbox kèm số liệu tổng hợp (trang quản trị). */
+export interface MailAdminMailbox {
+  id: number;
+  emplNo: string | null;
+  emplName: string | null;
+  emailAddress: string;
+  displayName: string | null;
+  pop3Host: string | null;
+  pop3Port: number | null;
+  pop3Secure: boolean;
+  smtpHost: string | null;
+  smtpPort: number | null;
+  smtpSecure: boolean;
+  isActive: boolean;
+  isShared: boolean;
+  lastSyncAt: string | null;
+  lastSyncStatus: string | null;
+  lastError: string | null;
+  inProgress: boolean;
+  lockedAt: string | null;
+  serverTotal: number;
+  pending: number;
+  messageCount: number;
+  attachmentCount: number;
+  unreadCount: number;
+  messageBytes: number;
+  attachmentBytes: number;
+  storageBytes: number;
+}
+
+export interface MailAdminTotals {
+  mailboxCount: number;
+  activeMailboxCount: number;
+  errorMailboxCount: number;
+  messageCount: number;
+  attachmentCount: number;
+  unreadCount: number;
+  storageBytes: number;
+  pending: number;
+  physicalFiles?: number;
+  physicalBytes?: number;
+  orphanFiles?: number;
+  dedupSavedBytes?: number;
+}
+
+export interface MailAdminEmployee {
+  emplNo: string | null;
+  emplName: string | null;
+  mailboxCount: number;
+  messageCount: number;
+  attachmentCount: number;
+  unreadCount: number;
+  storageBytes: number;
+}
+
+export interface MailAdminOverview {
+  mailboxes: MailAdminMailbox[];
+  totals: MailAdminTotals;
+  byEmployee: MailAdminEmployee[];
+}
+
+export interface MailStorageDashboard {
+  totals: MailAdminTotals;
+  byEmployee: MailAdminEmployee[];
+  byYear: { year: number; messageCount: number; bytes: number }[];
+  growth: { day: string; messageCount: number }[];
+}
+
+/** 1 dòng nhật ký đồng bộ (`ZTB_MAIL_SYNC_LOG`). */
+export interface MailSyncLogRow {
+  ID: number;
+  MAIL_ACCOUNT_ID: number;
+  STARTED_AT: string;
+  FINISHED_AT: string | null;
+  STATUS: string;
+  CONNECTED: boolean | number;
+  NEW_COUNT: number;
+  IMPORTED_COUNT: number;
+  ATTACH_COUNT: number;
+  ERROR_CODE: string | null;
+  ERROR_MESSAGE: string | null;
+  DURATION_MS: number | null;
 }
 
 export interface MailAttachment {

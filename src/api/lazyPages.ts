@@ -43,6 +43,7 @@ export const KHOTOTAL = lazy(() => import("../pages/kho/KHOTOTAL"));
 export const KHOTPNEW = lazy(() => import("../pages/kho/khotp_new/KHOTPNEW"));
 export const KHOLIEU = lazy(() => import("../pages/kho/kholieu/KHOLIEU"));
 export const SettingPage = lazy(() => import("../pages/setting/SettingPage"));
+export const PrecisionEmailAdmin = lazy(() => import("../pages/setting/PrecisionEmail/PrecisionEmailAdmin"));
 export const DTC = lazy(() => import("../pages/qc/dtc/DTC"));
 export const QC = lazy(() => import("../pages/qc/QC"));
 export const IQC = lazy(() => import("../pages/qc/iqc/IQC"));

@@ -150,8 +150,58 @@ $mail-warning: #b45309;
   text-overflow: ellipsis;
 }
 
-/* Nút bật/tắt thông báo đẩy cho từng mailbox (Phase 7). */
-.erp-mail__muteBtn {
+/* Mục Quản trị Email trong sidebar (chỉ admin — Phase 8). */
+.erp-mail__folder--admin {
+  color: $mail-primary;
+  font-weight: 600;
+
+  .material-symbols-outlined {
+    color: $mail-primary;
+  }
+
+  &:hover {
+    background: $mail-primary-soft;
+  }
+}
+
+/* Dialog bảng quản trị Email mở từ cửa sổ hộp thư. */
+.erp-mail__adminDialog {
+  display: flex;
+  flex-direction: column;
+  height: min(88vh, 900px);
+  background: $mail-bg;
+}
+
+.erp-mail__adminHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 8px 8px 16px;
+  border-bottom: 1px solid $mail-border;
+  background: #fff;
+}
+
+.erp-mail__adminTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: $mail-text;
+
+  .material-symbols-outlined {
+    color: $mail-primary;
+  }
+}
+
+.erp-mail__adminBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Nút bật/tắt thông báo đẩy cho từng mailbox (Phase 7). */.erp-mail__muteBtn {
   flex: 0 0 auto;
   border: 0;
   background: transparent;

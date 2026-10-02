@@ -14,6 +14,11 @@ interface MailSidebarProps {
   /** Mailbox đã tắt thông báo đẩy (Phase 7). */
   mutedAccountIds?: number[];
   onToggleMute?: (accountId: number) => void;
+  /** Quản trị Email (Phase 8) — chỉ hiện với admin. */
+  isAdmin?: boolean;
+  onOpenAdmin?: () => void;
+  /** Admin có cho phép nhân viên tự cấu hình mailbox không. */
+  selfServiceEnabled?: boolean;
 }
 
 /** Cột thư mục (Inbox/Starred/Sent/...) — chỉ là thư mục hiển thị phía client (POP3 không sync folder server). */
@@ -27,6 +32,9 @@ export default function MailSidebar({
   onCompose,
   mutedAccountIds = [],
   onToggleMute,
+  isAdmin = false,
+  onOpenAdmin,
+  selfServiceEnabled = true,
 }: MailSidebarProps) {
   const list = folders.length > 0 ? folders : [];
 
@@ -87,10 +95,26 @@ export default function MailSidebar({
         );
       })}
 
-      <button type="button" className="erp-mail__folder" onClick={onOpenAccount} style={{ marginTop: 6 }}>
-        <span className="material-symbols-outlined">settings</span>
-        <span>Cấu hình Email của tôi</span>
-      </button>
+      {/* Tự cấu hình chỉ hiện khi admin còn cho phép (MAIL_ALLOW_SELF_SERVICE). */}
+      {selfServiceEnabled && (
+        <button type="button" className="erp-mail__folder" onClick={onOpenAccount} style={{ marginTop: 6 }}>
+          <span className="material-symbols-outlined">settings</span>
+          <span>Cấu hình Email của tôi</span>
+        </button>
+      )}
+
+      {/* Quản trị Email — chỉ admin thấy (Phase 8). */}
+      {isAdmin && onOpenAdmin && (
+        <button
+          type="button"
+          className="erp-mail__folder erp-mail__folder--admin"
+          onClick={onOpenAdmin}
+          title="Danh sách mailbox · nhật ký đồng bộ · dung lượng NAS"
+        >
+          <span className="material-symbols-outlined">admin_panel_settings</span>
+          <span>Quản trị Email</span>
+        </button>
+      )}
     </nav>
   );
 }
