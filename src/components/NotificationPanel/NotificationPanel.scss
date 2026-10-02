@@ -146,6 +146,71 @@
     border: 1px solid #e2e8f0;
   }
 
+  /* Nút tắt thông báo nổi (snackbar) — đồng bộ phong cách với chat. */
+  &__muteBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #3b82f6;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+
+    &:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    &.is-muted {
+      color: #dc2626;
+      border-color: #fecaca;
+      background: #fef2f2;
+    }
+  }
+
+  /* Thanh báo đang tắt thông báo nổi. */
+  &__muteBar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    background: #fef2f2;
+    color: #b91c1c;
+    border-bottom: 1px solid #fecaca;
+    font-size: 11.5px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  &__muteBarText {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__muteBarBtn {
+    border: 1px solid #fecaca;
+    background: #ffffff;
+    color: #b91c1c;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: #fee2e2;
+    }
+  }
+
   &__closeBtn {
     display: flex;
     align-items: center;

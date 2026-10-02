@@ -36,10 +36,27 @@ const emptyForm = (): MailAccountFormValues => ({
   SMTP_PORT: 465,
   SMTP_SECURE: true,
   IS_ACTIVE: true,
+  SYNC_RANGE_ENABLED: false,
+  SYNC_FROM_DATE: "",
+  SYNC_TO_DATE: "",
 });
+
+/**
+ * Đổi mốc ngày từ server (ISO, thành phần UTC chính là ngày VN) sang giá trị cho
+ * `<input type="date">` (YYYY-MM-DD). KHÔNG dùng `toISOString().slice(0,10)` trực tiếp
+ * vì có thể lệch ngày nếu thời điểm nằm gần nửa đêm.
+ */
+function toDateInput(value: string | null | undefined): string {
+  if (!value) return "";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
+}
 
 function toForm(account: MailAccountConfig | null): MailAccountFormValues {
   if (!account) return emptyForm();
+  const from = toDateInput(account.syncFromDate);
+  const to = toDateInput(account.syncToDate);
   return {
     EMAIL_ADDRESS: account.emailAddress || "",
     DISPLAY_NAME: account.displayName || "",
@@ -52,6 +69,9 @@ function toForm(account: MailAccountConfig | null): MailAccountFormValues {
     SMTP_PORT: account.smtpPort ?? 465,
     SMTP_SECURE: account.smtpSecure !== false,
     IS_ACTIVE: account.isActive !== false,
+    SYNC_RANGE_ENABLED: Boolean(from || to),
+    SYNC_FROM_DATE: from,
+    SYNC_TO_DATE: to,
   };
 }
 
@@ -109,6 +129,9 @@ export default function MailAccountDialog({ open, onClose, isMobile = false, onS
     SMTP_PORT: Number(form.SMTP_PORT) || undefined,
     SMTP_SECURE: form.SMTP_SECURE,
     IS_ACTIVE: form.IS_ACTIVE,
+    // Tắt giới hạn ⇒ gửi null để XOÁ khoảng đã lưu (không phải giữ nguyên).
+    SYNC_FROM_DATE: form.SYNC_RANGE_ENABLED ? form.SYNC_FROM_DATE || null : null,
+    SYNC_TO_DATE: form.SYNC_RANGE_ENABLED ? form.SYNC_TO_DATE || null : null,
   });
 
   const handleTest = async () => {
@@ -286,6 +309,47 @@ export default function MailAccountDialog({ open, onClose, isMobile = false, onS
                 control={<Switch checked={form.IS_ACTIVE} onChange={(e) => set("IS_ACTIVE", e.target.checked)} />}
                 label="Bật đồng bộ tự động"
               />
+            </div>
+
+            {/* Khoảng thời gian đồng bộ: chỉ tải email trong khoảng để bỏ qua thư cũ. */}
+            <div style={{ marginTop: 16, borderTop: "1px solid #e2e8f0", paddingTop: 12 }}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={form.SYNC_RANGE_ENABLED}
+                    onChange={(e) => set("SYNC_RANGE_ENABLED", e.target.checked)}
+                  />
+                }
+                label="Chỉ đồng bộ email trong khoảng thời gian"
+              />
+              {form.SYNC_RANGE_ENABLED && (
+                <>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 8 }}>
+                    <TextField
+                      label="Từ ngày"
+                      type="date"
+                      value={form.SYNC_FROM_DATE}
+                      onChange={(e) => set("SYNC_FROM_DATE", e.target.value)}
+                      size="small"
+                      fullWidth
+                      InputLabelProps={{ shrink: true }}
+                    />
+                    <TextField
+                      label="Đến ngày"
+                      type="date"
+                      value={form.SYNC_TO_DATE}
+                      onChange={(e) => set("SYNC_TO_DATE", e.target.value)}
+                      size="small"
+                      fullWidth
+                      InputLabelProps={{ shrink: true }}
+                    />
+                  </div>
+                  <div style={{ fontSize: 12, color: "#64748b", marginTop: 6 }}>
+                    Chỉ những email có ngày trong khoảng này mới được tải về. Để trống một đầu = không giới hạn.
+                    Bỏ chọn để đồng bộ lại tất cả. Lưu ý: email đã tải trước đó không bị xoá.
+                  </div>
+                </>
+              )}
             </div>
           </>
         )}

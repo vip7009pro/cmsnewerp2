@@ -207,6 +207,8 @@ export const emailService = {
   reconcileNow: () => mailQuery<{ refs: number; orphans: number; failed: number; ms: number }>("emailReconcileNow"),
   accountToggle: (id: number, isActive: boolean) =>
     mailQuery<{ id: number; isActive: boolean }>("emailAccountToggle", { ID: id, IS_ACTIVE: isActive }),
+  /** Cập nhật mailbox (admin) — dùng cho cấu hình khoảng thời gian đồng bộ. */
+  accountUpdate: (values: Record<string, unknown>) => mailQuery<{ id: number }>("emailAccountUpdate", values),
   accountTest: (id: number) => mailQuery<{ message: string }>("emailAccountTest", { ID: id }),
   accountReset: (id: number) => mailQuery<{ id: number }>("emailAccountReset", { ID: id }),
   syncLogList: (id: number, limit = 50) => mailQuery<MailSyncLogRow[]>("emailSyncLogList", { ID: id, limit }),

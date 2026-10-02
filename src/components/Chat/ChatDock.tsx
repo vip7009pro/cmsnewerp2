@@ -55,8 +55,8 @@ const MUTE_OPTIONS: { label: string; value: ChatMuteOption }[] = [
   { label: "Trong 1 giờ", value: 60 },
   { label: "Trong 4 giờ", value: 240 },
   { label: "Trong 1 ngày", value: 1440 },
-  // Không hết hạn theo thời gian — chỉ bật lại khi người dùng mở lại phòng.
-  { label: "Cho tới khi mở lại", value: "untilOpen" },
+  // Không hết hạn theo thời gian — chỉ bật lại khi người dùng TỰ bấm "Bật lại thông báo".
+  { label: "Cho tới khi tôi bật lại", value: "untilOpen" },
 ];
 
 export default function ChatDock({ isMobile = false, open, onOpenChange, showTrigger = true }: ChatDockProps) {
@@ -623,7 +623,7 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
         {activeMuteSeconds && (
           <MenuItem disabled sx={{ fontSize: 11, opacity: "1 !important", color: "#64748b" }}>
             {activeMuteUntilOpen
-              ? "Sẽ bật lại khi bạn mở lại phòng này"
+              ? "Đang tắt cho tới khi bạn tự bật lại"
               : `Còn ${muteLabel} · tin mới sẽ không tự bật cửa sổ`}
           </MenuItem>
         )}

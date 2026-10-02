@@ -1238,7 +1238,7 @@ export default function ChatConversationView({
           title={
             muteSecondsLeft
               ? muteUntilOpen
-                ? "Đang tắt thông báo cho tới khi mở lại phòng này · bấm để đổi"
+                ? "Đang tắt thông báo cho tới khi bạn bật lại · bấm để đổi"
                 : `Đang tắt thông báo phòng này (còn ${formatMuteRemaining(muteSecondsLeft)}) · bấm để đổi`
               : "Tắt thông báo cho phòng này"
           }

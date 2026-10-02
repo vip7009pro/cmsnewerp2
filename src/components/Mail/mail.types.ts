@@ -156,6 +156,9 @@ export interface MailAdminMailbox {
   smtpSecure: boolean;
   isActive: boolean;
   isShared: boolean;
+  syncFromDate: string | null;
+  syncToDate: string | null;
+  skippedCount: number;
   lastSyncAt: string | null;
   lastSyncStatus: string | null;
   lastError: string | null;
@@ -288,6 +291,10 @@ export interface MailAccountConfig {
   smtpSecure: boolean;
   smtpUsername: string | null;
   isActive: boolean;
+  /** Chỉ đồng bộ email từ ngày này (YYYY-MM-DD); null = không giới hạn. */
+  syncFromDate: string | null;
+  /** Chỉ đồng bộ email tới ngày này (YYYY-MM-DD); null = không giới hạn. */
+  syncToDate: string | null;
   lastSyncAt: string | null;
   lastSyncStatus: string | null;
   lastError: string | null;
@@ -307,6 +314,10 @@ export interface MailAccountFormValues {
   SMTP_PORT: number | string;
   SMTP_SECURE: boolean;
   IS_ACTIVE: boolean;
+  /** Bật giới hạn khoảng thời gian đồng bộ. */
+  SYNC_RANGE_ENABLED: boolean;
+  SYNC_FROM_DATE: string;
+  SYNC_TO_DATE: string;
 }
 
 /** Trạng thái đồng bộ của 1 mailbox. */

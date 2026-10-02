@@ -21,6 +21,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { NotificationElement } from "./components/NotificationPanel/Notification";
 import { enqueueSnackbar } from "notistack";
+import { isNotiMuted } from "./api/services/notificationMuteService";
 import { Login } from "./api/lazyPages";
 import AppRoutes from "./AppRoutes";
 import { useSocketEvents } from "./hooks/useSocketEvents";
@@ -87,6 +88,8 @@ function App() {
       "notification_count",
       ((getNotiCount() ?? 0) + 1).toString()
     );
+    // Đang tắt thông báo ở "Trung tâm thông báo" ⇒ vẫn ghi nhận (badge tăng) nhưng KHÔNG phụt snackbar.
+    if (isNotiMuted()) return;
     switch (data.NOTI_TYPE) {
       case "success":
         enqueueSnackbar(data.CONTENT, {

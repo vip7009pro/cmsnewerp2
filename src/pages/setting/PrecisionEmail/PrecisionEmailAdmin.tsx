@@ -5,7 +5,9 @@ import {
   Chip,
   CircularProgress,
   Dialog,
+  FormControlLabel,
   IconButton,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -42,6 +44,27 @@ function formatNumber(value?: number | null): string {
   return Number(value || 0).toLocaleString("vi-VN");
 }
 
+/** Đổi mốc ngày server trả về (ISO, UTC = ngày VN) ⇒ "YYYY-MM-DD" cho <input type="date">. */
+function toDateInput(value?: string | null): string {
+  if (!value) return "";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
+}
+
+/** Nhãn ngắn hiển thị khoảng đồng bộ của 1 mailbox. */
+function rangeLabel(box: MailAdminMailbox): string {
+  const from = toDateInput(box.syncFromDate);
+  const to = toDateInput(box.syncToDate);
+  if (!from && !to) return "";
+  return `${from ? fmtDay(from) : "…"} → ${to ? fmtDay(to) : "…"}`;
+}
+
+function fmtDay(iso: string): string {
+  const [y, m, d] = iso.split("-");
+  return `${d}/${m}/${y}`;
+}
+
 type StatusFilter = "all" | "active" | "inactive" | "error";
 
 /**
@@ -65,6 +88,12 @@ export default function PrecisionEmailAdmin() {
   const [syncAll, setSyncAll] = useState<MailSyncAllState | null>(null);
   const [logs, setLogs] = useState<MailSyncLogRow[]>([]);
   const [logsLoading, setLogsLoading] = useState(false);
+  // Cấu hình khoảng thời gian đồng bộ cho 1 mailbox.
+  const [rangeAccount, setRangeAccount] = useState<MailAdminMailbox | null>(null);
+  const [rangeEnabled, setRangeEnabled] = useState(false);
+  const [rangeFrom, setRangeFrom] = useState("");
+  const [rangeTo, setRangeTo] = useState("");
+  const [savingRange, setSavingRange] = useState(false);
   const searchTimerRef = useRef<number | null>(null);
 
   const load = useCallback(async (withStorage = true) => {
@@ -140,6 +169,40 @@ export default function PrecisionEmailAdmin() {
       setError(err?.message || "Thao tác thất bại");
     } finally {
       setBusyId(null);
+    }
+  };
+
+  /** Mở dialog cấu hình khoảng thời gian đồng bộ cho 1 mailbox. */
+  const openRangeDialog = (box: MailAdminMailbox) => {
+    const from = toDateInput(box.syncFromDate);
+    const to = toDateInput(box.syncToDate);
+    setRangeAccount(box);
+    setRangeEnabled(Boolean(from || to));
+    setRangeFrom(from);
+    setRangeTo(to);
+  };
+
+  const saveRange = async () => {
+    if (!rangeAccount) return;
+    if (rangeEnabled && !rangeFrom && !rangeTo) {
+      setError("Chọn ít nhất một mốc ngày, hoặc bỏ chọn giới hạn.");
+      return;
+    }
+    setSavingRange(true);
+    setError(null);
+    try {
+      await emailService.accountUpdate({
+        ID: rangeAccount.id,
+        SYNC_FROM_DATE: rangeEnabled ? rangeFrom || null : null,
+        SYNC_TO_DATE: rangeEnabled ? rangeTo || null : null,
+      });
+      flash("Đã lưu khoảng thời gian đồng bộ");
+      setRangeAccount(null);
+      await load(false);
+    } catch (err: any) {
+      setError(err?.message || "Lưu khoảng đồng bộ thất bại");
+    } finally {
+      setSavingRange(false);
     }
   };
 
@@ -340,6 +403,12 @@ export default function PrecisionEmailAdmin() {
                 <TableCell>
                   <div>{box.emailAddress}</div>
                   {box.isShared && <Chip size="small" label="dùng chung" sx={{ height: 16, fontSize: 10 }} />}
+                  {rangeLabel(box) && (
+                    <div className="precision-email__muted" style={{ fontSize: 11 }}>
+                      Đồng bộ {rangeLabel(box)}
+                      {box.skippedCount > 0 ? ` · bỏ qua ${formatNumber(box.skippedCount)}` : ""}
+                    </div>
+                  )}
                 </TableCell>
                 <TableCell className="precision-email__muted">
                   {box.pop3Host || "—"}:{box.pop3Port ?? "—"}
@@ -424,6 +493,15 @@ export default function PrecisionEmailAdmin() {
                         onClick={() => void run(box.id, () => emailService.syncNow(box.id), "Đã gửi yêu cầu đồng bộ")}
                       >
                         <span className="material-symbols-outlined">sync</span>
+                      </button>
+                    </Tooltip>
+                    <Tooltip title="Cấu hình khoảng thời gian đồng bộ">
+                      <button
+                        type="button"
+                        className={`precision-email__iconBtn${rangeLabel(box) ? " is-active" : ""}`}
+                        onClick={() => openRangeDialog(box)}
+                      >
+                        <span className="material-symbols-outlined">date_range</span>
                       </button>
                     </Tooltip>
                     <Tooltip title="Xem nhật ký đồng bộ">
@@ -546,6 +624,59 @@ export default function PrecisionEmailAdmin() {
         onClose={() => setShowImport(false)}
         onImported={() => void load()}
       />
+
+      {/* Cấu hình khoảng thời gian đồng bộ cho 1 mailbox (bỏ qua thư cũ). */}
+      <Dialog open={!!rangeAccount} onClose={() => setRangeAccount(null)} maxWidth="xs" fullWidth>
+        <div className="precision-email__logDialog" style={{ padding: 20 }}>
+          <div className="precision-email__logHead" style={{ marginBottom: 8 }}>
+            <div>
+              <div className="precision-email__logTitle">Khoảng thời gian đồng bộ</div>
+              <div className="precision-email__muted">{rangeAccount?.emailAddress}</div>
+            </div>
+            <IconButton size="small" onClick={() => setRangeAccount(null)} title="Đóng">
+              <CloseRoundedIcon fontSize="small" />
+            </IconButton>
+          </div>
+          <FormControlLabel
+            control={<Switch checked={rangeEnabled} onChange={(e) => setRangeEnabled(e.target.checked)} />}
+            label="Chỉ đồng bộ email trong khoảng thời gian"
+          />
+          {rangeEnabled && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 12 }}>
+              <TextField
+                label="Từ ngày"
+                type="date"
+                value={rangeFrom}
+                onChange={(e) => setRangeFrom(e.target.value)}
+                size="small"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+              <TextField
+                label="Đến ngày"
+                type="date"
+                value={rangeTo}
+                onChange={(e) => setRangeTo(e.target.value)}
+                size="small"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </div>
+          )}
+          <div className="precision-email__muted" style={{ fontSize: 12, marginTop: 10 }}>
+            Chỉ tải về email có ngày nằm trong khoảng (để trống một đầu = không giới hạn).
+            Đổi khoảng sẽ đánh giá lại toàn bộ thư còn trên server. Email đã tải trước đó không bị xoá.
+          </div>
+          <div className="precision-email__actions" style={{ marginTop: 16, justifyContent: "flex-end" }}>
+            <Button size="small" onClick={() => setRangeAccount(null)}>
+              Huỷ
+            </Button>
+            <Button size="small" variant="contained" onClick={() => void saveRange()} disabled={savingRange}>
+              {savingRange ? "Đang lưu…" : "Lưu"}
+            </Button>
+          </div>
+        </div>
+      </Dialog>
 
       <Dialog open={!!logAccount} onClose={() => setLogAccount(null)} maxWidth="lg" fullWidth>
         <div className="precision-email__logDialog">

@@ -207,7 +207,7 @@ export function useChatController() {
 
   /**
    * Tắt/bật thông báo cho RIÊNG 1 phòng.
-   * `null` = bật lại; `"untilOpen"` = tới khi mở lại phòng; số = số phút.
+   * `null` = bật lại; `"untilOpen"` = giữ tắt tới khi người dùng tự bật lại; số = số phút.
    */
   const setConversationMute = useCallback(
     async (conversationId: number, option: ChatMuteOption) => {
@@ -483,13 +483,11 @@ export function useChatController() {
     async (conversationId: number) => {
       setActiveId(conversationId);
       /*
-       * Chế độ "Cho tới khi mở lại phòng" ⇒ người dùng vừa mở lại phòng này nên bật lại thông báo.
-       * Chỉ áp dụng cho ĐÚNG phòng đó, không ảnh hưởng các phòng khác.
+       * KHÔNG tự bật lại thông báo khi mở/chuyển phòng.
+       * Trước đây chế độ "cho tới khi mở lại" bị xoá mỗi lần chọn lại phòng ⇒ người dùng
+       * tắt thông báo xong chỉ cần chuyển qua phòng khác rồi quay lại là chuông được bật lại.
+       * Nay trạng thái tắt thông báo được giữ nguyên cho tới khi người dùng tự bấm "Bật lại thông báo".
        */
-      const muteState = muteStatesRef.current[conversationId];
-      if (muteState?.untilOpen && muteState.deadline > Date.now()) {
-        void setConversationMute(conversationId, null);
-      }
       const socket = getSocket();
       if (socket?.connected) socket.emit("chat:join", { conversationId });
 
@@ -516,7 +514,7 @@ export function useChatController() {
         setLoadingMessages(false);
       }
     },
-    [markRead, messages, setConversationMute]
+    [markRead, messages]
   );
 
   /**
