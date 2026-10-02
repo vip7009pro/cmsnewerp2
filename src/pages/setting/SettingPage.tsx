@@ -12,6 +12,7 @@ import { PrecisionSettingHeader } from "./PrecisionSetting/PrecisionSettingHeade
 import { PrecisionSettingMfaCard } from "./PrecisionSetting/PrecisionSettingMfaCard";
 import { PrecisionSettingTable } from "./PrecisionSetting/PrecisionSettingTable";
 import { PrecisionSettingNotification } from "./PrecisionSetting/PrecisionSettingNotification";
+import { isMailAdminUser } from "../../components/Mail/mailUtils";
 import {
   PrecisionSettingMobileTabs,
   SettingTabType,
@@ -31,7 +32,8 @@ const SettingPage: React.FC = () => {
   });
 
   const currentUser = getUserData();
-  const isAdmin = currentUser?.EMPL_NO === "NHU1903";
+  // Quản trị Email (và khối tiện ích quản trị) CHỈ dành cho admin mail — xem `isMailAdminUser`.
+  const isAdmin = isMailAdminUser(currentUser);
 
   // Theo dõi breakpoint màn hình mobile/tablet (<= 768px)
   useEffect(() => {

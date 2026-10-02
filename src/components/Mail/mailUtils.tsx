@@ -197,15 +197,16 @@ export function describeMailFilters(filters: ParsedMailQuery["filters"]): { key:
 
 /**
  * Người dùng hiện tại có quyền QUẢN TRỊ Email không (Phase 8).
- * Khớp quy tắc phía backend (`MAIL_ADMIN_EMPL_NOS` + `MAIL_ADMIN_JOBNAMES`) để
- * không hiển thị menu cho người sẽ bị chặn khi gọi API.
+ * Quyền này CHỈ dành cho danh sách EMPL_NO cố định (mặc định: NHU1903) — khớp
+ * quy tắc phía backend (`MAIL_ADMIN_EMPL_NOS`). KHÔNG dùng JOB_NAME: chức danh
+ * Leader/Admin vẫn KHÔNG được vào quản trị Email.
  */
-export function isMailAdminUser(userData?: { EMPL_NO?: string | null; JOB_NAME?: string | null } | null): boolean {
+export const MAIL_ADMIN_EMPL_NOS = ["NHU1903"];
+
+export function isMailAdminUser(userData?: { EMPL_NO?: string | null } | null): boolean {
   const emplNo = String(userData?.EMPL_NO || "").trim().toUpperCase();
-  const jobName = String(userData?.JOB_NAME || "").trim();
-  const adminEmplNos = ["NHU1903", "NVH1011"];
-  const adminJobNames = ["Admin", "ADMIN", "Leader"];
-  return adminEmplNos.includes(emplNo) || adminJobNames.includes(jobName) || adminJobNames.includes(jobName.toUpperCase());
+  if (!emplNo) return false;
+  return MAIL_ADMIN_EMPL_NOS.includes(emplNo);
 }
 
 /** Đuôi tệp (chữ thường, không dấu chấm). */
