@@ -12,8 +12,6 @@ import MailSyncStatus from "./MailSyncStatus";
 import MailComposer, { type MailComposeMode } from "./MailComposer";
 import MailContactBook from "./MailContactBook";
 import MailGroupSaveDialog from "./MailGroupSaveDialog";
-import MailMobileBar from "./MailMobileBar";
-import MailMobileDrawer from "./MailMobileDrawer";
 import { useMailController } from "../../hooks/useMailController";
 import { useMobileBackClose } from "../NavMenu/useMobileBackClose";
 import { getUserData } from "../../api/Api";
@@ -44,11 +42,6 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
   const mailAdmin = isMailAdminUser(getUserData());
   /** Trạng thái hộp soạn thảo (Phase 3). */
   const [compose, setCompose] = useState<{ open: boolean; mode: MailComposeMode; draftId?: number | null }>({ open: false, mode: "new" });
-  /* ---------------- Mobile-only viewport state (không ảnh hưởng desktop) ---------------- */
-  /** Bottom-sheet chứa cột thư mục + cài đặt (thay cho cột 1 luôn hiện của desktop). */
-  const [mobileDrawer, setMobileDrawer] = useState(false);
-  /** Ô tìm kiếm thu gọn sau icon search (tiết kiệm chiều cao màn hình). */
-  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   /* ---------------- Danh bạ: nhóm gửi nhanh / CC nhanh ---------------- */
   const [showContacts, setShowContacts] = useState(false);
@@ -173,16 +166,11 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
     [isControlled, onOpenChange]
   );
 
-  // Mobile: nút Back đi theo tầng — drawer/tìm kiếm ⇒ đóng lớp đó; đang xem email ⇒ về danh sách; ở danh sách ⇒ đóng.
+  // Mobile: nút Back đi theo tầng — đang xem email ⇒ về danh sách; đang ở danh sách ⇒ đóng.
   useMobileBackClose(
     isMobile && isOpen,
     () => {
-      if (mobileDrawer) {
-        setMobileDrawer(false);
-        return;
-      }
       if (controller.detail) controller.closeDetail();
-      else if (mobileSearchOpen) setMobileSearchOpen(false);
       else setOpen(false);
     },
     { rearm: true }
@@ -232,55 +220,31 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
     [controller]
   );
 
-  /**
-   * Cột 1 (thư mục + mailbox + cài đặt + danh bạ + admin).
-   * Desktop: nằm trong panel như cũ. Mobile: đặt trong bottom-sheet (drawer) để giải phóng chiều ngang.
-   * Dùng hàm render (không dùng chung 1 element) để tránh tái sử dụng cùng một React element ở 2 vị trí.
-   */
-  const renderSidebar = () => (
-    <MailSidebar
-      folders={controller.folders}
-      accounts={controller.accounts}
-      activeFolder={controller.activeFolder}
-      unreadTotal={controller.unreadTotal}
-      onSelect={(key) => void controller.openFolder(key)}
-      onOpenAccount={() => setShowAccount(true)}
-      onCompose={() => setCompose({ open: true, mode: "new" })}
-      mutedAccountIds={controller.mutedAccountIds}
-      onToggleMute={(accountId) => void controller.toggleMute(accountId)}
-      isAdmin={mailAdmin}
-      onOpenAdmin={() => setShowAdmin(true)}
-      onOpenContacts={() => {
-        setShowContacts(true);
-        void reloadContactGroups();
-      }}
-      contactGroupCount={contactGroups.length}
-      selfServiceEnabled={controller.selfServiceEnabled}
-    />
-  );
-
-  /** Ô tìm kiếm dùng chung: desktop hiển thị trong danh sách, mobile hiển thị trong shell (thu gọn). */
-  const searchNode = (
-    <MailSearchBar
-      value={controller.searchText}
-      onChange={(text) => void controller.runSearch(text, controller.searchSort, true)}
-      sort={controller.searchSort}
-      onSortChange={(sort) => void controller.runSearch(controller.searchText, sort, true)}
-      onClear={() => void controller.clearSearch()}
-      running={controller.searchMeta.running}
-      total={controller.searchMeta.total}
-      tookMs={controller.searchMeta.tookMs}
-      hint={controller.inSearchMode ? undefined : "Tìm trong tất cả thư mục"}
-    />
-  );
-
   const panel = (
     <div
       ref={panelRef}
       className={`erp-mail__panel${controller.detail ? " has-detail" : ""}${sidebarCollapsed ? " is-sidebar-collapsed" : ""}${listCollapsed ? " is-list-collapsed" : ""}`}
       style={{ "--mail-list-width": `${listWidth}px` } as CSSProperties}
     >
-      {renderSidebar()}
+      <MailSidebar
+        folders={controller.folders}
+        accounts={controller.accounts}
+        activeFolder={controller.activeFolder}
+        unreadTotal={controller.unreadTotal}
+        onSelect={(key) => void controller.openFolder(key)}
+        onOpenAccount={() => setShowAccount(true)}
+        onCompose={() => setCompose({ open: true, mode: "new" })}
+        mutedAccountIds={controller.mutedAccountIds}
+        onToggleMute={(accountId) => void controller.toggleMute(accountId)}
+        isAdmin={mailAdmin}
+        onOpenAdmin={() => setShowAdmin(true)}
+        onOpenContacts={() => {
+          setShowContacts(true);
+          void reloadContactGroups();
+        }}
+        contactGroupCount={contactGroups.length}
+        selfServiceEnabled={controller.selfServiceEnabled}
+      />
       <MailList
         title={folderTitle}
         messages={controller.messages}
@@ -310,7 +274,19 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
           )
         }
         statusBar={<MailSyncStatus onSynced={() => void controller.refresh()} />}
-        searchSlot={isMobile ? undefined : searchNode}
+        searchSlot={
+          <MailSearchBar
+            value={controller.searchText}
+            onChange={(text) => void controller.runSearch(text, controller.searchSort, true)}
+            sort={controller.searchSort}
+            onSortChange={(sort) => void controller.runSearch(controller.searchText, sort, true)}
+            onClear={() => void controller.clearSearch()}
+            running={controller.searchMeta.running}
+            total={controller.searchMeta.total}
+            tookMs={controller.searchMeta.tookMs}
+            hint={controller.inSearchMode ? undefined : "Tìm trong tất cả thư mục"}
+          />
+        }
         sidebarCollapsed={sidebarCollapsed}
         onToggleSidebar={toggleSidebar}
         onOpen={handleOpenItem}
@@ -381,42 +357,7 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
       {isMobile ? (
         isOpen && (
           <div className="erp-mail__mobileOverlay">
-            {/* Mobile: app bar cố định + tìm kiếm thu gọn + nội dung chiếm trọn màn hình. */}
-            <MailMobileBar
-              title={folderTitle}
-              unreadCount={controller.unreadTotal}
-              searchOpen={mobileSearchOpen}
-              onOpenDrawer={() => setMobileDrawer(true)}
-              onToggleSearch={() => setMobileSearchOpen((v) => !v)}
-              onRefresh={() => void controller.refresh()}
-              onClose={() => setOpen(false)}
-            />
-
-            {mobileSearchOpen && <div className="erp-mail__mSearch">{searchNode}</div>}
-
-            {/* Panel 3 cột bên trong; trên mobile CSS ẩn cột thư mục (đã chuyển vào drawer) + thanh tiêu đề danh sách. */}
             <div className="erp-mail__mobileBody">{panel}</div>
-
-            {/* Soạn thư nhanh: FAB chỉ hiện khi đang xem danh sách (không hiện khi đang đọc 1 email). */}
-            {!controller.detail && !controller.loadingDetail && (
-              <button
-                type="button"
-                className="erp-mail__mFab"
-                onClick={() => setCompose({ open: true, mode: "new" })}
-                aria-label="Soạn thư mới"
-                title="Soạn thư"
-              >
-                <span className="material-symbols-outlined">edit</span>
-              </button>
-            )}
-
-            <MailMobileDrawer
-              open={mobileDrawer}
-              onClose={() => setMobileDrawer(false)}
-              onNavigate={() => setMobileDrawer(false)}
-            >
-              {renderSidebar()}
-            </MailMobileDrawer>
           </div>
         )
       ) : (
@@ -465,7 +406,6 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
 
       <MailAccountDialog
         open={showAccount}
-        isMobile={isMobile}
         onClose={() => setShowAccount(false)}
         onSaved={() => {
           void controller.reloadBootstrap();
@@ -475,7 +415,7 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
 
       {/* Bảng quản trị Email (Phase 8) — mở ngay trong cửa sổ hộp thư. */}
       {mailAdmin && (
-        <Dialog open={showAdmin} onClose={() => setShowAdmin(false)} fullWidth maxWidth="xl" fullScreen={isMobile}>
+        <Dialog open={showAdmin} onClose={() => setShowAdmin(false)} fullWidth maxWidth="xl">
           <div className="erp-mail__adminDialog">
             <div className="erp-mail__adminHead">
               <span className="erp-mail__adminTitle">
@@ -499,7 +439,6 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
         open={compose.open}
         mode={compose.mode}
         draftId={compose.draftId}
-        isMobile={isMobile}
         source={compose.mode === "new" ? null : controller.detail?.message || null}
         contactGroups={contactGroups}
         onContactGroupsChanged={() => void reloadContactGroups()}
@@ -514,7 +453,6 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
       {/* DANH BẠ — nhóm gửi nhanh / CC nhanh (quản lý trong cửa sổ hộp thư). */}
       <MailContactBook
         open={showContacts}
-        isMobile={isMobile}
         onClose={() => setShowContacts(false)}
         groups={contactGroups}
         loading={contactLoading}
@@ -530,7 +468,6 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
       {/* Lưu To/Cc (của thư đang đọc) thành nhóm danh bạ. */}
       <MailGroupSaveDialog
         open={saveGroup.open}
-        isMobile={isMobile}
         onClose={() => setSaveGroup((prev) => ({ ...prev, open: false }))}
         sources={saveGroup.sources}
         suggestedName={saveGroup.suggestedName}

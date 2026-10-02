@@ -200,7 +200,7 @@ export default function MailDetail({ detail, loading, isMobile, onClose, onToggl
         />
       </div>
 
-      <MailAttachmentList attachments={attachments} isMobile={isMobile} />
+      <MailAttachmentList attachments={attachments} />
     </div>
   );
 }

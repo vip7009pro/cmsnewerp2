@@ -9,8 +9,6 @@ export type MailGroupTarget = "to" | "cc" | "bcc";
 interface MailGroupPickerProps {
   open: boolean;
   onClose: () => void;
-  /** Mobile: dialog chiếm trọn màn hình (desktop không đổi). */
-  isMobile?: boolean;
   groups: MailContactGroup[];
   loading?: boolean;
   /** Ô nhận mặc định khi mở. */
@@ -25,7 +23,7 @@ const TARGET_LABEL: Record<MailGroupTarget, string> = { to: "Đến (To)", cc: "
  * TAG NHANH NHÓM DANH BẠ vào ô Đến / Cc / Bcc khi soạn thư.
  * Chọn nhiều nhóm cùng lúc — thành viên được gộp và khử trùng ở phía hộp soạn.
  */
-export default function MailGroupPicker({ open, onClose, isMobile = false, groups, loading, target, onPick }: MailGroupPickerProps) {
+export default function MailGroupPicker({ open, onClose, groups, loading, target, onPick }: MailGroupPickerProps) {
   const [keyword, setKeyword] = useState("");
   const [picked, setPicked] = useState<number[]>([]);
   const [dest, setDest] = useState<MailGroupTarget>(target);
@@ -75,7 +73,7 @@ export default function MailGroupPicker({ open, onClose, isMobile = false, group
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" fullScreen={isMobile} PaperProps={{ sx: { height: isMobile ? "100%" : "min(620px, 90vh)" } }}>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" PaperProps={{ sx: { height: "min(620px, 90vh)" } }}>
       <div className="erp-mail__groupPicker">
         <div className="erp-mail__groupPickerHead">
           <span className="material-symbols-outlined">group_add</span>

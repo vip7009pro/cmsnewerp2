@@ -50,8 +50,6 @@ interface MailComposerProps {
   contactGroups?: MailContactGroup[];
   /** Nạp lại danh sách nhóm sau khi tạo mới từ hộp soạn thư. */
   onContactGroupsChanged?: () => void;
-  /** Mobile: hộp soạn thư chiếm trọn màn hình (desktop không đổi). */
-  isMobile?: boolean;
 }
 
 /** Thanh công cụ định dạng tối giản (execCommand) cho contentEditable. */
@@ -67,7 +65,7 @@ const TOOLS: { cmd: string; arg?: string; icon: string; title: string }[] = [
 const AUTOSAVE_MS = 1500;
 
 /** Hộp soạn email: To/Cc/Bcc, tiêu đề, nội dung rich text, đính kèm, lưu nháp tự động. */
-export default function MailComposer({ open, mode, source, draftId, onClose, onSent, contactGroups = [], onContactGroupsChanged, isMobile = false }: MailComposerProps) {
+export default function MailComposer({ open, mode, source, draftId, onClose, onSent, contactGroups = [], onContactGroupsChanged }: MailComposerProps) {
   const [to, setTo] = useState("");
   const [cc, setCc] = useState("");
   const [bcc, setBcc] = useState("");
@@ -366,7 +364,7 @@ export default function MailComposer({ open, mode, source, draftId, onClose, onS
 
   return (
     <>
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth fullScreen={isMobile} PaperProps={{ sx: { height: isMobile ? "100%" : "min(640px, 92vh)" } }}>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth PaperProps={{ sx: { height: "min(640px, 92vh)" } }}>
       <div className="erp-mail__composer">
         <div className="erp-mail__composerHead">
           <span className="erp-mail__composerTitle">
@@ -562,7 +560,6 @@ export default function MailComposer({ open, mode, source, draftId, onClose, onS
         open={groupPicker.open}
         target={groupPicker.target}
         groups={contactGroups}
-        isMobile={isMobile}
         onClose={() => setGroupPicker((prev) => ({ ...prev, open: false }))}
         onPick={(target, members, names) => addGroupMembers(target, members, names)}
       />

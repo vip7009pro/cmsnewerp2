@@ -39,3 +39,7 @@ Yêu cầu: trên mobile trước đây không thấy khối **Ảnh Lỗi (Defe
 - Scanner z-index 1300 bị drawer 10000 che → prop `zIndex` tùy chỉnh
 - Flex item `min-content` bóp chữ → `min-width:0; white-space:nowrap`
 - DTC.scss `overflow:hidden!important` block `@media 5000px` cắt mobile → override `@media 768px`
+
+## Update - 2026-10-03 (EMAIL: Tối ưu Mobile — viewport conditional rendering)
+- `src/components/Mail/MailDock.tsx`: nhánh `isMobile` = app bar (`MailMobileBar.tsx`) + tìm kiếm thu gọn + FAB soạn thư; cột thư mục chuyển vào bottom sheet (`MailMobileDrawer.tsx` + `.erp-mail__mSheet*` trong `mail.scss`). Dialog con dùng `fullScreen={isMobile}`. Desktop giữ nguyên 100%.
+- Backup: `Mail*.backup.tsx`, `mail.backup.scss` trong `src/components/Mail/`. Chi tiết ở `ROADMAP.md` (mục MAIL — Mobile UX).

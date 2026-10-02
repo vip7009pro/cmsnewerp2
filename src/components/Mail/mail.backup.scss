@@ -902,200 +902,11 @@ $mail-warning: #b45309;
   display: flex;
   flex-direction: column;
   background: #fff;
-  overflow: hidden;
 }
 
 /* iOS: input < 16px sẽ tự zoom trang khi focus. */
 .erp-mail__mobileOverlay .erp-mail__searchInput {
   font-size: 16px;
-}
-
-/* --- App bar trên cùng (mobile): menu | tiêu đề | search | tải lại | đóng --- */
-
-.erp-mail__mBar {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  min-height: 52px;
-  padding: env(safe-area-inset-top, 0px) 6px 0 4px;
-  background: #fff;
-  border-bottom: 1px solid $mail-border;
-}
-
-.erp-mail__mIcon {
-  flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: 10px;
-  background: transparent;
-  color: $mail-text;
-  cursor: pointer;
-
-  .material-symbols-outlined {
-    font-size: 22px;
-  }
-
-  &:active {
-    background: #e2e8f0;
-  }
-
-  &.is-active {
-    color: $mail-primary;
-    background: $mail-primary-soft;
-  }
-}
-
-.erp-mail__mTitle {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding-left: 4px;
-  font-size: 14.5px;
-  font-weight: 700;
-  color: $mail-text;
-}
-
-.erp-mail__mTitleText {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* --- Ô tìm kiếm thu gọn (chỉ chiếm chỗ khi người dùng mở) --- */
-
-.erp-mail__mSearch {
-  flex: 0 0 auto;
-  max-height: 44vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  border-bottom: 1px solid $mail-border;
-  background: #fff;
-}
-
-/* --- FAB soạn thư nhanh --- */
-
-.erp-mail__mFab {
-  position: absolute;
-  right: 16px;
-  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
-  z-index: 5;
-  width: 56px;
-  height: 56px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: 50%;
-  background: $mail-primary;
-  color: #fff;
-  box-shadow: 0 10px 24px -8px rgba(37, 99, 235, 0.65);
-  cursor: pointer;
-
-  .material-symbols-outlined {
-    font-size: 24px;
-  }
-
-  &:active {
-    transform: scale(0.96);
-  }
-}
-
-/* --- Bottom sheet: danh mục thư mục + mailbox + cài đặt (thay cột 1 của desktop) --- */
-
-.erp-mail__mSheetBackdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1290;
-  display: flex;
-  align-items: flex-end;
-  /* Backdrop ĐẶC — tuyệt đối không dùng backdrop-filter blur. */
-  background: rgba(15, 23, 42, 0.75);
-}
-
-.erp-mail__mSheet {
-  width: 100%;
-  max-height: 84vh;
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-  border-radius: 16px 16px 0 0;
-  box-shadow: 0 -10px 30px -12px rgba(15, 23, 42, 0.45);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-
-.erp-mail__mSheetHead {
-  position: relative;
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 58px;
-  padding: 18px 6px 8px 16px;
-  border-bottom: 1px solid $mail-border;
-}
-
-.erp-mail__mSheetGrip {
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 42px;
-  height: 4px;
-  border-radius: 999px;
-  background: #cbd5e1;
-}
-
-.erp-mail__mSheetTitle {
-  flex: 1 1 auto;
-  font-size: 15px;
-  font-weight: 800;
-  color: $mail-text;
-}
-
-.erp-mail__mSheetBody {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Trong sheet, cột thư mục trở về dạng DỌC (khác dải ngang của mobile trước đây) + vùng chạm lớn. */
-.erp-mail__mSheetBody .erp-mail__sidebar {
-  flex-direction: column;
-  overflow: visible;
-  padding: 10px 12px 18px;
-}
-
-/* Tiêu đề "Hộp thư" đã có trên head của sheet → bỏ bản lặp trong sidebar. */
-.erp-mail__mSheetBody .erp-mail__sidebar .erp-mail__sidebarTitle {
-  display: none;
-}
-
-.erp-mail__mSheetBody .erp-mail__sidebar .erp-mail__folder {
-  width: 100%;
-  min-height: 46px;
-  font-size: 14.5px;
-}
-
-.erp-mail__mSheetBody .erp-mail__sidebar .erp-mail__composeBtn {
-  min-height: 48px;
-  font-size: 14.5px;
-}
-
-.erp-mail__mSheetBody .erp-mail__sidebar .erp-mail__sidebarAccount {
-  min-height: 46px;
-}
-
-.erp-mail__mSheetBody .erp-mail__sidebar .erp-mail__muteBtn {
-  width: 42px;
-  height: 42px;
 }
 
 .erp-mail__mobileBody {
@@ -1109,21 +920,34 @@ $mail-warning: #b45309;
     min-height: 0;
   }
 
-  /* Cột 1 đã nằm trong bottom-sheet → giải phóng toàn bộ chiều ngang cho danh sách/nội dung. */
+  /* Danh sách chiếm trọn hàng (bài học flex-basis ở chat.scss). */
   .erp-mail__sidebar {
+    flex: 0 0 auto;
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid $mail-border;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px;
+  }
+
+  .erp-mail__sidebarTitle,
+  .erp-mail__sidebarAccount {
     display: none;
   }
 
-  /* Tiêu đề thư mục + nút tải lại đã có trên app bar (tiết kiệm 42px chiều cao). */
-  .erp-mail__listHead {
-    display: none;
+  .erp-mail__folder {
+    flex: 0 0 auto;
+    width: auto;
+    white-space: nowrap;
   }
 
   .erp-mail__detail {
     flex: 1 1 100%;
   }
 
-  /* Cột danh sách chiếm trọn hàng (không bó theo --mail-list-width của desktop). */
+  /* Mobile: cột danh sách chiếm trọn hàng (không bó theo --mail-list-width của desktop). */
   .erp-mail__main {
     flex: 1 1 100%;
   }
@@ -1136,34 +960,8 @@ $mail-warning: #b45309;
     display: none;
   }
 
-  /* Vùng chạm: hàng email cao hơn, chữ dễ đọc, nút ≥ 40px. */
-  .erp-mail__item {
-    padding: 12px 14px;
-    grid-template-columns: 38px 1fr auto;
-  }
-
-  .erp-mail__itemPreview {
-    font-size: 12.5px;
-  }
-
-  .erp-mail__attachment,
-  .erp-mail__inlineToggle {
-    min-height: 44px;
-  }
-}
-
-/* Tránh iOS tự zoom khi focus input/textarea (mọi dialog của module email). */
-@media (max-width: 768px) {
-  .erp-mail__mobileOverlay .erp-mail__searchInput,
-  .erp-mail__composer .MuiInputBase-input,
-  .erp-mail__composer textarea,
-  .erp-mail__contacts .MuiInputBase-input,
-  .erp-mail__groupSave .MuiInputBase-input,
-  .erp-mail__groupPicker .MuiInputBase-input,
-  .erp-mail__pasteDialog .MuiInputBase-input,
-  .erp-mail__acctDialog .MuiInputBase-input,
-  .erp-mail__adminDialog .MuiInputBase-input {
-    font-size: 16px;
+  .erp-mail__panel.has-detail .erp-mail__sidebar {
+    display: none;
   }
 }
 

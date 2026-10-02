@@ -18,8 +18,6 @@ import { formatMailFull } from "./mailUtils";
 interface MailAccountDialogProps {
   open: boolean;
   onClose: () => void;
-  /** Mobile: dialog chiếm trọn màn hình (desktop không đổi). */
-  isMobile?: boolean;
   /** Gọi sau khi lưu thành công (để refresh danh sách + badge). */
   onSaved: (accountId: number) => void;
 }
@@ -56,7 +54,7 @@ function toForm(account: MailAccountConfig | null): MailAccountFormValues {
 }
 
 /** Dialog để mỗi nhân viên tự cấu hình mailbox cá nhân (POP3 + SMTP). */
-export default function MailAccountDialog({ open, onClose, isMobile = false, onSaved }: MailAccountDialogProps) {
+export default function MailAccountDialog({ open, onClose, onSaved }: MailAccountDialogProps) {
   const [form, setForm] = useState<MailAccountFormValues>(emptyForm);
   const [account, setAccount] = useState<MailAccountConfig | null>(null);
   const [loading, setLoading] = useState(false);
@@ -184,7 +182,7 @@ export default function MailAccountDialog({ open, onClose, isMobile = false, onS
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth fullScreen={isMobile} className="erp-mail__acctDialog">
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ fontSize: 16, fontWeight: 800 }}>Cấu hình Email của tôi</DialogTitle>
       <DialogContent dividers>
         {loading ? (

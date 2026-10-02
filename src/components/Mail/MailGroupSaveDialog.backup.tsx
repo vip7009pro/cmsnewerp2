@@ -8,8 +8,6 @@ import { countAddresses, mergeAddressText, parseAddressText } from "./mailUtils"
 interface MailGroupSaveDialogProps {
   open: boolean;
   onClose: () => void;
-  /** Mobile: dialog chiếm trọn màn hình (desktop không đổi). */
-  isMobile?: boolean;
   /** Nội dung hiện tại của các ô người nhận (để chọn làm thành viên nhóm). */
   sources: { to: string; cc: string; bcc: string };
   /** Tên nhóm gợi ý (ví dụ lấy từ tiêu đề email). */
@@ -29,7 +27,6 @@ interface MailGroupSaveDialogProps {
 export default function MailGroupSaveDialog({
   open,
   onClose,
-  isMobile = false,
   sources,
   suggestedName = "",
   presetMembers = [],
@@ -121,7 +118,7 @@ export default function MailGroupSaveDialog({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" fullScreen={isMobile}>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <div className="erp-mail__groupSave">
         <div className="erp-mail__groupSaveHead">
           <span className="material-symbols-outlined">playlist_add</span>

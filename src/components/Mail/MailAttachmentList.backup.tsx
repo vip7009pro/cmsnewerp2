@@ -6,8 +6,6 @@ import { attachmentIcon, canPreviewAttachment, formatBytes, isDangerousAttachmen
 
 interface MailAttachmentListProps {
   attachments: MailAttachment[];
-  /** Mobile: dialog xem trước chiếm trọn màn hình (desktop không đổi). */
-  isMobile?: boolean;
 }
 
 interface PreviewState {
@@ -26,7 +24,7 @@ interface PreviewState {
  *   để danh sách gọn, nhưng LUÔN mở được để tải ⇒ không tệp nào bị "vô hình"
  *   (đã từng xảy ra khi nhà cung cấp gắn Content-ID cho tệp đính kèm thật — xem `IS_INLINE`).
  */
-export default function MailAttachmentList({ attachments, isMobile = false }: MailAttachmentListProps) {
+export default function MailAttachmentList({ attachments }: MailAttachmentListProps) {
   /** Tệp đính kèm THẬT (Content-Disposition: attachment). */
   const files = (attachments || []).filter((a) => !a.isInline);
   /** Phần nội dung nhúng (ảnh chữ ký, ảnh dán trong thân thư…). */
@@ -197,7 +195,7 @@ export default function MailAttachmentList({ attachments, isMobile = false }: Ma
 
       {error && <div className="erp-mail__attachmentErrorBar">{error}</div>}
 
-      <Dialog open={!!preview || previewLoading} onClose={closePreview} maxWidth="lg" fullWidth fullScreen={isMobile}>
+      <Dialog open={!!preview || previewLoading} onClose={closePreview} maxWidth="lg" fullWidth>
         <div className="erp-mail__preview">
           <div className="erp-mail__previewHead">
             <span className="erp-mail__previewName" title={preview?.name}>

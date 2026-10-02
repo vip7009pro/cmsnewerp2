@@ -8,8 +8,6 @@ import { countAddresses, parseAddressText } from "./mailUtils";
 interface MailContactBookProps {
   open: boolean;
   onClose: () => void;
-  /** Mobile: dialog chiếm trọn màn hình (desktop không đổi). */
-  isMobile?: boolean;
   groups: MailContactGroup[];
   loading?: boolean;
   /** Nạp lại danh sách nhóm sau khi thêm/sửa/xoá. */
@@ -32,7 +30,7 @@ const EMPTY_EDITOR: EditorState = { id: null, name: "", description: "", members
  * QUẢN LÝ DANH BẠ — tạo nhóm danh bạ để gửi nhanh / CC nhanh.
  * Mỗi người chỉ thấy nhóm của mình + nhóm dùng chung của công ty; chỉ sửa được nhóm của mình.
  */
-export default function MailContactBook({ open, onClose, isMobile = false, groups, loading, onReload, onComposeGroup }: MailContactBookProps) {
+export default function MailContactBook({ open, onClose, groups, loading, onReload, onComposeGroup }: MailContactBookProps) {
   const [keyword, setKeyword] = useState("");
   const [editor, setEditor] = useState<EditorState>(EMPTY_EDITOR);
   const [expandedId, setExpandedId] = useState<number | null>(null);
@@ -116,7 +114,7 @@ export default function MailContactBook({ open, onClose, isMobile = false, group
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" fullScreen={isMobile} PaperProps={{ sx: { height: isMobile ? "100%" : "min(760px, 92vh)" } }}>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" PaperProps={{ sx: { height: "min(760px, 92vh)" } }}>
       <div className="erp-mail__contacts">
         <div className="erp-mail__contactsHead">
           <span className="material-symbols-outlined">contacts</span>
