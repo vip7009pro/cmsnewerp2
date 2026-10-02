@@ -299,7 +299,8 @@ export const useYCSXLogic = () => {
           PROD_REQUEST_QTY: newycsxqty,
           EMPL_NO: userData?.EMPL_NO,
           DELIVERY_DT: moment(deliverydate).format("YYYYMMDD"),
-          FL_YN: isFirstLOT ? "Y" : "N",
+          // YCSX SAMPLE (CODE_55 = "04") luôn là NOT FIRST LOT
+          FL_YN: loaisx === "04" ? "N" : isFirstLOT ? "Y" : "N",
         });
         setIsEditModalOpen(false);
         if (kq === "OK") {
@@ -723,7 +724,8 @@ export const useYCSXLogic = () => {
           BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
           MATERIAL_YN: "N",
           IS_TAM_THOI: is_tam_thoi,
-          FL_YN: isFirstLOT ? "Y" : "N",
+          // YCSX SAMPLE (CODE_55 = "04") luôn là NOT FIRST LOT
+          FL_YN: loaisx === "04" ? "N" : isFirstLOT ? "Y" : "N",
         });
         if (kq === "OK") {
           await f_updateDMSX_LOSS_KT();
@@ -811,7 +813,8 @@ export const useYCSXLogic = () => {
           BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
           MATERIAL_YN: "Y",
           IS_TAM_THOI: is_tam_thoi,
-          FL_YN: isFirstLOT ? "Y" : "N",
+          // YCSX SAMPLE (CODE_55 = "04") luôn là NOT FIRST LOT
+          FL_YN: loaisx === "04" ? "N" : isFirstLOT ? "Y" : "N",
         });
         if (kq === "OK") {
           let next_p500_in_no: string = await f_getNextP500_IN_NO();
@@ -1149,7 +1152,8 @@ export const useYCSXLogic = () => {
             BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
             MATERIAL_YN: "N",
             IS_TAM_THOI: uploadExcelJson[i].IS_TAM_THOI ?? "N",
-            FL_YN: isFL ? "Y" : "N",
+            // YCSX SAMPLE (CODE_55 = "04") luôn là NOT FIRST LOT
+            FL_YN: uploadExcelJson[i].CODE_55 === "04" ? "N" : isFL ? "Y" : "N",
           });
           if (
             getCompany() === "PVN" &&
@@ -1233,7 +1237,8 @@ export const useYCSXLogic = () => {
             BLOCK_TDYCSX: tonkho_tdycsx.BLOCK_QTY,
             MATERIAL_YN: "Y",
             IS_TAM_THOI: uploadExcelJson[i].IS_TAM_THOI ?? "N",
-            FL_YN: isFL ? "Y" : "N",
+            // YCSX SAMPLE (CODE_55 = "04") luôn là NOT FIRST LOT
+            FL_YN: uploadExcelJson[i].CODE_55 === "04" ? "N" : isFL ? "Y" : "N",
           });
           let next_p500_in_no: string = await f_getNextP500_IN_NO();
           if (uploadExcelJson[i].PHANLOAI !== "GD") {
@@ -1364,7 +1369,8 @@ export const useYCSXLogic = () => {
       PO_NO: selectedPoNo?.PO_NO || "",
       CHECKSTATUS: "Waiting",
       IS_TAM_THOI: is_tam_thoi,
-      FL_YN: isFirstLOT ? "Y" : "N",
+      // YCSX SAMPLE (CODE_55 = "04") luôn là NOT FIRST LOT
+      FL_YN: loaisx === "04" ? "N" : isFirstLOT ? "Y" : "N",
       id: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
     };
     if (
