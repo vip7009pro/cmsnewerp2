@@ -39,6 +39,7 @@ import { saveTabModePreference } from "../../../api/services/tabModeService";
 import { UserData } from "../../../api/GlobalInterface";
 import NotificationPanel from "../../NotificationPanel/NotificationPanel";
 import ChatDock from "../../Chat/ChatDock";
+import MailDock from "../../Mail/MailDock";
 import NavMenuNew from "../../NavMenu/NavMenuNew";
 import type { NAVMENUDATA } from "../../NavMenu/getNavMenu";
 import { canUseTabMode, getFirstNavMenuSearchResult, normalizeMenuPath } from "../../NavMenu/navMenuSearch";
@@ -684,6 +685,8 @@ export default function PrecisionHeader({
 
             {/* Chat nội bộ: nút + badge chưa đọc, overlay toàn màn hình khi mở */}
             <ChatDock isMobile />
+            {/* Hộp thư Email */}
+            <MailDock isMobile />
           </div>
         ) : (
           <>
@@ -727,6 +730,9 @@ export default function PrecisionHeader({
 
           {/* Chat nội bộ (Messenger-style) */}
           <ChatDock isMobile={false} />
+
+          {/* Hộp thư Email tập trung */}
+          <MailDock isMobile={false} />
 
           {/* Notifications Center */}
           <div

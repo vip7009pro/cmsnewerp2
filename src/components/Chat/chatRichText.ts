@@ -72,10 +72,75 @@ const ALLOWED_STYLE_PROPS = new Set([
 /** Thuộc tính được phép giữ ngoài `style`. */
 const ALLOWED_ATTRS = new Set(["color", "size", "face"]);
 
+/** Thẻ bảng — chỉ giữ khi `allowTables` (dán bảng từ Excel vào email). */
+const TABLE_TAGS = new Set(["table", "thead", "tbody", "tfoot", "tr", "td", "th", "caption", "colgroup", "col"]);
+
+/** Thuộc tính được phép trên thẻ bảng. */
+const ALLOWED_TABLE_ATTRS = new Set([
+  "colspan",
+  "rowspan",
+  "width",
+  "height",
+  "align",
+  "valign",
+  "bgcolor",
+  "border",
+  "nowrap",
+  "cellpadding",
+  "cellspacing",
+]);
+
+/** Thuộc tính style cho phép thêm trên thẻ bảng (giữ định dạng giống Excel). */
+const ALLOWED_TABLE_STYLE_PROPS = new Set([
+  "border",
+  "border-top",
+  "border-right",
+  "border-bottom",
+  "border-left",
+  "border-collapse",
+  "border-spacing",
+  "border-color",
+  "border-style",
+  "border-width",
+  "padding",
+  "padding-top",
+  "padding-right",
+  "padding-bottom",
+  "padding-left",
+  "width",
+  "height",
+  "vertical-align",
+  "white-space",
+  "font-family",
+  "line-height",
+  "background",
+]);
+
 /** Scheme cho phép của thẻ <a> (chặn javascript:, data:...). */
 const SAFE_LINK_SCHEME = /^(https?:\/\/|mailto:)/i;
 
-function filterStyle(value: string): string {
+/**
+ * Nguồn ảnh được phép (chỉ dùng khi `allowImages`).
+ *  - `cid:` — ảnh nhúng của email (giữ nguyên khi trích dẫn/chuyển tiếp).
+ *  - `http(s)://` — ảnh từ internet (client tự quyết định có tải hay không).
+ *  - `data:image/...;base64,...` — ảnh dán/soạn trực tiếp (KHÔNG cho SVG để tránh script).
+ *    Phía backend sẽ tự chuyển sang đính kèm `cid:` khi gửi.
+ */
+const DATA_IMAGE_SRC = /^data:image\/(png|jpe?g|gif|webp|bmp|avif|tiff);base64,[a-z0-9+/=\s]+$/i;
+
+function safeImageSrc(value: string | null): string | null {
+  const src = String(value || "").trim();
+  if (!src) return null;
+  if (/^cid:[^\s"'<>]{1,200}$/i.test(src)) return src;
+  if (/^https?:\/\//i.test(src)) return src;
+  if (DATA_IMAGE_SRC.test(src)) return src;
+  return null;
+}
+
+/** Thuộc tính được phép giữ trên <img>. */
+const ALLOWED_IMG_ATTRS = new Set(["alt", "width", "height"]);
+
+function filterStyle(value: string, extraProps?: Set<string>): string {
   return String(value || "")
     .split(";")
     .map((part) => part.trim())
@@ -85,19 +150,19 @@ function filterStyle(value: string): string {
       if (index <= 0) return false;
       const prop = part.slice(0, index).trim().toLowerCase();
       const val = part.slice(index + 1).trim().toLowerCase();
-      if (!ALLOWED_STYLE_PROPS.has(prop)) return false;
+      if (!ALLOWED_STYLE_PROPS.has(prop) && !extraProps?.has(prop)) return false;
       if (!val) return false;
       // Chặn mọi vector qua giá trị (url(), expression, javascript:, data:).
       if (val.includes("url(") || val.includes("expression") || val.includes("javascript:")) {
         return false;
       }
-      if (val.includes("data:") && prop !== "color" && prop !== "background-color") return false;
+      if (val.includes("data:") && prop !== "color" && prop !== "background-color" && prop !== "background") return false;
       return true;
     })
     .join("; ");
 }
 
-function sanitizeNode(node: Node, doc: Document): Node[] {
+function sanitizeNode(node: Node, doc: Document, options: SanitizeRichHtmlOptions = {}): Node[] {
   if (node.nodeType === Node.TEXT_NODE) {
     const text = node.nodeValue || "";
     return text ? [doc.createTextNode(text)] : [];
@@ -107,17 +172,36 @@ function sanitizeNode(node: Node, doc: Document): Node[] {
   const element = node as Element;
   const tag = element.tagName.toLowerCase();
   if (DANGEROUS_TAGS.has(tag)) return [];
+  const tableMode = options.allowTables === true;
+  const extraStyleProps = tableMode ? ALLOWED_TABLE_STYLE_PROPS : undefined;
 
-  const children = Array.from(element.childNodes).flatMap((child) => sanitizeNode(child, doc));
+  // Ảnh: chỉ cho phép khi được bật (soạn email) + nguồn ảnh phải an toàn.
+  if (tag === "img") {
+    if (!options.allowImages) return [];
+    const src = safeImageSrc(element.getAttribute("src"));
+    if (!src) return [];
+    const img = doc.createElement("img");
+    img.setAttribute("src", src);
+    Array.from(element.attributes).forEach((attribute) => {
+      const name = attribute.name.toLowerCase();
+      if (!ALLOWED_IMG_ATTRS.has(name)) return;
+      const value = attribute.value;
+      if ((name === "width" || name === "height") && !/^\d{1,5}$/.test(value)) return;
+      img.setAttribute(name, name === "alt" ? value.slice(0, 300) : value);
+    });
+    return [img];
+  }
+
+  const children = Array.from(element.childNodes).flatMap((child) => sanitizeNode(child, doc, options));
 
   // Thẻ ngoài allowlist ⇒ bỏ thẻ nhưng GIỮ nội dung (ví dụ <a> → chữ).
-  if (!ALLOWED_TAGS.has(tag)) return children;
+  if (!ALLOWED_TAGS.has(tag) && !(tableMode && TABLE_TAGS.has(tag))) return children;
 
   const clean = doc.createElement(tag);
   Array.from(element.attributes).forEach((attribute) => {
     const name = attribute.name.toLowerCase();
     if (name === "style") {
-      const safe = filterStyle(attribute.value);
+      const safe = filterStyle(attribute.value, extraStyleProps);
       if (safe) clean.setAttribute("style", safe);
       return;
     }
@@ -131,14 +215,24 @@ function sanitizeNode(node: Node, doc: Document): Node[] {
       clean.setAttribute("rel", "noopener noreferrer");
       return;
     }
-    if (ALLOWED_ATTRS.has(name)) clean.setAttribute(name, attribute.value);
+    if (ALLOWED_ATTRS.has(name) || (tableMode && ALLOWED_TABLE_ATTRS.has(name))) {
+      clean.setAttribute(name, attribute.value);
+    }
   });
   children.forEach((child) => clean.appendChild(child));
   return [clean];
 }
 
+/** Tuỳ chọn lọc HTML richtext. */
+export interface SanitizeRichHtmlOptions {
+  /** Cho phép giữ thẻ `<img>` với nguồn an toàn (dùng cho soạn email). Mặc định: không. */
+  allowImages?: boolean;
+  /** Cho phép giữ thẻ bảng + định dạng bảng (dán bảng từ Excel). Mặc định: không. */
+  allowTables?: boolean;
+}
+
 /** Lọc HTML richtext theo allowlist. Trả về chuỗi HTML an toàn để lưu/hiển thị. */
-export function sanitizeRichHtml(html?: string | null): string {
+export function sanitizeRichHtml(html?: string | null, options: SanitizeRichHtmlOptions = {}): string {
   const raw = String(html || "");
   if (!raw) return "";
   if (typeof window === "undefined" || typeof DOMParser === "undefined") return "";
@@ -148,7 +242,7 @@ export function sanitizeRichHtml(html?: string | null): string {
   const holder = target.createElement("div");
 
   Array.from(source.body.childNodes).forEach((node) => {
-    sanitizeNode(node, target).forEach((child) => holder.appendChild(child));
+    sanitizeNode(node, target, options).forEach((child) => holder.appendChild(child));
   });
 
   // Bỏ các thẻ rỗng do execCommand sinh ra khi không có nội dung.

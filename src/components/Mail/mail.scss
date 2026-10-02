@@ -1,0 +1,1312 @@
+/* ============================================================================
+   Module Email tập trung — namespace .erp-mail__*
+   Bám sát pattern cửa sổ chat (.erp-chat__window): neo góc phải-dưới, z-index 1200.
+   ========================================================================== */
+
+$mail-primary: #2563eb;
+$mail-primary-soft: #eff6ff;
+$mail-text: #0f172a;
+$mail-muted: #64748b;
+$mail-border: #e2e8f0;
+$mail-bg: #f8fafc;
+$mail-danger: #dc2626;
+$mail-warning: #b45309;
+
+/* ------------------------- Trigger (navbar) ------------------------- */
+
+.erp-mail__badgeDot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $mail-danger;
+}
+
+/* ------------------------- Desktop: cửa sổ neo góc ------------------------- */
+
+.erp-mail__window {
+  position: fixed;
+  right: 20px;
+  bottom: 0;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  width: 980px;
+  max-width: calc(100vw - 32px);
+  height: min(680px, calc(100vh - 88px));
+  background: $mail-bg;
+  border: 1px solid $mail-border;
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -14px 44px -14px rgba(15, 23, 42, 0.3);
+  overflow: hidden;
+  /* KHÔNG dùng animation transform (xem bài học ở chat.scss). */
+}
+
+.erp-mail__window.is-fullscreen {
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  max-width: 100vw;
+  height: 100vh;
+  border: none;
+  border-radius: 0;
+}
+
+.erp-mail__windowHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex: 0 0 auto;
+  height: 46px;
+  padding: 0 8px 0 14px;
+  border-bottom: 1px solid $mail-border;
+  background: #fff;
+}
+
+.erp-mail__windowTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: $mail-text;
+}
+
+.erp-mail__windowCount {
+  min-width: 18px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: $mail-danger;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.erp-mail__windowBody {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.erp-mail__iconBtn {
+  color: $mail-muted !important;
+}
+
+/* ------------------------- Panel (3 cột) ------------------------- */
+
+.erp-mail__panel {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  background: #fff;
+}
+
+/* Sidebar folders */
+.erp-mail__sidebar {
+  flex: 0 0 208px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 8px;
+  border-right: 1px solid $mail-border;
+  background: #fff;
+  overflow-y: auto;
+}
+
+.erp-mail__sidebarTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: $mail-muted;
+}
+
+.erp-mail__sidebarAccount {
+  padding: 0 8px 8px;
+  font-size: 11.5px;
+  color: $mail-muted;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.erp-mail__folder {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: $mail-text;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+    color: $mail-muted;
+  }
+
+  &:hover {
+    background: #f1f5f9;
+  }
+
+  &.is-active {
+    background: $mail-primary-soft;
+    color: $mail-primary;
+
+    .material-symbols-outlined {
+      color: $mail-primary;
+    }
+  }
+}
+
+.erp-mail__folderCount {
+  margin-left: auto;
+  min-width: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: $mail-danger;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Danh sách email — mặc định NGẮN và CÓ THỂ CO LẠI khi cửa sổ hẹp ⇒ cột nội dung luôn ưu tiên rộng nhất. */
+.erp-mail__main {
+  flex: 0 1 var(--mail-list-width, 300px);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.erp-mail__listHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  height: 42px;
+  padding: 0 10px 0 14px;
+  border-bottom: 1px solid $mail-border;
+  background: #fff;
+}
+
+.erp-mail__listTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: $mail-text;
+}
+
+.erp-mail__listSpacer {
+  flex: 1 1 auto;
+}
+
+.erp-mail__list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.erp-mail__item {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  grid-template-areas: "avatar head meta" "avatar subject subject" "avatar preview preview";
+  align-items: center;
+  gap: 2px 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-bottom: 1px solid #f1f5f9;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s ease;
+
+  &:hover {
+    background: #f8fafc;
+  }
+
+  &.is-active {
+    background: $mail-primary-soft;
+  }
+
+  &.is-unread .erp-mail__itemSender,
+  &.is-unread .erp-mail__itemSubject {
+    font-weight: 800;
+    color: $mail-text;
+  }
+}
+
+.erp-mail__itemAvatar {
+  grid-area: avatar;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.erp-mail__itemHead {
+  grid-area: head;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.erp-mail__itemSender {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: $mail-text;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.erp-mail__itemMeta {
+  grid-area: meta;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: $mail-muted;
+}
+
+.erp-mail__itemSubject {
+  grid-area: subject;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: $mail-text;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.erp-mail__itemPreview {
+  grid-area: preview;
+  font-size: 12px;
+  color: $mail-muted;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.erp-mail__itemStar {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: #cbd5e1;
+  display: flex;
+
+  &.is-on {
+    color: #f59e0b;
+  }
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+}
+
+.erp-mail__clip {
+  .material-symbols-outlined {
+    font-size: 15px;
+  }
+}
+
+.erp-mail__empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: $mail-muted;
+  font-size: 13px;
+}
+
+.erp-mail__loadMore {
+  padding: 10px;
+  text-align: center;
+}
+
+/* Chi tiết email — ƯU TIÊN chiếm phần còn lại để hiển thị nội dung nhiều nhất. */
+.erp-mail__detail {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* Thanh kéo chỉnh độ rộng giữa cột danh sách và cột nội dung. */
+.erp-mail__divider {
+  flex: 0 0 6px;
+  position: relative;
+  cursor: col-resize;
+  background: transparent;
+  touch-action: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: $mail-border;
+  }
+
+  &:hover::after,
+  &.is-dragging::after {
+    left: 1px;
+    width: 3px;
+    background: $mail-primary;
+    border-radius: 2px;
+  }
+}
+
+.erp-mail__detailHead {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  padding: 10px 10px 8px 14px;
+  border-bottom: 1px solid $mail-border;
+}
+
+.erp-mail__detailSubject {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: $mail-text;
+}
+
+.erp-mail__detailMeta {
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  border-bottom: 1px solid $mail-border;
+  font-size: 12.5px;
+  color: $mail-muted;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.erp-mail__detailMeta b {
+  color: $mail-text;
+}
+
+.erp-mail__detailBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 0;
+  background: #fff;
+}
+
+.erp-mail__htmlFrame {
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  border: none;
+  background: #fff;
+}
+
+.erp-mail__plainBody {
+  padding: 14px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 13px;
+  color: $mail-text;
+}
+
+.erp-mail__attachmentsWrap {
+  flex: 0 0 auto;
+  border-top: 1px solid $mail-border;
+}
+
+.erp-mail__attachmentsHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 14px 0;
+}
+
+.erp-mail__attachmentsTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: $mail-muted;
+
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
+}
+
+.erp-mail__linkBtn {
+  border: 0;
+  background: transparent;
+  color: $mail-primary;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 6px;
+
+  &:hover {
+    background: $mail-primary-soft;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.erp-mail__attachments {
+  flex: 0 0 auto;
+  padding: 8px 14px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.erp-mail__attachment {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid $mail-border;
+  border-radius: 9px;
+  background: #f8fafc;
+  font-size: 12px;
+  color: $mail-text;
+
+  &:hover {
+    border-color: $mail-primary;
+    background: $mail-primary-soft;
+  }
+
+  &--danger {
+    border-color: rgba(220, 38, 38, 0.45);
+    background: #fff5f5;
+  }
+
+  .material-symbols-outlined {
+    font-size: 18px;
+    color: $mail-primary;
+  }
+}
+
+.erp-mail__attachmentName {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    color: $mail-primary;
+    text-decoration: underline;
+  }
+
+  &:disabled {
+    cursor: default;
+    color: $mail-muted;
+  }
+}
+
+.erp-mail__attachmentAction {
+  border: 0;
+  background: transparent;
+  padding: 2px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 6px;
+  color: $mail-muted;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(15, 23, 42, 0.06);
+    color: $mail-primary;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .material-symbols-outlined {
+    font-size: 17px;
+    color: inherit;
+  }
+}
+
+.erp-mail__attachmentWarn {
+  display: inline-flex;
+  color: $mail-danger;
+
+  .material-symbols-outlined {
+    font-size: 16px;
+    color: $mail-danger;
+  }
+}
+
+.erp-mail__attachmentSize {
+  color: $mail-muted;
+  font-size: 11px;
+}
+
+.erp-mail__attachmentError {
+  color: $mail-danger;
+  font-size: 11px;
+}
+
+.erp-mail__attachmentErrorBar {
+  margin: 0 14px 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: $mail-danger;
+  font-size: 12px;
+}
+
+/* ------------------------- Xem trước đính kèm ------------------------- */
+
+.erp-mail__preview {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  background: #fff;
+}
+
+.erp-mail__previewHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 8px 8px 16px;
+  border-bottom: 1px solid $mail-border;
+}
+
+.erp-mail__previewName {
+  font-size: 13px;
+  font-weight: 600;
+  color: $mail-text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.erp-mail__previewBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  overflow: auto;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #fff;
+  }
+}
+
+.erp-mail__previewHint {
+  padding: 24px;
+  color: $mail-muted;
+  font-size: 13px;
+}
+
+/* ------------------------- Tìm kiếm ------------------------- */
+
+.erp-mail__search {
+  flex: 0 0 auto;
+  border-bottom: 1px solid $mail-border;
+  padding: 8px 10px;
+  background: #fff;
+}
+
+.erp-mail__searchRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid $mail-border;
+  border-radius: 9px;
+  padding: 0 6px 0 8px;
+  background: #f8fafc;
+
+  &:focus-within {
+    border-color: $mail-primary;
+    background: #fff;
+  }
+}
+
+.erp-mail__searchIcon {
+  font-size: 18px;
+  color: $mail-muted;
+  flex: 0 0 auto;
+}
+
+.erp-mail__searchInput {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  color: $mail-text;
+  padding: 7px 0;
+
+  &::placeholder {
+    color: $mail-muted;
+  }
+
+  &::-webkit-search-cancel-button {
+    display: none;
+  }
+}
+
+.erp-mail__searchClear {
+  border: 0;
+  background: transparent;
+  color: $mail-muted;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 6px;
+  display: inline-flex;
+
+  &:hover {
+    background: rgba(15, 23, 42, 0.06);
+    color: $mail-text;
+  }
+
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
+}
+
+.erp-mail__searchSort {
+  flex: 0 0 auto;
+
+  .MuiSelect-select {
+    font-size: 12px;
+    padding: 5px 24px 5px 8px;
+  }
+}
+
+.erp-mail__searchFilters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.erp-mail__filterPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid $mail-border;
+  background: #fff;
+  color: $mail-muted;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: $mail-primary;
+    color: $mail-primary;
+  }
+
+  &.is-active,
+  &.is-chip {
+    background: $mail-primary-soft;
+    border-color: $mail-primary;
+    color: $mail-primary;
+  }
+
+  .material-symbols-outlined {
+    font-size: 13px;
+  }
+}
+
+.erp-mail__filterSep {
+  width: 1px;
+  height: 14px;
+  background: $mail-border;
+}
+
+.erp-mail__searchHint {
+  font-size: 11px;
+  color: $mail-muted;
+  font-style: italic;
+}
+
+.erp-mail__searchWarn {
+  margin-top: 5px;
+  font-size: 11.5px;
+  color: $mail-warning;
+
+  > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .material-symbols-outlined {
+    font-size: 14px;
+  }
+}
+
+.erp-mail__searchMeta {
+  margin-top: 5px;
+  font-size: 11.5px;
+  color: $mail-muted;
+}
+
+/* ------------------------- Mobile ------------------------- */
+
+.erp-mail__mobileOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+/* iOS: input < 16px sẽ tự zoom trang khi focus. */
+.erp-mail__mobileOverlay .erp-mail__searchInput {
+  font-size: 16px;
+}
+
+.erp-mail__mobileBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+
+  .erp-mail__panel {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  /* Danh sách chiếm trọn hàng (bài học flex-basis ở chat.scss). */
+  .erp-mail__sidebar {
+    flex: 0 0 auto;
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid $mail-border;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px;
+  }
+
+  .erp-mail__sidebarTitle,
+  .erp-mail__sidebarAccount {
+    display: none;
+  }
+
+  .erp-mail__folder {
+    flex: 0 0 auto;
+    width: auto;
+    white-space: nowrap;
+  }
+
+  .erp-mail__detail {
+    flex: 1 1 100%;
+  }
+
+  /* Mobile: cột danh sách chiếm trọn hàng (không bó theo --mail-list-width của desktop). */
+  .erp-mail__main {
+    flex: 1 1 100%;
+  }
+
+  .erp-mail__divider {
+    display: none;
+  }
+
+  .erp-mail__panel.has-detail .erp-mail__main {
+    display: none;
+  }
+
+  .erp-mail__panel.has-detail .erp-mail__sidebar {
+    display: none;
+  }
+}
+
+.erp-mail__backBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: $mail-muted;
+  cursor: pointer;
+  padding: 4px;
+
+  &.is-off {
+    color: #cbd5e1;
+  }
+
+  &:hover {
+    color: $mail-primary;
+  }
+}
+
+/* ------------------- Ẩn/hiện cột để tối ưu không gian đọc ------------------- */
+
+.erp-mail__panel.is-sidebar-collapsed .erp-mail__sidebar {
+  display: none;
+}
+
+.erp-mail__panel.is-list-collapsed .erp-mail__main {
+  display: none;
+}
+
+.erp-mail__panel.is-list-collapsed .erp-mail__detail {
+  flex: 1 1 100%;
+}
+
+/* ------------------- Thanh trạng thái đồng bộ ------------------- */
+
+.erp-mail__status {
+  flex: 0 0 auto;
+  border-bottom: 1px solid $mail-border;
+  background: #f8fafc;
+}
+
+.erp-mail__statusLine {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  font-size: 11.5px;
+  color: $mail-muted;
+
+  b {
+    color: $mail-text;
+  }
+
+  .is-pending {
+    color: #b45309;
+    font-weight: 700;
+  }
+}
+
+.erp-mail__statusIcon {
+  font-size: 16px;
+  color: $mail-primary;
+}
+
+.erp-mail__statusSyncing {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: $mail-primary;
+  font-weight: 600;
+}
+
+.erp-mail__statusTime {
+  color: #94a3b8;
+}
+
+.erp-mail__statusBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: $mail-muted;
+  cursor: pointer;
+  padding: 2px;
+
+  .material-symbols-outlined {
+    font-size: 17px;
+  }
+
+  &:hover {
+    color: $mail-primary;
+  }
+}
+
+.erp-mail__statusDetail {
+  padding: 4px 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px dashed $mail-border;
+}
+
+.erp-mail__statusRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: $mail-text;
+}
+
+.erp-mail__statusEmail {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.erp-mail__statusCounts {
+  color: $mail-muted;
+  white-space: nowrap;
+}
+
+.erp-mail__syncBtn {
+  border: 1px solid $mail-primary;
+  background: $mail-primary-soft;
+  color: $mail-primary;
+  border-radius: 7px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}
+
+/* ------------------- Thu gọn danh sách người nhận ------------------- */
+
+.erp-mail__recip {
+  display: block;
+  line-height: 1.5;
+}
+
+.erp-mail__recipList {
+  word-break: break-word;
+}
+
+.erp-mail__recipToggle {
+  margin-left: 6px;
+  border: none;
+  background: transparent;
+  color: $mail-primary;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+/* ------------------- Soạn thư (composer) ------------------- */
+
+.erp-mail__composeBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 10px;
+  background: $mail-primary;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 8px -3px rgba(37, 99, 235, 0.6);
+
+  .material-symbols-outlined {
+    color: #fff;
+  }
+
+  &:hover {
+    background: #1d4ed8;
+  }
+}
+
+.erp-mail__composer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.erp-mail__composerHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 10px 8px 10px 16px;
+  border-bottom: 1px solid $mail-border;
+}
+
+.erp-mail__composerTitle {
+  font-size: 14px;
+  font-weight: 800;
+  color: $mail-text;
+}
+
+.erp-mail__composerInfo {
+  font-size: 12px;
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.erp-mail__composerFields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px 6px;
+  flex: 0 0 auto;
+}
+
+.erp-mail__linkBtn {
+  align-self: flex-start;
+  border: none;
+  background: transparent;
+  color: $mail-primary;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+.erp-mail__composerToolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 12px;
+  border-top: 1px solid $mail-border;
+  border-bottom: 1px solid $mail-border;
+  flex: 0 0 auto;
+}
+
+.erp-mail__toolBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: $mail-muted;
+  cursor: pointer;
+
+  &:hover {
+    background: $mail-primary-soft;
+    color: $mail-primary;
+  }
+}
+
+.erp-mail__composerEditor {
+  flex: 1 1 auto;
+  min-height: 140px;
+  overflow-y: auto;
+  padding: 12px 16px;
+  font-size: 13.5px;
+  color: $mail-text;
+  outline: none;
+
+  &:empty::before {
+    content: "Nhập nội dung email...";
+    color: #94a3b8;
+  }
+}
+
+.erp-mail__composerAttach {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 16px;
+  border-top: 1px solid $mail-border;
+  max-height: 96px;
+  overflow-y: auto;
+  flex: 0 0 auto;
+}
+
+/* Nhắc về ảnh dán trong nội dung (sẽ gửi dạng ảnh nhúng kèm thư). */
+.erp-mail__composerInlineHint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 16px 8px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: $mail-primary-soft;
+  color: $mail-primary;
+  font-size: 11.5px;
+
+  &.is-warn {
+    background: #fef2f2;
+    color: $mail-danger;
+  }
+
+  .material-symbols-outlined {
+    font-size: 15px;
+  }
+}
+
+/* Ảnh xem trước trong khung soạn thảo (không tràn khung). */
+.erp-mail__composerEditor img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Bảng dán từ Excel — giữ viền/khung như bản gốc. */
+.erp-mail__composerEditor table {
+  border-collapse: collapse;
+  max-width: 100%;
+}
+
+.erp-mail__composerEditor td,
+.erp-mail__composerEditor th {
+  min-width: 24px;
+}
+
+/* ------------------- Hộp thoại chọn cách dán bảng ------------------- */
+
+.erp-mail__pasteDialog {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.erp-mail__pasteHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border-bottom: 1px solid $mail-border;
+  font-size: 14px;
+  font-weight: 600;
+  color: $mail-text;
+
+  .material-symbols-outlined {
+    font-size: 20px;
+    color: $mail-primary;
+  }
+}
+
+.erp-mail__pasteBody {
+  padding: 14px 18px;
+  font-size: 13px;
+  color: $mail-text;
+}
+
+.erp-mail__pasteOptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.erp-mail__pasteOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 10px;
+  border: 1px solid $mail-border;
+  border-radius: 10px;
+  background: #f8fafc;
+  cursor: pointer;
+  text-align: center;
+  color: $mail-text;
+
+  &:hover:not(:disabled) {
+    border-color: $mail-primary;
+    background: $mail-primary-soft;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .material-symbols-outlined {
+    font-size: 26px;
+    color: $mail-primary;
+  }
+
+  small {
+    color: $mail-muted;
+    font-size: 11px;
+  }
+}
+
+.erp-mail__pasteFoot {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 18px 14px;
+}
+
+/* Bảng trong thư hiển thị (iframe) — không tràn ngang. */
+.erp-mail__htmlFrame table {
+  border-collapse: collapse;
+  max-width: 100%;
+}
+
+.erp-mail__composerFoot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-top: 1px solid $mail-border;
+  flex: 0 0 auto;
+}
+
+.erp-mail__composerHint {
+  font-size: 11.5px;
+  color: #94a3b8;
+}
