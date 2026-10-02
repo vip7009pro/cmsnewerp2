@@ -20,9 +20,16 @@ interface PreviewState {
  * - Tải về bằng Blob (khác origin với API nên không dùng `<a href>` trực tiếp được).
  * - Xem trước inline an toàn cho ảnh/PDF (không bao giờ preview tệp thực thi được).
  * - Cảnh báo rõ với đuôi tệp nguy hiểm (dù server luôn ép tải về với tệp này).
+ * - Phần **ẢNH TRONG NỘI DUNG** (`isInline`) được gom vào mục thu gọn riêng: mặc định ẩn
+ *   để danh sách gọn, nhưng LUÔN mở được để tải ⇒ không tệp nào bị "vô hình"
+ *   (đã từng xảy ra khi nhà cung cấp gắn Content-ID cho tệp đính kèm thật — xem `IS_INLINE`).
  */
 export default function MailAttachmentList({ attachments }: MailAttachmentListProps) {
+  /** Tệp đính kèm THẬT (Content-Disposition: attachment). */
   const files = (attachments || []).filter((a) => !a.isInline);
+  /** Phần nội dung nhúng (ảnh chữ ký, ảnh dán trong thân thư…). */
+  const inlineFiles = (attachments || []).filter((a) => a.isInline);
+  const [showInline, setShowInline] = useState(false);
   const [busyId, setBusyId] = useState<number | null>(null);
   const [error, setError] = useState<string>("");
   const [preview, setPreview] = useState<PreviewState | null>(null);
@@ -36,7 +43,7 @@ export default function MailAttachmentList({ attachments }: MailAttachmentListPr
     };
   }, []);
 
-  if (files.length === 0) return null;
+  if (files.length === 0 && inlineFiles.length === 0) return null;
 
   const runDownload = async (att: MailAttachment) => {
     if (!att.available || busyId !== null) return;
@@ -97,73 +104,94 @@ export default function MailAttachmentList({ attachments }: MailAttachmentListPr
     }
   };
 
-  return (
-    <div className="erp-mail__attachmentsWrap">
-      <div className="erp-mail__attachmentsHead">
-        <span className="erp-mail__attachmentsTitle">
-          <span className="material-symbols-outlined">attach_file</span>
-          {files.length} tệp đính kèm
-        </span>
-        {files.length > 1 && (
-          <button type="button" className="erp-mail__linkBtn" onClick={downloadAll} disabled={busyId !== null}>
-            Tải tất cả
+  /** Hiển thị 1 tệp (dùng cho cả tệp đính kèm thật và phần nội dung nhúng). */
+  const renderItem = (att: MailAttachment) => {
+    const dangerous = isDangerousAttachment(att.fileName);
+    const previewable = canPreviewAttachment(att.fileName, att.contentType);
+    return (
+      <div key={att.id} className={`erp-mail__attachment${dangerous ? " erp-mail__attachment--danger" : ""}`}>
+        <span className="material-symbols-outlined">{attachmentIcon(att.fileName, att.contentType)}</span>
+        <button
+          type="button"
+          className="erp-mail__attachmentName"
+          onClick={() => (previewable ? openPreview(att) : runDownload(att))}
+          disabled={!att.available}
+          title={att.available ? att.fileName : "Tệp chưa sẵn sàng"}
+        >
+          {att.fileName}
+        </button>
+        <span className="erp-mail__attachmentSize">{formatBytes(att.fileSize)}</span>
+        {dangerous && (
+          <Tooltip title="Tệp thực thi được — hãy cẩn thận trước khi mở">
+            <span className="erp-mail__attachmentWarn">
+              <span className="material-symbols-outlined">warning</span>
+            </span>
+          </Tooltip>
+        )}
+        {!att.available && <span className="erp-mail__attachmentError">(chưa sẵn sàng)</span>}
+        {previewable && att.available && (
+          <button
+            type="button"
+            className="erp-mail__attachmentAction"
+            onClick={() => openPreview(att)}
+            disabled={busyId !== null}
+            title="Xem trước"
+          >
+            <span className="material-symbols-outlined">visibility</span>
           </button>
         )}
+        <button
+          type="button"
+          className="erp-mail__attachmentAction"
+          onClick={() => runDownload(att)}
+          disabled={!att.available || busyId !== null}
+          title="Tải về"
+        >
+          {busyId === att.id ? (
+            <CircularProgress size={14} />
+          ) : (
+            <span className="material-symbols-outlined">download</span>
+          )}
+        </button>
       </div>
+    );
+  };
 
-      <div className="erp-mail__attachments">
-        {files.map((att) => {
-          const dangerous = isDangerousAttachment(att.fileName);
-          const previewable = canPreviewAttachment(att.fileName, att.contentType);
-          return (
-            <div key={att.id} className={`erp-mail__attachment${dangerous ? " erp-mail__attachment--danger" : ""}`}>
-              <span className="material-symbols-outlined">{attachmentIcon(att.fileName, att.contentType)}</span>
-              <button
-                type="button"
-                className="erp-mail__attachmentName"
-                onClick={() => (previewable ? openPreview(att) : runDownload(att))}
-                disabled={!att.available}
-                title={att.available ? att.fileName : "Tệp chưa sẵn sàng"}
-              >
-                {att.fileName}
+  return (
+    <div className="erp-mail__attachmentsWrap">
+      {files.length > 0 && (
+        <>
+          <div className="erp-mail__attachmentsHead">
+            <span className="erp-mail__attachmentsTitle">
+              <span className="material-symbols-outlined">attach_file</span>
+              {files.length} tệp đính kèm
+            </span>
+            {files.length > 1 && (
+              <button type="button" className="erp-mail__linkBtn" onClick={downloadAll} disabled={busyId !== null}>
+                Tải tất cả
               </button>
-              <span className="erp-mail__attachmentSize">{formatBytes(att.fileSize)}</span>
-              {dangerous && (
-                <Tooltip title="Tệp thực thi được — hãy cẩn thận trước khi mở">
-                  <span className="erp-mail__attachmentWarn">
-                    <span className="material-symbols-outlined">warning</span>
-                  </span>
-                </Tooltip>
-              )}
-              {!att.available && <span className="erp-mail__attachmentError">(chưa sẵn sàng)</span>}
-              {previewable && att.available && (
-                <button
-                  type="button"
-                  className="erp-mail__attachmentAction"
-                  onClick={() => openPreview(att)}
-                  disabled={busyId !== null}
-                  title="Xem trước"
-                >
-                  <span className="material-symbols-outlined">visibility</span>
-                </button>
-              )}
-              <button
-                type="button"
-                className="erp-mail__attachmentAction"
-                onClick={() => runDownload(att)}
-                disabled={!att.available || busyId !== null}
-                title="Tải về"
-              >
-                {busyId === att.id ? (
-                  <CircularProgress size={14} />
-                ) : (
-                  <span className="material-symbols-outlined">download</span>
-                )}
-              </button>
-            </div>
-          );
-        })}
-      </div>
+            )}
+          </div>
+
+          <div className="erp-mail__attachments">{files.map(renderItem)}</div>
+        </>
+      )}
+
+      {/* Phần nội dung nhúng: thu gọn mặc định nhưng LUÔN mở/xem/tải được. */}
+      {inlineFiles.length > 0 && (
+        <>
+          <button
+            type="button"
+            className="erp-mail__inlineToggle"
+            onClick={() => setShowInline((prev) => !prev)}
+            aria-expanded={showInline}
+          >
+            <span className="material-symbols-outlined">{showInline ? "expand_less" : "expand_more"}</span>
+            {inlineFiles.length} ảnh / tệp nhúng trong nội dung
+          </button>
+          {showInline && <div className="erp-mail__attachments">{inlineFiles.map(renderItem)}</div>}
+        </>
+      )}
 
       {error && <div className="erp-mail__attachmentErrorBar">{error}</div>}
 
