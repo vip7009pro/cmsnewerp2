@@ -116,8 +116,12 @@ const BanVeCellRenderer: React.FC<any> = (params: any) => {
         accept=".pdf"
         style={{ display: "none" }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          if (e.target.files?.[0] && onUploadBanVe) {
-            onUploadBanVe(e.target.files[0], row);
+          const picked = e.target.files?.[0];
+          // Xoá giá trị input NGAY để chọn lại CHÍNH tệp đó vẫn kích hoạt onChange
+          // (nếu không, sau khi upload lỗi thì bấm chọn lại cùng tệp sẽ KHÔNG có phản ứng gì).
+          e.target.value = "";
+          if (picked && onUploadBanVe) {
+            onUploadBanVe(picked, row);
           }
         }}
       />
@@ -178,8 +182,11 @@ const AppSheetCellRenderer: React.FC<any> = (params: any) => {
         accept=".docx"
         style={{ display: "none" }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          if (e.target.files?.[0] && onUploadAppSheet) {
-            onUploadAppSheet(e.target.files[0], row);
+          const picked = e.target.files?.[0];
+          // Xoá giá trị input NGAY (xem giải thích ở BanVeCellRenderer).
+          e.target.value = "";
+          if (picked && onUploadAppSheet) {
+            onUploadAppSheet(picked, row);
           }
         }}
       />

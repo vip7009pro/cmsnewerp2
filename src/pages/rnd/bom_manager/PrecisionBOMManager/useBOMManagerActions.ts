@@ -1019,52 +1019,112 @@ export const useBOMManagerActions = ({
     }
   };
 
-  // Reset Bản vẽ CAD
+  // Reset Bản vẽ CAD (BANVE = N + ghi cờ PDBV)
+  // ⚠️ Tên command phải là `resetbanve` (chữ THƯỜNG — trùng tên hàm export trong
+  // `practice1/services/rndService.js`). `dbService` tra `commandHandlers[command]` nên
+  // viết `resetBanVe` sẽ báo "Command '...' not supported" và KHÔNG reset được gì.
+  // Payload dùng `VALUE` (backend ghi vào cột PDBV) — KHÔNG phải `BANVE_Y_N`.
   const confirmResetBanVe = () => {
+    if (!codefullinfo.G_CODE) {
+      Swal.fire("Thông báo", "Chưa chọn mã sản phẩm để reset bản vẽ", "warning");
+      return;
+    }
     Swal.fire({
       title: "Chắc chắn muốn Reset Bản vẽ?",
+      text: "Cờ BANVE của mã sẽ chuyển về 'N' (file trên server không bị xoá).",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Reset",
     }).then(async (res) => {
-      if (res.isConfirmed) {
-        try {
-          await generalQuery("resetBanVe", { G_CODE: codefullinfo.G_CODE, BANVE_Y_N: "N" });
-          Swal.fire("Thành công", "Đã Reset bản vẽ thành công", "success");
-        } catch (err) {
-          console.error(err);
+      if (!res.isConfirmed) return;
+      try {
+        const resetRes = await generalQuery("resetbanve", { G_CODE: codefullinfo.G_CODE, VALUE: "N" });
+        if (resetRes.data.tk_status === "NG") {
+          Swal.fire("Thông báo", "Reset bản vẽ thất bại: " + (resetRes.data.message || ""), "error");
+          return;
         }
+        setCodeFullInfo((prev) => ({ ...prev, BANVE: "N" }));
+        Swal.fire("Thành công", "Đã Reset bản vẽ thành công", "success");
+      } catch (err: any) {
+        Swal.fire("Thông báo", "Reset bản vẽ thất bại: " + err.message, "error");
       }
     });
   };
 
-  // Upload CAD PDF & AppSheet
+  /**
+   * Upload bản vẽ CAD — 2 BƯỚC BẮT BUỘC (đúng như bản gốc `BOM_MANAGER.tsx` trước khi
+   * tách hook, và như `CODE_MANAGER.tsx` hiện tại):
+   *   1. upload file lên server  (`uploadQuery(..., "banve")`)
+   *   2. cập nhật trạng thái vào DB: `M100.BANVE = 'Y'` (`update_banve_value`)
+   * Thiếu bước 2 ⇒ file nằm trên server nhưng toàn hệ thống (Code Manager, YCSX, Máy,
+   * Sample Monitor…) vẫn hiểu là "chưa có bản vẽ" ⇒ in phiếu sẽ bị chặn oan.
+   */
   const handleUploadCAD = (e: any) => {
     const file = e.target.files?.[0];
-    if (file && codefullinfo.G_CODE) {
-      checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
+    e.target.value = ""; // cho phép chọn lại CHÍNH tệp đó ở lần sau
+    if (!file || !codefullinfo.G_CODE) return;
+    checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
+      Swal.fire({ title: "Đang tải file...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+      try {
         const res = await uploadQuery(file, `${codefullinfo.G_CODE}.pdf`, "banve");
-        if (res.data.tk_status !== "NG") {
-          Swal.fire("Thành công", "Đã upload bản vẽ CAD PDF!", "success");
-        } else {
-          Swal.fire("Lỗi", "Upload bản vẽ thất bại", "error");
+        if (res.data.tk_status === "NG") {
+          Swal.fire("Thông báo", "Upload file thất bại: " + (res.data.message || ""), "error");
+          return;
         }
-      });
-    }
+        const updRes = await generalQuery("update_banve_value", {
+          G_CODE: codefullinfo.G_CODE,
+          banvevalue: "Y",
+        });
+        if (updRes.data.tk_status === "NG") {
+          Swal.fire(
+            "Thông báo",
+            "Upload xong nhưng CẬP NHẬT TRẠNG THÁI BẢN VẼ thất bại: " + (updRes.data.message || ""),
+            "error"
+          );
+          return;
+        }
+        setCodeFullInfo((prev) => ({ ...prev, BANVE: "Y" }));
+        Swal.fire("Thông báo", "Upload bản vẽ thành công", "success");
+      } catch (err: any) {
+        Swal.fire("Thông báo", "Lỗi upload: " + err.message, "error");
+      }
+    });
   };
 
+  /**
+   * Upload Appsheet — 2 BƯỚC BẮT BUỘC: upload file (`"appsheet"`) rồi cập nhật
+   * `M100.APPSHEET = 'Y'` (`update_appsheet_value`).
+   */
   const handleUploadAppsheet = (e: any) => {
     const file = e.target.files?.[0];
-    if (file && codefullinfo.G_CODE) {
-      checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
+    e.target.value = "";
+    if (!file || !codefullinfo.G_CODE) return;
+    checkBP(userData, ["RND", "KD"], ["ALL"], ["ALL"], async () => {
+      Swal.fire({ title: "Đang tải file...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+      try {
         const res = await uploadQuery(file, `Appsheet_${codefullinfo.G_CODE}.docx`, "appsheet");
-        if (res.data.tk_status !== "NG") {
-          Swal.fire("Thành công", "Đã upload Appsheet docx!", "success");
-        } else {
-          Swal.fire("Lỗi", "Upload Appsheet thất bại", "error");
+        if (res.data.tk_status === "NG") {
+          Swal.fire("Thông báo", "Upload file thất bại: " + (res.data.message || ""), "error");
+          return;
         }
-      });
-    }
+        const updRes = await generalQuery("update_appsheet_value", {
+          G_CODE: codefullinfo.G_CODE,
+          appsheetvalue: "Y",
+        });
+        if (updRes.data.tk_status === "NG") {
+          Swal.fire(
+            "Thông báo",
+            "Upload xong nhưng CẬP NHẬT TRẠNG THÁI APPSHEET thất bại: " + (updRes.data.message || ""),
+            "error"
+          );
+          return;
+        }
+        setCodeFullInfo((prev) => ({ ...prev, APPSHEET: "Y" }));
+        Swal.fire("Thông báo", "Upload Appsheet thành công", "success");
+      } catch (err: any) {
+        Swal.fire("Thông báo", "Lỗi upload: " + err.message, "error");
+      }
+    });
   };
 
   return {
