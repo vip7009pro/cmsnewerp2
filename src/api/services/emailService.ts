@@ -7,6 +7,9 @@ import type {
   MailAdminOverview,
   MailAttachment,
   MailBootstrap,
+  MailContactFromMessageResponse,
+  MailContactGroupListResponse,
+  MailContactSaveResult,
   MailDetailResponse,
   MailInboxPage,
   MailSearchFilters,
@@ -216,6 +219,23 @@ export const emailService = {
   /** Đẩy đồng bộ cho TẤT CẢ mailbox đang bật (chạy nền). */
   syncAll: () => mailQuery<MailSyncAllState>("emailSyncAll"),
   syncAllStatus: () => mailQuery<MailSyncAllState>("emailSyncAllStatus"),
+
+  /* ---------------- Danh bạ: nhóm gửi nhanh / CC nhanh ---------------- */
+
+  /** Danh sách nhóm danh bạ (kèm thành viên) để tag nhanh khi soạn thư. */
+  contactGroupList: (q?: string) =>
+    mailQuery<MailContactGroupListResponse>("emailContactGroupList", { Q: q || undefined }),
+
+  /** Tạo / cập nhật nhóm danh bạ. `payload` nhận `ADDRESSES` (chuỗi) hoặc `MEMBERS` (mảng). */
+  contactGroupSave: (payload: Record<string, unknown>) =>
+    mailQuery<MailContactSaveResult>("emailContactGroupSave", payload),
+
+  contactGroupDelete: (id: number) =>
+    mailQuery<{ id: number; deleted: boolean; name: string }>("emailContactGroupDelete", { ID: id }),
+
+  /** Đọc To/Cc/Bcc của 1 email để gợi ý tạo nhóm danh bạ. */
+  contactGroupFromMessage: (id: number) =>
+    mailQuery<MailContactFromMessageResponse>("emailContactGroupFromMessage", { ID: id }),
 };
 
 /** Upload 1 tệp đính kèm soạn thảo ⇒ trả {id, fileName, fileSize, contentType, dangerous}. */

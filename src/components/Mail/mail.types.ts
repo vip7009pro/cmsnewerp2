@@ -90,6 +90,55 @@ export interface MailSyncPage {
   unreadTotal: number;
 }
 
+/* ---------------- Danh bạ: nhóm gửi nhanh / CC nhanh ---------------- */
+
+export interface MailContactMember {
+  address: string;
+  name?: string | null;
+}
+
+/** Nhóm danh bạ email (do người dùng tạo, có thể chia sẻ cho công ty). */
+export interface MailContactGroup {
+  id: number;
+  name: string;
+  description: string | null;
+  isShared: boolean;
+  memberCount: number;
+  ownerEmplNo: string | null;
+  isOwner: boolean;
+  canEdit: boolean;
+  members: MailContactMember[];
+  updatedAt?: string | null;
+}
+
+export interface MailContactGroupListResponse {
+  groups: MailContactGroup[];
+  total: number;
+}
+
+/** Kết quả `emailContactGroupSave`. */
+export interface MailContactSaveResult {
+  id: number;
+  name: string;
+  memberCount: number;
+  created: boolean;
+  invalidAddresses: string[];
+  message: string;
+}
+
+/** Kết quả `emailContactGroupFromMessage` — gợi ý tạo nhóm từ To/Cc của 1 email. */
+export interface MailContactFromMessageResponse {
+  messageId: string | null;
+  subject: string | null;
+  receivedAt: string | null;
+  from: MailAddress;
+  to: MailContactMember[];
+  cc: MailContactMember[];
+  bcc: MailContactMember[];
+  suggestedMembers: MailContactMember[];
+  suggestedName: string;
+}
+
 /* ---------------- Phase 8: quản trị + dung lượng ---------------- */
 
 /** 1 mailbox kèm số liệu tổng hợp (trang quản trị). */

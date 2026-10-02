@@ -10,12 +10,15 @@ import MailDetail from "./MailDetail";
 import MailAccountDialog from "./MailAccountDialog";
 import MailSyncStatus from "./MailSyncStatus";
 import MailComposer, { type MailComposeMode } from "./MailComposer";
+import MailContactBook from "./MailContactBook";
+import MailGroupSaveDialog from "./MailGroupSaveDialog";
 import { useMailController } from "../../hooks/useMailController";
 import { useMobileBackClose } from "../NavMenu/useMobileBackClose";
 import { getUserData } from "../../api/Api";
 import { isMailAdminUser } from "./mailUtils";
+import { emailService } from "../../api/services/emailService";
 import PrecisionEmailAdmin from "../../pages/setting/PrecisionEmail/PrecisionEmailAdmin";
-import type { MailListItemModel } from "./mail.types";
+import type { MailContactGroup, MailContactMember, MailListItemModel } from "./mail.types";
 import "./mail.scss";
 
 interface MailDockProps {
@@ -39,6 +42,53 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
   const mailAdmin = isMailAdminUser(getUserData());
   /** Trạng thái hộp soạn thảo (Phase 3). */
   const [compose, setCompose] = useState<{ open: boolean; mode: MailComposeMode; draftId?: number | null }>({ open: false, mode: "new" });
+
+  /* ---------------- Danh bạ: nhóm gửi nhanh / CC nhanh ---------------- */
+  const [showContacts, setShowContacts] = useState(false);
+  const [contactGroups, setContactGroups] = useState<MailContactGroup[]>([]);
+  const [contactLoading, setContactLoading] = useState(false);
+  /** Dialog "Lưu thành nhóm danh bạ" — nguồn có thể là hộp soạn thư hoặc To/Cc của 1 email. */
+  const [saveGroup, setSaveGroup] = useState<{
+    open: boolean;
+    sources: { to: string; cc: string; bcc: string };
+    suggestedName: string;
+    presetMembers: MailContactMember[];
+  }>({ open: false, sources: { to: "", cc: "", bcc: "" }, suggestedName: "", presetMembers: [] });
+
+  const reloadContactGroups = useCallback(async () => {
+    setContactLoading(true);
+    try {
+      const res = await emailService.contactGroupList();
+      setContactGroups(res?.groups || []);
+    } catch (err) {
+      console.warn("[mail] tải danh bạ lỗi:", err);
+    } finally {
+      setContactLoading(false);
+    }
+  }, []);
+
+  // Nạp danh bạ khi mở cửa sổ hộp thư (để chip tag nhanh sẵn sàng trong hộp soạn thư).
+  useEffect(() => {
+    if (!isOpen) return;
+    void reloadContactGroups();
+  }, [isOpen, reloadContactGroups]);
+
+  /** Mở dialog lưu nhóm từ To/Cc của email đang đọc (gợi ý lấy từ BE). */
+  const openSaveGroupFromMessage = useCallback(async () => {
+    const id = controller.detail?.message.id;
+    if (!id) return;
+    try {
+      const suggestion = await emailService.contactGroupFromMessage(id);
+      setSaveGroup({
+        open: true,
+        sources: { to: "", cc: "", bcc: "" },
+        suggestedName: suggestion?.suggestedName || "",
+        presetMembers: suggestion?.suggestedMembers || [],
+      });
+    } catch (err: any) {
+      console.warn("[mail] lấy người nhận của email lỗi:", err?.message || err);
+    }
+  }, [controller.detail]);
   // Ẩn/hiện cột thư mục (cột 1) và cột danh sách (cột 2) để tối ưu không gian đọc nội dung.
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     try { return localStorage.getItem("mail_sidebar_collapsed") === "1"; } catch { return false; }
@@ -188,6 +238,11 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
         onToggleMute={(accountId) => void controller.toggleMute(accountId)}
         isAdmin={mailAdmin}
         onOpenAdmin={() => setShowAdmin(true)}
+        onOpenContacts={() => {
+          setShowContacts(true);
+          void reloadContactGroups();
+        }}
+        contactGroupCount={contactGroups.length}
         selfServiceEnabled={controller.selfServiceEnabled}
       />
       <MailList
@@ -259,6 +314,7 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
             onReply={() => setCompose({ open: true, mode: "reply" })}
             onReplyAll={() => setCompose({ open: true, mode: "replyAll" })}
             onForward={() => setCompose({ open: true, mode: "forward" })}
+            onSaveAsGroup={() => void openSaveGroupFromMessage()}
             onDelete={() => {
               const id = controller.detail?.message.id;
               if (!id) return;
@@ -384,11 +440,42 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
         mode={compose.mode}
         draftId={compose.draftId}
         source={compose.mode === "new" ? null : controller.detail?.message || null}
+        contactGroups={contactGroups}
+        onContactGroupsChanged={() => void reloadContactGroups()}
         onClose={() => setCompose({ open: false, mode: "new" })}
         onSent={() => {
           void controller.reloadBootstrap();
           if (controller.activeFolder === "SENT") void controller.refresh();
           else void controller.openFolder("SENT");
+        }}
+      />
+
+      {/* DANH BẠ — nhóm gửi nhanh / CC nhanh (quản lý trong cửa sổ hộp thư). */}
+      <MailContactBook
+        open={showContacts}
+        onClose={() => setShowContacts(false)}
+        groups={contactGroups}
+        loading={contactLoading}
+        onReload={reloadContactGroups}
+        onComposeGroup={() => {
+          setShowContacts(false);
+          const message = controller.detail?.message;
+          if (message) void openSaveGroupFromMessage();
+          else setSaveGroup({ open: true, sources: { to: "", cc: "", bcc: "" }, suggestedName: "", presetMembers: [] });
+        }}
+      />
+
+      {/* Lưu To/Cc (của thư đang đọc) thành nhóm danh bạ. */}
+      <MailGroupSaveDialog
+        open={saveGroup.open}
+        onClose={() => setSaveGroup((prev) => ({ ...prev, open: false }))}
+        sources={saveGroup.sources}
+        suggestedName={saveGroup.suggestedName}
+        presetMembers={saveGroup.presetMembers}
+        existingGroups={contactGroups}
+        onSaved={() => {
+          void reloadContactGroups();
+          setShowContacts(true);
         }}
       />
     </>

@@ -1,5 +1,51 @@
 import moment from "moment";
-import type { MailAddress } from "./mail.types";
+import type { MailAddress, MailContactMember } from "./mail.types";
+
+/* ------------------------------------------------------------------ */
+/* Địa chỉ email (To/Cc/Bcc) — dùng cho nhóm danh bạ                   */
+/* ------------------------------------------------------------------ */
+
+/** Tách danh sách địa chỉ từ chuỗi người dùng nhập/dán (`,` `;` xuống dòng, `Tên <email>`). */
+export function parseAddressText(text?: string | null): MailContactMember[] {
+  return String(text || "")
+    .split(/[,;\r\n\t]+/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => {
+      const angle = part.match(/^(.*?)<([^>]+)>$/);
+      if (angle) return { address: angle[2].trim(), name: angle[1].trim().replace(/^"|"$/g, "") || null };
+      return { address: part, name: null };
+    });
+}
+
+/** Đếm số địa chỉ trong chuỗi To/Cc/Bcc. */
+export function countAddresses(text?: string | null): number {
+  return parseAddressText(text).length;
+}
+
+/**
+ * Gộp địa chỉ mới vào chuỗi To/Cc/Bcc hiện tại — khử trùng theo địa chỉ
+ * (không phân biệt hoa/thường) rồi trả về chuỗi `Tên <email>, ...`.
+ */
+export function mergeAddressText(current: string, incoming: MailContactMember[]): string {
+  const existing = parseAddressText(current);
+  const seen = new Set(existing.map((a) => a.address.toLowerCase()));
+  const merged = [...existing];
+  for (const item of incoming) {
+    const address = String(item?.address || "").trim();
+    if (!address) continue;
+    const key = address.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push({ address, name: item.name || null });
+  }
+  return merged.map((a) => (a.name ? `${a.name} <${a.address}>` : a.address)).join(", ");
+}
+
+/** Nhóm danh bạ ⇒ chuỗi địa chỉ để đưa vào ô To/Cc/Bcc. */
+export function addressesOfGroup(members: MailContactMember[]): string {
+  return (members || []).map((m) => (m.name ? `${m.name} <${m.address}>` : m.address)).join(", ");
+}
 
 /**
  * Định dạng thời gian email.

@@ -6,6 +6,8 @@ import {
   CircularProgress,
   Dialog,
   IconButton,
+  Menu,
+  MenuItem,
   TextField,
   Tooltip,
 } from "@mui/material";
@@ -20,8 +22,10 @@ import {
   readFileAsDataUrl,
   renderHtmlToPngDataUrl,
 } from "./mailClipboardTable";
-import type { MailAttachment, MailDetailModel } from "./mail.types";
-import { formatBytes } from "./mailUtils";
+import type { MailAttachment, MailContactGroup, MailContactMember, MailDetailModel } from "./mail.types";
+import { formatBytes, mergeAddressText } from "./mailUtils";
+import MailGroupPicker, { type MailGroupTarget } from "./MailGroupPicker";
+import MailGroupSaveDialog from "./MailGroupSaveDialog";
 
 /** Lọc HTML soạn email: CHO PHÉP ảnh (data:/cid:/http) và BẢNG (dán từ Excel). */
 const sanitizeMailHtml = (value?: string | null) =>
@@ -42,6 +46,10 @@ interface MailComposerProps {
   draftId?: number | null;
   onClose: () => void;
   onSent: () => void;
+  /** Nhóm danh bạ của người dùng (để tag nhanh vào Đến/Cc/Bcc). */
+  contactGroups?: MailContactGroup[];
+  /** Nạp lại danh sách nhóm sau khi tạo mới từ hộp soạn thư. */
+  onContactGroupsChanged?: () => void;
 }
 
 /** Thanh công cụ định dạng tối giản (execCommand) cho contentEditable. */
@@ -57,11 +65,15 @@ const TOOLS: { cmd: string; arg?: string; icon: string; title: string }[] = [
 const AUTOSAVE_MS = 1500;
 
 /** Hộp soạn email: To/Cc/Bcc, tiêu đề, nội dung rich text, đính kèm, lưu nháp tự động. */
-export default function MailComposer({ open, mode, source, draftId, onClose, onSent }: MailComposerProps) {
+export default function MailComposer({ open, mode, source, draftId, onClose, onSent, contactGroups = [], onContactGroupsChanged }: MailComposerProps) {
   const [to, setTo] = useState("");
   const [cc, setCc] = useState("");
   const [bcc, setBcc] = useState("");
   const [showCc, setShowCc] = useState(false);
+  /** Tag nhanh nhóm danh bạ: chọn nhóm + ô nhận (Đến/Cc/Bcc). */
+  const [groupPicker, setGroupPicker] = useState<{ open: boolean; target: MailGroupTarget }>({ open: false, target: "to" });
+  const [chipMenu, setChipMenu] = useState<{ anchor: HTMLElement; group: MailContactGroup } | null>(null);
+  const [saveGroupOpen, setSaveGroupOpen] = useState(false);
   const [subject, setSubject] = useState("");
   const [html, setHtml] = useState("");
   const [attachments, setAttachments] = useState<{ id: number; fileName: string; fileSize: number }[]>([]);
@@ -289,6 +301,24 @@ export default function MailComposer({ open, mode, source, draftId, onClose, onS
     }
   };
 
+  /**
+   * TAG NHANH nhóm danh bạ vào ô nhận: gộp thành viên + khử trùng lặp theo địa chỉ.
+   * Thêm vào Cc/Bcc thì tự mở khoá 2 ô này.
+   */
+  const addGroupMembers = useCallback(
+    (target: MailGroupTarget, members: MailContactMember[], groupNames: string[]) => {
+      if (target !== "to") setShowCc(true);
+      const setter = target === "to" ? setTo : target === "cc" ? setCc : setBcc;
+      setter((current) => mergeAddressText(current, members || []));
+      markDirty();
+      setInfo(
+        `Đã thêm nhóm ${groupNames.join(", ")} vào ${target === "to" ? "Đến" : target === "cc" ? "Cc" : "Bcc"} (${members.length} địa chỉ)`
+      );
+      window.setTimeout(() => setInfo(null), 3500);
+    },
+    [markDirty]
+  );
+
   const handleSend = async () => {
     setBusy(true);
     setError(null);
@@ -361,6 +391,43 @@ export default function MailComposer({ open, mode, source, draftId, onClose, onS
             </>
           )}
           <TextField label="Tiêu đề" size="small" fullWidth value={subject} onChange={(e) => { setSubject(e.target.value); markDirty(); }} />
+
+          {/* Tag nhanh NHÓM DANH BẠ: gửi nhanh (Đến) / CC nhanh (Cc/Bcc). */}
+          <div className="erp-mail__composerGroups">
+            <button
+              type="button"
+              className="erp-mail__groupBtn"
+              onClick={() => setGroupPicker({ open: true, target: "to" })}
+              title="Chọn nhóm danh bạ và chèn vào Đến / Cc / Bcc"
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: 17 }}>group_add</span>
+              Nhóm danh bạ
+            </button>
+            <button type="button" className="erp-mail__linkBtn" onClick={() => setSaveGroupOpen(true)}>
+              Lưu To/Cc thành nhóm
+            </button>
+            {contactGroups.slice(0, 6).map((group) => (
+              <span key={group.id} className="erp-mail__groupChip" title={group.description || group.name}>
+                <button
+                  type="button"
+                  className="erp-mail__groupChipMain"
+                  onClick={() => addGroupMembers("to", group.members, [group.name])}
+                  title={`Thêm ${group.memberCount} địa chỉ vào Đến`}
+                >
+                  {group.name}
+                </button>
+                <button
+                  type="button"
+                  className="erp-mail__groupChipCaret"
+                  onClick={(e) => setChipMenu({ anchor: e.currentTarget, group })}
+                  title="Chọn Đến / Cc / Bcc"
+                  aria-label="Chọn ô nhận"
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: 16 }}>arrow_drop_down</span>
+                </button>
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="erp-mail__composerToolbar">
@@ -487,6 +554,39 @@ export default function MailComposer({ open, mode, source, draftId, onClose, onS
           </div>
         </div>
       </Dialog>
+
+      {/* Tag nhanh nhóm danh bạ vào Đến / Cc / Bcc. */}
+      <MailGroupPicker
+        open={groupPicker.open}
+        target={groupPicker.target}
+        groups={contactGroups}
+        onClose={() => setGroupPicker((prev) => ({ ...prev, open: false }))}
+        onPick={(target, members, names) => addGroupMembers(target, members, names)}
+      />
+
+      {/* Menu nhỏ trên chip: chọn nhanh Đến / Cc / Bcc. */}
+      <Menu anchorEl={chipMenu?.anchor || null} open={!!chipMenu} onClose={() => setChipMenu(null)}>
+        {(["to", "cc", "bcc"] as MailGroupTarget[]).map((target) => (
+          <MenuItem
+            key={target}
+            onClick={() => {
+              if (chipMenu) addGroupMembers(target, chipMenu.group.members, [chipMenu.group.name]);
+              setChipMenu(null);
+            }}
+          >
+            Thêm vào {target === "to" ? "Đến (To)" : target === "cc" ? "Cc" : "Bcc"}
+          </MenuItem>
+        ))}
+      </Menu>
+
+      {/* Lưu danh sách Đến/Cc đang gõ thành 1 nhóm danh bạ mới. */}
+      <MailGroupSaveDialog
+        open={saveGroupOpen}
+        onClose={() => setSaveGroupOpen(false)}
+        sources={{ to, cc, bcc }}
+        existingGroups={contactGroups}
+        onSaved={() => onContactGroupsChanged?.()}
+      />
     </>
   );
 }

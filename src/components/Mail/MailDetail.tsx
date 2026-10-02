@@ -23,6 +23,8 @@ interface MailDetailProps {
   onForward?: () => void;
   /** Xoá mềm email khỏi hộp thư của người dùng hiện tại (Phase 8). */
   onDelete?: () => void;
+  /** Lưu người nhận / CC của thư này thành 1 nhóm danh bạ. */
+  onSaveAsGroup?: () => void;
 }
 
 /** Số người nhận hiển thị trước khi thu gọn. */
@@ -64,7 +66,7 @@ function RecipientLine({ label, list }: { label: string; list: MailAddress[] }) 
 }
 
 /** Chi tiết 1 email: người gửi/nhận, thời gian, nội dung HTML an toàn, đính kèm, hội thoại. */
-export default function MailDetail({ detail, loading, isMobile, onClose, onToggleStar, listCollapsed, onToggleList, onReply, onReplyAll, onForward, onDelete }: MailDetailProps) {
+export default function MailDetail({ detail, loading, isMobile, onClose, onToggleStar, listCollapsed, onToggleList, onReply, onReplyAll, onForward, onDelete, onSaveAsGroup }: MailDetailProps) {
   // Ảnh nhúng theo Content-ID ⇒ URL tải từ server để hiển thị trong nội dung.
   const inlineImages = useMemo(() => {
     const map: Record<string, string> = {};
@@ -124,6 +126,17 @@ export default function MailDetail({ detail, loading, isMobile, onClose, onToggl
         {onForward && (
           <IconButton size="small" className="erp-mail__iconBtn" onClick={onForward} title="Chuyển tiếp" aria-label="Chuyển tiếp">
             <span className="material-symbols-outlined" style={{ fontSize: 19 }}>forward</span>
+          </IconButton>
+        )}
+        {onSaveAsGroup && (
+          <IconButton
+            size="small"
+            className="erp-mail__iconBtn"
+            onClick={onSaveAsGroup}
+            title="Lưu người nhận / CC thành nhóm danh bạ"
+            aria-label="Lưu người nhận thành nhóm danh bạ"
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 19 }}>playlist_add</span>
           </IconButton>
         )}
         <IconButton

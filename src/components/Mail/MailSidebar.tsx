@@ -17,6 +17,10 @@ interface MailSidebarProps {
   /** Quản trị Email (Phase 8) — chỉ hiện với admin. */
   isAdmin?: boolean;
   onOpenAdmin?: () => void;
+  /** Mở DANH BẠ (nhóm gửi nhanh / CC nhanh). */
+  onOpenContacts?: () => void;
+  /** Số nhóm danh bạ (hiển thị badge nhỏ). */
+  contactGroupCount?: number;
   /** Admin có cho phép nhân viên tự cấu hình mailbox không. */
   selfServiceEnabled?: boolean;
 }
@@ -34,6 +38,8 @@ export default function MailSidebar({
   onToggleMute,
   isAdmin = false,
   onOpenAdmin,
+  onOpenContacts,
+  contactGroupCount = 0,
   selfServiceEnabled = true,
 }: MailSidebarProps) {
   const list = folders.length > 0 ? folders : [];
@@ -100,6 +106,20 @@ export default function MailSidebar({
         <button type="button" className="erp-mail__folder" onClick={onOpenAccount} style={{ marginTop: 6 }}>
           <span className="material-symbols-outlined">settings</span>
           <span>Cấu hình Email của tôi</span>
+        </button>
+      )}
+
+      {/* DANH BẠ — nhóm gửi nhanh / CC nhanh. */}
+      {onOpenContacts && (
+        <button
+          type="button"
+          className="erp-mail__folder erp-mail__folder--contacts"
+          onClick={onOpenContacts}
+          title="Tạo nhóm danh bạ để gửi nhanh / CC nhanh"
+        >
+          <span className="material-symbols-outlined">contacts</span>
+          <span>Danh bạ</span>
+          {contactGroupCount > 0 && <span className="erp-mail__folderCount">{contactGroupCount}</span>}
         </button>
       )}
 
