@@ -14,6 +14,8 @@ export interface MailState {
   counts: Record<string, number>;
   hasOwnAccount: boolean;
   ownAccountId: number | null;
+  /** Mailbox người dùng đã tắt thông báo đẩy (Phase 7). */
+  mutedAccountIds: number[];
 }
 
 const initialState: MailState = {
@@ -24,6 +26,7 @@ const initialState: MailState = {
   counts: {},
   hasOwnAccount: false,
   ownAccountId: null,
+  mutedAccountIds: [],
 };
 
 const mailSlice = createSlice({
@@ -39,6 +42,11 @@ const mailSlice = createSlice({
       state.counts = payload.counts || {};
       state.hasOwnAccount = payload.hasOwnAccount === true;
       state.ownAccountId = payload.ownAccountId ?? null;
+      state.mutedAccountIds = Array.isArray(payload.mutedAccountIds) ? payload.mutedAccountIds.map(Number) : [];
+    },
+    /** Cập nhật danh sách mailbox tắt thông báo đẩy (đã chuẩn hoá từ server). */
+    setMailMutes(state, action: PayloadAction<number[]>) {
+      state.mutedAccountIds = Array.isArray(action.payload) ? action.payload.map(Number) : [];
     },
     /** Cập nhật số chưa đọc (khi đọc email / nhận realtime). */
     setMailUnread(state, action: PayloadAction<number>) {
@@ -53,5 +61,5 @@ const mailSlice = createSlice({
   },
 });
 
-export const { setMailBootstrap, setMailUnread, bumpMailUnread, resetMail } = mailSlice.actions;
+export const { setMailBootstrap, setMailUnread, bumpMailUnread, setMailMutes, resetMail } = mailSlice.actions;
 export default mailSlice.reducer;

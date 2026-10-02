@@ -11,12 +11,24 @@ interface MailSidebarProps {
   onOpenAccount: () => void;
   /** Mở hộp soạn email mới. */
   onCompose?: () => void;
+  /** Mailbox đã tắt thông báo đẩy (Phase 7). */
+  mutedAccountIds?: number[];
+  onToggleMute?: (accountId: number) => void;
 }
 
 /** Cột thư mục (Inbox/Starred/Sent/...) — chỉ là thư mục hiển thị phía client (POP3 không sync folder server). */
-export default function MailSidebar({ folders, accounts, activeFolder, unreadTotal, onSelect, onOpenAccount, onCompose }: MailSidebarProps) {
+export default function MailSidebar({
+  folders,
+  accounts,
+  activeFolder,
+  unreadTotal,
+  onSelect,
+  onOpenAccount,
+  onCompose,
+  mutedAccountIds = [],
+  onToggleMute,
+}: MailSidebarProps) {
   const list = folders.length > 0 ? folders : [];
-  const primaryAccount = accounts[0];
 
   return (
     <nav className="erp-mail__sidebar" aria-label="Thư mục email">
@@ -26,11 +38,29 @@ export default function MailSidebar({ folders, accounts, activeFolder, unreadTot
         </span>
         Hộp thư
       </div>
-      {primaryAccount && (
-        <div className="erp-mail__sidebarAccount" title={primaryAccount.EMAIL_ADDRESS}>
-          {primaryAccount.DISPLAY_NAME || primaryAccount.EMAIL_ADDRESS}
-        </div>
-      )}
+
+      {/* Danh sách mailbox + nút bật/tắt thông báo đẩy cho từng mailbox. */}
+      {accounts.map((account) => {
+        const muted = mutedAccountIds.includes(Number(account.ID));
+        return (
+          <div className="erp-mail__sidebarAccount" key={account.ID} title={account.EMAIL_ADDRESS}>
+            <span className="erp-mail__sidebarAccountName">{account.DISPLAY_NAME || account.EMAIL_ADDRESS}</span>
+            {onToggleMute && (
+              <button
+                type="button"
+                className={`erp-mail__muteBtn${muted ? " is-muted" : ""}`}
+                onClick={() => onToggleMute(Number(account.ID))}
+                title={muted ? "Đang TẮT thông báo đẩy — bấm để bật" : "Đang BẬT thông báo đẩy — bấm để tắt"}
+                aria-label={muted ? "Bật thông báo đẩy" : "Tắt thông báo đẩy"}
+              >
+                <span className="material-symbols-outlined">
+                  {muted ? "notifications_off" : "notifications"}
+                </span>
+              </button>
+            )}
+          </div>
+        );
+      })}
 
       {onCompose && (
         <button type="button" className="erp-mail__composeBtn" onClick={onCompose}>

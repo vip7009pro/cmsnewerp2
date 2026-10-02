@@ -25,6 +25,8 @@ export interface MailBootstrap {
   myEmplNo: string;
   hasOwnAccount?: boolean;
   ownAccountId?: number | null;
+  /** Mailbox đã TẮT thông báo đẩy (Phase 7). */
+  mutedAccountIds?: number[];
 }
 
 export interface MailAddress {

@@ -11,6 +11,7 @@ import { emailService } from "../api/services/emailService";
 import {
   bumpMailUnread,
   setMailBootstrap,
+  setMailMutes,
   setMailUnread,
   type MailState,
 } from "../redux/slices/mailSlice";
@@ -40,6 +41,10 @@ export interface MailController {
   inSearchMode: boolean;
   runSearch: (text: string, sort?: MailSearchSort, reset?: boolean) => Promise<void>;
   clearSearch: () => Promise<void>;
+  /** Mailbox đã tắt thông báo đẩy (Phase 7). */
+  mutedAccountIds: number[];
+  isAccountMuted: (accountId: number) => boolean;
+  toggleMute: (accountId: number) => Promise<void>;
   bootstrap: () => Promise<void>;
   /** Nạp lại bootstrap (bỏ qua cờ bootstrapped) — dùng sau khi lưu cấu hình mailbox. */
   reloadBootstrap: () => Promise<void>;
@@ -206,6 +211,31 @@ export function useMailController(options: { realtime?: boolean } = {}): MailCon
   const clearSearch = useCallback(async () => {
     await runSearch("", "newest", true);
   }, [runSearch]);
+
+  const isAccountMuted = useCallback(
+    (accountId: number) => (mail.mutedAccountIds || []).includes(Number(accountId)),
+    [mail.mutedAccountIds]
+  );
+
+  /** Bật/tắt thông báo đẩy cho 1 mailbox — cập nhật lạc quan rồi chốt theo dữ liệu server. */
+  const toggleMute = useCallback(
+    async (accountId: number) => {
+      const id = Number(accountId);
+      const next = !(mail.mutedAccountIds || []).includes(id);
+      const optimistic = next
+        ? [...(mail.mutedAccountIds || []), id]
+        : (mail.mutedAccountIds || []).filter((x) => x !== id);
+      dispatch(setMailMutes(optimistic));
+      try {
+        const res = await emailService.muteAccount(id, next);
+        dispatch(setMailMutes(res.mutedAccountIds || optimistic));
+      } catch (error: any) {
+        console.warn("[mail] đổi thông báo đẩy lỗi:", error?.message || error);
+        dispatch(setMailMutes(mail.mutedAccountIds || []));
+      }
+    },
+    [dispatch, mail.mutedAccountIds]
+  );
 
   /**
    * Lấy về các email MỚI HƠN mốc đã biết — dùng khi có `email:new` hoặc sau khi
@@ -378,6 +408,9 @@ export function useMailController(options: { realtime?: boolean } = {}): MailCon
     inSearchMode: searchText.trim().length > 0,
     runSearch,
     clearSearch,
+    mutedAccountIds: mail.mutedAccountIds || [],
+    isAccountMuted,
+    toggleMute,
     bootstrap,
     reloadBootstrap,
     openFolder,

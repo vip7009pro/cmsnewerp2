@@ -124,6 +124,14 @@ export const emailService = {
 
   deleteMyAccount: () => mailQuery<{ id: number }>("emailDeleteMyAccount"),
 
+  /* --- Tắt/bật thông báo đẩy (Phase 7) --- */
+  muteList: () => mailQuery<{ mutedAccountIds: number[] }>("emailMuteList"),
+  muteAccount: (accountId: number, muted: boolean) =>
+    mailQuery<{ accountId: number; muted: boolean; mutedAccountIds: number[] }>("emailMuteAccount", {
+      ACCOUNT_ID: accountId,
+      MUTED: muted,
+    }),
+
   /** Ép đồng bộ ngay 1 mailbox (trả về ngay, worker chạy nền). */
   syncNow: (id: number) => mailQuery<{ id: number; started: boolean }>("emailSyncNow", { ID: id }),
 

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { IconButton, Tooltip } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import FullscreenRoundedIcon from "@mui/icons-material/FullscreenRounded";
@@ -120,6 +120,30 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
     { rearm: true }
   );
 
+  // Deep-link từ thông báo đẩy: /?mail=<messageId> ⇒ mở cửa sổ và mở đúng email.
+  const deepLinkHandledRef = useRef(false);
+  const pendingMailRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (deepLinkHandledRef.current) return;
+    const raw = new URLSearchParams(window.location.search).get("mail");
+    if (!raw || raw === "inbox") return;
+    const messageId = Number(raw);
+    if (!Number.isInteger(messageId) || messageId <= 0) return;
+
+    deepLinkHandledRef.current = true;
+    pendingMailRef.current = messageId;
+    setOpen(true);
+  }, [setOpen]);
+
+  // Mở email của deep-link khi controller đã sẵn sàng (không dùng timer — an toàn với StrictMode).
+  useEffect(() => {
+    const messageId = pendingMailRef.current;
+    if (!messageId || !isOpen) return;
+    pendingMailRef.current = null;
+    void controller.openMessage(messageId);
+  }, [controller, isOpen]);
+
   const folderTitle = useMemo(() => {
     if (controller.inSearchMode) return "Kết quả tìm kiếm";
     const found = controller.folders.find((f) => f.FOLDER_KEY === controller.activeFolder);
@@ -154,6 +178,8 @@ export default function MailDock({ isMobile = false, open, onOpenChange, showTri
         onSelect={(key) => void controller.openFolder(key)}
         onOpenAccount={() => setShowAccount(true)}
         onCompose={() => setCompose({ open: true, mode: "new" })}
+        mutedAccountIds={controller.mutedAccountIds}
+        onToggleMute={(accountId) => void controller.toggleMute(accountId)}
       />
       <MailList
         title={folderTitle}
