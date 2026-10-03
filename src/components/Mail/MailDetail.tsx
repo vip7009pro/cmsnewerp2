@@ -5,7 +5,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import MailHtmlView from "./MailHtmlView";
 import MailAttachmentList from "./MailAttachmentList";
 import type { MailAddress, MailDetailResponse } from "./mail.types";
-import { addressEmail, addressLabel, formatMailFull, stripSubjectPrefix } from "./mailUtils";
+import { addressEmail, addressLabel, formatMailFullVn, stripSubjectPrefix } from "./mailUtils";
 import { mailFileUrl } from "../../api/services/emailService";
 
 interface MailDetailProps {
@@ -194,7 +194,7 @@ export default function MailDetail({ detail, loading, isMobile, onClose, onToggl
         </div>
         <RecipientLine label="Đến" list={message.to} />
         <RecipientLine label="CC" list={message.cc} />
-        <div>{formatMailFull(message.receivedAt || message.sentAt)}</div>
+        <div>{formatMailFullVn(message.receivedAt || message.sentAt)}</div>
       </div>
 
       {thread.length > 1 && (

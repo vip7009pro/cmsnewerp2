@@ -1,5 +1,5 @@
 import type { MailListItemModel } from "./mail.types";
-import { addressLabel, formatMailTime, initialsOf } from "./mailUtils";
+import { addressLabel, formatMailTimeVn, initialsOf } from "./mailUtils";
 
 interface MailListItemProps {
   item: MailListItemModel;
@@ -36,7 +36,7 @@ export default function MailListItem({ item, active, onOpen, onToggleStar }: Mai
             <span className="material-symbols-outlined">attach_file</span>
           </span>
         )}
-        <span>{formatMailTime(item.receivedAt || item.sentAt)}</span>
+        <span>{formatMailTimeVn(item.receivedAt || item.sentAt)}</span>
         <button
           type="button"
           className={`erp-mail__itemStar${item.isStarred ? " is-on" : ""}`}

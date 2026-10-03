@@ -21,6 +21,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { emailService, type MailSyncAllState } from "../../../api/services/emailService";
 import { formatMailFull } from "../../../components/Mail/mailUtils";
 import PrecisionEmailImportModal from "./PrecisionEmailImportModal";
+import MailAccountAdminDialog from "../../../components/Mail/MailAccountAdminDialog";
 import type {
   MailAdminMailbox,
   MailAdminOverview,
@@ -94,6 +95,8 @@ export default function PrecisionEmailAdmin() {
   const [rangeFrom, setRangeFrom] = useState("");
   const [rangeTo, setRangeTo] = useState("");
   const [savingRange, setSavingRange] = useState(false);
+  // Form THÊM/SỬA 1 mailbox (accountId = null ⇒ tạo mới).
+  const [accountDialog, setAccountDialog] = useState<{ id: number | null; initial: MailAdminMailbox | null } | null>(null);
   const searchTimerRef = useRef<number | null>(null);
 
   const load = useCallback(async (withStorage = true) => {
@@ -267,6 +270,9 @@ export default function PrecisionEmailAdmin() {
             }}
             className="precision-email__search"
           />
+          <Button size="small" variant="contained" onClick={() => setAccountDialog({ id: null, initial: null })}>
+            Thêm tài khoản
+          </Button>
           <Button size="small" variant="outlined" onClick={() => setShowImport(true)}>
             Nhập từ Excel
           </Button>
@@ -504,6 +510,16 @@ export default function PrecisionEmailAdmin() {
                         <span className="material-symbols-outlined">date_range</span>
                       </button>
                     </Tooltip>
+                    <Tooltip title="Sửa tài khoản">
+                      <button
+                        type="button"
+                        className="precision-email__iconBtn"
+                        disabled={busyId === box.id}
+                        onClick={() => setAccountDialog({ id: box.id, initial: box })}
+                      >
+                        <span className="material-symbols-outlined">edit</span>
+                      </button>
+                    </Tooltip>
                     <Tooltip title="Xem nhật ký đồng bộ">
                       <button type="button" className="precision-email__iconBtn" onClick={() => void openLogs(box)}>
                         <span className="material-symbols-outlined">receipt_long</span>
@@ -623,6 +639,17 @@ export default function PrecisionEmailAdmin() {
         open={showImport}
         onClose={() => setShowImport(false)}
         onImported={() => void load()}
+      />
+
+      <MailAccountAdminDialog
+        open={accountDialog !== null}
+        accountId={accountDialog?.id ?? null}
+        initial={accountDialog?.initial ?? null}
+        onClose={() => setAccountDialog(null)}
+        onSaved={() => {
+          flash(accountDialog?.id ? "Đã cập nhật tài khoản" : "Đã thêm tài khoản");
+          void load(false);
+        }}
       />
 
       {/* Cấu hình khoảng thời gian đồng bộ cho 1 mailbox (bỏ qua thư cũ). */}

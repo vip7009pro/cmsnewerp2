@@ -199,13 +199,35 @@ export interface MailAdminEmployee {
   storageBytes: number;
 }
 
+/** Dòng THÔ từ `ZTB_MAIL_ACCOUNT` (admin list) — KHÔNG chứa credential. */
+export interface MailRawAccountRow {
+  ID: number;
+  CTR_CD: string;
+  EMPL_NO: string | null;
+  EMAIL_ADDRESS: string;
+  DISPLAY_NAME: string | null;
+  POP3_HOST: string | null;
+  POP3_PORT: number | null;
+  POP3_SECURE: boolean | number;
+  POP3_USERNAME: string | null;
+  SMTP_HOST: string | null;
+  SMTP_PORT: number | null;
+  SMTP_SECURE: boolean | number;
+  SMTP_USERNAME: string | null;
+  IS_ACTIVE: boolean | number;
+  IS_SHARED: boolean | number;
+  SYNC_FROM_DATE: string | null;
+  SYNC_TO_DATE: string | null;
+  LAST_SYNC_AT: string | null;
+  LAST_SYNC_STATUS: string | null;
+  LAST_ERROR: string | null;
+}
+
 export interface MailAdminOverview {
   mailboxes: MailAdminMailbox[];
   totals: MailAdminTotals;
   byEmployee: MailAdminEmployee[];
-}
-
-export interface MailStorageDashboard {
+}export interface MailStorageDashboard {
   totals: MailAdminTotals;
   byEmployee: MailAdminEmployee[];
   byYear: { year: number; messageCount: number; bytes: number }[];

@@ -51,9 +51,24 @@ export function addressesOfGroup(members: MailContactMember[]): string {
  * Định dạng thời gian email.
  * DB dùng GETDATE() (giờ VN) + driver `useUTC:true` ⇒ các thành phần UTC của Date
  * chính là giờ VN ⇒ đọc thẳng bằng moment.utc (giống chatUtils.vnMoment).
+ *
+ * ⚠️ LƯU Ý QUAN TRỌNG — có HAI loại mốc thời gian trong module mail:
+ *  1) Mốc do MÁY CHỦ tạo bằng `GETDATE()` (LAST_SYNC_AT, CREATED_AT, STARTED_AT/FINISHED_AT, READ_AT…):
+ *     lưu dạng "giờ VN gắn nhãn UTC" ⇒ dùng `mailMoment`/`formatMailFull`/`formatMailTime`.
+ *  2) Mốc THẬT của EMAIL (`SENT_AT`/`RECEIVED_AT`, lấy từ header thư): parser trả về instant UTC thật,
+ *     driver `useUTC` ghi đúng thành phần UTC ⇒ lưu dạng **UTC thật** (vd 15:41 VN lưu thành 08:41Z).
+ *     ⇒ PHẢI đổi sang giờ VN bằng `mailMomentVn`/`formatMailFullVn`/`formatMailTimeVn`.
  */
 export function mailMoment(value?: string | null) {
   return value ? moment.utc(value) : null;
+}
+
+/** Múi giờ Việt Nam (phút) — dùng cho mốc thời gian THẬT của email. */
+export const MAIL_VN_OFFSET_MINUTES = 420;
+
+/** Mốc thời gian THẬT của email (SENT_AT/RECEIVED_AT lưu UTC) ⇒ quy về giờ Việt Nam. */
+export function mailMomentVn(value?: string | null) {
+  return value ? moment.utc(value).utcOffset(MAIL_VN_OFFSET_MINUTES) : null;
 }
 
 export function formatMailTime(value?: string | null): string {
@@ -67,6 +82,22 @@ export function formatMailTime(value?: string | null): string {
 
 export function formatMailFull(value?: string | null): string {
   const m = mailMoment(value);
+  return m ? m.format("DD/MM/YYYY HH:mm") : "";
+}
+
+/** Giờ gửi/nhận của email (đã quy về giờ Việt Nam). */
+export function formatMailTimeVn(value?: string | null): string {
+  const m = mailMomentVn(value);
+  if (!m) return "";
+  const now = moment.utc().utcOffset(MAIL_VN_OFFSET_MINUTES);
+  if (m.isSame(now, "day")) return m.format("HH:mm");
+  if (m.isSame(now, "year")) return m.format("DD/MM");
+  return m.format("DD/MM/YYYY");
+}
+
+/** Giờ gửi/nhận đầy đủ của email (đã quy về giờ Việt Nam). */
+export function formatMailFullVn(value?: string | null): string {
+  const m = mailMomentVn(value);
   return m ? m.format("DD/MM/YYYY HH:mm") : "";
 }
 
