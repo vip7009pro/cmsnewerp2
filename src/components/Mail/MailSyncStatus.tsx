@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { emailService } from "../../api/services/emailService";
 import type { MailSyncStatusResponse } from "./mail.types";
-import { formatMailFull } from "./mailUtils";
+import { formatMailFullVn } from "./mailUtils";
 
 interface MailSyncStatusProps {
   /** Gọi sau khi yêu cầu đồng bộ (để cha làm mới danh sách). */
@@ -100,7 +100,7 @@ export default function MailSyncStatus({ onSynced }: MailSyncStatusProps) {
           </span>
         )}
         {!syncing && status?.accounts?.[0]?.lastSyncAt && (
-          <span className="erp-mail__statusTime">· Lần cuối {formatMailFull(status.accounts[0].lastSyncAt)}</span>
+          <span className="erp-mail__statusTime">· Lần cuối {formatMailFullVn(status.accounts[0].lastSyncAt)}</span>
         )}
         <span style={{ flex: 1 }} />
         <button

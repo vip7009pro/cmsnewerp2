@@ -19,7 +19,7 @@ import {
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { emailService, type MailSyncAllState } from "../../../api/services/emailService";
-import { formatMailFull } from "../../../components/Mail/mailUtils";
+import { formatMailFull, formatMailFullVn } from "../../../components/Mail/mailUtils";
 import PrecisionEmailImportModal from "./PrecisionEmailImportModal";
 import MailAccountAdminDialog from "../../../components/Mail/MailAccountAdminDialog";
 import type {
@@ -310,12 +310,12 @@ export default function PrecisionEmailAdmin() {
         <div className="precision-email__syncAll">
           <CircularProgress size={14} />
           Đang đồng bộ hàng loạt: <b>{syncAll.processed}/{syncAll.total}</b> mailbox
-          (thành công {syncAll.ok} · lỗi {syncAll.failed}) — bắt đầu {syncAll.startedAt ? formatMailFull(syncAll.startedAt) : "—"}
+          (thành công {syncAll.ok} · lỗi {syncAll.failed}) — bắt đầu {syncAll.startedAt ? formatMailFullVn(syncAll.startedAt) : "—"}
         </div>
       )}
       {!syncAll?.running && syncAll?.finishedAt && (
         <div className="precision-email__syncAll is-done">
-          Đồng bộ hàng loạt xong lúc {formatMailFull(syncAll.finishedAt)}: {syncAll.ok}/{syncAll.total} thành công
+          Đồng bộ hàng loạt xong lúc {formatMailFullVn(syncAll.finishedAt)}: {syncAll.ok}/{syncAll.total} thành công
           {syncAll.failed > 0 ? `, ${syncAll.failed} lỗi` : ""}
         </div>
       )}
@@ -436,7 +436,7 @@ export default function PrecisionEmailAdmin() {
                   </span>
                 </TableCell>
                 <TableCell className="precision-email__muted">
-                  {box.lastSyncAt ? formatMailFull(box.lastSyncAt) : "chưa đồng bộ"}
+                  {box.lastSyncAt ? formatMailFullVn(box.lastSyncAt) : "chưa đồng bộ"}
                 </TableCell>
                 <TableCell align="right">
                   {formatNumber(box.messageCount)}

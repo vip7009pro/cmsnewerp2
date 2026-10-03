@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { emailService } from "../../api/services/emailService";
 import type { MailAccountConfig, MailAccountFormValues } from "./mail.types";
-import { formatMailFull } from "./mailUtils";
+import { formatMailFullVn } from "./mailUtils";
 
 interface MailAccountDialogProps {
   open: boolean;
@@ -223,7 +223,7 @@ export default function MailAccountDialog({ open, onClose, isMobile = false, onS
             )}
             {account?.lastSyncAt && (
               <div style={{ fontSize: 12, color: "#64748b", marginBottom: 10 }}>
-                Đồng bộ gần nhất: {formatMailFull(account.lastSyncAt)} · {account.lastSyncStatus || "—"}
+                Đồng bộ gần nhất: {formatMailFullVn(account.lastSyncAt)} · {account.lastSyncStatus || "—"}
                 {account.lastError ? ` · ${account.lastError}` : ""}
               </div>
             )}
