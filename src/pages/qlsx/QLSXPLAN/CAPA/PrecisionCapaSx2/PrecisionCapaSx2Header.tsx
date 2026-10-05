@@ -1,35 +1,37 @@
 import React from "react";
-import { FiRefreshCw, FiTrendingUp, FiEye, FiEyeOff } from "react-icons/fi";
+import { FiRefreshCw, FiEye, FiEyeOff } from "react-icons/fi";
 
-interface PrecisionCapaSxHeaderProps {
+interface PrecisionCapaSx2HeaderProps {
   onReload: () => void;
   totalMachines: number;
   totalWorkforce: number;
   isMobile?: boolean;
   showKpi?: boolean;
   onToggleKpi?: () => void;
+  isLoading?: boolean;
 }
 
-export const PrecisionCapaSxHeader: React.FC<PrecisionCapaSxHeaderProps> = ({
+export const PrecisionCapaSx2Header: React.FC<PrecisionCapaSx2HeaderProps> = ({
   onReload,
   totalMachines,
   totalWorkforce,
   isMobile = false,
   showKpi = true,
   onToggleKpi,
+  isLoading = false,
 }) => {
   return (
     <header className={`precision-capa-header ${isMobile ? "precision-capa-header--mobile" : ""}`}>
       <div className="precision-capa-header__left">
         <span className="precision-capa-header__badge-brand">
-          {isMobile ? "CAPA" : "CMS QLSX"}
+          {isMobile ? "CAPA 2" : "CMS QLSX"}
         </span>
 
         {!isMobile && (
           <div className="precision-capa-header__breadcrumb">
             <span>Kế Hoạch Sản Xuất</span>
             <span>/</span>
-            <span className="active">Quản Lý Năng Lực Thiết Bị & Nhân Lực (CAPA)</span>
+            <span className="active">Quản Lý Năng Lực Thiết Bị & Nhân Lực (CAPA 2)</span>
           </div>
         )}
 
@@ -60,15 +62,15 @@ export const PrecisionCapaSxHeader: React.FC<PrecisionCapaSxHeaderProps> = ({
           type="button"
           className="precision-capa-header__btn-action"
           onClick={onReload}
-          title="Đồng bộ lại toàn bộ dữ liệu máy & nhân lực"
+          disabled={isLoading}
+          title="Đồng bộ lại toàn bộ dữ liệu máy & năng lực"
         >
-          <FiRefreshCw size={12} />
-          {!isMobile && <span>Tải Lại</span>}
+          <FiRefreshCw size={12} className={isLoading ? "animate-spin" : ""} />
+          {!isMobile && <span>{isLoading ? "Đang Tải..." : "Tải Lại"}</span>}
         </button>
       </div>
     </header>
   );
 };
 
-export default React.memo(PrecisionCapaSxHeader);
-
+export default React.memo(PrecisionCapaSx2Header);

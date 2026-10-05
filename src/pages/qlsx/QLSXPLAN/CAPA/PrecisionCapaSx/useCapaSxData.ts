@@ -177,7 +177,40 @@ export const useCapaSxData = () => {
         const EDNM2 = eq_data.filter((e) => e?.EQ_NAME?.startsWith("ED") && e.FACTORY === "NM2" && e.EQ_ACTIVE === "OK").length;
 
         const eq_sttdata = { FR1: FRNM1, SR1: SRNM1, DC1: DCNM1, ED1: EDNM1, FR2: FRNM2, SR2: SRNM2, DC2: DCNM2, ED2: EDNM2 };
-        const empl_info = { FR: FR_EMPL, SR: SR_EMPL, DC: DC_EMPL, ED: ED_EMPL };
+        let empl_info = { FR: FR_EMPL, SR: SR_EMPL, DC: DC_EMPL, ED: ED_EMPL };
+        const hasEmpl = FR_EMPL.TNM1 > 0 || FR_EMPL.TNM2 > 0 || SR_EMPL.TNM1 > 0;
+        if (!hasEmpl) {
+          const resDiemDanh = await generalQuery("diemdanhallbp", { MAINDEPTCODE: 5 });
+          if (resDiemDanh.data.tk_status !== "NG") {
+            const list: DATA_DIEM_DANH[] = resDiemDanh.data.data;
+            empl_info = {
+              FR: {
+                TNM1: list.filter((e) => e.WORK_POSITION_NAME === "SX_FR1").length,
+                TNM2: list.filter((e) => e.WORK_POSITION_NAME === "SX_FR3").length,
+                NM1: list.filter((e) => e.WORK_POSITION_NAME === "SX_FR1" && e.ON_OFF === 1).length,
+                NM2: list.filter((e) => e.WORK_POSITION_NAME === "SX_FR3" && e.ON_OFF === 1).length,
+              },
+              SR: {
+                TNM1: list.filter((e) => e.WORK_POSITION_NAME === "SX_SR1").length,
+                TNM2: list.filter((e) => e.WORK_POSITION_NAME === "SX_SR3").length,
+                NM1: list.filter((e) => e.WORK_POSITION_NAME === "SX_SR1" && e.ON_OFF === 1).length,
+                NM2: list.filter((e) => e.WORK_POSITION_NAME === "SX_SR3" && e.ON_OFF === 1).length,
+              },
+              DC: {
+                TNM1: list.filter((e) => e.WORK_POSITION_NAME === "SX_DC1").length,
+                TNM2: list.filter((e) => e.WORK_POSITION_NAME === "SX_DC3").length,
+                NM1: list.filter((e) => e.WORK_POSITION_NAME === "SX_DC1" && e.ON_OFF === 1).length,
+                NM2: list.filter((e) => e.WORK_POSITION_NAME === "SX_DC3" && e.ON_OFF === 1).length,
+              },
+              ED: {
+                TNM1: list.filter((e) => e.WORK_POSITION_NAME === "SX_ED1").length,
+                TNM2: list.filter((e) => e.WORK_POSITION_NAME === "SX_ED3").length,
+                NM1: list.filter((e) => e.WORK_POSITION_NAME === "SX_ED1" && e.ON_OFF === 1).length,
+                NM2: list.filter((e) => e.WORK_POSITION_NAME === "SX_ED3" && e.ON_OFF === 1).length,
+              },
+            };
+          }
+        }
 
         const resCapa = await generalQuery("capabydeliveryplan", { PLAN_DATE: plan_date, EQ: eq, FACTORY: factory });
         if (resCapa.data.tk_status !== "NG") {
@@ -205,10 +238,10 @@ export const useCapaSxData = () => {
       getMachineCounting(),
       getYCSXBALANCE(),
       handle_loadEQ_STATUS(),
-      getDeliveryLeadTime(selectedFactory, selectedMachine, selectedPlanDate),
+      getDeliveryLeadTime(selectedFactory, "ALL", selectedPlanDate),
       getProductionPlanLeadTimeCapaData(selectedPlanDate),
     ]);
-  }, [getDiemDanhAllBP, getMachineCounting, getYCSXBALANCE, handle_loadEQ_STATUS, getDeliveryLeadTime, getProductionPlanLeadTimeCapaData, selectedFactory, selectedMachine, selectedPlanDate]);
+  }, [getDiemDanhAllBP, getMachineCounting, getYCSXBALANCE, handle_loadEQ_STATUS, getDeliveryLeadTime, getProductionPlanLeadTimeCapaData, selectedFactory, selectedPlanDate]);
 
   useEffect(() => {
     initFunction();

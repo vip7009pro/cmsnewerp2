@@ -1,8 +1,8 @@
 import React from "react";
 import moment from "moment";
-import { FiCalendar, FiHome, FiGrid, FiUsers, FiClock, FiLayers } from "react-icons/fi";
+import { FiCalendar, FiHome, FiGrid, FiUsers, FiClock, FiLayers, FiActivity } from "react-icons/fi";
 
-interface PrecisionCapaSxToolbarProps {
+interface PrecisionCapaSx2ToolbarProps {
   planDate: string;
   factory: string;
   activeTab: string;
@@ -12,7 +12,7 @@ interface PrecisionCapaSxToolbarProps {
   isMobile?: boolean;
 }
 
-export const PrecisionCapaSxToolbar: React.FC<PrecisionCapaSxToolbarProps> = ({
+export const PrecisionCapaSx2Toolbar: React.FC<PrecisionCapaSx2ToolbarProps> = ({
   planDate,
   factory,
   activeTab,
@@ -33,7 +33,6 @@ export const PrecisionCapaSxToolbar: React.FC<PrecisionCapaSxToolbarProps> = ({
 
   return (
     <div className={`precision-capa-toolbar ${isMobile ? "precision-capa-toolbar--mobile" : ""}`}>
-
       {/* Hàng 1: Bộ lọc Ngày & Nhà máy */}
       <div className="precision-capa-toolbar__controls-row">
         <div className="precision-capa-toolbar__filters-group">
@@ -127,11 +126,19 @@ export const PrecisionCapaSxToolbar: React.FC<PrecisionCapaSxToolbarProps> = ({
           onClick={() => onTabChange("plans")}
         >
           <FiLayers size={12} />
-          <span>Kế Hoạch Năng Lực & Lead Time</span>
+          <span>Kế Hoạch Năng Lực Giao Hàng</span>
+        </button>
+        <button
+          type="button"
+          className={`nav-tab-btn ${activeTab === "matrix" ? "nav-tab-btn--active" : ""}`}
+          onClick={() => onTabChange("matrix")}
+        >
+          <FiActivity size={12} />
+          <span>Bảng Ma Trận Chi Tiết</span>
         </button>
       </div>
     </div>
   );
 };
 
-export default React.memo(PrecisionCapaSxToolbar);
+export default React.memo(PrecisionCapaSx2Toolbar);

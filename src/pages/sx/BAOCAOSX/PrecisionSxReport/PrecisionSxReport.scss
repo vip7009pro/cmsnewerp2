@@ -563,6 +563,8 @@
       overflow-x: auto;
       min-height: 260px;
       height: 320px;
+      position: relative;
+      width: 100%;
 
       &--tall {
         height: 380px;

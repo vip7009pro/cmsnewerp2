@@ -25,18 +25,33 @@ export { zeroPad, requestFullScreen, encryptData } from "./utilCore";
  */
 
 export function CustomResponsiveContainer(props: any) {
+  const { minWidth = 0, minHeight = 250, style, ...rest } = props;
   return (
-    <div style={{ width: "100%", height: "100%", position: "relative" }}>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        minHeight: minHeight,
+        position: "relative",
+        flex: 1,
+        ...style,
+      }}
+    >
       <div
         style={{
           width: "100%",
           height: "100%",
+          minHeight: minHeight,
           position: "absolute",
           top: 0,
           left: 0,
         }}
       >
-        <ResponsiveContainer {...props} />
+        <ResponsiveContainer
+          minWidth={minWidth}
+          minHeight={minHeight}
+          {...rest}
+        />
       </div>
     </div>
   );

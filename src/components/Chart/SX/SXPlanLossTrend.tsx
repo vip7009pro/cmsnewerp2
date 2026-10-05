@@ -72,7 +72,7 @@ const SXPlanLossTrend = ({
   };
   useEffect(() => {}, []);
   return (
-    <CustomResponsiveContainer>
+    <CustomResponsiveContainer minHeight={260} minWidth={0}>
       <ComposedChart
         width={500}
         height={300}

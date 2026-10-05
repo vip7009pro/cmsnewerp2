@@ -6,10 +6,9 @@ import {
   FiClock,
   FiActivity,
   FiTrendingUp,
-  FiCheckCircle,
 } from "react-icons/fi";
 
-interface PrecisionCapaSxKpiProps {
+interface PrecisionCapaSx2KpiProps {
   totalReqWorkforce: number;
   retainWorkforce: number;
   realtimeWorkforce: number;
@@ -18,10 +17,11 @@ interface PrecisionCapaSxKpiProps {
   maxDailyCapaMinutes: number;
   totalYcsxBalanceMinutes: number;
   avgLeadTimeDays: number;
+  retainLeadTimeDays: number;
   isMobile?: boolean;
 }
 
-export const PrecisionCapaSxKpi: React.FC<PrecisionCapaSxKpiProps> = ({
+export const PrecisionCapaSx2Kpi: React.FC<PrecisionCapaSx2KpiProps> = ({
   totalReqWorkforce,
   retainWorkforce,
   realtimeWorkforce,
@@ -30,21 +30,32 @@ export const PrecisionCapaSxKpi: React.FC<PrecisionCapaSxKpiProps> = ({
   maxDailyCapaMinutes,
   totalYcsxBalanceMinutes,
   avgLeadTimeDays,
+  retainLeadTimeDays,
   isMobile = false,
 }) => {
-  const attendanceRate = retainWorkforce > 0 ? (realtimeWorkforce / retainWorkforce) * 100 : 0;
-  const runningRate = totalMachines > 0 ? (runningMachines / totalMachines) * 100 : 0;
+  const attendanceRate =
+    retainWorkforce > 0 ? (realtimeWorkforce / retainWorkforce) * 100 : 0;
+  const runningRate =
+    totalMachines > 0 ? (runningMachines / totalMachines) * 100 : 0;
 
   return (
-    <div className={`precision-capa-kpi-grid ${isMobile ? "precision-capa-kpi-grid--mobile" : ""}`}>
-
+    <div
+      className={`precision-capa-kpi-grid ${
+        isMobile ? "precision-capa-kpi-grid--mobile" : ""
+      }`}
+    >
       {/* 1. Nhân Lực Cần Cho Full Capa */}
       <div className="kpi-card kpi-card--purple">
         <div className="kpi-info">
           <span className="kpi-label">Nhân Lực Cần Full Capa</span>
-          <div className="kpi-amount">{totalReqWorkforce.toLocaleString("en-US")} <small style={{ fontSize: "11px", fontWeight: "normal" }}>Người</small></div>
+          <div className="kpi-amount">
+            {totalReqWorkforce.toLocaleString("en-US")}{" "}
+            <small style={{ fontSize: "11px", fontWeight: "normal" }}>
+              Người
+            </small>
+          </div>
           <div className="kpi-meta">
-            <span>Tiêu chuẩn 100% ca:</span>
+            <span>Tiêu chuẩn tổng:</span>
             <span className="meta-val">{totalReqWorkforce} người</span>
           </div>
         </div>
@@ -58,11 +69,18 @@ export const PrecisionCapaSxKpi: React.FC<PrecisionCapaSxKpiProps> = ({
         <div className="kpi-info">
           <span className="kpi-label">Điểm Danh Có Mặt</span>
           <div className="kpi-amount">
-            {realtimeWorkforce} / {retainWorkforce} <small style={{ fontSize: "11px", fontWeight: "normal" }}>Người</small>
+            {realtimeWorkforce} / {retainWorkforce}{" "}
+            <small style={{ fontSize: "11px", fontWeight: "normal" }}>
+              Người
+            </small>
           </div>
           <div className="kpi-meta">
             <span>Tỷ lệ đi làm:</span>
-            <span className={`growth-pill ${attendanceRate >= 90 ? "growth-pill--up" : "growth-pill--down"}`}>
+            <span
+              className={`growth-pill ${
+                attendanceRate >= 90 ? "growth-pill--up" : "growth-pill--down"
+              }`}
+            >
               {attendanceRate.toFixed(1)}%
             </span>
           </div>
@@ -77,11 +95,18 @@ export const PrecisionCapaSxKpi: React.FC<PrecisionCapaSxKpiProps> = ({
         <div className="kpi-info">
           <span className="kpi-label">Máy Đang Chạy (Running)</span>
           <div className="kpi-amount">
-            {runningMachines} / {totalMachines} <small style={{ fontSize: "11px", fontWeight: "normal" }}>Máy</small>
+            {runningMachines} / {totalMachines}{" "}
+            <small style={{ fontSize: "11px", fontWeight: "normal" }}>
+              Máy
+            </small>
           </div>
           <div className="kpi-meta">
             <span>Tỷ lệ vận hành:</span>
-            <span className={`growth-pill ${runningRate >= 80 ? "growth-pill--up" : "growth-pill--down"}`}>
+            <span
+              className={`growth-pill ${
+                runningRate >= 80 ? "growth-pill--up" : "growth-pill--down"
+              }`}
+            >
               {runningRate.toFixed(1)}%
             </span>
           </div>
@@ -91,17 +116,23 @@ export const PrecisionCapaSxKpi: React.FC<PrecisionCapaSxKpiProps> = ({
         </div>
       </div>
 
-      {/* 4. Tổng Năng Lực Máy Ngày */}
+      {/* 4. Tổng Năng Lực Toàn Xưởng / Ngày */}
       <div className="kpi-card kpi-card--indigo">
         <div className="kpi-info">
           <span className="kpi-label">Tổng Năng Lực Máy / Ngày</span>
           <div className="kpi-amount">
-            {(maxDailyCapaMinutes / 60).toLocaleString("en-US", { maximumFractionDigits: 0 })}{" "}
-            <small style={{ fontSize: "11px", fontWeight: "normal" }}>Giờ</small>
+            {(maxDailyCapaMinutes / 60).toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+            })}{" "}
+            <small style={{ fontSize: "11px", fontWeight: "normal" }}>
+              Giờ
+            </small>
           </div>
           <div className="kpi-meta">
             <span>Quy đổi:</span>
-            <span className="meta-val">{maxDailyCapaMinutes.toLocaleString("en-US")} phút</span>
+            <span className="meta-val">
+              {maxDailyCapaMinutes.toLocaleString("en-US")} phút
+            </span>
           </div>
         </div>
         <div className="kpi-icon-wrap">
@@ -114,12 +145,18 @@ export const PrecisionCapaSxKpi: React.FC<PrecisionCapaSxKpiProps> = ({
         <div className="kpi-info">
           <span className="kpi-label">Tồn Yêu Cầu Chờ Dập</span>
           <div className="kpi-amount">
-            {(totalYcsxBalanceMinutes / 60).toLocaleString("en-US", { maximumFractionDigits: 0 })}{" "}
-            <small style={{ fontSize: "11px", fontWeight: "normal" }}>Giờ</small>
+            {(totalYcsxBalanceMinutes / 60).toLocaleString("en-US", {
+              maximumFractionDigits: 0,
+            })}{" "}
+            <small style={{ fontSize: "11px", fontWeight: "normal" }}>
+              Giờ
+            </small>
           </div>
           <div className="kpi-meta">
             <span>Khối lượng:</span>
-            <span className="meta-val">{totalYcsxBalanceMinutes.toLocaleString("en-US")} phút</span>
+            <span className="meta-val">
+              {totalYcsxBalanceMinutes.toLocaleString("en-US")} phút
+            </span>
           </div>
         </div>
         <div className="kpi-icon-wrap">
@@ -132,11 +169,14 @@ export const PrecisionCapaSxKpi: React.FC<PrecisionCapaSxKpiProps> = ({
         <div className="kpi-info">
           <span className="kpi-label">Lead Time Trung Bình</span>
           <div className="kpi-amount">
-            {avgLeadTimeDays.toFixed(1)} <small style={{ fontSize: "11px", fontWeight: "normal" }}>Ngày</small>
+            {avgLeadTimeDays.toFixed(1)}{" "}
+            <small style={{ fontSize: "11px", fontWeight: "normal" }}>
+              Ngày
+            </small>
           </div>
           <div className="kpi-meta">
-            <span>Dựa trên thực tế:</span>
-            <span className="meta-val">PO Balance</span>
+            <span>Retain Lead Time:</span>
+            <span className="meta-val">{retainLeadTimeDays.toFixed(1)} ngày</span>
           </div>
         </div>
         <div className="kpi-icon-wrap">
@@ -147,4 +187,4 @@ export const PrecisionCapaSxKpi: React.FC<PrecisionCapaSxKpiProps> = ({
   );
 };
 
-export default React.memo(PrecisionCapaSxKpi);
+export default React.memo(PrecisionCapaSx2Kpi);
