@@ -73,7 +73,7 @@ const MACHINE_OLD: React.FC = () => {
     (series: string, checked: boolean) => {
       if (series === "ALL") {
         if (checked) {
-          setSelected_eq(["ALL", "ED", "FR", "DC", "SR"]);
+          setSelected_eq(eq_series);
         } else {
           setSelected_eq([]);
         }
