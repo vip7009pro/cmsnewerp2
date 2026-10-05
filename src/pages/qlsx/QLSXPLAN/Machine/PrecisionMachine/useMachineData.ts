@@ -12,7 +12,7 @@ import {
 import { MachineKpiData, UseMachineDataReturn } from "./machineTypes";
 import useLocalStorageArray from "../LoadSelectedMachineHook";
 
-const EQ_SERIES_LIST = ["ALL", "ED", "FR", "DC", "SR"];
+const EQ_SERIES_LIST = ["ALL", "ED", "FR", "DC", "SR", "SP"];
 
 export const useMachineData = (): UseMachineDataReturn => {
   const [factory, setFactory] = useState<"NM1" | "NM2">("NM1");
@@ -163,7 +163,7 @@ export const useMachineData = (): UseMachineDataReturn => {
   const kpiData: MachineKpiData = useMemo(() => {
     const currentFactoryMachines = eq_status.filter((m) => m.FACTORY === factory);
     const totalMachines = currentFactoryMachines.length || 12;
-    
+
     // Đếm máy đang chạy
     const activeMachines = currentFactoryMachines.filter(
       (m) => m.EQ_ACTIVE === "OK" || m.EQ_STATUS === "MASS" || m.EQ_STATUS === "SETTING"

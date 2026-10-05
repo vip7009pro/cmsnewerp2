@@ -10,12 +10,13 @@ interface PrecisionCapaSxPlanChartsProps {
   onActivePlanMachineChange: (machine: string) => void;
 }
 
-const MACHINE_LIST = ["ALL", "FR", "SR", "DC", "ED"];
+const MACHINE_LIST = ["ALL", "FR", "SR", "DC", "ED", "SP"];
 const MACHINE_COLORS: Record<string, { bg: string; text: string }> = {
   FR: { bg: "#eff6ff", text: "#1d4ed8" },
   SR: { bg: "#ecfdf5", text: "#047857" },
   DC: { bg: "#faf5ff", text: "#7e22ce" },
   ED: { bg: "#fff1f2", text: "#be123c" },
+  SP: { bg: "#fef9c3", text: "#a16207" },
   ALL: { bg: "#0284c7", text: "#ffffff" },
 };
 
@@ -33,7 +34,7 @@ const PrecisionCapaSxPlanCharts: React.FC<PrecisionCapaSxPlanChartsProps> = ({
   };
 
   const renderCharts = () => {
-    const eqList = activePlanMachine === "ALL" ? ["FR", "SR", "DC", "ED"] : [activePlanMachine];
+    const eqList = activePlanMachine === "ALL" ? ["FR", "SR", "DC", "ED", "SP"] : [activePlanMachine];
     if (eqList.length === 1) {
       const eq = eqList[0];
       const data = productionplancapadata.filter((d) => d.EQ_SERIES === eq);
@@ -134,15 +135,15 @@ const PrecisionCapaSxPlanCharts: React.FC<PrecisionCapaSxPlanChartsProps> = ({
               activePlanMachine !== mach
                 ? {}
                 : mach !== "ALL"
-                ? {
+                  ? {
                     backgroundColor: MACHINE_COLORS[mach]?.bg,
                     color: MACHINE_COLORS[mach]?.text,
                     borderColor: MACHINE_COLORS[mach]?.text,
                   }
-                : {}
+                  : {}
             }
           >
-            {mach === "ALL" ? "Tất Cả 4 Máy" : `Máy ${mach}`}
+            {mach === "ALL" ? "Tất Cả Dòng Máy" : `Máy ${mach}`}
           </button>
         ))}
         <button

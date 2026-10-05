@@ -175,21 +175,21 @@ export const useQuickPlanData = () => {
                   getAuditMode() == 0
                     ? element?.G_NAME
                     : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME
-                    : "TEM_NOI_BO",
+                      ? element?.G_NAME
+                      : "TEM_NOI_BO",
                 G_NAME_KD:
                   getAuditMode() == 0
                     ? element?.G_NAME_KD
                     : element?.G_NAME?.search("CNDB") == -1
-                    ? element?.G_NAME_KD
-                    : "TEM_NOI_BO",
+                      ? element?.G_NAME_KD
+                      : "TEM_NOI_BO",
                 PO_TDYCSX:
                   element.PO_TDYCSX === undefined || element.PO_TDYCSX === null
                     ? 0
                     : element.PO_TDYCSX,
                 TOTAL_TKHO_TDYCSX:
                   element.TOTAL_TKHO_TDYCSX === undefined ||
-                  element.TOTAL_TKHO_TDYCSX === null
+                    element.TOTAL_TKHO_TDYCSX === null
                     ? 0
                     : element.TOTAL_TKHO_TDYCSX,
                 TKHO_TDYCSX:
@@ -206,12 +206,12 @@ export const useQuickPlanData = () => {
                     : element.CK_TDYCSX,
                 BLOCK_TDYCSX:
                   element.BLOCK_TDYCSX === undefined ||
-                  element.BLOCK_TDYCSX === null
+                    element.BLOCK_TDYCSX === null
                     ? 0
                     : element.BLOCK_TDYCSX,
                 FCST_TDYCSX:
                   element.FCST_TDYCSX === undefined ||
-                  element.FCST_TDYCSX === null
+                    element.FCST_TDYCSX === null
                     ? 0
                     : element.FCST_TDYCSX,
                 W1: element.W1 === undefined || element.W1 === null ? 0 : element.W1,
@@ -224,7 +224,7 @@ export const useQuickPlanData = () => {
                 W8: element.W8 === undefined || element.W8 === null ? 0 : element.W8,
                 PROD_REQUEST_QTY:
                   element.PROD_REQUEST_QTY === undefined ||
-                  element.PROD_REQUEST_QTY === null
+                    element.PROD_REQUEST_QTY === null
                     ? 0
                     : element.PROD_REQUEST_QTY,
                 CD1: element.CD1 === null ? 0 : element.CD1,
@@ -619,13 +619,9 @@ export const useQuickPlanData = () => {
           qlsxplandatafilter.current[i].PLAN_QTY !== 0 &&
           qlsxplandatafilter.current[i].PLAN_QTY <= (qlsxplandatafilter.current[i].CURRENT_SLC ?? 0) &&
           qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) !== "" &&
-          (qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FR" ||
-            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SR" ||
-            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DC" ||
-            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "ED" ||
-            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FX" ||
-            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DG" ||
-            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SC") &&
+          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) !== "NO" &&
+          qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) !== "NA" &&
+          machine_list.some((item) => item.EQ_NAME === qlsxplandatafilter.current[i].PLAN_EQ) &&
           qlsxplandatafilter.current[i].STEP >= 0 &&
           qlsxplandatafilter.current[i].STEP <= 9
         ) {
@@ -699,14 +695,8 @@ export const useQuickPlanData = () => {
           } else if (qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "") {
             err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": PLAN_EQ không được rỗng";
           } else if (
-            !(
-              qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FR" ||
-              qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SR" ||
-              qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DC" ||
-              qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "ED" ||
-              qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FX" ||
-              qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DG" ||
-              qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SC"
+            !machine_list.some(
+              (item) => item.EQ_NAME === qlsxplandatafilter.current[i].PLAN_EQ
             )
           ) {
             err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": PLAN_EQ không hợp lệ";
@@ -971,8 +961,8 @@ export const useQuickPlanData = () => {
                   temp_ycsx_data[0].TON_CD1 <= 0
                     ? 0
                     : temp_ycsx_data[0].TON_CD1 < temp_ycsx_data[0].UPH1 * qtyFactor
-                    ? temp_ycsx_data[0].TON_CD1
-                    : temp_ycsx_data[0].UPH1 * qtyFactor,
+                      ? temp_ycsx_data[0].TON_CD1
+                      : temp_ycsx_data[0].UPH1 * qtyFactor,
                 CD1: temp_ycsx_data[0].CD1,
                 CD2: temp_ycsx_data[0].CD2,
                 CD3: temp_ycsx_data[0].CD3,
@@ -1054,8 +1044,8 @@ export const useQuickPlanData = () => {
                     (temp_ycsx_data[0]?.TON_CD1 ?? 0) <= 0
                       ? 0
                       : (temp_ycsx_data[0]?.TON_CD1 ?? 0) < UPH1 * qtyFactor
-                      ? temp_ycsx_data[0]?.TON_CD1 ?? 0
-                      : UPH1 * qtyFactor,
+                        ? temp_ycsx_data[0]?.TON_CD1 ?? 0
+                        : UPH1 * qtyFactor,
                 };
               } else if (plan_temp === p.EQ2) {
                 return {
@@ -1075,8 +1065,8 @@ export const useQuickPlanData = () => {
                     (temp_ycsx_data[0]?.TON_CD2 ?? 0) <= 0
                       ? 0
                       : (temp_ycsx_data[0]?.TON_CD2 ?? 0) < UPH2 * qtyFactor
-                      ? temp_ycsx_data[0]?.TON_CD2 ?? 0
-                      : UPH2 * qtyFactor,
+                        ? temp_ycsx_data[0]?.TON_CD2 ?? 0
+                        : UPH2 * qtyFactor,
                 };
               } else if (plan_temp === p.EQ3) {
                 return {
@@ -1096,8 +1086,8 @@ export const useQuickPlanData = () => {
                     (temp_ycsx_data[0]?.TON_CD3 ?? 0) <= 0
                       ? 0
                       : (temp_ycsx_data[0]?.TON_CD3 ?? 0) < UPH3 * qtyFactor
-                      ? temp_ycsx_data[0]?.TON_CD3 ?? 0
-                      : UPH3 * qtyFactor,
+                        ? temp_ycsx_data[0]?.TON_CD3 ?? 0
+                        : UPH3 * qtyFactor,
                 };
               } else if (plan_temp === p.EQ4) {
                 return {
@@ -1117,8 +1107,8 @@ export const useQuickPlanData = () => {
                     (temp_ycsx_data[0]?.TON_CD4 ?? 0) <= 0
                       ? 0
                       : (temp_ycsx_data[0]?.TON_CD4 ?? 0) < UPH4 * qtyFactor
-                      ? temp_ycsx_data[0]?.TON_CD4 ?? 0
-                      : UPH4 * qtyFactor,
+                        ? temp_ycsx_data[0]?.TON_CD4 ?? 0
+                        : UPH4 * qtyFactor,
                 };
               } else {
                 Swal.fire("Thông báo", "Máy đã nhập ko giống trong BOM", "warning");
@@ -1154,18 +1144,18 @@ export const useQuickPlanData = () => {
                 prnb === 1
                   ? temp_ycsx_data[0]?.TON_CD1 ?? 0
                   : prnb === 2
-                  ? temp_ycsx_data[0]?.TON_CD2 ?? 0
-                  : prnb === 3
-                  ? temp_ycsx_data[0]?.TON_CD3 ?? 0
-                  : temp_ycsx_data[0]?.TON_CD4 ?? 0;
+                    ? temp_ycsx_data[0]?.TON_CD2 ?? 0
+                    : prnb === 3
+                      ? temp_ycsx_data[0]?.TON_CD3 ?? 0
+                      : temp_ycsx_data[0]?.TON_CD4 ?? 0;
               let SLC: number =
                 prnb === 1
                   ? temp_ycsx_data[0]?.SLC_CD1 ?? 0
                   : prnb === 2
-                  ? temp_ycsx_data[0]?.SLC_CD2 ?? 0
-                  : prnb === 3
-                  ? temp_ycsx_data[0]?.SLC_CD3 ?? 0
-                  : temp_ycsx_data[0]?.SLC_CD4 ?? 0;
+                    ? temp_ycsx_data[0]?.SLC_CD2 ?? 0
+                    : prnb === 3
+                      ? temp_ycsx_data[0]?.SLC_CD3 ?? 0
+                      : temp_ycsx_data[0]?.SLC_CD4 ?? 0;
               return {
                 ...p,
                 [keyvar]: params.value,
