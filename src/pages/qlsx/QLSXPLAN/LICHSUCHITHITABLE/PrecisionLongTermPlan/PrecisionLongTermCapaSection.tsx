@@ -1,48 +1,130 @@
 import React, { useMemo } from "react";
-import { FiActivity, FiDownload, FiChevronUp, FiChevronDown, FiLayers, FiCpu, FiTool, FiSliders } from "react-icons/fi";
+import {
+  FiActivity,
+  FiDownload,
+  FiChevronUp,
+  FiChevronDown,
+  FiLayers,
+  FiCpu,
+  FiTool,
+  FiSliders,
+} from "react-icons/fi";
 import { SaveExcel } from "../../../../../api/services/excelService";
-import { PROD_PLAN_CAPA_DATA } from "../../interfaces/khsxInterface";
+import {
+  MACHINE_LIST,
+  PROD_PLAN_CAPA_DATA,
+} from "../../interfaces/khsxInterface";
 import PrecisionLongTermCapaChart from "./PrecisionLongTermCapaChart";
 
 interface PrecisionLongTermCapaSectionProps {
   capaData: PROD_PLAN_CAPA_DATA[];
-  activeTab: "ALL" | "FR" | "SR" | "DC" | "ED";
+  machineList?: MACHINE_LIST[];
+  activeTab: string;
   isCollapsed: boolean;
-  onTabChange: (tab: "ALL" | "FR" | "SR" | "DC" | "ED") => void;
+  onTabChange: (tab: string) => void;
   onToggleCollapse: () => void;
 }
 
+interface SeriesMeta {
+  color: string;
+  label: string;
+  icon: React.ReactNode;
+}
+
+const KNOWN_SERIES_META: Record<
+  string,
+  { color: string; label: string; icon: React.ReactNode }
+> = {
+  FR: { color: "#4f46e5", label: "Dập FR", icon: <FiCpu /> },
+  SR: { color: "#059669", label: "Dập SR", icon: <FiLayers /> },
+  DC: { color: "#d97706", label: "Dán DC", icon: <FiTool /> },
+  ED: { color: "#e11d48", label: "Bế ED", icon: <FiSliders /> },
+  SP: { color: "#0891b2", label: "In SP", icon: <FiCpu /> },
+  IN: { color: "#7c3aed", label: "In Lụa", icon: <FiActivity /> },
+};
+
+const PALETTE = [
+  "#4f46e5",
+  "#059669",
+  "#d97706",
+  "#e11d48",
+  "#0891b2",
+  "#7c3aed",
+  "#2563eb",
+  "#ea580c",
+  "#0d9488",
+  "#db2777",
+];
+
+const getSeriesMeta = (series: string, index: number): SeriesMeta => {
+  const upper = series?.toUpperCase() || "";
+  if (KNOWN_SERIES_META[upper]) {
+    return KNOWN_SERIES_META[upper];
+  }
+  const color = PALETTE[index % PALETTE.length];
+  return {
+    color,
+    label: `Công Đoạn ${series}`,
+    icon: <FiCpu />,
+  };
+};
+
 const PrecisionLongTermCapaSection: React.FC<PrecisionLongTermCapaSectionProps> = ({
   capaData,
+  machineList = [],
   activeTab,
   isCollapsed,
   onTabChange,
   onToggleCollapse,
 }) => {
-  const frData = useMemo(
-    () => capaData.filter((item) => item.EQ_SERIES === "FR"),
-    [capaData]
-  );
-  const srData = useMemo(
-    () => capaData.filter((item) => item.EQ_SERIES === "SR"),
-    [capaData]
-  );
-  const dcData = useMemo(
-    () => capaData.filter((item) => item.EQ_SERIES === "DC"),
-    [capaData]
-  );
-  const edData = useMemo(
-    () => capaData.filter((item) => item.EQ_SERIES === "ED"),
-    [capaData]
-  );
+  // 1. Trích xuất danh sách dòng máy (loại bỏ 'NA', 'NO', 'ALL')
+  const seriesList = useMemo(() => {
+    const listFromMachines = (machineList || [])
+      .map((m) => m.EQ_NAME)
+      .filter(
+        (name) => name && name !== "NA" && name !== "NO" && name !== "ALL"
+      );
 
-  const showFR = activeTab === "ALL" || activeTab === "FR";
-  const showSR = activeTab === "ALL" || activeTab === "SR";
-  const showDC = activeTab === "ALL" || activeTab === "DC";
-  const showED = activeTab === "ALL" || activeTab === "ED";
+    const set = new Set(listFromMachines);
+    (capaData || []).forEach((item) => {
+      if (
+        item.EQ_SERIES &&
+        item.EQ_SERIES !== "NA" &&
+        item.EQ_SERIES !== "NO" &&
+        item.EQ_SERIES !== "ALL"
+      ) {
+        set.add(item.EQ_SERIES);
+      }
+    });
+
+    // Fallback nếu chưa có dữ liệu nạp
+    if (set.size === 0) {
+      ["FR", "SR", "DC", "ED"].forEach((s) => set.add(s));
+    }
+
+    return Array.from(set);
+  }, [machineList, capaData]);
+
+  // 2. Nhóm dữ liệu Capa theo từng dòng máy
+  const seriesDataMap = useMemo(() => {
+    const map = new Map<string, PROD_PLAN_CAPA_DATA[]>();
+    seriesList.forEach((s) => map.set(s, []));
+    (capaData || []).forEach((item) => {
+      if (map.has(item.EQ_SERIES)) {
+        map.get(item.EQ_SERIES)!.push(item);
+      }
+    });
+    return map;
+  }, [seriesList, capaData]);
 
   const isSingle = activeTab !== "ALL";
   const chartHeight = isSingle ? 280 : 210;
+
+  // Lọc danh sách dòng máy cần hiển thị theo tab đang chọn
+  const visibleSeries = useMemo(() => {
+    if (activeTab === "ALL") return seriesList;
+    return seriesList.filter((s) => s === activeTab);
+  }, [activeTab, seriesList]);
 
   return (
     <div className="precision-longterm-capa-section">
@@ -61,43 +143,28 @@ const PrecisionLongTermCapaSection: React.FC<PrecisionLongTermCapaSectionProps> 
         </div>
 
         <div className="precision-longterm-capa-section__controls">
-          {/* Tab Switcher */}
+          {/* Dynamic Tab Switcher */}
           <div className="capa-tabs">
             <button
               type="button"
               className={`capa-tab-btn ${activeTab === "ALL" ? "capa-tab-btn--active" : ""}`}
               onClick={() => onTabChange("ALL")}
             >
-              Tất cả (4 máy)
+              Tất cả ({seriesList.length} máy)
             </button>
-            <button
-              type="button"
-              className={`capa-tab-btn ${activeTab === "FR" ? "capa-tab-btn--active" : ""}`}
-              onClick={() => onTabChange("FR")}
-            >
-              FR (Dập FR)
-            </button>
-            <button
-              type="button"
-              className={`capa-tab-btn ${activeTab === "SR" ? "capa-tab-btn--active" : ""}`}
-              onClick={() => onTabChange("SR")}
-            >
-              SR (Dập SR)
-            </button>
-            <button
-              type="button"
-              className={`capa-tab-btn ${activeTab === "DC" ? "capa-tab-btn--active" : ""}`}
-              onClick={() => onTabChange("DC")}
-            >
-              DC (Dán DC)
-            </button>
-            <button
-              type="button"
-              className={`capa-tab-btn ${activeTab === "ED" ? "capa-tab-btn--active" : ""}`}
-              onClick={() => onTabChange("ED")}
-            >
-              ED (Bế ED)
-            </button>
+            {seriesList.map((series, idx) => {
+              const meta = getSeriesMeta(series, idx);
+              return (
+                <button
+                  key={series}
+                  type="button"
+                  className={`capa-tab-btn ${activeTab === series ? "capa-tab-btn--active" : ""}`}
+                  onClick={() => onTabChange(series)}
+                >
+                  {series} ({meta.label})
+                </button>
+              );
+            })}
           </div>
 
           {/* Toggle Thu gọn / Mở rộng */}
@@ -122,132 +189,71 @@ const PrecisionLongTermCapaSection: React.FC<PrecisionLongTermCapaSectionProps> 
         </div>
       </div>
 
-      {/* 2. Body lưới hiển thị các Executive Cards */}
+      {/* 2. Body lưới hiển thị các Executive Cards động */}
       {!isCollapsed && (
         <div
           className={`precision-longterm-capa-section__grid ${
             isSingle ? "precision-longterm-capa-section__grid--single" : ""
           }`}
         >
-          {/* FR Card */}
-          {showFR && (
-            <div className="executive-card executive-card--fr">
-              <div className="executive-card__header">
-                <div className="executive-card__title-wrap">
-                  <span className="executive-card__icon-circle">
-                    <FiCpu />
-                  </span>
-                  <span className="executive-card__title">FR PLAN CAPA (Công Đoạn FR)</span>
-                </div>
-                <button
-                  type="button"
-                  className="executive-card__btn-excel"
-                  onClick={() => SaveExcel(frData, "FR_PLAN_CAPA")}
-                  title="Xuất Excel dữ liệu FR Capa"
-                >
-                  <FiDownload size={10} />
-                  <span>Excel</span>
-                </button>
-              </div>
-              <div className="executive-card__body">
-                <PrecisionLongTermCapaChart
-                  data={frData}
-                  barColor="#4f46e5"
-                  chartHeight={chartHeight}
-                />
-              </div>
-            </div>
-          )}
+          {visibleSeries.map((series, idx) => {
+            const meta = getSeriesMeta(series, idx);
+            const seriesData = seriesDataMap.get(series) || [];
+            const upper = series.toUpperCase();
+            const isKnown = ["FR", "SR", "DC", "ED"].includes(upper);
+            const knownClass = isKnown ? `executive-card--${upper.toLowerCase()}` : "";
 
-          {/* SR Card */}
-          {showSR && (
-            <div className="executive-card executive-card--sr">
-              <div className="executive-card__header">
-                <div className="executive-card__title-wrap">
-                  <span className="executive-card__icon-circle">
-                    <FiLayers />
-                  </span>
-                  <span className="executive-card__title">SR PLAN CAPA (Công Đoạn SR)</span>
+            return (
+              <div
+                key={series}
+                className={`executive-card ${knownClass}`}
+                style={
+                  !isKnown
+                    ? {
+                        borderTop: `3px solid ${meta.color}`,
+                      }
+                    : undefined
+                }
+              >
+                <div className="executive-card__header">
+                  <div className="executive-card__title-wrap">
+                    <span
+                      className="executive-card__icon-circle"
+                      style={
+                        !isKnown
+                          ? {
+                              backgroundColor: `${meta.color}15`,
+                              color: meta.color,
+                            }
+                          : undefined
+                      }
+                    >
+                      {meta.icon}
+                    </span>
+                    <span className="executive-card__title">
+                      {series} PLAN CAPA ({meta.label})
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    className="executive-card__btn-excel"
+                    onClick={() => SaveExcel(seriesData, `${series}_PLAN_CAPA`)}
+                    title={`Xuất Excel dữ liệu ${series} Capa`}
+                  >
+                    <FiDownload size={10} />
+                    <span>Excel</span>
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  className="executive-card__btn-excel"
-                  onClick={() => SaveExcel(srData, "SR_PLAN_CAPA")}
-                  title="Xuất Excel dữ liệu SR Capa"
-                >
-                  <FiDownload size={10} />
-                  <span>Excel</span>
-                </button>
-              </div>
-              <div className="executive-card__body">
-                <PrecisionLongTermCapaChart
-                  data={srData}
-                  barColor="#059669"
-                  chartHeight={chartHeight}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* DC Card */}
-          {showDC && (
-            <div className="executive-card executive-card--dc">
-              <div className="executive-card__header">
-                <div className="executive-card__title-wrap">
-                  <span className="executive-card__icon-circle">
-                    <FiTool />
-                  </span>
-                  <span className="executive-card__title">DC PLAN CAPA (Công Đoạn DC)</span>
+                <div className="executive-card__body">
+                  <PrecisionLongTermCapaChart
+                    data={seriesData}
+                    barColor={meta.color}
+                    chartHeight={chartHeight}
+                  />
                 </div>
-                <button
-                  type="button"
-                  className="executive-card__btn-excel"
-                  onClick={() => SaveExcel(dcData, "DC_PLAN_CAPA")}
-                  title="Xuất Excel dữ liệu DC Capa"
-                >
-                  <FiDownload size={10} />
-                  <span>Excel</span>
-                </button>
               </div>
-              <div className="executive-card__body">
-                <PrecisionLongTermCapaChart
-                  data={dcData}
-                  barColor="#d97706"
-                  chartHeight={chartHeight}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* ED Card */}
-          {showED && (
-            <div className="executive-card executive-card--ed">
-              <div className="executive-card__header">
-                <div className="executive-card__title-wrap">
-                  <span className="executive-card__icon-circle">
-                    <FiSliders />
-                  </span>
-                  <span className="executive-card__title">ED PLAN CAPA (Công Đoạn ED)</span>
-                </div>
-                <button
-                  type="button"
-                  className="executive-card__btn-excel"
-                  onClick={() => SaveExcel(edData, "ED_PLAN_CAPA")}
-                  title="Xuất Excel dữ liệu ED Capa"
-                >
-                  <FiDownload size={10} />
-                  <span>Excel</span>
-                </button>
-              </div>
-              <div className="executive-card__body">
-                <PrecisionLongTermCapaChart
-                  data={edData}
-                  barColor="#e11d48"
-                  chartHeight={chartHeight}
-                />
-              </div>
-            </div>
-          )}
+            );
+          })}
         </div>
       )}
     </div>

@@ -1,5 +1,22 @@
 # ERP Context & Status
 
+## Update - 2026-10-06 (QLSX / LONGTERM_PLAN: Chuyển Đổi Biểu Đồ Capa Dài Hạn Sang Hiển Thị Động Theo Dòng Máy)
+- **Mục tiêu**: Chuyển các biểu đồ Capa cố định theo 4 dòng máy (FR, SR, DC, ED) trong [LONGTERM_PLAN.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/LONGTERM_PLAN.tsx) sang hiển thị biểu đồ & tab động linh hoạt, lấy danh sách dòng máy từ API `f_getMachineListData()` và lọc bỏ máy `'NA'`, `'NO'`.
+- **Thực hiện**:
+  - [useLongTermPlanData.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionLongTermPlan/useLongTermPlanData.ts):
+    - Cập nhật hàm `getMachineList`: gọi `f_getMachineListData()`, lọc sạch các mã không hợp lệ `EQ_NAME !== 'NA' && EQ_NAME !== 'NO' && EQ_NAME !== 'ALL'`.
+    - Mở rộng kiểu `activeCapaTab` từ enum tĩnh sang `string` (mặc định `'ALL'`).
+  - [LONGTERM_PLAN.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/LONGTERM_PLAN.tsx):
+    - Truyền `machineList={machine_list}` vào [PrecisionLongTermCapaSection.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionLongTermPlan/PrecisionLongTermCapaSection.tsx).
+  - [PrecisionLongTermCapaSection.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionLongTermPlan/PrecisionLongTermCapaSection.tsx):
+    - Trích xuất danh sách dòng máy động `seriesList` từ `machineList` kết hợp dữ liệu `capaData` (tự động fallback nếu danh sách trống, loại trừ `'NA'`, `'NO'`, `'ALL'`).
+    - Khởi tạo bảng màu palette doanh nghiệp (`KNOWN_SERIES_META` cho FR, SR, DC, ED, SP, IN và auto-color theo index cho các dòng máy mới phát sinh trong tương lai).
+    - Render động danh sách Tab: nút "Tất cả (N máy)" + từng tab máy kèm nhãn công đoạn.
+    - Render động danh sách Executive Cards: hỗ trợ lọc theo tab, xuất Excel từng dòng máy độc lập `SaveExcel(data, `${series}_PLAN_CAPA`)`, tích hợp Recharts [PrecisionLongTermCapaChart.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionLongTermPlan/PrecisionLongTermCapaChart.tsx).
+  - [PrecisionLongTermPlan.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/PrecisionLongTermPlan/PrecisionLongTermPlan.scss):
+    - Cấu hình `.capa-tabs` hỗ trợ `overflow-x: auto; max-width: 100%` cuộn mượt mà khi có nhiều tab dòng máy.
+    - Cấu hình `.precision-longterm-capa-section__grid` dạng `repeat(auto-fit, minmax(280px, 1fr))` tự co giãn số cột theo số lượng dòng máy, mở rộng `max-height: 320px` khi xem single tab.
+
 ## Update - 2026-10-05 (SHARED / RECHARTS: Sửa Triệt Để Warning width(0) & height(0) Trong ResponsiveContainer)
 - **Mục tiêu**: Loại bỏ cảnh báo Recharts: *"The width(0) and height(0) of chart should be greater than 0..."* tại [SXPlanLossTrend.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/SX/SXPlanLossTrend.tsx) và các biểu đồ dùng [CustomResponsiveContainer](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/api/services/utilService.tsx).
 - **Nguyên nhân**: `CustomResponsiveContainer` sử dụng thẻ con `position: absolute` bên trong thẻ `position: relative` nằm trong flex container. Khi flex item chưa có kích thước hoặc `height: 100%` chưa tính xong, chiều cao bằng 0 khiến Recharts cảnh báo.

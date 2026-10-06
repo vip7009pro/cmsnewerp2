@@ -35,18 +35,25 @@ export const useLongTermPlanData = () => {
   const [machine, setMachine] = useState<string>("ALL");
 
   const [quickSearchText, setQuickSearchText] = useState<string>("");
-  const [activeCapaTab, setActiveCapaTab] = useState<"ALL" | "FR" | "SR" | "DC" | "ED">("ALL");
+  const [activeCapaTab, setActiveCapaTab] = useState<string>("ALL");
   const [isCapaCollapsed, setIsCapaCollapsed] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const selectedLongTermPlan = useRef<LONGTERM_PLAN_DATA[]>([]);
   const gridApiRef = useRef<any>(null);
 
-  // 1. Tải danh sách máy móc
+  // 1. Tải danh sách máy móc (bỏ các máy NA, NO, ALL)
   const getMachineList = useCallback(async () => {
     try {
       const data = await f_getMachineListData();
-      setMachine_List(data || []);
+      const filtered = (data || []).filter(
+        (item: MACHINE_LIST) =>
+          item.EQ_NAME &&
+          item.EQ_NAME !== "NA" &&
+          item.EQ_NAME !== "NO" &&
+          item.EQ_NAME !== "ALL"
+      );
+      setMachine_List(filtered);
     } catch (error) {
       console.error("Lỗi khi tải danh sách máy:", error);
     }

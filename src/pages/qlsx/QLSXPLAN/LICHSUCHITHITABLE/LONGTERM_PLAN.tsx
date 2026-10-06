@@ -126,6 +126,7 @@ const LONGTERM_PLAN: React.FC = () => {
         <div className={isMobile ? "precision-longterm-mobile-capa-wrapper" : undefined}>
           <PrecisionLongTermCapaSection
             capaData={productionplancapadata}
+            machineList={machine_list}
             activeTab={activeCapaTab}
             isCollapsed={isCapaCollapsed}
             onTabChange={setActiveCapaTab}
