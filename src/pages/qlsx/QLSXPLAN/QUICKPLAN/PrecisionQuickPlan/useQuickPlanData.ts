@@ -621,7 +621,7 @@ export const useQuickPlanData = () => {
           qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) !== "" &&
           qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) !== "NO" &&
           qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) !== "NA" &&
-          machine_list.some((item) => item.EQ_NAME === qlsxplandatafilter.current[i].PLAN_EQ) &&
+          machine_list.some((item) => item.EQ_NAME === qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2)) &&
           qlsxplandatafilter.current[i].STEP >= 0 &&
           qlsxplandatafilter.current[i].STEP <= 9
         ) {

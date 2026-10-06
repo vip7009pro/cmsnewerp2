@@ -1444,7 +1444,7 @@ const QUICKPLAN2 = () => {
           "temp_plan_table",
           JSON.stringify([...plandatatable, temp_add_plan]),
         );
-      }      
+      }
     } else {
       Swal.fire("Thông báo", "Chọn ít nhất 1 YCSX để Add !", "error");
     }
@@ -1613,12 +1613,14 @@ const QUICKPLAN2 = () => {
           else if (qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "") {
             err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": PLAN_EQ không được rỗng";
           }
-          else if (!(qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FR" ||
+          else if (!(
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FR" ||
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SR" ||
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DC" ||
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "ED" ||
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "FX" ||
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "DG" ||
+            qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SP" ||
             qlsxplandatafilter.current[i].PLAN_EQ.substring(0, 2) === "SC")) {
             err_code += "_" + qlsxplandatafilter.current[i].G_NAME_KD + ": PLAN_EQ không hợp lệ";
           }
@@ -1643,9 +1645,8 @@ const QUICKPLAN2 = () => {
           INS_DATE: '2024-12-30',
           UPD_EMPL: 'NHU1903',
           UPD_DATE: '2024-12-30',
-        }  
-        if(await f_insert_Notification_Data(newNotification))
-        {
+        }
+        if (await f_insert_Notification_Data(newNotification)) {
           getSocket().emit("notification_panel", newNotification);
         }
         Swal.fire("Thông báo", "Lưu PLAN thành công", "success");
@@ -1738,9 +1739,8 @@ const QUICKPLAN2 = () => {
               INS_DATE: '2024-12-30',
               UPD_EMPL: 'NHU1903',
               UPD_DATE: '2024-12-30',
-            }  
-            if(await f_insert_Notification_Data(newNotification))
-            {
+            }
+            if (await f_insert_Notification_Data(newNotification)) {
               getSocket().emit("notification_panel", newNotification);
             }
             Swal.fire("Thông báo", "Lưu thành công", "success");
