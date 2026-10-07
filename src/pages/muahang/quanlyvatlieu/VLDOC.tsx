@@ -299,8 +299,8 @@ const VLDOC: React.FC<VLDOCProps> = ({ M_ID, M_NAME }) => {
               color: params.data.EXP_YN === "Y" ? "#e11d48" : "#0f172a",
             }}
           >
-            <option value="N">N (Hiệu Lực)</option>
-            <option value="Y">Y (Hết Hạn)</option>
+            <option value="N">N (Vô hạn)</option>
+            <option value="Y">Y (Có Hạn)</option>
           </select>
         );
       },
