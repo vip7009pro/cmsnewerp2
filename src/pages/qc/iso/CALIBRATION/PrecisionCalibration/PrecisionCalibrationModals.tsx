@@ -11,7 +11,6 @@ import {
   Select,
   FormControl,
   InputLabel,
-  Grid,
   IconButton,
 } from "@mui/material";
 import {
@@ -20,6 +19,7 @@ import {
   AiOutlineCamera,
   AiOutlineEye,
   AiOutlineCloudDownload,
+  AiOutlineFilePdf,
 } from "react-icons/ai";
 import { Equipment, CalibrationHistory, ImagePreviewState } from "./calibrationTypes";
 
@@ -66,8 +66,8 @@ export const EquipmentModal: React.FC<EquipmentModalProps> = ({
       </DialogTitle>
 
       <DialogContent dividers>
-        <Grid container spacing={1.5}>
-          <Grid item xs={12}>
+        <div className="pc-form-grid">
+          <div className="pc-form-col col-12">
             <TextField
               label="Tên thiết bị *"
               placeholder="VD: Thước cặp điện tử Mitutoyo 150mm"
@@ -76,8 +76,8 @@ export const EquipmentModal: React.FC<EquipmentModalProps> = ({
               value={formData.EQ_NAME || ""}
               onChange={(e) => setFormData({ ...formData, EQ_NAME: e.target.value })}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </div>
+          <div className="pc-form-col col-6">
             <TextField
               label="Số quản lý (CONTROL_NO) *"
               placeholder="VD: CAL-QC-001"
@@ -86,8 +86,8 @@ export const EquipmentModal: React.FC<EquipmentModalProps> = ({
               value={formData.CONTROL_NO || ""}
               onChange={(e) => setFormData({ ...formData, CONTROL_NO: e.target.value })}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </div>
+          <div className="pc-form-col col-6">
             <TextField
               label="Số Series / Model"
               placeholder="VD: CD-6 CSX / 500-196-30"
@@ -96,8 +96,8 @@ export const EquipmentModal: React.FC<EquipmentModalProps> = ({
               value={formData.SERIES_MODEL || ""}
               onChange={(e) => setFormData({ ...formData, SERIES_MODEL: e.target.value })}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </div>
+          <div className="pc-form-col col-6">
             <TextField
               label="Nhà sản xuất (Maker)"
               placeholder="VD: Mitutoyo / Japan"
@@ -106,8 +106,8 @@ export const EquipmentModal: React.FC<EquipmentModalProps> = ({
               value={formData.MAKER || ""}
               onChange={(e) => setFormData({ ...formData, MAKER: e.target.value })}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </div>
+          <div className="pc-form-col col-6">
             <FormControl size="small" fullWidth>
               <InputLabel>Trạng thái sử dụng</InputLabel>
               <Select
@@ -119,8 +119,8 @@ export const EquipmentModal: React.FC<EquipmentModalProps> = ({
                 <MenuItem value="BROKEN">Đã hỏng / Ngừng dùng</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={4}>
+          </div>
+          <div className="pc-form-col col-4">
             <TextField
               label="Chu kỳ HC (tháng)"
               type="number"
@@ -129,8 +129,8 @@ export const EquipmentModal: React.FC<EquipmentModalProps> = ({
               value={formData.CAL_PERIOD || 12}
               onChange={(e) => setFormData({ ...formData, CAL_PERIOD: Number(e.target.value) })}
             />
-          </Grid>
-          <Grid item xs={12} sm={4}>
+          </div>
+          <div className="pc-form-col col-4">
             <TextField
               label="Bộ phận sử dụng"
               placeholder="VD: QC / SX / KHO"
@@ -139,8 +139,8 @@ export const EquipmentModal: React.FC<EquipmentModalProps> = ({
               value={formData.DEPARTMENT || ""}
               onChange={(e) => setFormData({ ...formData, DEPARTMENT: e.target.value })}
             />
-          </Grid>
-          <Grid item xs={12} sm={4}>
+          </div>
+          <div className="pc-form-col col-4">
             <TextField
               label="Vị trí đặt"
               placeholder="VD: Tủ đo lường QC 1"
@@ -149,10 +149,10 @@ export const EquipmentModal: React.FC<EquipmentModalProps> = ({
               value={formData.LOCATION || ""}
               onChange={(e) => setFormData({ ...formData, LOCATION: e.target.value })}
             />
-          </Grid>
+          </div>
 
           {/* Photo Dropzone Preview */}
-          <Grid item xs={12}>
+          <div className="pc-form-col col-12">
             <div className="image-dropzone-box">
               <div className="dropzone-preview">
                 {file ? (
@@ -196,8 +196,8 @@ export const EquipmentModal: React.FC<EquipmentModalProps> = ({
                 </label>
               </div>
             </div>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       </DialogContent>
 
       <DialogActions>
@@ -226,6 +226,8 @@ interface HistoryModalProps {
   setFormData: React.Dispatch<React.SetStateAction<Partial<CalibrationHistory>>>;
   file: File | null;
   setFile: (file: File | null) => void;
+  pdfFile: File | null;
+  setPdfFile: (file: File | null) => void;
   onClose: () => void;
   onSave: () => Promise<void>;
 }
@@ -237,6 +239,8 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
   setFormData,
   file,
   setFile,
+  pdfFile,
+  setPdfFile,
   onClose,
   onSave,
 }) => {
@@ -273,8 +277,8 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
       </DialogTitle>
 
       <DialogContent dividers>
-        <Grid container spacing={1.5}>
-          <Grid item xs={12} sm={4}>
+        <div className="pc-form-grid">
+          <div className="pc-form-col col-4">
             <TextField
               label="Ngày hiệu chuẩn *"
               type="date"
@@ -284,8 +288,8 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
               value={formData.CAL_DATE || ""}
               onChange={(e) => handleCalDateChange(e.target.value)}
             />
-          </Grid>
-          <Grid item xs={12} sm={4}>
+          </div>
+          <div className="pc-form-col col-4">
             <TextField
               label="Chu kỳ (tháng) *"
               type="number"
@@ -294,8 +298,8 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
               value={formData.CAL_PERIOD || 12}
               onChange={(e) => handlePeriodChange(Number(e.target.value))}
             />
-          </Grid>
-          <Grid item xs={12} sm={4}>
+          </div>
+          <div className="pc-form-col col-4">
             <TextField
               label="Ngày HC kế tiếp *"
               type="date"
@@ -305,8 +309,8 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
               value={formData.NEXT_CAL_DATE || ""}
               onChange={(e) => setFormData({ ...formData, NEXT_CAL_DATE: e.target.value })}
             />
-          </Grid>
-          <Grid item xs={12} sm={12}>
+          </div>
+          <div className="pc-form-col col-12">
             <TextField
               label="Người / Đơn vị hiệu chuẩn *"
               placeholder="VD: TT Kỹ thuật Đo lường 1 (Quatest 1) / Nguyễn Văn A"
@@ -315,8 +319,8 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
               value={formData.CAL_PERSON || ""}
               onChange={(e) => setFormData({ ...formData, CAL_PERSON: e.target.value })}
             />
-          </Grid>
-          <Grid item xs={12}>
+          </div>
+          <div className="pc-form-col col-12">
             <TextField
               label="Ghi chú kết quả / Số tem"
               placeholder="VD: Sai số trong phạm vi cho phép +-0.02mm. Tem số: CAL-2026-098"
@@ -327,10 +331,10 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
               value={formData.REMARK || ""}
               onChange={(e) => setFormData({ ...formData, REMARK: e.target.value })}
             />
-          </Grid>
+          </div>
 
           {/* Stamp Photo Dropzone */}
-          <Grid item xs={12}>
+          <div className="pc-form-col col-12">
             <div className="image-dropzone-box">
               <div className="dropzone-preview">
                 {file ? (
@@ -374,8 +378,81 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
                 </label>
               </div>
             </div>
-          </Grid>
-        </Grid>
+          </div>
+
+          {/* Calibration Result PDF Dropzone */}
+          <div className="pc-form-col col-12">
+            <div className="pdf-dropzone-box">
+              <div className="dropzone-preview">
+                <div className="pdf-icon-wrapper">
+                  <AiOutlineFilePdf size={28} color="#ef4444" />
+                </div>
+                <div className="preview-info">
+                  <div className="preview-name" title={pdfFile ? pdfFile.name : formData.RESULT_FILE_URL || ""}>
+                    {pdfFile
+                      ? pdfFile.name
+                      : formData.RESULT_FILE_URL
+                      ? formData.RESULT_FILE_URL
+                      : "Chưa có file kết quả hiệu chuẩn (PDF)"}
+                  </div>
+                  <span style={{ color: "#94a3b8" }}>
+                    {pdfFile
+                      ? `${(pdfFile.size / 1024).toFixed(1)} KB (Đã chọn file mới)`
+                      : formData.RESULT_FILE_URL
+                      ? "File PDF hiện tại"
+                      : "Hỗ trợ tệp định dạng .PDF"}
+                  </span>
+                </div>
+              </div>
+              <div className="pdf-dropzone-actions">
+                {formData.RESULT_FILE_URL && !pdfFile && (
+                  <button
+                    type="button"
+                    className="btn-view-pdf"
+                    onClick={() =>
+                      window.open(
+                        `/calibration/${formData.RESULT_FILE_URL}`,
+                        "_blank",
+                        "noopener,noreferrer"
+                      )
+                    }
+                  >
+                    Xem PDF
+                  </button>
+                )}
+                {pdfFile && (
+                  <button
+                    type="button"
+                    className="btn-remove-pdf"
+                    onClick={() => setPdfFile(null)}
+                    title="Hủy file đã chọn"
+                  >
+                    Hủy chọn
+                  </button>
+                )}
+                <input
+                  type="file"
+                  id="result-pdf-picker"
+                  accept="application/pdf,.pdf"
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const selected = e.target.files[0];
+                      if (!selected.name.toLowerCase().endsWith(".pdf")) {
+                        alert("Vui lòng chọn file định dạng PDF!");
+                        return;
+                      }
+                      setPdfFile(selected);
+                    }
+                  }}
+                />
+                <label htmlFor="result-pdf-picker" className="btn-browse-pdf">
+                  {pdfFile || formData.RESULT_FILE_URL ? "Đổi file PDF" : "Tải lên PDF"}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
       </DialogContent>
 
       <DialogActions>

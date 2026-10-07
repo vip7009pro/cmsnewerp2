@@ -1,5 +1,11 @@
 import React from "react";
-import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+import {
+  AiOutlineEdit,
+  AiOutlineDelete,
+  AiOutlineFilePdf,
+  AiOutlineCloudDownload,
+} from "react-icons/ai";
+import { f_downloadFile } from "../../../../../api/services/fileService";
 import { Equipment, CalibrationHistory } from "./calibrationTypes";
 
 interface EqColumnProps {
@@ -179,6 +185,49 @@ export const createHistoryColumns = ({
       },
     },
     { field: "CAL_PERSON", headerName: "Người HC", width: 150 },
+    {
+      field: "RESULT_FILE_URL",
+      headerName: "File Kết Quả",
+      width: 150,
+      cellRenderer: (params: any) => {
+        const fileUrl = params.value;
+        if (!fileUrl) {
+          return (
+            <div className="pc-thumb-cell">
+              <span className="no-img-text">Chưa có file</span>
+            </div>
+          );
+        }
+        const fullUrl = `/calibration/${fileUrl}`;
+        return (
+          <div className="pc-pdf-cell">
+            <button
+              type="button"
+              className="btn-pdf-view"
+              title="Xem trước file PDF kết quả hiệu chuẩn"
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(fullUrl, "_blank", "noopener,noreferrer");
+              }}
+            >
+              <AiOutlineFilePdf size={15} className="pdf-icon" />
+              <span>Xem PDF</span>
+            </button>
+            <button
+              type="button"
+              className="btn-pdf-download"
+              title="Tải về file PDF"
+              onClick={(e) => {
+                e.stopPropagation();
+                f_downloadFile(fullUrl, fileUrl);
+              }}
+            >
+              <AiOutlineCloudDownload size={15} />
+            </button>
+          </div>
+        );
+      },
+    },
     { field: "REMARK", headerName: "Ghi chú", width: 200 },
     {
       field: "ACTION",

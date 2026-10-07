@@ -1,5 +1,25 @@
 # ERP Context & Status
 
+## Update - 2026-10-07 (QC / ISO / CALIBRATION: Tích Hợp Upload File PDF Kết Quả Hiệu Chuẩn & Xem/Tải Trực Tiếp)
+- **Mục tiêu**: Thêm tính năng upload file PDF kết quả hiệu chuẩn trong modal Thêm/Sửa lịch sử hiệu chuẩn và bổ sung cột "File Kết Quả" trên Bảng Lịch Sử hiệu chuẩn [PrecisionCalibrationTables.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iso/CALIBRATION/PrecisionCalibration/PrecisionCalibrationTables.tsx) cho phép view/download file PDF.
+- **Thực hiện**:
+  - **Database & Backend** ([qcService.js](file:///g:/NODEJS/practice1/services/qcService.js)):
+    - Bổ sung cột `RESULT_FILE_URL NVARCHAR(500) NULL` vào bảng `QC_CALIBRATION_HISTORY`.
+    - Nâng cấp `qc_insert_calibration` và `qc_update_calibration` lưu trữ `RESULT_FILE_URL`.
+    - Bổ sung `RESULT_FILE_URL` vào truy vấn `qc_get_equipment_list` (`LAST_RESULT_FILE_URL`).
+  - **Types & State** ([calibrationTypes.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iso/CALIBRATION/PrecisionCalibration/calibrationTypes.ts), [useCalibrationData.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iso/CALIBRATION/PrecisionCalibration/useCalibrationData.ts)):
+    - Thêm `RESULT_FILE_URL?: string` vào interface `CalibrationHistory`.
+    - Thêm state `histPdfFile, setHistPdfFile`, tự động upload file PDF kết quả qua `uploadQuery(..., "calibration")` và lưu URL khi submit.
+  - **Modal Upload** ([PrecisionCalibrationModals.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iso/CALIBRATION/PrecisionCalibration/PrecisionCalibrationModals.tsx)):
+    - Chuyển đổi toàn bộ Grid sang CSS grid `.pc-form-grid` thuần để tương thích tuyệt đối với MUI v7, tránh lỗi overload.
+    - Thêm khu vực dropzone chuyên biệt cho PDF với icon màu đỏ, hiển thị trạng thái file (file mới/file hiện tại/kích thước), nút "Xem PDF", "Hủy chọn" và "Đổi/Tải lên PDF".
+  - **Cột Bảng Lịch Sử & Styling** ([PrecisionCalibrationColumns.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iso/CALIBRATION/PrecisionCalibration/PrecisionCalibrationColumns.tsx), [PrecisionCalibration.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iso/CALIBRATION/PrecisionCalibration/PrecisionCalibration.scss)):
+    - Thêm cột `RESULT_FILE_URL` ("File Kết Quả") vào `createHistoryColumns`.
+    - Tích hợp 2 nút thao tác trong ô: nút **Xem PDF** (mở trực tiếp tab mới) và nút **Tải về** (download qua `f_downloadFile`).
+    - Nếu chưa có file hiển thị trạng thái "Chưa có file".
+  - **Container & Props** ([CALIBRATION.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iso/CALIBRATION/CALIBRATION.tsx)):
+    - Đồng bộ `pdfFile` và `setPdfFile` truyền xuống `HistoryModal`.
+
 ## Update - 2026-10-06 (QLSX / LONGTERM_PLAN: Chuyển Đổi Biểu Đồ Capa Dài Hạn Sang Hiển Thị Động Theo Dòng Máy)
 - **Mục tiêu**: Chuyển các biểu đồ Capa cố định theo 4 dòng máy (FR, SR, DC, ED) trong [LONGTERM_PLAN.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qlsx/QLSXPLAN/LICHSUCHITHITABLE/LONGTERM_PLAN.tsx) sang hiển thị biểu đồ & tab động linh hoạt, lấy danh sách dòng máy từ API `f_getMachineListData()` và lọc bỏ máy `'NA'`, `'NO'`.
 - **Thực hiện**:

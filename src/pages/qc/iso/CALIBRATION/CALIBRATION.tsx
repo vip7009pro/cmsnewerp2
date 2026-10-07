@@ -52,6 +52,8 @@ const CALIBRATION: React.FC = () => {
     setHistFormData,
     histFile,
     setHistFile,
+    histPdfFile,
+    setHistPdfFile,
     handleOpenAddHist,
     handleOpenEditHist,
     handleSaveHist,
@@ -150,6 +152,8 @@ const CALIBRATION: React.FC = () => {
         setFormData={setHistFormData}
         file={histFile}
         setFile={setHistFile}
+        pdfFile={histPdfFile}
+        setPdfFile={setHistPdfFile}
         onClose={() => setOpenHistModal(false)}
         onSave={handleSaveHist}
       />

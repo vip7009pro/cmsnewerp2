@@ -44,6 +44,7 @@ export const useCalibrationData = () => {
   const [isEditHist, setIsEditHist] = useState(false);
   const [histFormData, setHistFormData] = useState<Partial<CalibrationHistory>>({});
   const [histFile, setHistFile] = useState<File | null>(null);
+  const [histPdfFile, setHistPdfFile] = useState<File | null>(null);
 
   const [imagePreview, setImagePreview] = useState<ImagePreviewState>({
     isOpen: false,
@@ -283,8 +284,10 @@ export const useCalibrationData = () => {
       CAL_PERIOD: defaultPeriod,
       CAL_PERSON: "",
       REMARK: "",
+      RESULT_FILE_URL: "",
     });
     setHistFile(null);
+    setHistPdfFile(null);
     setIsEditHist(false);
     setOpenHistModal(true);
   };
@@ -292,6 +295,7 @@ export const useCalibrationData = () => {
   const handleOpenEditHist = (hist: CalibrationHistory) => {
     setHistFormData(hist);
     setHistFile(null);
+    setHistPdfFile(null);
     setIsEditHist(true);
     setOpenHistModal(true);
   };
@@ -311,10 +315,23 @@ export const useCalibrationData = () => {
       }
     }
 
+    let resultPdfUrl = histFormData.RESULT_FILE_URL || "";
+    if (histPdfFile) {
+      const fileName = `CAL_RESULT_${Date.now()}_${histPdfFile.name}`;
+      const res = await uploadQuery(histPdfFile, fileName, "calibration");
+      if (res.data.tk_status !== "NG") {
+        resultPdfUrl = fileName;
+      } else {
+        Swal.fire("Lỗi", "Upload file kết quả hiệu chuẩn (PDF) thất bại", "error");
+        return;
+      }
+    }
+
     const payload = {
       ...histFormData,
       EQ_ID: selectedEqId,
       STAMP_IMAGE_URL: stampUrl,
+      RESULT_FILE_URL: resultPdfUrl,
     };
     const cmd = isEditHist ? "qc_update_calibration" : "qc_insert_calibration";
 
@@ -412,6 +429,8 @@ export const useCalibrationData = () => {
     setHistFormData,
     histFile,
     setHistFile,
+    histPdfFile,
+    setHistPdfFile,
     handleOpenAddHist,
     handleOpenEditHist,
     handleSaveHist,

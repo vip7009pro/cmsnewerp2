@@ -13,6 +13,7 @@ export interface Equipment {
   LAST_CAL_DATE?: string;
   NEXT_CAL_DATE?: string;
   STAMP_IMAGE_URL?: string;
+  LAST_RESULT_FILE_URL?: string;
   INS_DATE: string;
   INS_EMPL: string;
   UPD_DATE: string;
@@ -28,6 +29,7 @@ export interface CalibrationHistory {
   NEXT_CAL_DATE: string;
   CAL_PERIOD: number;
   STAMP_IMAGE_URL: string;
+  RESULT_FILE_URL?: string;
   CAL_PERSON: string;
   REMARK: string;
   INS_DATE: string;

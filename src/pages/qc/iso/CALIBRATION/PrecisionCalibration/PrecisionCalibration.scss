@@ -719,6 +719,66 @@
   }
 }
 
+.pc-pdf-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 100%;
+
+  .btn-pdf-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #b91c1c;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    .pdf-icon {
+      color: #dc2626;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: #dc2626;
+      color: #ffffff;
+      border-color: #dc2626;
+
+      .pdf-icon {
+        color: #ffffff;
+      }
+    }
+  }
+
+  .btn-pdf-download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    font-size: 14px;
+    color: #475569;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+      border-color: #94a3b8;
+    }
+  }
+}
+
 // Dialogs
 .pc-dialog-custom {
   .MuiDialogTitle-root {
@@ -736,6 +796,36 @@
   .MuiDialogContent-root {
     padding: 16px 20px !important;
     background: #ffffff;
+  }
+
+  .pc-form-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 12px;
+    width: 100%;
+
+    .pc-form-col {
+      display: flex;
+      flex-direction: column;
+
+      &.col-12 {
+        grid-column: span 12;
+      }
+
+      &.col-6 {
+        grid-column: span 6;
+        @media (max-width: 600px) {
+          grid-column: span 12;
+        }
+      }
+
+      &.col-4 {
+        grid-column: span 4;
+        @media (max-width: 600px) {
+          grid-column: span 12;
+        }
+      }
+    }
   }
 
   .image-dropzone-box {
@@ -789,6 +879,107 @@
       &:hover {
         background: #f1f5f9;
         border-color: #94a3b8;
+      }
+    }
+  }
+
+  .pdf-dropzone-box {
+    border: 1.5px dashed #cbd5e1;
+    border-radius: 6px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    .dropzone-preview {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .pdf-icon-wrapper {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fee2e2;
+        border-radius: 6px;
+        border: 1px solid #fecaca;
+        flex-shrink: 0;
+      }
+
+      .preview-info {
+        font-size: 11px;
+        color: #475569;
+
+        .preview-name {
+          font-weight: 600;
+          color: #1e293b;
+          max-width: 220px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .pdf-dropzone-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .btn-view-pdf {
+        padding: 4px 8px;
+        font-size: 11px;
+        font-weight: 600;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #b91c1c;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: #fee2e2;
+          color: #991b1b;
+        }
+      }
+
+      .btn-remove-pdf {
+        padding: 4px 8px;
+        font-size: 11px;
+        font-weight: 600;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        color: #64748b;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: #fee2e2;
+          color: #dc2626;
+          border-color: #fca5a5;
+        }
+      }
+
+      .btn-browse-pdf {
+        padding: 4px 10px;
+        font-size: 11px;
+        font-weight: 600;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        color: #334155;
+        cursor: pointer;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: #f1f5f9;
+          border-color: #94a3b8;
+        }
       }
     }
   }
