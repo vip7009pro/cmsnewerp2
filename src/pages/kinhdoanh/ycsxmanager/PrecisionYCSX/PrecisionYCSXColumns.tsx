@@ -92,6 +92,50 @@ export const getYCSXColumns = (options: ColumnOptions): any[] => {
         width: 80,
       },
       {
+        field: "CD1",
+        cellDataType: "number",
+        headerName: "CD1",
+        width: 60,
+        cellRenderer: (params: any) => (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data?.CD1?.toLocaleString("en-US")}</b>
+          </span>
+        ),
+      },
+      {
+        field: "CD2",
+        cellDataType: "number",
+        headerName: "CD2",
+        width: 60,
+        cellRenderer: (params: any) => (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data?.CD2?.toLocaleString("en-US")}</b>
+          </span>
+        ),
+      },
+      {
+        field: "CD3",
+        cellDataType: "number",
+        headerName: "CD3",
+        width: 60,
+        cellRenderer: (params: any) => (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data?.CD3?.toLocaleString("en-US")}</b>
+          </span>
+        ),
+      },
+      {
+        field: "CD4",
+        cellDataType: "number",
+        headerName: "CD4",
+        width: 60,
+        cellRenderer: (params: any) => (
+          <span style={{ color: "#cc0099" }}>
+            <b>{params.data?.CD4?.toLocaleString("en-US")}</b>
+          </span>
+        ),
+      },
+      {
         field: "LOT_TOTAL_INPUT_QTY_EA",
         cellDataType: "number",
         headerName: "NHẬP KIỂM",
@@ -120,21 +164,32 @@ export const getYCSXColumns = (options: ColumnOptions): any[] => {
         width: 80,
         cellRenderer: (params: any) => (
           <span style={{ color: "#cc0099" }}>
-            <b>{params.data?.INSPECT_BALANCE?.toLocaleString("en-US")}</b>
+            <b>{(params.data?.INSPECT_BALANCE < 0 ? 0 : params.data?.INSPECT_BALANCE)?.toLocaleString("en-US")}</b>
           </span>
         ),
       },
       {
-        field: "SHORTAGE_YCSX",
+        field: "CHO_NHAP_KHO",
         cellDataType: "number",
-        headerName: "TỒN YCSX",
-        width: 80,
+        headerName: "CHỜ NHẬP KHO",
+        width: 90,
         cellRenderer: (params: any) => (
-          <span style={{ color: "blue" }}>
-            <b>{params.data?.SHORTAGE_YCSX?.toLocaleString("en-US")}</b>
+          <span style={{ color: "#cc0099" }}>
+            <b>{(params.data?.CHO_NHAP_KHO < 0 ? 0 : params.data?.CHO_NHAP_KHO)?.toLocaleString("en-US")}</b>
           </span>
         ),
       },
+      /*  {
+         field: "SHORTAGE_YCSX",
+         cellDataType: "number",
+         headerName: "TỒN YCSX",
+         width: 80,
+         cellRenderer: (params: any) => (
+           <span style={{ color: "blue" }}>
+             <b>{params.data?.SHORTAGE_YCSX?.toLocaleString("en-US")}</b>
+           </span>
+         ),
+       }, */
       {
         field: "YCSX_PENDING",
         headerName: "YCSX_PENDING",
