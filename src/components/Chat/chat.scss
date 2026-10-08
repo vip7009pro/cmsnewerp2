@@ -435,11 +435,23 @@ $chat-bubble-other: #f1f5f9;
 
 .erp-chat__row {
   display: flex;
+  width: 100%;
   gap: 8px;
   margin-bottom: 4px;
 
   &.is-mine {
     flex-direction: row-reverse;
+    justify-content: flex-start;
+
+    .erp-chat__rowAvatar {
+      display: none !important;
+      width: 0 !important;
+      flex: 0 0 0 !important;
+    }
+  }
+
+  &:not(.is-mine) {
+    justify-content: flex-start;
   }
 
   &.has-avatar {
@@ -455,11 +467,19 @@ $chat-bubble-other: #f1f5f9;
 .erp-chat__bubbleWrap {
   display: flex;
   flex-direction: column;
-  max-width: min(62%, 520px);
+  max-width: min(72%, 520px);
   min-width: 0;
 
   .erp-chat__row.is-mine & {
     align-items: flex-end;
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  .erp-chat__row:not(.is-mine) & {
+    align-items: flex-start;
+    margin-left: 0;
+    margin-right: auto;
   }
 }
 
@@ -473,18 +493,18 @@ $chat-bubble-other: #f1f5f9;
 .erp-chat__bubble {
   position: relative;
   padding: 8px 12px;
-  border-radius: 14px;
+  border-radius: 16px 16px 16px 4px;
   background: $chat-bubble-other;
   color: $chat-text;
   word-break: break-word;
-  box-shadow: 0 1px 1px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
 
   .erp-chat__row.is-mine & {
-    /* Nền xanh đậm trước đây làm chữ khó đọc (nhất là link / chữ nhạt) ⇒ dùng
-       TRẮNG XÁM NHẸ + viền mảnh để vẫn phân biệt được với tin của người khác. */
-    background: #f7f9fc;
-    color: $chat-text;
-    border: 1px solid #dfe6ee;
+    border-radius: 16px 16px 4px 16px;
+    background: #e0edff;
+    color: #0f172a;
+    border: 1px solid #bfdbfe;
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.08);
   }
 
   &.is-deleted {
@@ -1355,8 +1375,103 @@ $chat-bubble-other: #f1f5f9;
     z-index: 3;
   }
 
+  .erp-chat__messages {
+    padding: 8px 10px !important;
+  }
+
+  .erp-chat__row {
+    gap: 6px;
+    margin-bottom: 3px;
+
+    &.is-mine {
+      justify-content: flex-end;
+
+      .erp-chat__rowAvatar {
+        display: none !important;
+        width: 0 !important;
+        flex: 0 0 0 !important;
+      }
+
+      .erp-chat__bubbleWrap {
+        align-items: flex-end;
+        margin-left: auto;
+        margin-right: 0;
+      }
+    }
+
+    &:not(.is-mine) {
+      justify-content: flex-start;
+
+      .erp-chat__bubbleWrap {
+        align-items: flex-start;
+        margin-left: 0;
+        margin-right: auto;
+      }
+    }
+  }
+
+  .erp-chat__rowAvatar {
+    flex: 0 0 28px;
+    width: 28px;
+  }
+
   .erp-chat__bubbleWrap {
-    max-width: 80%;
+    max-width: 76%;
+  }
+
+  .erp-chat__bubble {
+    padding: 7px 11px;
+    font-size: 13.5px;
+  }
+}
+
+@media (max-width: 768px) {
+  .erp-chat__messages {
+    padding: 8px 10px !important;
+  }
+
+  .erp-chat__row {
+    gap: 6px;
+    margin-bottom: 3px;
+
+    &.is-mine {
+      justify-content: flex-end;
+
+      .erp-chat__rowAvatar {
+        display: none !important;
+        width: 0 !important;
+        flex: 0 0 0 !important;
+      }
+
+      .erp-chat__bubbleWrap {
+        align-items: flex-end;
+        margin-left: auto;
+        margin-right: 0;
+      }
+    }
+
+    &:not(.is-mine) {
+      justify-content: flex-start;
+
+      .erp-chat__bubbleWrap {
+        align-items: flex-start;
+        margin-left: 0;
+        margin-right: auto;
+      }
+    }
+  }
+
+  .erp-chat__rowAvatar {
+    flex: 0 0 28px;
+    width: 28px;
+  }
+
+  .erp-chat__bubbleWrap {
+    max-width: 76% !important;
+  }
+
+  .erp-chat__bubble {
+    padding: 7px 11px;
   }
 }
 

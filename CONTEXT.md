@@ -1,6 +1,26 @@
 # ERP Context & Status
 
-## Update - 2026-10-07 (QC / ISO / CALIBRATION: Tích Hợp Upload File PDF Kết Quả Hiệu Chuẩn & Xem/Tải Trực Tiếp)
+## Update - 2026-10-08 (KD / YCSX & CHAT: Tự Động updateCDP400, Multi-Select Phòng Ban Tạo Nhóm, Sharelink Gia Nhập Phòng)
+- **Mục tiêu**:
+  1. Mỗi khi người dùng bấm tra YCSX tại [YCSXManager.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/YCSXManager.tsx), gọi API `generalQuery` command `'updateCDP400'` để cập nhật đồng bộ các công đoạn sản xuất trên bảng P400 trước khi tải danh sách.
+  2. Khắc phục lỗi tạo nhóm chat: khi chọn bộ phận A rồi bấm chọn cả bộ phận, tiếp tục chọn bộ phận B thì giữ nguyên bộ phận A để tạo nhóm liên phòng ban.
+  3. Tạo tính năng sharelink gia nhập phòng chat: người dùng sao chép link mời, người khác mở link hoặc bấm trong chat sẽ hiển thị hộp thoại xác nhận gia nhập, khi đồng ý sẽ thêm thành viên vào nhóm.
+- **Thực hiện**:
+  - **YCSXManager** ([useYCSXLogic.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/useYCSXLogic.ts), [YCSXManager.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/YCSXManager.tsx)):
+    - Tích hợp `await generalQuery("updateCDP400", {})` vào `handletraYCSX` trước khi gọi `f_traYCSX`.
+  - **Chat Multi-Select Bộ Phận** ([ChatNewChatDialog.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chat/ChatNewChatDialog.tsx)):
+    - Cải tiến `handleSelectDepartment` gộp (merge) nhân sự của các bộ phận liên tiếp thay vì ghi đè.
+    - Hỗ trợ toggle (nếu toàn bộ nhân sự bộ phận đã được chọn thì bấm lại để bỏ chọn).
+    - Cập nhật nhãn nút động: `+ Thêm bộ phận (+N)` / `Bỏ chọn bộ phận (N)`.
+    - Tự động gợi ý tên nhóm tổng hợp nhiều bộ phận (VD: "Nhóm Kinh Doanh - Sản Xuất").
+  - **Share Link Tham Gia Phòng** ([chatRoomService.js](file:///g:/NODEJS/practice1/services/chat/chatRoomService.js), [chatService.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/api/services/chatService.ts), [ChatJoinDialog.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chat/ChatJoinDialog.tsx), [ChatDock.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chat/ChatDock.tsx), [ChatGroupPanel.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chat/ChatGroupPanel.tsx), [ChatConversationView.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chat/ChatConversationView.tsx), [chatUtils.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chat/chatUtils.tsx), [ChatMessageBubble.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chat/ChatMessageBubble.tsx)):
+    - Backend: Thêm 2 command `chatGetInviteInfo` (lấy thông tin phòng) và `chatJoinViaLink` (thêm thành viên, gửi tin nhắn hệ thống, emit socket).
+    - Tạo nút "Sao chép link mời vào phòng" trên header phòng và panel quản lý nhóm.
+    - Xây dựng component `ChatJoinDialog` hiển thị câu hỏi xác nhận kèm avatar, tên phòng, số lượng thành viên.
+    - `ChatDock` tự động quét URL param `?joinChat=` / `?chatJoin=` và lắng nghe custom event `erp:chat-join` khi click liên kết trong chat để mở hộp thoại ngay lập tức.
+    - Sửa lỗi runtime `ReferenceError: Cannot access 'setOpen' before initialization` tại [ChatDock.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chat/ChatDock.tsx) và `ReferenceError: Cannot access 'deptMembers' before initialization` tại [ChatNewChatDialog.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chat/ChatNewChatDialog.tsx) bằng cách di chuyển các hook phụ thuộc xuống sau khi khai báo biến cơ sở.
+    - Tối ưu hóa UI Mobile [chat.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chat/chat.scss) & [ChatMessageBubble.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chat/ChatMessageBubble.tsx): Giảm padding container từ 16px xuống 8-10px; bỏ hoàn toàn ô avatar rỗng 30px bên phải ở tin nhắn của tôi để bong bóng ôm sát lề phải; giới hạn `max-width: 76%`; phân biệt rõ rệt hình dáng và màu sắc bong bóng trái (xám slate) và phải (xanh dương dịu) tạo cảm giác định vị hai bên chân thực.
+
 - **Mục tiêu**: Thêm tính năng upload file PDF kết quả hiệu chuẩn trong modal Thêm/Sửa lịch sử hiệu chuẩn và bổ sung cột "File Kết Quả" trên Bảng Lịch Sử hiệu chuẩn [PrecisionCalibrationTables.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iso/CALIBRATION/PrecisionCalibration/PrecisionCalibrationTables.tsx) cho phép view/download file PDF.
 - **Thực hiện**:
   - **Database & Backend** ([qcService.js](file:///g:/NODEJS/practice1/services/qcService.js)):

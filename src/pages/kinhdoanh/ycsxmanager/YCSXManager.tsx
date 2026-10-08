@@ -3,7 +3,7 @@ import * as XLSX from "xlsx";
 import moment from "moment";
 import Swal from "sweetalert2";
 import { FiX } from "react-icons/fi";
-import { getCompany } from "../../../api/Api";
+import { generalQuery, getCompany } from "../../../api/Api";
 import { checkBP } from "../../../api/services/permissionService";
 import AGTable from "../../../components/DataTable/AGTable";
 import { getDisplayedGridRows } from "../../../components/DataTable/gridExportUtils";

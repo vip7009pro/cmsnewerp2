@@ -276,7 +276,23 @@ export const chatService = {
       image: string;
       siteName: string;
     }>("chatLinkPreview", { url }),
+
+  /** Lấy thông tin phòng chat từ mã phòng (dùng khi mở link mời). */
+  getInviteInfo: (conversationId: number) =>
+    chatQuery<ChatInviteInfo>("chatGetInviteInfo", { conversationId }),
+
+  /** Gia nhập phòng chat qua link mời. */
+  joinViaLink: (conversationId: number) =>
+    chatQuery<ChatConversation>("chatJoinViaLink", { conversationId }),
 };
+
+export interface ChatInviteInfo {
+  conversationId: number;
+  title: string;
+  avatar: string | null;
+  memberCount: number;
+  isMember: boolean;
+}
 
 /** Upload 1 file vào phòng chat, trả về attachment vừa lưu. */
 export async function uploadChatFile(

@@ -936,6 +936,16 @@ export default function ChatConversationView({
     if (textareaRef.current) textareaRef.current.style.height = "auto";
   };
 
+  const handleCopyInviteLink = async () => {
+    try {
+      const inviteUrl = `${window.location.origin}/?joinChat=${conversation.CONVERSATION_ID}`;
+      await navigator.clipboard.writeText(inviteUrl);
+      setToast("Đã sao chép link mời vào phòng!");
+    } catch {
+      setToast("Không thể sao chép liên kết");
+    }
+  };
+
   /**
    * Điều hướng bảng gợi ý tag khi đang ở chế độ richtext.
    * Trả về true nghĩa là đã xử lý phím ⇒ ChatRichEditor không gửi tin/xuống dòng.
@@ -1229,6 +1239,19 @@ export default function ChatConversationView({
           <Tooltip title={isDirect ? "Thông tin hội thoại" : "Quản lý nhóm"}>
             <IconButton size="small" className="erp-chat__iconBtn" onClick={onOpenInfo}>
               <InfoOutlinedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        )}
+
+        {!isSelf && !isDirect && (
+          <Tooltip title="Sao chép link mời vào phòng">
+            <IconButton
+              size="small"
+              className="erp-chat__iconBtn"
+              onClick={handleCopyInviteLink}
+              aria-label="Sao chép link mời vào phòng"
+            >
+              <IosShareRoundedIcon fontSize="small" />
             </IconButton>
           </Tooltip>
         )}

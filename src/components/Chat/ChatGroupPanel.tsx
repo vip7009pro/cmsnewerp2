@@ -19,6 +19,8 @@ import PersonRemoveRoundedIcon from "@mui/icons-material/PersonRemoveRounded";
 import SwapHorizRoundedIcon from "@mui/icons-material/SwapHorizRounded";
 import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import ShareRoundedIcon from "@mui/icons-material/ShareRounded";
+import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import type { ChatConversation, ChatEmployee, ChatMember } from "./chat.types";
 import { chatAvatarUrl, initialsOf, memberFullLabel } from "./chatUtils";
 import ChatRoomAvatar from "./chatAvatars";
@@ -81,6 +83,16 @@ export default function ChatGroupPanel({
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<{ text: string; tone: "ok" | "error" } | null>(null);
   const [roleMenu, setRoleMenu] = useState<{ anchor: HTMLElement; member: ChatMember } | null>(null);
+
+  const handleCopyInviteLink = async () => {
+    try {
+      const inviteUrl = `${window.location.origin}/?joinChat=${conversation.CONVERSATION_ID}`;
+      await navigator.clipboard.writeText(inviteUrl);
+      setNotice({ text: "Đã sao chép liên kết tham gia phòng vào clipboard!", tone: "ok" });
+    } catch {
+      setNotice({ text: "Không thể sao chép liên kết tự động", tone: "error" });
+    }
+  };
 
   const others = useMemo(
     () => conversation.MEMBERS.filter((member) => member.EMPL_NO !== myEmplNo),
@@ -182,6 +194,21 @@ export default function ChatGroupPanel({
               {ROLE_LABEL[conversation.MY_ROLE]}
             </span>
           </div>
+
+          {isGroup && (
+            <div style={{ marginTop: 10, width: "100%" }}>
+              <Button
+                fullWidth
+                size="small"
+                variant="outlined"
+                startIcon={<ShareRoundedIcon fontSize="small" />}
+                onClick={handleCopyInviteLink}
+                sx={{ textTransform: "none", fontSize: "0.8rem", borderRadius: 1.5 }}
+              >
+                Sao chép link mời vào phòng
+              </Button>
+            </div>
+          )}
         </div>
 
         <Divider sx={{ my: 1.5 }} />

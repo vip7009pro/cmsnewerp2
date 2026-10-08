@@ -30,7 +30,8 @@ import {
   sharedFileToFile,
   sharedPayloadHasContent,
 } from "./chatShareTarget";
-import type { ChatMessage } from "./chat.types";
+import type { ChatConversation, ChatMessage } from "./chat.types";
+import ChatJoinDialog from "./ChatJoinDialog";
 import { chatService } from "../../api/services/chatService";
 import { formatMuteRemaining } from "./chatUtils";
 import {
@@ -108,6 +109,64 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
     },
     [isControlled, onOpenChange]
   );
+
+  const [joinConvId, setJoinConvId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const checkUrlForJoin = () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const joinParam = urlParams.get("joinChat") || urlParams.get("chatJoin");
+        if (joinParam && Number(joinParam) > 0) {
+          setJoinConvId(Number(joinParam));
+        }
+      } catch (err) {
+        console.warn("Lỗi kiểm tra URL joinChat:", err);
+      }
+    };
+
+    checkUrlForJoin();
+
+    const handleCustomJoin = (e: any) => {
+      const id = Number(e.detail?.conversationId);
+      if (id > 0) {
+        setJoinConvId(id);
+      }
+    };
+    window.addEventListener("erp:chat-join" as any, handleCustomJoin);
+    window.addEventListener("popstate", checkUrlForJoin);
+
+    return () => {
+      window.removeEventListener("erp:chat-join" as any, handleCustomJoin);
+      window.removeEventListener("popstate", checkUrlForJoin);
+    };
+  }, []);
+
+  const handleJoinedConversation = useCallback(
+    async (conv: ChatConversation) => {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("joinChat");
+        url.searchParams.delete("chatJoin");
+        window.history.replaceState({}, "", url.pathname + (url.search ? url.search : "") + url.hash);
+      } catch {}
+
+      setOpen(true);
+      await controller.refreshConversation(conv.CONVERSATION_ID);
+      await controller.selectConversation(conv.CONVERSATION_ID);
+    },
+    [controller, setOpen]
+  );
+
+  const handleCloseJoinDialog = useCallback(() => {
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("joinChat");
+      url.searchParams.delete("chatJoin");
+      window.history.replaceState({}, "", url.pathname + (url.search ? url.search : "") + url.hash);
+    } catch {}
+    setJoinConvId(null);
+  }, []);
 
   /**
    * Mobile: nút Back (Android) / vuốt cạnh (iOS) đi theo TỪNG TẦNG.
@@ -729,6 +788,13 @@ export default function ChatDock({ isMobile = false, open, onOpenChange, showTri
           </Button>
         </DialogActions>
       </Dialog>
+
+      <ChatJoinDialog
+        open={Boolean(joinConvId)}
+        conversationId={joinConvId}
+        onClose={handleCloseJoinDialog}
+        onJoined={handleJoinedConversation}
+      />
     </>
   );
 }

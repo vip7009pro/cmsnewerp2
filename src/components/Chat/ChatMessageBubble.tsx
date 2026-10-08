@@ -161,9 +161,24 @@ export default function ChatMessageBubble({
     [deleted, message.CONTENT]
   );
 
-  /** Bấm vào tag tên trong tin richtext (span có `data-mention`). */
+  /** Bấm vào tag tên trong tin richtext (span có `data-mention`) hoặc liên kết joinChat. */
   const handleRichTextClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    const emplNo = (event.target as HTMLElement)?.dataset?.mention;
+    const target = event.target as HTMLElement;
+    const anchor = target.closest("a");
+    if (anchor && anchor.href) {
+      const match = anchor.href.match(/[?&](?:joinChat|chatJoin)=(\d+)/);
+      if (match) {
+        event.preventDefault();
+        event.stopPropagation();
+        window.dispatchEvent(
+          new CustomEvent("erp:chat-join", {
+            detail: { conversationId: Number(match[1]) },
+          })
+        );
+        return;
+      }
+    }
+    const emplNo = target?.dataset?.mention;
     if (!emplNo) return;
     event.stopPropagation();
     if (emplNo === MENTION_ALL_ID) return; // @All: chỉ để nhắc, không mở chat riêng
@@ -271,16 +286,18 @@ export default function ChatMessageBubble({
         </span>
       )}
 
-      <div className="erp-chat__rowAvatar">
-        {showAvatar && !mine && (
-          <Avatar
-            src={chatAvatarUrl(message.SENDER_EMPL_NO, sender?.EMPL_IMAGE)}
-            sx={{ width: 30, height: 30, fontSize: 12, bgcolor: "#64748b" }}
-          >
-            {initialsOf(sender?.FULL_NAME || message.SENDER_EMPL_NO)}
-          </Avatar>
-        )}
-      </div>
+      {!mine && (
+        <div className="erp-chat__rowAvatar">
+          {showAvatar && (
+            <Avatar
+              src={chatAvatarUrl(message.SENDER_EMPL_NO, sender?.EMPL_IMAGE)}
+              sx={{ width: 30, height: 30, fontSize: 12, bgcolor: "#64748b" }}
+            >
+              {initialsOf(sender?.FULL_NAME || message.SENDER_EMPL_NO)}
+            </Avatar>
+          )}
+        </div>
+      )}
 
       <div className="erp-chat__bubbleWrap">
         {showAvatar && !mine && (

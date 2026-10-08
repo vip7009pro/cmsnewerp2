@@ -134,19 +134,23 @@ export default function ChatNewChatDialog({
   );
 
   const toggle = (employee: ChatEmployee) => {
-    // Đang "chọn tất cả" mà bỏ chọn 1 người ⇒ chuyển sang chọn thủ công danh sách đầy đủ
-    // trừ người đó (giữ đúng cảm giác "bấm là bỏ chọn người này").
-    setSelected((prev) => {
-      const base = selectAllMembers ?? prev;
-      return base.some((item) => item.EMPL_NO === employee.EMPL_NO)
-        ? base.filter((item) => item.EMPL_NO !== employee.EMPL_NO)
-        : [...base, employee];
-    });
-    if (selectAllMembers) setSelectAllMembers(null);
+    const base = selectAllMembers ?? selected;
+    const isExisted = base.some((item) => item.EMPL_NO === employee.EMPL_NO);
+    const next = isExisted
+      ? base.filter((item) => item.EMPL_NO !== employee.EMPL_NO)
+      : [...base, employee];
+
+    if (next.length > 20) {
+      setSelectAllMembers(next);
+      setSelected([]);
+    } else {
+      setSelected(next);
+      setSelectAllMembers(null);
+    }
   };
 
   const handleSelectAll = async () => {
-    if (isSelectAll) {
+    if (isSelectAll && selectAllMembers?.length === (allEmployees?.length || 0)) {
       setSelectAllMembers(null);
       setSelected([]);
       setBulkHint(ALL_COMPANY_HINT);
@@ -195,7 +199,18 @@ export default function ChatNewChatDialog({
     [allEmployees, deptMain, deptSub]
   );
 
-  /** Chọn NHANH toàn bộ nhân sự của phòng ban/bộ phận đang chọn. */
+  const isDeptFullySelected = useMemo(() => {
+    if (deptMembers.length === 0) return false;
+    const selectedSet = new Set(selectedNos);
+    return deptMembers.every((m) => selectedSet.has(m.EMPL_NO));
+  }, [deptMembers, selectedNos]);
+
+  const newDeptCount = useMemo(() => {
+    const selectedSet = new Set(selectedNos);
+    return deptMembers.filter((m) => !selectedSet.has(m.EMPL_NO)).length;
+  }, [deptMembers, selectedNos]);
+
+  /** Chọn / Bỏ chọn toàn bộ nhân sự của phòng ban/bộ phận, GIỮ NGUYÊN các bộ phận đã chọn trước đó. */
   const handleSelectDepartment = async () => {
     setError(null);
     if (!deptMain && !deptSub) {
@@ -212,13 +227,59 @@ export default function ChatNewChatDialog({
       setError("Bộ phận này không có nhân sự");
       return;
     }
-    setSelected([]);
-    setSelectAllMembers(members);
-    const label = deptSub || deptMain;
-    setBulkHint(
-      `Bộ phận ${label}${deptMain && deptSub ? ` · ${deptMain}` : ""} · ${members.length} nhân sự`
-    );
-    setGroupTitle((prev) => (prev.trim() ? prev : `Bộ phận ${label}`));
+
+    const currentBase = selectAllMembers ?? selected;
+    const currentMap = new Map(currentBase.map((item) => [item.EMPL_NO, item]));
+    const allAlreadyIn = members.every((m) => currentMap.has(m.EMPL_NO));
+
+    let nextMembers: ChatEmployee[];
+    if (allAlreadyIn) {
+      // Đã chọn hết nhân sự bộ phận này -> Bấm lại để BỎ CHỌN bộ phận này
+      const removeSet = new Set(members.map((m) => m.EMPL_NO));
+      nextMembers = currentBase.filter((item) => !removeSet.has(item.EMPL_NO));
+    } else {
+      // Thêm nhân sự bộ phận này vào danh sách hiện tại (giữ nguyên các bộ phận đã chọn trước)
+      members.forEach((m) => currentMap.set(m.EMPL_NO, m));
+      nextMembers = Array.from(currentMap.values());
+    }
+
+    if (nextMembers.length === 0) {
+      setSelectAllMembers(null);
+      setSelected([]);
+      setBulkHint(ALL_COMPANY_HINT);
+      return;
+    }
+
+    // Cập nhật danh sách bộ phận tổng hợp
+    const deptSet = new Set<string>();
+    nextMembers.forEach((e) => {
+      const d = e.SUBDEPTNAME || e.MAINDEPTNAME;
+      if (d) deptSet.add(d);
+    });
+    const deptList = Array.from(deptSet);
+    const deptSummary =
+      deptList.length <= 3
+        ? deptList.join(", ")
+        : `${deptList.slice(0, 3).join(", ")} (+${deptList.length - 3} bộ phận)`;
+
+    setBulkHint(`Bộ phận: ${deptSummary} · ${nextMembers.length} nhân sự`);
+
+    // Gợi ý tên nhóm nếu chưa nhập hoặc đang theo mẫu mặc định
+    setGroupTitle((prev) => {
+      const trimmed = prev.trim();
+      if (!trimmed || trimmed.startsWith("Bộ phận ") || trimmed.startsWith("Nhóm ")) {
+        return deptList.length > 0 ? `Nhóm ${deptList.slice(0, 3).join(" - ")}` : "Nhóm mới";
+      }
+      return prev;
+    });
+
+    if (nextMembers.length > 20) {
+      setSelectAllMembers(nextMembers);
+      setSelected([]);
+    } else {
+      setSelected(nextMembers);
+      setSelectAllMembers(null);
+    }
   };
 
   const handleStartDirect = async (employee: ChatEmployee) => {
@@ -332,13 +393,18 @@ export default function ChatNewChatDialog({
             </TextField>
             <Button
               size="small"
-              variant="outlined"
+              variant={isDeptFullySelected ? "contained" : "outlined"}
+              color={isDeptFullySelected ? "inherit" : "primary"}
               className="erp-chat-dialog__deptBtn"
               disabled={(!deptMain && !deptSub) || loadingAll || submitting}
               onClick={() => void handleSelectDepartment()}
             >
               {loadingAll ? <CircularProgress size={14} color="inherit" /> : null}
-              Chọn cả bộ phận{deptMembers.length > 0 ? ` (${deptMembers.length})` : ""}
+              {isDeptFullySelected
+                ? `Bỏ chọn bộ phận (${deptMembers.length})`
+                : selectedNos.length > 0
+                ? `+ Thêm bộ phận (+${newDeptCount})`
+                : `Chọn cả bộ phận (${deptMembers.length})`}
             </Button>
           </div>
         )}

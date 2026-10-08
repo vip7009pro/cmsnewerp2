@@ -357,18 +357,41 @@ export function linkifyText(text: string, keyPrefix = "link"): (string | JSX.Ele
     const { url, trailing } = splitTrailingPunctuation(match[0]);
     if (!url) continue;
     if (match.index > lastIndex) out.push(text.slice(lastIndex, match.index));
-    out.push(
-      <a
-        key={`${keyPrefix}-${index}`}
-        className="erp-chat__link"
-        href={hrefOf(url)}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={(event) => event.stopPropagation()}
-      >
-        {url}
-      </a>
-    );
+    const joinMatch = url.match(/[?&](?:joinChat|chatJoin)=(\d+)/);
+    if (joinMatch) {
+      const convId = Number(joinMatch[1]);
+      out.push(
+        <a
+          key={`${keyPrefix}-${index}`}
+          className="erp-chat__link"
+          href={hrefOf(url)}
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            window.dispatchEvent(
+              new CustomEvent("erp:chat-join", {
+                detail: { conversationId: convId },
+              })
+            );
+          }}
+        >
+          {url}
+        </a>
+      );
+    } else {
+      out.push(
+        <a
+          key={`${keyPrefix}-${index}`}
+          className="erp-chat__link"
+          href={hrefOf(url)}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(event) => event.stopPropagation()}
+        >
+          {url}
+        </a>
+      );
+    }
     if (trailing) out.push(trailing);
     lastIndex = match.index + match[0].length;
     index += 1;

@@ -188,6 +188,11 @@ export const useYCSXLogic = () => {
         showConfirmButton: false,
       });
     }
+    try {
+      await generalQuery("updateCDP400", {});
+    } catch (err) {
+      console.error("Lỗi khi chạy updateCDP400:", err);
+    }
     const data = await f_traYCSX(
       {
         alltime: alltime,
