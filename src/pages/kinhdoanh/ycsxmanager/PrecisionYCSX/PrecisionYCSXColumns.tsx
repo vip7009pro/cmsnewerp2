@@ -179,17 +179,17 @@ export const getYCSXColumns = (options: ColumnOptions): any[] => {
           </span>
         ),
       },
-      /*  {
-         field: "SHORTAGE_YCSX",
-         cellDataType: "number",
-         headerName: "TỒN YCSX",
-         width: 80,
-         cellRenderer: (params: any) => (
-           <span style={{ color: "blue" }}>
-             <b>{params.data?.SHORTAGE_YCSX?.toLocaleString("en-US")}</b>
-           </span>
-         ),
-       }, */
+      {
+        field: "SHORTAGE_YCSX",
+        cellDataType: "number",
+        headerName: "TỒN YCSX",
+        width: 80,
+        cellRenderer: (params: any) => (
+          <span style={{ color: "blue" }}>
+            <b>{params.data?.SHORTAGE_YCSX?.toLocaleString("en-US")}</b>
+          </span>
+        ),
+      },
       {
         field: "YCSX_PENDING",
         headerName: "YCSX_PENDING",
