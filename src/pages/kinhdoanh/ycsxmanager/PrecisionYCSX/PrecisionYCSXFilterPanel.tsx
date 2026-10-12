@@ -291,7 +291,7 @@ const PrecisionYCSXFilterPanel: React.FC<Props> = ({
         <button
           type="button"
           className="precision-ycsx__filterSearchBtn"
-          onClick={onSearch}
+          onClick={() => onSearch()}
         >
           <FiZap />
           <span>Tra Cứu YCSX</span>

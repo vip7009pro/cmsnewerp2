@@ -177,7 +177,8 @@ export const useYCSXLogic = () => {
 
   // Tra cứu YCSX
   const handletraYCSX = async (isSilent: boolean = false) => {
-    if (!isSilent) {
+    const silent = isSilent === true;
+    if (!silent) {
       Swal.fire({
         title: "Tra YCSX",
         text: "Đang tải dữ liệu, hãy chờ chút",
@@ -211,7 +212,7 @@ export const useYCSXLogic = () => {
         phanloaihang: phanloaihang,
         material_yes: materialYES,
       },
-      isSilent
+      silent
     );
     setYcsxDataTable(data);
   };

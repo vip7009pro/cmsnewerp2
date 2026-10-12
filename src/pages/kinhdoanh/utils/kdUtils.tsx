@@ -810,6 +810,7 @@ export const f_isIDCongViecExist = async (
 };
 
 export const f_traYCSX = async (searchFilter: any, isSilent: boolean = false) => {
+  const silent = isSilent === true;
   let kq: YCSXTableData[] = [];
   await generalQuery("traYCSXDataFull", {
     alltime: searchFilter.alltime,
@@ -875,7 +876,7 @@ export const f_traYCSX = async (searchFilter: any, isSilent: boolean = false) =>
           }
         );
         kq = loadeddata;
-        if (!isSilent) {
+        if (!silent) {
           Swal.fire({
             title: "Thông báo",
             text: "Đã load " + response.data.data.length + " dòng",

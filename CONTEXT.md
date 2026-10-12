@@ -1,5 +1,17 @@
 # ERP Context & Status
 
+## Update - 2026-10-12 (KD / YCSX: Hiển Thị Đầy Đủ Swal.fire Khi Bấm Nút Tra Cứu YCSX)
+- **Mục tiêu**: Khắc phục tình trạng khi bấm nút "Tra Cứu YCSX" tại [YCSXManager.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/YCSXManager.tsx) không hiển thị thông báo `Swal.fire` ("Đang tải dữ liệu, hãy chờ chút" và "Đã load ... dòng") như khi nhấn phím Enter trong các ô lọc.
+- **Nguyên nhân gốc**:
+  - Tại [PrecisionYCSXFilterPanel.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/PrecisionYCSXFilterPanel.tsx) và [YCSXManager.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/YCSXManager.tsx), nút button gán trực tiếp `onClick={onSearch}` và `onSearch={ycsx.handletraYCSX}`.
+  - Khi click chuột, React truyền SyntheticEvent (MouseEvent) làm đối số đầu vào hàm `handletraYCSX(isSilent: boolean = false)`.
+  - Trong JavaScript, đối tượng Event mang giá trị truthy, khiến biểu thức `if (!isSilent)` bị hiểu nhầm là `false` (chế độ silent), do đó cả thông báo loading Swal của `handletraYCSX` và thông báo hoàn thành của `f_traYCSX` đều bị bỏ qua (trong khi ấn Enter thì gọi `onSearch()` không có tham số nên `isSilent` mặc định là `false`).
+- **Thực hiện**:
+  - [useYCSXLogic.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/useYCSXLogic.ts): Chuẩn hóa `const silent = isSilent === true;` để chỉ bật silent khi giá trị đúng là boolean `true`, truyền `silent` xuống `f_traYCSX`.
+  - [PrecisionYCSXFilterPanel.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/PrecisionYCSX/PrecisionYCSXFilterPanel.tsx): Bọc `onClick={() => onSearch()}` không chuyển tiếp click event.
+  - [YCSXManager.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/YCSXManager.tsx): Bọc `onSearch={() => ycsx.handletraYCSX()}`.
+  - [kdUtils.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/utils/kdUtils.tsx): Chuẩn hóa `const silent = isSilent === true;` trong `f_traYCSX`.
+
 ## Update - 2026-10-12 (SYSTEM / API TIMEOUT: Nâng Timeout Truy Vấn Toàn Bộ Hệ Thống Lên 5 Phút)
 - **Mục tiêu**: Khắc phục tình trạng khi tra cứu dữ liệu lớn (như tra Xuất Pack kho thành phẩm [KHOTP.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kho/khotp/KHOTP.tsx)), yêu cầu API chạy được 45 giây là bị axios tự động cancel / timeout giữa chừng. Nâng thời gian timeout truy vấn lên 5 phút (300.000 ms) cho toàn bộ web.
 - **Thực hiện**:

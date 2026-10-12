@@ -301,7 +301,7 @@ const YCSXManager: React.FC = () => {
             <PrecisionYCSXFilterPanel
               filters={filterValues}
               onFilterChange={handleFilterChange}
-              onSearch={ycsx.handletraYCSX}
+              onSearch={() => ycsx.handletraYCSX()}
               onReset={ycsx.clearYCSXform}
               isHidden={isFilterHidden}
               isCMS={isCMS}
