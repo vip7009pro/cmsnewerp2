@@ -1,5 +1,31 @@
 # ERP Context & Status
 
+## Update - 2026-10-12 (SYSTEM / API TIMEOUT: Nâng Timeout Truy Vấn Toàn Bộ Hệ Thống Lên 5 Phút)
+- **Mục tiêu**: Khắc phục tình trạng khi tra cứu dữ liệu lớn (như tra Xuất Pack kho thành phẩm [KHOTP.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kho/khotp/KHOTP.tsx)), yêu cầu API chạy được 45 giây là bị axios tự động cancel / timeout giữa chừng. Nâng thời gian timeout truy vấn lên 5 phút (300.000 ms) cho toàn bộ web.
+- **Thực hiện**:
+  - **Frontend ([Api.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/api/Api.ts))**:
+    - Khởi tạo hằng số toàn cục `DEFAULT_API_TIMEOUT = 5 * 60 * 1000` (300.000 ms = 5 phút).
+    - Cập nhật `axios.defaults.timeout = DEFAULT_API_TIMEOUT`.
+    - Cập nhật `generalQuery` sử dụng fallback `options?.timeout ?? DEFAULT_API_TIMEOUT`.
+    - Đồng bộ `aiQuery` và `aiExecuteSql` sử dụng `DEFAULT_API_TIMEOUT`.
+  - **Backend ([database_mssql.js](file:///g:/NODEJS/practice1/config/database_mssql.js))**:
+    - Nâng fallback `DB_REQUEST_TIMEOUT` và `DB_CONNECTION_TIMEOUT` từ 60.000 ms lên 300.000 ms (5 phút) để đảm bảo kết nối mssql không bị ngắt sớm trước khi query hoàn tất.
+
+## Update - 2026-10-12 (KHO / KHOTP: Rà Soát Phục Hồi Toàn Bộ Cột Bị Thiếu So Với Bản Backup)
+- **Mục tiêu**: Rà soát các bảng AGTable trong [KHOTP.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kho/khotp/KHOTP.tsx) / [PrecisionKHOTPColumns.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kho/khotp/PrecisionKHOTP/PrecisionKHOTPColumns.tsx), đối chiếu chi tiết với [KHOTP.backup.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kho/khotp/KHOTP.backup.tsx) và backend API [warehouseService.js](file:///g:/NODEJS/practice1/services/warehouseService.js), khắc phục tình trạng thiếu cột.
+- **Phát hiện & Khắc phục**:
+  1. **Bảng Nhập/Xuất Kho (`column_WH_IN_OUT`)**:
+     - Phát hiện thiếu 2 cột: `IO_Shift` (Ca làm việc) và `IO_Status` (Trạng thái Pending/Closed).
+     - Đã bổ sung `IO_Shift` (width: 80) và `IO_Status` (width: 90) tích hợp hàm render `renderIOStatus` trực quan (Pending: badge đỏ `#dc2626`, Closed: badge xanh `#16a34a`).
+     - Sửa key field `IO_Type` (trước đó là `IO_TYPE` viết hoa không khớp thuộc tính DB trả về từ query `trakhotpInOut`, bổ sung valueGetter fallback tương thích).
+  2. **Bảng Xuất Pack (`column_XUATPACK`)**:
+     - Phát hiện thiếu 14/18 cột kết quả kiểm tra chất lượng DTC (chỉ có 4 cột kích thước, kéo keo, XRF, điện trở).
+     - Đã bổ sung toàn bộ 14 cột DTC còn thiếu: `KQ_Tĩnh_điện`, `KQ_Độ_bóng`, `KQ_Phtalate`, `KQ_FTIR`, `KQ_Mài_mòn`, `KQ_Màu_sắc`, `KQ_TVOC`, `KQ_Cân_nặng`, `KQ_Scanbarcode`, `KQ_Nhiệt_cao_Ẩm_cao` (KQ_Nhiệt_Ẩm), `KQ_Shock_nhiệt`, `KQ_Kéo_keo_2`, `KQ_Ngoại_quan`, `KQ_Độ_dày`.
+     - Đồng bộ hàm `renderKQQuality` hiển thị badge chuẩn (OK xanh lá, NG đỏ, N/A xám).
+     - Bổ sung `valueGetter` cho cột YCSX (`params.data?.PROD_REQUEST_NO ?? params.data?.YCSX_NO`).
+  3. **Các bảng tồn kho (`column_STOCK_CMS`, `column_STOCK_KD`, `column_STOCK_TACH`)**:
+     - Đã đối chiếu và xác nhận khớp 100% đầy đủ số lượng và nội dung các cột so với bản backup.
+
 ## Update - 2026-10-08 (KD / YCSX & CHAT: Tự Động updateCDP400, Multi-Select Phòng Ban Tạo Nhóm, Sharelink Gia Nhập Phòng)
 - **Mục tiêu**:
   1. Mỗi khi người dùng bấm tra YCSX tại [YCSXManager.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/YCSXManager.tsx), gọi API `generalQuery` command `'updateCDP400'` để cập nhật đồng bộ các công đoạn sản xuất trên bảng P400 trước khi tải danh sách.

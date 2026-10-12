@@ -49,6 +49,28 @@ export const renderKQQuality = (val: any) => {
   );
 };
 
+// Helper renderer trạng thái IO_Status
+export const renderIOStatus = (val: any) => {
+  if (!val) return "";
+  const isPending = val === "Pending";
+  return (
+    <span
+      style={{
+        display: "inline-block",
+        padding: "1px 8px",
+        borderRadius: "4px",
+        fontSize: "11px",
+        fontWeight: 700,
+        background: isPending ? "#fee2e2" : "#dcfce7",
+        color: isPending ? "#dc2626" : "#16a34a",
+        textAlign: "center",
+      }}
+    >
+      {val}
+    </span>
+  );
+};
+
 // ==========================================
 // 1. CỘT NHẬP / XUẤT KHO (column_WH_IN_OUT)
 // ==========================================
@@ -57,20 +79,29 @@ export const column_WH_IN_OUT = [
   { field: "G_NAME", headerName: "G_NAME", width: 180 },
   { field: "G_NAME_KD", headerName: "G_NAME_KD", width: 120 },
   { field: "CUST_NAME_KD", headerName: "CUST_NAME_KD", width: 150 },
-  { field: "Customer_ShortName", headerName: "Customer_ShortName", width: 100 },
-  { field: "PROD_REQUEST_NO", headerName: "PROD_REQUEST_NO", width: 100 },
-  { field: "PROD_REQUEST_DATE", headerName: "PROD_REQUEST_DATE", width: 100 },
-  { field: "PLAN_ID", headerName: "PLAN_ID", width: 100 },
-  { field: "IO_TYPE", headerName: "IO_TYPE", width: 80 },
-  { field: "IO_Date", headerName: "IO_Date", width: 100 },
-  { field: "INPUT_DATETIME", headerName: "INPUT_DATETIME", width: 100 },
+  { field: "Customer_ShortName", headerName: "Customer_ShortName", width: 130 },
+  { field: "IO_Date", headerName: "IO_Date", width: 110 },
+  { field: "INPUT_DATETIME", headerName: "IN_OUT_TIME", width: 150 },
+  { field: "IO_Shift", headerName: "IO_Shift", width: 80 },
+  {
+    field: "IO_Type",
+    headerName: "IO_Type",
+    width: 80,
+    valueGetter: (params: any) => params.data?.IO_Type ?? params.data?.IO_TYPE,
+  },
+  {
+    field: "IO_Status",
+    headerName: "IO_Status",
+    width: 90,
+    cellRenderer: (params: any) => renderIOStatus(params.value ?? params.data?.IO_Status),
+  },
   {
     field: "IO_Qty",
     headerName: "IO_Qty",
-    width: 80,
+    width: 90,
     cellRenderer: (params: any) => (
-      <span style={{ color: "green" }}>
-        <b>{params.data.IO_Qty?.toLocaleString("en-US")}</b>
+      <span style={{ color: "#16a34a", fontWeight: 700, fontFamily: "monospace" }}>
+        {Number(params.data.IO_Qty ?? 0).toLocaleString("en-US")}
       </span>
     ),
   },
@@ -92,8 +123,8 @@ export const column_XUATPACK = [
     headerName: "CUST_NAME_KD",
     width: 110,
     cellRenderer: (params: any) => (
-      <span style={{ color: "#B008B0" }}>
-        <b>{params.data.CUST_NAME_KD}</b>
+      <span style={{ color: "#B008B0", fontWeight: 700 }}>
+        {params.data.CUST_NAME_KD}
       </span>
     ),
   },
@@ -103,8 +134,8 @@ export const column_XUATPACK = [
     headerName: "OUT_DATE",
     width: 90,
     cellRenderer: (params: any) => (
-      <span style={{ color: "blue" }}>
-        <b>{params.data.OUT_DATE}</b>
+      <span style={{ color: "#2563eb", fontWeight: 700 }}>
+        {params.data.OUT_DATE}
       </span>
     ),
   },
@@ -114,8 +145,8 @@ export const column_XUATPACK = [
     headerName: "Out_Qty",
     width: 90,
     cellRenderer: (params: any) => (
-      <span style={{ color: "green" }}>
-        <b>{params.data.Out_Qty?.toLocaleString("en-US")}</b>
+      <span style={{ color: "#16a34a", fontWeight: 700, fontFamily: "monospace" }}>
+        {Number(params.data.Out_Qty ?? 0).toLocaleString("en-US")}
       </span>
     ),
   },
@@ -132,7 +163,12 @@ export const column_XUATPACK = [
   { field: "EXP_DATE", headerName: "EXP_DATE", width: 100 },
   { field: "Outtype", headerName: "Outtype", width: 90 },
   { field: "PLAN_ID", headerName: "PLAN_ID", width: 90 },
-  { field: "PROD_REQUEST_NO", headerName: "YCSX_NO", width: 80 },
+  {
+    field: "PROD_REQUEST_NO",
+    headerName: "YCSX_NO",
+    width: 90,
+    valueGetter: (params: any) => params.data?.PROD_REQUEST_NO ?? params.data?.YCSX_NO,
+  },
   {
     field: "KQ_Kích_thước",
     headerName: "KQ_Kích_thước",
@@ -154,6 +190,90 @@ export const column_XUATPACK = [
   {
     field: "KQ_Điện_trở",
     headerName: "KQ_Điện_trở",
+    width: 80,
+    cellRenderer: (p: any) => renderKQQuality(p.value),
+  },
+  {
+    field: "KQ_Tĩnh_điện",
+    headerName: "KQ_Tĩnh_điện",
+    width: 80,
+    cellRenderer: (p: any) => renderKQQuality(p.value),
+  },
+  {
+    field: "KQ_Độ_bóng",
+    headerName: "KQ_Độ_bóng",
+    width: 80,
+    cellRenderer: (p: any) => renderKQQuality(p.value),
+  },
+  {
+    field: "KQ_Phtalate",
+    headerName: "KQ_Phtalate",
+    width: 80,
+    cellRenderer: (p: any) => renderKQQuality(p.value),
+  },
+  {
+    field: "KQ_FTIR",
+    headerName: "KQ_FTIR",
+    width: 80,
+    cellRenderer: (p: any) => renderKQQuality(p.value),
+  },
+  {
+    field: "KQ_Mài_mòn",
+    headerName: "KQ_Mài_mòn",
+    width: 80,
+    cellRenderer: (p: any) => renderKQQuality(p.value),
+  },
+  {
+    field: "KQ_Màu_sắc",
+    headerName: "KQ_Màu_sắc",
+    width: 80,
+    cellRenderer: (p: any) => renderKQQuality(p.value),
+  },
+  {
+    field: "KQ_TVOC",
+    headerName: "KQ_TVOC",
+    width: 80,
+    cellRenderer: (p: any) => renderKQQuality(p.value),
+  },
+  {
+    field: "KQ_Cân_nặng",
+    headerName: "KQ_Cân_nặng",
+    width: 80,
+    cellRenderer: (p: any) => renderKQQuality(p.value),
+  },
+  {
+    field: "KQ_Scanbarcode",
+    headerName: "KQ_Scanbarcode",
+    width: 80,
+    cellRenderer: (p: any) => renderKQQuality(p.value),
+  },
+  {
+    field: "KQ_Nhiệt_cao_Ẩm_cao",
+    headerName: "KQ_Nhiệt_Ẩm",
+    width: 80,
+    cellRenderer: (p: any) => renderKQQuality(p.value),
+  },
+  {
+    field: "KQ_Shock_nhiệt",
+    headerName: "KQ_Shock_nhiệt",
+    width: 80,
+    cellRenderer: (p: any) => renderKQQuality(p.value),
+  },
+  {
+    field: "KQ_Kéo_keo_2",
+    headerName: "KQ_Kéo_keo_2",
+    width: 80,
+    cellRenderer: (p: any) => renderKQQuality(p.value),
+  },
+  {
+    field: "KQ_Ngoại_quan",
+    headerName: "KQ_Ngoại_quan",
+    width: 80,
+    cellRenderer: (p: any) => renderKQQuality(p.value),
+  },
+  {
+    field: "KQ_Độ_dày",
+    headerName: "KQ_Độ_dày",
     width: 80,
     cellRenderer: (p: any) => renderKQQuality(p.value),
   },

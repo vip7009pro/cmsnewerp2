@@ -14,9 +14,10 @@ import { UserData, WEB_SETTING_DATA } from "./GlobalInterface";
 import { encryptData } from "./services/utilCore";
 import { DEFAULT_USER_DATA } from "./defaultUserData";
 
+export const DEFAULT_API_TIMEOUT = 5 * 60 * 1000; // 300.000 ms = 5 phút cho toàn bộ truy vấn API hệ thống ERP
 const cookies = new Cookies();
 axios.defaults.withCredentials = true;
-axios.defaults.timeout = 45000; // 45 giây chống treo socket vô hạn trên trình duyệt
+axios.defaults.timeout = DEFAULT_API_TIMEOUT;
 
 // Hạn sống của cookie token — PHẢI khớp `expiresIn` của JWT ở backend (24h).
 // Trước đây cookie không set maxAge nên là SESSION COOKIE: đóng hẳn trình duyệt là mất token
@@ -438,7 +439,7 @@ export async function aiQuery(question: string, options?: {
     },
     {
       withCredentials: true,
-      timeout: 60000,
+      timeout: DEFAULT_API_TIMEOUT,
     },
   );
   return data;
@@ -463,7 +464,7 @@ export async function aiExecuteSql(sql: string) {
     },
     {
       withCredentials: true,
-      timeout: 60000,
+      timeout: DEFAULT_API_TIMEOUT,
     },
   );
   return data;
@@ -490,7 +491,7 @@ export async function generalQuery(command: string, queryData: any, options?: { 
       DATA: encryptedData,
     },
     {
-      timeout: options?.timeout ?? 45000,
+      timeout: options?.timeout ?? DEFAULT_API_TIMEOUT,
     }
   );
 //delay 1s
