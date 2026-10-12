@@ -180,6 +180,39 @@ export const getYCSXColumns = (options: ColumnOptions): any[] => {
         ),
       },
       {
+        field: "NHAP_KHO",
+        cellDataType: "number",
+        headerName: "NHẬP KHO",
+        width: 90,
+        cellRenderer: (params: any) => (
+          <span style={{ color: "#cc0099" }}>
+            <b>{(params.data?.NHAP_KHO < 0 ? 0 : params.data?.NHAP_KHO)?.toLocaleString("en-US")}</b>
+          </span>
+        ),
+      },
+      {
+        field: "XUAT_KHO",
+        cellDataType: "number",
+        headerName: "XUẤT KHO",
+        width: 90,
+        cellRenderer: (params: any) => (
+          <span style={{ color: "#cc0099" }}>
+            <b>{(params.data?.XUAT_KHO < 0 ? 0 : params.data?.XUAT_KHO)?.toLocaleString("en-US")}</b>
+          </span>
+        ),
+      },
+      {
+        field: "TON_KHO",
+        cellDataType: "number",
+        headerName: "TỒN KHO",
+        width: 90,
+        cellRenderer: (params: any) => (
+          <span style={{ color: "#cc0099" }}>
+            <b>{(params.data?.TON_KHO < 0 ? 0 : params.data?.TON_KHO)?.toLocaleString("en-US")}</b>
+          </span>
+        ),
+      },
+      {
         field: "SHORTAGE_YCSX",
         cellDataType: "number",
         headerName: "TỒN YCSX",
