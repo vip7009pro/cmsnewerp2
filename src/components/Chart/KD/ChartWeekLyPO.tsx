@@ -30,6 +30,24 @@ const ChartWeeklyPO = ({data}: {data: Array<WeekLyPOData>}) => {
     }));
   }, [data]);
 
+  const maxLeft = useMemo(() => {
+    if (!chartData || chartData.length === 0) return 100;
+    let max = 0;
+    for (const d of chartData) {
+      if (d.WEEKLY_PO_QTY > max) max = d.WEEKLY_PO_QTY;
+    }
+    return max > 0 ? Math.ceil(max * 1.15) : 100;
+  }, [chartData]);
+
+  const maxRight = useMemo(() => {
+    if (!chartData || chartData.length === 0) return 100;
+    let max = 0;
+    for (const d of chartData) {
+      if (d.WEEKLY_PO_AMOUNT > max) max = d.WEEKLY_PO_AMOUNT;
+    }
+    return max > 0 ? Math.ceil(max * 1.15) : 100;
+  }, [chartData]);
+
     const formatCash = (n: number) => {  
      return nFormatter(n, digit) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
    };
@@ -110,7 +128,7 @@ const ChartWeeklyPO = ({data}: {data: Array<WeekLyPOData>}) => {
         <YAxis
           width={50}
           yAxisId='left-axis'
-          domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}
+          domain={[0, maxLeft]}
           label={{
             value: "Số lượng",
             angle: -90,
@@ -129,7 +147,7 @@ const ChartWeeklyPO = ({data}: {data: Array<WeekLyPOData>}) => {
         <YAxis
           yAxisId='right-axis'
           orientation='right'
-          domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}
+          domain={[0, maxRight]}
           label={{
             value: "Số tiền",
             angle: -90,

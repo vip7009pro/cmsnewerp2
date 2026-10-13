@@ -1,36 +1,35 @@
 # ERP Context & Status
 
-## Update - 2026-10-13 (REPORT / KINH DOANH REPORT: Fix Trục Tung & Đường Biểu Diễn Bị Vọt Ngoài Biểu Đồ)
-- **Vấn đề phát hiện**: Trên [KinhDoanhReport.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport.tsx), các biểu đồ *PO By Week (Nhận PO Theo Tuần)*, *Monthly Closing (Chốt Tháng)*, *Yearly Closing (Chốt Năm)* có đường số lượng (`DELIVERY_QTY` / `WEEKLY_PO_QTY`) bị vọt lên trên trời ra ngoài vùng hiển thị và trục tung chỉ scale đến 800M (trong khi năm 2021 là 1.8B).
+## Update - 2026-10-13 (REPORT / CENTRAL SCHEDULER: Bộ Lập Lịch Refresh Chung 10 Phút & Reload Guard)
+- **Mục tiêu**: Đặt lịch refresh chung cho toàn bộ hệ thống báo cáo ERP là **10 phút** (`minIntervalMinutes = 10`), cứ 10 phút chạy cập nhật tất cả các báo cáo một lần. Kể cả khi khởi động lại backend, nếu tính từ lần cập nhật trước tới hiện tại mà chưa được 10 phút thì **tuyệt đối KHÔNG chạy** (chống spam refresh khi server reload/restart). Thiết kế kiến trúc Central Registry để sau này các báo cáo của các bộ phận khác (Sản Xuất, Kho, Mua Hàng, QC...) đăng ký chạy chung luồng.
+- **Thực hiện Backend ([reportSyncService.js](file:///g:/NODEJS/practice1/services/reportSyncService.js), [index.js](file:///g:/NODEJS/practice1/index.js))**:
+  - **Central Registry (`REPORT_REGISTRY`)**: Mảng quản lý tập trung cấu hình đồng bộ mọi phân hệ báo cáo ERP (`code`, `name`, `department`, `minIntervalMinutes: 10`, `syncFn`). Cung cấp hàm `registerReportSync` cho phép các module tương lai đăng ký linh hoạt.
+  - **Reload Guard chống spam (`shouldSyncReport`)**: Kiểm tra trực tiếp khoảng cách thời gian `DATEDIFF(second, LAST_SYNC_AT, GETDATE())` trong bảng `RP_SYNC_LOG`. Nếu `elapsedSeconds < 600` (chưa đủ 10 phút) => trả về `shouldSync: false` và ghi log `SKIPPED`. Kể cả khi restart server hay PM2 reload, nếu chưa đủ 10 phút từ lần sync gần nhất thì hoàn toàn bỏ qua, không quét backdata.
+  - **Scheduler Polling 60 giây (`startReportSyncScheduler`)**: Polling check định kỳ mỗi 60 giây (quét DB cực nhẹ 1-2ms), chỉ khi báo cáo nào chạm mốc `>= 10 phút` mới kích hoạt sync. Khởi động kiểm tra sau 15 giây khi server start.
+  - **Phân tách 2 chế độ**: Tự động background (`force: false` - tuân thủ guard 10 phút) và Thao tác thủ công qua UI (`force: true` - chạy tức thì).
+  - Tích hợp shutdown scheduler an toàn khi `SIGINT` trong `index.js`.
+- **Cập nhật Skill ([SKILL.md](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/.agents/skills/report_table_refactoring/SKILL.md))**:
+  - Bổ sung Nguyên tắc vàng số 8: Central Registry & Bộ Lập Lịch Chung 10 Phút (Reload Guard).
+  - Chuẩn hóa Bước 3: Hướng dẫn đăng ký module báo cáo mới vào `REPORT_REGISTRY`.
+  - Cập nhật checklist kiểm tra Reload Guard chống spam khi khởi động backend.
+
+## Update - 2026-10-13 (SHARED / RECHARTS: Fix Triệt Để Runtime Error DecimalError Invalid argument: NaN)
+- **Vấn đề phát hiện**: Khi mở [KinhDoanhReport.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport.tsx), hệ thống bị văng lỗi runtime: `Error: [DecimalError] Invalid argument: NaN at new Decimal2 (recharts.js) at getTickValuesFixedDomainFn`.
 - **Nguyên nhân gốc**:
-  - Backend trả về cột `DELIVERY_QTY` và `WEEKLY_PO_QTY` dạng chuỗi `String` do nguồn từ cột `BIGINT` trong SQL Server.
-  - JavaScript so sánh chuỗi theo bảng chữ cái từ điển: chuỗi `'641736255'` (641M) hoặc `'8...'` lớn hơn `'1724838513'` (1.72B) vì `'6' > '1'`. Do đó Recharts tưởng 641M-800M là Max và chỉ vẽ trục Y đến 800M. Khi vẽ SVG Line, giá trị 1.72B bị chia scale vượt quá 200% chiều cao biểu đồ và bị cắt mất đỉnh.
+  - Tại 5 biểu đồ ([KDDailyClosing.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/KDDailyClosing.tsx), [KDWeeklyClosing.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/KDWeeklyClosing.tsx), [KDMonthlyClosing.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/KDMonthlyClosing.tsx), [KDYearlyClosing.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/KDYearlyClosing.tsx), [ChartWeekLyPO.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/ChartWeekLyPO.tsx)), hàm cấu hình domain trục tung `domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}`.
+  - Khi dữ liệu ban đầu rỗng `[]` (đang loading hoặc chưa có dòng nào), `dataMax` truyền vào là `-Infinity` / `NaN`, khiến hàm trả về chuỗi `'auto'`. Recharts nhận domain hỗn hợp `[0, 'auto']` và chuyển vào `getTickValuesFixedDomainFn` gọi `new Decimal('auto')` $\rightarrow$ sinh ra `[DecimalError] Invalid argument: NaN` làm sập cây component React.
 - **Khắc phục triệt để**:
-  - **Backend ([kinhdoanhService.js](file:///g:/NODEJS/practice1/services/kinhdoanhService.js))**: Ép kiểu `CAST(... AS FLOAT)` cho `DELIVERY_QTY` và `WEEKLY_PO_QTY` trong toàn bộ các truy vấn `kd_annuallyclosing`, `kd_monthlyclosing`, `kd_weeklyclosing`, `kd_dailyclosing` và `kd_pooverweek`.
-  - **Frontend ([KDYearlyClosing.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/KDYearlyClosing.tsx), [KDMonthlyClosing.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/KDMonthlyClosing.tsx), [ChartWeekLyPO.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/ChartWeekLyPO.tsx), [KDWeeklyClosing.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/KDWeeklyClosing.tsx), [KDDailyClosing.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/KDDailyClosing.tsx))**:
-    - Chuẩn hóa `useMemo` parse `Number(val) || 0` trước khi nạp vào ComposedChart (phòng thủ sâu).
-    - Cấu hình domain trục tung `domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}` tạo khoảng đệm 15% phía trên đỉnh giúp đường biểu diễn và nhãn số không bao giờ bị chạm mép hoặc cắt cụt.
+  - Tại cả 5 component biểu đồ, tách logic tính `maxLeft` và `maxRight` vào các hook `useMemo` độc lập dựa trên `chartData`:
+    + Quét tìm giá trị lớn nhất của các cột số lượng và số tiền, nếu `max > 0` nhân `1.15` (làm tròn lên), nếu data rỗng fallback về `100`.
+    + Gán trực tiếp `domain={[0, maxLeft]}` và `domain={[0, maxRight]}` dạng pure `number[]`.
+  - Recharts và Decimal xử lý mượt mà 100%, loại bỏ vĩnh viễn lỗi runtime `DecimalError`.
 
 ## Update - 2026-10-13 (REPORT / KINH DOANH REPORT: Fix Triệt Để PO Balance Full Sync & Lọc HAVING)
-- **Vấn đề phát hiện**: Khi người dùng phản hồi biểu đồ PO Balance By Year và PO Balance By Week (năm 2026) khác bản cũ:
-  1. Cơ chế sync 60 ngày cũ vô tình xóa toàn bộ năm 2026 và chỉ chèn lại 60 ngày gần nhất (từ tuần 33), làm mất các tuần từ 02 đến 32 (hơn 3.3 triệu tồn đơn).
-  2. PO Balance bản chất là số dư tồn đơn (Balance Data) - đơn hàng có thể tồn từ năm này qua năm khác, gần đây mới clear hoặc bị hủy. Nếu chỉ rolling 60 ngày thì các biến động giao hàng của PO cũ sẽ không bao giờ được tính lại.
-  3. Lọc `WHERE PO_BALANCE > 0` ở cấp độ khách hàng vô tình loại bỏ các khách hàng có số tồn = 0, làm sai lệch cột tổng số lượng đặt `PO_QTY` và tổng giao `DELIVERY_QTY` của cả tuần.
-- **Khắc phục**:
-  - Chuyển sync bảng `RP_KD_PO_BALANCE_WEEKLY` sang **Full Sync** toàn bộ các năm (chạy chỉ ~5 giây).
-  - Chuyển điều kiện lọc sang `HAVING SUM(PO_BALANCE) > 0` trong `pobalanceByYear`, `pobalanceYearByWeekDetail` và `poBalanceByYearWeekCustomerByYear`.
-  - Kết quả: Toàn bộ 41 tuần năm 2026 và dữ liệu các năm khớp 100% từng con số với bản gốc.
-  - Nâng cấp Skill `report_table_refactoring/SKILL.md`: Chuẩn hóa nguyên tắc phân biệt Transaction Data vs. Balance Data và quy tắc HAVING cho báo cáo đa tầng.
+- **Vấn đề & Khắc phục**: Chuyển sync bảng `RP_KD_PO_BALANCE_WEEKLY` sang **Full Sync** toàn bộ các năm (chạy chỉ ~5 giây) và chuyển điều kiện lọc sang `HAVING SUM(PO_BALANCE) > 0` trong `pobalanceByYear`, `pobalanceYearByWeekDetail` và `poBalanceByYearWeekCustomerByYear`. Toàn bộ 41 tuần năm 2026 và dữ liệu các năm khớp 100% từng con số với bản gốc.
 
 ## Update - 2026-10-13 (REPORT / KINH DOANH REPORT: Hiển Thị Thời Điểm Cập Nhật & Nút Đồng Bộ Mới Nhất)
-- **Mục tiêu**: Bổ sung hiển thị thời điểm cập nhật dữ liệu (`lastSyncTime`) và nút "Cập Nhật Dữ Liệu Mới Nhất" (thay thế nút Làm mới cũ ở cạnh nút Toàn màn hình) trên [KinhDoanhReport.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport.tsx); đồng thời cập nhật Skill chuẩn hóa cách thức triển khai cho mọi báo cáo ERP.
-- **Thực hiện**:
-  - **Database & Backend**: Tạo bảng `RP_SYNC_LOG` ghi lại `LAST_SYNC_AT`, `STATUS`, `DURATION_MS`; cung cấp 2 command API `getReportSyncInfo` và `triggerReportSync`.
-  - **Frontend ([PrecisionKDHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/PrecisionKinhDoanhReport/PrecisionKDHeader.tsx), [useKDReportData.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/PrecisionKinhDoanhReport/useKDReportData.ts), [kdReportQueries.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/PrecisionKinhDoanhReport/kdReportQueries.ts), [PrecisionKDReport.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/PrecisionKinhDoanhReport/PrecisionKDReport.scss))**:
-    - Hiển thị badge: `🕒 Dữ liệu cập nhật: YYYY-MM-DD HH:mm:ss` tự động format thân thiện.
-    - Nút `Cập Nhật Dữ Liệu Mới Nhất`: Khi click hiển thị Swal loading, kích hoạt `triggerReportSyncAPI`, sau khi đồng bộ rolling 60 ngày thành công tự động reload báo cáo và thông báo hoàn thành kèm thời gian thực thi.
-  - **Skill ([SKILL.md](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/.agents/skills/report_table_refactoring/SKILL.md))**:
-    - Chuẩn hóa thành 6 Nguyên tắc vàng và 5 Bước thực hiện (thêm Bước 5: Tích hợp thời điểm cập nhật & nút đồng bộ tức thì trên Frontend).
+- **Thực hiện**: Bổ sung badge hiển thị thời điểm cập nhật dữ liệu (`lastSyncTime`) và nút "Cập Nhật Dữ Liệu Mới Nhất" trên [KinhDoanhReport.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport.tsx). Tạo bảng `RP_SYNC_LOG` và 2 endpoint API `getReportSyncInfo` & `triggerReportSync`.
+
 
 ## Update - 2026-10-13 (REPORT / KINH DOANH REPORT: Nâng Cấp Báo Cáo Sang Bảng Summary RP_*)
 - **Mục tiêu**: Nâng cấp toàn diện màn hình [KinhDoanhReport.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport.tsx) từ truy vấn trực tiếp hàng chục triệu dòng dữ liệu backdata sang truy vấn bảng summary `RP_*`.

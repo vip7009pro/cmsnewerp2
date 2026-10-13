@@ -32,6 +32,25 @@ const ChartYearly = ({data}: {data: YearlyClosingData[]}) => {
     }));
   }, [data]);
 
+  const maxLeft = useMemo(() => {
+    if (!chartData || chartData.length === 0) return 100;
+    let max = 0;
+    for (const d of chartData) {
+      if (d.DELIVERY_QTY > max) max = d.DELIVERY_QTY;
+    }
+    return max > 0 ? Math.ceil(max * 1.15) : 100;
+  }, [chartData]);
+
+  const maxRight = useMemo(() => {
+    if (!chartData || chartData.length === 0) return 100;
+    let max = 0;
+    for (const d of chartData) {
+      if (d.DELIVERED_AMOUNT > max) max = d.DELIVERED_AMOUNT;
+      if (d.KPI_VALUE && d.KPI_VALUE > max) max = d.KPI_VALUE;
+    }
+    return max > 0 ? Math.ceil(max * 1.15) : 100;
+  }, [chartData]);
+
   const formatCash = (n: number) => {  
     return nFormatter(n, 2) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
   };
@@ -144,7 +163,7 @@ const ChartYearly = ({data}: {data: YearlyClosingData[]}) => {
         </XAxis>
         <YAxis
           yAxisId='left-axis'
-          domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}
+          domain={[0, maxLeft]}
           label={{
             value: "Số lượng",
             angle: -90,
@@ -162,7 +181,7 @@ const ChartYearly = ({data}: {data: YearlyClosingData[]}) => {
         <YAxis
           yAxisId='right-axis'
           orientation='right'
-          domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}
+          domain={[0, maxRight]}
           label={{
             value: "Số tiền",
             angle: -90,

@@ -33,6 +33,25 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
       KPI_VALUE: Number(item.KPI_VALUE) || 0,
     }));
   }, [data]);
+
+  const maxLeft = useMemo(() => {
+    if (!chartData || chartData.length === 0) return 100;
+    let max = 0;
+    for (const d of chartData) {
+      if (d.DELIVERY_QTY > max) max = d.DELIVERY_QTY;
+    }
+    return max > 0 ? Math.ceil(max * 1.15) : 100;
+  }, [chartData]);
+
+  const maxRight = useMemo(() => {
+    if (!chartData || chartData.length === 0) return 100;
+    let max = 0;
+    for (const d of chartData) {
+      if (d.DELIVERED_AMOUNT > max) max = d.DELIVERED_AMOUNT;
+      if (d.KPI_VALUE && d.KPI_VALUE > max) max = d.KPI_VALUE;
+    }
+    return max > 0 ? Math.ceil(max * 1.15) : 100;
+  }, [chartData]);
   const formatCash = (n: number) => {
     /*  if (n < 1e3) return n;
      if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$"; */
@@ -161,7 +180,7 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
         <YAxis
           width={50}
           yAxisId='left-axis'
-          domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}
+          domain={[0, maxLeft]}
           label={{
             value: "Số lượng",
             angle: -90,
@@ -181,7 +200,7 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
           width={70}
           yAxisId='right-axis'
           orientation='right'
-          domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}
+          domain={[0, maxRight]}
           label={{
             value: "Số tiền",
             angle: -90,

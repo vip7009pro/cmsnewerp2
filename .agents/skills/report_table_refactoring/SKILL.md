@@ -36,7 +36,11 @@ Trong hệ thống ERP doanh nghiệp sản xuất, các bảng backdata như gi
 >    - **Bắt buộc dùng `HAVING SUM(PO_BALANCE) > 0`** để vừa bảo toàn 100% số lượng đặt & giao, vừa chỉ lọc hiển thị các tuần/năm thực sự còn tồn.
 > 7. **BẢNG QUẢN LÝ NHẬT KÝ ĐỒNG BỘ (`RP_SYNC_LOG`) & MANUAL TRIGGER**:
 >    - Quản lý tập trung trạng thái và timestamp đồng bộ của từng phân hệ báo cáo qua bảng `RP_SYNC_LOG`.
->    - Cung cấp API để Frontend đọc thời gian cập nhật và cho phép người dùng click **"Cập nhật dữ liệu mới nhất"** để chủ động tổng hợp backdata rolling mà không cần chờ cronjob.
+>    - Cung cấp API để Frontend đọc thời gian cập nhật và cho phép người dùng click **"Cập nhật dữ liệu mới nhất"** (`force: true`) để chủ động tổng hợp backdata rolling tức thì mà không cần chờ cronjob.
+> 8. **CENTRAL REGISTRY & BỘ LẬP LỊCH CHUNG 10 PHÚT (RELOAD GUARD)**:
+>    - Toàn bộ báo cáo của các phân hệ (Kinh Doanh, Sản Xuất, Kho, QC...) được quản lý tập trung qua `REPORT_REGISTRY` với định mức refresh chung mặc định là **10 phút**.
+>    - **Nguyên tắc Guard khi khởi động lại Backend**: Kể cả khi restart server/service, nếu tính từ lần cập nhật gần nhất (`LAST_SYNC_AT` trong `RP_SYNC_LOG`) tới hiện tại mà **chưa đủ 10 phút thì TUYỆT ĐỐI KHÔNG CHẠY** đồng bộ lại (trả về trạng thái `SKIPPED`).
+>    - **Cơ chế Polling Check 60 giây**: Scheduler chạy vòng lặp kiểm tra nhẹ mỗi 60 giây (truy vấn DB `DATEDIFF(second, LAST_SYNC_AT, GETDATE())`), chỉ khi báo cáo nào chạm mốc `>= 600 giây` mới kích hoạt hàm sync. Tránh trường hợp dùng `setInterval` cố định bị cộng dồn thời gian khi server restart giữa chừng.
 
 ---
 
@@ -84,12 +88,26 @@ graph TD
 
 ---
 
-### BƯỚC 3: NẠP DỮ LIỆU BAN ĐẦU & CƠ CHẾ SYNC ENGINE
+### BƯỚC 3: NẠP DỮ LIỆU BAN ĐẦU, CƠ CHẾ SYNC ENGINE & CENTRAL REGISTRY
 1. Viết script migration nạp toàn bộ dữ liệu lịch sử từ backdata.
 2. Xây dựng Service đồng bộ (VD: `reportSyncService.js`):
    - Hàm `syncRP[PhânHệ](days, ctrCd)`: Xóa và nạp lại dữ liệu rolling (VD: 30 - 60 ngày gần nhất) để hứng toàn bộ thay đổi mới.
    - Khi hoàn thành sync: Sử dụng `MERGE RP_SYNC_LOG` cập nhật `LAST_SYNC_AT = GETDATE()`, `DURATION_MS`, `STATUS = 'OK'`.
    - Cung cấp hàm `getReportSyncInfo(reportCode)`: Trả về `LAST_SYNC_AT` định dạng chuỗi `YYYY-MM-DD HH:mm:ss`.
+3. **Đăng ký vào Central Registry & Bộ Lập Lịch Chung 10 Phút**:
+   - Khai báo phân hệ báo cáo vào `REPORT_REGISTRY` chung của hệ thống:
+     ```javascript
+     registerReportSync({
+       code: 'SAN_XUAT', // hoặc 'KHO', 'MUA_HANG', 'QC'
+       name: 'Báo Cáo Sản Xuất',
+       department: 'SX',
+       minIntervalMinutes: 10, // Chu kỳ tối thiểu 10 phút
+       syncFn: async (ctrCd) => await syncRPSanXuat(60, ctrCd),
+     });
+     ```
+   - **Cơ chế Scheduler & Guard 10 Phút**:
+     - Hàm `shouldSyncReport(reportCode, minIntervalMinutes = 10)`: Quét `DATEDIFF(second, LAST_SYNC_AT, GETDATE())` trong bảng `RP_SYNC_LOG`. Nếu `< 600s` thì `shouldSync: false` (bỏ qua).
+     - Scheduler chạy vòng lặp kiểm tra định kỳ mỗi 60 giây và kích hoạt tự động sau 15 giây khi server khởi động (đảm bảo chống reload lặp khi restart server).
 
 ---
 
@@ -146,6 +164,7 @@ graph TD
 - [ ] Các bảng số dư tồn (PO Balance, Tồn kho) phải được Full Sync hoặc snapshot toàn bộ đơn Open, không dùng rolling làm mất tuần cũ.
 - [ ] Truy vấn tổng hợp cha/con dùng `HAVING SUM(BALANCE) > 0` thay vì `WHERE BALANCE > 0` để tránh làm hỏng các cột tổng đặt/tổng giao.
 - [ ] Bảng `RP_SYNC_LOG` lưu trữ đầy đủ `LAST_SYNC_AT` sau mỗi lượt đồng bộ.
+- [ ] Đăng ký báo cáo vào `REPORT_REGISTRY` với định mức tối thiểu 10 phút và tích hợp Reload Guard kiểm tra `LAST_SYNC_AT` chống spam khi khởi động backend.
 - [ ] Có API `getReportSyncInfo` và `triggerReportSync` hoạt động chính xác.
 - [ ] Toàn bộ query cũ ở backend đã được comment backup bảo lưu.
 - [ ] Đầu ra dữ liệu của truy vấn mới khớp 100% cấu trúc và kết quả với truy vấn cũ.
