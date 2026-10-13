@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
+import React, { PureComponent, useEffect, useMemo, useState } from "react";
 import {
   ComposedChart,
   Line,
@@ -21,6 +21,15 @@ import { WeekLyPOData } from "../../../pages/kinhdoanh/interfaces/kdInterface";
 
 const ChartWeeklyPO = ({data}: {data: Array<WeekLyPOData>}) => {
   const digit: number = getCompany()==='CMS' ? 0: 2;
+
+  const chartData = useMemo(() => {
+    return (data || []).map((item) => ({
+      ...item,
+      WEEKLY_PO_QTY: Number(item.WEEKLY_PO_QTY) || 0,
+      WEEKLY_PO_AMOUNT: Number(item.WEEKLY_PO_AMOUNT) || 0,
+    }));
+  }, [data]);
+
     const formatCash = (n: number) => {  
      return nFormatter(n, digit) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
    };
@@ -67,10 +76,10 @@ const ChartWeeklyPO = ({data}: {data: Array<WeekLyPOData>}) => {
         >
           <p>{label}:</p>
           <p className='label'>
-            AMOUNT: {`${payload[0].value.toLocaleString("en-US")}`} USD
+            AMOUNT: {`${payload[0]?.value?.toLocaleString("en-US")}`} USD
           </p>
           <p className='label'>
-            QTY: {`${payload[1].value.toLocaleString("en-US")}`} EA
+            QTY: {`${payload[1]?.value?.toLocaleString("en-US")}`} EA
           </p>
         </div>
       );
@@ -86,9 +95,9 @@ const ChartWeeklyPO = ({data}: {data: Array<WeekLyPOData>}) => {
       <ComposedChart
         width={500}
         height={300}
-        data={data}
+        data={chartData}
         margin={{
-          top: 5,
+          top: 15,
           right: 30,
           left: 20,
           bottom: 5,
@@ -101,6 +110,7 @@ const ChartWeeklyPO = ({data}: {data: Array<WeekLyPOData>}) => {
         <YAxis
           width={50}
           yAxisId='left-axis'
+          domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}
           label={{
             value: "Số lượng",
             angle: -90,
@@ -119,6 +129,7 @@ const ChartWeeklyPO = ({data}: {data: Array<WeekLyPOData>}) => {
         <YAxis
           yAxisId='right-axis'
           orientation='right'
+          domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}
           label={{
             value: "Số tiền",
             angle: -90,

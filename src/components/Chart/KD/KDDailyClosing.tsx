@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
+import React, { PureComponent, useEffect, useMemo, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -24,6 +24,15 @@ import { CustomResponsiveContainer, getWorkingDaysInMonth, nFormatter } from "..
 const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
   const [dailyClosingData, setDailyClosingData] = useState<Array<DailyClosingData>>([]);
   const digit: number = getCompany()==='CMS' ? 0: 2;
+
+  const chartData = useMemo(() => {
+    return (data || []).map((item) => ({
+      ...item,
+      DELIVERY_QTY: Number(item.DELIVERY_QTY) || 0,
+      DELIVERED_AMOUNT: Number(item.DELIVERED_AMOUNT) || 0,
+      KPI_VALUE: Number(item.KPI_VALUE) || 0,
+    }));
+  }, [data]);
   const formatCash = (n: number) => {
     /*  if (n < 1e3) return n;
      if (n >= 1e3) return +(n / 1e3).toFixed(1) + "K$"; */
@@ -137,9 +146,9 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
       <ComposedChart
         width={500}
         height={300}
-        data={data}
+        data={chartData}
         margin={{
-          top: 5,
+          top: 15,
           right: 30,
           left: 20,
           bottom: 5,
@@ -152,6 +161,7 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
         <YAxis
           width={50}
           yAxisId='left-axis'
+          domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}
           label={{
             value: "Số lượng",
             angle: -90,
@@ -171,6 +181,7 @@ const ChartDaily = ({ data }: { data: DailyClosingData[] }) => {
           width={70}
           yAxisId='right-axis'
           orientation='right'
+          domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}
           label={{
             value: "Số tiền",
             angle: -90,

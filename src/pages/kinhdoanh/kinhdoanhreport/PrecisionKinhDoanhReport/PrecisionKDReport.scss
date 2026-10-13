@@ -91,6 +91,32 @@
       gap: 6px;
     }
 
+    &__sync-info {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #64748b;
+
+      .sync-clock-icon {
+        color: #2563eb;
+      }
+
+      .sync-label {
+        font-weight: 500;
+      }
+
+      .sync-time {
+        color: #0f172a;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+      }
+    }
+
     &__btn-action {
       display: inline-flex;
       align-items: center;
@@ -106,11 +132,41 @@
       cursor: pointer;
       transition: all 0.15s ease;
 
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: #f8fafc;
         color: #1e293b;
         border-color: #94a3b8;
       }
+
+      &:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+      }
+    }
+
+    &__btn-sync {
+      background-color: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+
+      &:hover:not(:disabled) {
+        background-color: #dbeafe;
+        border-color: #93c5fd;
+        color: #1e40af;
+      }
+
+      .animate-spin {
+        animation: kdSpin 1s linear infinite;
+      }
+    }
+  }
+
+  @keyframes kdSpin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
     }
   }
 

@@ -42,6 +42,9 @@ const KinhDoanhReport: React.FC = () => {
     pobalanceDetail,
     pobalanceSummary,
     pobalanceCustomer,
+    lastSyncTime,
+    isSyncing,
+    handleSyncLatest,
     initFunction,
     handleSelectPOYear,
     handleSelectPOWeek,
@@ -55,7 +58,12 @@ const KinhDoanhReport: React.FC = () => {
   return (
     <div className="precision-kd-report">
       {/* 1. Header Bar công nghiệp */}
-      <PrecisionKDHeader onReload={initFunction} />
+      <PrecisionKDHeader
+        onReload={initFunction}
+        onSync={handleSyncLatest}
+        lastSyncTime={lastSyncTime}
+        isSyncing={isSyncing}
+      />
 
       {/* 2. Bộ Lọc Điều Hành & Thanh Chuyển Tab Phân Hệ */}
       <PrecisionKDFilterToolbar

@@ -1,5 +1,45 @@
 # ERP Context & Status
 
+## Update - 2026-10-13 (REPORT / KINH DOANH REPORT: Fix Trục Tung & Đường Biểu Diễn Bị Vọt Ngoài Biểu Đồ)
+- **Vấn đề phát hiện**: Trên [KinhDoanhReport.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport.tsx), các biểu đồ *PO By Week (Nhận PO Theo Tuần)*, *Monthly Closing (Chốt Tháng)*, *Yearly Closing (Chốt Năm)* có đường số lượng (`DELIVERY_QTY` / `WEEKLY_PO_QTY`) bị vọt lên trên trời ra ngoài vùng hiển thị và trục tung chỉ scale đến 800M (trong khi năm 2021 là 1.8B).
+- **Nguyên nhân gốc**:
+  - Backend trả về cột `DELIVERY_QTY` và `WEEKLY_PO_QTY` dạng chuỗi `String` do nguồn từ cột `BIGINT` trong SQL Server.
+  - JavaScript so sánh chuỗi theo bảng chữ cái từ điển: chuỗi `'641736255'` (641M) hoặc `'8...'` lớn hơn `'1724838513'` (1.72B) vì `'6' > '1'`. Do đó Recharts tưởng 641M-800M là Max và chỉ vẽ trục Y đến 800M. Khi vẽ SVG Line, giá trị 1.72B bị chia scale vượt quá 200% chiều cao biểu đồ và bị cắt mất đỉnh.
+- **Khắc phục triệt để**:
+  - **Backend ([kinhdoanhService.js](file:///g:/NODEJS/practice1/services/kinhdoanhService.js))**: Ép kiểu `CAST(... AS FLOAT)` cho `DELIVERY_QTY` và `WEEKLY_PO_QTY` trong toàn bộ các truy vấn `kd_annuallyclosing`, `kd_monthlyclosing`, `kd_weeklyclosing`, `kd_dailyclosing` và `kd_pooverweek`.
+  - **Frontend ([KDYearlyClosing.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/KDYearlyClosing.tsx), [KDMonthlyClosing.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/KDMonthlyClosing.tsx), [ChartWeekLyPO.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/ChartWeekLyPO.tsx), [KDWeeklyClosing.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/KDWeeklyClosing.tsx), [KDDailyClosing.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/components/Chart/KD/KDDailyClosing.tsx))**:
+    - Chuẩn hóa `useMemo` parse `Number(val) || 0` trước khi nạp vào ComposedChart (phòng thủ sâu).
+    - Cấu hình domain trục tung `domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}` tạo khoảng đệm 15% phía trên đỉnh giúp đường biểu diễn và nhãn số không bao giờ bị chạm mép hoặc cắt cụt.
+
+## Update - 2026-10-13 (REPORT / KINH DOANH REPORT: Fix Triệt Để PO Balance Full Sync & Lọc HAVING)
+- **Vấn đề phát hiện**: Khi người dùng phản hồi biểu đồ PO Balance By Year và PO Balance By Week (năm 2026) khác bản cũ:
+  1. Cơ chế sync 60 ngày cũ vô tình xóa toàn bộ năm 2026 và chỉ chèn lại 60 ngày gần nhất (từ tuần 33), làm mất các tuần từ 02 đến 32 (hơn 3.3 triệu tồn đơn).
+  2. PO Balance bản chất là số dư tồn đơn (Balance Data) - đơn hàng có thể tồn từ năm này qua năm khác, gần đây mới clear hoặc bị hủy. Nếu chỉ rolling 60 ngày thì các biến động giao hàng của PO cũ sẽ không bao giờ được tính lại.
+  3. Lọc `WHERE PO_BALANCE > 0` ở cấp độ khách hàng vô tình loại bỏ các khách hàng có số tồn = 0, làm sai lệch cột tổng số lượng đặt `PO_QTY` và tổng giao `DELIVERY_QTY` của cả tuần.
+- **Khắc phục**:
+  - Chuyển sync bảng `RP_KD_PO_BALANCE_WEEKLY` sang **Full Sync** toàn bộ các năm (chạy chỉ ~5 giây).
+  - Chuyển điều kiện lọc sang `HAVING SUM(PO_BALANCE) > 0` trong `pobalanceByYear`, `pobalanceYearByWeekDetail` và `poBalanceByYearWeekCustomerByYear`.
+  - Kết quả: Toàn bộ 41 tuần năm 2026 và dữ liệu các năm khớp 100% từng con số với bản gốc.
+  - Nâng cấp Skill `report_table_refactoring/SKILL.md`: Chuẩn hóa nguyên tắc phân biệt Transaction Data vs. Balance Data và quy tắc HAVING cho báo cáo đa tầng.
+
+## Update - 2026-10-13 (REPORT / KINH DOANH REPORT: Hiển Thị Thời Điểm Cập Nhật & Nút Đồng Bộ Mới Nhất)
+- **Mục tiêu**: Bổ sung hiển thị thời điểm cập nhật dữ liệu (`lastSyncTime`) và nút "Cập Nhật Dữ Liệu Mới Nhất" (thay thế nút Làm mới cũ ở cạnh nút Toàn màn hình) trên [KinhDoanhReport.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport.tsx); đồng thời cập nhật Skill chuẩn hóa cách thức triển khai cho mọi báo cáo ERP.
+- **Thực hiện**:
+  - **Database & Backend**: Tạo bảng `RP_SYNC_LOG` ghi lại `LAST_SYNC_AT`, `STATUS`, `DURATION_MS`; cung cấp 2 command API `getReportSyncInfo` và `triggerReportSync`.
+  - **Frontend ([PrecisionKDHeader.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/PrecisionKinhDoanhReport/PrecisionKDHeader.tsx), [useKDReportData.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/PrecisionKinhDoanhReport/useKDReportData.ts), [kdReportQueries.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/PrecisionKinhDoanhReport/kdReportQueries.ts), [PrecisionKDReport.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/PrecisionKinhDoanhReport/PrecisionKDReport.scss))**:
+    - Hiển thị badge: `🕒 Dữ liệu cập nhật: YYYY-MM-DD HH:mm:ss` tự động format thân thiện.
+    - Nút `Cập Nhật Dữ Liệu Mới Nhất`: Khi click hiển thị Swal loading, kích hoạt `triggerReportSyncAPI`, sau khi đồng bộ rolling 60 ngày thành công tự động reload báo cáo và thông báo hoàn thành kèm thời gian thực thi.
+  - **Skill ([SKILL.md](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/.agents/skills/report_table_refactoring/SKILL.md))**:
+    - Chuẩn hóa thành 6 Nguyên tắc vàng và 5 Bước thực hiện (thêm Bước 5: Tích hợp thời điểm cập nhật & nút đồng bộ tức thì trên Frontend).
+
+## Update - 2026-10-13 (REPORT / KINH DOANH REPORT: Nâng Cấp Báo Cáo Sang Bảng Summary RP_*)
+- **Mục tiêu**: Nâng cấp toàn diện màn hình [KinhDoanhReport.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/kinhdoanhreport/KinhDoanhReport.tsx) từ truy vấn trực tiếp hàng chục triệu dòng dữ liệu backdata sang truy vấn bảng summary `RP_*`.
+- **Nguyên tắc cốt lõi**:
+  - **Skill mới**: Xây dựng Skill chuẩn [report_table_refactoring](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/.agents/skills/report_table_refactoring/SKILL.md) hướng dẫn toàn diện nâng cấp báo cáo ERP sang bảng `RP_*` cho các trang báo cáo khác.
+  - **Backend**: Backup 100% câu query cũ dưới dạng comment `/* === BACKUP TRUY VẤN CŨ === */` và chuyển sang lấy dữ liệu từ 6 bảng `RP_*`.
+- **Kết quả đo lường**: Thời gian phản hồi giảm từ hàng chục giây xuống dưới 100ms (Dynamic Pivot ~240ms). Độ khớp dữ liệu chính xác 100%.
+
+
 ## Update - 2026-10-12 (KD / YCSX: Hiển Thị Đầy Đủ Swal.fire Khi Bấm Nút Tra Cứu YCSX)
 - **Mục tiêu**: Khắc phục tình trạng khi bấm nút "Tra Cứu YCSX" tại [YCSXManager.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/kinhdoanh/ycsxmanager/YCSXManager.tsx) không hiển thị thông báo `Swal.fire` ("Đang tải dữ liệu, hãy chờ chút" và "Đã load ... dòng") như khi nhấn phím Enter trong các ô lọc.
 - **Nguyên nhân gốc**:

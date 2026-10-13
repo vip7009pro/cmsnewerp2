@@ -230,3 +230,39 @@ export {
   queryRunningPOBalance,
   queryCustomerPoOverWeek,
 } from "./kdReportPOQueries";
+
+export interface ReportSyncInfo {
+  REPORT_CODE: string;
+  REPORT_NAME?: string;
+  LAST_SYNC_AT: string;
+  STATUS?: string;
+  DURATION_MS?: number;
+  MESSAGE?: string;
+}
+
+export const queryReportSyncInfo = async (reportCode: string = "KINH_DOANH"): Promise<ReportSyncInfo | null> => {
+  try {
+    const res = await generalQuery("getReportSyncInfo", { REPORT_CODE: reportCode });
+    if (res.data.tk_status !== "NG" && res.data.data?.[0]) {
+      return res.data.data[0];
+    }
+  } catch (err) {
+    console.error("queryReportSyncInfo error:", err);
+  }
+  return null;
+};
+
+export const triggerReportSyncAPI = async (
+  reportCode: string = "KINH_DOANH",
+  days: number = 60
+): Promise<{ success: boolean; message: string; data?: ReportSyncInfo }> => {
+  try {
+    const res = await generalQuery("triggerReportSync", { REPORT_CODE: reportCode, DAYS: days });
+    if (res.data.tk_status !== "NG") {
+      return { success: true, message: res.data.message || "Đồng bộ thành công", data: res.data.data?.[0] };
+    }
+    return { success: false, message: res.data.message || "Đồng bộ thất bại" };
+  } catch (err: any) {
+    return { success: false, message: err?.message || "Lỗi kết nối khi đồng bộ dữ liệu" };
+  }
+};

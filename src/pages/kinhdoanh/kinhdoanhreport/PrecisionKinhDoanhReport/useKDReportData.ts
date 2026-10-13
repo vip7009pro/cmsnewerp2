@@ -38,6 +38,8 @@ import {
   queryRunningPOBalance,
   queryWeeklyClosing,
   queryYearlyClosing,
+  queryReportSyncInfo,
+  triggerReportSyncAPI,
 } from "./kdReportQueries";
 import { buildKDClosingColumns } from "./precisionKDColumns";
 
@@ -48,6 +50,8 @@ export const useKDReportData = () => {
   const [todate, setToDate] = useState<string>(moment().format("YYYY-MM-DD"));
   const [selectedYW, setSelectedYW] = useState<string>("ALL");
   const [activeTab, setActiveTab] = useState<string>("summary");
+  const [lastSyncTime, setLastSyncTime] = useState<string>("");
+  const [isSyncing, setIsSyncing] = useState<boolean>(false);
 
   const [widgetdata_yesterday, setWidgetData_Yesterday] = useState<DailyClosingData[]>([]);
   const [widgetdata_thisweek, setWidgetData_ThisWeek] = useState<WeeklyClosingData[]>([]);
@@ -149,15 +153,24 @@ export const useKDReportData = () => {
   }, [df, fromdate, todate, in_nhanh]);
 
   // Nạp toàn bộ dữ liệu song song (22 queries)
-  const initFunction = useCallback(async () => {
-    Swal.fire({
-      title: "Đang tải báo cáo",
-      text: "Đang tải toàn bộ dữ liệu kinh doanh, vui lòng đợi...",
-      icon: "info",
-      showCancelButton: false,
-      allowOutsideClick: false,
-      confirmButtonText: "OK",
-      showConfirmButton: false,
+  const initFunction = useCallback(async (isSilent: boolean = false) => {
+    if (!isSilent) {
+      Swal.fire({
+        title: "Đang tải báo cáo",
+        text: "Đang tải toàn bộ dữ liệu kinh doanh, vui lòng đợi...",
+        icon: "info",
+        showCancelButton: false,
+        allowOutsideClick: false,
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+      });
+    }
+
+    // Nạp thời điểm đồng bộ mới nhất của báo cáo song song
+    queryReportSyncInfo("KINH_DOANH").then((info) => {
+      if (info?.LAST_SYNC_AT) {
+        setLastSyncTime(info.LAST_SYNC_AT);
+      }
     });
 
     const qParams = { df, fromdate, todate, in_nhanh };
@@ -294,6 +307,43 @@ export const useKDReportData = () => {
     setPoBalanceCustomer(await f_load_PO_BALANCE_CUSTOMER({ PO_YEAR: poYear, PO_WEEK: poWeek }));
   }, []);
 
+  // Kích hoạt đồng bộ thủ công dữ liệu phát sinh mới nhất từ backdata
+  const handleSyncLatest = useCallback(async () => {
+    if (isSyncing) return;
+    setIsSyncing(true);
+    Swal.fire({
+      title: "Đang đồng bộ dữ liệu mới nhất...",
+      text: "Hệ thống đang quét và tổng hợp dữ liệu phát sinh mới nhất từ cơ sở dữ liệu...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      const res = await triggerReportSyncAPI("KINH_DOANH", 60);
+      if (res.success) {
+        if (res.data?.LAST_SYNC_AT) {
+          setLastSyncTime(res.data.LAST_SYNC_AT);
+        }
+        await initFunction(true);
+        Swal.fire({
+          icon: "success",
+          title: "Cập nhật thành công!",
+          text: "Toàn bộ số liệu báo cáo đã được cập nhật mới nhất.",
+          timer: 1800,
+          showConfirmButton: false,
+        });
+      } else {
+        Swal.fire("Thông báo", res.message || "Đồng bộ thất bại", "error");
+      }
+    } catch (err: any) {
+      Swal.fire("Lỗi", err?.message || "Đã xảy ra lỗi khi đồng bộ", "error");
+    } finally {
+      setIsSyncing(false);
+    }
+  }, [isSyncing, initFunction]);
+
   useEffect(() => {
     initFunction();
   }, []);
@@ -305,6 +355,9 @@ export const useKDReportData = () => {
     in_nhanh, setInNhanh,
     selectedYW,
     activeTab, setActiveTab,
+    lastSyncTime,
+    isSyncing,
+    handleSyncLatest,
     widgetdata_yesterday,
     widgetdata_thisweek,
     widgetdata_thismonth,

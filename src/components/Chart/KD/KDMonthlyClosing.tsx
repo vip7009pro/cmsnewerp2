@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { PureComponent, useEffect, useState } from "react";
+import React, { PureComponent, useEffect, useMemo, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -27,6 +27,16 @@ const ChartMonthLy = ({data}: {data: MonthlyClosingData[]}) => {
   const [monthlyClosingData, setMonthlyClosingData] = useState<
     Array<MonthlyClosingData>
   >([]);
+
+  const chartData = useMemo(() => {
+    return (data || []).map((item) => ({
+      ...item,
+      DELIVERY_QTY: Number(item.DELIVERY_QTY) || 0,
+      DELIVERED_AMOUNT: Number(item.DELIVERED_AMOUNT) || 0,
+      KPI_VALUE: Number(item.KPI_VALUE) || 0,
+    }));
+  }, [data]);
+
   const formatCash = (n: number) => {
     return nFormatter(n, digit) + ((getGlobalSetting()?.filter((ele: WEB_SETTING_DATA, index: number)=> ele.ITEM_NAME==='CURRENCY')[0]?.CURRENT_VALUE ?? "USD") === 'USD'?  " $": " đ");
   };
@@ -139,9 +149,9 @@ const ChartMonthLy = ({data}: {data: MonthlyClosingData[]}) => {
       <ComposedChart
         width={500}
         height={300}
-        data={data}
+        data={chartData}
         margin={{
-          top: 5,
+          top: 15,
           right: 30,
           left: 20,
           bottom: 5,
@@ -153,6 +163,7 @@ const ChartMonthLy = ({data}: {data: MonthlyClosingData[]}) => {
         </XAxis>
         <YAxis
           yAxisId='left-axis'
+          domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}
           label={{
             value: "Số lượng",
             angle: -90,
@@ -170,6 +181,7 @@ const ChartMonthLy = ({data}: {data: MonthlyClosingData[]}) => {
         <YAxis
           yAxisId='right-axis'
           orientation='right'
+          domain={[0, (dataMax: number) => (dataMax > 0 ? Math.ceil(dataMax * 1.15) : 'auto')]}
           label={{
             value: "Số tiền",
             angle: -90,
