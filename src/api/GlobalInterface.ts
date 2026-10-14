@@ -134,6 +134,7 @@ export interface userDataInterface {
 export interface WeeklyClosingData {
   EMPL_NAME: string;
   DELIVERY_AMOUNT: number;
+  KPI_VALUE: number;
 }
 export interface WeeklyClosingData {
   DEL_WEEK: string;

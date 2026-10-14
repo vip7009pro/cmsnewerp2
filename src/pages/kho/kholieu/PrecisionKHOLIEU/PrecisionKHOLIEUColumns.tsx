@@ -220,4 +220,16 @@ export const column_STOCK_LIEU = [
       );
     },
   },
+  {
+    field: "REASON",
+    headerName: "REASON",
+    width: 110,
+    cellRenderer: (params: any) => {
+      return (
+        <span style={{ color: "red" }}>
+          <b>{params.data.REASON?.toLocaleString("en-US")}</b>
+        </span>
+      );
+    },
+  },
 ];
