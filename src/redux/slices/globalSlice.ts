@@ -32,6 +32,10 @@ const companyInfo = {
         server_name: "SUBNET_SERVER",
         apiUrl: `${protocol}://cmsvina4285.com:${sub_port}`,
       },
+      {
+        server_name: "LAN_SERVER",
+        apiUrl: `${protocol}://192.168.1.192:${main_port}`,
+      },
       /* {
         server_name: "MAIN_SERVER",
         apiUrl: `${protocol}://14.160.33.94:${main_port}`
@@ -43,10 +47,10 @@ const companyInfo = {
       {
         server_name: "LAN_SERVER",
         apiUrl: `${protocol}://192.168.1.192:${main_port}`
-      }, */       
+      }, */
       {
         server_name: "TEST_SERVER",
-        apiUrl: `${protocol}://localhost:${sub_port}` 
+        apiUrl: `${protocol}://localhost:${sub_port}`
       }
     ],
   },
@@ -184,7 +188,7 @@ socket.on("connect_error", (e) => {
 let server_ip_local: any = localStorage.getItem("server_ip")?.toString();
 if (server_ip_local !== undefined) {
 } else {
-  localStorage.setItem( "server_ip", companyInfo[startCPN as keyof typeof companyInfo].apiUrl );
+  localStorage.setItem("server_ip", companyInfo[startCPN as keyof typeof companyInfo].apiUrl);
 }
 let notiCount: any = localStorage.getItem("notification_count")?.toString();
 if (notiCount !== undefined) {
@@ -340,9 +344,9 @@ export const glbSlice = createSlice({
         state.tabs.filter((e: ELE_ARRAY, index: number) => e.ELE_CODE !== "-1")
           .length < 8
       ) {
-        if(state.tabs.map((e: ELE_ARRAY, index: number) => e.ELE_CODE).includes(action.payload.ELE_CODE)) return;
+        if (state.tabs.map((e: ELE_ARRAY, index: number) => e.ELE_CODE).includes(action.payload.ELE_CODE)) return;
         state.tabs = [...state.tabs, action.payload];
-//        console.log(action.payload);
+        //        console.log(action.payload);
         localStorage.setItem(
           "tabs",
           JSON.stringify(
@@ -406,24 +410,24 @@ export const glbSlice = createSlice({
             })
           )
         );
-       
+
 
 
 
 
         //get the next tabIndex which ELE_CODE  !== - 1
-        if(action.payload < state.tabs.length - 1) {
+        if (action.payload < state.tabs.length - 1) {
           let nextTabIndex = action.payload + 1;
           while (nextTabIndex < state.tabs.length && state.tabs[nextTabIndex].ELE_CODE === "-1") {
             nextTabIndex++;
           }
-          if(nextTabIndex === state.tabs.length) {
+          if (nextTabIndex === state.tabs.length) {
             nextTabIndex = action.payload;
             while (nextTabIndex > 0 && state.tabs[nextTabIndex].ELE_CODE === "-1") {
               nextTabIndex--;
             }
           }
-          console.log('next tab index: ',nextTabIndex);
+          console.log('next tab index: ', nextTabIndex);
           state.tabIndex = nextTabIndex;
         }
         else {
@@ -433,7 +437,7 @@ export const glbSlice = createSlice({
           }
           state.tabIndex = nextTabIndex;
         }
-       
+
 
         /* while (
           state.tabIndex > 0 &&
@@ -465,55 +469,55 @@ export const glbSlice = createSlice({
             })
           )
         );
-        
+
       }
     },
-   /*  closeTab: (state, action: PayloadAction<number>) => {
-      let checkallDeleted: number = 0;
-      for (let i = 0; i < state.tabs.length; i++) {
-        if (state.tabs[i].ELE_CODE !== "-1") checkallDeleted++;
-      }
-      if (checkallDeleted > 1) {
-        state.tabs[action.payload] = {
-          ELE_CODE: "-1",
-          ELE_NAME: "DELETED",
-          REACT_ELE: "",
-          PAGE_ID: -1,
-        };
-        localStorage.setItem(
-          "tabs",
-          JSON.stringify(
-            state.tabs.map((ele: ELE_ARRAY, index: number) => {
-              return {
-                MENU_CODE: ele.ELE_CODE,
-                MENU_NAME: ele.ELE_NAME,
-                PAGE_ID: ele.PAGE_ID,
-              };
-            })
-          )
-        );
-        while (
-          state.tabIndex > 0 &&
-          state.tabs[state.tabIndex].ELE_CODE === "-1"
-        ) {
-          state.tabIndex--;
-        }
-        if (state.tabIndex === 0) {
-          while (
-            state.tabIndex < state.tabs.length &&
-            state.tabs[state.tabIndex].ELE_CODE === "-1"
-          ) {
-            state.tabIndex++;
-          }
-          console.log('tab index: ',state.tabIndex);
-        }
-      } else {
-        state.tabs = [];
-        state.tabIndex = 0;
-      }
-    }, */
+    /*  closeTab: (state, action: PayloadAction<number>) => {
+       let checkallDeleted: number = 0;
+       for (let i = 0; i < state.tabs.length; i++) {
+         if (state.tabs[i].ELE_CODE !== "-1") checkallDeleted++;
+       }
+       if (checkallDeleted > 1) {
+         state.tabs[action.payload] = {
+           ELE_CODE: "-1",
+           ELE_NAME: "DELETED",
+           REACT_ELE: "",
+           PAGE_ID: -1,
+         };
+         localStorage.setItem(
+           "tabs",
+           JSON.stringify(
+             state.tabs.map((ele: ELE_ARRAY, index: number) => {
+               return {
+                 MENU_CODE: ele.ELE_CODE,
+                 MENU_NAME: ele.ELE_NAME,
+                 PAGE_ID: ele.PAGE_ID,
+               };
+             })
+           )
+         );
+         while (
+           state.tabIndex > 0 &&
+           state.tabs[state.tabIndex].ELE_CODE === "-1"
+         ) {
+           state.tabIndex--;
+         }
+         if (state.tabIndex === 0) {
+           while (
+             state.tabIndex < state.tabs.length &&
+             state.tabs[state.tabIndex].ELE_CODE === "-1"
+           ) {
+             state.tabIndex++;
+           }
+           console.log('tab index: ',state.tabIndex);
+         }
+       } else {
+         state.tabs = [];
+         state.tabIndex = 0;
+       }
+     }, */
     settabIndex: (state, action: PayloadAction<number>) => {
-      console.log('set tab index: ',action.payload);
+      console.log('set tab index: ', action.payload);
       state.tabIndex = action.payload;
     },
     setTabModeSwap: (state, action: PayloadAction<boolean>) => {
@@ -553,5 +557,5 @@ export const glbSlice = createSlice({
     },
   },
 });
-export const { changeDiemDanhState, changeUserData, update_socket, toggleSidebar, hideSidebar, addChithiArray, resetChithiArray, changeServer, listen_socket, addTab, addComponent, closeTab, settabIndex, setTabModeSwap, resetTab, logout, login, vendorLogin, vendorLogout, changeGLBLanguage, changeGLBSetting, switchTheme, changeCtrCd, changeSelectedServer, updateNotiCount, changeLagMode} = glbSlice.actions;
+export const { changeDiemDanhState, changeUserData, update_socket, toggleSidebar, hideSidebar, addChithiArray, resetChithiArray, changeServer, listen_socket, addTab, addComponent, closeTab, settabIndex, setTabModeSwap, resetTab, logout, login, vendorLogin, vendorLogout, changeGLBLanguage, changeGLBSetting, switchTheme, changeCtrCd, changeSelectedServer, updateNotiCount, changeLagMode } = glbSlice.actions;
 export default glbSlice.reducer;
