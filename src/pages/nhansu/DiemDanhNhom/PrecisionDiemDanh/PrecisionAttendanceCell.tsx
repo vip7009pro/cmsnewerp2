@@ -32,7 +32,7 @@ const PrecisionAttendanceCell: React.FC<PrecisionAttendanceCellProps> = ({
         if (isTkOk(response)) {
           const newProjects = tableData.map((p) =>
             p.EMPL_NO === data.EMPL_NO
-              ? { ...p, ON_OFF: 0, REASON_NAME: 'AUTO' }
+              ? { ...p, ON_OFF: 0, REASON_NAME: 'AUTO', REMARK: 'AUTO' }
               : p
           );
           setTableData(newProjects);
@@ -169,7 +169,7 @@ const PrecisionAttendanceCell: React.FC<PrecisionAttendanceCellProps> = ({
     if (data.REMARK === 'AUTO') {
       const newProjects = tableData.map((p) =>
         p.EMPL_NO === data.EMPL_NO
-          ? { ...p, ON_OFF: null, OFF_ID: null, REASON_NAME: null }
+          ? { ...p, ON_OFF: null, OFF_ID: null, REASON_NAME: null, REMARK: null }
           : p
       );
       setTableData(newProjects);
@@ -233,7 +233,7 @@ const PrecisionAttendanceCell: React.FC<PrecisionAttendanceCellProps> = ({
         <span className="material-symbols-outlined" style={{ fontSize: 13 }}>
           {isPresent ? 'check' : 'cancel'}
         </span>
-        {isPresent ? 'Đi làm' : data.REASON_NAME || 'Nghỉ làm'}
+        {isPresent ? 'Đi làm' : 'Nghỉ làm'}
       </span>
       <button
         type="button"

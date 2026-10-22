@@ -8,6 +8,7 @@ import KHOTPNEW from "../../kho/khotp_new/KHOTPNEW";
 import MyTabs from "../../../components/MyTab/MyTab";
 import QTR_DATA from "./QTR_DATA";
 import VOC_HISTORY from "./VOC_HISTORY";
+import OQC_SHIPPING_MANAGEMENT from "./OQC_SHIPPING_MANAGEMENT";
 const OQC = () => {
   const isCms = getCompany() === "CMS";
   useEffect(() => {}, []);
@@ -23,6 +24,11 @@ const OQC = () => {
         <MyTabs.Tab title={"Data OQC"}>
           <div className="trainspection">
             <OQC_DATA />
+          </div>
+        </MyTabs.Tab>
+        <MyTabs.Tab title={"OQC_Quản lý xuất hàng"}>
+          <div className="trainspection">
+            <OQC_SHIPPING_MANAGEMENT />
           </div>
         </MyTabs.Tab>
        { isCms && <MyTabs.Tab title={"Data QTR"}>
