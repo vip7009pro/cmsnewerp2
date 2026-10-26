@@ -1,5 +1,12 @@
 # ERP Context & Status
 
+## Update - 2026-10-26 (EMAIL: Khắc Phục Lỗi Đồng Bộ Dừng Ngày 15/10 & Kẹt Ở 387/442)
+- **Mục tiêu**: Xử lý triệt để phản ánh đồng bộ email không có thư mới sau 15/10/2026, kẹt 387/442 dù server có 442 email.
+- **Khắc phục**:
+  - Chuyển tài khoản `nvh1903@cmsbando.com` sang POP3S Cổng 995 (Bảo mật SSL/TLS, `POP3_SECURE = true`) và SMTP Cổng 25: vượt qua rào cản DPI của tường lửa mạng trên cổng 110 (từng drop gói tin email spam msg #383).
+  - Tối ưu `services/mail/mailIngest.js`: Luôn đọc `skippedUidls`, tự động cách ly UIDL lỗi `RETR_FAILED` vào bảng `ZTB_MAIL_SYNC_SKIP` chống treo vĩnh viễn hàng đợi, tự động reconnect kết nối POP3 khi socket bị ngắt và cập nhật trạng thái cảnh báo chuẩn xác.
+  - Đồng bộ thành công 100% toàn bộ 442 email đến tận ngày 24/10/2026, hiển thị trạng thái hoàn tất 442/442.
+
 ## Update - 2026-10-21 (QC / OQC: Thêm Tab "OQC_Quản lý xuất hàng" & Command Backend)
 - **Mục tiêu**: Bổ sung tab mới "OQC_Quản lý xuất hàng" trên màn hình OQC [OQC.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/oqc/OQC.tsx), tra cứu dữ liệu xuất hàng theo câu truy vấn SQL nghiệp vụ (liên kết `tbl_InputOutput`, `P501`, `ZTB_OQC_OUTGOING_SCAN`, `ZTB_OQC_SAMPLING_STANDARD_AQL`, `M100`, `M110`), lọc theo khoảng ngày, khách hàng, code `G_NAME`, code `G_CODE`.
 - **Thực hiện Backend ([qcService.js](file:///g:/NODEJS/practice1/services/qcService.js))**:
