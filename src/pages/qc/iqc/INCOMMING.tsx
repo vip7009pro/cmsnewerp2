@@ -29,6 +29,7 @@ const INCOMMING: React.FC = () => {
   const [showDtcSheet, setShowDtcSheet] = useState(false);
   const [quickSearch, setQuickSearch] = useState("");
   const [onlyPending, setOnlyPending] = useState(false);
+  const [onlyDtcOk, setOnlyDtcOk] = useState(true);
   // Ref (selectedRowsData.current) không trigger re-render ⇒ cần state đếm cho chip counter trên mobile
   const [selectedCount, setSelectedCount] = useState(0);
 
@@ -98,11 +99,21 @@ const INCOMMING: React.FC = () => {
     }
   };
 
+  // ==========================================================
+  // DỮ LIỆU LỌC DTC_RESULT OK (áp dụng cho cả Desktop & Mobile)
+  // ==========================================================
+  const displayRows = useMemo(() => {
+    if (!onlyDtcOk) return incoming.iqc1datatable;
+    return incoming.iqc1datatable.filter(
+      (row) => (row.DTC_RESULT ?? "").toString().trim().toUpperCase() !== "NG"
+    );
+  }, [incoming.iqc1datatable, onlyDtcOk]);
+
   const handleToggleBNK = () => {
     if (!incoming.showBNK) {
       if (!incoming.clickedRow) {
-        if (incoming.iqc1datatable.length > 0) {
-          const first = incoming.iqc1datatable[0];
+        if (displayRows.length > 0) {
+          const first = displayRows[0];
           incoming.setClickedRow(first);
           if (first.DTC_ID) {
             incoming.handletraDTCData(first.DTC_ID);
@@ -129,8 +140,8 @@ const INCOMMING: React.FC = () => {
   // MOBILE SỐ LIỆU PHÁI SINH (chỉ dùng ở nhánh mobile)
   // ==========================================================
   const mobileRows = useMemo(
-    () => (isMobile ? filterIncomingRows(incoming.iqc1datatable, quickSearch, onlyPending) : incoming.iqc1datatable),
-    [isMobile, incoming.iqc1datatable, quickSearch, onlyPending]
+    () => (isMobile ? filterIncomingRows(displayRows, quickSearch, onlyPending) : displayRows),
+    [isMobile, displayRows, quickSearch, onlyPending]
   );
 
   // Số điều kiện lọc đang bật (hiển thị badge trên nút "Lọc")
@@ -220,7 +231,7 @@ const INCOMMING: React.FC = () => {
         />
 
         <PrecisionIncomingTable
-          data={incoming.iqc1datatable}
+          data={displayRows}
           isWorker={isWorker}
           clickedRow={incoming.clickedRow}
           onRowClick={handleRowClick}
@@ -300,11 +311,13 @@ const INCOMMING: React.FC = () => {
             ncrIdInput={incoming.ncrIdInput}
             setNcrIdInput={incoming.setNcrIdInput}
             onUpdateNcrId={incoming.handleUpdateNcrId}
+            onlyDtcOk={onlyDtcOk}
+            onToggleOnlyDtcOk={setOnlyDtcOk}
             onExportExcel={incoming.handleExportExcel}
           />
 
           <PrecisionIncomingTable
-            data={incoming.iqc1datatable}
+            data={displayRows}
             isWorker={isWorker}
             clickedRow={incoming.clickedRow}
             onRowClick={handleRowClick}

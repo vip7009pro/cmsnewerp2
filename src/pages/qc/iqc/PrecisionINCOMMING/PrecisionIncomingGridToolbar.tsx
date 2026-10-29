@@ -13,6 +13,8 @@ interface PrecisionIncomingGridToolbarProps {
   ncrIdInput: string;
   setNcrIdInput: (val: string) => void;
   onUpdateNcrId: () => void;
+  onlyDtcOk?: boolean;
+  onToggleOnlyDtcOk?: (checked: boolean) => void;
   onExportExcel: (type: "EX1" | "EX2") => void;
 }
 
@@ -26,6 +28,8 @@ export const PrecisionIncomingGridToolbar: React.FC<PrecisionIncomingGridToolbar
   ncrIdInput,
   setNcrIdInput,
   onUpdateNcrId,
+  onlyDtcOk,
+  onToggleOnlyDtcOk,
   onExportExcel,
 }) => {
   return (
@@ -104,6 +108,17 @@ export const PrecisionIncomingGridToolbar: React.FC<PrecisionIncomingGridToolbar
             <span>Update NCR_ID</span>
           </button>
         </div>
+
+        {onToggleOnlyDtcOk && (
+          <input
+            type="checkbox"
+            className="precision-incoming__dtc-checkbox"
+            checked={!!onlyDtcOk}
+            onChange={(e) => onToggleOnlyDtcOk(e.target.checked)}
+            title="Chỉ hiển thị các dòng có DTC_RESULT là OK (Bỏ chọn để hiện tất cả)"
+            aria-label="Chỉ hiển thị các dòng có DTC_RESULT là OK"
+          />
+        )}
       </div>
 
       <div className="precision-incoming__toolbar-right">

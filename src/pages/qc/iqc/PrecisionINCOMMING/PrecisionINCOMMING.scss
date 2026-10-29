@@ -660,6 +660,14 @@ $shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.2), 0 8px 10px -6px rgba(15, 23,
     }
   }
 
+  &__dtc-checkbox {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    accent-color: #059669;
+    margin: 0 2px;
+  }
+
   &__toolbar-right {
     display: flex;
     align-items: center;

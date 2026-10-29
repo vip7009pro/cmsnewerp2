@@ -1,5 +1,14 @@
 # ERP Context & Status
 
+## Update - 2026-10-29 (QC / IQC: Thêm Checkbox Lọc Nhanh DTC_RESULT OK)
+- **Mục tiêu**: Bổ sung checkbox không tên ngay sau nút `Update NCR_ID` trên toolbar bảng dữ liệu Incoming tại màn hình IQC ([INCOMMING.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/INCOMMING.tsx)).
+- **Logic & Giao diện**:
+  - Checkbox mặc định checked (`onlyDtcOk = true`): lưới Incoming chỉ hiển thị các dòng có `DTC_RESULT` là `"OK"` (chuẩn hóa `row.DTC_RESULT?.toString().trim().toUpperCase() === "OK"`).
+  - Khi bỏ chọn checkbox (`onlyDtcOk = false`): lưới Incoming hiển thị đầy đủ toàn bộ dữ liệu như hiện tại.
+  - Tích hợp chuẩn hóa cả trên Desktop ([PrecisionIncomingGridToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/PrecisionINCOMMING/PrecisionIncomingGridToolbar.tsx)) và Bottom Sheet ĐTC trên Mobile ([PrecisionIncomingMobileDtcSheet.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/PrecisionINCOMMING/PrecisionIncomingMobileDtcSheet.tsx)).
+  - Bổ sung `dataAlias={incoming.iqc1datatable}` cho [PrecisionIncomingTable.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/PrecisionINCOMMING/PrecisionIncomingTable.tsx) để giữ trọn vẹn khả năng xuất Excel EX1 theo dữ liệu đang hiển thị trên AG Grid và EX2 toàn bộ mảng gốc.
+  - Bổ sung định dạng CSS/SCSS compact ERP không inline style ([PrecisionINCOMMING.scss](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/PrecisionINCOMMING/PrecisionINCOMMING.scss)), màu checkbox xanh lá (`#059669`) đồng bộ nhận diện kết quả OK.
+
 ## Update - 2026-10-26 (EMAIL: Khắc Phục Lỗi Đồng Bộ Dừng Ngày 15/10 & Kẹt Ở 387/442)
 - **Mục tiêu**: Xử lý triệt để phản ánh đồng bộ email không có thư mới sau 15/10/2026, kẹt 387/442 dù server có 442 email.
 - **Khắc phục**:
