@@ -23,7 +23,9 @@ const BOM_AMAZON: React.FC = () => {
     enableEdit,
     rows,
     codeinfoCMS,
+    setcodeinfoCMS,
     codeinfoKD,
+    setcodeinfoKD,
     amz_country,
     setAMZ_COUNTRY,
     amz_prod_name,
@@ -62,6 +64,8 @@ const BOM_AMAZON: React.FC = () => {
   // Xử lý khi chọn một mã hàng từ All Code để khởi tạo BOM từ phôi
   const handleSelectCodeInfo = (row: CODE_INFO) => {
     if (!row?.G_CODE) return;
+    setcodeinfoCMS(row.G_CODE);
+    setcodeinfoKD(row.G_NAME || "");
     handleGETBOMAMAZONEMPTY(row.G_CODE, row.G_NAME || "", G_CODE_MAU);
   };
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { generalQuery, getAuditMode } from "../../../../api/Api";
+import { generalQuery, getAuditMode, getUserData } from "../../../../api/Api";
 import { UserData } from "../../../../api/GlobalInterface";
 import { SaveExcel } from "../../../../api/services/excelService";
 import { checkBP } from "../../../../api/services/permissionService";
@@ -166,10 +166,16 @@ export const useBomAmazonData = (): UseBomAmazonDataReturn => {
                 id: index.toString(),
               })
             );
+            setcodeinfoCMS(G_CODE);
+            setcodeinfoKD(G_NAME);
+            setAMZ_COUNTRY("");
+            setAMZ_PROD_NAME("");
             setBOMAMAZONTable(loadeddata);
             setIsBomExist(false);
             setisLoading(false);
           } else {
+            setcodeinfoCMS(G_CODE);
+            setcodeinfoKD(G_NAME);
             setBOMAMAZONTable([]);
             setisLoading(false);
           }
@@ -242,8 +248,26 @@ export const useBomAmazonData = (): UseBomAmazonDataReturn => {
   }, []);
 
   // LƯU BOM AMAZON (INSERT HOẶC UPDATE) — tổng hợp err_code theo từng dòng
+  // LƯU BOM AMAZON (INSERT HOẶC UPDATE) — tổng hợp err_code theo từng dòng
   const addBOMAMAZON = useCallback(async () => {
-    if (!codeinfoCMS) return;
+    if (!codeinfoCMS) {
+      Swal.fire("Thông báo", "Vui lòng chọn một mã sản phẩm trước khi lưu BOM!", "warning");
+      return;
+    }
+
+    if (bomamazontable.length === 0) {
+      Swal.fire("Thông báo", "Bảng dữ liệu BOM đang rỗng!", "warning");
+      return;
+    }
+
+    Swal.fire({
+      title: "Đang lưu BOM Amazon...",
+      text: `Đang xử lý ${bomamazontable.length} chỉ tiêu`,
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
 
     // Nếu chính bước kiểm tra tồn tại lỗi (mất kết nối) thì DỪNG, không insert mù.
     let bomAmazonExist = false;
@@ -273,20 +297,20 @@ export const useBomAmazonData = (): UseBomAmazonDataReturn => {
               G_CODE: codeinfoCMS,
               G_CODE_MAU: G_CODE_MAU,
               DOITUONG_NO: row.DOITUONG_NO,
-              GIATRI: row.GIATRI,
-              REMARK: row.REMARK,
-              AMZ_PROD_NAME: amz_prod_name,
-              AMZ_COUNTRY: amz_country,
+              GIATRI: row.GIATRI ?? "",
+              REMARK: row.REMARK ?? "",
+              AMZ_PROD_NAME: amz_prod_name ?? "",
+              AMZ_COUNTRY: amz_country ?? "",
             })
           : await generalQuery("updateAmazonBOM", {
               G_CODE: codeinfoCMS,
-              G_CODE_MAU: row.G_CODE_MAU,
+              G_CODE_MAU: row.G_CODE_MAU ?? G_CODE_MAU,
               DOITUONG_NO: row.DOITUONG_NO,
-              GIATRI: row.GIATRI,
-              REMARK: row.REMARK,
-              AMZ_PROD_NAME: amz_prod_name,
-              AMZ_COUNTRY: amz_country,
-              DOITUONG_NAME2: row.DOITUONG_NAME2,
+              GIATRI: row.GIATRI ?? "",
+              REMARK: row.REMARK ?? "",
+              AMZ_PROD_NAME: amz_prod_name ?? "",
+              AMZ_COUNTRY: amz_country ?? "",
+              DOITUONG_NAME2: row.DOITUONG_NAME2 ?? "",
             });
 
         if (response.data?.tk_status === "NG") {
@@ -296,6 +320,19 @@ export const useBomAmazonData = (): UseBomAmazonDataReturn => {
         }
       } catch (error: any) {
         err_code += `\n| ${rowLabel}: ${error?.message ?? "lỗi kết nối"}`;
+      }
+    }
+
+    // Nếu là insert mới thành công và có thông tin tên thực tế / thị trường, đồng bộ thêm qua updateAmazonBOMCodeInfo
+    if (isInsert && successCount > 0 && (amz_prod_name || amz_country)) {
+      try {
+        await generalQuery("updateAmazonBOMCodeInfo", {
+          G_CODE: codeinfoCMS,
+          AMZ_PROD_NAME: amz_prod_name ?? "",
+          AMZ_COUNTRY: amz_country ?? "",
+        });
+      } catch (e) {
+        console.error("Lỗi đồng bộ thông tin phụ khi tạo BOM mới:", e);
       }
     }
 
@@ -329,7 +366,17 @@ export const useBomAmazonData = (): UseBomAmazonDataReturn => {
   ]);
 
   const confirmSaveBOMAMAZON = useCallback(() => {
-    checkBP(userData, ["RND"], ["ALL"], ["ALL"], () => {
+    if (!codeinfoCMS) {
+      Swal.fire("Thông báo", "Vui lòng chọn một mã sản phẩm từ danh mục trước khi lưu BOM!", "warning");
+      return;
+    }
+    if (bomamazontable.length === 0) {
+      Swal.fire("Thông báo", "Bảng dữ liệu BOM đang rỗng!", "warning");
+      return;
+    }
+
+    const currentUser = userData?.EMPL_NO ? userData : getUserData();
+    checkBP(currentUser, ["RND"], ["ALL"], ["ALL"], () => {
       Swal.fire({
         title: "Chắc chắn muốn lưu BOM AMAZON ?",
         text: `Mã sản phẩm: ${codeinfoCMS}`,
@@ -345,11 +392,12 @@ export const useBomAmazonData = (): UseBomAmazonDataReturn => {
         }
       });
     });
-  }, [userData, codeinfoCMS, addBOMAMAZON]);
+  }, [userData, codeinfoCMS, bomamazontable.length, addBOMAMAZON]);
 
   // BẬT / TẮT SỬA VỚI PHÂN QUYỀN RND
   const handleToggleEdit = useCallback(() => {
-    checkBP(userData, ["RND"], ["ALL"], ["ALL"], () => {
+    const currentUser = userData?.EMPL_NO ? userData : getUserData();
+    checkBP(currentUser, ["RND"], ["ALL"], ["ALL"], () => {
       setEnableEdit((prev) => {
         const nextState = !prev;
         Swal.fire(
@@ -364,6 +412,11 @@ export const useBomAmazonData = (): UseBomAmazonDataReturn => {
 
   // CẬP NHẬT THÔNG TIN PHỤ (ẢNH / TÊN / THỊ TRƯỜNG)
   const handle_saveAMAZONCODEINFO = useCallback(async () => {
+    if (!codeinfoCMS) {
+      Swal.fire("Thông báo", "Vui lòng chọn mã sản phẩm trước !", "warning");
+      return;
+    }
+
     const { value: pass1 } = await Swal.fire({
       title: "Xác nhận cập nhật thông tin phụ",
       input: "password",
@@ -375,26 +428,26 @@ export const useBomAmazonData = (): UseBomAmazonDataReturn => {
       confirmButtonText: "Xác nhận",
     });
 
+    if (pass1 === undefined) {
+      return;
+    }
+
     if (pass1 === "okema") {
-      if (codeinfoCMS !== "") {
-        generalQuery("updateAmazonBOMCodeInfo", {
-          G_CODE: codeinfoCMS,
-          AMZ_PROD_NAME: amz_prod_name,
-          AMZ_COUNTRY: amz_country,
+      generalQuery("updateAmazonBOMCodeInfo", {
+        G_CODE: codeinfoCMS,
+        AMZ_PROD_NAME: amz_prod_name ?? "",
+        AMZ_COUNTRY: amz_country ?? "",
+      })
+        .then((response) => {
+          if (response.data.tk_status !== "NG") {
+            Swal.fire("Thông báo", "Update data thành công", "success");
+          } else {
+            Swal.fire("Thông báo", "Update data thất bại: " + response.data.message, "error");
+          }
         })
-          .then((response) => {
-            if (response.data.tk_status !== "NG") {
-              Swal.fire("Thông báo", "Update data thành công", "success");
-            } else {
-              Swal.fire("Thông báo", "Update data thất bại: " + response.data.message, "error");
-            }
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      } else {
-        Swal.fire("Thông báo", "Chọn code trước đã !", "error");
-      }
+        .catch((error) => {
+          console.error(error);
+        });
     } else {
       Swal.fire("Thông báo", "Đã nhập sai mật mã !", "error");
     }
@@ -460,7 +513,9 @@ export const useBomAmazonData = (): UseBomAmazonDataReturn => {
     setEnableEdit,
     rows,
     codeinfoCMS,
+    setcodeinfoCMS,
     codeinfoKD,
+    setcodeinfoKD,
     amz_country,
     setAMZ_COUNTRY,
     amz_prod_name,

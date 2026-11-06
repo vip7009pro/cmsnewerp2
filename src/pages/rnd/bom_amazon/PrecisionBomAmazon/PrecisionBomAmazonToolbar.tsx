@@ -72,7 +72,6 @@ export const PrecisionBomAmazonToolbar: React.FC<ToolbarProps> = React.memo(
               type="button"
               className="precision-bom-amz__btn precision-bom-amz__btn--save"
               onClick={onSaveBom}
-              disabled={!codeinfoCMS || bomDataLength === 0}
               title="Lưu cấu trúc BOM Amazon vào cơ sở dữ liệu"
             >
               <AiFillSave size={15} />

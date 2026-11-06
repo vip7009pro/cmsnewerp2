@@ -125,7 +125,6 @@ export const PrecisionBomAmazonInfoPanel: React.FC<InfoPanelProps> = React.memo(
             type="button"
             className="updateBtn"
             onClick={onUpdateInfo}
-            disabled={!codeinfoCMS}
             title="Cập nhật tên thực tế và thị trường (Yêu cầu mật mã xác nhận)"
           >
             <AiOutlineCheck size={14} />

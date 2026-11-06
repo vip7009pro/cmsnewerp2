@@ -1,5 +1,21 @@
 # ERP Context & Status
 
+## Update - 2026-11-06 (R&D / BOM AMAZON: Khắc Phục Lỗi Nút Lưu BOM & Cập Nhật Thông Tin Phụ Bị Liệt)
+- **Mục tiêu**: Kiểm tra và đồng bộ sai khác logic nút "Lưu BOM" và "Cập nhật thông tin phụ" giữa [BOM_AMAZON.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/bom_amazon/BOM_AMAZON.tsx) và [BOM_AMAZON.backup.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/bom_amazon/BOM_AMAZON.backup.tsx).
+- **Nguyên nhân cốt lõi phát hiện**:
+  - Khi người dùng chọn mã sản phẩm từ tab "TRA CỨU ALL", hàm `handleGETBOMAMAZONEMPTY` và `handleSelectCodeInfo` chỉ tải cấu trúc phôi mẫu mà quên cập nhật `setcodeinfoCMS` và `setcodeinfoKD` (trong bản backup gốc, 2 setter này nằm ngay trong sự kiện `onRowClick` của bảng cha).
+  - Vì `codeinfoCMS === ""` nên:
+    1. Nút "LƯU BOM" trên [PrecisionBomAmazonToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/bom_amazon/PrecisionBomAmazon/PrecisionBomAmazonToolbar.tsx) bị gán thuộc tính `disabled={!codeinfoCMS || bomDataLength === 0}` dẫn đến nút bị vô hiệu hóa (disabled), click vào không có bất kỳ phản hồi nào.
+    2. Nút "CẬP NHẬT THÔNG TIN PHỤ" trên [PrecisionBomAmazonInfoPanel.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/bom_amazon/PrecisionBomAmazon/PrecisionBomAmazonInfoPanel.tsx) bị gán `disabled={!codeinfoCMS}` dẫn đến nút bị disabled, toàn bộ ô nhập textarea tên thực tế và thị trường cũng bị disable.
+    3. Phân quyền `checkBP`: `userData` từ Redux có thể bị `undefined` nếu vừa F5/chưa hydrate xong, khiến `checkBP` âm thầm `return;`.
+    4. Backend `insertAmazonBOM` không lưu cột `AMZ_PROD_NAME`, chỉ có `updateAmazonBOMCodeInfo` mới lưu được tên thực tế.
+- **Khắc phục**:
+  - Bổ sung `setcodeinfoCMS(G_CODE)` và `setcodeinfoKD(G_NAME)` ngay khi chọn mã từ phôi rỗng ([BOM_AMAZON.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/bom_amazon/BOM_AMAZON.tsx), [useBomAmazonData.ts](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/bom_amazon/PrecisionBomAmazon/useBomAmazonData.ts)).
+  - Bỏ thuộc tính HTML `disabled` làm đơ nút, chuyển sang cơ chế xác thực thân thiện: nếu chưa chọn mã hoặc dữ liệu rỗng, khi click nút sẽ hiển thị cảnh báo `Swal.fire` rõ ràng ([PrecisionBomAmazonToolbar.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/bom_amazon/PrecisionBomAmazon/PrecisionBomAmazonToolbar.tsx), [PrecisionBomAmazonInfoPanel.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/rnd/bom_amazon/PrecisionBomAmazon/PrecisionBomAmazonInfoPanel.tsx)).
+  - Dự phòng an toàn `currentUser = userData?.EMPL_NO ? userData : getUserData()` cho `checkBP`, chống nuốt sự kiện khi Redux chưa kịp hydrate.
+  - Tự động đồng bộ `updateAmazonBOMCodeInfo` sau khi insert BOM mới thành công, giải quyết triệt để việc mất `AMZ_PROD_NAME`.
+  - Hiển thị loading `Swal.showLoading()` trong suốt quá trình ghi dữ liệu nhiều dòng vào SQL Server.
+
 ## Update - 2026-10-29 (QC / IQC: Thêm Checkbox Lọc Nhanh DTC_RESULT OK)
 - **Mục tiêu**: Bổ sung checkbox không tên ngay sau nút `Update NCR_ID` trên toolbar bảng dữ liệu Incoming tại màn hình IQC ([INCOMMING.tsx](file:///g:/NODEJS/WEBCMS%20ERP2/cmsnewerp2/src/pages/qc/iqc/INCOMMING.tsx)).
 - **Logic & Giao diện**:

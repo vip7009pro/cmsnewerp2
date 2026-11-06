@@ -23,7 +23,9 @@ export interface UseBomAmazonDataReturn {
   setEnableEdit: (val: boolean | ((prev: boolean) => boolean)) => void;
   rows: CODE_INFO[];
   codeinfoCMS: string;
+  setcodeinfoCMS: (val: string) => void;
   codeinfoKD: string;
+  setcodeinfoKD: (val: string) => void;
   amz_country: string;
   setAMZ_COUNTRY: (val: string) => void;
   amz_prod_name: string;
